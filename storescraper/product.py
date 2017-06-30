@@ -1,15 +1,16 @@
-from currency import Currency
+from .currency import Currency
 
 
 class Product:
-    def __init__(self, name, store, product_type, url, key, stock,
-                 normal_price, offer_price, currency, part_number=None,
+    def __init__(self, name, store, product_type, url, discovery_url, key,
+                 stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None):
         self.name = name
         self.store = store
         self.product_type = product_type
         self.url = url
+        self.discovery_url = discovery_url
         self.key = key
         self.stock = stock
         self.normal_price = normal_price
@@ -26,6 +27,7 @@ class Product:
         lines.append('{} - {} ({})'.format(self.store, self.name,
                                            self.product_type))
         lines.append(self.url)
+        lines.append('Discovery URL: {}'.format(self.discovery_url))
         lines.append('SKU: {}'.format(
             self._optional_field_as_string('sku')))
         lines.append('Part number: {}'.format(
@@ -56,12 +58,16 @@ class Product:
 
         return '\n'.join(lines)
 
+    def __repr__(self):
+        return '{} - {}'.format(self.store, self.name)
+
     def serialize(self):
         return {
             'name': self.name,
             'store': self.store,
             'product_type': self.product_type,
             'url': self.url,
+            'discovery_url': self.discovery_url,
             'key': self.key,
             'stock': self.stock,
             'normal_price': self.normal_price,

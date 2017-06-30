@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
 
-from product import Product
-from store import Store
-from utils import remove_words
+from storescraper.product import Product
+from storescraper.store import Store
+from storescraper.utils import remove_words
 
 
 class AbcDin(Store):
@@ -111,13 +111,12 @@ class AbcDin(Store):
                     product_url = \
                         'https://www.abcdin.cl/tienda/ProductDisplay?' + newqs
 
-                discovered_urls.append({'url': product_url})
+                discovered_urls.append(product_url)
 
         return discovered_urls
 
     @classmethod
-    def products_for_url(cls, url, product_type=None, extra_args=None,
-                         discovery_information=None):
+    def products_for_url(cls, url, product_type=None, extra_args=None):
         product_webpage = requests.get(url)
         soup = BeautifulSoup(product_webpage.text, 'html.parser')
 
@@ -156,6 +155,7 @@ class AbcDin(Store):
             name,
             cls.__name__,
             product_type,
+            url,
             url,
             sku,
             stock,

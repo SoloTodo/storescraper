@@ -11,8 +11,12 @@ def remove_words(text, blacklist=CLP_BLACKLIST):
     return text
 
 
-def get_store_class_by_name(store_path):
-    store_module, store_class_name = store_path.split('.')
-    store_module = importlib.import_module(
-        'stores.{}'.format(store_module))
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+def get_store_class_by_name(store_class_name):
+    store_module = importlib.import_module('storescraper.stores')
     return getattr(store_module, store_class_name)
