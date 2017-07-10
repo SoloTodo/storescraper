@@ -36,7 +36,7 @@ class AbcDin(Store):
         ]
 
     @classmethod
-    def discover_urls(cls, product_type, extra_args=None):
+    def discover_urls_for_product_type(cls, product_type, extra_args=None):
         ajax_resources = [
             ['10076', 'Notebook'],
             ['10003', 'Television'],
@@ -96,6 +96,9 @@ class AbcDin(Store):
 
             for idx, product_cell in enumerate(product_cells):
                 product_url = product_cell.find('a')['href']
+                product_url = product_url.replace(
+                    'abc-live.prod.coc.ibmcloud.com', 'www.abcdin.cl')
+                product_url = product_url.replace('http://', 'https://')
 
                 if 'ProductDisplay' in product_url:
                     parsed_product = urlparse(product_url)

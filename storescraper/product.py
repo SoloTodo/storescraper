@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from .currency import Currency
 
 
@@ -29,18 +31,18 @@ class Product:
         lines.append(self.url)
         lines.append('Discovery URL: {}'.format(self.discovery_url))
         lines.append('SKU: {}'.format(
-            self._optional_field_as_string('sku')))
+            self.optional_field_as_string('sku')))
         lines.append('Part number: {}'.format(
-            self._optional_field_as_string('part_number')))
+            self.optional_field_as_string('part_number')))
         lines.append(u'Key: {}'.format(self.key))
-        lines.append(u'Stock: {}'.format(self._stock_as_string()))
+        lines.append(u'Stock: {}'.format(self.stock_as_string()))
         lines.append(u'Currency: {}'.format(self.currency))
         lines.append(u'Normal price: {}'.format(Currency.format(
             self.normal_price, self.currency)))
         lines.append(u'Offer price: {}'.format(Currency.format(
             self.offer_price, self.currency)))
         lines.append('Cell plan name: {}'.format(
-            self._optional_field_as_string('cell_plan_name')))
+            self.optional_field_as_string('cell_plan_name')))
 
         cell_monthly_payment = self.cell_monthly_payment
 
@@ -54,7 +56,7 @@ class Product:
             cell_monthly_payment_string))
 
         lines.append('Description: {}'.format(
-            self._optional_field_as_string('description')[:30]))
+            self.optional_field_as_string('description')[:30]))
 
         return '\n'.join(lines)
 
@@ -80,7 +82,22 @@ class Product:
             'cell_monthly_payment': self.cell_monthly_payment
         }
 
-    def _stock_as_string(self):
+    @classmethod
+    def deserialize(cls, serialized_data):
+        serialized_data['normal_price'] = \
+            Decimal(serialized_data['normal_price'])
+        serialized_data['offer_price'] = \
+            Decimal(serialized_data['offer_price'])
+        return cls(**serialized_data)
+
+    def is_available(self):
+        return self.stock != 0
+
+    ##########################################################################
+    # Utility methods
+    ##########################################################################
+
+    def stock_as_string(self):
         if self.stock == -1:
             return 'Available but unknown'
         elif self.stock == 0:
@@ -88,7 +105,7 @@ class Product:
         else:
             return str(self.stock)
 
-    def _optional_field_as_string(self, field):
+    def optional_field_as_string(self, field):
         field_value = getattr(self, field)
         if field_value is not None:
             return field_value
