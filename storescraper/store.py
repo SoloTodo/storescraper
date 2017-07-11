@@ -108,9 +108,12 @@ class Store:
                             'product_type': product_type
                         })
         else:
+            logger.info('Using sync method')
             for product_type in product_types:
                 for url in cls.discover_urls_for_product_type(
                         product_type, extra_args):
+                    logger.info('Discovered URL: {} ({})'.format(
+                        url, product_type))
                     discovered_urls_with_types.append({
                         'url': url,
                         'product_type': product_type
@@ -132,17 +135,22 @@ class Store:
             products_for_url_concurrency = \
                 cls.preferred_products_for_url_concurrency
 
+        logger.info('Retrieving products for: {}'.format(cls.__name__))
+
+        for entry in discovery_urls_with_types:
+            logger.info('{} ({})'.format(entry['url'], entry['product_type']))
+
         products = []
 
         if async:
-            discovered_urls_with_types_chunks = chunks(
+            discovery_urls_with_types_chunks = chunks(
                 discovery_urls_with_types, products_for_url_concurrency)
 
-            for discovered_urls_with_types_chunk in \
-                    discovered_urls_with_types_chunks:
+            for discovery_urls_with_types_chunk in \
+                    discovery_urls_with_types_chunks:
                 chunk_tasks = []
 
-                for discovered_url_entry in discovered_urls_with_types_chunk:
+                for discovered_url_entry in discovery_urls_with_types_chunk:
                     task = cls.products_for_url_task.s(
                         cls.__name__, discovered_url_entry['url'],
                         discovered_url_entry['product_type'], extra_args)
@@ -154,13 +162,19 @@ class Store:
                 for task_result in tasks_group.get():
                     for serialized_product in task_result:
                         product = Product.deserialize(serialized_product)
+                        logger.info('{}\n'.format(product))
                         products.append(product)
         else:
+            logger.info('Using sync method')
             for discovered_url_entry in discovery_urls_with_types:
-                products.extend(cls.products_for_url(
+                retrieved_products = cls.products_for_url(
                     discovered_url_entry['url'],
                     discovered_url_entry['product_type'],
-                    extra_args))
+                    extra_args)
+
+                for product in retrieved_products:
+                    logger.info('{}\n'.format(product))
+                    products.append(product)
 
         return products
 
