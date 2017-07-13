@@ -142,6 +142,9 @@ class AbcDin(Store):
         else:
             stock = 0
 
+        if len(prices_containers) == 1:
+            return []
+
         normal_price = prices_containers[1].text
         normal_price = Decimal(remove_words(normal_price))
 

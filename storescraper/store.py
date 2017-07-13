@@ -1,3 +1,5 @@
+import traceback
+
 from celery import shared_task, group
 from celery.utils.log import get_task_logger
 
@@ -7,10 +9,15 @@ from .utils import get_store_class_by_name, chunks
 logger = get_task_logger(__name__)
 
 
+class StoreScrapError(Exception):
+    def __init__(self, message):
+        super(StoreScrapError, self).__init__(message)
+
+
 class Store:
     preferred_queue = 'us'
-    preferred_discover_urls_concurrency = 5
-    preferred_products_for_url_concurrency = 40
+    preferred_discover_urls_concurrency = 3
+    preferred_products_for_url_concurrency = 10
     prefer_async = True
 
     ##########################################################################
@@ -151,6 +158,7 @@ class Store:
                 chunk_tasks = []
 
                 for discovered_url_entry in discovery_urls_with_types_chunk:
+                    logger.info('Retrieving URL: {}'.format(discovered_url_entry['url']))
                     task = cls.products_for_url_task.s(
                         cls.__name__, discovered_url_entry['url'],
                         discovered_url_entry['product_type'], extra_args)
@@ -184,43 +192,23 @@ class Store:
 
     @staticmethod
     @shared_task
-    def products_task(store_class_name, product_types=None, async=True,
-                      extra_args=None, queue=None,
-                      discover_urls_concurrency=None,
-                      products_for_url_concurrency=None):
-        store = get_store_class_by_name(store_class_name)
-        return store.products(product_types, async, extra_args, queue,
-                              discover_urls_concurrency,
-                              products_for_url_concurrency)
-
-    @staticmethod
-    @shared_task
-    def discover_urls_for_product_types_task(
-            store_class_name, product_types=None, async=None, extra_args=None,
-            queue=None, discover_urls_concurrency=None):
-        store = get_store_class_by_name(store_class_name)
-        return store.discover_urls_for_product_types(
-            product_types, async, extra_args, queue, discover_urls_concurrency)
-
-    @staticmethod
-    @shared_task
-    def products_for_urls_task(store_class_name, urls_with_product_types=None,
-                               async=True, extra_args=None, queue=None):
-        store = get_store_class_by_name(store_class_name)
-        return store.products_for_urls(urls_with_product_types, async,
-                                       extra_args,
-                                       queue)
-
-    @staticmethod
-    @shared_task
     def discover_urls_for_product_type_task(store_class_name, product_type,
                                             extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info('Discovering URLs')
         logger.info('Store: ' + store.__name__)
         logger.info('Product type: ' + product_type)
-        discovered_urls = store.discover_urls_for_product_type(product_type,
-                                                               extra_args)
+        try:
+            discovered_urls = store.discover_urls_for_product_type(
+                product_type, extra_args)
+        except Exception:
+            error_message = 'Error discovering URLs from {}: {} - {}'.format(
+                store_class_name,
+                product_type,
+                traceback.format_exc())
+            logger.error(error_message)
+            raise StoreScrapError(error_message)
+
         for idx, url in enumerate(discovered_urls):
             logger.info('{} - {}'.format(idx, url))
         return discovered_urls
@@ -234,8 +222,17 @@ class Store:
         logger.info('Store: ' + store.__name__)
         logger.info('Product type: ' + product_type)
         logger.info('URL: ' + url)
-        raw_products = store.products_for_url(
-            url, product_type, extra_args)
+
+        try:
+            raw_products = store.products_for_url(
+                url, product_type, extra_args)
+        except Exception:
+            error_message = 'Error retrieving products from {}: {} - {}'.format(
+                store_class_name,
+                url,
+                traceback.format_exc())
+            logger.error(error_message)
+            raise StoreScrapError(error_message)
 
         serialized_products = [p.serialize() for p in raw_products]
 
