@@ -18,24 +18,20 @@ class Store:
     preferred_queue = 'us'
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 10
-    prefer_async = True
 
     ##########################################################################
     # API methods
     ##########################################################################
 
     @classmethod
-    def products(cls, product_types=None, async=None, extra_args=None,
+    def products(cls, product_types=None, extra_args=None,
                  queue=None, discover_urls_concurrency=None,
-                 products_for_url_concurrency=None):
+                 products_for_url_concurrency=None, async=True):
         if product_types is None:
             product_types = cls.product_types()
         else:
             product_types = [ptype for ptype in cls.product_types()
                              if ptype in product_types]
-
-        if async is None:
-            async = cls.prefer_async
 
         if queue is None:
             queue = cls.preferred_queue
@@ -51,31 +47,30 @@ class Store:
 
         discovered_urls_with_types = cls.discover_urls_for_product_types(
             product_types=product_types,
-            async=async,
             extra_args=extra_args,
             queue=queue,
-            discover_urls_concurrency=discover_urls_concurrency
+            discover_urls_concurrency=discover_urls_concurrency,
+            async=async
         )
 
         return cls.products_for_urls(
             discovered_urls_with_types,
-            async=async,
             extra_args=extra_args,
             queue=queue,
-            products_for_url_concurrency=products_for_url_concurrency)
+            products_for_url_concurrency=products_for_url_concurrency,
+            async=async
+        )
 
     @classmethod
-    def discover_urls_for_product_types(cls, product_types=None, async=None,
+    def discover_urls_for_product_types(cls, product_types=None,
                                         extra_args=None, queue=None,
-                                        discover_urls_concurrency=None):
+                                        discover_urls_concurrency=None,
+                                        async=True):
         if product_types is None:
             product_types = cls.product_types()
         else:
             product_types = [ptype for ptype in cls.product_types()
                              if ptype in product_types]
-
-        if async is None:
-            async = cls.prefer_async
 
         if queue is None:
             queue = cls.preferred_queue
@@ -129,12 +124,9 @@ class Store:
         return discovered_urls_with_types
 
     @classmethod
-    def products_for_urls(cls, discovery_urls_with_types, async=None,
-                          extra_args=None, queue=None,
-                          products_for_url_concurrency=None):
-        if async is None:
-            async = cls.prefer_async
-
+    def products_for_urls(cls, discovery_urls_with_types, extra_args=None,
+                          queue=None, products_for_url_concurrency=None,
+                          async=True):
         if queue is None:
             queue = cls.preferred_queue
 
@@ -148,6 +140,7 @@ class Store:
             logger.info('{} ({})'.format(entry['url'], entry['product_type']))
 
         products = []
+        discovery_urls_without_products = []
 
         if async:
             discovery_urls_with_types_chunks = chunks(
@@ -167,11 +160,15 @@ class Store:
 
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
-                for task_result in tasks_group.get():
+                for idx, task_result in enumerate(tasks_group.get()):
                     for serialized_product in task_result:
                         product = Product.deserialize(serialized_product)
                         logger.info('{}\n'.format(product))
                         products.append(product)
+
+                    if not task_result:
+                        discovery_urls_without_products.append(
+                            discovery_urls_with_types_chunk[idx]['url'])
         else:
             logger.info('Using sync method')
             for discovered_url_entry in discovery_urls_with_types:
@@ -184,7 +181,14 @@ class Store:
                     logger.info('{}\n'.format(product))
                     products.append(product)
 
-        return products
+                if not retrieved_products:
+                    discovery_urls_without_products.append(
+                        discovered_url_entry['url'])
+
+        return {
+            'products': products,
+            'discovery_urls_without_products': discovery_urls_without_products
+        }
 
     ##########################################################################
     # Celery tasks wrappers
