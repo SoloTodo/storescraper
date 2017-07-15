@@ -64,6 +64,9 @@ class Product:
         return '{} - {}'.format(self.store, self.name)
 
     def serialize(self):
+        serialized_cell_monthly_payment = str(self.cell_monthly_payment) \
+            if self.cell_monthly_payment is not None else None
+
         return {
             'name': self.name,
             'store': self.store,
@@ -79,7 +82,7 @@ class Product:
             'sku': self.sku,
             'description': self.description,
             'cell_plan_name': self.cell_plan_name,
-            'cell_monthly_payment': self.cell_monthly_payment
+            'cell_monthly_payment': serialized_cell_monthly_payment
         }
 
     @classmethod

@@ -6,7 +6,7 @@ import logging
 
 sys.path.append('../..')
 
-from storescraper.utils import get_store_class_by_name
+from storescraper.utils import get_store_class_by_name  # noqa
 
 
 def main():
