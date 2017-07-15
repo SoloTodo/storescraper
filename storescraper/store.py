@@ -101,6 +101,7 @@ class Store:
                     chunk_tasks.append(task)
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
+                # Prevents Celery error for running a task inside another
                 with allow_join_result():
                     task_results = tasks_group.get()
 
@@ -171,6 +172,7 @@ class Store:
 
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
+                # Prevents Celery error for running a task inside another
                 with allow_join_result():
                     task_results = tasks_group.get()
 
