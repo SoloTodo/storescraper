@@ -37,22 +37,32 @@ def main():
     available_products = 0
     unavailable_products = 0
 
-    products = store.products(
+    products_data = store.products(
         product_types=args.product_types,
-        async=not args.sync,
+        use_async=not args.sync,
         extra_args=args.extra_args,
         queue='us')
 
-    for product in products:
+    for product in products_data['products']:
         if product.is_available():
             available_products += 1
         else:
             unavailable_products += 1
         print(product, '\n')
 
+    urls_with_error = products_data['discovery_urls_without_products']
+    print('Discovery URLs without products:')
+    if not urls_with_error:
+        print('* No empty URLs found')
+    for url_with_error in urls_with_error:
+        print('* '.format(url_with_error))
+
+    print()
     print('Available: {}'.format(available_products))
     print('Unavailable: {}'.format(unavailable_products))
-    print('Total: {}'.format(available_products + unavailable_products))
+    print('With error: {}'.format(len(urls_with_error)))
+    print('Total: {}'.format(available_products + unavailable_products +
+                             len(urls_with_error)))
 
 if __name__ == '__main__':
     main()

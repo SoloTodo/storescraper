@@ -37,7 +37,7 @@ def main():
 
     result = store.discover_urls_for_product_types(
         product_types=args.product_types,
-        async=not args.sync,
+        use_async=not args.sync,
         extra_args=args.extra_args,
         queue='us')
 
