@@ -97,6 +97,8 @@ class Falabella(Store):
                 product_name = product_entry['title']
                 sku = product_entry['skuId']
                 description = product_entry['title']
+                picture_url = 'http://falabella.scene7.com/is/image/' \
+                              'Falabella/{}'.format(sku)
 
                 prices = {e['type']: e for e in product_entry['prices']}
 
@@ -137,7 +139,8 @@ class Falabella(Store):
                     sku=sku,
                     description=description,
                     cell_plan_name=None,
-                    cell_monthly_payment=None
+                    cell_monthly_payment=None,
+                    picture_url=picture_url
                 )
 
                 products.append(p)

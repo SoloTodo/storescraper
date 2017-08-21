@@ -7,7 +7,7 @@ class Product:
     def __init__(self, name, store, product_type, url, discovery_url, key,
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, description=None, cell_plan_name=None,
-                 cell_monthly_payment=None):
+                 cell_monthly_payment=None, picture_url=None):
         self.name = name
         self.store = store
         self.product_type = product_type
@@ -23,6 +23,7 @@ class Product:
         self.description = description
         self.cell_plan_name = cell_plan_name
         self.cell_monthly_payment = cell_monthly_payment
+        self.picture_url = picture_url
 
     def __str__(self):
         lines = list()
@@ -34,6 +35,8 @@ class Product:
             self.optional_field_as_string('sku')))
         lines.append('Part number: {}'.format(
             self.optional_field_as_string('part_number')))
+        lines.append('Picture URL: {}'.format(
+            self.optional_field_as_string('picture_url')))
         lines.append(u'Key: {}'.format(self.key))
         lines.append(u'Stock: {}'.format(self.stock_as_string()))
         lines.append(u'Currency: {}'.format(self.currency))
@@ -82,7 +85,8 @@ class Product:
             'sku': self.sku,
             'description': self.description,
             'cell_plan_name': self.cell_plan_name,
-            'cell_monthly_payment': serialized_cell_monthly_payment
+            'cell_monthly_payment': serialized_cell_monthly_payment,
+            'picture_url': self.picture_url
         }
 
     @classmethod
