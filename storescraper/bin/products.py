@@ -19,8 +19,8 @@ def main():
     parser.add_argument('store', type=str,
                         help='The name of the store to be parsed')
 
-    parser.add_argument('--product_types', type=str, nargs='*',
-                        help='Specific product types to be parsed')
+    parser.add_argument('--categories', type=str, nargs='*',
+                        help='Specific categories to be parsed')
 
     parser.add_argument('--sync', type=bool, nargs='?', default=False,
                         const=True,
@@ -38,7 +38,7 @@ def main():
     unavailable_products = 0
 
     products_data = store.products(
-        product_types=args.product_types,
+        categories=args.categories,
         use_async=not args.sync,
         extra_args=args.extra_args,
         queue='us')

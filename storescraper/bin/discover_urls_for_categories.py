@@ -10,18 +10,18 @@ from storescraper.utils import get_store_class_by_name  # noqa
 def main():
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(levelname)s %(message)s',
-                        filename='discover_urls_for_product_types.log',
+                        filename='discover_urls_for_categories.log',
                         filemode='w')
 
     parser = argparse.ArgumentParser(
         description='Discovers the URLs of the given store and (optional) '
-                    'product types')
+                    'categories')
 
     parser.add_argument('store', type=str,
                         help='The name of the store to be parsed')
 
-    parser.add_argument('--product_types', type=str, nargs='*',
-                        help='Specific product types to be parsed')
+    parser.add_argument('--category', type=str, nargs='*',
+                        help='Specific categories to be parsed')
 
     parser.add_argument('--sync', type=bool, nargs='?', default=False,
                         const=True,
@@ -35,14 +35,14 @@ def main():
     args = parser.parse_args()
     store = get_store_class_by_name(args.store)
 
-    result = store.discover_urls_for_product_types(
-        product_types=args.product_types,
+    result = store.discover_urls_for_categories(
+        categories=args.categories,
         use_async=not args.sync,
         extra_args=args.extra_args,
         queue='us')
 
     for entry in result:
-        print('{0} ({1})'.format(entry['url'], entry['product_type']))
+        print('{} ({})'.format(entry['url'], entry['category']))
     print('Total: {0} URLs'.format(len(result)))
 
 if __name__ == '__main__':

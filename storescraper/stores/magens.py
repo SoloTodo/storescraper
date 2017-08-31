@@ -12,7 +12,7 @@ from storescraper.utils import remove_words
 
 class Magens(Store):
     @classmethod
-    def product_types(cls):
+    def categories(cls):
         return [
             'Notebook',
             'VideoCard',
@@ -31,7 +31,7 @@ class Magens(Store):
         ]
 
     @classmethod
-    def discover_urls_for_product_type(cls, product_type, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['Procesadores', 'Processor'],
             ['Placa%20Madre', 'Motherboard'],
@@ -55,8 +55,8 @@ class Magens(Store):
 
         discovered_urls = []
 
-        for url_extension, ptype in url_extensions:
-            if ptype != product_type:
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
                 continue
 
             page = 1
@@ -96,7 +96,7 @@ class Magens(Store):
         return discovered_urls
 
     @classmethod
-    def products_for_url(cls, url, product_type=None, extra_args=None):
+    def products_for_url(cls, url, category=None, extra_args=None):
         soup = BeautifulSoup(requests.get(url).text, 'html.parser')
 
         part_number = soup.find(
@@ -112,7 +112,7 @@ class Magens(Store):
         for panel_id in ['panel_fichaTecnica', 'panel_atributos']:
             panel = soup.find('section', {'id': panel_id})
             if panel:
-                description += panel.text
+                description += panel.get_text(' ', strip=True)
 
         if soup.find('button', {'id': 'product-form__add-to-cart'}):
             stock = -1
@@ -130,7 +130,7 @@ class Magens(Store):
         product = Product(
             name,
             cls.__name__,
-            product_type,
+            category,
             url,
             url,
             sku,

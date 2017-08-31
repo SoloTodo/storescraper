@@ -4,13 +4,13 @@ from .currency import Currency
 
 
 class Product:
-    def __init__(self, name, store, product_type, url, discovery_url, key,
+    def __init__(self, name, store, category, url, discovery_url, key,
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_url=None):
         self.name = name
         self.store = store
-        self.product_type = product_type
+        self.category = category
         self.url = url
         self.discovery_url = discovery_url
         self.key = key
@@ -28,7 +28,7 @@ class Product:
     def __str__(self):
         lines = list()
         lines.append('{} - {} ({})'.format(self.store, self.name,
-                                           self.product_type))
+                                           self.category))
         lines.append(self.url)
         lines.append('Discovery URL: {}'.format(self.discovery_url))
         lines.append('SKU: {}'.format(
@@ -73,7 +73,7 @@ class Product:
         return {
             'name': self.name,
             'store': self.store,
-            'product_type': self.product_type,
+            'category': self.category,
             'url': self.url,
             'discovery_url': self.discovery_url,
             'key': self.key,

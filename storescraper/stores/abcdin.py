@@ -1,5 +1,6 @@
 import re
 
+import html2text
 import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -12,7 +13,7 @@ from storescraper.utils import remove_words
 
 class AbcDin(Store):
     @classmethod
-    def product_types(cls):
+    def categories(cls):
         return [
             'Notebook',
             'Television',
@@ -36,7 +37,7 @@ class AbcDin(Store):
         ]
 
     @classmethod
-    def discover_urls_for_product_type(cls, product_type, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         ajax_resources = [
             ['10076', 'Notebook'],
             ['10003', 'Television'],
@@ -72,11 +73,11 @@ class AbcDin(Store):
 
         discovered_urls = []
 
-        for category_id, ptype in ajax_resources:
-            if ptype != product_type:
+        for category_id, local_category in ajax_resources:
+            if local_category != category:
                 continue
 
-            url = 'http://www.abcdin.cl/tienda/ProductListingView?' \
+            url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
                   'searchTermScope=&searchType=10&filterTerm=' \
                   '&langId=-1000&advancedSearch=' \
                   '&sType=SimpleSearch&gridPosition=' \
@@ -92,34 +93,37 @@ class AbcDin(Store):
                   '&pageSize=1000'.format(category_id)
 
             soup = BeautifulSoup(requests.get(url).text, 'html.parser')
-            product_cells = soup.find('ul', 'grid_mode').findAll('li')
+            product_cells = soup.find('ul', 'grid_mode')
+
+            if not product_cells:
+                continue
+
+            product_cells = product_cells.findAll('li')
 
             for idx, product_cell in enumerate(product_cells):
-                product_url = product_cell.find('a')['href']
-                product_url = product_url.replace(
-                    'abc-live.prod.coc.ibmcloud.com', 'www.abcdin.cl')
-                product_url = product_url.replace('http://', 'https://')
-
-                if 'ProductDisplay' in product_url:
-                    parsed_product = urlparse(product_url)
+                product_listed_url = product_cell.find('a')['href']
+                if 'ProductDisplay' in product_listed_url:
+                    parsed_product = urlparse(product_listed_url)
                     parameters = parse_qs(parsed_product.query)
 
                     parameters = {
                         k: v for k, v in parameters.items()
-                        if k in ['urlRequestType', 'productId', 'langId',
-                                 'storeId']}
+                        if k in ['productId', 'storeId']}
 
                     newqs = urlencode(parameters, doseq=True)
 
-                    product_url = \
-                        'https://www.abcdin.cl/tienda/ProductDisplay?' + newqs
-
+                    product_url = 'https://www.abcdin.cl/tienda/es/abcdin/' \
+                                  'ProductDisplay?' + newqs
+                else:
+                    slug_with_sku = product_listed_url.split('/')[-1]
+                    product_url = 'https://www.abcdin.cl/tienda/es/abcdin/'\
+                                  + slug_with_sku
                 discovered_urls.append(product_url)
 
         return discovered_urls
 
     @classmethod
-    def products_for_url(cls, url, product_type=None, extra_args=None):
+    def products_for_url(cls, url, category=None, extra_args=None):
         product_webpage = requests.get(url)
         soup = BeautifulSoup(product_webpage.text, 'html.parser')
 
@@ -154,13 +158,17 @@ class AbcDin(Store):
             offer_price = normal_price
 
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']
-        description = soup.find(
-            'p', attrs={'id': re.compile(r'product_longdescription_.*')}).text
+
+        description = html2text.html2text(str(soup.find(
+            'p', attrs={'id': re.compile(r'product_longdescription_.*')})))
+
+        picture_url = 'https://www.abcdin.cl' + \
+                      soup.find('img', {'id': 'productMainImage'})['src']
 
         product = Product(
             name,
             cls.__name__,
-            product_type,
+            category,
             url,
             url,
             sku,
@@ -172,7 +180,8 @@ class AbcDin(Store):
             sku=sku,
             description=description,
             cell_plan_name=None,
-            cell_monthly_payment=None
+            cell_monthly_payment=None,
+            picture_url=picture_url
         )
 
         return [product]

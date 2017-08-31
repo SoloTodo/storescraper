@@ -11,7 +11,7 @@ from storescraper.utils import remove_words
 
 class Falabella(Store):
     @classmethod
-    def product_types(cls):
+    def categories(cls):
         return [
             'Notebook',
             'Television',
@@ -42,7 +42,7 @@ class Falabella(Store):
         ]
 
     @classmethod
-    def products_for_url(cls, url, product_type=None, extra_args=None):
+    def products_for_url(cls, url, category=None, extra_args=None):
         session = requests.Session()
         session.headers.update({
             'Accept': '*/*',
@@ -117,17 +117,10 @@ class Falabella(Store):
                 else:
                     offer_price = normal_price
 
-                product_prices = {
-                    pmtype: normal_price
-                    for pmtype in ['cash', 'debit_card', 'credit_card']
-                }
-
-                product_prices['cmr_card'] = offer_price
-
                 p = Product(
                     product_name,
                     cls.__name__,
-                    product_type,
+                    category,
                     product_url,
                     url,
                     sku,
@@ -153,7 +146,7 @@ class Falabella(Store):
         return products
 
     @classmethod
-    def discover_urls_for_product_type(cls, product_type, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         url_schemas = [
             ['cat5860031/Notebooks-Convencionales', 'Notebook'],
             ['cat2028/Notebooks-Gamers', 'Notebook'],
@@ -197,8 +190,8 @@ class Falabella(Store):
 
         urls = []
 
-        for url_schema, ptype in url_schemas:
-            if ptype != product_type:
+        for url_schema, local_category in url_schemas:
+            if local_category != category:
                 continue
 
             urls.append('http://www.falabella.com/falabella-cl/category/{}'

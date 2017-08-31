@@ -32,7 +32,7 @@ def main():
 
     products = store.products_for_url(
         url=args.url,
-        product_type='Unknown',
+        category='Unknown',
         extra_args=args.extra_args)
 
     if products:

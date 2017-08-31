@@ -27,16 +27,16 @@ class Store:
     ##########################################################################
 
     @classmethod
-    def products(cls, product_types=None, extra_args=None,
+    def products(cls, categories=None, extra_args=None,
                  queue=None, discover_urls_concurrency=None,
                  products_for_url_concurrency=None, use_async=None):
         sanitized_parameters = cls.sanitize_parameters(
-            product_types=product_types, queue=queue,
+            categories=categories, queue=queue,
             discover_urls_concurrency=discover_urls_concurrency,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
-        product_types = sanitized_parameters['product_types']
+        categories = sanitized_parameters['categories']
         queue = sanitized_parameters['queue']
         discover_urls_concurrency = \
             sanitized_parameters['discover_urls_concurrency']
@@ -45,10 +45,10 @@ class Store:
         use_async = sanitized_parameters['use_async']
 
         logger.info('Obtaining products from: {}'.format(cls.__name__))
-        logger.info('Product_types: {}'.format(', '.join(product_types)))
+        logger.info('Categories: {}'.format(', '.join(categories)))
 
-        discovered_urls_with_types = cls.discover_urls_for_product_types(
-            product_types=product_types,
+        discovered_urls_with_categories = cls.discover_urls_for_categories(
+            categories=categories,
             extra_args=extra_args,
             queue=queue,
             discover_urls_concurrency=discover_urls_concurrency,
@@ -56,7 +56,7 @@ class Store:
         )
 
         return cls.products_for_urls(
-            discovered_urls_with_types,
+            discovered_urls_with_categories,
             extra_args=extra_args,
             queue=queue,
             products_for_url_concurrency=products_for_url_concurrency,
@@ -64,16 +64,16 @@ class Store:
         )
 
     @classmethod
-    def discover_urls_for_product_types(cls, product_types=None,
-                                        extra_args=None, queue=None,
-                                        discover_urls_concurrency=None,
-                                        use_async=True):
+    def discover_urls_for_categories(cls, categories=None,
+                                     extra_args=None, queue=None,
+                                     discover_urls_concurrency=None,
+                                     use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
-            product_types=product_types, queue=queue,
+            categories=categories, queue=queue,
             discover_urls_concurrency=discover_urls_concurrency,
             use_async=use_async)
 
-        product_types = sanitized_parameters['product_types']
+        categories = sanitized_parameters['categories']
         queue = sanitized_parameters['queue']
         discover_urls_concurrency = \
             sanitized_parameters['discover_urls_concurrency']
@@ -81,23 +81,23 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        discovered_urls_with_types = []
+        discovered_urls_with_categories = []
 
         if use_async:
-            product_type_chunks = chunks(
-                product_types, discover_urls_concurrency)
+            category_chunks = chunks(
+                categories, discover_urls_concurrency)
 
-            for product_type_chunk in product_type_chunks:
+            for category_chunk in category_chunks:
                 chunk_tasks = []
 
                 logger.info('Discovering URLs for: {}'.format(
-                    product_type_chunk))
+                    category_chunk))
 
-                for product_type in product_type_chunk:
-                    task = cls.discover_urls_for_product_type_task.s(
-                        cls.__name__, product_type, extra_args)
+                for category in category_chunk:
+                    task = cls.discover_urls_for_category_task.s(
+                        cls.__name__, category, extra_args)
                     task.set(queue='storescraper_discover_urls_for_'
-                                   'product_type_' + queue)
+                                   'category_' + queue)
                     chunk_tasks.append(task)
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
@@ -106,30 +106,30 @@ class Store:
                     task_results = tasks_group.get()
 
                 for idx, task_result in enumerate(task_results):
-                    product_type = product_type_chunk[idx]
-                    logger.info('Discovered URLs for {}:'.format(product_type))
+                    category = category_chunk[idx]
+                    logger.info('Discovered URLs for {}:'.format(category))
                     for discovered_url in task_result:
                         logger.info(discovered_url)
-                        discovered_urls_with_types.append({
+                        discovered_urls_with_categories.append({
                             'url': discovered_url,
-                            'product_type': product_type
+                            'category': category
                         })
         else:
             logger.info('Using sync method')
-            for product_type in product_types:
-                for url in cls.discover_urls_for_product_type(
-                        product_type, extra_args):
+            for category in categories:
+                for url in cls.discover_urls_for_category(
+                        category, extra_args):
                     logger.info('Discovered URL: {} ({})'.format(
-                        url, product_type))
-                    discovered_urls_with_types.append({
+                        url, category))
+                    discovered_urls_with_categories.append({
                         'url': url,
-                        'product_type': product_type
+                        'category': category
                     })
 
-        return discovered_urls_with_types
+        return discovered_urls_with_categories
 
     @classmethod
-    def products_for_urls(cls, discovery_urls_with_types, extra_args=None,
+    def products_for_urls(cls, discovery_urls_with_categories, extra_args=None,
                           queue=None, products_for_url_concurrency=None,
                           use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
@@ -144,28 +144,29 @@ class Store:
 
         logger.info('Retrieving products for: {}'.format(cls.__name__))
 
-        for entry in discovery_urls_with_types:
-            logger.info('{} ({})'.format(entry['url'], entry['product_type']))
+        for entry in discovery_urls_with_categories:
+            logger.info('{} ({})'.format(entry['url'], entry['category']))
 
         products = []
         discovery_urls_without_products = []
 
         if use_async:
-            discovery_urls_with_types_chunks = chunks(
-                discovery_urls_with_types, products_for_url_concurrency)
+            discovery_urls_with_categories_chunks = chunks(
+                discovery_urls_with_categories, products_for_url_concurrency)
 
             task_counter = 1
-            for discovery_urls_with_types_chunk in \
-                    discovery_urls_with_types_chunks:
+            for discovery_urls_with_categories_chunk in \
+                    discovery_urls_with_categories_chunks:
                 chunk_tasks = []
 
-                for discovered_url_entry in discovery_urls_with_types_chunk:
+                for discovered_url_entry in \
+                        discovery_urls_with_categories_chunk:
                     logger.info('Retrieving URL ({} / {}): {}'.format(
-                        task_counter, len(discovery_urls_with_types),
+                        task_counter, len(discovery_urls_with_categories),
                         discovered_url_entry['url']))
                     task = cls.products_for_url_task.s(
                         cls.__name__, discovered_url_entry['url'],
-                        discovered_url_entry['product_type'], extra_args)
+                        discovered_url_entry['category'], extra_args)
                     task.set(queue='storescraper_products_for_url_' + queue)
                     chunk_tasks.append(task)
                     task_counter += 1
@@ -184,13 +185,13 @@ class Store:
 
                     if not task_result:
                         discovery_urls_without_products.append(
-                            discovery_urls_with_types_chunk[idx]['url'])
+                            discovery_urls_with_categories_chunk[idx]['url'])
         else:
             logger.info('Using sync method')
-            for discovered_url_entry in discovery_urls_with_types:
+            for discovered_url_entry in discovery_urls_with_categories:
                 retrieved_products = cls.products_for_url(
                     discovered_url_entry['url'],
-                    discovered_url_entry['product_type'],
+                    discovered_url_entry['category'],
                     extra_args)
 
                 for product in retrieved_products:
@@ -212,19 +213,19 @@ class Store:
 
     @staticmethod
     @shared_task
-    def discover_urls_for_product_type_task(store_class_name, product_type,
-                                            extra_args=None):
+    def discover_urls_for_category_task(store_class_name, category,
+                                        extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info('Discovering URLs')
         logger.info('Store: ' + store.__name__)
-        logger.info('Product type: ' + product_type)
+        logger.info('Category: ' + category)
         try:
-            discovered_urls = store.discover_urls_for_product_type(
-                product_type, extra_args)
+            discovered_urls = store.discover_urls_for_category(
+                category, extra_args)
         except Exception:
             error_message = 'Error discovering URLs from {}: {} - {}'.format(
                 store_class_name,
-                product_type,
+                category,
                 traceback.format_exc())
             logger.error(error_message)
             raise StoreScrapError(error_message)
@@ -235,17 +236,17 @@ class Store:
 
     @staticmethod
     @shared_task
-    def products_for_url_task(store_class_name, url, product_type=None,
+    def products_for_url_task(store_class_name, url, category=None,
                               extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info('Obtaining products for URL')
         logger.info('Store: ' + store.__name__)
-        logger.info('Product type: ' + product_type)
+        logger.info('Category: ' + category)
         logger.info('URL: ' + url)
 
         try:
             raw_products = store.products_for_url(
-                url, product_type, extra_args)
+                url, category, extra_args)
         except Exception:
             error_message = 'Error retrieving products from {}: {} - {}' \
                             ''.format(store_class_name, url,
@@ -262,12 +263,12 @@ class Store:
 
     @staticmethod
     @shared_task
-    def products_task(store_class_name, product_types=None, extra_args=None,
+    def products_task(store_class_name, categories=None, extra_args=None,
                       queue=None, discover_urls_concurrency=None,
                       products_for_url_concurrency=None, use_async=None):
         store = get_store_class_by_name(store_class_name)
         result = store.products(
-            product_types=product_types, extra_args=extra_args, queue=queue,
+            categories=categories, extra_args=extra_args, queue=queue,
             discover_urls_concurrency=discover_urls_concurrency,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
@@ -282,13 +283,14 @@ class Store:
 
     @staticmethod
     @shared_task
-    def products_for_urls_task(store_class_name, discovery_urls_with_types,
+    def products_for_urls_task(store_class_name,
+                               discovery_urls_with_categories,
                                extra_args=None, queue=None,
                                products_for_url_concurrency=None,
                                use_async=True):
         store = get_store_class_by_name(store_class_name)
         result = store.products_for_urls(
-            discovery_urls_with_types, extra_args=extra_args, queue=queue,
+            discovery_urls_with_categories, extra_args=extra_args, queue=queue,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
@@ -305,17 +307,17 @@ class Store:
     ##########################################################################
 
     @classmethod
-    def product_types(cls):
+    def categories(cls):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 
     @classmethod
-    def products_for_url(cls, url, product_type=None, extra_args=None):
+    def products_for_url(cls, url, category=None, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 
     @classmethod
-    def discover_urls_for_product_type(cls, product_type, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 
@@ -334,14 +336,14 @@ class Store:
         return g
 
     @classmethod
-    def sanitize_parameters(cls, product_types=None, queue=None,
+    def sanitize_parameters(cls, categories=None, queue=None,
                             discover_urls_concurrency=None,
                             products_for_url_concurrency=None, use_async=None):
-        if product_types is None:
-            product_types = cls.product_types()
+        if categories is None:
+            categories = cls.categories()
         else:
-            product_types = [ptype for ptype in cls.product_types()
-                             if ptype in product_types]
+            categories = [category for category in cls.categories()
+                          if category in categories]
 
         if queue is None:
             queue = cls.preferred_queue
@@ -357,7 +359,7 @@ class Store:
             use_async = cls.prefer_async
 
         return {
-            'product_types': product_types,
+            'categories': categories,
             'queue': queue,
             'discover_urls_concurrency': discover_urls_concurrency,
             'products_for_url_concurrency': products_for_url_concurrency,
