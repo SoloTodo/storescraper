@@ -162,8 +162,8 @@ class AbcDin(Store):
         description = html2text.html2text(str(soup.find(
             'p', attrs={'id': re.compile(r'product_longdescription_.*')})))
 
-        picture_url = 'https://www.abcdin.cl' + \
-                      soup.find('img', {'id': 'productMainImage'})['src']
+        picture_urls = ['https://www.abcdin.cl' +
+                        soup.find('img', {'id': 'productMainImage'})['src']]
 
         product = Product(
             name,
@@ -181,7 +181,7 @@ class AbcDin(Store):
             description=description,
             cell_plan_name=None,
             cell_monthly_payment=None,
-            picture_url=picture_url
+            picture_urls=picture_urls
         )
 
         return [product]

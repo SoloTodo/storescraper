@@ -1,4 +1,9 @@
+import json
+from datetime import datetime
 from decimal import Decimal
+import dateutil.parser
+
+import pytz
 
 from .currency import Currency
 
@@ -7,7 +12,8 @@ class Product:
     def __init__(self, name, store, category, url, discovery_url, key,
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, description=None, cell_plan_name=None,
-                 cell_monthly_payment=None, picture_url=None):
+                 cell_monthly_payment=None, picture_urls=None, timestamp=None,
+                 state='NEW'):
         self.name = name
         self.store = store
         self.category = category
@@ -23,7 +29,15 @@ class Product:
         self.description = description
         self.cell_plan_name = cell_plan_name
         self.cell_monthly_payment = cell_monthly_payment
-        self.picture_url = picture_url
+        self.picture_urls = picture_urls
+        if not timestamp:
+            timestamp = datetime.utcnow()
+        if not timestamp.tzinfo:
+            timestamp = pytz.utc.localize(timestamp)
+        if state not in ['NEW', 'REFURBISHED', 'BAD_BOX', 'OPEN_BOX']:
+            raise Exception
+        self.state = state
+        self.timestamp = timestamp
 
     def __str__(self):
         lines = list()
@@ -35,8 +49,8 @@ class Product:
             self.optional_field_as_string('sku')))
         lines.append('Part number: {}'.format(
             self.optional_field_as_string('part_number')))
-        lines.append('Picture URL: {}'.format(
-            self.optional_field_as_string('picture_url')))
+        lines.append('Picture URLs: {}'.format(
+            self.optional_field_as_string('picture_urls')))
         lines.append(u'Key: {}'.format(self.key))
         lines.append(u'Stock: {}'.format(self.stock_as_string()))
         lines.append(u'Currency: {}'.format(self.currency))
@@ -44,6 +58,7 @@ class Product:
             self.normal_price, self.currency)))
         lines.append(u'Offer price: {}'.format(Currency.format(
             self.offer_price, self.currency)))
+        lines.append('State: {}'.format(self.state))
         lines.append('Cell plan name: {}'.format(
             self.optional_field_as_string('cell_plan_name')))
 
@@ -57,6 +72,7 @@ class Product:
 
         lines.append('Cell monthly payment: {}'.format(
             cell_monthly_payment_string))
+        lines.append('Timestamp: {}'.format(self.timestamp.isoformat()))
 
         lines.append('Description: {}'.format(
             self.optional_field_as_string('description')[:30]))
@@ -86,7 +102,9 @@ class Product:
             'description': self.description,
             'cell_plan_name': self.cell_plan_name,
             'cell_monthly_payment': serialized_cell_monthly_payment,
-            'picture_url': self.picture_url
+            'picture_urls': self.picture_urls,
+            'timestamp': self.timestamp.isoformat(),
+            'state': self.state,
         }
 
     @classmethod
@@ -95,6 +113,9 @@ class Product:
             Decimal(serialized_data['normal_price'])
         serialized_data['offer_price'] = \
             Decimal(serialized_data['offer_price'])
+
+        serialized_data['timestamp'] = \
+            dateutil.parser.parse(serialized_data['timestamp'])
         return cls(**serialized_data)
 
     def is_available(self):
@@ -118,3 +139,8 @@ class Product:
             return field_value
         else:
             return 'N/A'
+
+    def picture_urls_as_json(self):
+        if not self.picture_urls:
+            return None
+        return json.dumps(self.picture_urls)

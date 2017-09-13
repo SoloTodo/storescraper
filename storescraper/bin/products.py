@@ -40,8 +40,7 @@ def main():
     products_data = store.products(
         categories=args.categories,
         use_async=not args.sync,
-        extra_args=args.extra_args,
-        queue='us')
+        extra_args=args.extra_args)
 
     for product in products_data['products']:
         if product.is_available():

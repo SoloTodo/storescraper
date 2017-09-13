@@ -2,6 +2,8 @@
 from decimal import Decimal
 
 import re
+
+import html2text
 from bs4 import BeautifulSoup
 import requests
 
@@ -112,7 +114,7 @@ class Magens(Store):
         for panel_id in ['panel_fichaTecnica', 'panel_atributos']:
             panel = soup.find('section', {'id': panel_id})
             if panel:
-                description += panel.get_text(' ', strip=True)
+                description += html2text.html2text(str(panel))
 
         if soup.find('button', {'id': 'product-form__add-to-cart'}):
             stock = -1
@@ -126,6 +128,8 @@ class Magens(Store):
         normal_price = soup.find('span', 'product-info__price-normal')
         normal_price = normal_price.text.split('$')[1]
         normal_price = Decimal(remove_words(normal_price))
+
+        picture_urls = [soup.find('img', 'product-slider__block-image')['src']]
 
         product = Product(
             name,
@@ -142,7 +146,8 @@ class Magens(Store):
             sku=sku,
             description=description,
             cell_plan_name=None,
-            cell_monthly_payment=None
+            cell_monthly_payment=None,
+            picture_urls=picture_urls
         )
 
         return [product]

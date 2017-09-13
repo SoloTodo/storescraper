@@ -1,6 +1,9 @@
 import importlib
 from decimal import Decimal
 
+import html2text
+import re
+
 CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
 
@@ -62,3 +65,16 @@ def format_currency(value, curr='', sep='.', dp=',',
     build(neg if sign else pos)
 
     return ''.join(reversed(result))
+
+
+def html_to_markdown(html):
+    h = html2text.HTML2Text()
+    h.body_width = 0
+    result = h.handle(html)
+
+    def strip_bold_content(match):
+        return ' **{}** '.format(match.groups()[0].strip())
+
+    result = re.sub(r'\*\*(.+?)\*\*', strip_bold_content, result)
+
+    return result

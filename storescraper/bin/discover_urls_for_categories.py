@@ -20,7 +20,7 @@ def main():
     parser.add_argument('store', type=str,
                         help='The name of the store to be parsed')
 
-    parser.add_argument('--category', type=str, nargs='*',
+    parser.add_argument('--categories', type=str, nargs='*',
                         help='Specific categories to be parsed')
 
     parser.add_argument('--sync', type=bool, nargs='?', default=False,
@@ -38,12 +38,12 @@ def main():
     result = store.discover_urls_for_categories(
         categories=args.categories,
         use_async=not args.sync,
-        extra_args=args.extra_args,
-        queue='us')
+        extra_args=args.extra_args)
 
     for entry in result:
         print('{} ({})'.format(entry['url'], entry['category']))
     print('Total: {0} URLs'.format(len(result)))
+
 
 if __name__ == '__main__':
     main()

@@ -17,7 +17,6 @@ class StoreScrapError(Exception):
 
 
 class Store:
-    preferred_queue = 'us'
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 10
     prefer_async = True
@@ -28,16 +27,15 @@ class Store:
 
     @classmethod
     def products(cls, categories=None, extra_args=None,
-                 queue=None, discover_urls_concurrency=None,
+                 discover_urls_concurrency=None,
                  products_for_url_concurrency=None, use_async=None):
         sanitized_parameters = cls.sanitize_parameters(
-            categories=categories, queue=queue,
+            categories=categories,
             discover_urls_concurrency=discover_urls_concurrency,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
         categories = sanitized_parameters['categories']
-        queue = sanitized_parameters['queue']
         discover_urls_concurrency = \
             sanitized_parameters['discover_urls_concurrency']
         products_for_url_concurrency = \
@@ -50,7 +48,6 @@ class Store:
         discovered_urls_with_categories = cls.discover_urls_for_categories(
             categories=categories,
             extra_args=extra_args,
-            queue=queue,
             discover_urls_concurrency=discover_urls_concurrency,
             use_async=use_async
         )
@@ -58,23 +55,21 @@ class Store:
         return cls.products_for_urls(
             discovered_urls_with_categories,
             extra_args=extra_args,
-            queue=queue,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async
         )
 
     @classmethod
     def discover_urls_for_categories(cls, categories=None,
-                                     extra_args=None, queue=None,
+                                     extra_args=None,
                                      discover_urls_concurrency=None,
                                      use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
-            categories=categories, queue=queue,
+            categories=categories,
             discover_urls_concurrency=discover_urls_concurrency,
             use_async=use_async)
 
         categories = sanitized_parameters['categories']
-        queue = sanitized_parameters['queue']
         discover_urls_concurrency = \
             sanitized_parameters['discover_urls_concurrency']
         use_async = sanitized_parameters['use_async']
@@ -96,8 +91,7 @@ class Store:
                 for category in category_chunk:
                     task = cls.discover_urls_for_category_task.s(
                         cls.__name__, category, extra_args)
-                    task.set(queue='storescraper_discover_urls_for_'
-                                   'category_' + queue)
+                    task.set(queue='storescraper_discover_urls_for_category')
                     chunk_tasks.append(task)
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
@@ -130,14 +124,12 @@ class Store:
 
     @classmethod
     def products_for_urls(cls, discovery_urls_with_categories, extra_args=None,
-                          queue=None, products_for_url_concurrency=None,
+                          products_for_url_concurrency=None,
                           use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
-            queue=queue,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
-        queue = sanitized_parameters['queue']
         products_for_url_concurrency = \
             sanitized_parameters['products_for_url_concurrency']
         use_async = sanitized_parameters['use_async']
@@ -167,7 +159,7 @@ class Store:
                     task = cls.products_for_url_task.s(
                         cls.__name__, discovered_url_entry['url'],
                         discovered_url_entry['category'], extra_args)
-                    task.set(queue='storescraper_products_for_url_' + queue)
+                    task.set(queue='storescraper_products_for_url')
                     chunk_tasks.append(task)
                     task_counter += 1
 
@@ -264,11 +256,11 @@ class Store:
     @staticmethod
     @shared_task
     def products_task(store_class_name, categories=None, extra_args=None,
-                      queue=None, discover_urls_concurrency=None,
+                      discover_urls_concurrency=None,
                       products_for_url_concurrency=None, use_async=None):
         store = get_store_class_by_name(store_class_name)
         result = store.products(
-            categories=categories, extra_args=extra_args, queue=queue,
+            categories=categories, extra_args=extra_args,
             discover_urls_concurrency=discover_urls_concurrency,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
@@ -285,12 +277,12 @@ class Store:
     @shared_task
     def products_for_urls_task(store_class_name,
                                discovery_urls_with_categories,
-                               extra_args=None, queue=None,
+                               extra_args=None,
                                products_for_url_concurrency=None,
                                use_async=True):
         store = get_store_class_by_name(store_class_name)
         result = store.products_for_urls(
-            discovery_urls_with_categories, extra_args=extra_args, queue=queue,
+            discovery_urls_with_categories, extra_args=extra_args,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
@@ -336,7 +328,7 @@ class Store:
         return g
 
     @classmethod
-    def sanitize_parameters(cls, categories=None, queue=None,
+    def sanitize_parameters(cls, categories=None,
                             discover_urls_concurrency=None,
                             products_for_url_concurrency=None, use_async=None):
         if categories is None:
@@ -344,9 +336,6 @@ class Store:
         else:
             categories = [category for category in cls.categories()
                           if category in categories]
-
-        if queue is None:
-            queue = cls.preferred_queue
 
         if discover_urls_concurrency is None:
             discover_urls_concurrency = cls.preferred_discover_urls_concurrency
@@ -360,7 +349,6 @@ class Store:
 
         return {
             'categories': categories,
-            'queue': queue,
             'discover_urls_concurrency': discover_urls_concurrency,
             'products_for_url_concurrency': products_for_url_concurrency,
             'use_async': use_async,
