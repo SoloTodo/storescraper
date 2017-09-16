@@ -1,4 +1,5 @@
 # coding=utf-8
+import urllib
 from decimal import Decimal
 
 import re
@@ -9,7 +10,7 @@ import requests
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words
+from storescraper.utils import remove_words, html_to_markdown
 
 
 class Magens(Store):
@@ -99,7 +100,9 @@ class Magens(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        cleaned_url = urllib.parse.unquote(url).encode(
+            'ascii', 'ignore').decode('ascii')
+        soup = BeautifulSoup(requests.get(cleaned_url).text, 'html.parser')
 
         part_number = soup.find(
             'small', 'product-info__part-number').string.split(':')[1].strip()
@@ -114,7 +117,7 @@ class Magens(Store):
         for panel_id in ['panel_fichaTecnica', 'panel_atributos']:
             panel = soup.find('section', {'id': panel_id})
             if panel:
-                description += html2text.html2text(str(panel))
+                description += html_to_markdown(str(panel)) + '\n\n'
 
         if soup.find('button', {'id': 'product-form__add-to-cart'}):
             stock = -1
@@ -129,13 +132,16 @@ class Magens(Store):
         normal_price = normal_price.text.split('$')[1]
         normal_price = Decimal(remove_words(normal_price))
 
-        picture_urls = [soup.find('img', 'product-slider__block-image')['src']]
+        picture_tags = soup.find('div', {'id': 'product-slider'})\
+            .findAll('img', 'product-slider__block-image')
+
+        picture_urls = [p['src'] for p in picture_tags]
 
         product = Product(
             name,
             cls.__name__,
             category,
-            url,
+            cleaned_url,
             url,
             sku,
             stock,
