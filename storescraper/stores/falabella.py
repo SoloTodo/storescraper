@@ -76,7 +76,11 @@ class Falabella(Store):
                       session.get(pictures_resource_url).text).groups()[0])
         picture_urls = []
 
-        for picture_entry in pictures_json['set']['item']:
+        picture_entries = pictures_json['set']['item']
+        if not isinstance(picture_entries, list):
+            picture_entries = [picture_entries]
+
+        for picture_entry in picture_entries:
             picture_url = '{}{}'.format(media_asset_url,
                                         picture_entry['i']['n'])
             picture_urls.append(picture_url)

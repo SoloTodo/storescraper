@@ -1,4 +1,6 @@
+import json
 import re
+import urllib
 
 import html2text
 import requests
@@ -124,17 +126,20 @@ class AbcDin(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        product_webpage = requests.get(url)
-        soup = BeautifulSoup(product_webpage.text, 'html.parser')
+        page_content = requests.get(url).text
+        soup = BeautifulSoup(page_content, 'html.parser')
 
         if soup.find('div', {'id': 'errorPage'}):
             return []
 
         try:
             name = soup.find(
-                'span', {'itemprop': 'name'}).string.strip()
+                'span', {'itemprop': 'name'}).text.strip()
         except AttributeError:
             return []
+
+        page_content = page_content.replace(name, urllib.parse.quote(name))
+        soup = BeautifulSoup(page_content, 'html.parser')
 
         prices_containers = soup.findAll('div', 'detailprecioBig')
 
@@ -162,8 +167,19 @@ class AbcDin(Store):
         description = html2text.html2text(str(soup.find(
             'p', attrs={'id': re.compile(r'product_longdescription_.*')})))
 
-        picture_urls = ['https://www.abcdin.cl' +
-                        soup.find('img', {'id': 'productMainImage'})['src']]
+        pictures_data = json.loads(soup.find('div', 'jsonProduct').text)
+        pictures_dict = pictures_data[0]['Attributes']
+
+        if 'ItemAngleFullImage' in pictures_dict:
+            sorted_pictures = sorted(
+                pictures_dict['ItemAngleFullImage'].items(),
+                key=lambda pair: int(pair[0].replace('image_', '')))
+            picture_urls = ['https://www.abcdin.cl' + picture_pair[1]
+                            for picture_pair in sorted_pictures]
+        else:
+            picture_urls = [
+                soup.find('meta', {'property': 'og:image'})['content']
+            ]
 
         product = Product(
             name,
