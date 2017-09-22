@@ -66,7 +66,7 @@ class Magens(Store):
             found_products = 0
 
             while True:
-                if page > 100:
+                if page > 30:
                     raise Exception('Page overflow')
 
                 separator = '?'
@@ -83,7 +83,11 @@ class Magens(Store):
                 product_containers = soup.findAll('article', 'product-block')
 
                 if not product_containers:
-                    break
+                    if page == 1:
+                        raise Exception('Empty category path: {} - {}'.format(
+                            category, url_extension))
+                    else:
+                        break
 
                 for container in product_containers:
                     product_url = container.find('a')['href'].replace('\t', '')

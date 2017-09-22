@@ -2,7 +2,6 @@ import json
 import re
 import urllib
 
-import html2text
 import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -10,7 +9,7 @@ from urllib.parse import urlparse, parse_qs, urlencode
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words
+from storescraper.utils import remove_words, html_to_markdown
 
 
 class AbcDin(Store):
@@ -56,21 +55,25 @@ class AbcDin(Store):
             ['10031', 'WashingMachine'],
             ['10032', 'WashingMachine'],
             ['10033', 'WashingMachine'],
-            ['24553', 'Cell'],
+            ['24553', 'Cell'],  # Smartphones
             ['10018', 'Camera'],
             ['10007', 'StereoSystem'],
             ['10008', 'StereoSystem'],
             ['10004', 'OpticalDiskPlayer'],
             ['10009', 'HomeTheater'],
             ['10082', 'UsbFlashDrive'],
-            ['16010', 'VideoGameConsole'],  # PS3
-            ['16013', 'VideoGameConsole'],  # PS4
-            ['16004', 'VideoGameConsole'],  # Xbox 360
-            ['16007', 'VideoGameConsole'],  # Xbox One
+            ['14008', 'VideoGameConsole'],  # PS3
+            ['14001', 'VideoGameConsole'],  # PS4
+            ['14009', 'VideoGameConsole'],  # Xbox 360
+            ['14005', 'VideoGameConsole'],  # Xbox One
+            ['14011', 'VideoGameConsole'],  # Switch
             ['14012', 'VideoGameConsole'],  # 3DS
             ['14011', 'VideoGameConsole'],  # Wii U
             ['10077', 'AllInOne'],
             ['10065', 'WaterHeater'],
+            ['10061', 'SpaceHeater'],  # Estufas electricas
+            ['10063', 'SpaceHeater'],  # Estufas a lena
+            ['24055', 'Smartwatch'],
         ]
 
         discovered_urls = []
@@ -95,12 +98,13 @@ class AbcDin(Store):
                   '&pageSize=1000'.format(category_id)
 
             soup = BeautifulSoup(requests.get(url).text, 'html.parser')
-            product_cells = soup.find('ul', 'grid_mode')
+            products_grid = soup.find('ul', 'grid_mode')
 
-            if not product_cells:
-                continue
+            if not products_grid:
+                raise Exception('Empty category path: {} - {}'.format(
+                    category, category_id))
 
-            product_cells = product_cells.findAll('li')
+            product_cells = products_grid.findAll('li')
 
             for idx, product_cell in enumerate(product_cells):
                 product_listed_url = product_cell.find('a')['href']
@@ -164,8 +168,10 @@ class AbcDin(Store):
 
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']
 
-        description = html2text.html2text(str(soup.find(
-            'p', attrs={'id': re.compile(r'product_longdescription_.*')})))
+        description = html_to_markdown(str(soup.find(
+            'p', attrs={'id': re.compile(r'product_longdescription_.*')})),
+            baseurl='https://www.abcdin.cl'
+        )
 
         pictures_data = json.loads(soup.find('div', 'jsonProduct').text)
         pictures_dict = pictures_data[0]['Attributes']

@@ -46,91 +46,6 @@ class Falabella(Store):
         ]
 
     @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
-        content = session.get(url).text.replace('&#10;', '')
-
-        soup = BeautifulSoup(content, 'html.parser')
-        description = html_to_markdown(
-            str(soup.find('div', 'fb-product-information-tab__copy')))
-
-        raw_json_data = re.search('var fbra_browseMainProductConfig = (.+);\r',
-                                  content)
-
-        if not raw_json_data:
-            return []
-
-        product_data = json.loads(raw_json_data.groups()[0])
-
-        brand = product_data['state']['product']['brand']
-        model = product_data['state']['product']['displayName']
-        full_name = '{} {}'.format(brand, model)
-
-        global_id = product_data['state']['product']['id']
-        media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
-
-        pictures_resource_url = 'http://falabella.scene7.com/is/image/' \
-                                'Falabella/{}?req=set,json'.format(global_id)
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      session.get(pictures_resource_url).text).groups()[0])
-        picture_urls = []
-
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
-
-        for picture_entry in picture_entries:
-            picture_url = '{}{}?scl=1.0'.format(media_asset_url,
-                                        picture_entry['i']['n'])
-            picture_urls.append(picture_url)
-
-        products = []
-        for model in product_data['state']['product']['skus']:
-            sku = model['skuId']
-
-            prices = {e['type']: e for e in model['price']}
-
-            lookup_field = 'originalPrice'
-            if lookup_field not in prices[3]:
-                lookup_field = 'formattedLowestPrice'
-
-            normal_price = Decimal(remove_words(prices[3][lookup_field]))
-
-            if 1 in prices:
-                lookup_field = 'originalPrice'
-                if lookup_field not in prices[1]:
-                    lookup_field = 'formattedLowestPrice'
-                offer_price = Decimal(
-                    remove_words(prices[1][lookup_field]))
-            else:
-                offer_price = normal_price
-
-            stock = model['stockAvailable']
-
-            p = Product(
-                full_name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                cell_plan_name=None,
-                cell_monthly_payment=None,
-                picture_urls=picture_urls
-            )
-
-            products.append(p)
-
-        return products
-
-    @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_paths = [
             ['cat5860031/Notebooks-Convencionales', 'Notebook'],
@@ -204,6 +119,9 @@ class Falabella(Store):
             page = 1
 
             while True:
+                if page > 30:
+                    raise Exception('Page overflow')
+
                 res = None
 
                 error_count = 0
@@ -222,6 +140,10 @@ class Falabella(Store):
                     res = json.loads(
                         session.get(pag_url).content.decode('utf-8'))
 
+                if not res['state']['resultList'] and page == 1:
+                    raise Exception('Empty category path: {} - {}'.format(
+                        category, url_path))
+
                 for product_entry in res['state']['resultList']:
                     product_id = product_entry['productId'].strip()
                     product_url = \
@@ -235,3 +157,95 @@ class Falabella(Store):
                 page += 1
 
         return discovered_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        session = requests.Session()
+        content = session.get(url).text.replace('&#10;', '')
+
+        soup = BeautifulSoup(content, 'html.parser')
+
+        panels = ['fb-product-information__product-information-tab',
+                  'fb-product-information__specification']
+
+        description = ''
+
+        for panel in panels:
+            description += html_to_markdown(str(soup.find('div', panel))) + \
+                           '\n\n'
+
+        raw_json_data = re.search('var fbra_browseMainProductConfig = (.+);\r',
+                                  content)
+
+        if not raw_json_data:
+            return []
+
+        product_data = json.loads(raw_json_data.groups()[0])
+
+        brand = product_data['state']['product']['brand']
+        model = product_data['state']['product']['displayName']
+        full_name = '{} {}'.format(brand, model)
+
+        global_id = product_data['state']['product']['id']
+        media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
+
+        pictures_resource_url = 'http://falabella.scene7.com/is/image/' \
+                                'Falabella/{}?req=set,json'.format(global_id)
+        pictures_json = json.loads(
+            re.search(r's7jsonResponse\((.+),""\);',
+                      session.get(pictures_resource_url).text).groups()[0])
+        picture_urls = []
+
+        picture_entries = pictures_json['set']['item']
+        if not isinstance(picture_entries, list):
+            picture_entries = [picture_entries]
+
+        for picture_entry in picture_entries:
+            picture_url = '{}{}?scl=1.0'.format(media_asset_url,
+                                                picture_entry['i']['n'])
+            picture_urls.append(picture_url)
+
+        products = []
+        for model in product_data['state']['product']['skus']:
+            sku = model['skuId']
+
+            prices = {e['type']: e for e in model['price']}
+
+            lookup_field = 'originalPrice'
+            if lookup_field not in prices[3]:
+                lookup_field = 'formattedLowestPrice'
+
+            normal_price = Decimal(remove_words(prices[3][lookup_field]))
+
+            if 1 in prices:
+                lookup_field = 'originalPrice'
+                if lookup_field not in prices[1]:
+                    lookup_field = 'formattedLowestPrice'
+                offer_price = Decimal(
+                    remove_words(prices[1][lookup_field]))
+            else:
+                offer_price = normal_price
+
+            stock = model['stockAvailable']
+
+            p = Product(
+                full_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                cell_plan_name=None,
+                cell_monthly_payment=None,
+                picture_urls=picture_urls
+            )
+
+            products.append(p)
+
+        return products

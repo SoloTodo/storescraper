@@ -67,8 +67,8 @@ def format_currency(value, curr='', sep='.', dp=',',
     return ''.join(reversed(result))
 
 
-def html_to_markdown(html):
-    h = html2text.HTML2Text()
+def html_to_markdown(html, baseurl=''):
+    h = html2text.HTML2Text(baseurl=baseurl)
     h.body_width = 0
     result = h.handle(html)
 

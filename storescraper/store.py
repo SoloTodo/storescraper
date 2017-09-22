@@ -304,12 +304,12 @@ class Store:
                                   'subclasses of Store')
 
     @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def products_for_url(cls, url, category=None, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 
