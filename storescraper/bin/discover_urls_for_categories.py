@@ -23,10 +23,9 @@ def main():
     parser.add_argument('--categories', type=str, nargs='*',
                         help='Specific categories to be parsed')
 
-    parser.add_argument('--sync', type=bool, nargs='?', default=False,
+    parser.add_argument('--async', type=bool, nargs='?', default=False,
                         const=True,
-                        help='Set to force synchronous parsing '
-                             '(without using celery tasks)')
+                        help='Use asynchronous tasks (celery)')
 
     parser.add_argument('--extra_args', type=json.loads, nargs='?', default={},
                         help='Optional arguments to pass to the parser '
@@ -37,12 +36,12 @@ def main():
 
     result = store.discover_urls_for_categories(
         categories=args.categories,
-        use_async=not args.sync,
+        use_async=args.async,
         extra_args=args.extra_args)
 
     for entry in result:
         print('{} ({})'.format(entry['url'], entry['category']))
-    print('Total: {0} URLs'.format(len(result)))
+    print('Total: {} URLs'.format(len(result)))
 
 
 if __name__ == '__main__':

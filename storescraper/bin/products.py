@@ -22,10 +22,9 @@ def main():
     parser.add_argument('--categories', type=str, nargs='*',
                         help='Specific categories to be parsed')
 
-    parser.add_argument('--sync', type=bool, nargs='?', default=False,
+    parser.add_argument('--async', type=bool, nargs='?', default=False,
                         const=True,
-                        help='Set to force synchronous parsing '
-                             '(without using celery tasks)')
+                        help='Use async tasks (celery)')
 
     parser.add_argument('--extra_args', type=json.loads, nargs='?', default={},
                         help='Optional arguments to pass to the parser '
@@ -39,7 +38,7 @@ def main():
 
     products_data = store.products(
         categories=args.categories,
-        use_async=not args.sync,
+        use_async=args.async,
         extra_args=args.extra_args)
 
     for product in products_data['products']:
@@ -62,6 +61,7 @@ def main():
     print('With error: {}'.format(len(urls_with_error)))
     print('Total: {}'.format(available_products + unavailable_products +
                              len(urls_with_error)))
+
 
 if __name__ == '__main__':
     main()

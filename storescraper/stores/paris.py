@@ -57,7 +57,8 @@ class Paris(Store):
             ['51436669', 'Television'],
             ['51206208', 'Tablet'],
             ['51206164', 'Refrigerator'],
-            ['51206219', 'Printer'],
+            ['51206220', 'Printer'],  # Multifuncionales
+            ['51206221', 'Printer'],  # Laser
             ['51206182', 'Oven'],
             ['51206183', 'Oven'],
             ['51206185', 'VacuumCleaner'],
@@ -70,8 +71,8 @@ class Paris(Store):
             ['51206144', 'Camera'],
             ['51568120', 'StereoSystem'],
             ['51568118', 'StereoSystem'],
-            ['51437112', 'OpticalDiskPlayer'],
-            ['51437110', 'HomeTheater'],
+            # ['51437112', 'OpticalDiskPlayer'],
+            ['51568103', 'HomeTheater'],  # Home theater
             ['51206225', 'ExternalStorageDrive'],
             ['51206226', 'UsbFlashDrive'],
             ['51225099', 'MemoryCard'],
@@ -99,7 +100,8 @@ class Paris(Store):
             product_containers = soup.findAll('td', 'item')
 
             if not product_containers:
-                raise Exception('Empty category: {}'.format(path))
+                raise Exception('Empty category: {} - {}'.format(
+                    category, path))
 
             for cell in product_containers:
                 product_link = cell.find('div', 'tertiary_button').find('a')
@@ -123,7 +125,13 @@ class Paris(Store):
         if soup.find('h1', {'role': 'main'}):
             return []
 
-        name = soup.find('h1', {'id': 'catalog_link'}).text.strip()
+        name = soup.find('h1', {'id': 'catalog_link'})
+
+        if not name:
+            return []
+
+        name = name.text.strip()
+
         sku = soup.find('div', {'id': 'detalles-sku'}).text.replace(
             'SKU: ', '').strip()
         normal_price = re.search(
