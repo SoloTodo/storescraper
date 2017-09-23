@@ -1,5 +1,6 @@
 from .abcdin import AbcDin
 from .falabella import Falabella
+from .hites import Hites
 from .la_polar import LaPolar
 from .lider import Lider
 from .magens import Magens
