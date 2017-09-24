@@ -86,7 +86,8 @@ class Hites(Store):
                     category_url))
 
             for product_url in category_product_urls:
-                print(product_url)
+                product_url = product_url.replace('http://', 'https://')
+
                 if 'ProductDisplay' in product_url:
                     parsed_product = urllib.parse.urlparse.urlparse(
                         product_url)
@@ -100,7 +101,7 @@ class Hites(Store):
                     newqs = urllib.parse.urlencode(parameters, doseq=True)
 
                     product_url = \
-                        'http://www.hites.com/tienda/ProductDisplay?' + newqs
+                        'https://www.hites.com/tienda/ProductDisplay?' + newqs
 
                 product_urls.append(product_url)
 
@@ -112,6 +113,11 @@ class Hites(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']
+
+        description = ''
+
+        for panel in soup.findAll('div', 'descripcion-producto'):
+            description += html_to_markdown(str(panel)) + '\n\n'
 
         if soup.find('div', 'noDisponible_button'):
             stock = 0
@@ -126,17 +132,13 @@ class Hites(Store):
             normal_price = Decimal(price_str)
             offer_price = normal_price
 
-            description = ''
-
-            for panel in soup.findAll('div', 'descripcion-producto'):
-                description += html_to_markdown(str(panel)) + '\n\n'
         else:
             stock = -1
 
             catentry_id = re.search(r'"catentry_id" : "(\d+)"',
                                     page_source).groups()[0]
 
-            ajax_url = 'http://www.hites.com/tienda/' \
+            ajax_url = 'https://www.hites.com/tienda/' \
                        'GetCatalogEntryDetailsByIDView?storeId=10151' \
                        '&catalogEntryId=' + catentry_id
 
@@ -161,9 +163,6 @@ class Hites(Store):
             else:
                 offer_price = normal_price
 
-            description = html_to_markdown(
-                json_body['description'][0]['longDescription'])
-
         # Pictures
 
         page_id = soup.find('meta', {'name': 'pageId'})['content']
@@ -173,17 +172,19 @@ class Hites(Store):
                                  gallery_content)
         gallery_json = json.loads(gallery_content)
 
+        picture_urls = [
+            'https://www.hites.com' +
+            soup.find('img', {'id': 'productMainImage'})['src']
+        ]
+
         if gallery_json and 'ItemAngleFullImage' in gallery_json[0]:
             sorted_pictures = sorted(
                 gallery_json[0]['ItemAngleFullImage'].items(),
                 key=lambda pair: int(pair[0].replace('image_', '')))
-            picture_urls = ['https://www.hites.com' + picture_pair[1]
-                            for picture_pair in sorted_pictures]
-        else:
-            picture_urls = [
-                'https://www.hites.com' +
-                soup.find('img', {'id': 'productMainImage'})['src']
-            ]
+            for picture_pair in sorted_pictures:
+                picture_url = 'https://www.hites.com' + picture_pair[1]
+                if picture_url not in picture_urls:
+                    picture_urls.append(picture_url)
 
         p = Product(
             name,
