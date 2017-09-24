@@ -1,4 +1,5 @@
 from .abcdin import AbcDin
+from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
 from .la_polar import LaPolar
