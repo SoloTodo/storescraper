@@ -92,8 +92,6 @@ class Paris(Store):
             if category != local_category:
                 continue
 
-            print(path)
-
             category_url = base_url + path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
@@ -107,8 +105,13 @@ class Paris(Store):
                 product_link = cell.find('div', 'tertiary_button').find('a')
 
                 product_js = product_link['onclick']
+                # print(product_js)
                 product_id = re.search(
-                    r"showPopup\('(\d+)'", product_js).groups()[0]
+                    r"showPopup\('(\d+)'", product_js)
+                if not product_id:
+                    # "Producto con precio pendiente"
+                    continue
+                product_id = product_id.groups()[0]
                 product_url = 'https://www.paris.cl/tienda/ProductDisplay?' \
                               'storeId=10801&productId=' + product_id
                 product_urls.append(product_url)

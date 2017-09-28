@@ -1,12 +1,13 @@
 import json
 import urllib
 
+import re
 import requests
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, remove_words
 
 
 class PcFactory(Store):
@@ -245,7 +246,7 @@ class PcFactory(Store):
                     if not stock:
                         continue
 
-                    product_url = 'https://www.pcfactory.cl/#producto={}' \
+                    product_url = 'https://www.pcfactory.cl/producto={}' \
                                   ''.format(product_entry['id_producto'])
                     product_urls.append(product_url)
 
@@ -257,21 +258,20 @@ class PcFactory(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = requests.Session()
 
-        params = {
-            'requestableOperation': 'getUrlData',
-            'requestableType': 'REQUESTABLE_TYPE_CONTROLLER',
-            'requestableController': 'ControllerIndex',
-            'url': url,
-            'applyResolver': True
-        }
+        session.get(url)
 
-        response = session.post(
-            'https://www.pcfactory.cl/ControllerIndex',
-            data='data=' + urllib.parse.quote(json.dumps(params))
-        )
+        response = session.get(
+            'https://www.pcfactory.cl/public/scripts/dynamic/initData.js',
+            headers={
+                'Referer': url
+            })
 
-        response_data = json.loads(response.text)
-        product_data = response_data['data']['initData']['producto']
+        raw_json = re.search(
+            r'window.pcFactory.dataGlobal.serverData			=  (.+)',
+            response.text).groups()[0][:-1]
+
+        response_data = json.loads(raw_json)
+        product_data = response_data['producto']
 
         full_name = '{} {}'.format(product_data['marca'],
                                    product_data['nombre'])
@@ -292,8 +292,8 @@ class PcFactory(Store):
             url,
             sku,
             stock,
-            Decimal(product_data['precio_normal']),
-            Decimal(product_data['precio_cash']),
+            Decimal(remove_words(product_data['precio_normal'])),
+            Decimal(remove_words(product_data['precio_cash'])),
             'CLP',
             sku=sku,
             part_number=product_data['partno'],
