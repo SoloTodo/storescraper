@@ -91,7 +91,10 @@ class Store:
                 for category in category_chunk:
                     task = cls.discover_urls_for_category_task.s(
                         cls.__name__, category, extra_args)
-                    task.set(queue='storescraper_discover_urls_for_category')
+                    task.set(
+                        queue='storescraper',
+                        max_retries=5
+                    )
                     chunk_tasks.append(task)
                 tasks_group = cls.create_celery_group(chunk_tasks)
 
@@ -159,7 +162,10 @@ class Store:
                     task = cls.products_for_url_task.s(
                         cls.__name__, discovered_url_entry['url'],
                         discovered_url_entry['category'], extra_args)
-                    task.set(queue='storescraper_products_for_url')
+                    task.set(
+                        queue='storescraper',
+                        max_retries=5
+                    )
                     chunk_tasks.append(task)
                     task_counter += 1
 
@@ -252,26 +258,6 @@ class Store:
             logger.info('{} - {}'.format(idx, product))
 
         return serialized_products
-
-    @staticmethod
-    @shared_task
-    def products_task(store_class_name, categories=None, extra_args=None,
-                      discover_urls_concurrency=None,
-                      products_for_url_concurrency=None, use_async=None):
-        store = get_store_class_by_name(store_class_name)
-        result = store.products(
-            categories=categories, extra_args=extra_args,
-            discover_urls_concurrency=discover_urls_concurrency,
-            products_for_url_concurrency=products_for_url_concurrency,
-            use_async=use_async)
-
-        serialized_result = {
-            'products': [p.serialize() for p in result['products']],
-            'discovery_urls_without_products':
-                result['discovery_urls_without_products']
-        }
-
-        return serialized_result
 
     @staticmethod
     @shared_task

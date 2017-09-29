@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-celery multi start storescraper_discover_urls_for_category storescraper_products_for_url -Q:storescraper_discover_urls_for_category storescraper_discover_urls_for_category -c:storescraper_discover_urls_for_category 5 -Q:storescraper_products_for_url storescraper_products_for_url -c:storescraper_products_for_url 10 -E -l info --config=celeryconfig
+celery multi start storescraper -Q:storescraper storescraper -c:storescraper 30 -E -l info --config=celeryconfig

@@ -92,6 +92,8 @@ class Paris(Store):
             if category != local_category:
                 continue
 
+            print(path)
+
             category_url = base_url + path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 

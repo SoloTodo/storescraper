@@ -2,3 +2,7 @@
 env
 **/__pycache__
 .idea
+.gitignore
+__init__.py
+defaults.py
+local.py
