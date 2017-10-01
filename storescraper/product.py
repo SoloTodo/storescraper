@@ -6,19 +6,33 @@ import validators
 
 import pytz
 
+from .utils import check_ean13
 from .currency import Currency
 
 
 class Product:
+    VALID_CONDITIONS = [
+        'https://schema.org/DamagedCondition',
+        'https://schema.org/NewCondition',
+        'https://schema.org/RefurbishedCondition',
+        'https://schema.org/UsedCondition',
+    ]
+
     def __init__(self, name, store, category, url, discovery_url, key,
                  stock, normal_price, offer_price, currency, part_number=None,
-                 sku=None, description=None, cell_plan_name=None,
+                 sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 state='NEW'):
+                 condition='https://schema.org/NewCondition'):
         assert isinstance(key, str)
+
         if picture_urls:
             for picture_url in picture_urls:
                 assert validators.url(picture_url)
+
+        if ean:
+            assert check_ean13(ean)
+
+        assert condition in Product.VALID_CONDITIONS
 
         self.name = name
         self.store = store
@@ -32,6 +46,7 @@ class Product:
         self.currency = currency
         self.part_number = part_number
         self.sku = sku
+        self.ean = ean
         self.description = description
         self.cell_plan_name = cell_plan_name
         self.cell_monthly_payment = cell_monthly_payment
@@ -40,9 +55,7 @@ class Product:
             timestamp = datetime.utcnow()
         if not timestamp.tzinfo:
             timestamp = pytz.utc.localize(timestamp)
-        if state not in ['NEW', 'REFURBISHED', 'BAD_BOX', 'OPEN_BOX']:
-            raise Exception
-        self.state = state
+        self.condition = condition
         self.timestamp = timestamp
 
     def __str__(self):
@@ -53,6 +66,8 @@ class Product:
         lines.append('Discovery URL: {}'.format(self.discovery_url))
         lines.append('SKU: {}'.format(
             self.optional_field_as_string('sku')))
+        lines.append('EAN: {}'.format(
+            self.optional_field_as_string('ean')))
         lines.append('Part number: {}'.format(
             self.optional_field_as_string('part_number')))
         lines.append('Picture URLs: {}'.format(
@@ -64,7 +79,7 @@ class Product:
             self.normal_price, self.currency)))
         lines.append(u'Offer price: {}'.format(Currency.format(
             self.offer_price, self.currency)))
-        lines.append('State: {}'.format(self.state))
+        lines.append('Condition: {}'.format(self.condition))
         lines.append('Cell plan name: {}'.format(
             self.optional_field_as_string('cell_plan_name')))
 
@@ -105,12 +120,13 @@ class Product:
             'currency': self.currency,
             'part_number': self.part_number,
             'sku': self.sku,
+            'ean': self.ean,
             'description': self.description,
             'cell_plan_name': self.cell_plan_name,
             'cell_monthly_payment': serialized_cell_monthly_payment,
             'picture_urls': self.picture_urls,
             'timestamp': self.timestamp.isoformat(),
-            'state': self.state,
+            'condition': self.condition,
         }
 
     @classmethod

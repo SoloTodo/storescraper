@@ -4,6 +4,8 @@ from decimal import Decimal
 import html2text
 import re
 
+import math
+
 CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
 
@@ -78,3 +80,32 @@ def html_to_markdown(html, baseurl=''):
     result = re.sub(r'\*\*(.+?)\*\*', strip_bold_content, result)
 
     return result
+
+
+def check_ean13(ean):
+    if not ean or not isinstance(ean, str):
+        return False
+    if len(ean) != 13:
+        return False
+    try:
+        int(ean)
+    except:
+        return False
+    oddsum = 0
+    evensum = 0
+    eanvalue = ean
+    reversevalue = eanvalue[::-1]
+    finalean = reversevalue[1:]
+
+    for i in range(len(finalean)):
+        if i % 2 == 0:
+            oddsum += int(finalean[i])
+        else:
+            evensum += int(finalean[i])
+    total = (oddsum * 3) + evensum
+
+    check = int(10 - math.ceil(total % 10.0)) % 10
+
+    if check != int(ean[-1]):
+        return False
+    return True

@@ -162,11 +162,16 @@ class LaPolar(Store):
         # Pricing
 
         availability_regex = r'"isAvailable": (.+),'
+
+        # Availability data is only available when there is only one SKU in the
+        # product page
+        availability_data = ''
         pricing_data = re.search(r'retailrocket.products.post\(([\s\S]*?)\);',
                                  page_source)
 
         if pricing_data:
             pricing_data = pricing_data.groups()[0]
+            availability_data = re.search(availability_regex, pricing_data)
 
             pricing_data = re.sub(availability_regex, '', pricing_data)
             pricing_data = re.sub(r'"categoryPaths": (.+),', '', pricing_data)
@@ -233,7 +238,6 @@ class LaPolar(Store):
             else:
                 offer_price = normal_price
 
-            availability_data = re.search(availability_regex, pricing_data)
             stock = int(re.match(r'\((-?\d+)',
                                  availability_data.groups()[0]).groups()[0])
 

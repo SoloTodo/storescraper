@@ -1,4 +1,6 @@
 from .abcdin import AbcDin
+from .al_kosto import AlKosto
+from .alltec import AllTec
 from .bip import Bip
 from .corona import Corona
 from .falabella import Falabella

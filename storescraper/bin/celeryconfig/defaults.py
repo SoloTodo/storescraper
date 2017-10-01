@@ -7,5 +7,3 @@ result_backend = 'rpc://'
 imports = (
     'storescraper.store'
 )
-
-task_time_limit = 300
