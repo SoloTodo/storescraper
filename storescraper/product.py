@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from decimal import Decimal
 import dateutil.parser
+import validators
 
 import pytz
 
@@ -14,6 +15,11 @@ class Product:
                  sku=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
                  state='NEW'):
+        assert isinstance(key, str)
+        if picture_urls:
+            for picture_url in picture_urls:
+                assert validators.url(picture_url)
+
         self.name = name
         self.store = store
         self.category = category

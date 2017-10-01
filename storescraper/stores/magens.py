@@ -139,7 +139,7 @@ class Magens(Store):
         picture_tags = soup.find('div', {'id': 'product-slider'})\
             .findAll('img', 'product-slider__block-image')
 
-        picture_urls = [p['src'] for p in picture_tags]
+        picture_urls = [p['src'].replace(' ', '%20') for p in picture_tags]
 
         product = Product(
             name,

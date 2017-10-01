@@ -172,9 +172,14 @@ class Ripley(Store):
 
         description += '\n\n'
 
-        print(description)
+        picture_urls = []
+        for path in specs_json['images']:
+            picture_url = path
 
-        picture_urls = ['https:' + path for path in specs_json['images']]
+            if not picture_url.startswith('https'):
+                picture_url = 'https:' + picture_url
+
+            picture_urls.append(picture_url)
 
         p = Product(
             specs_json['name'],

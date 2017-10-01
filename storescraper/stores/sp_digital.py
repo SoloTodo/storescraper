@@ -163,8 +163,13 @@ class SpDigital(Store):
                 str(tab), 'https://www.spdigital.cl') + '\n\n'
 
         picture_containers = soup.findAll('a', {'rel': 'lightbox'})
-        picture_urls = [container.find('img')['src']
-                        for container in picture_containers]
+
+        picture_urls = []
+        for container in picture_containers:
+            picture_url = container.find('img')['src'].replace(' ', '%20')
+            if 'http' not in picture_url:
+                picture_url = 'https://www.spdigital.cl' + picture_url
+            picture_urls.append(picture_url)
 
         p = Product(
             name,

@@ -5,6 +5,8 @@ celery==4.0.2
 certifi==2017.4.17
 chardet==3.0.4
 decorator==4.0.11
+demjson==2.2.4
+html2text==2016.9.19
 idna==2.5
 ipdb==0.10.3
 ipython==6.1.0
@@ -14,9 +16,12 @@ kombu==4.0.2
 pep8==1.7.0
 pexpect==4.2.1
 pickleshare==0.7.4
+pkg-resources==0.0.0
 prompt-toolkit==1.0.14
 ptyprocess==0.5.2
 Pygments==2.2.0
+PySocks==1.6.7
+python-dateutil==2.6.1
 pytz==2017.2
 requests==2.18.1
 simplegeneric==0.8.1

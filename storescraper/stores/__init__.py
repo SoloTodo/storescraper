@@ -1,4 +1,5 @@
 from .abcdin import AbcDin
+from .bip import Bip
 from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
@@ -9,3 +10,4 @@ from .paris import Paris
 from .pc_factory import PcFactory
 from .ripley import Ripley
 from .sp_digital import SpDigital
+from .wei import Wei

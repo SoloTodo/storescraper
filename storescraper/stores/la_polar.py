@@ -1,4 +1,5 @@
 import json
+import demjson
 import re
 import requests
 from decimal import Decimal
@@ -128,39 +129,7 @@ class LaPolar(Store):
 
         page_source = response.text
 
-        pricing_data = re.search(r'retailrocket.products.post\(([\s\S]*?)\);',
-                                 page_source).groups()[0]
-
-        availability_regex = r'"isAvailable": (.+),'
-
-        availability_data = re.search(availability_regex, pricing_data)
-
-        pricing_data = re.sub(availability_regex, '', pricing_data)
-        pricing_data = re.sub(r'"categoryPaths": (.+),', '', pricing_data)
-        pricing_data = re.sub(r'// .+', '', pricing_data)
-        pricing_data = re.sub(
-            r'("image_link" : .+),',
-            lambda x: str(x.groups()[0]),
-            pricing_data)
-        pricing_data = pricing_data.replace("\\'", "'")
-
-        pricing_json = json.loads(pricing_data)
-        sku = str(pricing_json['id'])
-        name = pricing_json['name']
-        normal_price = Decimal(pricing_json['price'])
-        offer_price = pricing_json['params']['exclusive_price']
-        if offer_price:
-            offer_price = Decimal(offer_price)
-        else:
-            offer_price = normal_price
-
-        vendor = pricing_json['vendor']
-        model = pricing_json['model']
-
-        product_name = '{} - {} {}'.format(name, vendor, model)
-
-        stock = int(re.match(r'\((-?\d+)',
-                             availability_data.groups()[0]).groups()[0])
+        # Description and pictures
 
         soup = BeautifulSoup(page_source, 'html.parser')
         description = html_to_markdown(
@@ -190,22 +159,100 @@ class LaPolar(Store):
 
             picture_urls.append('https://www.lapolar.cl' + path)
 
-        p = Product(
-            product_name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            description=description,
-            cell_plan_name=None,
-            cell_monthly_payment=None,
-            picture_urls=picture_urls
-        )
+        # Pricing
 
-        return [p]
+        availability_regex = r'"isAvailable": (.+),'
+        pricing_data = re.search(r'retailrocket.products.post\(([\s\S]*?)\);',
+                                 page_source)
+
+        if pricing_data:
+            pricing_data = pricing_data.groups()[0]
+
+            pricing_data = re.sub(availability_regex, '', pricing_data)
+            pricing_data = re.sub(r'"categoryPaths": (.+),', '', pricing_data)
+            pricing_data = re.sub(r'// .+', '', pricing_data)
+            pricing_data = re.sub(
+                r'("image_link" : .+),',
+                lambda x: str(x.groups()[0]),
+                pricing_data)
+            pricing_data = pricing_data.replace("\\'", "'")
+        else:
+            pricing_data = re.search(
+                r'retailrocket.productsGroup.post\(([\s\S]*?)\);',
+                page_source).groups()[0]
+            pricing_data = re.sub(r'"oldPrice": (.+)', '', pricing_data)
+
+        pricing_json = demjson.decode(pricing_data)
+
+        vendor = pricing_json['vendor']
+        model = pricing_json['model']
+        vendor_and_model = '{} {}'.format(vendor, model)
+
+        if 'products' in pricing_json:
+            products = []
+            for sku, sku_pricing in pricing_json['products'].items():
+                product_url = 'https://www.lapolar.cl/internet/catalogo/' \
+                              'detalles/busqueda/' + sku
+                name = '{} - {}'.format(sku_pricing['name'], vendor_and_model)
+                if sku_pricing['isAvailable']:
+                    stock = -1
+                else:
+                    stock = 0
+
+                normal_price = Decimal(sku_pricing['price'])
+                offer_price = Decimal(sku_pricing['price'])
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    product_url,
+                    product_url,
+                    sku,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    'CLP',
+                    sku=sku,
+                    description=description,
+                    cell_plan_name=None,
+                    cell_monthly_payment=None,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
+        else:
+            sku = str(pricing_json['id'])
+            product_url = 'https://www.lapolar.cl/internet/catalogo/' \
+                          'detalles/busqueda/' + sku
+            name = '{} - {}'.format(pricing_json['name'], vendor_and_model)
+            normal_price = Decimal(pricing_json['price'])
+            offer_price = pricing_json['params']['exclusive_price']
+            if offer_price:
+                offer_price = Decimal(offer_price)
+            else:
+                offer_price = normal_price
+
+            availability_data = re.search(availability_regex, pricing_data)
+            stock = int(re.match(r'\((-?\d+)',
+                                 availability_data.groups()[0]).groups()[0])
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                product_url,
+                product_url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                cell_plan_name=None,
+                cell_monthly_payment=None,
+                picture_urls=picture_urls
+            )
+
+            return [p]
