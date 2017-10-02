@@ -1,3 +1,4 @@
+import html
 import json
 import re
 import requests
@@ -143,7 +144,8 @@ class Wei(Store):
                                 page_source).groups()[0]
         pricing_json = json.loads(pricing_str)
 
-        name = pricing_json['name']
+        name = html.unescape(pricing_json['name'])
+
         if pricing_json['isAvailable']:
             stock = -1
         else:
