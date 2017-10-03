@@ -2,8 +2,11 @@ import html
 import json
 
 import re
+from collections import OrderedDict
+
 import requests
 from decimal import Decimal
+
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -11,6 +14,8 @@ from storescraper.utils import html_to_markdown, check_ean13
 
 
 class Americanas(Store):
+    preferred_discover_urls_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -32,13 +37,13 @@ class Americanas(Store):
         ]
 
         product_urls = []
-        step = 100
+        step = 24
         session = requests.Session()
 
         sortings = [
+            'bestSellers',
             'lowerPrice',
             'biggerPrice',
-            'bestSellers',
             'bestRated',
         ]
 
@@ -55,10 +60,12 @@ class Americanas(Store):
 
                     category_url = \
                         'https://mystique-v1-americanas.b2w.io/mystique/' \
-                        'search?offset={}&limit={}&sortBy={}&source=omega&' \
+                        'search?offset={}&sortBy={}&source=omega&' \
                         'filter=%7B%22id%22%3A%22category.id%22%2C%22value' \
                         '%22%3A%22{}%22%2C%22fixed%22%3Atrue%7D' \
-                        ''.format(offset, step, sorting, category_id)
+                        ''.format(offset, sorting, category_id)
+
+                    print(category_url)
 
                     category_page = json.loads(session.get(category_url).text)
 
@@ -71,7 +78,8 @@ class Americanas(Store):
                     for product in category_page['products']:
                         product_url = 'http://www.americanas.com.br/' \
                                       'produto/{}'.format(product['id'])
-                        product_urls.append(product_url)
+                        if product_url not in product_urls:
+                            product_urls.append(product_url)
 
                     if offset == 480:
                         break

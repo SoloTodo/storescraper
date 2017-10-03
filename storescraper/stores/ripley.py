@@ -72,7 +72,7 @@ class Ripley(Store):
             ['electrohogar/lavado-y-secado/lavadoras-secadoras',
              'WashingMachine'],
             ['telefonia/celulares/smartphones', 'Cell'],
-            ['telefonia/celulares/iphones', 'Cell'],
+            ['telefonia/celulares/iphone', 'Cell'],
             ['telefonia/celulares/basicos', 'Cell'],
             ['entretenimiento/fotografia/camaras-semi-profesionales',
              'Camera'],
@@ -157,12 +157,19 @@ class Ripley(Store):
 
         if 'offerPrice' in specs_json['prices']:
             normal_price = Decimal(specs_json['prices']['offerPrice'])
-        else:
+        elif 'listPrice' in specs_json['prices']:
             normal_price = Decimal(specs_json['prices']['listPrice'])
+        else:
+            normal_price = Decimal(0)
+            stock = 0
 
         offer_price = Decimal(specs_json['prices'].get('cardPrice',
                                                        normal_price))
-        description = html_to_markdown(specs_json['longDescription'])
+
+        description = ''
+
+        if 'longDescription' in specs_json:
+            description += html_to_markdown(specs_json['longDescription'])
 
         description += '\n\nAtributo | Valor\n-- | --\n'
 

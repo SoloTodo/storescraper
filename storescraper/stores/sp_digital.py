@@ -137,8 +137,9 @@ class SpDigital(Store):
         else:
             stock_text = soup.find('div', 'product-view-stock').find(
                 'span').text
-            stock_overflow, stock_value = re.match(r'(.*)(\d+) UNIDADES',
+            stock_overflow, stock_value = re.match(r'(.*?)(\d+) UNIDADES',
                                                    stock_text).groups()
+
             if stock_overflow:
                 stock = -1
             else:
