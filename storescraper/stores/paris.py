@@ -43,12 +43,8 @@ class Paris(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         base_url = 'http://www.paris.cl/webapp/wcs/stores/servlet/' \
-                   'SearchDisplay?searchTermScope=&searchType=1000&' \
-                   'filterTerm=&orderBy=&maxPrice=&showResultsPage=true&' \
-                   'langId=-5&beginIndex=0&sType=SimpleSearch&metaData=&' \
-                   'pageSize=1000&manufacturer=&resultCatEntryType=&' \
-                   'catalogId=40000000629&pageView=image&searchTerm=&' \
-                   'minPrice=&storeId=10801&categoryId='
+                   'AjaxCatalogSearchResultView?sType=SimpleSearch&pageSize=' \
+                   '1000&storeId=10801&categoryId='
 
         category_paths = [
             ['51206207', 'Notebook'],
@@ -95,6 +91,7 @@ class Paris(Store):
             print(path)
 
             category_url = base_url + path
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
             product_containers = soup.findAll('td', 'item')

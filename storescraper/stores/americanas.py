@@ -92,7 +92,12 @@ class Americanas(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = requests.Session()
 
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.url == 'https://www.americanas.com.br/':
+            return []
+
+        page_source = response.text
 
         main_page_json = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                    page_source)
