@@ -37,7 +37,7 @@ class Americanas(Store):
         ]
 
         product_urls = []
-        step = 24
+        step = 90
         session = requests.Session()
 
         sortings = [

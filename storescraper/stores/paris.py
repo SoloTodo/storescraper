@@ -65,8 +65,8 @@ class Paris(Store):
             ['51206214', 'Cell'],
             ['51206145', 'Camera'],
             ['51206144', 'Camera'],
-            ['51568120', 'StereoSystem'],
-            ['51568118', 'StereoSystem'],
+            ['51568122', 'StereoSystem'],   # Microcomponente
+            ['51568123', 'StereoSystem'],   # Minicomponente
             # ['51437112', 'OpticalDiskPlayer'],
             ['51568103', 'HomeTheater'],  # Home theater
             ['51206225', 'ExternalStorageDrive'],

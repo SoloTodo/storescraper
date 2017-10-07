@@ -194,6 +194,9 @@ class Falabella(Store):
 
         products = []
         for model in product_data['state']['product']['skus']:
+            if 'stockAvailable' not in model:
+                continue
+
             sku = model['skuId']
 
             prices = {e['type']: e for e in model['price']}
