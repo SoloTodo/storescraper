@@ -8,6 +8,8 @@ from storescraper.utils import remove_words, html_to_markdown
 
 
 class AllTec(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [

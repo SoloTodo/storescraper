@@ -184,7 +184,8 @@ class AbcDin(Store):
                             for picture_pair in sorted_pictures]
         else:
             picture_urls = [
-                soup.find('meta', {'property': 'og:image'})['content']
+                'https://www.abcdin.cl' +
+                soup.find('img', {'id': 'productMainImage'})['src']
             ]
 
         product = Product(
