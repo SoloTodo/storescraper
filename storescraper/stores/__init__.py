@@ -8,11 +8,14 @@ from .bip import Bip
 from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
+from .infor_ingen import InforIngen
 from .la_polar import LaPolar
 from .lider import Lider
 from .magens import Magens
 from .paris import Paris
+from .pc_express import PcExpress
 from .pc_factory import PcFactory
 from .ripley import Ripley
 from .sp_digital import SpDigital
 from .wei import Wei
+from .winpy import Winpy
