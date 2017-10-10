@@ -63,8 +63,6 @@ class InforIngen(Store):
                           'route=product/category&limit=1000&path=' + \
                           category_path
 
-            print(url_webpage)
-
             soup = BeautifulSoup(session.get(url_webpage).text, 'html.parser')
             soup = soup.find('div', 'product-list')
 
@@ -87,9 +85,6 @@ class InforIngen(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = requests.Session()
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        with open('infor.html', 'w') as f:
-            f.write(str(soup))
 
         name = soup.find('meta', {'itemprop': 'name'})['content'].strip()
         sku = soup.find('input', {'name': 'product_id'})['value'].strip()
