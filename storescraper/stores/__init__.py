@@ -5,7 +5,14 @@ from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
 from .belight import Belight
+from .best_buy_mexico import BestBuyMexico
 from .bip import Bip
+from .byp import Byp
+from .carrefour import Carrefour
+from .carrefour_brasil import CarrefourBrasil
+from .casa_del_audio import CasaDelAudio
+from .casa_musa import CasaMusa
+from .casas_bahia import CasasBahia
 from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
