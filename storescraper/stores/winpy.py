@@ -111,7 +111,12 @@ class Winpy(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = requests.Session()
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.url == 'https://www.winpy.cl/':
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()

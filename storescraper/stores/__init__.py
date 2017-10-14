@@ -4,6 +4,7 @@ from .alltec import AllTec
 from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
+from .belight import Belight
 from .bip import Bip
 from .corona import Corona
 from .falabella import Falabella
