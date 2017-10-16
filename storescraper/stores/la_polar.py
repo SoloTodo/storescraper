@@ -82,8 +82,8 @@ class LaPolar(Store):
              'VideoGameConsole'],
             ['electrohogar/calefaccion/todas_las_estufas',
              'SpaceHeater'],
-            ['electronica/celulares/smartwatch',
-             'Smartwatch'],
+            # ['electronica/celulares/smartwatch',
+            #  'Smartwatch'],
         ]
 
         session = requests.Session()
@@ -101,7 +101,12 @@ class LaPolar(Store):
 
             products_json = re.search(
                 r'var listado_productos_json = (.+)',
-                data).groups()[0][:-1]
+                data)
+
+            if not products_json:
+                raise Exception('Empty category: ' + url)
+
+            products_json = products_json.groups()[0][:-1]
 
             data = json.loads(products_json)
 
