@@ -181,6 +181,7 @@ class Falabella(Store):
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
                       session.get(pictures_resource_url).text).groups()[0])
+
         picture_urls = []
 
         picture_entries = pictures_json['set']['item']

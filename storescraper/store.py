@@ -210,7 +210,8 @@ class Store:
     ##########################################################################
 
     @staticmethod
-    @shared_task
+    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+                 default_retry_delay=5)
     def discover_urls_for_category_task(store_class_name, category,
                                         extra_args=None):
         store = get_store_class_by_name(store_class_name)
@@ -233,13 +234,14 @@ class Store:
         return discovered_urls
 
     @staticmethod
-    @shared_task
+    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+                 default_retry_delay=5)
     def products_for_url_task(store_class_name, url, category=None,
                               extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info('Obtaining products for URL')
         logger.info('Store: ' + store.__name__)
-        logger.info('Category: ' + category)
+        logger.info('Category: {}'.format(category))
         logger.info('URL: ' + url)
 
         try:
@@ -260,7 +262,8 @@ class Store:
         return serialized_products
 
     @staticmethod
-    @shared_task
+    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+                 default_retry_delay=5)
     def products_for_urls_task(store_class_name,
                                discovery_urls_with_categories,
                                extra_args=None,

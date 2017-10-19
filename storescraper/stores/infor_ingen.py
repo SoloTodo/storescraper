@@ -33,23 +33,20 @@ class InforIngen(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['156', 'Notebook'],
-            ['59', 'Processor'],  # Procesadores
-            ['66', 'Motherboard'],  # MB
-            ['72_73', 'StorageDrive'],  # HDD Desktop
-            ['72_74', 'StorageDrive'],  # HDD Notebook
-            ['72_135', 'SolidStateDrive'],  # SSD
-            ['98_101', 'ComputerCase'],  # Gabinetes c/fuente
-            ['98_102', 'ComputerCase'],  # Gabinetes s/fuente
-            ['98_99', 'PowerSupply'],  # Fuentes de poder Genéricas
-            ['98_100', 'PowerSupply'],  # Fuentes de poder Reales
-            ['103', 'Printer'],  # Impresoras
-            ['108', 'Ram'],  # RAM
-            ['112_113', 'Monitor'],  # Monitores LCD
-            ['112_114', 'Television'],  # Televisores
-            ['115_119', 'Mouse'],  # Mouse PC
-            ['146', 'CpuCooler'],  # Coolers CPU
-            ['127', 'VideoCard'],  # Tarjetas de video
+            ['60', 'Processor'],  # Procesadores
+            ['61', 'Motherboard'],  # MB
+            ['73', 'Ram'],  # RAM
+            ['75_102', 'StorageDrive'],  # HDD Notebook
+            ['75_76', 'StorageDrive'],  # HDD Desktop
+            ['75_77', 'SolidStateDrive'],  # SSD
+            ['78', 'VideoCard'],  # Tarjetas de video
+            ['81_84', 'ComputerCase'],  # Gabinetes c/fuente
+            ['81_85', 'ComputerCase'],  # Gabinetes s/fuente
+            ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
+            ['81_83', 'PowerSupply'],  # Fuentes de poder Reales
+            ['92_95', 'CpuCooler'],  # Coolers CPU Aire
+            ['92_96', 'CpuCooler'],  # Coolers CPU Liquido
+            ['98', 'Monitor'],  # Monitores LCD
         ]
 
         product_urls = []
@@ -59,24 +56,20 @@ class InforIngen(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'http://www.infor-ingen.com/index.php?' \
-                          'route=product/category&limit=1000&path=' + \
+            url_webpage = 'https://www.infor-ingen.com/tienda/index.php?' \
+                          'route=product/category&limit=100&path=' + \
                           category_path
 
             soup = BeautifulSoup(session.get(url_webpage).text, 'html.parser')
-            soup = soup.find('div', 'product-list')
 
-            if not soup:
-                raise Exception('Empty category: ' + category_path)
-
-            link_containers = soup.findAll('div', 'image')
+            link_containers = soup.findAll('div', 'product-layout')
 
             for link_container in link_containers:
                 original_product_url = link_container.find('a')['href']
                 product_id = re.search(r'product_id=(\d+)',
                                        original_product_url).groups()[0]
-                product_url = 'http://www.infor-ingen.com/index.php?route=' \
-                              'product/product&product_id=' + product_id
+                product_url = 'https://www.infor-ingen.com/tienda/index.php?' \
+                              'route=product/product&product_id=' + product_id
                 product_urls.append(product_url)
 
         return product_urls
@@ -86,41 +79,24 @@ class InforIngen(Store):
         session = requests.Session()
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('meta', {'itemprop': 'name'})['content'].strip()
-        sku = soup.find('input', {'name': 'product_id'})['value'].strip()
+        pricing_container = soup.find('div', {'id': 'product'}).parent
+        name = pricing_container.find('h1').text.strip()
+        sku = soup.find('input', {'name': 'product_id'})['value']
 
-        availability = soup.find('link',
-                                 {'itemprop': 'availability'})['href'].strip()
+        stock = int(soup.find('b', text='STOCK TIENDA:').next.next)
+
+        price_containers = pricing_container.find(
+            'img', {'align': 'absmiddle'}).parent.findAll('h2')
+
+        normal_price = Decimal(remove_words(price_containers[0].string))
+        offer_price = Decimal(remove_words(price_containers[1].string))
+
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 
-        if availability == 'http://schema.org/InStock':
-            stock_text = soup.find('div', 'description').text
-            stock_match = re.search(r'Cantidad: (\d+)', stock_text)
-            if stock_match:
-                stock = int(stock_match.groups()[0])
-            else:
-                stock = -1
-        else:
-            stock = 0
-
-        product_price_container = soup.find('div', 'price-cart')
-
-        normal_price = product_price_container.find('span', 'price-old').text
-        normal_price = Decimal(remove_words(normal_price))
-
-        offer_price = product_price_container.find('span', 'price-new').text
-        offer_price = Decimal(remove_words(offer_price))
-
-        picture_urls = []
-        picture_links = soup.findAll('a', 'colorbox')
-
-        if len(picture_links) > 1:
-            picture_links = picture_links[1:]
-
-        for picture_link in picture_links:
-            picture_url = picture_link['href'].replace(' ', '%20')
-            picture_urls.append(picture_url)
+        picture_urls = [tag['href'].replace(' ', '%20')
+                        for tag in soup.findAll('a', 'thumbnail')
+                        if tag['href']]
 
         p = Product(
             name,

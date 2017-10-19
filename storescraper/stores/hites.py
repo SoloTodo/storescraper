@@ -62,7 +62,7 @@ class Hites(Store):
             # ['14054', 'SpaceHeater'],
             # ['14051', 'SpaceHeater'],
             # ['14052', 'SpaceHeater'],
-            ['14056', 'SpaceHeater'],  # Termoventiladores
+            # ['14056', 'SpaceHeater'],  # Termoventiladores
         ]
 
         product_urls = []
