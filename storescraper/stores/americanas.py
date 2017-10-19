@@ -2,15 +2,13 @@ import html
 import json
 
 import re
-from collections import OrderedDict
-
-import requests
 from decimal import Decimal
 
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, check_ean13
+from storescraper.utils import html_to_markdown, check_ean13, \
+    session_with_proxy
 
 
 class Americanas(Store):
@@ -38,7 +36,7 @@ class Americanas(Store):
 
         product_urls = []
         step = 90
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         sortings = [
             'bestSellers',
@@ -90,7 +88,7 @@ class Americanas(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         response = session.get(url)
 

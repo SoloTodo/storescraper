@@ -6,6 +6,8 @@ import re
 
 import math
 
+import requests
+
 CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
 
@@ -109,3 +111,17 @@ def check_ean13(ean):
     if check != int(ean[-1]):
         return False
     return True
+
+
+def session_with_proxy(extra_args):
+    session = requests.Session()
+
+    if extra_args and 'proxy' in extra_args:
+        proxy = extra_args['proxy']
+
+        session.proxies = {
+            'http': proxy,
+            'https': proxy,
+        }
+
+    return session
