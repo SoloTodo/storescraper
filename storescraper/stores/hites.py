@@ -144,7 +144,7 @@ class Hites(Store):
                        'GetCatalogEntryDetailsByIDView?storeId=10151' \
                        '&catalogEntryId=' + catentry_id
 
-            ajax_body = requests.get(ajax_url).text
+            ajax_body = session.get(ajax_url).text
 
             json_body = re.search(r'/\*([\S\s]+)\*/', ajax_body).groups()[0]
             json_body = json_body.replace('\n', '').replace('\t', '').replace(
