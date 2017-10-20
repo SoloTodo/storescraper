@@ -1,12 +1,11 @@
 import urllib
 from _decimal import Decimal
 
-import requests
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class CasaDelAudio(Store):
@@ -31,6 +30,7 @@ class CasaDelAudio(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -41,7 +41,7 @@ class CasaDelAudio(Store):
                   'term=&getFilterData=True&filters=&fields=Name'.format(
                     category_path)
 
-            soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
             containers = soup.findAll('li', 'item')
 
@@ -57,7 +57,8 @@ class CasaDelAudio(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('span', {'itemprop': 'sku'}).text.strip()

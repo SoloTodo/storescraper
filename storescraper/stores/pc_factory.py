@@ -2,12 +2,12 @@ import json
 import urllib
 
 import re
-import requests
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words
+from storescraper.utils import html_to_markdown, remove_words, \
+    session_with_proxy
 
 
 class PcFactory(Store):
@@ -82,7 +82,7 @@ class PcFactory(Store):
             ['236', '262', 'Printer'],  # Imp. Multifuncionales
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         session.get('https://www.pcfactory.cl')
 
         product_urls = []
@@ -256,7 +256,7 @@ class PcFactory(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         session.get(url)
 

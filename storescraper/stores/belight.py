@@ -1,10 +1,10 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Belight(Store):
@@ -29,6 +29,8 @@ class Belight(Store):
 
         product_urls = []
 
+        session = session_with_proxy(extra_args)
+
         for category_path, local_category in url_extensions:
             if local_category != category:
                 continue
@@ -36,7 +38,7 @@ class Belight(Store):
             category_url = 'http://www.belight.cl/productos/categoria/{}' \
                            ''.format(category_path)
 
-            soup = BeautifulSoup(requests.get(category_url).text,
+            soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
             product_containers = soup.findAll('div', 'producto')
@@ -50,7 +52,8 @@ class Belight(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
         name = soup.find('h1').text.strip()
 
         sku = soup.find('span', 'etiqueta').text.split(' : ')[-1].strip()

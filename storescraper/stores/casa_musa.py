@@ -1,11 +1,11 @@
 from _decimal import Decimal
 
-import requests
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class CasaMusa(Store):
@@ -26,13 +26,14 @@ class CasaMusa(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
             category_url = 'http://www.casamusa.cl/iluminacion/{}' \
                            '?limit=36'.format(category_path)
-            soup = BeautifulSoup(requests.get(category_url).text,
+            soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
             containers = soup.findAll('div', 'product-block')

@@ -1,10 +1,10 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class AlKosto(Store):
@@ -31,7 +31,7 @@ class AlKosto(Store):
              'memorias-sd-hd/memoria-usb/', 'UsbFlashDrive'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         product_urls = []
 
         for url_path, local_category in url_extensions:
@@ -59,7 +59,7 @@ class AlKosto(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('div', 'product-name').text.strip()

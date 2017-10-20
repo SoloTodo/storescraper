@@ -1,11 +1,11 @@
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class SpDigital(Store):
@@ -39,7 +39,7 @@ class SpDigital(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         url_extensions = [
             ['351', 'ExternalStorageDrive'],
@@ -119,7 +119,7 @@ class SpDigital(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         part_number = soup.find('span', {'id': '_sku'})

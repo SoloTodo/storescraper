@@ -2,13 +2,13 @@ import json
 import urllib
 
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Hites(Store):
@@ -66,6 +66,8 @@ class Hites(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
         for category_id, local_category in url_extensions:
             if local_category != category:
@@ -73,10 +75,9 @@ class Hites(Store):
 
             category_url = url_base + category_id
 
-            soup = BeautifulSoup(urllib.request.urlopen(
+            soup = BeautifulSoup(session.post(
                 category_url,
-                'pageSize=1000&storeId=10151'.encode('utf-8')).read(),
-                                 'html.parser')
+                'pageSize=1000&storeId=10151').text, 'html.parser')
 
             divs = soup.findAll('div', 'product')
             category_product_urls = [div.find('a')['href'] for div in divs]
@@ -109,7 +110,8 @@ class Hites(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        page_source = requests.get(url).text
+        session = session_with_proxy(extra_args)
+        page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']

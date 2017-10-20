@@ -1,10 +1,9 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class AmazonPrint(Store):
@@ -34,7 +33,7 @@ class AmazonPrint(Store):
             ['informatica/amazenamento/cartao-de-memoria.html', 'MemoryCard'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         product_urls = []
 
         for category_path, local_category in url_extensions:
@@ -83,7 +82,7 @@ class AmazonPrint(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1').text.strip()

@@ -1,10 +1,10 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class AllTec(Store):
@@ -50,7 +50,7 @@ class AllTec(Store):
             ['80-potencia-realcertificadas', 'PowerSupply'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         for category_path, local_category in category_urls:
             if local_category != category:
                 continue
@@ -90,7 +90,7 @@ class AllTec(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()

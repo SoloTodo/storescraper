@@ -1,12 +1,11 @@
 import json
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Ripley(Store):
@@ -99,7 +98,7 @@ class Ripley(Store):
             ['telefonia/smartwatches-and-wearables', 'Smartwatch'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         product_urls = []
 
@@ -142,7 +141,7 @@ class Ripley(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         product_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                  page_source)

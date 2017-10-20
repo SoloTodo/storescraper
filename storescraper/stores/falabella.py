@@ -5,12 +5,12 @@ from decimal import Decimal
 
 import re
 
-import requests
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Falabella(Store):
@@ -89,7 +89,7 @@ class Falabella(Store):
             ['cat4290063/SmartWatch', 'Smartwatch'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         session.headers.update({
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
@@ -147,7 +147,7 @@ class Falabella(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         content = session.get(url).text.replace('&#10;', '')
 
         soup = BeautifulSoup(content, 'html.parser')

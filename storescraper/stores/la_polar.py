@@ -1,14 +1,13 @@
 import json
 import demjson
 import re
-import requests
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class LaPolar(Store):
@@ -86,7 +85,7 @@ class LaPolar(Store):
             #  'Smartwatch'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         product_urls = []
 
@@ -126,7 +125,7 @@ class LaPolar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         response = session.get(url, allow_redirects=False)
 
         if response.status_code != 200:

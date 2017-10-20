@@ -1,13 +1,12 @@
 import re
 
 import demjson
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Byp(Store):
@@ -33,6 +32,7 @@ class Byp(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -48,7 +48,7 @@ class Byp(Store):
                     category_path, page
                 )
 
-                soup = BeautifulSoup(requests.get(category_url).text,
+                soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
                 product_containers = soup.find(
@@ -78,7 +78,8 @@ class Byp(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        page_source = requests.get(url).text
+        session = session_with_proxy(extra_args)
+        page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         pricing_text = re.search(

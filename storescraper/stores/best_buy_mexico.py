@@ -1,10 +1,9 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class BestBuyMexico(Store):
@@ -44,6 +43,8 @@ class BestBuyMexico(Store):
 
         product_urls = []
 
+        session = session_with_proxy(extra_args)
+
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
@@ -51,7 +52,7 @@ class BestBuyMexico(Store):
             category_url = 'http://www.bestbuy.com.mx/productos/{}&limit=all' \
                            ''.format(category_path)
 
-            soup = BeautifulSoup(requests.get(category_url).text,
+            soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
             product_cells = soup.findAll('li', 'item')
@@ -67,7 +68,8 @@ class BestBuyMexico(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1').text.strip()
 

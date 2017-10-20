@@ -1,10 +1,9 @@
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class CarrefourBrasil(Store):
@@ -28,6 +27,7 @@ class CarrefourBrasil(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -36,7 +36,7 @@ class CarrefourBrasil(Store):
             category_url = 'https://www.carrefour.com.br/' + category_path
             print(category_url)
 
-            soup = BeautifulSoup(requests.get(category_url).text,
+            soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
             containers = soup.findAll('li', 'product')
@@ -53,7 +53,8 @@ class CarrefourBrasil(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'})
 

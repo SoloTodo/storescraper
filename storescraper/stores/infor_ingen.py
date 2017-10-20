@@ -1,13 +1,12 @@
 import re
-import urllib
 
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class InforIngen(Store):
@@ -50,7 +49,7 @@ class InforIngen(Store):
         ]
 
         product_urls = []
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in url_extensions:
             if local_category != category:
@@ -76,7 +75,7 @@ class InforIngen(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         pricing_container = soup.find('div', {'id': 'product'}).parent

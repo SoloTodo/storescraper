@@ -1,13 +1,13 @@
 import re
 
 import demjson
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Winpy(Store):
@@ -66,7 +66,7 @@ class Winpy(Store):
         ]
 
         product_urls = []
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -110,7 +110,7 @@ class Winpy(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         response = session.get(url)
 
         if response.url == 'https://www.winpy.cl/':

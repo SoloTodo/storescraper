@@ -1,11 +1,11 @@
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Bip(Store):
@@ -77,7 +77,7 @@ class Bip(Store):
             ['categoria=20&categoria_papa=185', 'Mouse'],
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         product_urls = []
 
@@ -115,7 +115,7 @@ class Bip(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
 

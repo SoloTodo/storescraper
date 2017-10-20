@@ -2,13 +2,13 @@ import json
 import urllib
 
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Corona(Store):
@@ -68,7 +68,7 @@ class Corona(Store):
         ]
 
         product_urls = []
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         for category_path, extra_url_args, local_category in category_urls:
             if local_category != category:
@@ -110,7 +110,7 @@ class Corona(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 

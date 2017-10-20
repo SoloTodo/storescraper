@@ -2,14 +2,12 @@ import json
 import urllib
 import xml.etree.ElementTree as ET
 
-import requests
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Lider(Store):
@@ -100,6 +98,7 @@ class Lider(Store):
         ]
 
         product_urls = []
+        session = session_with_proxy(extra_args)
 
         for category_path, local_category in url_extensions:
             if local_category != category:
@@ -111,13 +110,33 @@ class Lider(Store):
 
             print(category_url)
 
-            product_urls.extend(cls._product_urls_for_url(category_url))
+            response = session.get(category_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            if '/product/' in response.url:
+                product_id = response.url.split('/')[-1]
+                product_urls.append('https://www.lider.cl/electrohogar/'
+                                    'product/' + product_id)
+
+            else:
+                containers = soup.findAll('div', 'box-product')
+                if not containers:
+                    raise Exception('No products found for: {}'.format(
+                        category_url))
+
+                for container in containers:
+                    product_path = container.findAll('a')[1]['href']
+                    product_id = product_path.split('/')[-1]
+                    product_url = 'https://www.lider.cl/electrohogar/' \
+                                  'product/' + product_id
+
+                    product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         pricing_data = soup.find('script', {'type': 'application/ld+json'})
@@ -144,13 +163,14 @@ class Lider(Store):
 
         # Availability
 
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         request_body = 'productNumber={}&useImsStores=true&consolidate=true' \
                        ''.format(sku)
         print(request_body)
-        avail_data = urllib.request.urlopen(
+        avail_data = session.post(
             'https://www.lider.cl/electrohogar/includes/inventory/'
-            'inventoryInformation.jsp', request_body.encode('utf-8')).read()
-        avail_json = json.loads(avail_data.decode('utf-8'))
+            'inventoryInformation.jsp', request_body).text
+        avail_json = json.loads(avail_data)
 
         in_stock = int(avail_json['stockLevel'])
 
@@ -195,35 +215,3 @@ class Lider(Store):
         )
 
         return [p]
-
-    @classmethod
-    def _product_urls_for_url(cls, category_url, retries=5):
-        response = requests.get(category_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        product_urls = []
-
-        if '/product/' in response.url:
-            product_id = response.url.split('/')[-1]
-            product_urls.append('https://www.lider.cl/electrohogar/'
-                                'product/' + product_id)
-            return product_urls
-
-        containers = soup.findAll('div', 'box-product')
-        if not containers:
-            if retries:
-                return cls._product_urls_for_url(category_url,
-                                                 retries=retries-1)
-            else:
-                raise Exception('No products found for: {}'.format(
-                    category_url.encode('utf-8')))
-
-        for container in containers:
-            product_path = container.findAll('a')[1]['href']
-            product_id = product_path.split('/')[-1]
-            product_url = 'https://www.lider.cl/electrohogar/product/' + \
-                          product_id
-
-            product_urls.append(product_url)
-
-        return product_urls

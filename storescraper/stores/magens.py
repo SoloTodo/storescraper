@@ -4,13 +4,12 @@ from decimal import Decimal
 
 import re
 
-import html2text
 from bs4 import BeautifulSoup
-import requests
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Magens(Store):
@@ -57,6 +56,7 @@ class Magens(Store):
         ]
 
         discovered_urls = []
+        session = session_with_proxy(extra_args)
 
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -78,7 +78,7 @@ class Magens(Store):
                                 url_extension, separator, page)
 
                 soup = BeautifulSoup(
-                    requests.get(category_url).text, 'html.parser')
+                    session.get(category_url).text, 'html.parser')
 
                 product_containers = soup.findAll('article', 'product-block')
 
@@ -106,7 +106,8 @@ class Magens(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         cleaned_url = urllib.parse.unquote(url).encode(
             'ascii', 'ignore').decode('ascii')
-        soup = BeautifulSoup(requests.get(cleaned_url).text, 'html.parser')
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(cleaned_url).text, 'html.parser')
 
         part_number = soup.find(
             'small', 'product-info__part-number').string.split(':')[1].strip()

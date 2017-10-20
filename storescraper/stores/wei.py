@@ -1,13 +1,13 @@
 import html
 import json
 import re
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class Wei(Store):
@@ -97,7 +97,7 @@ class Wei(Store):
             # ['719', 'Processor'],   # CPU AMD AM4 CON PLACA MADRE Y COOLER
         ]
 
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         product_urls = []
         for category_path, local_category in category_urls:
@@ -135,7 +135,7 @@ class Wei(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')

@@ -2,14 +2,14 @@ import json
 import re
 import urllib
 
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown
+from storescraper.utils import remove_words, html_to_markdown, \
+    session_with_proxy
 
 
 class AbcDin(Store):
@@ -78,6 +78,8 @@ class AbcDin(Store):
 
         discovered_urls = []
 
+        session = session_with_proxy(extra_args)
+
         for category_id, local_category in ajax_resources:
             if local_category != category:
                 continue
@@ -97,7 +99,7 @@ class AbcDin(Store):
                   '&ddkey=ProductListingView_8_-2011_1974&filterFacet=' \
                   '&pageSize=1000'.format(category_id)
 
-            soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products_grid = soup.find('ul', 'grid_mode')
 
             if not products_grid:
@@ -130,7 +132,8 @@ class AbcDin(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        page_content = requests.get(url).text
+        session = session_with_proxy(extra_args)
+        page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')
 
         if soup.find('div', {'id': 'errorPage'}):
