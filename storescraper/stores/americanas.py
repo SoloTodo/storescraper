@@ -74,7 +74,7 @@ class Americanas(Store):
                         break
 
                     for product in category_page['products']:
-                        product_url = 'http://www.americanas.com.br/' \
+                        product_url = 'https://www.americanas.com.br/' \
                                       'produto/{}'.format(product['id'])
                         if product_url not in product_urls:
                             product_urls.append(product_url)
