@@ -13,6 +13,8 @@ from .carrefour_brasil import CarrefourBrasil
 from .casa_del_audio import CasaDelAudio
 from .casa_musa import CasaMusa
 from .casas_bahia import CasasBahia
+from .cetrogar import Cetrogar
+from .cintegral import Cintegral
 from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
