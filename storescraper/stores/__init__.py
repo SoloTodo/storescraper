@@ -20,6 +20,10 @@ from .clie import Clie
 from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
+from .costco_mexico import CostcoMexico
+from .david_and_joseph import DavidAndJoseph
+from .dell import Dell
+from .deltron import Deltron
 from .falabella import Falabella
 from .hites import Hites
 from .infor_ingen import InforIngen
