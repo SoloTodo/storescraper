@@ -15,6 +15,10 @@ from .casa_musa import CasaMusa
 from .casas_bahia import CasasBahia
 from .cetrogar import Cetrogar
 from .cintegral import Cintegral
+from .claro import Claro
+from .clie import Clie
+from .conelectric import Conelectric
+from .coppel import Coppel
 from .corona import Corona
 from .falabella import Falabella
 from .hites import Hites
