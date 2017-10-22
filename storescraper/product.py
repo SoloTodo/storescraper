@@ -136,6 +136,12 @@ class Product:
         serialized_data['offer_price'] = \
             Decimal(serialized_data['offer_price'])
 
+        cell_monthly_payment = serialized_data['cell_monthly_payment']
+        if cell_monthly_payment:
+            cell_monthly_payment = Decimal(cell_monthly_payment)
+
+        serialized_data['cell_monthly_payment'] = cell_monthly_payment
+
         serialized_data['timestamp'] = \
             dateutil.parser.parse(serialized_data['timestamp'])
         return cls(**serialized_data)

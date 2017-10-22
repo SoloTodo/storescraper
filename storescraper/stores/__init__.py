@@ -28,6 +28,7 @@ from .demasled import Demasled
 from .easy import Easy
 from .eglo import Eglo
 from .electropuntonet import Electropuntonet
+from .entel import Entel
 from .falabella import Falabella
 from .hites import Hites
 from .infor_ingen import InforIngen

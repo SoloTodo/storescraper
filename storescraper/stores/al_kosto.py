@@ -4,7 +4,7 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, check_ean13
 
 
 class AlKosto(Store):
@@ -64,8 +64,12 @@ class AlKosto(Store):
 
         name = soup.find('div', 'product-name').text.strip()
         ean = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        sku = ean
         if len(ean) == 12:
             ean = '0' + ean
+
+        if not check_ean13(ean):
+            ean = None
 
         description = ''
 
@@ -91,9 +95,6 @@ class AlKosto(Store):
         price_container = soup.find('div', 'product-shop')
         normal_price = price_container.find('span', {'itemprop': 'price'})
 
-        # if not normal_price:
-        #     normal_price = price_container.findAll('span', 'price')[-1]
-
         normal_price = Decimal(remove_words(normal_price.string))
 
         offer_price = normal_price
@@ -104,12 +105,12 @@ class AlKosto(Store):
             category,
             url,
             url,
-            ean,
+            sku,
             stock,
             normal_price,
             offer_price,
             'COP',
-            sku=ean,
+            sku=sku,
             ean=ean,
             description=description,
             picture_urls=picture_urls
