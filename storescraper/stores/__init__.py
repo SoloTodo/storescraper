@@ -29,7 +29,11 @@ from .easy import Easy
 from .eglo import Eglo
 from .electropuntonet import Electropuntonet
 from .entel import Entel
+from .exito import Exito
+from .extra_brasil import ExtraBrasil
 from .falabella import Falabella
+from .falabella_argentina import FalabellaArgentina
+from .falabella_peru import FalabellaPeru
 from .hites import Hites
 from .infor_ingen import InforIngen
 from .la_polar import LaPolar
