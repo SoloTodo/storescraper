@@ -170,7 +170,7 @@ class FalabellaPeru(Store):
                 stock,
                 normal_price,
                 offer_price,
-                'CLP',
+                'PEN',
                 sku=sku,
                 description=description,
                 cell_plan_name=None,

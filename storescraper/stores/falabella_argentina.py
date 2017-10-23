@@ -177,7 +177,7 @@ class FalabellaArgentina(Store):
                 stock,
                 normal_price,
                 offer_price,
-                'CLP',
+                'ARS',
                 sku=sku,
                 description=description,
                 cell_plan_name=None,
