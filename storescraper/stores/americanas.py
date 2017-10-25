@@ -99,6 +99,9 @@ class Americanas(Store):
 
         main_page_json = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                    page_source)
+        if not main_page_json:
+            return []
+
         main_page_json = json.loads(main_page_json.groups()[0])
 
         product_json = \
