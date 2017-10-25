@@ -1,8 +1,11 @@
 import json
 import urllib
 
+import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
+
+from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -72,11 +75,26 @@ class Entel(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        driver = webdriver.PhantomJS()
 
-        plan_tabs = soup.find('div', {'class': 'row tabs'}).findAll(
-            'div', 'tab')
+        tries = 1
+
+        while True:
+            if tries >= 10:
+                raise Exception('Try overflow getting plans')
+            print('Try: {}'.format(tries))
+            driver.get(url)
+            time.sleep(5)
+
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+            plan_tabs = soup.find('div', {'class': 'row tabs'})
+            if plan_tabs:
+                break
+
+            tries += 1
+
+        plan_tabs = plan_tabs.findAll('div', 'tab')
         content_tabs = soup.find('div', 'content-tabs').findAll(
             'div', 'content-tab')
 
@@ -135,6 +153,7 @@ class Entel(Store):
                 )
                 products.append(product)
 
+        driver.close()
         return products
 
     @classmethod
@@ -149,24 +168,38 @@ class Entel(Store):
         details_json = json.loads(session.get(details_url).text)
 
         product_name = details_json['title']
-        main_variant = details_json['variants'][0]
 
         products = []
 
-        # Prepago
-
-        try:
-            prepago_price = Decimal(
-                main_variant['prepaid_prices']['price_1'])
-            prepago_stock = -1
-        except TypeError:
-            prepago_price = Decimal(0)
-            prepago_stock = 0
+        pricing_variants = {}
 
         for variant in details_json['variants']:
+            pricing_variant = None
             variant_name = product_name
+
             for key, value in variant['options'].items():
                 variant_name += ' {} {}'.format(key, value)
+                if key == 'capacidad':
+                    print('Found: ' + value)
+                    if value not in pricing_variants:
+                        print('New value')
+                        pricing_variants[value] = variant
+                    pricing_variant = pricing_variants[value]
+
+            if not pricing_variant:
+                print('Using default')
+                pricing_variant = variant
+
+            # Prepago
+
+            try:
+                prepago_price = Decimal(
+                    pricing_variant['prepaid_prices']['price_1'])
+                prepago_stock = -1
+            except TypeError:
+                print('No prepago price')
+                prepago_price = Decimal(0)
+                prepago_stock = 0
 
             picture_urls = variant['covers']
 
@@ -197,8 +230,8 @@ class Entel(Store):
                  'portability_price'),
             ]
 
-            # Yes, use the prices for the first variant for all variants
-            for plan in main_variant['plans']:
+            # Use the prices of the first variant with the same capacity
+            for plan in pricing_variant['plans']:
                 plan = plan['plan']
                 if plan['plan_type'] in ['cargo_fijo', 'voz',
                                          'multi_smart',

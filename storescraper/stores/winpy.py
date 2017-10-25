@@ -1,4 +1,5 @@
 import re
+import urllib
 
 import demjson
 from bs4 import BeautifulSoup
@@ -158,8 +159,10 @@ class Winpy(Store):
 
         picture_tags = soup.findAll('img', {'itemprop': 'image'})
 
-        picture_urls = ['https://www.winpy.cl' + tag['src']
+        picture_urls = ['https://www.winpy.cl' + urllib.parse.quote(tag['src'])
                         for tag in picture_tags]
+
+        print(picture_urls)
 
         p = Product(
             name,
