@@ -25,6 +25,8 @@ class Product:
                  condition='https://schema.org/NewCondition'):
         assert isinstance(key, str)
 
+        assert offer_price <= normal_price
+
         if picture_urls:
             for picture_url in picture_urls:
                 assert validators.url(picture_url)

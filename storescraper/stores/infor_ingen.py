@@ -90,6 +90,9 @@ class InforIngen(Store):
         normal_price = Decimal(remove_words(price_containers[0].string))
         offer_price = Decimal(remove_words(price_containers[1].string))
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 

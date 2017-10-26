@@ -133,7 +133,6 @@ class Hites(Store):
 
             normal_price = Decimal(price_str)
             offer_price = normal_price
-
         else:
             stock = -1
 
@@ -162,6 +161,8 @@ class Hites(Store):
             offer_price = remove_words(json_body['hitesPrice'])
             if offer_price:
                 offer_price = Decimal(offer_price)
+                if offer_price > normal_price:
+                    offer_price = normal_price
             else:
                 offer_price = normal_price
 

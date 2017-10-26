@@ -164,6 +164,9 @@ class Ripley(Store):
         offer_price = Decimal(specs_json['prices'].get('cardPrice',
                                                        normal_price))
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = ''
 
         if 'longDescription' in specs_json:
