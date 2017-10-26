@@ -159,8 +159,7 @@ class Ripley(Store):
         elif 'listPrice' in specs_json['prices']:
             normal_price = Decimal(specs_json['prices']['listPrice'])
         else:
-            normal_price = Decimal(0)
-            stock = 0
+            return []
 
         offer_price = Decimal(specs_json['prices'].get('cardPrice',
                                                        normal_price))
