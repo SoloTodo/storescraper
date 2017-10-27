@@ -34,6 +34,11 @@ from .extra_brasil import ExtraBrasil
 from .falabella import Falabella
 from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
+from .fnac import Fnac
+from .fravega import Fravega
+from .garbarino import Garbarino
+from .gearbest import GearBest
+from .globalmac import GlobalMac
 from .hites import Hites
 from .infor_ingen import InforIngen
 from .la_polar import LaPolar

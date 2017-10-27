@@ -29,10 +29,10 @@ class Product:
 
         if picture_urls:
             for picture_url in picture_urls:
-                assert validators.url(picture_url)
+                assert validators.url(picture_url), picture_url
 
         if ean:
-            assert check_ean13(ean)
+            assert check_ean13(ean), ean
 
         assert condition in Product.VALID_CONDITIONS
 
