@@ -149,9 +149,13 @@ class Paris(Store):
         else:
             offer_price = normal_price
 
-        stock = int(re.search(
+        stock = re.search(
             r"var itemQuantity_DL = '(.+)'",
-            page_source).groups()[0].replace('.', ''))
+            page_source)
+        if stock:
+            stock = int(stock.groups()[0].replace('.', ''))
+        else:
+            stock = 0
         description = html_to_markdown(str(soup.find('div', 'description')))
 
         image_id = re.search(

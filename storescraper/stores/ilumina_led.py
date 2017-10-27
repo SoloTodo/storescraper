@@ -3,27 +3,27 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class GlobalMac(Store):
+class IluminaLed(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'StorageDrive',
-            'SolidStateDrive',
+            'Lamp',
+            'LightTube',
+            'LightProjector',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['apple-chile/macbook-air', 'Notebook'],
-            # ['apple-chile/macbook-pro', 'Notebook'],
-            ['hardware-mac-pc/discos-duros-notebook-sata-2.5', 'StorageDrive'],
-            # ['hardware-mac-pc/discos-duros-sata-3.5', 'StorageDrive'],
-            ['hardware-mac-pc/discos-duros-ssd-sata-2.5', 'SolidStateDrive'],
+            # Ampolletas LED
+            ['producto-categoria/ampolletas-led/', 'Lamp'],
+            # Tubos LED
+            ['producto-categoria/tubos-led/', 'LightTube'],
+            # Proyectores LED
+            ['producto-categoria/proyectores-de-area/', 'LightProjector'],
         ]
 
         product_urls = []
@@ -33,13 +33,19 @@ class GlobalMac(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.globalmac.cl/' + category_path
+            category_url = 'http://www.iluminaled.cl/{}?count=100&paged=' \
+                           ''.format(category_path)
+
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
-            items = soup.findAll('div', 'product-layout')
+            product_containers = soup.findAll('li', 'product')
 
-            for item in items:
-                product_urls.append(item.find('a')['href'])
+            if not product_containers:
+                raise Exception('Empty category: ' + category_url)
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
         return product_urls
 
@@ -47,23 +53,20 @@ class GlobalMac(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        name = soup.find('h1', 'product_title').text.strip()
+        sku = soup.find('span', 'add_to_wishlist')['data-product-id'].strip()
 
-        name = soup.find('title').text.strip()
-        sku = soup.find('meta', {'itemprop': 'model'})['content']
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
-        picture_urls = [tag['href'] for tag in soup.find(
-            'ul', 'thumbnails').findAll('a', 'thumbnail')]
 
-        if soup.find('link', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
+
+        if soup.find('button', 'single_add_to_cart_button'):
             stock = -1
         else:
             stock = 0
-
-        price = soup.find('meta', {'itemprop': 'price'})['content']
-        price = Decimal(remove_words(price))
 
         p = Product(
             name,
@@ -77,7 +80,6 @@ class GlobalMac(Store):
             price,
             'CLP',
             sku=sku,
-            part_number=sku,
             description=description,
             picture_urls=picture_urls
         )

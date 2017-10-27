@@ -39,7 +39,14 @@ from .fravega import Fravega
 from .garbarino import Garbarino
 from .gearbest import GearBest
 from .globalmac import GlobalMac
+from .gobantes import Gobantes
+from .gtd import Gtd
+from .hiraoka import Hiraoka
 from .hites import Hites
+from .hp_online import HpOnline
+from .ibyte import Ibyte
+from .ilumina_led import IluminaLed
+from .imp_dali import ImpDali
 from .infor_ingen import InforIngen
 from .la_polar import LaPolar
 from .lider import Lider
