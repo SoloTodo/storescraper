@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, check_ean13
 
 
 class Fnac(Store):
@@ -79,6 +79,8 @@ class Fnac(Store):
             ean = pricing_data['productEans'][0]
             if len(ean) == 12:
                 ean = '0' + ean
+            if not check_ean13(ean):
+                ean = None
         else:
             ean = None
 
