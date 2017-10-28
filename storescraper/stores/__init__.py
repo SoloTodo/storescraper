@@ -54,6 +54,8 @@ from .kabum import Kabum
 from .kalunga import Kalunga
 from .kuhn import Kuhn
 from .led_light_chile import LedLightChile
+from .led_shop import LedShop
+from .led_studio import LedStudio
 from .la_polar import LaPolar
 from .lider import Lider
 from .magens import Magens

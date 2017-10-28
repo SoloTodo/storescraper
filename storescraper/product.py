@@ -24,6 +24,7 @@ class Product:
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
                  condition='https://schema.org/NewCondition'):
         assert isinstance(key, str)
+        assert isinstance(stock, int)
 
         assert offer_price <= normal_price
 

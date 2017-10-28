@@ -53,7 +53,7 @@ def main():
     if not urls_with_error:
         print('* No empty URLs found')
     for url_with_error in urls_with_error:
-        print('* '.format(url_with_error))
+        print('* {}'.format(url_with_error))
 
     print()
     print('Available: {}'.format(available_products))
