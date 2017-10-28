@@ -48,6 +48,12 @@ from .ibyte import Ibyte
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
 from .infor_ingen import InforIngen
+from .jumbo_argentina import JumboArgentina
+from .jumbo_colombia import JumboColombia
+from .kabum import Kabum
+from .kalunga import Kalunga
+from .kuhn import Kuhn
+from .led_light_chile import LedLightChile
 from .la_polar import LaPolar
 from .lider import Lider
 from .magens import Magens
