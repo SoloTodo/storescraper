@@ -1,5 +1,7 @@
 import json
 import re
+
+import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -118,6 +120,11 @@ class Paris(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        return cls._products_for_url(url, category=category,
+                                     extra_args=extra_args, retries=5)
+
+    @classmethod
+    def _products_for_url(cls, url, category, extra_args, retries):
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
@@ -156,6 +163,15 @@ class Paris(Store):
             stock = int(stock.groups()[0].replace('.', ''))
         else:
             stock = 0
+
+        if stock == 0:
+            if retries:
+                return cls._products_for_url(
+                    url, category=category, extra_args=extra_args,
+                    retries=retries-1)
+            else:
+                pass
+
         description = html_to_markdown(str(soup.find('div', 'description')))
 
         image_id = re.search(

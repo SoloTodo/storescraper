@@ -5,7 +5,8 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, check_ean13
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    check_ean13
 
 
 class Fnac(Store):

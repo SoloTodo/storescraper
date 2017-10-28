@@ -65,6 +65,9 @@ class HpOnline(Store):
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)[0]
 
+        if isinstance(pricing_data, list):
+            return []
+
         name = pricing_data['product_name']
         sku = pricing_data['sku_config']
         part_number = pricing_data['ean_code']
