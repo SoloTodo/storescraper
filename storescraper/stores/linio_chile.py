@@ -8,24 +8,44 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class HpOnline(Store):
+class LinioChile(Store):
     @classmethod
     def categories(cls):
         return [
             'Notebook',
+            'Cell',
+            'Television',
+            'Tablet',
             'Printer',
+            'VideoGameConsole',
+            'Refrigerator',
+            'WashingMachine',
+            'Oven',
+            'VacuumCleaner',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['notebooks', 'Notebook'],
-            ['impresoras', 'Printer']
+            ['computacion/pc-portatil', 'Notebook'],
+            ['celulares-y-smartphones/liberados', 'Cell'],
+            ['tv-y-video/televisores/', 'Television'],
+            ['tablets/tablet', 'Tablet'],
+            ['impresoras-y-scanners/impresoras', 'Printer'],
+            ['nintendo-videojuegos/consolas-nintendo/', 'VideoGameConsole'],
+            ['playstation-videojuegos/consolas-playstation/',
+             'VideoGameConsole'],
+            ['xbox-videojuegos/consolas-xbox/', 'VideoGameConsole'],
+            ['refrigeracion/refrigeradores/', 'Refrigerator'],
+            ['lavado-y-secado/lavadoras/', 'WashingMachine'],
+            ['lavado-y-secado/secadoras/', 'WashingMachine'],
+            ['pequenos-electrodomesticos/microondas-y-hornos/', 'Oven'],
+            ['pequenos-electrodomesticos/aspiradoras/', 'VacuumCleaner'],
         ]
 
+        product_urls = []
         session = session_with_proxy(extra_args)
 
-        product_urls = []
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
@@ -33,21 +53,26 @@ class HpOnline(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.hponline.cl/c/{}?page={}' \
-                               '&lazy=true'.format(category_path, page)
+                category_url = 'https://www.linio.cl/c/{}?page={}'.format(
+                    category_path, page)
+
+                if page >= 40:
+                    raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
-                product_cells = soup.findAll('div', 'catalogue-product')
 
-                if not product_cells:
+                products_containers = \
+                    soup.findAll('div', 'catalogue-product')
+
+                if not products_containers:
                     if page == 1:
                         raise Exception('Empty category: ' + category_url)
                     break
 
-                for cell in product_cells:
-                    product_url = 'https://www.hponline.cl' + \
-                                  cell.find('a')['href']
+                for product_container in products_containers:
+                    product_url = 'https://www.linio.cl' + \
+                                  product_container.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -60,7 +85,7 @@ class HpOnline(Store):
 
         page_source = session.get(url).text
 
-        pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
+        pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)[0]
 
