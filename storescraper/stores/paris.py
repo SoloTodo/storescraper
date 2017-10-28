@@ -1,7 +1,7 @@
 import json
+import random
 import re
 
-import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -43,7 +43,7 @@ class Paris(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.paris.cl/webapp/wcs/stores/servlet/' \
+        base_url = 'https://www.paris.cl/webapp/wcs/stores/servlet/' \
                    'AjaxCatalogSearchResultView?sType=SimpleSearch&pageSize=' \
                    '1000&storeId=10801&categoryId='
 
@@ -89,9 +89,12 @@ class Paris(Store):
             if category != local_category:
                 continue
 
-            print(path)
+            random_component = random.randint(1, 1000)
 
-            category_url = base_url + path
+            category_url = 'https://www.paris.cl/webapp/wcs/stores/servlet/' \
+                           'AjaxCatalogSearchResultView?sType=SimpleSearch&' \
+                           'pageSize=1000&storeId=10801&categoryId={}&' \
+                           'rnd={}'.format(path, random_component)
             print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
