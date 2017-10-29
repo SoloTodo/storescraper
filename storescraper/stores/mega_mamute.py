@@ -11,7 +11,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
     check_ean13
 
 
-class LivrariasCuritiba(Store):
+class MegaMatute(Store):
     @classmethod
     def categories(cls):
         return [
@@ -25,8 +25,11 @@ class LivrariasCuritiba(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['C:/6/63/298/', 'UsbFlashDrive'],
-            ['C:/6/61/317/', 'MemoryCard'],
+            ['C:/164/168/170/', 'StorageDrive'],
+            ['C:/164/168/169/', 'ExternalStorageDrive'],
+            ['C:/164/168/172/', 'SolidStateDrive'],
+            ['C:/164/168/173/', 'UsbFlashDrive'],
+            ['C:/8/116/118/', 'MemoryCard'],
         ]
 
         product_urls = []
@@ -40,18 +43,20 @@ class LivrariasCuritiba(Store):
 
             while True:
                 category_url = \
-                    'http://www.livrariascuritiba.com.br/buscapagina?fq={}&' \
-                    'PS=16&sl=1ac72559-0af1-49ae-bf8d-a6c48490c420&' \
-                    'cc=16&sm=0&PageNumber={}&O=OrderByPriceASC' \
+                    'http://www.megamamute.com.br/buscapagina?fq={}&PS=16&' \
+                    'sl=45e718bf-51b0-49c4-8882-725649af0594' \
+                    '&cc=3&sm=0&PageNumber={}' \
                     ''.format(urllib.parse.quote(category_path), page)
 
-                if page >= 50:
+                if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
+
+                print(category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                containers = soup.findAll('li', 'tecnologia')
+                containers = soup.findAll('div', 'x-product')
 
                 if not containers:
                     if page == 1:
@@ -59,7 +64,7 @@ class LivrariasCuritiba(Store):
                     break
 
                 for container in containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('h2').find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -80,16 +85,31 @@ class LivrariasCuritiba(Store):
         skus_data = json.loads(skus_data)
         name = '{} {}'.format(pricing_data['productBrandName'],
                               pricing_data['productName'])
-        price = Decimal(pricing_data['productPriceTo'])
+        normal_price = Decimal(pricing_data['productPriceTo'])
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        discount_container = soup.find('div', 'price_box-v1').fetchParents()[0]
+        discount_container = discount_container.findAll('p', 'flag')
+        if discount_container:
+            discount_container = discount_container[-1]
+            discount_value = re.search(r'(\d+)', discount_container.text)
+            discount_value = Decimal(discount_value.groups()[0])
+            discount_factor = (Decimal(100) - discount_value) / Decimal(100)
+
+            offer_price = normal_price * discount_factor
+            offer_price = offer_price.quantize(Decimal('0.01'))
+        else:
+            offer_price = normal_price
+
+        picture_urls = [tag['rel'][0].split('?')[0] for tag in
+                        soup.findAll('a', {'id': 'botaoZoom'})]
+
         description = ''
-        panel_classes = ['produto-contents--sinope',
-                         'produto-contents--caracteristicas']
+        panel_classes = ['blc_1', 'blc_2']
 
         for panel_class in panel_classes:
-            panel = soup.find('li', panel_class)
+            panel = soup.find('div', panel_class)
             description += html_to_markdown(str(panel)) + '\n\n'
 
         products = []
@@ -107,9 +127,6 @@ class LivrariasCuritiba(Store):
             sku = str(sku_data['sku'])
             stock = pricing_data['skuStocks'][sku]
 
-            picture_urls = [sku_data['image'].split('?')[0].replace(
-                '-300-300', '')]
-
             p = Product(
                 name,
                 cls.__name__,
@@ -118,8 +135,8 @@ class LivrariasCuritiba(Store):
                 url,
                 sku,
                 stock,
-                price,
-                price,
+                normal_price,
+                offer_price,
                 'BRL',
                 sku=sku,
                 ean=ean,

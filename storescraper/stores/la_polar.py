@@ -92,9 +92,9 @@ class LaPolar(Store):
         for extension, local_category in extensions:
             if category != local_category:
                 continue
-            print(extension)
             url = 'https://www.lapolar.cl/internet/catalogo/' \
                   'todolistados/' + extension
+            print(url)
 
             data = session.get(url).text
 

@@ -65,6 +65,13 @@ from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
 from .magens import Magens
+from .mega_mamute import MegaMatute
+from .megatone import Megatone
+from .meroli import Meroli
+from .microplay import Microplay
+from .movistar import Movistar
+from .movistar_one import MovistarOne
+from .musimundo import Musimundo
 from .paris import Paris
 from .pc_express import PcExpress
 from .pc_factory import PcFactory

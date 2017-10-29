@@ -158,7 +158,6 @@ class Entel(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        print(url)
         session = session_with_proxy(extra_args)
         slug = url.split('/')[-1]
 
