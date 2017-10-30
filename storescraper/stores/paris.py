@@ -130,7 +130,10 @@ class Paris(Store):
     def _products_for_url(cls, url, category, extra_args, retries):
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        random_component = random.randint(1, 1000)
+        url_for_request = '{}&rnd={}'.format(url, random_component)
+
+        page_source = session.get(url_for_request).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('h1', {'role': 'main'}):
