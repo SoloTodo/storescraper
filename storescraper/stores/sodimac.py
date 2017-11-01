@@ -117,7 +117,8 @@ class Sodimac(Store):
             else:
                 offer_price = normal_price
 
-            name = '{} {}'.format(pricing_json['brand'], pricing_json['name'])
+            name = '{} {}'.format(pricing_json.get('brand', ''),
+                                  pricing_json['name']).strip()
 
             stock_regex = '{}=(\d+)'.format(sku)
             stock = int(re.search(stock_regex,
