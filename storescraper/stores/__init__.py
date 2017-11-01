@@ -91,6 +91,15 @@ from .reif_store import ReifStore
 from .rhona import Rhona
 from .ribeiro import Ribeiro
 from .ripley import Ripley
+from .ripley_peru import RipleyPeru
+from .rodo import Rodo
+from .sams import Sams
+from .samsung_online import SamsungOnline
+from .sanborns import Sanborns
+from .saraiva import Saraiva
+from .sears_mexico import SearsMexico
+from .sindelen import Sindelen
 from .sp_digital import SpDigital
+from .vivelo import Vivelo
 from .wei import Wei
 from .winpy import Winpy

@@ -106,8 +106,6 @@ class Ripley(Store):
             if local_category != category:
                 continue
 
-            print(category_path)
-
             page = 1
 
             while True:
@@ -122,7 +120,6 @@ class Ripley(Store):
 
                 if not product_link_containers:
                     if page == 1:
-                        print(page_url)
                         raise Exception('Empty category path: {} - {}'.format(
                             category, category_path))
                     else:
