@@ -99,7 +99,14 @@ from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sears_mexico import SearsMexico
 from .sindelen import Sindelen
+from .sion_computer import SionComputer
+from .sistemax import Sistemax
+from .sodimac import Sodimac
+from .sodimac_argentina import SodimacArgentina
+from .solar_led import SolarLed
+from .sony_style import SonyStyle
 from .sp_digital import SpDigital
+from .syd import Syd
 from .vivelo import Vivelo
 from .wei import Wei
 from .winpy import Winpy
