@@ -125,3 +125,7 @@ def session_with_proxy(extra_args):
         }
 
     return session
+
+
+class InvalidSessionCookieException(Exception):
+    pass

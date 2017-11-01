@@ -87,6 +87,9 @@ from .peta import Peta
 from .pichau import Pichau
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
+from .reif_store import ReifStore
+from .rhona import Rhona
+from .ribeiro import Ribeiro
 from .ripley import Ripley
 from .sp_digital import SpDigital
 from .wei import Wei

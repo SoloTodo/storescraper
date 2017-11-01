@@ -6,7 +6,8 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    InvalidSessionCookieException
 
 
 class Deltron(Store):
@@ -62,15 +63,30 @@ class Deltron(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
         session_cookies = cls._session_cookies(extra_args)
 
+        try:
+            products = cls._products_for_url(url, category, extra_args,
+                                             session_cookies)
+        except InvalidSessionCookieException:
+            print('Invalid session cookie, refreshing')
+            session_cookies = cls._session_cookies(extra_args, refresh=True)
+            products = cls._products_for_url(url, category, extra_args,
+                                             session_cookies)
+        return products
+
+    @classmethod
+    def _products_for_url(cls, url, category, extra_args, session_cookies):
+        session = session_with_proxy(extra_args)
         page_source = session.get(url, cookies=session_cookies).text
 
         if 'Item  NO ENCONTRADO' in page_source:
             return []
 
         soup = BeautifulSoup(page_source, 'html.parser')
+
+        if not soup.findAll('font', {'size': '3'}):
+            raise InvalidSessionCookieException
 
         name = soup.find('title').text.strip()
         part_number = soup.find('h3').string.split(':')[1].strip()
@@ -122,8 +138,8 @@ class Deltron(Store):
         return [p]
 
     @classmethod
-    def _session_cookies(cls, extra_args):
-        if not cls.SESSION_COOKIES:
+    def _session_cookies(cls, extra_args, refresh=False):
+        if not cls.SESSION_COOKIES or refresh:
             session = session_with_proxy(extra_args)
             url = 'http://{}:{}@www2.deltron.com.pe/login.php'.format(
                 extra_args['username'], extra_args['password'])
