@@ -83,7 +83,12 @@ class Exito(Store):
             'div', {'id': 'slide-image-pdp'}).findAll('img')]
 
         price_container = soup.find('span', 'money')
-        price = Decimal(price_container.text)
+        if price_container:
+            price = Decimal(price_container.text)
+            stock = -1
+        else:
+            stock = 0
+            price = Decimal(0)
 
         driver.close()
 
@@ -94,7 +99,7 @@ class Exito(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             price,
             price,
             'COP',
