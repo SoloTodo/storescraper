@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    check_ean13
 
 
 class BestBuyMexico(Store):
@@ -76,23 +77,52 @@ class BestBuyMexico(Store):
         pricing_tag = soup.find(
             'script', {'src': 'http://media.flixfacts.com/js/loader.js'})
 
-        sku = pricing_tag['data-flix-sku'].strip()
-        part_number = pricing_tag['data-flix-mpn'].strip()
-        ean = pricing_tag['data-flix-ean'].strip()
+        if pricing_tag:
+            sku = pricing_tag['data-flix-sku'].strip()
+            part_number = pricing_tag['data-flix-mpn'].strip()
+            ean = pricing_tag['data-flix-ean'].strip()
 
-        if len(ean) == 12:
-            ean = '0' + ean
+            if len(ean) == 12:
+                ean = '0' + ean
 
-        normal_price = Decimal(soup.find('span', 'price').text.replace(
-            u'$\xa0', '').replace(',', ''))
+            normal_price = Decimal(soup.find('span', 'price').text.replace(
+                u'$\xa0', '').replace(',', ''))
 
-        offer_price = normal_price
+            offer_price = normal_price
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tabcnt_description'})))
+            description = html_to_markdown(
+                str(soup.find('div', {'id': 'tabcnt_description'})))
 
-        picture_tags = soup.find('div', 'product-img-box').findAll('img')
-        picture_urls = [picture['src'] for picture in picture_tags]
+            picture_tags = soup.find('div', 'product-img-box').findAll('img')
+            picture_urls = [picture['src'] for picture in picture_tags]
+        else:
+            sku = soup.find('span', {'id': 'sku-value'}).text.strip()
+            part_number = soup.find('span', {'id': 'model-value'}).text.strip()
+
+            ean = None
+            ean_container = soup.find('td', text='EAN/UPC')
+            if ean_container:
+                ean = ean_container.parent.find(
+                    'td', 'specification-value').text
+
+                if len(ean) == 12:
+                    ean = '0' + ean
+
+                if not check_ean13(ean):
+                    ean = None
+
+            normal_price = Decimal(soup.find(
+                'div', 'pb-purchase-price').text.replace(
+                u'$', '').replace(',', ''))
+
+            offer_price = normal_price
+
+            description = html_to_markdown(
+                str(soup.find('div', 'descriptionContainer')))
+
+            picture_tags = soup.findAll('li', 'thumbnail-image-wrapper')
+            picture_urls = [picture.find('img')['src']
+                            for picture in picture_tags]
 
         p = Product(
             name,

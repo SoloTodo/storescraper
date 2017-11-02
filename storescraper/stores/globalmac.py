@@ -33,8 +33,10 @@ class GlobalMac(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.globalmac.cl/' + category_path
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            category_url = 'https://www.globalmac.cl/' + category_path
+            print(category_url)
+            soup = BeautifulSoup(session.get(category_url, verify=False).text,
+                                 'html.parser')
 
             items = soup.findAll('div', 'product-layout')
 
@@ -46,7 +48,8 @@ class GlobalMac(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url,  verify=False).text,
+                             'html.parser')
 
         name = soup.find('title').text.strip()
         sku = soup.find('meta', {'itemprop': 'model'})['content']
