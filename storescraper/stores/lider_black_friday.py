@@ -43,7 +43,6 @@ class LiderBlackFriday(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(category)
         categories_dict = {
             'Computaci\xf3n': 'Notebook',
             'Smartphones': 'Cell',
@@ -83,8 +82,8 @@ class LiderBlackFriday(Store):
             if product_type != category:
                 continue
 
-            url = 'http://blackfriday.lider.cl/#!/index.html/' + json_product[
-                'ID']
+            product_url = 'http://blackfriday.lider.cl/#!/index.html/' \
+                          + json_product['ID']
 
             brand = json_product['brand']
             model = json_product['displayName']
@@ -110,7 +109,7 @@ class LiderBlackFriday(Store):
                 name,
                 cls.__name__,
                 category,
-                url,
+                product_url,
                 url,
                 sku,
                 -1,
