@@ -58,6 +58,7 @@ from .led_light_chile import LedLightChile
 from .led_shop import LedShop
 from .led_studio import LedStudio
 from .lider import Lider
+from .lider_black_friday import LiderBlackFriday
 from .linio_chile import LinioChile
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
