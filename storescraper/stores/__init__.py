@@ -118,6 +118,12 @@ from .todo_juegos import TodoJuegos
 from .top_pc import TopPc
 from .tottus import Tottus
 from .ttchile import TtChile
+from .vitel import Vitel
 from .vivelo import Vivelo
+from .vtr import Vtr
+from .walmart_argentina import WalmartArgentina
+from .walmart_brazil import WalmartBrazil
+from .walmart_mexico import WalmartMexico
 from .wei import Wei
 from .winpy import Winpy
+from .zmart import Zmart

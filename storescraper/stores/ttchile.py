@@ -8,6 +8,8 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 
 class TtChile(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
