@@ -28,6 +28,7 @@ from .demasled import Demasled
 from .easy import Easy
 from .eglo import Eglo
 from .electropuntonet import Electropuntonet
+from .enel import Enel
 from .entel import Entel
 from .exito import Exito
 from .extra_brasil import ExtraBrasil
@@ -108,6 +109,8 @@ from .solar_led import SolarLed
 from .sony_style import SonyStyle
 from .sp_digital import SpDigital
 from .syd import Syd
+from .tecnoglobal import Tecnoglobal
+from .terabyte import Terabyte
 from .vivelo import Vivelo
 from .wei import Wei
 from .winpy import Winpy

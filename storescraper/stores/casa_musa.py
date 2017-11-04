@@ -50,7 +50,8 @@ class CasaMusa(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url, verify=False).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text,
+                             'html.parser')
 
         name = soup.find('h1').text.strip()
         pricing_container = soup.find('div', 'wrap-product-shop')
