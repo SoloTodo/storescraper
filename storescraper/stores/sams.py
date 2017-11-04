@@ -39,9 +39,15 @@ class Sams(Store):
 
             json_data = json.loads(session.get(category_url).text)
 
-            containers = json_data['mainArea'][5]['contents'][0]['records']
+            containers = json_data['mainArea']
+            products_container = None
 
             for container in containers:
+                if container['name'] == 'ResultsList':
+                    products_container = container
+                    break
+
+            for container in products_container['contents'][0]['records']:
                 attributes = container['attributes']
                 product_url = base_url + attributes['product.seoURL'][0][1:-1]
                 product_urls.append(product_url)

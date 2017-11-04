@@ -52,7 +52,7 @@ class Corona(Store):
             ['C:/9/35/37/', None, 'OpticalDiskPlayer'],
             ['C:/8/11/14/', '&fq=specificationFilter_32'
                             '%3aAspiradoras', 'VacuumCleaner'],
-            ['C:/9/56/57/', None, 'VideoGameConsole'],
+            # ['C:/9/56/57/', None, 'VideoGameConsole'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
              'WaterHeater'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
@@ -86,6 +86,9 @@ class Corona(Store):
                           urllib.parse.quote_plus(category_path),
                           extra_url_args,
                           page)
+                if page >= 10:
+                    raise Exception('Page overflow: ' + category_path)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 

@@ -33,7 +33,7 @@ class CasaMusa(Store):
                 continue
             category_url = 'http://www.casamusa.cl/iluminacion/{}' \
                            '?limit=36'.format(category_path)
-            soup = BeautifulSoup(session.get(category_url).text,
+            soup = BeautifulSoup(session.get(category_url, verify=False).text,
                                  'html.parser')
 
             containers = soup.findAll('div', 'product-block')
@@ -50,7 +50,7 @@ class CasaMusa(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text, 'html.parser')
 
         name = soup.find('h1').text.strip()
         pricing_container = soup.find('div', 'wrap-product-shop')
