@@ -26,6 +26,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .easy import Easy
+from .efe import Efe
 from .eglo import Eglo
 from .electropuntonet import Electropuntonet
 from .enel import Enel
@@ -111,6 +112,12 @@ from .sp_digital import SpDigital
 from .syd import Syd
 from .tecnoglobal import Tecnoglobal
 from .terabyte import Terabyte
+from .tienda_movistar import TiendaMovistar
+from .tienda_toyotomi import TiendaToyotomi
+from .todo_juegos import TodoJuegos
+from .top_pc import TopPc
+from .tottus import Tottus
+from .ttchile import TtChile
 from .vivelo import Vivelo
 from .wei import Wei
 from .winpy import Winpy
