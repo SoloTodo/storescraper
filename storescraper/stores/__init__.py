@@ -126,4 +126,5 @@ from .walmart_brazil import WalmartBrazil
 from .walmart_mexico import WalmartMexico
 from .wei import Wei
 from .winpy import Winpy
+from .wom import Wom
 from .zmart import Zmart
