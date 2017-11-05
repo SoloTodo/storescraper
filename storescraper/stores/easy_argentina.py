@@ -56,25 +56,28 @@ class EasyArgentina(Store):
                 raise Exception('Empty category: ' + url)
 
             for container in containers:
-                product_id = re.search(r'QuickInfoButton_category_(\d+)',
-                                       str(container)).groups()[0]
-                prod_url = 'https://www.easy.com.ar/tienda/ProductDisplay?' \
-                           'productId={}&storeId=10151'.format(product_id)
-                product_urls.append(prod_url)
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        query_string = urllib.parse.urlparse(url).query
-        sku = urllib.parse.parse_qs(query_string)['productId'][0]
+        sku = soup.find('input', {'name': 'catentryCurrent'})['value'].strip()
 
         name = soup.find('div', 'prod-title').text.strip()
-        price_string = soup.find('span', 'price-e').text
-        price = Decimal(price_string.replace('.', '').replace(',', '.'))
+
+        price_container = soup.find('span', 'price-mas')
+
+        if not price_container:
+            price_container = soup.find('span', 'price-e')
+
+        price = Decimal(price_container.text.replace('.', '').replace(
+            ',', '.'))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'Description'})))
