@@ -62,7 +62,8 @@ class Wom(Store):
                         cell_url = 'http://www.wom.cl/equipos/{0}'.format(
                             cell_link['href']
                         )
-                        product_urls.append(cell_url)
+                        if cell_url not in product_urls:
+                            product_urls.append(cell_url)
 
                     page += 1
         return product_urls
@@ -225,7 +226,7 @@ class Wom(Store):
                 products.append(product)
 
                 prepago_container = soup.find('span', 'm-b-40')
-                if prepago_container:
+                if prepago_container and idx == 0:
                     price = Decimal(
                         remove_words(
                             prepago_container.string
