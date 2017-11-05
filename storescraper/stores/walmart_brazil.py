@@ -43,11 +43,12 @@ class WalmartBrazil(Store):
 
             while True:
                 category_url = 'https://www.walmart.com.br/_search?fq={}' \
-                               '&PS=40&PageNumber={}' \
+                               '&PS=40&O=OrderByTopSaleDESC&PageNumber={}' \
                                ''.format(urllib.parse.quote(category_paths,
                                                             safe=''), page)
+                print(category_url)
 
-                if page >= 100:
+                if page >= 200:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
@@ -60,13 +61,19 @@ class WalmartBrazil(Store):
                         raise Exception('Empty category: ' + category_url)
                     break
 
+                skipped = 0
+
                 for container in containers:
                     if container.find('p', 'warning'):
+                        skipped += 1
                         continue
 
                     product_url = 'https://www.walmart.com.br' + \
                                   container.find('a')['href']
                     product_urls.append(product_url)
+
+                if skipped == 40:
+                    break
 
                 page += 1
 
@@ -83,7 +90,7 @@ class WalmartBrazil(Store):
             for tag in soup.findAll('li', 'owl-item')]
 
         pricing_data = demjson.decode(re.search(
-            r'dataLayer = ([\S\s]+?);', page_source).groups()[0])[0]
+            r'dataLayer = ([\S\s]+?);dataLayer', page_source).groups()[0])[0]
 
         products = []
 
