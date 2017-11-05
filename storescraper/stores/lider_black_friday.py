@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class LiderBlackFriday(Store):
@@ -53,8 +53,10 @@ class LiderBlackFriday(Store):
             'Impresoras': 'Printer'
         }
 
+        session = session_with_proxy(extra_args)
+
         categories = json.loads(
-            requests.get(
+            session.get(
                 'http://blackfriday.lider.cl/categories.json').text)
 
         product_to_type = {}
@@ -70,6 +72,14 @@ class LiderBlackFriday(Store):
 
                     for producto in category_values['productos']:
                         product_to_type[producto] = product_type
+
+        product_to_stock = {}
+        stocks = json.loads(session.get('http://blackfriday.lider.cl/'
+                                        'inventario/ff_inv_landing.json').text)
+
+        for stocks in stocks['Inventory']:
+            for sku, sku_stock_info in stocks.items():
+                product_to_stock[sku] = sku_stock_info['stock']
 
         json_products = json.loads(
             requests.get(
@@ -105,6 +115,10 @@ class LiderBlackFriday(Store):
 
             picture_urls = [tag['src'] for tag in soup.findAll('img')]
 
+            stock = product_to_stock['PROD_' + sku]
+            if stock < 0:
+                stock = 0
+
             p = Product(
                 name,
                 cls.__name__,
@@ -112,7 +126,7 @@ class LiderBlackFriday(Store):
                 product_url,
                 url,
                 sku,
-                -1,
+                stock,
                 normal_price,
                 offer_price,
                 'CLP',

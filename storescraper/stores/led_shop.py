@@ -51,7 +51,9 @@ class LedShop(Store):
                 continue
 
             category_url = 'http://www.ledshop.cl/' + category_path
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            print(category_url)
+            soup = BeautifulSoup(session.get(category_url, timeout=10).text,
+                                 'html.parser')
 
             product_containers = soup.findAll('div', 'product_grid_item')
 
@@ -71,7 +73,9 @@ class LedShop(Store):
         session.headers['User-Agent'] = 'curl/7.52.1'
         session.headers['Accept'] = '*/*'
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        print(url)
+
+        soup = BeautifulSoup(session.get(url, timeout=10).text, 'html.parser')
         name = soup.find('h2').text.strip()
         sku = soup.find('input', {'name': 'product_id'})['value'].strip()
 
