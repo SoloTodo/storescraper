@@ -85,9 +85,24 @@ class WalmartBrazil(Store):
         page_source = session.get(url).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
-        picture_urls = [
-            'https:' + tag.find('a')['data-zoom'].replace(' ', '%20')
-            for tag in soup.findAll('li', 'owl-item')]
+
+        picture_urls = []
+
+        for tag in soup.findAll('li', 'owl-item'):
+            picture_path = tag.find('a')['data-zoom'].replace(
+                ' ', '%20').strip()
+
+            if not picture_path:
+                picture_path = tag.find('a')['data-normal'].replace(
+                    ' ', '%20').strip()
+
+            if not picture_path:
+                continue
+            picture_url = 'https:' + picture_path
+            picture_urls.append(picture_url)
+
+        if not picture_urls:
+            picture_urls = None
 
         pricing_data = demjson.decode(re.search(
             r'dataLayer = ([\S\s]+?);dataLayer', page_source).groups()[0])[0]
