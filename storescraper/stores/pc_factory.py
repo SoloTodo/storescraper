@@ -246,7 +246,7 @@ class PcFactory(Store):
                     if not stock:
                         continue
 
-                    product_url = 'https://www.pcfactory.cl/producto={}' \
+                    product_url = 'https://www.pcfactory.cl/producto/{}' \
                                   ''.format(product_entry['id_producto'])
                     product_urls.append(product_url)
 
