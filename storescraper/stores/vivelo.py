@@ -68,6 +68,7 @@ class Vivelo(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
@@ -91,7 +92,7 @@ class Vivelo(Store):
                     stock = -1
 
                 color_id_to_part_number_and_stock[json_match['color']] = {
-                    'part_number': json_match['sku'].strip(),
+                    'part_number': json_match['sku'].strip()[:50],
                     'stock': stock
                 }
 
