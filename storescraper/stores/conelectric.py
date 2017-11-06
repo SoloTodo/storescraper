@@ -20,7 +20,7 @@ class Conelectric(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://conelectric.cl'
+        base_url = 'https://conelectric.cl'
         category_codes = [
             # Ampolletas LED
             ['30', 'Lamp'],
@@ -60,7 +60,7 @@ class Conelectric(Store):
 
                     encoded_path = urllib.parse.quote(urllib.parse.urlparse(
                         product_url).path)
-                    product_url = 'http://conelectric.cl' + encoded_path
+                    product_url = 'https://conelectric.cl' + encoded_path
 
                     product_urls.append(product_url)
 
@@ -89,7 +89,7 @@ class Conelectric(Store):
 
         picture_tag = soup.find(
             'article', {'id': 'ficha-producto'}).find('figure').find('img')
-        picture_urls = ['http://conelectric.cl' +
+        picture_urls = ['https://conelectric.cl' +
                         picture_tag['src'].replace(' ', '%20')]
 
         p = Product(

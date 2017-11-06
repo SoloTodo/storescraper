@@ -182,6 +182,8 @@ class Corona(Store):
                 offer_price = normal_price
             else:
                 offer_price = Decimal(remove_words(offer_price_text))
+                if offer_price > normal_price:
+                    offer_price = normal_price
 
         else:
             offer_price = normal_price
