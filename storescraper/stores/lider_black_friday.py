@@ -99,7 +99,7 @@ class LiderBlackFriday(Store):
             model = json_product['displayName']
             name = u'{} {}'.format(brand, model)
             sku = json_product['sku']
-            
+
             if isinstance(json_product['price'], list):
                 continue
 

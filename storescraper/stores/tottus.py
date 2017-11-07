@@ -56,28 +56,23 @@ class Tottus(Store):
             'name': '/atg/commerce/order/purchase/CartModifierFormHandler.'
                     'items[0].productId'})['value'].strip()
 
-        stock = int(soup.find('input', {'id': 'maxSaleQuantity_{}'.format(
-            sku)})['value'])
-        if stock == 12:
+        if len(soup.findAll('div', 'out-of-stock')) == 2:
+            stock = 0
+        else:
             stock = -1
 
         prices_container = soup.find('div', 'price-selector')
 
-        cmr_price_container = prices_container.find('span', 'red')
+        offer_price_container = prices_container.find('span', 'red')
 
-        if cmr_price_container:
-            offer_price = Decimal(remove_words(
-                cmr_price_container.text
-            ))
-
-            normal_price = Decimal(remove_words(
-                prices_container.find('span', 'nule-price').text
+        if offer_price_container:
+            price = Decimal(remove_words(
+                offer_price_container.text
             ))
         else:
-            normal_price = Decimal(remove_words(
+            price = Decimal(remove_words(
                 prices_container.find('span', 'active-price').find('span').text
             ))
-            offer_price = normal_price
 
         description = html_to_markdown(str(soup.find('div', {'id': 'tab_1'})))
 
@@ -92,8 +87,8 @@ class Tottus(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             description=description,
