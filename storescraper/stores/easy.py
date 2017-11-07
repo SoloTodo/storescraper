@@ -54,7 +54,7 @@ class Easy(Store):
             ['electrohogar/calefones-y-termos/calefont-gas-natural',
              'WaterHeater'],
             ['electrohogar/calefones-y-termos/termos', 'WaterHeater'],
-            ['electrohogar/calefaccion/calefactores-a-leña', 'SpaceHeater'],
+            # ['electrohogar/calefaccion/calefactores-a-leña', 'SpaceHeater'],
             ['electrohogar/calefaccion/estufas-infrarrojas', 'SpaceHeater'],
             ['electrohogar/calefaccion/estufas-a-gas', 'SpaceHeater'],
             # ['electrohogar/calefaccion/estufas-a-parafina', 'SpaceHeater'],
@@ -82,6 +82,8 @@ class Easy(Store):
 
             category_url = 'http://www.easy.cl/ProductListingView?storeId=' \
                            '10151&resultsPerPage=1000&categoryId=' + page_id
+
+            print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             divs = soup.findAll('div', 'product')

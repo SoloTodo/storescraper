@@ -116,7 +116,7 @@ class Peta(Store):
 
         product_container = soup.find('div', 'product-shop')
 
-        if product_container.find('span', 'outofstock'):
+        if product_container.find('p', 'out-of-stock'):
             stock = 0
         else:
             stock = -1
