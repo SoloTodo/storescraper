@@ -54,7 +54,12 @@ class Eglo(Store):
         name = soup.find('div', 'product-info__description').text.strip()
         sku = soup.find('div', 'product-info__title').find(
             'span').text.split(':')[1].strip()
-        stock = int(soup.find('input', {'id': 'producto_cantidad'})['max'])
+
+        stock_container = soup.find('input', {'id': 'producto_cantidad'})
+        if stock_container:
+            stock = int(stock_container['max'])
+        else:
+            stock = 0
 
         price_container = soup.find('span', 'price-box__new').text
 

@@ -80,7 +80,7 @@ class Wei(Store):
             ['1306', 'VideoCard'],  # Tarjetas de video NVIDIA
             ['1209', 'VideoGameConsole'],  # Consolas
             ['635', 'Lamp'],  # FOCOS LED
-            ['630', 'LightTube'],  # TUBOS LED
+            # ['630', 'LightTube'],  # TUBOS LED
             ['627', 'Lamp'],  # AMPOLLETAS LED
             ['628', 'Lamp'],  # DICROICOS LED
             ['636', 'LightProjector'],  # PROYECTORES DE AREA LED

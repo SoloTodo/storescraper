@@ -114,6 +114,9 @@ class Hites(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        if soup.find('div', {'id': 'errorPage'}):
+            return []
+
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']
 
         description = ''

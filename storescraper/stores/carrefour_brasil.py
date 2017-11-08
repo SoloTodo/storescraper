@@ -67,7 +67,7 @@ class CarrefourBrasil(Store):
         if soup.find('strong', 'text-not-product-avisme'):
             stock = 0
 
-        price = soup.find('meta', {'itemprop': 'price'})['content']
+        price = soup.find('meta', {'itemprop': 'lowPrice'})['content']
         normal_price = Decimal(price)
         offer_price = normal_price
 

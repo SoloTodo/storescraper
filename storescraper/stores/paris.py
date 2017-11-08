@@ -43,10 +43,6 @@ class Paris(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'https://www.paris.cl/webapp/wcs/stores/servlet/' \
-                   'AjaxCatalogSearchResultView?sType=SimpleSearch&pageSize=' \
-                   '1000&storeId=10801&categoryId='
-
         category_paths = [
             ['51206207', 'Notebook'],
             ['51325099', 'Notebook'],
@@ -96,7 +92,8 @@ class Paris(Store):
                            'pageSize=1000&storeId=10801&categoryId={}&' \
                            'rnd={}'.format(path, random_component)
             print(category_url)
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(
+                category_url, timeout=30).text, 'html.parser')
 
             product_containers = soup.findAll('td', 'item')
 
@@ -133,7 +130,7 @@ class Paris(Store):
         random_component = random.randint(1, 1000)
         url_for_request = '{}&rnd={}'.format(url, random_component)
 
-        page_source = session.get(url_for_request).text
+        page_source = session.get(url_for_request, timeout=10).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('h1', {'role': 'main'}):
