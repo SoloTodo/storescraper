@@ -130,7 +130,7 @@ class Paris(Store):
         random_component = random.randint(1, 1000)
         url_for_request = '{}&rnd={}'.format(url, random_component)
 
-        page_source = session.get(url_for_request, timeout=10).text
+        page_source = session.get(url_for_request, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('h1', {'role': 'main'}):

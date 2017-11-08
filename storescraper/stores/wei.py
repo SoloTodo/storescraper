@@ -79,11 +79,6 @@ class Wei(Store):
             ['1307', 'VideoCard'],  # Tarjetas de video AMD
             ['1306', 'VideoCard'],  # Tarjetas de video NVIDIA
             ['1209', 'VideoGameConsole'],  # Consolas
-            ['635', 'Lamp'],  # FOCOS LED
-            # ['630', 'LightTube'],  # TUBOS LED
-            ['627', 'Lamp'],  # AMPOLLETAS LED
-            ['628', 'Lamp'],  # DICROICOS LED
-            ['636', 'LightProjector'],  # PROYECTORES DE AREA LED
             ['1228', 'Printer'],  # IMPRESORA TINTA
             ['1227', 'Printer'],  # Impresoras Laser
             ['715', 'Printer'],  # MULTIFUNCIONALES LASER
@@ -92,7 +87,12 @@ class Wei(Store):
             ['1245', 'Monitor'],  # MONITORES LED, LCD, TFT
             ['1248', 'Television'],  # TELEVISORES LCDTV
             ['678', 'Tablet'],  # Tablets
+            # ['635', 'Lamp'],  # FOCOS LED
+            # ['627', 'Lamp'],  # AMPOLLETAS LED
+            # ['628', 'Lamp'],  # DICROICOS LED
+            # ['630', 'LightTube'],  # TUBOS LED
             # ['638', 'LightTube'],  # TUBOS LED
+            # ['636', 'LightProjector'],  # PROYECTORES DE AREA LED
             # ['676', 'Motherboard'],   # AM1
             # ['719', 'Processor'],   # CPU AMD AM4 CON PLACA MADRE Y COOLER
         ]
@@ -112,6 +112,7 @@ class Wei(Store):
 
                 page_url = 'https://www.wei.cl/categoria/{}?page={}' \
                            ''.format(category_path, page)
+                print(page_url)
 
                 soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
 
