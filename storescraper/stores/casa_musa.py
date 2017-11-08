@@ -31,7 +31,7 @@ class CasaMusa(Store):
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-            category_url = 'http://www.casamusa.cl/iluminacion/{}' \
+            category_url = 'https://www.casamusa.cl/iluminacion/{}' \
                            '?limit=36'.format(category_path)
             soup = BeautifulSoup(session.get(category_url, verify=False).text,
                                  'html.parser')
