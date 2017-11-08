@@ -53,6 +53,7 @@ class CarrefourBrasil(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -67,8 +68,11 @@ class CarrefourBrasil(Store):
         if soup.find('strong', 'text-not-product-avisme'):
             stock = 0
 
-        price = soup.find('meta', {'itemprop': 'lowPrice'})['content']
-        normal_price = Decimal(price)
+        price = soup.find('meta', {'itemprop': 'lowPrice'})
+        if not price:
+            price = soup.find('meta', {'itemprop': 'price'})
+
+        normal_price = Decimal(price['content'])
         offer_price = normal_price
 
         sku = soup.find('span', {'itemprop': 'sku'}).text.split('.', 1)[1]

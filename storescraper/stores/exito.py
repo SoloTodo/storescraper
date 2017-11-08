@@ -8,6 +8,9 @@ from storescraper.utils import html_to_markdown
 
 
 class Exito(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -41,6 +44,7 @@ class Exito(Store):
 
         for brand_path in brand_paths:
             category_url = base_url + '/' + brand_path + '?No=0&Nrpp=80'
+            print(category_url)
             driver.get(category_url)
             base_soup = BeautifulSoup(driver.page_source, 'html.parser')
 
@@ -62,6 +66,7 @@ class Exito(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)

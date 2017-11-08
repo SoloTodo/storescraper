@@ -56,7 +56,10 @@ class BestBuyMexico(Store):
             soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
-            product_cells = soup.findAll('li', 'item')
+            product_cells = soup.findAll('div', 'product-line-item-line')
+
+            if not product_cells:
+                product_cells = soup.findAll('li', 'item')
 
             if not product_cells:
                 raise Exception('No products found: {}'.format(category_url))
@@ -69,8 +72,13 @@ class BestBuyMexico(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
+        if soup.find('img', {'src': 'https://mexico.bbystatic.com/images/'
+                                    'lo-sentimos.png'}):
+            return []
 
         name = soup.find('h1').text.strip()
 
