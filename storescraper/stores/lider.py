@@ -145,11 +145,13 @@ class Lider(Store):
 
         pricing_json = json.loads(pricing_data)
 
-        brand = pricing_json['brand']
-        model = pricing_json['name']
-        name = '{} {}'.format(brand, model)
+        if 'brand' in pricing_json and 'name' in pricing_json:
+            name = '{} {}'.format(pricing_json['brand'], pricing_json['name'])
+        else:
+            name = pricing_json['name']
+
         sku = pricing_json['sku']
-        part_number = pricing_json['model']
+        part_number = pricing_json.get('model')
         normal_price = Decimal(pricing_json['offers']['lowPrice'])
         offer_price = normal_price
 
@@ -169,7 +171,6 @@ class Lider(Store):
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         request_body = 'productNumber={}&useImsStores=true&consolidate=true' \
                        ''.format(sku)
-        print(request_body)
         avail_data = session.post(
             'https://www.lider.cl/electrohogar/includes/inventory/'
             'inventoryInformation.jsp', request_body).text
