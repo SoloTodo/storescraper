@@ -2,6 +2,7 @@ import json
 import urllib
 
 import re
+from datetime import datetime
 from decimal import Decimal
 
 from storescraper.product import Product
@@ -256,15 +257,15 @@ class PcFactory(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         session.get(url)
 
         response = session.get(
-            'https://www.pcfactory.cl/public/scripts/dynamic/initData.js',
-            headers={
-                'Referer': url
-            })
+            'https://www.pcfactory.cl/public/scripts/dynamic/initData.js?_={}'
+            ''.format(datetime.now().timestamp()),
+            )
 
         raw_json = re.search(
             r'window.pcFactory.dataGlobal.serverData			=  (.+)',
