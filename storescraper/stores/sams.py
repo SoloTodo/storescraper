@@ -1,6 +1,7 @@
 import json
 
 import re
+from datetime import datetime
 
 from decimal import Decimal
 
@@ -34,7 +35,8 @@ class Sams(Store):
             if local_category != category:
                 continue
 
-            category_url = '{}/sams/browse/{}'.format(base_url, category_path)
+            category_url = '{}/sams/browse/{}?_={}'.format(
+                base_url, category_path, datetime.now().toordinal())
             print(category_url)
 
             json_data = json.loads(session.get(category_url).text)

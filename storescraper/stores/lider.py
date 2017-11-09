@@ -2,6 +2,7 @@ import json
 import urllib
 import xml.etree.ElementTree as ET
 
+import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -140,14 +141,16 @@ class Lider(Store):
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         pricing_data = soup.find('script', {'type': 'application/ld+json'})
-        pricing_json = json.loads(pricing_data.text)
+        pricing_data = re.sub(r'/\*[\S\s]*\*/', '', pricing_data.text)
+
+        pricing_json = json.loads(pricing_data)
 
         brand = pricing_json['brand']
         model = pricing_json['name']
         name = '{} {}'.format(brand, model)
         sku = pricing_json['sku']
         part_number = pricing_json['model']
-        normal_price = Decimal(pricing_json['offers']['price'])
+        normal_price = Decimal(pricing_json['offers']['lowPrice'])
         offer_price = normal_price
 
         panels = [
