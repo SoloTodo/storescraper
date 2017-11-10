@@ -41,7 +41,7 @@ class Tecnoglobal(Store):
             ('bu_familia=20&bu_subfam=21', 'Printer'),  # Inkjet
             ('bu_familia=100&bu_subfam=220', 'VideoCard'),  # Tarjetas de video
             ('bu_familia=100&bu_subfam=180', 'Motherboard'),  # Placas madre
-            ('bu_familia=100&bu_subfam=20', 'Processor'),  # Procesadores
+            # ('bu_familia=100&bu_subfam=20', 'Processor'),  # Procesadores
         ]
 
         product_urls = []
