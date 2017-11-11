@@ -104,7 +104,7 @@ class SodimacArgentina(Store):
             # CMR Price
             price_container = soup.find('p', 'price')
             offer_price = Decimal(remove_words(
-                price_container.text.split('&nbsp;')[0]))
+                price_container.text.split('\xa0')[0]))
 
             # Normal price
 
@@ -114,7 +114,7 @@ class SodimacArgentina(Store):
             for sale_price in sale_price_container:
                 price_label = sale_price.getText()
                 if 'Precio' in price_label:
-                    normal_price = price_label.split('&nbsp;')[1]
+                    normal_price = price_label.split('\xa0')[1]
                     normal_price = Decimal(
                         remove_words(normal_price))
                     break

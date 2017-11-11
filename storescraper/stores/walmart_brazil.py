@@ -68,8 +68,8 @@ class WalmartBrazil(Store):
                         skipped += 1
                         continue
 
-                    product_url = 'https://www.walmart.com.br' + \
-                                  container.find('a')['href']
+                    product_path = container.find('figure').parent['href']
+                    product_url = 'https://www.walmart.com.br' + product_path
                     product_urls.append(product_url)
 
                 if skipped == 40:
