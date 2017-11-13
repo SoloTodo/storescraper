@@ -128,9 +128,15 @@ class BestBuyMexico(Store):
             description = html_to_markdown(
                 str(soup.find('div', 'descriptionContainer')))
 
-            picture_tags = soup.findAll('li', 'thumbnail-image-wrapper')
-            picture_urls = [picture.find('img')['src']
-                            for picture in picture_tags]
+            picture_urls = []
+
+            for tag in soup.findAll('li', 'thumbnail-image-wrapper'):
+                picture_url = tag.find('img')['src']
+                if picture_url:
+                    picture_urls.append(picture_url)
+
+            if not picture_urls:
+                picture_urls = None
 
         p = Product(
             name,

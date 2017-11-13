@@ -40,8 +40,7 @@ class TtChile(Store):
             ['catpro.php?ic=18', 'Monitor'],  # LCD
             ['catpro.php?ic=23', 'Motherboard'],  # MB AMD
             ['catpro.php?ic=24', 'Motherboard'],  # MB Intel
-            ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR
-            ['subpro.php?ic=16&isc=12', 'Ram'],  # RAM DDR3
+            ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR4
             ['subpro.php?ic=16&isc=13', 'Ram'],  # RAM Notebook
             ['subpro.php?ic=10&isc=6', 'StorageDrive'],  # HDD Notebook
             ['subpro.php?ic=10&isc=5', 'StorageDrive'],  # HDD SATA
