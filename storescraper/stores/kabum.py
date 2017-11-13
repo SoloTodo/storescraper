@@ -75,6 +75,14 @@ class Kabum(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).content.decode('latin-1')
 
+        soup = BeautifulSoup(page_source, 'html.parser')
+        redirect_tag = soup.find('meta', {'http-equiv': 'refresh'})
+
+        if redirect_tag:
+            new_url = redirect_tag['content'].split('url=')[1]
+            page_source = session.get(new_url).content.decode('latin-1')
+            soup = BeautifulSoup(page_source, 'html.parser')
+
         pricing_data = json.loads(re.search(
             r'dataLayer = ([\S\s]+?);\s', page_source).groups()[0])[0][
             'productsDetail'][0]
@@ -88,8 +96,6 @@ class Kabum(Store):
             stock = 0
 
         offer_price = Decimal(pricing_data['price'])
-
-        soup = BeautifulSoup(page_source, 'html.parser')
 
         normal_price_container = soup.find('div', 'preco_desconto-cm')
 
