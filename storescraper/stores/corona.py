@@ -175,7 +175,7 @@ class Corona(Store):
                 normal_price_text.split('$')[1].split(',')[0]))
 
             offer_price_text = corona_price_container.string.split(
-                '$')[-1].split('!')[0]
+                '$')[-1].split('Con')[0]
 
             if 'x' in offer_price_text or 'X' in offer_price_text or \
                     offer_price_text == '-':

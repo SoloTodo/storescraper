@@ -41,8 +41,8 @@ class WalmartMexico(Store):
                            '&start=0&raw=1000' \
                            ''.format(base_url, category_path)
 
-            data = json.loads(session.get(category_url).content.decode(
-                'latin-1'))
+            data = json.loads(session.get(
+                category_url, verify=False).content.decode('latin-1'))
 
             if not data:
                 raise Exception('Empty URL: ' + category_url)
@@ -62,7 +62,8 @@ class WalmartMexico(Store):
         data_url = 'https://www.walmart.com.mx/webcontrols/' \
                    'getProductDetailSolr.ashx?upc=' + sku
 
-        product_data = session.get(data_url).content.decode('latin-1')
+        product_data = session.get(
+            data_url, verify=False).content.decode('latin-1')
         product_json = json.loads(product_data)
 
         name = product_json['DisplayName']

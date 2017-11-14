@@ -39,7 +39,8 @@ class Sams(Store):
                 base_url, category_path, datetime.now().toordinal())
             print(category_url)
 
-            json_data = json.loads(session.get(category_url).text)
+            json_data = json.loads(session.get(category_url,
+                                               verify=False).text)
 
             containers = json_data['mainArea']
             products_container = None
@@ -66,7 +67,7 @@ class Sams(Store):
                    'ProductCatalogActor/getSkuSummaryDetails?' \
                    'storeId=0000009999&skuId=' + product_id
 
-        pricing_json = json.loads(session.get(json_url).text)
+        pricing_json = json.loads(session.get(json_url, verify=False).text)
 
         price = Decimal(pricing_json['specialPrice'])
 

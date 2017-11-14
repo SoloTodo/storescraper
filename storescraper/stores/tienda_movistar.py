@@ -75,7 +75,7 @@ class TiendaMovistar(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         price_container = soup.find('div', 'price-box').find('span', 'price')
-        price = Decimal(remove_words(price_container.text))
+        price = Decimal(remove_words(price_container.text.split('\xa0')[-1]))
 
         base_name = soup.find('h1', {'itemprop': 'name'}).text.strip()
 
@@ -85,34 +85,60 @@ class TiendaMovistar(Store):
                 str(soup.find('div', {'id': panel_id}))) + '\n\n'
 
         color_data = re.search(r'Product.Config\((.+?)\)',
-                               page_source).groups()[0]
-        color_data = json.loads(color_data)
-
-        session.headers['x-requested-with'] = 'XMLHttpRequest'
-
+                               page_source)
         products = []
 
-        for option in color_data['attributes']['92']['options']:
-            color_name = option['label'].strip()
-            name = u'{} {}'.format(base_name, color_name)
+        if color_data:
+            color_data = color_data.groups()[0]
+            color_data = json.loads(color_data)
 
-            product_url = '{}?color={}'.format(url, urllib.parse.quote(
-                color_name))
+            session.headers['x-requested-with'] = 'XMLHttpRequest'
 
-            sku = option['products'][0]
+            for option in color_data['attributes']['92']['options']:
+                color_name = option['label'].strip()
+                name = u'{} {}'.format(base_name, color_name)
 
-            pictures_ajax_url = 'https://tienda.movistar.cl/amconf/ajax/' \
-                                'index/id/{}/'.format(sku)
-            color_soup = BeautifulSoup(session.post(pictures_ajax_url).text,
-                                       'html.parser')
+                product_url = '{}?color={}'.format(url, urllib.parse.quote(
+                    color_name))
 
-            picture_urls = [tag['href'] for tag in color_soup.findAll('a')]
+                sku = option['products'][0]
+
+                pictures_ajax_url = 'https://tienda.movistar.cl/amconf/ajax/' \
+                                    'index/id/{}/'.format(sku)
+                color_soup = BeautifulSoup(
+                    session.post(pictures_ajax_url).text, 'html.parser')
+
+                picture_urls = [tag['href'] for tag in color_soup.findAll('a')]
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    product_url,
+                    url,
+                    sku,
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    description=description,
+                    picture_urls=picture_urls
+                )
+
+                products.append(p)
+        else:
+            sku = soup.find('meta', {'itemprop': 'productID'})[
+                'content'].split(':')[1]
+
+            picture_urls = [tag['href'] for tag in
+                            soup.findAll('a', 'cloud-zoom-gallery')]
 
             p = Product(
-                name,
+                base_name,
                 cls.__name__,
                 category,
-                product_url,
+                url,
                 url,
                 sku,
                 -1,
