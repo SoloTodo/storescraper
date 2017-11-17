@@ -180,7 +180,9 @@ class Paris(Store):
         description = html_to_markdown(str(soup.find('div', 'description')))
 
         image_id = re.search(
-            r"var productImagePartNumber = '(.+)';", page_source).groups()[0]
+            r"var field3_DL = '(.+)';", page_source).groups()[0]
+
+        print(image_id)
 
         pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
                                 'Cencosud/{}?req=set,json'.format(image_id)
