@@ -164,7 +164,8 @@ class Wei(Store):
 
         picture_urls = []
         for picture_container in soup.findAll('div', 'slider-item'):
-            picture_url = picture_container.find('img')['src']
+            picture_url = picture_container.find('img')['src'].replace(
+                ' ', '%20')
             picture_urls.append(picture_url)
 
         p = Product(

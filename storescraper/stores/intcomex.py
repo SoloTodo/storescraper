@@ -104,7 +104,7 @@ class Intcomex(Store):
 
             if tags:
                 picture_urls = []
-                for tag in picture_containers:
+                for tag in tags:
                     picture_url = tag['rel'].replace(' ', '%20')
                     if 'http' not in picture_url:
                         picture_url = 'http://store.intcomex.com' + picture_url
