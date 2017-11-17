@@ -138,6 +138,9 @@ class Paris(Store):
                        'Error%5FGenerico%5FB?$full%2Djpeg$'}):
             return []
 
+        if soup.find('h1', {'role': 'main'}):
+            return []
+
         name = soup.find('h1', {'id': 'catalog_link'})
 
         if not name:
