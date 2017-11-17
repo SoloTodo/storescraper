@@ -62,7 +62,6 @@ class Wei(Store):
             ['1133', 'Motherboard'],  # 2011
             ['730', 'Motherboard'],  # PLACAS GAMER
             ['1162', 'CpuCooler'],  # Ventilacion
-            ['673', 'Processor'],  # AM1
             ['602', 'Processor'],  # FM2
             ['674', 'Processor'],  # FM2+
             ['1119', 'Processor'],  # AM3+
@@ -87,6 +86,7 @@ class Wei(Store):
             ['1245', 'Monitor'],  # MONITORES LED, LCD, TFT
             ['1248', 'Television'],  # TELEVISORES LCDTV
             ['678', 'Tablet'],  # Tablets
+            # ['673', 'Processor'],  # AM1
             # ['635', 'Lamp'],  # FOCOS LED
             # ['627', 'Lamp'],  # AMPOLLETAS LED
             # ['628', 'Lamp'],  # DICROICOS LED

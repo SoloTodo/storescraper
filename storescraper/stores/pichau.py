@@ -40,6 +40,7 @@ class Pichau(Store):
             while True:
                 category_url = 'https://www.pichau.com.br/{}?limit=48&p={}' \
                                ''.format(category_path, page)
+                print(category_url)
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
@@ -50,10 +51,13 @@ class Pichau(Store):
                 containers = soup.findAll('li', 'item')
 
                 for container in containers:
+                    # product_path = container.find('a')['href'].split('/')[-1]
+                    # product_url = 'https://www.pichau.com.br/' + product_path
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
 
                 if not soup.find('a', 'bt-next'):
+                    print('Breaking')
                     break
 
                 page += 1
@@ -65,8 +69,19 @@ class Pichau(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        pricing_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)[0]
+        json_tags = soup.findAll(
+            'script', {'type': 'application/ld+json'})
+
+        if json_tags:
+            product_url = url
+        else:
+            product_path = url.split('/')[-1]
+            product_url = 'https://www.pichau.com.br/' + product_path
+            soup = BeautifulSoup(session.get(product_url).text, 'html.parser')
+            json_tags = soup.findAll(
+                'script', {'type': 'application/ld+json'})
+
+        pricing_data = json.loads(json_tags[-1].text)[0]
 
         name = pricing_data['name']
         sku = pricing_data['sku']
@@ -104,7 +119,7 @@ class Pichau(Store):
             name,
             cls.__name__,
             category,
-            url,
+            product_url,
             url,
             sku,
             stock,

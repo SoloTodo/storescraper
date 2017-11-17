@@ -133,7 +133,9 @@ class Paris(Store):
         page_source = session.get(url_for_request, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        if soup.find('h1', {'role': 'main'}):
+        if soup.find('img', {
+                'src': 'https://paris.scene7.com/is/image/Cencosud/'
+                       'Error%5FGenerico%5FB?$full%2Djpeg$'}):
             return []
 
         name = soup.find('h1', {'id': 'catalog_link'})

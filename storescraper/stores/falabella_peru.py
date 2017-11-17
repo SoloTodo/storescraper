@@ -9,8 +9,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class FalabellaPeru(Store):
@@ -147,14 +146,14 @@ class FalabellaPeru(Store):
             if lookup_field not in prices[3]:
                 lookup_field = 'formattedLowestPrice'
 
-            normal_price = Decimal(remove_words(prices[3][lookup_field]))
+            normal_price = Decimal(prices[3][lookup_field].replace(',', ''))
 
             if 1 in prices:
                 lookup_field = 'originalPrice'
                 if lookup_field not in prices[1]:
                     lookup_field = 'formattedLowestPrice'
                 offer_price = Decimal(
-                    remove_words(prices[1][lookup_field]))
+                    prices[1][lookup_field].replace(',', ''))
             else:
                 offer_price = normal_price
 

@@ -37,14 +37,14 @@ class Bip(Store):
         url_buscar_productos = 'index_2.php?modulo=busca&'
 
         url_extensions = [
-            # Netbooks
+            # Notebooks
             ['categoria=167&categoria_papa=166', 'Notebook'],
             # Tarjetas de video
             ['categoria=118&categoria_papa=97', 'VideoCard'],
             # Proces
             ['categoria=111', 'Processor'],
             # LCD
-            ['categoria=19', 'Monitor'],
+            ['categoria=761&categoria_papa=759', 'Monitor'],
             # Placas madre
             ['categoria=108', 'Motherboard'],
             # RAM PC
@@ -70,7 +70,7 @@ class Bip(Store):
             # Discos externos
             ['categoria=230&categoria_papa=123', 'ExternalStorageDrive'],
             # USB Flash
-            ['categoria=145&categoria_papa=123', 'UsbFlashDrive'],
+            ['categoria=528&categoria_papa=123', 'UsbFlashDrive'],
             # Memory card
             ['categoria=82&categoria_papa=24', 'MemoryCard'],
             # Mouse

@@ -55,8 +55,9 @@ class Corona(Store):
             # ['C:/9/56/57/', None, 'VideoGameConsole'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
              'WaterHeater'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
-                            'Calefactores+y+Termoventiladores', 'SpaceHeater'],
+            # ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
+            #                 'Calefactores+y+Termoventiladores',
+            # 'SpaceHeater'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
              'SpaceHeater'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Le%c3%b1a',
@@ -96,8 +97,8 @@ class Corona(Store):
 
                 if not product_blocks:
                     if page == 1:
-                        raise Exception('Empty category: {} - {}'.format(
-                            category, category_path))
+                        raise Exception('Empty category: {} - {} {}'.format(
+                            category, category_path, extra_url_args))
                     else:
                         break
 

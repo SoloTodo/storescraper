@@ -95,17 +95,20 @@ class Intcomex(Store):
                 description += html_to_markdown(str(panel)) + '\n\n'
 
         picture_containers = soup.find(
-            'div', 'swiper-wrapper').findAll('img', 'img-thumb')
+            'div', 'swiper-wrapper')
+
+        picture_urls = None
 
         if picture_containers:
-            picture_urls = []
-            for tag in picture_containers:
-                picture_url = tag['rel'].replace(' ', '%20')
-                if 'http' not in picture_url:
-                    picture_url = 'http://store.intcomex.com' + picture_url
-                picture_urls.append(picture_url)
-        else:
-            picture_urls = None
+            tags = picture_containers.findAll('img', 'img-thumb')
+
+            if tags:
+                picture_urls = []
+                for tag in picture_containers:
+                    picture_url = tag['rel'].replace(' ', '%20')
+                    if 'http' not in picture_url:
+                        picture_url = 'http://store.intcomex.com' + picture_url
+                    picture_urls.append(picture_url)
 
         p = Product(
             name,
