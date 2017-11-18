@@ -42,11 +42,11 @@ class Bip(Store):
             # Tarjetas de video
             ['categoria=118&categoria_papa=97', 'VideoCard'],
             # Proces
-            ['categoria=111', 'Processor'],
+            ['categoria=784', 'Processor'],
             # LCD
             ['categoria=761&categoria_papa=759', 'Monitor'],
             # Placas madre
-            ['categoria=108', 'Motherboard'],
+            ['categoria=785', 'Motherboard'],
             # RAM PC
             ['categoria=132', 'Ram'],
             # RAM Notebook

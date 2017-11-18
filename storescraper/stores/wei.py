@@ -142,8 +142,12 @@ class Wei(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         pricing_str = re.search('retailrocket.products.post\((.+)\);',
-                                page_source).groups()[0]
-        pricing_json = json.loads(pricing_str)
+                                page_source)
+
+        if not pricing_str:
+            return []
+
+        pricing_json = json.loads(pricing_str.groups()[0])
 
         name = html.unescape(pricing_json['name'])
 

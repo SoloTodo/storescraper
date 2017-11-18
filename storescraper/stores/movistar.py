@@ -128,7 +128,7 @@ class Movistar(Store):
             name = name.replace('&nbsp;', '')
 
             price_container = plan_container.find(
-                'p', 'precio-mensual').contents[1]
+                'p', 'precio-mensual-verde').contents[1]
             price = Decimal(remove_words(price_container))
 
             product = Product(
@@ -163,6 +163,7 @@ class Movistar(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
