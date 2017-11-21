@@ -132,8 +132,8 @@ class FalabellaPeru(Store):
             picture_entries = [picture_entries]
 
         for picture_entry in picture_entries:
-            picture_url = '{}{}?scl=1.0'.format(media_asset_url,
-                                                picture_entry['i']['n'])
+            picture_url = 'https:{}{}?scl=1.0'.format(
+                media_asset_url, picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
         products = []
