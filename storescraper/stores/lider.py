@@ -152,8 +152,16 @@ class Lider(Store):
 
         sku = pricing_json['sku']
         part_number = pricing_json.get('model')
-        normal_price = Decimal(pricing_json['offers']['lowPrice'])
-        offer_price = normal_price
+
+        best_price_container = soup.find('p', 'js-price-product')
+
+        if best_price_container.find('i', 'ico-lidercard_sm'):
+            offer_price = Decimal(best_price_container['content'])
+            normal_price = Decimal(
+                soup.find('span', 'js-price-internet')['content'])
+        else:
+            offer_price = Decimal(best_price_container['content'])
+            normal_price = offer_price
 
         panels = [
             soup.find('div', {'id': 'longDescription'}),
