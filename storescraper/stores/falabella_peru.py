@@ -25,7 +25,10 @@ class FalabellaPeru(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_paths = [
-            ['cat40712/Laptops', 'Notebook'],
+            ['cat1590466/Laptops', 'Notebook'],
+            ['cat3150461/Laptops-2-en-1', 'Notebook'],
+            ['cat1590470/McBook', 'Notebook'],
+            ['cat1590476/Laptops-Gamers', 'Notebook'],
             ['cat40480/Disco-Duro-y-USB', 'ExternalStorageDrive'],
         ]
 
@@ -38,13 +41,13 @@ class FalabellaPeru(Store):
             'Content-Type': 'application/json',
             'DNT': '1',
             'Host': 'www.falabella.com.pe',
-            'Referer': 'http://www.falabella.com.pe/falabella-pe/',
+            'Referer': 'https://www.falabella.com.pe/falabella-pe/',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
                           '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
                           'Safari/537.36'
         })
-        session.get('http://www.falabella.com.pe/falabella-pe/')
-        session.get('http://www.falabella.com.pe/falabella-pe/'
+        session.get('https://www.falabella.com.pe/falabella-pe/')
+        session.get('https://www.falabella.com.pe/falabella-pe/'
                     'includes/ajaxFirstNameAndCartQuantity.jsp')
         discovered_urls = []
 
@@ -206,7 +209,7 @@ class FalabellaPeru(Store):
                 if error_count > 10:
                     raise Exception('Error threshold exceeded: ' + url_path)
                 query_args['currentPage'] = page
-                pag_url = 'http://www.falabella.com.pe/rest/model/' \
+                pag_url = 'https://www.falabella.com.pe/rest/model/' \
                           'falabella/rest/browse/BrowseActor/' \
                           'get-product-record-list?{}'.format(
                             urllib.parse.quote(json.dumps(
@@ -223,7 +226,7 @@ class FalabellaPeru(Store):
             for product_entry in res['state']['resultList']:
                 product_id = product_entry['productId'].strip()
                 product_url = \
-                    'http://www.falabella.com.pe/falabella-pe/product/{}/' \
+                    'https://www.falabella.com.pe/falabella-pe/product/{}/' \
                     ''.format(product_id)
                 discovered_urls.append(product_url)
 
