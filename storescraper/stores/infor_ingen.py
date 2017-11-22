@@ -55,21 +55,38 @@ class InforIngen(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://www.infor-ingen.com/tienda/index.php?' \
-                          'route=product/category&limit=100&path=' + \
-                          category_path
+            page = 1
 
-            soup = BeautifulSoup(session.get(url_webpage).text, 'html.parser')
+            while True:
+                if page >= 5:
+                    raise Exception('Page overflow: ' + category_path)
 
-            link_containers = soup.findAll('div', 'product-layout')
+                url_webpage = 'https://www.infor-ingen.com/tienda/index.php?' \
+                              'route=product/category&limit=100&path={}' \
+                              '&page={}'.format(category_path, page)
 
-            for link_container in link_containers:
-                original_product_url = link_container.find('a')['href']
-                product_id = re.search(r'product_id=(\d+)',
-                                       original_product_url).groups()[0]
-                product_url = 'https://www.infor-ingen.com/tienda/index.php?' \
-                              'route=product/product&product_id=' + product_id
-                product_urls.append(product_url)
+                print(url_webpage)
+
+                soup = BeautifulSoup(session.get(url_webpage).text,
+                                     'html.parser')
+
+                link_containers = soup.findAll('div', 'product-layout')
+
+                if not link_containers:
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_path)
+                    break
+
+                for link_container in link_containers:
+                    original_product_url = link_container.find('a')['href']
+                    product_id = re.search(r'product_id=(\d+)',
+                                           original_product_url).groups()[0]
+                    product_url = 'https://www.infor-ingen.com/tienda/' \
+                                  'index.php?route=product/product&' \
+                                  'product_id=' + product_id
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
