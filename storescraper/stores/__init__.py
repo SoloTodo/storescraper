@@ -62,6 +62,7 @@ from .la_polar import LaPolar
 from .led_light_chile import LedLightChile
 from .led_shop import LedShop
 from .led_studio import LedStudio
+from .lg_chile import LgChile
 from .lider import Lider
 from .lider_black_friday import LiderBlackFriday
 from .linio_chile import LinioChile
