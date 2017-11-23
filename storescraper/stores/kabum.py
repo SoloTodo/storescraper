@@ -84,7 +84,7 @@ class Kabum(Store):
             page_source = session.get(new_url).content.decode('latin-1')
             soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('p', {'itemprop': 'description'}).text.strip()
+        name = soup.find('p', {'itemprop': 'description'}).text.strip()[:255]
         sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
         availability = soup.find('link', {'itemprop': 'availability'})['href']
 
