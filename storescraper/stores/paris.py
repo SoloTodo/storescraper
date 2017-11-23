@@ -1,6 +1,7 @@
 import json
 import random
 import re
+import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -128,7 +129,12 @@ class Paris(Store):
         session = session_with_proxy(extra_args)
 
         random_component = random.randint(1, 1000)
-        url_for_request = '{}&rnd={}'.format(url, random_component)
+
+        parsed_url = urllib.parse.urlparse(url)
+        qs = urllib.parse.parse_qs(parsed_url.query)
+        qs['rnd'] = random_component
+        new_parsed_url = parsed_url._replace(query=urllib.parse.urlencode(qs))
+        url_for_request = urllib.parse.urlunparse(new_parsed_url)
 
         page_source = session.get(url_for_request, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -136,14 +142,17 @@ class Paris(Store):
         if soup.find('img', {
                 'src': 'https://paris.scene7.com/is/image/Cencosud/'
                        'Error%5FGenerico%5FB?$full%2Djpeg$'}):
+            print('Error generico found (#1)')
             return []
 
         if soup.find('h1', {'role': 'main'}):
+            print('Error generico found (#2)')
             return []
 
         name = soup.find('h1', {'id': 'catalog_link'})
 
         if not name:
+            print('No name found')
             return []
 
         name = name.text.strip()
@@ -183,12 +192,16 @@ class Paris(Store):
         description = html_to_markdown(str(soup.find('div', 'description')))
 
         image_id = re.search(
-            r"var field3_DL = '(.+)';", page_source).groups()[0]
+            r"var field3_DL = '(.*)';", page_source).groups()[0]
+
+        if not image_id:
+            image_id = re.search(
+                r"var partNumber_DL = '(.+)';", page_source).groups()[0]
 
         print(image_id)
-
         pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
                                 'Cencosud/{}?req=set,json'.format(image_id)
+
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
                       session.get(pictures_resource_url).text).groups()[0])

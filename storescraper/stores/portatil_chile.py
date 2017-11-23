@@ -38,7 +38,8 @@ class PortatilChile(Store):
                 print(category_path, page)
                 category_url = url_base.format(category_path, page)
 
-                json_data = json.loads(session.get(category_url).text)
+                json_data = json.loads(session.get(category_url,
+                                                   verify=False).text)
                 soup = BeautifulSoup(json_data['productList'], 'html.parser')
 
                 containers = soup.findAll('div', 'item')
@@ -59,7 +60,8 @@ class PortatilChile(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text,
+                             'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('input', {'name': 'id_product'})['value'].strip()
