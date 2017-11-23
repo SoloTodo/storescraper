@@ -95,7 +95,13 @@ class Zmart(Store):
         if 'PREVENTA' in order_type_container.text:
             stock = 0
 
-        price_string = soup.find('div', {'id': 'PriceProduct'}).contents[2]
+        price_string = soup.find('div', {'id': 'PriceProduct'})
+
+        if not price_string:
+            return []
+
+        price_string = price_string.contents[2]
+
         price = Decimal(remove_words(price_string))
 
         description = html_to_markdown(str(soup.find('div', 'tab')),

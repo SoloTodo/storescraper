@@ -79,6 +79,9 @@ class RipleyPeru(Store):
         product_json = json.loads(product_data.groups()[0])
         specs_json = product_json['product']['product']
 
+        if 'name' not in specs_json:
+            return []
+
         sku = specs_json['partNumber']
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0

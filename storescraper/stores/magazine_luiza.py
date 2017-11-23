@@ -59,7 +59,12 @@ class MagazineLuiza(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.url != url:
+            return []
+
+        page_source = response.text
 
         pricing_data = re.search('digitalData = ([\S\s]+?); </script',
                                  page_source).groups()[0]
