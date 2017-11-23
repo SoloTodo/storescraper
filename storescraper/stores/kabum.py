@@ -80,22 +80,21 @@ class Kabum(Store):
 
         if redirect_tag:
             new_url = redirect_tag['content'].split('url=')[1]
+            print('Redirect to: {}'.format(new_url))
             page_source = session.get(new_url).content.decode('latin-1')
             soup = BeautifulSoup(page_source, 'html.parser')
 
-        pricing_data = json.loads(re.search(
-            r'dataLayer = ([\S\s]+?);\s', page_source).groups()[0])[0][
-            'productsDetail'][0]
+        name = soup.find('p', {'itemprop': 'description'}).text.strip()
+        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        availability = soup.find('link', {'itemprop': 'availability'})['href']
 
-        name = pricing_data['name'].strip()
-        sku = pricing_data['id'].strip()
-
-        if pricing_data['available']:
+        if availability == 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
 
-        offer_price = Decimal(pricing_data['price'])
+        offer_price = Decimal(
+            soup.find('meta', {'itemprop': 'price'})['content'])
 
         normal_price_container = soup.find('div', 'preco_desconto-cm')
 

@@ -28,7 +28,7 @@ class Exito(Store):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
-        base_url = 'http://www.exito.com'
+        base_url = 'https://www.exito.com'
 
         brand_paths = [
             'KINGSTON/_/N-1z13381',
@@ -40,6 +40,7 @@ class Exito(Store):
 
         product_urls = []
 
+        print(base_url)
         driver.get(base_url)
 
         for brand_path in brand_paths:
