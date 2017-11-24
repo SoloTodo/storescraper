@@ -48,6 +48,7 @@ class Eglo(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -61,9 +62,15 @@ class Eglo(Store):
         else:
             stock = 0
 
-        price_container = soup.find('span', 'price-box__new').text
+        price_container = soup.find('span', 'price-box__new')
 
-        price = Decimal(remove_words(price_container))
+        old_price_container = price_container.find('s')
+
+        if old_price_container:
+            old_price = Decimal(remove_words(old_price_container.text))
+            price = (old_price * Decimal('0.9')).quantize(0)
+        else:
+            price = Decimal(remove_words(price_container.text))
 
         description = html_to_markdown(str(soup.find('div', 'tab-content')),
                                        'http://www.eglo.cl')

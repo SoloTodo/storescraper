@@ -86,12 +86,13 @@ class Kabum(Store):
 
         name = soup.find('p', {'itemprop': 'description'}).text.strip()[:255]
         sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
-        availability = soup.find('link', {'itemprop': 'availability'})['href']
 
-        if availability == 'http://schema.org/InStock':
-            stock = -1
-        else:
+        availability = soup.find('link', {'itemprop': 'availability'})
+
+        if availability and availability['href'] != 'http://schema.org/InStock':
             stock = 0
+        else:
+            stock = -1
 
         offer_price = Decimal(
             soup.find('meta', {'itemprop': 'price'})['content'])

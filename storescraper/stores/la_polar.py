@@ -43,7 +43,7 @@ class LaPolar(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         extensions = [
-            ['computacion/notebooks/notebooks2', 'Notebook'],
+            ['computacion/notebooks/ver_todo11', 'Notebook'],
             ['electronica/tv_video/todos_los_led', 'Television'],
             ['computacion/tablets/tablets2', 'Tablet'],
             ['electrohogar/refrigeracion/todos_los_refrigeradores',
@@ -57,7 +57,7 @@ class LaPolar(Store):
              'WashingMachine'],
             ['electrohogar/lavado_secado/secadoras',
              'WashingMachine'],
-            ['electronica/celulares/todos_los_celulares',
+            ['electronica/celulares/smartphones',
              'Cell'],
             ['electronica/camaras_videocamaras/camaras',
              'Camera'],
@@ -73,7 +73,7 @@ class LaPolar(Store):
              'UsbFlashDrive'],
             ['electronica/camaras_videocamaras/accesorios',
              'MemoryCard'],
-            ['computacion/all_in_one/all_in_one2', 'AllInOne'],
+            # ['computacion/all_in_one/all_in_one2', 'AllInOne'],
             ['electrohogar/ventilacion/aire_acondicionado_enfriadores',
              'AirConditioner'],
             ['electrohogar/calefaccion/calefont2', 'WaterHeater'],
