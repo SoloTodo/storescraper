@@ -113,8 +113,8 @@ class Pontofrio(Store):
         description = html_to_markdown(
             str(soup.find('div', 'detalhesProduto')))
 
-        picture_urls = [tag.find('img')['src'].replace('\xa0', '%20') for tag in
-                        soup.findAll('a', 'jqzoom')]
+        picture_urls = [tag.find('img')['src'].replace('\xa0', '%20')
+                        for tag in soup.findAll('a', 'jqzoom')]
 
         p = Product(
             name,

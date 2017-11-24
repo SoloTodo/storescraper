@@ -89,13 +89,11 @@ class Kabum(Store):
 
         availability = soup.find('link', {'itemprop': 'availability'})
 
-        if availability and availability['href'] != 'http://schema.org/InStock':
+        if availability and availability['href'] != \
+                'http://schema.org/InStock':
             stock = 0
         else:
             stock = -1
-
-        offer_price = Decimal(
-            soup.find('meta', {'itemprop': 'price'})['content'])
 
         normal_price_container = soup.find('div', 'preco_desconto-cm')
 
@@ -103,10 +101,16 @@ class Kabum(Store):
             normal_price = Decimal(
                 normal_price_container.text.replace(
                     'R$', '').replace('.', '').replace(',', '.'))
+
+            offer_price = Decimal(
+                soup.find('span', 'preco_desconto_avista-cm').text.replace(
+                    'R$', '').replace('.', '').replace(',', '.'))
         else:
             normal_price = Decimal(
                 soup.find('div', 'preco_normal').text.replace(
                     'R$', '').replace('.', '').replace(',', '.'))
+            offer_price = Decimal(soup.find(
+                'meta', {'itemprop': 'price'})['content'])
 
         description = html_to_markdown(str(soup.find('div', 'content_tab')))
 
