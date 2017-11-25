@@ -101,8 +101,8 @@ class ExtraBrasil(Store):
         description = html_to_markdown(
             str(soup.find('div', 'detalhesProduto')))
 
-        picture_urls = [tag['href'].replace(' ', '%20') for tag in
-                        soup.findAll('a', {'data-id': 'linkThumb'})
+        picture_urls = [tag['href'].replace(' ', '%20').replace('\xa0', '')
+                        for tag in soup.findAll('a', {'data-id': 'linkThumb'})
                         if 'href' in tag.attrs]
 
         soup = BeautifulSoup(page_source, 'html.parser')

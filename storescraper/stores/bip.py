@@ -28,7 +28,8 @@ class Bip(Store):
             'UsbFlashDrive',
             'MemoryCard',
             'Television',
-            'Mouse'
+            'Mouse',
+            'Printer',
         ]
 
     @classmethod
@@ -75,6 +76,8 @@ class Bip(Store):
             ['categoria=82&categoria_papa=24', 'MemoryCard'],
             # Mouse
             ['categoria=20&categoria_papa=185', 'Mouse'],
+            # Impresora
+            ['categoria=769&categoria_papa=768', 'Printer'],
         ]
 
         session = session_with_proxy(extra_args)

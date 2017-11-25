@@ -104,7 +104,7 @@ class CasasBahia(Store):
         description = html_to_markdown(
             str(soup.find('div', 'detalhesProduto')))
 
-        picture_urls = [tag['href'] for tag in
+        picture_urls = [tag['href'].replace('\xa0', '') for tag in
                         soup.findAll('a', {'data-id': 'linkThumb'})
                         if 'href' in tag.attrs]
 

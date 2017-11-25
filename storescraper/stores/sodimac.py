@@ -114,6 +114,8 @@ class Sodimac(Store):
 
             if 'CMR' in pricing_json:
                 offer_price = Decimal(pricing_json['CMR'])
+                if offer_price > normal_price:
+                    offer_price = normal_price
             else:
                 offer_price = normal_price
 
