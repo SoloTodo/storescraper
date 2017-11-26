@@ -73,32 +73,6 @@ class Claro(Store):
                               'detalle.html?id=' + product_id
                 product_urls.append(product_url)
 
-            # Tienda Claro
-
-            page = 1
-
-            while True:
-                category_url = 'http://tienda.clarochile.cl/?limit=36&p=' + \
-                               str(page)
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
-
-                done = False
-
-                for container in soup.findAll('div', 'item'):
-                    product_url = container.find('a')['href']
-
-                    if product_url in product_urls:
-                        done = True
-                        break
-
-                    product_urls.append(product_url)
-
-                if done:
-                    break
-
-                page += 1
-
         return product_urls
 
     @classmethod
@@ -125,9 +99,6 @@ class Claro(Store):
         elif 'equipos.clarochile.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
-        elif 'tienda.clarochile.cl' in url:
-            # Equipo prepago
-            products.append(cls._celular_prepago(url, extra_args))
         else:
             raise Exception('Invalid URL: ' + url)
         return products
@@ -279,35 +250,3 @@ class Claro(Store):
             color_index += 1
 
         return products
-
-    @classmethod
-    def _celular_prepago(cls, url, extra_args):
-        session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h2').text.strip()
-        sku = soup.find('meta', {'itemprop': 'sku'})['content']
-
-        price = Decimal(remove_words(soup.find('span', 'price').text))
-
-        picture_urls = [tag['href'] for tag in soup.findAll('a', 'cloud-zoom')]
-        description = html_to_markdown(str(soup.find('div', 'tabs-content')))
-
-        product = Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            sku,
-            -1,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            cell_plan_name='Claro Prepago',
-            description=description,
-            picture_urls=picture_urls
-        )
-
-        return product
