@@ -131,10 +131,12 @@ class Paris(Store):
         random_component = random.randint(1, 1000)
 
         parsed_url = urllib.parse.urlparse(url)
-        qs = urllib.parse.parse_qs(parsed_url.query)
+        qs = dict(urllib.parse.parse_qsl(parsed_url.query))
         qs['rnd'] = random_component
         new_parsed_url = parsed_url._replace(query=urllib.parse.urlencode(qs))
         url_for_request = urllib.parse.urlunparse(new_parsed_url)
+
+        print(url_for_request)
 
         page_source = session.get(url_for_request, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
