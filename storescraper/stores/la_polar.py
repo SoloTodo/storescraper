@@ -202,7 +202,8 @@ class LaPolar(Store):
             for sku, sku_pricing in pricing_json['products'].items():
                 product_url = 'https://www.lapolar.cl/internet/catalogo/' \
                               'detalles/busqueda/' + sku
-                name = '{} - {}'.format(sku_pricing['name'], vendor_and_model)
+                name = '{} - {}'.format(sku_pricing['name'].strip(),
+                                        vendor_and_model.strip())
                 if sku_pricing['isAvailable']:
                     stock = -1
                 else:

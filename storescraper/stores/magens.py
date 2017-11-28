@@ -49,6 +49,7 @@ class Magens(Store):
             ['Notebook', 'Notebook'],
             ['Tablet', 'Tablet'],
             ['Pantalla', 'Monitor'],
+            ['Monitor', 'Monitor'],
             ['Televisores', 'Television'],
             # ['Impresora%20Láser', 'Printer'],
             ['Impresora%20De%20Inyección%20De%20Tinta', 'Printer'],

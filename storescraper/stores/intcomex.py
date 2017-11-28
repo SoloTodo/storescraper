@@ -36,7 +36,7 @@ class Intcomex(Store):
             ('mem.flash', 'MemoryCard'),  # Tarjetas de memoria
             ('sto.ssd', 'SolidStateDrive'),  # SSD
             ('sto.inthd', 'StorageDrive'),  # Discos duros internos
-            ('prt.photo', 'Printer'),  # Impresoras Fotograficas
+            # ('prt.photo', 'Printer'),  # Impresoras Fotograficas
             ('prt.inkjet', 'Printer'),  # Impresoras Inkjet
             ('prt.laser', 'Printer'),  # Impresoras Laser
             ('prt.mfp', 'Printer'),  # Impresoras Multifuncionales
