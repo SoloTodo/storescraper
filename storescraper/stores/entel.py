@@ -1,5 +1,4 @@
 import json
-import urllib
 
 import time
 from bs4 import BeautifulSoup
@@ -176,7 +175,10 @@ class Entel(Store):
             pricing_variant = None
             variant_name = product_name
 
-            for key, value in variant['options'].items():
+            variant_items = sorted(variant['options'].items(),
+                                   key=lambda x: x[0])
+
+            for key, value in variant_items:
                 variant_name += ' {} {}'.format(key, value)
                 if key == 'capacidad':
                     print('Found: ' + value)
