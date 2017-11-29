@@ -27,6 +27,7 @@ class Easy(Store):
             'LightProjector',
             'WaterHeater',
             'SpaceHeater',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -64,6 +65,8 @@ class Easy(Store):
             ['electrohogar/calefaccion/termoventiladores', 'SpaceHeater'],
             ['especial-hola-invierno/calefaccion/estufas-electrica',
              'SpaceHeater'],
+            ['electrohogar/climatizacion/aire-acondicionado-portatil',
+             'AirConditioner'],
         ]
 
         session = session_with_proxy(extra_args)

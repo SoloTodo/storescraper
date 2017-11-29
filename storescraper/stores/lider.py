@@ -36,6 +36,7 @@ class Lider(Store):
             'AllInOne',
             'Projector',
             'SpaceHeater',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -96,6 +97,8 @@ class Lider(Store):
             #  'SpaceHeater'],
             # ['Electrohogar/Calefacción/Estufas-a-Gas/_/N-a1fiac',
             #  'SpaceHeater'],
+            [u'Electrohogar/Ventilación/Aire-acondicionado/_/N-xkrp9o',
+             'AirConditioner'],
         ]
 
         product_urls = []

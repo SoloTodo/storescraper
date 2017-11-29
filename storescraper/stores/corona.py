@@ -32,6 +32,7 @@ class Corona(Store):
             'AllInOne',
             'WaterHeater',
             'SpaceHeater',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -66,6 +67,8 @@ class Corona(Store):
              'SpaceHeater'],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
                             'Estufas+El%c3%a9ctricas', 'SpaceHeater'],
+            ['C:/8/11/15/', '&fq=specificationFilter_26%3aAire+Acondicionado',
+             'AirConditioner'],
         ]
 
         product_urls = []

@@ -274,6 +274,9 @@ class PcFactory(Store):
         response_data = json.loads(raw_json)
         product_data = response_data['producto']
 
+        if not product_data:
+            return []
+
         full_name = '{} {}'.format(product_data['marca'],
                                    product_data['nombre'])
 
