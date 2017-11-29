@@ -72,11 +72,16 @@ class CasaDelAudio(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'my-tab-content'})))
 
-        picture_urls = []
-        for tag in soup.find('div', {'id': 'g_thumbs'}).findAll('a'):
-            picture_url = 'https://www.casadelaudio.com' + \
-                          urllib.parse.quote(tag['data-zoom-image'])
-            picture_urls.append(picture_url)
+        pictures_container = soup.find('div', {'id': 'g_thumbs'})
+
+        if pictures_container:
+            picture_urls = []
+            for tag in pictures_container.findAll('a'):
+                picture_url = 'https://www.casadelaudio.com' + \
+                              urllib.parse.quote(tag['data-zoom-image'])
+                picture_urls.append(picture_url)
+        else:
+            picture_urls = None
 
         p = Product(
             name,

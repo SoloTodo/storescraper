@@ -57,7 +57,7 @@ class Enel(Store):
         price = Decimal(soup.find(
             'meta', {'property': 'product:price:amount'})['content'])
 
-        stock = int(re.search(r'quantityAvailable=(\d+?);',
+        stock = int(re.search(r'quantityAvailable = (\d+?);',
                               page_source).groups()[0])
 
         description = html_to_markdown(str(soup.find('div', 'product-tab')))
