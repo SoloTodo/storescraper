@@ -67,6 +67,8 @@ class Easy(Store):
              'SpaceHeater'],
             ['electrohogar/climatizacion/aire-acondicionado-portatil',
              'AirConditioner'],
+            ['electrohogar/climatizacion/aire-acondicionado-split',
+             'AirConditioner'],
         ]
 
         session = session_with_proxy(extra_args)

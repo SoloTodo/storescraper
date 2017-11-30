@@ -60,6 +60,7 @@ class LedStudio(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -91,11 +92,16 @@ class LedStudio(Store):
 
                 sku = element['sku']
 
+                # Pls remove the url rewrite after migrating
+
+                url_with_variation_id = '{}?p={}'.format(
+                    url, element['variation_id'])
+
                 p = Product(
                     variant_name,
                     cls.__name__,
                     category,
-                    url,
+                    url_with_variation_id,
                     url,
                     sku,
                     stock,
