@@ -162,6 +162,9 @@ class Lider(Store):
             offer_price = Decimal(best_price_container['content'])
             normal_price = Decimal(
                 soup.find('span', 'js-price-internet')['content'])
+
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = Decimal(best_price_container['content'])
             normal_price = offer_price
