@@ -4,12 +4,16 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from selenium import webdriver
+
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Kabum(Store):
+    SESSION_COOKIES = None
+
     @classmethod
     def categories(cls):
         return [
@@ -37,6 +41,9 @@ class Kabum(Store):
         product_urls = []
         session = session_with_proxy(extra_args)
 
+        if not cls.SESSION_COOKIES:
+            cls._session_cookies()
+
         for category_path, local_category in category_urls:
             if local_category != category:
                 continue
@@ -44,12 +51,13 @@ class Kabum(Store):
             page = 1
 
             while True:
-                category_url = 'http://www.kabum.com.br/{}?limite=100&' \
+                category_url = 'https://www.kabum.com.br/{}?limite=100&' \
                                'pagina={}'.format(category_path, page)
+                print(category_url)
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url).content,
+                soup = BeautifulSoup(session.get(category_url, cookies=cls.SESSION_COOKIES).content,
                                      'html.parser')
 
                 containers = soup.findAll('div', 'listagem-box')
@@ -72,8 +80,11 @@ class Kabum(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        if not cls.SESSION_COOKIES:
+            cls._session_cookies()
+
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).content.decode('latin-1')
+        page_source = session.get(url, cookies=cls.SESSION_COOKIES).content.decode('latin-1')
 
         soup = BeautifulSoup(page_source, 'html.parser')
         redirect_tag = soup.find('meta', {'http-equiv': 'refresh'})
@@ -134,3 +145,21 @@ class Kabum(Store):
         )
 
         return [p]
+
+    @classmethod
+    def _session_cookies(cls):
+        if not cls.SESSION_COOKIES:
+            driver = webdriver.PhantomJS(service_args=['--load-images=no'])
+            # driver = webdriver.Chrome()
+
+            driver.get('https://www.kabum.com.br/')
+
+            cookies = {}
+            for cookie_entry in driver.get_cookies():
+                cookies[cookie_entry['name']] = cookie_entry['value']
+
+            driver.close()
+
+            cls.SESSION_COOKIES = cookies
+
+        return cls.SESSION_COOKIES

@@ -61,7 +61,7 @@ class Easy(Store):
             # ['electrohogar/calefaccion/estufas-a-parafina', 'SpaceHeater'],
             # ['electrohogar/calefaccion/chimeneas-electricas', 'SpaceHeater'],
             ['electrohogar/calefaccion/paneles-calefactores', 'SpaceHeater'],
-            ['electrohogar/calefaccion/calefactores-a-pellet', 'SpaceHeater'],
+            # ['electrohogar/calefaccion/calefactores-a-pellet', 'SpaceHeater'],
             ['electrohogar/calefaccion/termoventiladores', 'SpaceHeater'],
             ['especial-hola-invierno/calefaccion/estufas-electrica',
              'SpaceHeater'],

@@ -85,8 +85,13 @@ class Ribeiro(Store):
         else:
             stock = 0
 
-        normal_price = soup.find('p', 'texto_gris_indiv').find('span').text
-        normal_price = Decimal(normal_price.replace(',', '').replace('$', ''))
+        normal_price = soup.find('p', 'texto_gris_indiv')
+
+        if not normal_price:
+            return []
+
+        normal_price = Decimal(normal_price.find('span').text.replace(
+            ',', '').replace('$', ''))
 
         price_container = soup.find('span', 'prodPlanCuo')
 
