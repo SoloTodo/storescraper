@@ -57,8 +57,10 @@ class Kabum(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url, cookies=cls.SESSION_COOKIES).content,
-                                     'html.parser')
+                soup = BeautifulSoup(
+                    session.get(category_url,
+                                cookies=cls.SESSION_COOKIES).content,
+                    'html.parser')
 
                 containers = soup.findAll('div', 'listagem-box')
 
@@ -84,7 +86,8 @@ class Kabum(Store):
             cls._session_cookies()
 
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, cookies=cls.SESSION_COOKIES).content.decode('latin-1')
+        page_source = session.get(
+            url, cookies=cls.SESSION_COOKIES).content.decode('latin-1')
 
         soup = BeautifulSoup(page_source, 'html.parser')
         redirect_tag = soup.find('meta', {'http-equiv': 'refresh'})
@@ -92,7 +95,8 @@ class Kabum(Store):
         if redirect_tag:
             new_url = redirect_tag['content'].split('url=')[1]
             print('Redirect to: {}'.format(new_url))
-            page_source = session.get(new_url).content.decode('latin-1')
+            page_source = session.get(
+                new_url, cookies=cls.SESSION_COOKIES).content.decode('latin-1')
             soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('p', {'itemprop': 'description'}).text.strip()[:255]
