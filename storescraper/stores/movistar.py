@@ -208,8 +208,14 @@ class Movistar(Store):
                 if not plan_name:
                     continue
 
-                plan_name = plan_name.find(
-                    'strong').contents[0].strip() + plan_combination_suffix
+                if plan_name.find('img'):
+                    plan_name = plan_name.find(
+                        'strong').contents[1].strip() + plan_combination_suffix
+                else:
+                    plan_name = plan_name.find(
+                        'strong').contents[0].strip() + plan_combination_suffix
+
+                print(plan_name)
 
                 initial_payment = Decimal(remove_words(row.find(
                     'p', {'id': 'priceOffer'}).find('strong').text.strip()))

@@ -46,7 +46,8 @@ class AllTec(Store):
             ['36-ddr3', 'Ram'],
             ['37-ddr4', 'Ram'],
             ['27-monitores', 'Monitor'],
-            ['57-refrigeracion', 'CpuCooler'],
+            ['93-cpu-cooler', 'CpuCooler'],
+            ['92-water-cooling', 'CpuCooler'],
             ['80-potencia-realcertificadas', 'PowerSupply'],
         ]
 
