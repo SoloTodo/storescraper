@@ -99,13 +99,13 @@ class Falabella(Store):
             'Content-Type': 'application/json',
             'DNT': '1',
             'Host': 'www.falabella.com',
-            'Referer': 'http://www.falabella.com/falabella-cl/',
+            'Referer': 'https://www.falabella.com/falabella-cl/',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
                           '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
                           'Safari/537.36'
         })
-        session.get('http://www.falabella.com/falabella-cl/')
-        session.get('http://www.falabella.com/falabella-cl/'
+        session.get('https://www.falabella.com/falabella-cl/')
+        session.get('https://www.falabella.com/falabella-cl/'
                     'includes/ajaxFirstNameAndCartQuantity.jsp')
         discovered_urls = []
 
@@ -176,7 +176,7 @@ class Falabella(Store):
                 if error_count > 10:
                     raise Exception('Error threshold exceeded: ' + url_path)
                 query_args['currentPage'] = page
-                pag_url = 'http://www.falabella.com/rest/model/' \
+                pag_url = 'https://www.falabella.com/rest/model/' \
                           'falabella/rest/browse/BrowseActor/' \
                           'get-product-record-list?{}'.format(
                             urllib.parse.quote(json.dumps(
@@ -191,7 +191,7 @@ class Falabella(Store):
             for product_entry in res['state']['resultList']:
                 product_id = product_entry['productId'].strip()
                 product_url = \
-                    'http://www.falabella.com/falabella-cl/product/{}/' \
+                    'https://www.falabella.com/falabella-cl/product/{}/' \
                     ''.format(product_id)
                 discovered_urls.append(product_url)
 
@@ -239,7 +239,7 @@ class Falabella(Store):
         global_id = product_data['state']['product']['id']
         media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
 
-        pictures_resource_url = 'http://falabella.scene7.com/is/image/' \
+        pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
                                 'Falabella/{}?req=set,json'.format(global_id)
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
@@ -252,8 +252,8 @@ class Falabella(Store):
             picture_entries = [picture_entries]
 
         for picture_entry in picture_entries:
-            picture_url = '{}{}?scl=1.0'.format(media_asset_url,
-                                                picture_entry['i']['n'])
+            picture_url = 'https:{}{}?scl=1.0'.format(media_asset_url,
+                                                      picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
         products = []
