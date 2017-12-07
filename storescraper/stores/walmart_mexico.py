@@ -57,6 +57,11 @@ class WalmartMexico(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+
+        response = session.get(url)
+        if response.url != url:
+            return []
+
         sku = re.search(r'(\d+)$', url).groups()[-1]
 
         data_url = 'https://www.walmart.com.mx/webcontrols/' \

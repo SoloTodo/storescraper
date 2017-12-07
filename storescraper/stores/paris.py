@@ -96,14 +96,14 @@ class Paris(Store):
             soup = BeautifulSoup(session.get(
                 category_url, timeout=30).text, 'html.parser')
 
-            product_containers = soup.findAll('td', 'item')
+            product_containers = soup.findAll('div', 'boxProduct')
 
             if not product_containers:
                 raise Exception('Empty category: {} - {}'.format(
                     category, path))
 
             for cell in product_containers:
-                product_link = cell.find('div', 'tertiary_button').find('a')
+                product_link = cell.find('a', {'id': 'myBtn'})
 
                 product_js = product_link['onclick']
                 # print(product_js)
