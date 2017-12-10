@@ -27,6 +27,8 @@ class Entel(Store):
         product_urls = []
 
         if category == 'Cell':
+            # Contrato
+
             json_product_list = json.loads(session.get(
                 'http://equipos.entel.cl/devices/personas/tm/'
                 'contratacion.json?search=1').text)
@@ -35,6 +37,18 @@ class Entel(Store):
                 product_url = 'http://equipos.entel.cl/segmentos/' \
                               'personas/products/' + device['slug']
                 product_urls.append(product_url)
+
+            # Prepago
+
+            json_prepago = json.loads(session.get(
+                'https://miportal.entel.cl/lista-productos?Nrpp=100&'
+                'format=json-rest').text)
+
+            for record in json_prepago['response']['main'][1]['records']:
+                cell_id = record['attributes']['productId'][0]
+                cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
+                           cell_id
+                product_urls.append(cell_url)
 
         if category == 'CellPlan':
             product_urls.append(cls.prepago_url)
@@ -68,6 +82,9 @@ class Entel(Store):
         elif 'equipos.entel.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
+        elif 'miportal.entel.cl' in url:
+            # Equipo prepago
+            products.extend(cls._celular_prepago(url, extra_args))
         else:
             raise Exception('Invalid URL: ' + url)
         return products
@@ -157,6 +174,7 @@ class Entel(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
+        print(url)
         session = session_with_proxy(extra_args)
         slug = url.split('/')[-1]
 
@@ -191,34 +209,7 @@ class Entel(Store):
                 print('Using default')
                 pricing_variant = variant
 
-            # Prepago
-
-            try:
-                prepago_price = Decimal(
-                    pricing_variant['prepaid_prices']['price_1'])
-                prepago_stock = -1
-            except TypeError:
-                print('No prepago price')
-                prepago_price = Decimal(0)
-                prepago_stock = 0
-
             picture_urls = variant['covers']
-
-            product = Product(
-                variant_name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                variant_name + ' Entel Prepago',
-                prepago_stock,
-                prepago_price,
-                prepago_price,
-                'CLP',
-                cell_plan_name='Entel Prepago',
-                picture_urls=picture_urls
-            )
-            products.append(product)
 
             # Plan
 
@@ -299,5 +290,51 @@ class Entel(Store):
                         cell_monthly_payment=cell_monthly_payment
                     )
                     products.append(product)
+
+        return products
+
+    @classmethod
+    def _celular_prepago(cls, url, extra_args):
+        print(url)
+        session = session_with_proxy(extra_args)
+
+        products = []
+
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        json_data = json.loads(soup.find('var', {'id': 'renderData'}).string)
+
+        for sku in json_data['renderSkusBean']['skus']:
+            price = Decimal(sku['skuPrice'])
+
+            if sku['available']:
+                stock = -1
+            else:
+                stock = 0
+
+            sku_id = sku['skuId']
+
+            pictures_container = soup.findAll('div', {'name': sku_id})[2]
+
+            picture_urls = []
+            for container in pictures_container.findAll('img'):
+                picture_urls.append('https://miportal.entel.cl' +
+                                    container['src'])
+
+            product = Product(
+                sku['skuName'],
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                sku_id,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku_id,
+                cell_plan_name='Entel Prepago',
+                picture_urls=picture_urls,
+            )
+            products.append(product)
 
         return products
