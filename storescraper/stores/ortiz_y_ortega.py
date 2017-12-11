@@ -23,16 +23,14 @@ class OrtizYOrtega(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['54', 'Refrigerator'],
-            ['55', 'Refrigerator'],
-            ['60', 'AirConditioner'],
-            ['92', 'WaterHeater'],
-            ['53', 'WashingMachine'],
-            # ['61', 'WashingMachine'],
-            ['62', 'WashingMachine'],
-            ['71', 'Stove'],
-            ['83', 'Stove'],
-            ['508', 'Stove'],
+            ['hogar/heladeras-y-freezers', 'Refrigerator'],
+            ['climatizacion/refrigeracion/aires-acondicionados',
+             'AirConditioner'],
+            ['hogar/agua-caliente', 'WaterHeater'],
+            ['hogar/lavarropas-y-secarropas', 'WashingMachine'],
+            ['hogar/cocinas-hornos-y-anafes/anafes-a-gas', 'Stove'],
+            ['hogar/cocinas-hornos-y-anafes/anafes-electricos', 'Stove'],
+            ['hogar/cocinas-hornos-y-anafes/cocinas-a-gas', 'Stove'],
         ]
 
         product_urls = []
@@ -42,54 +40,46 @@ class OrtizYOrtega(Store):
             if local_category != category:
                 continue
 
-            page = 1
+            url = 'http://www.ortizyortega.com.ar/t/categorias/' + \
+                  category_path
 
-            while True:
-                url = 'http://www.ortizyortega.com.ar/index.pl?' \
-                      'defaultCommand=getListItems&_a=getListItems&' \
-                      '_c=catalogueFront&mod=catalogueFront&id={0}&' \
-                      'productOrderBy=&productOrderBySort=&page={1}&' \
-                      '%2Fcatalogue%2Fsearch.html%3FsearchField__' \
-                      'category__id_node__equal={0}'.format(
-                        category_path, page)
+            print(url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                containers = soup.findAll('div', 'box_prod_listado')
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            containers = soup.findAll('div', 'product-list-item')
 
-                if not containers:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_path)
-                    break
+            if not containers:
+                raise Exception('Empty category: ' + category_path)
 
-                for container in containers:
-                    url = 'http://www.ortizyortega.com.ar' + \
-                          urllib.parse.quote(container.findAll(
-                              'a')[1]['href'])
-                    product_urls.append(url)
-
-                page += 1
+            for container in containers:
+                url = container.find('a')['href'].split('?')[0]
+                product_urls.append(url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.status_code == 500:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
-        sku = soup.find('input', {'id': 'id'})['value'].strip()
+        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
 
-        price_string = soup.find('span', 'text_precio_detalle_num').text
-        price = Decimal(price_string.replace('$', '').replace(',', '.'))
-
-        stock = int(re.search(r"verficarStock\('(\d+)",
-                              page_source).groups()[0])
+        price_string = soup.find('span', {'id': 'our_price_display'}).text
+        price = Decimal(price_string.replace('$', '').replace(
+            '.', '').replace(',', '.'))
 
         description = html_to_markdown(
-            str(soup.find('div', 'cont_especificaciones_detalle')))
+            str(soup.find('section', 'cont-second_block')))
 
-        picture_urls = [soup.find('a', {'id': 'image_product'})['href']]
-        soup = soup.find('div', 'cont_der_ficha_prod_detalle')
-        name = soup.find('h1').text.strip()
+        picture_urls = ['http://www.ortizyortega.com.ar' +
+                        soup.find('img', {'id': 'bigpic'})['data-zoom-image']]
+        name = soup.find('h2', 'product_name').text.strip()
 
         p = Product(
             name,
@@ -98,7 +88,7 @@ class OrtizYOrtega(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             price,
             price,
             'ARS',
