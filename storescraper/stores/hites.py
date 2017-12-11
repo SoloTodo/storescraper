@@ -12,6 +12,8 @@ from storescraper.utils import remove_words, html_to_markdown, \
 
 
 class Hites(Store):
+    preferred_products_for_url_concurrency = 5
+
     @classmethod
     def categories(cls):
         return [
@@ -77,7 +79,7 @@ class Hites(Store):
 
             soup = BeautifulSoup(session.post(
                 category_url,
-                'pageSize=1000&storeId=10151').text, 'html.parser')
+                'pageSize=1000&storeId=10151', timeout=10).text, 'html.parser')
 
             divs = soup.findAll('div', 'product')
             category_product_urls = [div.find('a')['href'] for div in divs]
@@ -111,7 +113,7 @@ class Hites(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, timeout=30).text
+        page_source = session.get(url, timeout=10).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('div', {'id': 'errorPage'}):
