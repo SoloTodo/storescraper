@@ -111,7 +111,7 @@ class Hites(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        page_source = session.get(url, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('div', {'id': 'errorPage'}):
