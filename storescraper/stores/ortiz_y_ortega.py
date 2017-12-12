@@ -1,6 +1,3 @@
-import urllib
-
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -23,10 +20,11 @@ class OrtizYOrtega(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['hogar/heladeras-y-freezers', 'Refrigerator'],
+            ['hogar/heladeras-y-freezers/heladeras', 'Refrigerator'],
+            ['hogar/heladeras-y-freezers/freezers', 'Refrigerator'],
             ['climatizacion/refrigeracion/aires-acondicionados',
              'AirConditioner'],
-            ['hogar/agua-caliente', 'WaterHeater'],
+            ['hogar/agua-caliente/calefones-a-gas', 'WaterHeater'],
             ['hogar/lavarropas-y-secarropas', 'WashingMachine'],
             ['hogar/cocinas-hornos-y-anafes/anafes-a-gas', 'Stove'],
             ['hogar/cocinas-hornos-y-anafes/anafes-electricos', 'Stove'],
@@ -40,20 +38,19 @@ class OrtizYOrtega(Store):
             if local_category != category:
                 continue
 
-            url = 'http://www.ortizyortega.com.ar/t/categorias/' + \
-                  category_path
+            category_url = 'http://www.ortizyortega.com.ar/t/categorias/' + \
+                           category_path
+            print(category_url)
 
-            print(url)
-
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             containers = soup.findAll('div', 'product-list-item')
 
             if not containers:
                 raise Exception('Empty category: ' + category_path)
 
             for container in containers:
-                url = container.find('a')['href'].split('?')[0]
-                product_urls.append(url)
+                product_url = container.find('a')['href'].split('?')[0]
+                product_urls.append(product_url)
 
         return product_urls
 
@@ -77,8 +74,16 @@ class OrtizYOrtega(Store):
         description = html_to_markdown(
             str(soup.find('section', 'cont-second_block')))
 
-        picture_urls = ['http://www.ortizyortega.com.ar' +
-                        soup.find('img', {'id': 'bigpic'})['data-zoom-image']]
+        picture_containers = soup.findAll('img', 'thumbnails-img')
+
+        if picture_containers:
+            picture_urls = ['http://www.ortizyortega.com.ar' +
+                            container['data-zoom-image']
+                            for container in picture_containers]
+        else:
+            picture_urls = [
+                'http://www.ortizyortega.com.ar' +
+                soup.find('img', {'id': 'bigpic'})['data-zoom-image']]
         name = soup.find('h2', 'product_name').text.strip()
 
         p = Product(

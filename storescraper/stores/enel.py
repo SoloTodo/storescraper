@@ -13,6 +13,7 @@ class Enel(Store):
     def categories(cls):
         return [
             'Lamp',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -20,6 +21,7 @@ class Enel(Store):
         category_paths = [
             # Ampolletas LED
             ['59-ampolletas-led', 'Lamp'],
+            ['105-aire-acondicionado-sin-instalacion', 'AirConditioner'],
         ]
 
         product_urls = []

@@ -77,7 +77,15 @@ class Sodimac(Store):
             while True:
                 url = 'http://www.sodimac.cl/sodimac-cl/category/{}?No={}' \
                       ''.format(category_path, page)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                print(url)
+
+                response = session.get(url)
+
+                if '/product/' in response.url:
+                    product_urls.append(response.url)
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 mosaic_divs = soup.findAll('div', 'informationContainer')
 
