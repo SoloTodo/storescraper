@@ -176,6 +176,7 @@ class Hites(Store):
         page_id = soup.find('meta', {'name': 'pageId'})['content']
         gallery_content = soup.find(
             'div', {'id': 'entitledItem_' + page_id}).text
+        gallery_content = gallery_content.replace('\\', '/')
         gallery_content = re.sub(r'"DescriptiveAttributes"[\S\s]*?},', '',
                                  gallery_content)
         gallery_json = json.loads(gallery_content)

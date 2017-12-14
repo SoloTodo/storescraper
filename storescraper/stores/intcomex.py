@@ -83,9 +83,13 @@ class Intcomex(Store):
         sku, part_number = [tag.text.strip() for tag in pricing_area.findAll(
             'span', 'font-bold')]
 
-        price_area = soup.find('div', 'linkArea')
-        price = price_area.find('div', 'font-price').text.split('$')[1]
-        price = Decimal(price.replace('.', '').replace(',', '.'))
+        price_area = soup.find('div', 'linkArea').find('div', 'font-price')
+
+        if not price_area:
+            return []
+
+        price = Decimal(price_area.text.split('$')[1].replace(
+            '.', '').replace(',', '.'))
 
         description = ''
 

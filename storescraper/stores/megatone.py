@@ -113,7 +113,7 @@ class Megatone(Store):
 
         for tag in soup.findAll('a', 'imgThumb'):
             try:
-                picture_url = tag['data-image']
+                picture_url = tag['data-image'].replace(' ', '%20')
                 picture_urls.append(picture_url)
             except KeyError:
                 pass

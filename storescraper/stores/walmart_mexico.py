@@ -48,7 +48,11 @@ class WalmartMexico(Store):
                 raise Exception('Empty URL: ' + category_url)
 
             for entry in data:
-                product_url = base_url + entry['ProductUrl']
+                product_path = entry['ProductUrl'].strip()
+
+                if not product_path:
+                    continue
+                product_url = base_url + product_path
                 product_urls.append(product_url)
 
         return product_urls
