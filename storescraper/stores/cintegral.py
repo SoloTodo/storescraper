@@ -117,7 +117,9 @@ class Cintegral(Store):
         sku = soup.find('li', 'product').find('strong').text.split(
             ':')[1].strip()
         part_number = re.search(
-            r"ccs_cc_args.push\(\['pn', '(.+)'\]\);", page_source).groups()[0]
+            r"ccs_cc_args.push\(\['pn', '(.*)'\]\);", page_source).groups()[0]
+        if not part_number:
+            part_number = None
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
