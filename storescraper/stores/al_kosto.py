@@ -23,12 +23,14 @@ class AlKosto(Store):
         base_url = 'http://www.alkosto.com/'
 
         url_extensions = [
-            ['computadores-y-tablets/accesorios/accesorios-computadores/'
-             'memorias-sd-hd/discos-duros/', 'ExternalStorageDrive'],
+            # ['computadores-y-tablets/accesorios/accesorios-computadores/'
+            #    'memorias-sd-hd/discos-duros/', 'ExternalStorageDrive'],
             ['computadores-y-tablets/accesorios/accesorios-computadores/'
              'memorias-sd-hd/micro-sd/', 'MemoryCard'],
             ['computadores-y-tablets/accesorios/accesorios-computadores/'
              'memorias-sd-hd/memoria-usb/', 'UsbFlashDrive'],
+            ['accesorios/accesorios-computadores-tablets/'
+             'accesorios-computadores/memorias-sd-hd', 'MemoryCard']
         ]
 
         session = session_with_proxy(extra_args)

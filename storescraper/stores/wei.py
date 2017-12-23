@@ -45,7 +45,7 @@ class Wei(Store):
             ['1264', 'Notebook'],  # Notebooks ultralivianos
             ['731', 'Notebook'],  # NOTEBOOK GAMER
             ['1257', 'Mouse'],  # Mouse
-            ['1138', 'ExternalStorageDrive'],  # Discos externos
+            # ['1138', 'ExternalStorageDrive'],  # Discos externos
             ['665', 'ExternalStorageDrive'],  # Discos externos FORMATO 2.5"
             ['664', 'ExternalStorageDrive'],  # Discos externos FORMATO 3.5"
             ['515', 'SolidStateDrive'],  # SSD

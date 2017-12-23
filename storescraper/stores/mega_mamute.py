@@ -76,7 +76,7 @@ class MegaMatute(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if 'ProductLinkNotFound' in response.url:
+        if response.url != url:
             return []
 
         page_source = response.text

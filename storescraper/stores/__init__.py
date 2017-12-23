@@ -44,6 +44,7 @@ from .garbarino import Garbarino
 from .gearbest import GearBest
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
+from .grupo_cva import GrupoCva
 from .gtd import Gtd
 from .hiraoka import Hiraoka
 from .hites import Hites

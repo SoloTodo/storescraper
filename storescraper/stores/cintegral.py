@@ -1,3 +1,6 @@
+import json
+import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -28,66 +31,75 @@ class Cintegral(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.cintegral.cl/'
+        url_base = 'http://www.cintegral.cl/'
 
-        category_paths = [
-            ['9', 'Notebook'],
-            ['89', 'Tablet'],
-            ['98', 'Cell'],
-            ['18', 'Processor'],
-            ['2', 'StorageDrive'],
-            ['59', 'StorageDrive'],
-            ['7', 'ComputerCase'],
-            ['54', 'PowerSupply'],
-            ['19', 'Motherboard'],
-            ['4', 'Ram'],
-            ['49', 'Ram'],
-            ['14', 'VideoCard'],
-            ['31', 'Printer'],
-            ['32', 'Printer'],
-            ['34', 'Printer'],
-            ['1', 'Monitor'],
-            ['17', 'Mouse'],
+        url_extensions = [
+            ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
+            ['pc-y-portatiles/portatiles/tablet.html', 'Tablet'],
+            ['pc-y-portatiles/partes-y-piezas/cpu.html', 'Processor'],
+            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
+             'discos-duros-pc.html', 'StorageDrive'],
+            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
+             'discos-duros-externos.html', 'ExternalStorageDrive'],
+            ['pc-y-portatiles/partes-y-piezas/almacenamiento/ssd.html',
+             'SolidStateDrive'],
+            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
+             'memorias-flash.html', 'MemoryCard'],
+            ['pc-y-portatiles/partes-y-piezas/almacenamiento/pendrive.html',
+             'UsbFlashDrive'],
+            ['pc-y-portatiles/partes-y-piezas/gabinetes.html', 'ComputerCase'],
+            ['pc-y-portatiles/partes-y-piezas/fuentes-de-poder.html',
+             'PowerSupply'],
+            ['pc-y-portatiles/partes-y-piezas/placa-madre.html',
+             'Motherboard'],
+            ['pc-y-portatiles/partes-y-piezas/memorias.html', 'Ram'],
+            ['pc-y-portatiles/partes-y-piezas/tarjetas-de-video.html',
+             'VideoCard'],
+            ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
+            ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
+            ['impresion-e-imagen/multifuncionales.html', 'Printer'],
+            ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
+            ['monitores-y-proyeccion/monitores.html', 'Monitor'],
+            ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
         ]
 
-        session = session_with_proxy(extra_args)
         product_urls = []
+        session = session_with_proxy(extra_args)
+        session.headers['X-Requested-With'] = 'XMLHttpRequest'
 
-        for category_path, local_category in category_paths:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
+            category_url = url_base + 'index.php/' + url_extension
             page = 1
 
-            while True:
-                category_url = '{}categoria.php?categoria={}&pagina={}'.format(
-                    base_url, category_path, page)
-                print(category_url)
+            local_product_urls = []
 
+            while True:
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                base_soup = BeautifulSoup(session.get(category_url).text,
-                                          'html.parser')
+                url = category_url + '?p=' + str(page)
+                print(url)
+                json_data = json.loads(session.get(url).text)
+                soup = BeautifulSoup(json_data['listing'], 'html.parser')
 
-                product_containers = \
-                    base_soup.findAll('div', 'casilla-producto')
+                done = False
 
-                if not product_containers and page == 1:
+                containers = soup.findAll('a', 'product-image')
+
+                if not containers:
                     raise Exception('Empty category: ' + category_url)
 
-                product_found = False
-
-                for container in product_containers:
-                    link = container.find('a')
-                    if not link:
-                        continue
-
-                    product_found = True
-
-                    product_url = base_url + link['href'].replace(' ', '%20')
+                for product_link in containers:
+                    product_url = product_link['href']
+                    if product_url in local_product_urls:
+                        done = True
+                        break
+                    local_product_urls.append(product_url)
                     product_urls.append(product_url)
 
-                if not product_found:
+                if done:
                     break
 
                 page += 1
@@ -96,31 +108,35 @@ class Cintegral(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('div', 'nombre-producto-catalogo')\
-            .find('span').string.strip()
-
-        sku = soup.find('input', {'name': 'idprod'})['value']
-
-        stock_containers = soup.findAll('td', 'columna-derecha-tabla-catalogo')
-
-        if not stock_containers:
-            stock = 0
-        else:
-            stock = int(stock_containers[-1].find('span').text)
-
-        normal_price = Decimal(remove_words(
-            soup.find('div', 'precio-producto-catalogo').find('span').string))
-        offer_price = normal_price
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
+        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('li', 'product').find('strong').text.split(
+            ':')[1].strip()
+        part_number = re.search(
+            r"ccs_cc_args.push\(\['pn', '(.+)'\]\);", page_source).groups()[0]
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'ficha-producto'})))
+            str(soup.find('div', 'product-description')))
 
-        picture_urls = ['http://www.cintegral.cl/' +
-                        soup.find('a', 'highslide')['href'].replace(
-                            ' ', '%20')]
+        if soup.find('button', {'id': 'product-addtocart-button'}):
+            stock = -1
+        else:
+            stock = 0
+
+        special_price_container = soup.find('p', 'special-price')
+
+        if special_price_container:
+            price = Decimal(remove_words(
+                special_price_container.find('span', 'price').text))
+        else:
+            price = Decimal(remove_words(
+                soup.find('span', 'regular-price').find('span').text))
+
+        picture_urls = [link['href'] for link in soup.findAll('a', 'lightbox')]
 
         p = Product(
             name,
@@ -130,10 +146,11 @@ class Cintegral(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             description=description,
             picture_urls=picture_urls
         )

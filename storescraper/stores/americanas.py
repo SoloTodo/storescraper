@@ -92,7 +92,7 @@ class Americanas(Store):
 
         response = session.get(url)
 
-        if response.url == 'https://www.americanas.com.br/':
+        if response.url != url:
             return []
 
         page_source = response.text

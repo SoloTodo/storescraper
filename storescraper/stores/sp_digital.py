@@ -88,6 +88,7 @@ class SpDigital(Store):
 
                 url = 'https://www.spdigital.cl/categories/view/{}/page:' \
                       '{}?o=withstock'.format(category_id, p)
+                print(url)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
                 product_containers = soup.findAll('div', 'product-item-mosaic')

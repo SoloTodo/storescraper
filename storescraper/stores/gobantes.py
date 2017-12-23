@@ -72,7 +72,7 @@ class Gobantes(Store):
                         soup.findAll('a', 'colorbox')]
 
         price = Decimal(remove_words(soup.find(
-            'div', 'price').text.replace("Precio:", "")))
+            'div', 'price').text.split(':')[1]))
 
         price = price.quantize(0)
 

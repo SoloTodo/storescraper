@@ -52,7 +52,7 @@ class PcExpress(Store):
             ['71', 'Printer'],
             ['72', 'Ram'],
             ['73_171', 'Monitor'],
-            ['73_129', 'Television'],
+            # ['73_129', 'Television'],
             ['74_133', 'Mouse'],
             ['75_136', 'Notebook'],
             ['75_223', 'Tablet'],
