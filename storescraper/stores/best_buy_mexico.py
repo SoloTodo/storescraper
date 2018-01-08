@@ -50,7 +50,7 @@ class BestBuyMexico(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.bestbuy.com.mx/productos/{}&limit=all' \
+            category_url = 'https://www.bestbuy.com.mx/productos/{}&limit=all' \
                            ''.format(category_path)
 
             soup = BeautifulSoup(session.get(category_url).text,
@@ -66,7 +66,7 @@ class BestBuyMexico(Store):
 
             for product_cell in product_cells:
                 product_url = product_cell.find('a')['href']
-                product_urls.append(product_url)
+                product_urls.append('https:' + product_url)
 
         return product_urls
 
@@ -133,7 +133,7 @@ class BestBuyMexico(Store):
             for tag in soup.findAll('li', 'thumbnail-image-wrapper'):
                 picture_url = tag.find('img')['src']
                 if picture_url:
-                    picture_urls.append(picture_url)
+                    picture_urls.append('https:' + picture_url)
 
             if not picture_urls:
                 picture_urls = None
