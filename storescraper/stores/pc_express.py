@@ -109,22 +109,25 @@ class PcExpress(Store):
         name = soup.find('h1', 'rm-product-page__title').text
         sku = soup.find('p', 'rm-product__code').span.text
 
-        availability_table = soup.find('div', 'rm-product__stock').ul
-        availability_cells = availability_table.findAll('li')
-
+        availability_table = soup.find('div', 'rm-product__stock')
         stock = 0
 
-        for cell in availability_cells:
-            cell_text = cell.span.text.lower().strip()
+        if availability_table is not None:
+            availability_table = availability_table.ul
+            availability_cells = availability_table.findAll('li')
 
-            if 'más de 20 unidades' == cell_text:
-                stock = -1
-                break
 
-            stock_match = re.match(r'(\d+) unidad', cell_text)
+            for cell in availability_cells:
+                cell_text = cell.span.text.lower().strip()
 
-            if stock_match:
-                stock += int(stock_match.groups()[0])
+                if 'más de 20 unidades' == cell_text:
+                    stock = -1
+                    break
+
+                stock_match = re.match(r'(\d+) unidad', cell_text)
+
+                if stock_match:
+                    stock += int(stock_match.groups()[0])
 
         offer_price = soup.find('div', 'rm-product__price--cash').h3.text
         offer_price = Decimal(remove_words(offer_price))
