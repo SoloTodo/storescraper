@@ -67,84 +67,78 @@ class PcExpress(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.pc-express.cl/index.php?cPath=' + \
-                           category_id + '&page='
-
+            category_url = 'https://tienda.pc-express.cl/index.php?route=' \
+                           'product/category&path=' + category_id + '&page='
             page = 1
-            local_product_urls = []
 
             while True:
                 if page > 10:
                     raise Exception('Page overflow: ' + category_id)
-
                 category_page_url = category_url + str(page)
                 soup = BeautifulSoup(session.get(category_page_url).text,
                                      'html.parser')
-                td_products = soup.findAll('div', 'box-product')
-                break_flag = False
+                td_products = soup.findAll('div', 'product-list__image')
 
-                for td_product in td_products:
-                    original_product_url = td_product.find(
-                        'a', 'image-wrapper')['href']
-                    product_id = re.search(r'products_id=(\d+)',
-                                           original_product_url).groups()[0]
-                    product_url = 'http://www.pc-express.cl/' \
-                                  'product_info.php?products_id=' + product_id
-
-                    if product_url in local_product_urls:
-                        break_flag = True
-                        break
-                    local_product_urls.append(product_url)
-
-                if break_flag:
+                if len(td_products) == 0:
                     if page == 1:
                         raise Exception('Empty category: ' + category_id)
                     break
 
+                else:
+                    for td_product in td_products:
+                        original_product_url = td_product.find(
+                            'a')['href']
+
+                        product_id = re.search(r'product_id=(\d+)',
+                                               original_product_url
+                                               ).groups()[0]
+                        product_url = 'https://tienda.pc-express.cl/' \
+                                      'index.php?route=product/product&' \
+                                      'product_id=' + product_id
+                        product_urls.append(product_url)
+
                 page += 1
 
-            product_urls.extend(local_product_urls)
-
-        return list(set(product_urls))
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h1').text
-        sku = soup.find('input', {'name': 'products_id'})['value'].strip()
+        name = soup.find('h1', 'rm-product-page__title').text
+        sku = soup.find('p', 'rm-product__code').span.text
 
-        availability_table = soup.find(
-            'div', 'description-box').nextSibling.nextSibling
-
-        availability_cells = availability_table.findAll('td', 'text-right')
-
+        availability_table = soup.find('div', 'rm-product__stock')
         stock = 0
 
-        for cell in availability_cells:
-            cell_text = cell.text.lower()
+        if availability_table is not None:
+            availability_table = availability_table.ul
+            availability_cells = availability_table.findAll('li')
 
-            if cell_text.encode('utf-8') == \
-                    b'm\xc3\xa3\xc2\xa1s de 20 unidades':
-                stock = -1
-                break
 
-            stock_match = re.match(r'(\d+) unidades', cell_text)
+            for cell in availability_cells:
+                cell_text = cell.span.text.lower().strip()
 
-            if stock_match:
-                stock += int(stock_match.groups()[0])
+                if 'más de 20 unidades' == cell_text:
+                    stock = -1
+                    break
 
-        offer_price = soup.findAll('span', 'product-price-number')[1]
-        offer_price = Decimal(remove_words(offer_price.text))
+                stock_match = re.match(r'(\d+) unidad', cell_text)
 
-        normal_price = soup.findAll('span', 'product-price-number')[0]
-        normal_price = Decimal(remove_words(normal_price.text))
+                if stock_match:
+                    stock += int(stock_match.groups()[0])
 
-        description = html_to_markdown(str(soup.find('div', 'description')))
+        offer_price = soup.find('div', 'rm-product__price--cash').h3.text
+        offer_price = Decimal(remove_words(offer_price))
 
-        picture_urls = ['http://www.pc-express.cl/' +
-                        soup.find('a', 'product-image')['href']]
+        normal_price = soup.find('div', 'rm-product__price--normal').h3.text
+        normal_price = Decimal(remove_words(normal_price))
+
+        description = html_to_markdown(str(soup.find(
+            'div', {'id': 'tab-description'})))
+
+        picture_urls = [soup.find('ul', 'thumbnails').a['href']]
 
         p = Product(
             name,
