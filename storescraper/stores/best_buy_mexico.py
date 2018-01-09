@@ -50,8 +50,8 @@ class BestBuyMexico(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.bestbuy.com.mx/productos/{}&limit=all' \
-                           ''.format(category_path)
+            category_url = 'https://www.bestbuy.com.mx/productos/' \
+                           '{}&limit=all'.format(category_path)
 
             soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')

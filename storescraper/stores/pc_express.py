@@ -116,7 +116,6 @@ class PcExpress(Store):
             availability_table = availability_table.ul
             availability_cells = availability_table.findAll('li')
 
-
             for cell in availability_cells:
                 cell_text = cell.span.text.lower().strip()
 
