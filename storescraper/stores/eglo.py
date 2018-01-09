@@ -80,12 +80,11 @@ class Eglo(Store):
         if picture_containers:
             picture_urls = []
             for container in picture_containers:
-                picture_url = 'http://www.eglo.cl' + \
-                              container.find('img')['src']
+                picture_url = container.find('img')['src']
                 picture_urls.append(picture_url)
         else:
-            picture_urls = ['http://www.eglo.cl' +
-                            soup.find('img', 'product-zoom')['src']]
+            picture_urls = [soup.find('div', 'product-main-'
+                                             'image__item').img['src']]
 
         p = Product(
             name,
