@@ -1,3 +1,4 @@
+from .aire_center import AireCenter
 from .abcdin import AbcDin
 from .al_kosto import AlKosto
 from .alltec import AllTec
