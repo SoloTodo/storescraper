@@ -22,7 +22,6 @@ class JumboColombia(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['C:/47/48/54/', 'ExternalStorageDrive'],
-            ['C:/47/2000061/1000020/', 'MemoryCard'],
         ]
 
         product_urls = []
@@ -45,7 +44,7 @@ class JumboColombia(Store):
                 base_soup = BeautifulSoup(session.get(category_url).text,
                                           'html.parser')
 
-                link_containers = base_soup.findAll('article')
+                link_containers = base_soup.findAll('li', 'tecnologia')
 
                 if not link_containers:
                     if page == 1:
