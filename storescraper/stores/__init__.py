@@ -1,3 +1,4 @@
+from .clima_seguro import ClimaSeguro
 from .aire_center import AireCenter
 from .abcdin import AbcDin
 from .al_kosto import AlKosto
