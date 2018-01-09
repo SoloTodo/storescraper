@@ -63,6 +63,9 @@ class AireCenter(Store):
 
         name = soup.find("h1", "title").text
 
+        if soup.find("div", "product-price") is None:
+            return []
+
         sku = re.search(r'(\d+)',
                         soup.find("div", "product-price")['id']
                         ).groups()[0]
