@@ -29,8 +29,8 @@ class Ribeiro(Store):
              'WaterHeater'],
             ['heladeras-cocina-y-lavado-lavado-lavarropas-automatico/'
              '_/N-vlbaf6', 'WashingMachine'],
-            ['heladeras-cocina-y-lavado-lavado-lavarropas-semi-automatico/'
-             '_/N-1twuqgi', 'WashingMachine'],
+            # ['heladeras-cocina-y-lavado-lavado-lavarropas-semi-automatico/'
+            # '_/N-1twuqgi', 'WashingMachine'],
             ['heladeras-cocina-y-lavado-cocinas-cocinas/_/'
              'N-5k0lxo', 'Stove'],
             ['heladeras-cocina-y-lavado-cocinas-anafes/_/'
