@@ -24,8 +24,8 @@ class SolarLed(Store):
         category_paths = [
             # Ampolletas LED
             ['solarled/5-ampolletas-led', 'Lamp'],
-            ['solarled/6-tubos-led', 'LightTube'],
-            ['solarled/15-focos-led', 'LightProjector'],
+            # ['solarled/6-tubos-led', 'LightTube'],
+            # ['solarled/15-focos-led', 'LightProjector'],
         ]
 
         product_urls = []
