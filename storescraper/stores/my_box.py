@@ -74,6 +74,8 @@ class MyBox(Store):
 
         stock = int(re.search(r'quantityAvailable=(-?\d+)',
                               page_source).groups()[0])
+        if stock < 0:
+            stock = 0
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
