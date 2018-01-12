@@ -114,7 +114,8 @@ class Wei(Store):
                            ''.format(category_path, page)
                 print(page_url)
 
-                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(
+                    page_url, verify=False).text, 'html.parser')
 
                 product_cells = soup.findAll('div', 'box-producto')
 
@@ -138,7 +139,7 @@ class Wei(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         pricing_str = re.search('retailrocket.products.post\((.+)\);',
