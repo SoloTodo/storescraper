@@ -53,7 +53,7 @@ class Sodimac(Store):
             ['cat2080050/Calefont-tiro-forzado', 'WaterHeater'],
             ['scat923316/Termos-electricos-hogar', 'WaterHeater'],
             ['scat918650/Calderas', 'WaterHeater'],
-            ['cat3620002/Tablet', 'Tablet'],
+            # ['cat3620002/Tablet', 'Tablet'],
             ['scat583461/Estufas-Toyotomi', 'SpaceHeater'],
             # ['scat299492/Estufas-a-Gas', 'SpaceHeater'],
             ['scat411008/Estufas-a-Parafina', 'SpaceHeater'],
