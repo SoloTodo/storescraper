@@ -41,7 +41,7 @@ class OfficeDepot(Store):
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
-            link_containers = soup.findAll('div', 'productGridItem ')
+            link_containers = soup.findAll('div', 'product-item')
 
             if not link_containers:
                 raise Exception('Empty category: ' + category_url)
@@ -57,7 +57,8 @@ class OfficeDepot(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
+        name = soup.find('div', 'name').text.replace(
+            '/ Califica este producto', '').strip()
         sku = soup.find('span', {'id': 'skuEmarsys'}).text.strip()
 
         if soup.find('button', {'id': 'addToCartButton'}):
@@ -65,15 +66,20 @@ class OfficeDepot(Store):
         else:
             stock = 0
 
-        price_container = soup.find(
-            'span', {'itemprop': 'price'})
+        price_container = soup.find('span', {'id': 'priceOriginal'})
 
-        if not price_container:
-            price_container = soup.find(
-                'span', {'id': 'price1'})
+        offerprice_container = soup.find('div', 'discountedPrice')
 
-        price = price_container.string.replace('\"', '')
-        price = Decimal(price.replace('$', '').replace(',', ''))
+        normal_price = price_container.text
+        normal_price = Decimal(normal_price)
+
+        if offerprice_container is None:
+            offer_price = normal_price
+
+        else:
+            offer_price = offerprice_container.text.strip()
+            offer_price = Decimal(offer_price.replace(
+                ',', '').replace('$', ''))
 
         picture_container = soup.find('meta', {'name': 'twitter:image'})
         if picture_container:
@@ -89,11 +95,10 @@ class OfficeDepot(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'MXN',
             sku=sku,
             picture_urls=picture_urls
         )
-
         return [p]
