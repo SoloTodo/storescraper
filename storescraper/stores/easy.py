@@ -48,7 +48,7 @@ class Easy(Store):
              'WashingMachine'],
             ['electrohogar/lavado-y-secado/secadoras', 'WashingMachine'],
             ['electrohogar/tecnologia/reproductores', 'OpticalDiskPlayer'],
-            ['iluminacion-led', 'Lamp'],
+            ['iluminacion/iluminación-led', 'Lamp'],
             ['iluminacion-de-exterior/reflectores-exterior', 'LightProjector'],
             ['electrohogar/calefones-y-termos/calefont-gas-licuado',
              'WaterHeater'],
@@ -68,8 +68,8 @@ class Easy(Store):
              'SpaceHeater'],
             ['electrohogar/climatizacion/aire-acondicionado-portatil',
              'AirConditioner'],
-            ['electrohogar/climatizacion/aire-acondicionado-split',
-             'AirConditioner'],
+            # ['electrohogar/climatizacion/aire-acondicionado-split',
+            # 'AirConditioner'],
         ]
 
         session = session_with_proxy(extra_args)
