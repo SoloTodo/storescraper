@@ -7,6 +7,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
+import re
 
 
 class Sistemax(Store):
@@ -54,7 +55,7 @@ class Sistemax(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'http://www.sistemax.cl/webstore/index.php?' \
+            url_webpage = 'http://www.sistemax.cl/index.php?' \
                           'route=product/category&limit=1000&path=' + \
                           category_path
 
@@ -65,43 +66,51 @@ class Sistemax(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-
+        html = session.get(url).text
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h2').text.strip()
-        sku = soup.find('input', {'name': 'product_id'})['value'].strip()
-        pricing_cells = soup.findAll('td', 'description-right')
-        stock_text = pricing_cells[len(pricing_cells) - 1]
+        name = soup.find('h1').text.strip()
+        key = soup.find(
+            'input', {'type': 'hidden', 'name': 'product_id'})['value']
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
+        part_number = re.search(r'Referencia: (.*)</li>', html).groups()[0]
+        pricing_cells = soup.findAll('h3', 'special-price')
+        if len(pricing_cells) > 1:
+            normal_price = Decimal(
+                pricing_cells[1].text.split('$')[-1].replace(',', ''))
+            offer_price = Decimal(
+                pricing_cells[2].text.split('$')[-1].replace(',', ''))
+        else:
+            normal_price = Decimal(
+                remove_words(pricing_cells[0].next_element.
+                             next_element.next_element.next_element.h2.text))
+            offer_price = normal_price
 
-        picture_urls = [tag['href'].replace(' ', '%20') for tag in
-                        soup.findAll('a', 'cloud-zoom')]
+        if offer_price > normal_price:
+            offer_price = normal_price
 
-        if stock_text.text.strip() == 'En Stock':
+        stock = pricing_cells[0].text.replace('Disponibilidad: ', '')
+
+        if stock == 'En Stock':
             stock = -1
         else:
             stock = 0
 
-        offer_price_container = soup.find('h3', 'special-price')
+        description = html_to_markdown(str(soup.find(
+            'div', 'tab-content').div))
+        picture_container = soup.find('ul', 'thumbnails')
 
-        if offer_price_container:
-            offer_price = offer_price_container.text.split('$')[1]
-            offer_price = Decimal(remove_words(offer_price))
+        picture_urls = []
 
-            normal_price = offer_price_container.parent.previous.previous
-            normal_price = Decimal(remove_words(normal_price.split('$')[1]))
-            if normal_price < offer_price:
-                normal_price = offer_price
-        else:
-            normal_price = Decimal(remove_words(soup.find(
-                'h3', 'product-price').text))
-            offer_price = normal_price
+        for tag in picture_container.findAll('a'):
+            url = tag['href'].replace(' ', '%20')
+            if url != '':
+                picture_urls.append(url)
 
         p = Product(
             name,
@@ -109,12 +118,13 @@ class Sistemax(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            part_number=part_number,
+            sku=key,
             description=description,
             picture_urls=picture_urls
         )
@@ -141,7 +151,7 @@ class Sistemax(Store):
                     original_product_url).query
                 product_id = urllib.parse.parse_qs(query_string)[
                     'product_id'][0]
-                product_url = 'http://www.sistemax.cl/webstore/' \
+                product_url = 'http://www.sistemax.cl/' \
                               'index.php?route=product/product&product_id=' + \
                               product_id
                 product_urls.append(product_url)
