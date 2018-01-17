@@ -19,15 +19,14 @@ class Syd(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'http://www.syd.cl'
+        url_base = 'http://syd.cl'
 
         category_paths = [
-            ['/computadoras/macbook_pro_13', 'Notebook'],
-            ['/computadoras/macbook_pro_15', 'Notebook'],
-            ['/computadoras/macbook_air', 'Notebook'],
+            ['/collection/macbook-pro-13', 'Notebook'],
+            ['/collection/macbook-pro-15', 'Notebook'],
+            ['/collection/macbook-air', 'Notebook'],
             # ['/computadoras/monitores', 'Monitor'],
-            ['/memorias', 'Ram'],
-            ['/ipodiphoneipad/ipad_mini', 'Tablet'],
+            ['/collection/memorias', 'Ram'],
             # ['/ipodiphoneipad/ipad_retina', 'Tablet'],
         ]
 
@@ -38,7 +37,7 @@ class Syd(Store):
             if local_category != category:
                 continue
 
-            category_url = url_base + category_path + '/?op=all&crit='
+            category_url = url_base + category_path
 
             response = session.get(category_url)
 
@@ -47,15 +46,14 @@ class Syd(Store):
 
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            titles = soup.findAll('h4')
+            titles = soup.findAll('div', 'eg_product_card')
 
             if not titles:
                 raise Exception('Empty category: ' + category_url)
 
             for title in titles:
                 product_link = title.find('a')
-                product_url = url_base + category_path + '/' + \
-                    product_link['href']
+                product_url = url_base + product_link['href']
                 product_urls.append(product_url)
 
         return product_urls
@@ -65,19 +63,18 @@ class Syd(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.findAll('h2')[4].text.strip()
-        sku = soup.find('input', {'name': 'sku'})['value'].strip()
-        part_number = soup.find('div', 'descripcion').find(
-            'h3').text.split(':')[1].strip()
+        name = soup.find('h2').text
+        sku = soup.find('select', 'form-control hidden').option['data-sku']
+        part_number = sku
+        price = Decimal(remove_words(soup.find(
+            'select', 'form-control hidden').option['data-final_price']))
 
-        price = soup.find('div', 'detallesCompra')
-        price = price.findAll('dd')[1].string
-        price = Decimal(remove_words(price))
+        description = soup.find('div', 'row text-justify')
+        description = description.findAll('p')
+        description = html_to_markdown(str(description))
 
-        description = html_to_markdown(str(soup.find('div', 'texto')))
-
-        picture_urls = ['http://www.syd.cl' +
-                        soup.find('div', 'imagenProducto').find('img')['src']]
+        picture_urls = [soup.find(
+            'img', 'img-thumbnail mk_main_img img-responsive')['src']]
 
         p = Product(
             name,
