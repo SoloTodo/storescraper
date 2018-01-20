@@ -24,7 +24,8 @@ class Sistemax(Store):
             'PowerSupply',
             'ComputerCase',
             'CpuCooler',
-            'Mouse'
+            'Mouse',
+            'Notebook',
         ]
 
     @classmethod
@@ -43,6 +44,7 @@ class Sistemax(Store):
             ['88', 'ComputerCase'],  # Gabinetes c/fuente
             ['95', 'CpuCooler'],  # Coolers CPU
             ['93', 'Mouse'],  # Mouse
+            ['115', 'Notebook'],  # Notebook
         ]
 
         product_urls = []
@@ -94,10 +96,11 @@ class Sistemax(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        stock = pricing_cells[0].text.replace('Disponibilidad: ', '')
+        stock_container = re.search(r'Disponibilidad: (\d+)',
+                                    pricing_cells[0].text)
 
-        if stock == 'En Stock':
-            stock = -1
+        if stock_container:
+            stock = int(stock_container.groups()[0])
         else:
             stock = 0
 
@@ -108,9 +111,9 @@ class Sistemax(Store):
         picture_urls = []
 
         for tag in picture_container.findAll('a'):
-            url = tag['href'].replace(' ', '%20')
-            if url != '':
-                picture_urls.append(url)
+            picture_url = tag['href'].replace(' ', '%20')
+            if picture_url != '':
+                picture_urls.append(picture_url)
 
         p = Product(
             name,
