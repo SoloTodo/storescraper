@@ -65,7 +65,7 @@ class Claro(Store):
 
             products_json = json.loads(session.get(
                 'https://equipos.clarochile.cl/servicio/catalogo'
-            ).text.split('</div>')[1])
+            ).text)
 
             for idx, product_entry in enumerate(products_json):
                 product_id = product_entry['id']
