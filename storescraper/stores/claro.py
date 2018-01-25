@@ -243,7 +243,8 @@ class Claro(Store):
                         price,
                         'CLP',
                         cell_plan_name=plan_name,
-                        picture_urls=picture_urls
+                        picture_urls=picture_urls,
+                        cell_monthly_payment=Decimal(0)
                     )
                     products.append(product)
 
