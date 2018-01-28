@@ -88,7 +88,7 @@ class Exito(Store):
         picture_urls = [tag['data-src'] for tag in soup.find(
             'div', {'id': 'slide-image-pdp'}).findAll('img')]
 
-        price_container = soup.find('span', 'money')
+        price_container = soup.find('div', 'col-data').find('span', 'money')
         if price_container:
             price = Decimal(price_container.text)
             stock = -1

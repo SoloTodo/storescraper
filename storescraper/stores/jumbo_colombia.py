@@ -41,10 +41,11 @@ class JumboColombia(Store):
                                'cd&cc=24&sm=0&PageNumber={}'.format(
                                 category_path, page)
 
-                base_soup = BeautifulSoup(session.get(category_url).text,
-                                          'html.parser')
+                soup = BeautifulSoup(session.get(category_url).text,
+                                     'html.parser')
 
-                link_containers = base_soup.findAll('li', 'tecnologia')
+                link_containers = soup.findAll(
+                    'li', 'comprar-tecnologia-|-tiendas-jumbo-colombia')
 
                 if not link_containers:
                     if page == 1:
@@ -61,6 +62,7 @@ class JumboColombia(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 

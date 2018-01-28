@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -64,33 +66,51 @@ class Syd(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h2').text
-        sku = soup.find('select', 'form-control hidden').option['data-sku']
-        part_number = sku
-        price = Decimal(remove_words(soup.find(
-            'select', 'form-control hidden').option['data-final_price']))
+        product_web_id = soup.find('input', {'id': 'productWebId'})['value']
+
+        picture_urls = [soup.find(
+            'img', 'img-thumbnail mk_main_img img-responsive')['src']]
 
         description = soup.find('div', 'row text-justify')
         description = description.findAll('p')
         description = html_to_markdown(str(description))
 
-        picture_urls = [soup.find(
-            'img', 'img-thumbnail mk_main_img img-responsive')['src']]
+        variants_container = soup.find('select', {'id': 'variant'})
+        products = []
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            -1,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=part_number,
-            description=description,
-            picture_urls=picture_urls
-        )
+        for variant in variants_container.findAll('option'):
+            sku = variant['data-sku']
+            part_number = sku
+            price = Decimal(remove_words(variant['data-final_price']))
 
-        return [p]
+            variant_id = variant['value']
+
+            stock_url = 'http://syd.cl/product/create/{}?q=1&' \
+                        'productWebId={}'.format(variant_id, product_web_id)
+
+            stock_data = json.loads(session.get(stock_url).text)
+            if stock_data['status'] == 'ok':
+                stock = -1
+            else:
+                stock = 0
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=part_number,
+                description=description,
+                picture_urls=picture_urls
+            )
+
+            products.append(p)
+
+        return products

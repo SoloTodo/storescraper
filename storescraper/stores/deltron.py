@@ -37,7 +37,7 @@ class Deltron(Store):
             ['NBK', 'Notebook'],
             ['HD', 'StorageDrive'],
             ['HDE', 'ExternalStorageDrive'],
-            ['MC&product_line=MCCF', 'MemoryCard'],
+            # ['MC&product_line=MCCF', 'MemoryCard'],
             ['MC&product_line=MCSD', 'MemoryCard'],
             ['MC&product_line=MCUS', 'UsbFlashDrive'],
         ]
