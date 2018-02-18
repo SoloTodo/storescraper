@@ -22,44 +22,38 @@ class Exito(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        if category != 'MemoryCard':
-            return []
-
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
-        base_url = 'https://www.exito.com'
+        base_url = 'http://www.exito.com'
 
-        brand_paths = [
-            'KINGSTON/_/N-1z13381',
-            'SANDISK/_/N-1z12rza',
-            'TOSHIBA/_/N-1z13cqe',
-            'WESTERN_DIGITAL/_/N-1z12ruu',
-            'SEAGATE/_/N-1z12qc2',
+        url_extensions = [
+            ['Tecnologia-Celulares_y_accesorios-Accesorios_para_celular-'
+             'Almacenamiento/_/N-2fzn', 'MemoryCard'],
+            ['Tecnologia-Computadores-_impresoras_y_tablets-'
+             'Accesorios_de_computador-Memorias/_/N-2gbg',
+             'ExternalStorageDrive'],
         ]
 
         product_urls = []
 
-        print(base_url)
         driver.get(base_url)
 
-        for brand_path in brand_paths:
-            category_url = base_url + '/' + brand_path + '?No=0&Nrpp=80'
-            print(category_url)
-            driver.get(category_url)
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
+                continue
+
+            catalog_url = base_url + '/browse/' + url_extension + \
+                '?No=0&Nrpp=80'
+            driver.get(catalog_url)
             base_soup = BeautifulSoup(driver.page_source, 'html.parser')
 
             link_containers = base_soup.findAll('div', 'product')
 
-            if not link_containers:
-                raise Exception('Empty category: ' + category_url)
-
             for link_container in link_containers:
-                if link_container.find('div', 'available'):
-                    continue
-                product_url = base_url + link_container.find('a')['href']
-                product_url = product_url.replace('?nocity', '')
-                product_urls.append(product_url)
+                url = base_url + link_container.find('a')['href']
+                url = url.replace('?nocity', '')
+                product_urls.append(url)
 
         driver.close()
 

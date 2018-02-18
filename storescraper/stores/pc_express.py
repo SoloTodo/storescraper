@@ -137,7 +137,12 @@ class PcExpress(Store):
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 
-        picture_urls = [soup.find('ul', 'thumbnails').a['href']]
+        picture_urls = None
+
+        thumbnails = soup.find('ul', 'thumbnails')
+
+        if thumbnails:
+            picture_urls = [thumbnails.a['href']]
 
         p = Product(
             name,

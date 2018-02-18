@@ -66,7 +66,7 @@ class BestBuyMexico(Store):
 
             for product_cell in product_cells:
                 product_url = product_cell.find('a')['href']
-                product_urls.append('https:' + product_url)
+                product_urls.append(product_url)
 
         return product_urls
 

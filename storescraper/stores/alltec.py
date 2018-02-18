@@ -128,6 +128,9 @@ class AllTec(Store):
         else:
             normal_price = offer_price
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         picture_urls = [link['href'] for link in
                         soup.find('ul', {'id': 'thumbs_list_frame'}).findAll(
                             'a')]

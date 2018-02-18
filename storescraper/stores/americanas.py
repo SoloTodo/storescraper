@@ -30,7 +30,7 @@ class Americanas(Store):
             ['475413', 'ExternalStorageDrive'],
             ['475433', 'SolidStateDrive'],
             ['266416', 'MemoryCard'],
-            ['263648', 'MemoryCard'],
+            # ['263648', 'MemoryCard'],
             ['475414', 'UsbFlashDrive'],
         ]
 
@@ -111,11 +111,11 @@ class Americanas(Store):
 
         sizes = ['extraLarge', 'large', 'big', 'medium']
 
+        description = main_page_json['description']['content']
+
         products = []
         for page_id, page_json in product_json.items():
             name = page_json['name']
-            description = html_to_markdown(
-                html.unescape(page_json['description'])).strip()
 
             picture_urls = []
 

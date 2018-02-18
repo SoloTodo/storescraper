@@ -31,11 +31,12 @@ class Gobantes(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.gobantes.cl/{}?limit=200'.format(
+            category_url = 'https://www.gobantes.cl/{}?limit=200'.format(
                 category_path
             )
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(category_url, verify=False).text,
+                                 'html.parser')
 
             product_containers = soup.findAll('div', 'image')
 
@@ -44,7 +45,8 @@ class Gobantes(Store):
 
             for container in product_containers:
                 product_url = container.find('a')['href'].replace(
-                    "&limit=200", "")
+                    '&limit=200', '').replace('https://gobantes.cl/',
+                                              'https://www.gobantes.cl/')
                 product_urls.append(product_url)
 
         return product_urls
@@ -52,7 +54,8 @@ class Gobantes(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text,
+                             'html.parser')
 
         model = soup.find('h1').text.strip()
         brand = soup.find('span', text='Marca:')

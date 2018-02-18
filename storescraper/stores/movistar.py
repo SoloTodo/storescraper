@@ -11,9 +11,8 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 
 class Movistar(Store):
-    prepago_url = 'http://hogar.movistar.cl/prepago/'
-    planes_url = 'http://www.movistar.cl/web/movistar/tienda/' \
-                 'telefonia-movil/planes-multimedia'
+    prepago_url = 'http://ww2.movistar.cl/prepago/'
+    planes_url = 'https://planes.movistar.cl/'
 
     @classmethod
     def categories(cls):
@@ -33,11 +32,11 @@ class Movistar(Store):
             ])
         elif category == 'Cell':
             req_url = 'http://www.movistar.cl/web/movistar/tienda/equipos/' \
-                'catalogo-de-equipos?p_p_id=colportalcatalog_WAR_' \
-                'colportalcatalogoportlet_INSTANCE_fPJVYJKGELWc&p_p_' \
-                'lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_' \
-                'cacheability=cacheLevelPage&p_p_col_id=column-layout-2&' \
-                'p_p_col_count=3'
+                      'catalogo-de-equipos?p_p_id=colportalcatalog_WAR_' \
+                      'colportalcatalogoportlet_INSTANCE_fPJVYJKGELWc&p_p_' \
+                      'lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_' \
+                      'cacheability=cacheLevelPage&p_p_col_id=' \
+                      'column-layout-2&p_p_col_count=3'
 
             data_template = \
                 '_colportalcatalog_WAR_colportalcatalogoportlet_INSTANCE_' \
@@ -117,47 +116,88 @@ class Movistar(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
 
-        plan_containers = soup.find('div', 'list_pack').findAll(
-            'div', 'contenedor-pack')
+        plan_containers = soup.find('section', 'listadoplanes-box').findAll(
+            'div', 'item')
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
+            plan_url = plan_link['href']
 
-            base_plan_name = 'Plan ' + plan_link.text.strip()
-            name = base_plan_name
-            name = name.replace('&nbsp;', '')
+            plan_name = 'Plan ' + plan_link.text.strip()
+            plan_name = plan_name.replace('&nbsp;', '')
 
-            price_container = plan_container.find(
-                'p', 'precio-mensual-verde').contents[1]
-            price = Decimal(remove_words(price_container))
+            normal_price_text = plan_container.find('p', 'normal').text.strip()
 
-            product = Product(
-                name,
+            if normal_price_text:
+                # The product has internet price and normal price
+                price_container = \
+                    normal_price_text.split('\xa0')[1].split('/')[0]
+                print(price_container)
+                normal_price = Decimal(remove_words(price_container))
+
+                offer_price_text = plan_container.find('span', 'monto').text
+                internet_price = Decimal(
+                    remove_words(offer_price_text.split('\xa0')[1]))
+            else:
+                # The product only has normal price
+                internet_price = None
+
+                normal_price_text = plan_container.find('span', 'monto').text
+                normal_price = Decimal(
+                    remove_words(normal_price_text.strip()))
+
+            products.append(Product(
+                plan_name,
                 cls.__name__,
                 'CellPlan',
+                plan_url,
                 url,
-                url,
-                name,
+                plan_name,
                 -1,
-                price,
-                price,
-                'CLP',
-            )
-            products.append(product)
+                normal_price,
+                normal_price,
+                'CLP'
+            ))
 
-            product = Product(
-                name + ' Portabilidad',
+            products.append(Product(
+                plan_name + ' Portabilidad',
                 cls.__name__,
                 'CellPlan',
+                plan_url,
                 url,
-                url,
-                name + ' Portabilidad',
+                plan_name + ' Portabilidad',
                 -1,
-                price,
-                price,
-                'CLP',
-            )
-            products.append(product)
+                normal_price,
+                normal_price,
+                'CLP'
+            ))
+
+            if internet_price:
+                products.append(Product(
+                    plan_name + ' Exclusivo Web',
+                    cls.__name__,
+                    'CellPlan',
+                    plan_url,
+                    url,
+                    plan_name + ' Exclusivo Web',
+                    -1,
+                    internet_price,
+                    internet_price,
+                    'CLP'
+                ))
+
+                products.append(Product(
+                    plan_name + ' Portabilidad Exclusivo Web',
+                    cls.__name__,
+                    'CellPlan',
+                    plan_url,
+                    url,
+                    plan_name + ' Portabilidad Exclusivo Web',
+                    -1,
+                    internet_price,
+                    internet_price,
+                    'CLP'
+                ))
 
         return products
 
@@ -165,96 +205,97 @@ class Movistar(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        panel_ids = ['pack2', 'pack1']
-        description = ''
-        for panel_id in panel_ids:
-            panel = soup.find('div', {'id': panel_id})
-            description += html_to_markdown(str(panel)) + '\n\n'
-
-        manufacturer = soup.find('p', 'top-name').text.strip()
-        model = soup.find('h1', {'id': 'devicename'}).text.strip()
-        name = '{} {}'.format(manufacturer, model)
-
-        base_sku = re.search(r'dispositivo-(\d+)', url).groups()[0]
+        device_id = re.search('(\d+)$', url).groups()[0]
 
         products = []
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
+        manufacturer = soup.find('p', 'top-name').string.strip()
+        cell_name = soup.find('h1', {'id': 'devicename'}).text.strip()
+
+        cell_name = '{} {}'.format(manufacturer, cell_name)
+
         cell_prices = []
 
         plan_combinations = [
-            ('lineaNueva', ''),
+            ('lineaNueva', None),
             ('portabilidad', ' Portabilidad')
         ]
 
         for dom_element_id, plan_combination_suffix in plan_combinations:
-            plan_combination_table = soup.find(
-                'div', {'id': dom_element_id}).find('table')
-            cell_refs = plan_combination_table.find('tbody').findAll(
-                'strong', 'textfeat01')
+            for internet_prefix in [None, ' Exclusivo Web']:
+                plan_combination_table = soup.find(
+                    'div', {'id': dom_element_id}).find('table')
+                rows = plan_combination_table.find('tbody').findAll(
+                    'tr', recursive=False)
+                rows_with_plans = []
 
-            for cell_ref in cell_refs:
-                row = cell_ref.findParent('tr')
-                if row.find('span', 'c-blue'):
-                    # Movistar One price
-                    continue
-                try:
-                    order = row['data-order']
-                except KeyError:
-                    continue
+                for row in rows:
+                    if row.find('span', 'c-blue'):
+                        # Movistar One price
+                        continue
 
-                plan_name = row.find('td', 'w2')
+                    try:
+                        order = row['data-order']
+                        rows_with_plans.append(row)
+                    except KeyError:
+                        continue
 
-                if not plan_name:
-                    continue
+                for row in rows_with_plans:
+                    plan_name = row.find('td', 'w2')
 
-                if plan_name.find('img'):
-                    plan_name = plan_name.find(
-                        'strong').contents[1].strip() + plan_combination_suffix
-                else:
-                    plan_name = plan_name.find(
-                        'strong').contents[0].strip() + plan_combination_suffix
+                    if not plan_name:
+                        continue
 
-                initial_payment = Decimal(remove_words(row.find(
-                    'p', {'id': 'priceOffer'}).find('strong').text.strip()))
+                    if plan_name.find('img'):
+                        plan_name = plan_name.find(
+                            'strong').contents[1].strip()
+                    else:
+                        plan_name = plan_name.find(
+                            'strong').contents[0].strip()
 
-                monthly_payment = row.find('p', 'textfeat02').find('strong')
+                    if internet_prefix:
+                        plan_name += internet_prefix
+                    if plan_combination_suffix:
+                        plan_name += plan_combination_suffix
 
-                if monthly_payment:
-                    monthly_payment = Decimal(remove_words(
-                        monthly_payment.text.strip()))
-                else:
-                    monthly_payment = Decimal('0')
+                    initial_payment = Decimal(remove_words(row.find(
+                        'p', {'id': 'priceOffer'}).find(
+                        'strong').text.strip()))
 
-                cell_prices.append(
-                    (plan_name, initial_payment, monthly_payment))
+                    monthly_payment = row.find('p', 'textfeat02').find(
+                        'strong')
+
+                    if monthly_payment:
+                        monthly_payment = Decimal(remove_words(
+                            monthly_payment.text.strip()))
+                    else:
+                        monthly_payment = Decimal('0')
+
+                    cell_prices.append(
+                        (plan_name, initial_payment, monthly_payment))
 
         color_variants = soup.find('ul', 'list-colors')
         for container in color_variants.findAll('li')[1:]:
             color_name = container.findAll('span')[-1].text.strip()
-            picture_urls = ['http://www.movistar.cl' +
-                            container.find('span')[
-                                'data-desktop-image-retina']]
 
-            variant_name = '{} Color {}'.format(name, color_name)
+            variant_name = '{} Color {}'.format(cell_name, color_name)
 
             for plan_name, initial_payment, monthly_payment in cell_prices:
-                product = Product(
+                products.append(Product(
                     variant_name,
                     cls.__name__,
                     'Cell',
                     url,
                     url,
-                    '{} {} {}'.format(base_sku, color_name, plan_name),
+                    '{} - {}'.format(device_id, plan_name),
                     -1,
                     initial_payment,
                     initial_payment,
                     'CLP',
                     cell_plan_name=plan_name,
-                    picture_urls=picture_urls,
-                    description=description,
                     cell_monthly_payment=monthly_payment
-                )
-                products.append(product)
+                ))
 
         return products

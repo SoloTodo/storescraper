@@ -49,7 +49,7 @@ class Carrefour(Store):
             if '?' in category_path:
                 separator = '&'
 
-            category_url = 'http://www.carrefour.com.ar/{}{}limit=all'.format(
+            category_url = 'https://www.carrefour.com.ar/{}{}limit=all'.format(
                     category_path, separator)
 
             print(category_url)

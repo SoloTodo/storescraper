@@ -52,7 +52,7 @@ class Magens(Store):
             ['Monitor', 'Monitor'],
             ['Televisores', 'Television'],
             # ['Impresora%20Láser', 'Printer'],
-            ['Impresora%20De%20Inyección%20De%20Tinta', 'Printer'],
+            ['Impresora%20De%20Inyecci%C3%B3n%20De%20Tinta', 'Printer'],
             ['Impresora', 'Printer'],
         ]
 
@@ -74,9 +74,10 @@ class Magens(Store):
                 if '?' in url_extension:
                     separator = '&'
 
-                category_url = 'http://www.magens.cl/Categoria/' \
+                category_url = 'https://www.magens.cl/Categoria/' \
                                '{}{}paginaActual={}'.format(
                                 url_extension, separator, page)
+                print(category_url)
 
                 soup = BeautifulSoup(
                     session.get(category_url).text, 'html.parser')
@@ -92,7 +93,8 @@ class Magens(Store):
 
                 for container in product_containers:
                     product_url = container.find('a')['href'].replace('\t', '')
-                    discovered_urls.append(product_url)
+                    discovered_urls.append('https://www.magens.cl' +
+                                           product_url)
                     found_products += 1
 
                 page += 1

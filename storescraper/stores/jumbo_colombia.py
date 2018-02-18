@@ -1,5 +1,7 @@
 import json
 import re
+import urllib
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -34,7 +36,7 @@ class JumboColombia(Store):
             page = 1
 
             while True:
-                if page >= 10:
+                if page >= 20:
                     raise Exception('Page overflow: ' + category_path)
                 category_url = 'http://www.tiendasjumbo.co/buscapagina?fq={}' \
                                '&PS=50&sl=19ccd66b-b568-43cb-a106-b52f9796f5' \
@@ -54,6 +56,11 @@ class JumboColombia(Store):
 
                 for link_container in link_containers:
                     product_url = link_container.find('a')['href']
+                    parse_result = urllib.parse.urlparse(product_url)
+                    product_url = '{}://{}{}'.format(parse_result.scheme,
+                                                     parse_result.hostname,
+                                                     urllib.parse.quote(
+                                                         parse_result.path))
                     product_urls.append(product_url)
 
                 page += 1

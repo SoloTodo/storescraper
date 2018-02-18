@@ -72,18 +72,19 @@ class MyBox(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        stock = int(re.search(r'quantityAvailable=(-?\d+)',
+        stock = int(re.search(r"productAvailableForOrder='(\d+)'",
                               page_source).groups()[0])
-        if stock < 0:
-            stock = 0
+        if stock:
+            stock = -1
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1').text.strip()
-        sku = soup.find('input', {'name': 'id_product'})['value'].strip()
+        sku = re.search(r"id_product='(\d+)'", page_source).groups()[0]
 
-        price = soup.find('span', {'id': 'our_price_display'}).string
-        price = Decimal(remove_words(price))
+        price = re.search(r"productPriceTaxExcluded=(\d+)",
+                          page_source).groups()[0]
+        price = Decimal(price)
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'idTab1'})))

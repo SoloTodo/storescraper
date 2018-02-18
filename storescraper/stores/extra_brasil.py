@@ -49,7 +49,7 @@ class ExtraBrasil(Store):
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = \
-                    'http://buscando.extra.com.br/{}&paginaAtual={}&' \
+                    'https://buscando.extra.com.br/{}&paginaAtual={}&' \
                     'Ordenacao=precoCrescente'.format(category_path, page)
 
                 print(category_url)
@@ -66,7 +66,7 @@ class ExtraBrasil(Store):
 
                 for container in containers:
                     product_url = container.find('a')['href']
-                    product_url = product_url.split('&')[0]
+                    product_url = product_url.split('?')[0]
                     product_urls.append(product_url)
 
                 page += 1
