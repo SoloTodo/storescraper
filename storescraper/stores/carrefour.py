@@ -55,7 +55,7 @@ class Carrefour(Store):
             print(category_url)
 
             soup = BeautifulSoup(
-                session.get(category_url).text, 'html.parser')
+                session.get(category_url, verify=False).text, 'html.parser')
             containers = soup.find('ul', 'products-grid').findAll(
                 'li', 'item')
 
@@ -71,7 +71,7 @@ class Carrefour(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         pricing_text = re.search(

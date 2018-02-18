@@ -3,8 +3,6 @@ import demjson
 import re
 from decimal import Decimal
 
-from bs4 import BeautifulSoup
-
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -116,10 +114,12 @@ class LaPolar(Store):
         if not response.ok:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        page_source = response.text
 
-        js_data = re.search('var laPolar = ([\s\S]+);',
-                            soup.findAll('script')[-3].text).groups()[0]
+        js_data = re.search(
+            '<script src="/js/vendor.js"></script><script>var laPolar = '
+            '([\s\S]+); </script><script src="/js/product.js">',
+            page_source).groups()[0]
         description_html = \
             re.search(r'"description":([\s\S]+),"gifts"', js_data).groups()[0]
 

@@ -73,7 +73,7 @@ class Exito(Store):
             'REF:', '').strip()
 
         name = soup.find('h1', 'name').text.strip()
-        sku = soup.find('button', 'btn-add-cart')['data-prd'].strip()
+        sku = soup.find('div', 'product')['id'][3:]
 
         description = ''
         for panel in soup.findAll('div', 'tabs-pdp')[:-1]:

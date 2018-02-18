@@ -77,7 +77,7 @@ class JumboColombia(Store):
                                  page_source).groups()[0]
         pricing_data = json.loads(pricing_data)
 
-        skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
+        skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);CATALOG',
                               page_source).groups()[0]
         skus_data = json.loads(skus_data)
         name = '{} {}'.format(pricing_data['productBrandName'],
