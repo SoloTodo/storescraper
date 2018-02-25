@@ -56,7 +56,7 @@ class PcExpress(Store):
             ['74_133', 'Mouse'],
             ['75_136', 'Notebook'],
             ['75_223', 'Tablet'],
-            ['241_269', 'Tablet'],
+            # ['241_269', 'Tablet'],
             ['83', 'VideoCard'],
         ]
 
