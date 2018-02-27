@@ -53,9 +53,9 @@ class Wei(Store):
             ['511', 'StorageDrive'],  # HDD PC SATA
             ['513', 'StorageDrive'],  # HDD Notebook SATA
             ['1142', 'UsbFlashDrive'],  # Pendrive
-            ['1127', 'Motherboard'],  # AM3
-            ['1128', 'Motherboard'],  # AM3+
-            ['668', 'Motherboard'],  # FM2+
+            # ['1127', 'Motherboard'],  # AM3
+            # ['1128', 'Motherboard'],  # AM3+
+            # ['668', 'Motherboard'],  # FM2+
             ['660', 'Motherboard'],  # 1150
             ['687', 'Motherboard'],  # 1151
             ['1131', 'Motherboard'],  # 1155

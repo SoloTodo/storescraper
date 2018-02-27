@@ -91,7 +91,7 @@ class Ribeiro(Store):
             return []
 
         normal_price = Decimal(normal_price.find('span').text.replace(
-            ',', '').replace('$', ''))
+            ',', '').replace('$', '').replace('.', ''))
 
         price_container = soup.find('span', 'prodPlanCuo')
 
@@ -99,7 +99,7 @@ class Ribeiro(Store):
             price_container = soup.find('span', 'precio_big_indivGris')
 
         offer_price = Decimal(price_container.text.replace(
-            ',', '').replace('$', ''))
+            ',', '').replace('$', '').replace('.', ''))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'ContenedorDescripciones'})))
