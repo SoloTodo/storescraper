@@ -1,3 +1,5 @@
+import urllib
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from selenium import webdriver
@@ -64,7 +66,9 @@ class Tecnoglobal(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                soup = cls._retrieve_page(session, category_url, extra_args)
+                cookies = cls._retrieve_page(session, extra_args)
+                response = session.get(category_url, cookies=cookies)
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 containers = soup.findAll('td', {
                     'title': 'Codigo TecnoGlobal'})[1:]
@@ -90,7 +94,17 @@ class Tecnoglobal(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = cls._retrieve_page(session, url, extra_args)
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        cookies = cls._retrieve_page(session, extra_args)
+
+        query = urllib.parse.urlparse(url).query
+
+        response = session.post(
+            'http://www.tecnoglobal.cl/default.asp',
+            data=query,
+            cookies=cookies)
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         has_offer_price = soup.find('img', {'src': '../../img/params/'
                                                    'listado/ofertas.gif'})
@@ -145,19 +159,20 @@ class Tecnoglobal(Store):
         return [p]
 
     @classmethod
-    def _retrieve_page(cls, session, url, extra_args, refresh=False):
+    def _retrieve_page(cls, session, extra_args, refresh=False):
         cookies = cls._session_cookies(extra_args, refresh)
-        response = session.get(url, cookies=cookies)
+        response = session.get(
+            'http://www.tecnoglobal.cl/default.asp', cookies=cookies)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         if soup.find('input', {'name': 'lo_usuario'}):
             if refresh:
                 raise Exception('Invalid username / password')
             else:
-                return cls._retrieve_page(session, url, extra_args,
+                return cls._retrieve_page(session, extra_args,
                                           refresh=True)
         else:
-            return soup
+            return cookies
 
     @classmethod
     def _session_cookies(cls, extra_args, refresh=True):
