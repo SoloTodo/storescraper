@@ -169,6 +169,9 @@ class AbcDin(Store):
         else:
             offer_price = normal_price
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content']
 
         description = html_to_markdown(str(soup.find(
