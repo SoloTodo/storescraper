@@ -28,27 +28,25 @@ class AllTec(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.alltec.cl/'
+        base_url = 'https://www.alltec.cl/'
 
         category_urls = [
             ['16-gabinetes', 'ComputerCase'],
-            ['55-tarjetas-de-video', 'VideoCard'],
+            ['18-fuentes-de-poder', 'PowerSupply'],
             ['17-placas-madre', 'Motherboard'],
             ['20-procesadores', 'Processor'],
+            ['19-memorias', 'Ram'],
             ['24-mouse', 'Mouse'],
             ['43-impresoras', 'Printer'],
-
+            ['55-tarjetas-de-video', 'VideoCard'],
         ]
 
         url_extensions = [
             ['33-mecanicos-rigidos', 'StorageDrive'],
             ['34-ssd', 'SolidStateDrive'],
-            ['36-ddr3', 'Ram'],
-            ['37-ddr4', 'Ram'],
             ['27-monitores', 'Monitor'],
             ['93-cpu-cooler', 'CpuCooler'],
             ['92-water-cooling', 'CpuCooler'],
-            ['80-potencia-realcertificadas', 'PowerSupply'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -57,6 +55,7 @@ class AllTec(Store):
                 continue
 
             category_url = base_url + category_path
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
             subcategory_containers = soup.findAll('div', 'subcategory-image')
@@ -76,12 +75,10 @@ class AllTec(Store):
                 continue
 
             subcategory_url = '{}{}?n=1000'.format(base_url, subcategory_path)
+            print(subcategory_url)
             soup = BeautifulSoup(session.get(subcategory_url).text,
                                  'html.parser')
             link_containers = soup.findAll('div', 'product-container')
-
-            if not link_containers:
-                raise Exception('Empty subcategory: ' + subcategory_url)
 
             for link_container in link_containers:
                 product_url = link_container.find('a')['href']
