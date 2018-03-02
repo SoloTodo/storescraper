@@ -141,6 +141,9 @@ class Bip(Store):
         normal_price_cell = soup.findAll('td', 'prc8')[1]
         normal_price = Decimal(remove_words(normal_price_cell.string))
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = ''
 
         description_container = soup.find('table', 'brd')
