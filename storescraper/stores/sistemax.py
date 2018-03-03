@@ -96,11 +96,10 @@ class Sistemax(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        stock_container = re.search(r'Disponibilidad: (\d+)',
-                                    pricing_cells[0].text)
+        stock_container = soup.find('p', {'id': 'stock'})
 
-        if stock_container:
-            stock = int(stock_container.groups()[0])
+        if stock_container.text.strip() == 'En Stock':
+            stock = -1
         else:
             stock = 0
 
