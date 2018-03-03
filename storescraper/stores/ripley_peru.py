@@ -25,38 +25,41 @@ class RipleyPeru(Store):
                    'orderBy=3'
 
         category_urls = [
-            ['computo/laptops/todas-las-laptops', 'Notebook'],
-            ['computo/2-en-1-convertibles/laptops-2-en-1', 'Notebook'],
+            # ['computo/laptops/todas-las-laptops', 'Notebook'],
+            # ['computo/2-en-1-convertibles/laptops-2-en-1', 'Notebook'],
             ['computo/almacenamiento/discos-duros', 'ExternalStorageDrive'],
             ['computo/almacenamiento/memorias-usb', 'UsbFlashDrive'],
+            # ['celulares/accesorios/memorias', 'MemoryCard'],
         ]
 
         session = session_with_proxy(extra_args)
-
         product_urls = []
 
-        for category_path, local_category in category_urls:
+        for category_url, local_category in category_urls:
             if local_category != category:
                 continue
 
             page = 1
 
             while True:
-                if page > 30:
-                    raise Exception('Page overflow')
+                if page >= 20:
+                    raise Exception()
 
-                page_url = url_base.format(category_path, page)
-                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
+                page_url = url_base.format(category_url, page)
+                response = session.get(page_url)
+
+                if not response.ok:
+                    if page == 1:
+                        raise Exception('Empty category: ' + page_url)
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 product_link_containers = soup.find(
                     'div', 'catalog-container')
 
                 if not product_link_containers:
-                    if page == 1:
-                        raise Exception('Empty category path: {} - {}'.format(
-                            category, category_path))
-                    else:
-                        break
+                    break
 
                 product_link_containers = product_link_containers.findAll(
                     'a', 'catalog-item')

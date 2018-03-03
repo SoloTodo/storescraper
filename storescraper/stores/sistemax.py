@@ -89,8 +89,8 @@ class Sistemax(Store):
                 pricing_cells[2].text.split('$')[-1].replace(',', ''))
         else:
             normal_price = Decimal(
-                remove_words(pricing_cells[0].next_element.
-                             next_element.next_element.next_element.h2.text))
+                remove_words(soup.find(
+                    'div', {'id': 'product'}).parent.find('h2').text))
             offer_price = normal_price
 
         if offer_price > normal_price:

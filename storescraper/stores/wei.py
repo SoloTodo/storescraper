@@ -58,12 +58,12 @@ class Wei(Store):
             # ['668', 'Motherboard'],  # FM2+
             ['660', 'Motherboard'],  # 1150
             ['687', 'Motherboard'],  # 1151
-            ['1131', 'Motherboard'],  # 1155
+            # ['1131', 'Motherboard'],  # 1155
             ['1133', 'Motherboard'],  # 2011
             ['730', 'Motherboard'],  # PLACAS GAMER
             ['1162', 'CpuCooler'],  # Ventilacion
             ['602', 'Processor'],  # FM2
-            ['674', 'Processor'],  # FM2+
+            # ['674', 'Processor'],  # FM2+
             ['1119', 'Processor'],  # AM3+
             ['657', 'Processor'],  # 1150
             ['691', 'Processor'],  # 1151
@@ -114,8 +114,7 @@ class Wei(Store):
                            ''.format(category_path, page)
                 print(page_url)
 
-                soup = BeautifulSoup(session.get(
-                    page_url, verify=False).text, 'html.parser')
+                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
 
                 product_cells = soup.findAll('div', 'box-producto')
 
