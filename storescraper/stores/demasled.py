@@ -23,7 +23,7 @@ class Demasled(Store):
             # Ampolletas LED
             ['/bipin-mr16', 'Lamp'],
             ['/dicroicas-gu10', 'Lamp'],
-            ['/ampolletas-g9', 'Lamp'],
+            # ['/ampolletas-g9', 'Lamp'],
             ['/rosca-e27-ampolleta-tradicional', 'Lamp'],
             ['/ampolleta-par', 'Lamp'],
             # Tubos LED
