@@ -67,7 +67,7 @@ class OrtizYOrtega(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
         sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
 
-        price_string = soup.find('span', {'id': 'our_price_display'}).text
+        price_string = soup.find('span', 'precio-modal-1pago').text
         price = Decimal(price_string.replace('$', '').replace(
             '.', '').replace(',', '.'))
 
