@@ -77,10 +77,10 @@ class Sistemax(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1').text.strip()
-        key = soup.find(
+        sku = soup.find(
             'input', {'type': 'hidden', 'name': 'product_id'})['value']
 
-        part_number = re.search(r'Referencia: (.*)</li>', html).groups()[0]
+        part_number = soup.find('p', {'id': 'pn'}).text[:49]
         pricing_cells = soup.findAll('h3', 'special-price')
         if len(pricing_cells) > 1:
             normal_price = Decimal(
@@ -121,13 +121,13 @@ class Sistemax(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
             'CLP',
             part_number=part_number,
-            sku=key,
+            sku=sku,
             description=description,
             picture_urls=picture_urls
         )
