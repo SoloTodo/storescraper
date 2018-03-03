@@ -118,7 +118,7 @@ class Magens(Store):
         name = soup.find(
             'meta', {'property': 'og:description'})['content'].strip()
 
-        sku = re.search(r'-(\d+)/p', url).groups()[0]
+        sku = re.search(r'-(\d+)$', url).groups()[0]
 
         description = ''
 

@@ -3,6 +3,8 @@ import demjson
 import re
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -88,8 +90,8 @@ class LaPolar(Store):
             if local_category != category:
                 continue
 
-            url = 'https://tienda.lapolar.cl/catalogo/{}?response=json&' \
-                  'pageSize=1000'.format(extension)
+            url = 'https://tienda.lapolar.cl/catalogo/{}?response=' \
+                  'json&pageSize=1000'.format(extension)
             print(url)
             products_json = json.loads(session.get(url).text)
 
@@ -109,38 +111,40 @@ class LaPolar(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, allow_redirects=False)
+        response = session.get(url)
 
         if not response.ok:
             return []
 
         page_source = response.text
 
-        js_data = re.search(
-            '<script src="/js/vendor.js"></script><script>var laPolar = '
-            '([\s\S]+); </script><script src="/js/product.js">',
-            page_source).groups()[0]
-        description_html = \
-            re.search(r'"description":([\s\S]+),"gifts"', js_data).groups()[0]
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        js_data = js_data.replace(description_html, '""')
-        js_data = demjson.decode(js_data)['product']
+        name = soup.find('h1', 'title').text.strip()
+        sku = soup.find('span', {'id': 'spanProductPlu'}).text.strip()
 
-        sku = js_data['plu']
-        name = js_data['marketingDescription']
-        normal_price = Decimal(js_data['price']['internet'])
-        offer_price = Decimal(js_data['price']['laPolarCard'])
+        normal_price = Decimal(
+            re.search(r'internet: Number\((\d+)\)', page_source).groups()[0])
+        offer_price = Decimal(
+            re.search(r'laPolarCard: Number\((\d+)\)',
+                      page_source).groups()[0])
 
-        if not offer_price:
-            offer_price = normal_price
+        available_online = int(
+            re.search(r'isAvailableOnline: (\d+),', page_source).groups()[0])
 
-        if js_data['availableOnlineCatalog']:
+        if available_online:
             stock = -1
         else:
             stock = 0
 
-        picture_urls = [image['large'] for image in js_data['images']]
-        description = html_to_markdown(description_html)
+        if not offer_price:
+            offer_price = normal_price
+
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'description'})))
+
+        picture_tags = soup.findAll('img', {'temprop': 'thumbnailUrl'})
+        picture_urls = [tag['data-img-large'] for tag in picture_tags]
 
         p = Product(
             name,
