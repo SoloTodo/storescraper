@@ -1,3 +1,5 @@
+import json
+import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -33,12 +35,14 @@ class Peta(Store):
         category_paths = [
             ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks.html',
              'Notebook'],
-            ['equipos-computadores-tablets-aio-ebooks/moviles/ultrabooks.html',
-             'Notebook'],
-            ['apple/mac/macbook.html', 'Notebook'],
-            ['apple/mac/macbook-air.html', 'Notebook'],
-            ['apple/mac/macbook-pro.html', 'Notebook'],
-            ['apple/mac/macbook-pro-retina.html', 'Notebook'],
+            # ['equipos-computadores-tablets-aio-ebooks/moviles/ultrabooks.html',
+            #  'Notebook'],
+            ['equipos-computadores-tablets-aio-ebooks/moviles/'
+             'equipos-2-en-1.html', 'Notebook'],
+            # ['apple/mac/macbook.html', 'Notebook'],
+            # ['apple/mac/macbook-air.html', 'Notebook'],
+            # ['apple/mac/macbook-pro.html', 'Notebook'],
+            # ['apple/mac/macbook-pro-retina.html', 'Notebook'],
             ['partes-y-piezas/display/tarjetas-de-video.html', 'VideoCard'],
             ['partes-y-piezas/componentes/cpu-procesadores.html',
              'Processor'],
@@ -57,84 +61,79 @@ class Peta(Store):
             ['partes-y-piezas/display/televisores.html', 'Television'],
             ['equipos-computadores-tablets-aio-ebooks/moviles/tablets.html',
              'Tablet'],
-            ['apple/ipad.html', 'Tablet'],
+            # ['apple/ipad.html', 'Tablet'],
             ['partes-y-piezas/impresoras/inyeccion-de-tinta.html', 'Printer'],
             ['partes-y-piezas/impresoras/http-laserwaca-com.html', 'Printer'],
             ['partes-y-piezas/almacenamiento/externos.html',
              'ExternalStorageDrive'],
-            ['accesorios/perifericos/mouse.html', 'Mouse'],
+            ['accesorios/perifericos/mouse.html', 'Mouse']
         ]
 
-        product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in category_paths:
+        product_urls = []
+        for url_extension, local_category in category_paths:
             if local_category != category:
                 continue
 
-            url = 'http://www.peta.cl/index.php/' + category_path
-            page = 1
+            url = 'https://www.peta.cl/' + url_extension
+            p = 1
 
-            # Peta tends to change the path to its categories, and that
-            # causes the pagination to break, so we load the first page
-            # of the category and refresh the value of the base url for it
-            url = session.get(url).url
+            local_product_urls = []
 
             while True:
-                print(category_path, page)
-                complete_url = url + '?limit=60&p=' + str(page)
-
-                if page >= 10:
-                    raise Exception('Page overflow: ' + complete_url)
-
-                soup = BeautifulSoup(session.get(complete_url).text,
+                category_url = url + '?product_list_limit=24&p=' + str(p)
+                print(category_url)
+                soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                p_rows = soup.findAll('ul', 'products-grid')
+                for cell in soup.find(
+                        'ol', 'product-items').findAll('li', 'product-item'):
+                    product_id_container = cell.find('input',
+                                                     {'name': 'product'})
 
-                for row in p_rows:
-                    for cell in row.findAll('li', 'item'):
-                        product_url = cell.find('a')['href']
-                        product_urls.append(product_url)
+                    if not product_id_container:
+                        raise Exception('Empty category:' + category_url)
+
+                    product_url = 'https://www.peta.cl/catalog/product/' \
+                                  'view/id/' + product_id_container['value']
+                    local_product_urls.append(product_url)
 
                 pager = soup.find('div', 'pages')
                 if not pager or not pager.find('a', 'next'):
+                    if not local_product_urls:
+                        raise Exception('Empty category:' + category_url)
                     break
 
-                page += 1
+                p += 1
+
+            product_urls.extend(local_product_urls)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-        sku = soup.find(
-            'meta', {'itemprop': 'productID'})['content'].split(':', 1)[1]
+        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        part_number = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        sku = soup.find('div', 'price-final_price')['data-product-id'].strip()
 
-        product_container = soup.find('div', 'product-shop')
-
-        if product_container.find('p', 'out-of-stock'):
-            stock = 0
-        else:
+        if soup.find('button', {'id': 'product-addtocart-button'}):
             stock = -1
+        else:
+            stock = 0
 
-        price_containers = soup.find('div', 'price-box').findAll(
-            'span', 'price')
-
-        offer_price = Decimal(remove_words(price_containers[0].text))
-        normal_price = Decimal(remove_words(price_containers[1].text))
-
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', 'fancy-images')]
+        price_container = soup.find('span', 'price')
+        price = Decimal(remove_words(price_container.string))
 
         description = html_to_markdown(
-            str(soup.find('div', 'short-description')))
+            str(soup.find('div', {'id': 'product.info.description'})))
 
-        for section in soup.findAll('div', 'tab-content'):
-            description += '\n\n' + html_to_markdown(str(section))
+        picture_encoded_urls = re.findall(r'"full":(".+?")', page_source)
+        picture_urls = [json.loads(tag) for tag in picture_encoded_urls]
 
         p = Product(
             name,
@@ -144,11 +143,11 @@ class Peta(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
-            part_number=sku,
+            part_number=part_number,
             description=description,
             picture_urls=picture_urls
         )

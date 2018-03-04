@@ -124,27 +124,6 @@ class Corona(Store):
         if soup.find('p', 'title-not-found'):
             return []
 
-        name = soup.find('div', 'productName')
-
-        if not name:
-            return []
-
-        name = name.text.strip()
-        sku = soup.find('div', 'skuReference').text.strip()
-
-        pricing_data = re.search(r'vtex.events.addData\(([\S\s]*?)\);',
-                                 page_source).groups()[0]
-
-        pricing_json = json.loads(pricing_data)
-
-        stocks = pricing_json['skuStocks']
-        if len(stocks) > 1:
-            raise Exception('More than one stock for URL: ' + url)
-
-        stock = set(stocks.values()).pop()
-
-        normal_price = Decimal(pricing_json['productPriceTo'])
-
         description_text = re.search(
             r'<div class="row detalles-producto">[\S\s]*'
             r'<div class="row recomendados-productos">',
@@ -162,50 +141,54 @@ class Corona(Store):
                 picture_url = link['rel'][0]
             picture_urls.append(picture_url)
 
-        # Prices
+        # Offer price
 
+        offer_price = None
         corona_price_container = soup.find('td', 'Oferta')
         if corona_price_container:
-            normal_price_container = soup.find('p', 'descricao-preco')
-
-            if normal_price_container:
-                normal_price_text = normal_price_container.findAll(
-                    'strong')[1].text
-            else:
-                normal_price_container = soup.find('td', 'Oferta')
-                normal_price_text = normal_price_container.text
-
-            normal_price = Decimal(remove_words(
-                normal_price_text.split('$')[1].split(',')[0]))
-
             offer_price_text = corona_price_container.string.split(
                 '$')[-1].split('Con')[0]
 
             if 'x' in offer_price_text or 'X' in offer_price_text or \
                     offer_price_text == '-':
-                offer_price = normal_price
+                pass
             else:
                 offer_price = Decimal(remove_words(offer_price_text))
-                if offer_price > normal_price:
-                    offer_price = normal_price
 
-        else:
-            offer_price = normal_price
+        # SKUS pricing
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls
-        )
+        skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
+                              page_source).groups()[0]
 
-        return [p]
+        skus_data = json.loads(skus_data)
+        products = []
+
+        for sku_data in skus_data['skus']:
+            name = sku_data['skuname']
+            sku = str(sku_data['sku'])
+            stock = sku_data['availablequantity']
+
+            normal_price = Decimal(sku_data['bestPrice'] / 100)
+
+            if offer_price:
+                sku_offer_price = offer_price
+            else:
+                sku_offer_price = normal_price
+
+            products.append(Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                sku_offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls
+            ))
+
+        return products

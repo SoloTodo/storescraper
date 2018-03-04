@@ -21,7 +21,7 @@ class OrtizYOrtega(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['hogar/heladeras-y-freezers/heladeras', 'Refrigerator'],
-            ['hogar/heladeras-y-freezers/freezers', 'Refrigerator'],
+            # ['hogar/heladeras-y-freezers/freezers', 'Refrigerator'],
             ['climatizacion/refrigeracion/aires-acondicionados',
              'AirConditioner'],
             ['hogar/agua-caliente/calefones-a-gas', 'WaterHeater'],
