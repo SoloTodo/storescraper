@@ -6,8 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Movistar(Store):
@@ -132,7 +131,6 @@ class Movistar(Store):
                 # The product has internet price and normal price
                 price_container = \
                     normal_price_text.split('\xa0')[1].split('/')[0]
-                print(price_container)
                 normal_price = Decimal(remove_words(price_container))
 
                 offer_price_text = plan_container.find('span', 'monto').text
@@ -203,7 +201,6 @@ class Movistar(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        print(url)
         session = session_with_proxy(extra_args)
 
         device_id = re.search('(\d+)$', url).groups()[0]
@@ -227,8 +224,11 @@ class Movistar(Store):
             for internet_prefix in [None, ' Exclusivo Web']:
                 plan_combination_table = soup.find(
                     'div', {'id': dom_element_id}).find('table')
-                rows = plan_combination_table.find('tbody').findAll(
-                    'tr', recursive=False)
+
+                anchor_elements = plan_combination_table.findAll(
+                    'p', {'id': 'priceOffer'})
+                rows = [tag.find_parent('tr') for tag in anchor_elements]
+
                 rows_with_plans = []
 
                 for row in rows:
