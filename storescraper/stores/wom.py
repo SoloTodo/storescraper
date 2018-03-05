@@ -11,7 +11,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class Wom(Store):
     prepago_url = 'http://www.wom.cl/prepago/'
-    planes_url = 'http://www.wom.cl/planes/'
+    planes_url = 'https://www.wom.cl/planes/'
 
     @classmethod
     def categories(cls):
@@ -103,24 +103,18 @@ class Wom(Store):
         products = []
 
         plan_prices = {
-            'plan 5 gigas': Decimal(9990),
-            'plan 15 gigas': Decimal(15990),
-            'plan 25 gigas': Decimal(19990),
-            'plan 35 gigas': Decimal(25990),
-            'plan gigas ilimitados': Decimal(29990),
-            'plan minutos 4 gigas': Decimal(9990),
-            'plan minutos 10 gigas': Decimal(15990),
-            'plan minutos 14 gigas': Decimal(19990),
-            'plan minutos 20 gigas': Decimal(29990),
+            'ver-plan-5': Decimal(9990),
+            'ver-plan-15': Decimal(15990),
+            'ver-plan-25': Decimal(19990),
+            'ver-plan-35': Decimal(25990),
+            'ver-plan-ilimitado': Decimal(29990),
         }
 
-        plan_containers = soup.findAll('article', 'new-plan')
+        plan_containers = soup.findAll('article', 'box_plan')
 
         for container in plan_containers:
-            plan_img = container.find('img', 'img-plan-mob')
-            plan_name = plan_img['alt']
-
-            plan_price = plan_prices[plan_name]
+            plan_name = container['id']
+            plan_price = plan_prices[container['id']]
 
             for suffix in ['', ' Portabilidad']:
                 adjusted_plan_name = plan_name + suffix
@@ -144,16 +138,26 @@ class Wom(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        try:
-            cell_brand = soup.find('h2').string.strip()
-            cell_model = soup.find('h1').string.strip()
+        is_cell = soup.find('a', 'cent-block')
 
-            name = '{0} {1}'.format(cell_brand, cell_model)
-        except AttributeError:
-            name = soup.find('h2').string.strip()
+        if not is_cell:
+            return []
+
+        data_container = soup.find('div', 'midle-align-wrap')
+
+        cell_brand = data_container.find('h2').string.strip()
+        cell_model = data_container.find('h1').string.strip()
+
+        name = '{} {}'.format(cell_brand, cell_model)
+
+        picture_urls = ['http://www.wom.cl' + tag['src'] for tag in
+                        soup.find('div', 'equipo').findAll('img')]
+        description = html_to_markdown(
+            str(soup.find('ul', 'descripcion')))
 
         products = []
 
@@ -163,113 +167,83 @@ class Wom(Store):
             'div', 'info-planes-equipo2')
 
         for idx, container in enumerate(plan_association_containers):
-            plan_name = container.find('h3').contents[0].strip()
+            plan_name = container.find('h3').contents[1].strip().replace(
+                ' <br>', '')
 
-            if container.find('p', 'sin-port-dos'):
-                # Cell
+            cell_monthly_payment = Decimal(remove_words(
+                container.find('strong', 'valor').text))
 
-                picture_urls = ['http://www.wom.cl' + tag['src'] for tag in
-                                soup.find('div', 'equipo').findAll('img')]
-                description = html_to_markdown(
-                    str(soup.find('ul', 'descripcion')))
+            portability_price = Decimal(
+                remove_words(
+                    container.findAll(
+                        'p', 'valor-cuota')[1].contents[1].replace(
+                        '*', '')))
 
-                cell_monthly_payment = Decimal(remove_words(
-                    container.find('strong', 'valor').text))
+            portability_plan_name = plan_name + ' Portabilidad'
 
-                portability_price = Decimal(
+            product = Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} {}'.format(name, portability_plan_name),
+                -1,
+                portability_price,
+                portability_price,
+                'CLP',
+                cell_plan_name=portability_plan_name,
+                picture_urls=picture_urls,
+                description=description,
+                cell_monthly_payment=cell_monthly_payment
+            )
+
+            products.append(product)
+
+            normal_price = Decimal(
+                remove_words(
+                    container.find('p', 'sin-port-dos').contents[1]))
+
+            product = Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} {}'.format(name, plan_name),
+                -1,
+                normal_price,
+                normal_price,
+                'CLP',
+                cell_plan_name=plan_name,
+                picture_urls=picture_urls,
+                description=description,
+                cell_monthly_payment=cell_monthly_payment
+            )
+            products.append(product)
+
+            prepago_container = soup.find('span', 'm-b-40')
+            if prepago_container and idx == 0:
+                price = Decimal(
                     remove_words(
-                        container.findAll(
-                            'p', 'valor-cuota')[1].contents[1].replace(
-                            '*', '')))
-
-                portability_plan_name = plan_name + ' Portabilidad'
-
-                product = Product(
-                    name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} {}'.format(name, portability_plan_name),
-                    -1,
-                    portability_price,
-                    portability_price,
-                    'CLP',
-                    cell_plan_name=portability_plan_name,
-                    picture_urls=picture_urls,
-                    description=description,
-                    cell_monthly_payment=cell_monthly_payment
+                        prepago_container.string
+                    )
                 )
 
-                products.append(product)
-
-                normal_price = Decimal(
-                    remove_words(
-                        container.find('p', 'sin-port-dos').contents[1]))
-
                 product = Product(
                     name,
                     cls.__name__,
                     'Cell',
                     url,
                     url,
-                    '{} {}'.format(name, plan_name),
-                    -1,
-                    normal_price,
-                    normal_price,
-                    'CLP',
-                    cell_plan_name=plan_name,
-                    picture_urls=picture_urls,
-                    description=description,
-                    cell_monthly_payment=cell_monthly_payment
-                )
-                products.append(product)
-
-                prepago_container = soup.find('span', 'm-b-40')
-                if prepago_container and idx == 0:
-                    price = Decimal(
-                        remove_words(
-                            prepago_container.string
-                        )
-                    )
-
-                    product = Product(
-                        name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} {}'.format(name, 'WOM Prepago'),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name='WOM Prepago',
-                        picture_urls=picture_urls,
-                        description=description
-                    )
-                    products.append(product)
-            else:
-                # Modem
-                price = Decimal(remove_words(
-                    container.find('p', 'valor-cuota').text))
-
-                cell_monthly_payment = Decimal(remove_words(
-                    soup.findAll('strong', 'valor')[1::2][idx].text))
-
-                product = Product(
-                    name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} {}'.format(name, plan_name),
+                    '{} {}'.format(name, 'WOM Prepago'),
                     -1,
                     price,
                     price,
                     'CLP',
-                    cell_plan_name=plan_name,
-                    cell_monthly_payment=cell_monthly_payment
+                    cell_plan_name='WOM Prepago',
+                    picture_urls=picture_urls,
+                    description=description
                 )
                 products.append(product)
 
