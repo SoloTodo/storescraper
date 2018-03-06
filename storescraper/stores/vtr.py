@@ -84,51 +84,49 @@ class Vtr(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
 
-        plan_types = [
-            ('cont-no-portar', ''),
-            # ('cont-si-portar', 'Portabilidad Sin Equipo'),
-        ]
+        plan_containers = soup.findAll('div', 'mobile-plan-box')
+        prices_containers = soup.findAll('span', 'price')[1::2]
 
-        for panel_class, suffix in plan_types:
-            for panel in soup.findAll('div', panel_class):
-                for plan_table in panel.findAll('tbody')[::2]:
-                    plan_row = plan_table.find('tr')
-                    cells = plan_row.findAll('td')
+        assert(len(plan_containers) == len(prices_containers))
 
-                    name = cells[0].contents[0].strip()
-                    price = Decimal(remove_words(cells[1].text))
+        for idx, plan_container in enumerate(plan_containers):
+            name = plan_container.find('h4').text.strip().replace('\n', ' ')
+            price_container = prices_containers[idx]
 
-                    p = Product(
-                        name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        name,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                    )
+            price = Decimal(remove_words(price_container['data-not-ported']))
 
-                    products.append(p)
+            p = Product(
+                name,
+                cls.__name__,
+                'CellPlan',
+                url,
+                url,
+                name,
+                -1,
+                price,
+                price,
+                'CLP',
+            )
 
-                    portablidad_name = '{} Portabilidad'.format(name)
+            products.append(p)
 
-                    p = Product(
-                        portablidad_name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        portablidad_name,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                    )
+            portablidad_name = '{} Portabilidad'.format(name)
+            price = Decimal(remove_words(price_container['data-ported']))
 
-                    products.append(p)
+            p = Product(
+                portablidad_name,
+                cls.__name__,
+                'CellPlan',
+                url,
+                url,
+                portablidad_name,
+                -1,
+                price,
+                price,
+                'CLP',
+            )
+
+            products.append(p)
 
         return products
 
