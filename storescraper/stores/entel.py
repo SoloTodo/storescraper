@@ -304,7 +304,7 @@ class Entel(Store):
         json_data = json.loads(soup.find('var', {'id': 'renderData'}).string)
 
         for sku in json_data['renderSkusBean']['skus']:
-            price = Decimal(sku['skuPrice'])
+            price = Decimal(sku['skuPrice']).quantize(0)
 
             if sku['available']:
                 stock = -1
