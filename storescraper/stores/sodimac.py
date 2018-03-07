@@ -117,7 +117,10 @@ class Sodimac(Store):
         if soup.find('div', {'id': 'JsonArray'}):
             pricing_json = json.loads(pricing_container.text)[0]
 
-            normal_price = Decimal(pricing_json['INTERNET'])
+            if 'EVENTO' in pricing_json:
+                normal_price = Decimal(pricing_json['EVENTO'])
+            else:
+                normal_price = Decimal(pricing_json['INTERNET'])
 
             if 'CMR' in pricing_json:
                 offer_price = Decimal(pricing_json['CMR'])
