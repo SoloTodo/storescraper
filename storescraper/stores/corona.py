@@ -127,9 +127,12 @@ class Corona(Store):
         description_text = re.search(
             r'<div class="row detalles-producto">[\S\s]*'
             r'<div class="row recomendados-productos">',
-            page_source).group()
+            page_source)
 
-        description = html_to_markdown(description_text)
+        if description_text:
+            description = html_to_markdown(description_text.group())
+        else:
+            description = None
 
         # Pictures
 
