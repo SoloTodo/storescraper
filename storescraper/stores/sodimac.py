@@ -87,7 +87,7 @@ class Sodimac(Store):
 
                 soup = BeautifulSoup(response.text, 'html.parser')
 
-                mosaic_divs = soup.findAll('div', 'informationContainer')
+                mosaic_divs = soup.findAll('section', 'jq-item')
 
                 if not mosaic_divs:
                     if page == 0:
@@ -95,9 +95,8 @@ class Sodimac(Store):
                     break
 
                 for div in mosaic_divs:
-                    product_url = 'http://www.sodimac.cl' + \
-                                  div.find('a')['href']
-                    product_url = product_url.replace(' ', '')
+                    product_url = 'http://www.sodimac.cl/sodimac-cl/' \
+                                  'product/' + div['data']
                     product_urls.append(product_url)
                 page += 16
 
@@ -108,7 +107,7 @@ class Sodimac(Store):
         session = session_with_proxy(extra_args)
 
         response = session.get(url)
-        if 'empty=true' in response.url:
+        if 'http://www.sodimac.cl/sodimac-cl/404' in response.url:
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
