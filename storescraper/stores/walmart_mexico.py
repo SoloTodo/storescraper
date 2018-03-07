@@ -71,6 +71,8 @@ class WalmartMexico(Store):
         data_url = 'https://www.walmart.com.mx/webcontrols/' \
                    'getProductDetailSolr.ashx?upc=' + sku
 
+        print(data_url)
+
         product_data = session.get(
             data_url, verify=False).content.decode('latin-1')
         product_json = json.loads(product_data)
@@ -95,6 +97,9 @@ class WalmartMexico(Store):
 
         for variant in product_json['variants']:
             price = Decimal(variant['data']['Price'])
+
+            if not price:
+                price = Decimal(variant['Offerts'][0]['price'])
 
             ean = variant['upc']
             if len(ean) == 12:
