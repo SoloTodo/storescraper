@@ -21,7 +21,7 @@ class Syd(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'http://syd.cl'
+        url_base = 'https://syd.cl'
 
         category_paths = [
             ['/collection/macbook-pro-13', 'Notebook'],
@@ -62,6 +62,7 @@ class Syd(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -85,7 +86,7 @@ class Syd(Store):
 
             variant_id = variant['value']
 
-            stock_url = 'http://syd.cl/product/create/{}?q=1&' \
+            stock_url = 'https://syd.cl/product/create/{}?q=1&' \
                         'productWebId={}'.format(variant_id, product_web_id)
 
             stock_data = json.loads(session.get(stock_url).text)

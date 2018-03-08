@@ -39,7 +39,13 @@ class Liverpool(Store):
             category_url = '{}/tienda/{}'.format(base_url, category_path)
             print(category_url)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            response = session.get(category_url)
+
+            if response.url != category_url:
+                product_urls.append(response.url)
+                continue
+
+            soup = BeautifulSoup(response.text, 'html.parser')
 
             link_containers = soup.findAll('a', 'product-name')
 

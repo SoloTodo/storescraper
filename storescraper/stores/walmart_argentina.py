@@ -25,7 +25,7 @@ class WalmartArgentina(Store):
         category_paths = [
             ['C:/488/', 'Refrigerator'],
             ['C:/467/', 'AirConditioner'],
-            ['C:/506/', 'WaterHeater'],
+            # ['C:/506/', 'WaterHeater'],
             ['C:/497/', 'WashingMachine'],
             ['C:/509/511/', 'Stove'],  # Cocina
             # ['C:/509/512/', 'Stove'],  # Anafe
@@ -41,6 +41,7 @@ class WalmartArgentina(Store):
             url = 'http://www.walmart.com.ar/buscapagina?sl=7eb3beac-b62d-' \
                   '4de8-89c9-ed84c3e3a9aa&PS=1000&cc=4&PageNumber=1&sm=0&' \
                   'fq={}'.format(category_path)
+            print(url)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             containers = soup.findAll('a', 'prateleira__image-link')

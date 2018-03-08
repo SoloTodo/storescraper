@@ -58,7 +58,7 @@ class Hites(Store):
             ['14082', 'StereoSystem'],
             ['14083', 'StereoSystem'],
             ['14120', 'OpticalDiskPlayer'],
-            ['14079', 'HomeTheater'],
+            # ['14079', 'HomeTheater'],
             ['14087', 'VideoGameConsole'],
             ['14065', 'AllInOne'],
             # ['14054', 'SpaceHeater'],

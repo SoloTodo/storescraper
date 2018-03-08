@@ -93,6 +93,8 @@ class Magens(Store):
 
                 for container in product_containers:
                     product_url = container.find('a')['href'].replace('\t', '')
+                    if product_url == '/':
+                        continue
                     discovered_urls.append('https://www.magens.cl' +
                                            product_url)
                     found_products += 1

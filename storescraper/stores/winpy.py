@@ -43,7 +43,7 @@ class Winpy(Store):
             ['portatiles/mobile-workstation/', 'Notebook'],
             ['zona-notebook-gamers/', 'Notebook'],
             # ['apple/macbook-air/', 'Notebook'],
-            ['apple/macbook/', 'Notebook'],
+            # ['apple/macbook/', 'Notebook'],
             # ['apple/macbook-pro/', 'Notebook'],
             ['apple/macbook-pro-retina/', 'Notebook'],
             ['portatiles/tablet/', 'Tablet'],
