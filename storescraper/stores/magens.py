@@ -112,8 +112,13 @@ class Magens(Store):
         cleaned_url = urllib.parse.unquote(url).encode(
             'ascii', 'ignore').decode('ascii')
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(cleaned_url, timeout=20).text,
-                             'html.parser')
+
+        response = session.get(cleaned_url, timeout=20)
+
+        if response.url == 'https://www.magens.cl/':
+            return []
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         part_number = soup.find(
             'small', 'product-info__part-number').string.split(':')[1].strip()
