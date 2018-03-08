@@ -53,7 +53,7 @@ class Falabella(Store):
             ['cat2028/Notebooks-Gamers', 'Notebook'],
             ['cat2450060/Notebooks-2-en-1', 'Notebook'],
             ['cat5860030/MacBooks', 'Notebook'],
-            # ['cat11290006/Gamer', 'Notebook'],
+            ['cat11290006/Gamer', 'Notebook'],
             ['cat70043/Televisores', 'Television'],
             ['cat7230007/Tablet', 'Tablet'],
             ['cat4074/No-Frost', 'Refrigerator'],
@@ -141,7 +141,7 @@ class Falabella(Store):
                 except Exception:
                     continue
 
-            if not category_product_urls:
+            if not category_product_urls and url_path != 'cat11290006/Gamer':
                 raise Exception('Category error: ' + url_path)
 
             discovered_urls.extend(category_product_urls)
