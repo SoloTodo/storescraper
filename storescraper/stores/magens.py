@@ -80,7 +80,7 @@ class Magens(Store):
                 print(category_url)
 
                 soup = BeautifulSoup(
-                    session.get(category_url).text, 'html.parser')
+                    session.get(category_url, timeout=20).text, 'html.parser')
 
                 product_containers = soup.findAll('article', 'product-block')
 
@@ -112,7 +112,8 @@ class Magens(Store):
         cleaned_url = urllib.parse.unquote(url).encode(
             'ascii', 'ignore').decode('ascii')
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(cleaned_url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(cleaned_url, timeout=20).text,
+                             'html.parser')
 
         part_number = soup.find(
             'small', 'product-info__part-number').string.split(':')[1].strip()
