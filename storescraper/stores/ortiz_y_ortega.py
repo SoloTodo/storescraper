@@ -74,16 +74,20 @@ class OrtizYOrtega(Store):
         description = html_to_markdown(
             str(soup.find('section', 'cont-second_block')))
 
+        main_picture_container = soup.find('img', {'id': 'bigpic'})
         picture_containers = soup.findAll('img', 'thumbnails-img')
 
         if picture_containers:
             picture_urls = ['http://www.ortizyortega.com.ar' +
                             container['data-zoom-image']
                             for container in picture_containers]
-        else:
+        elif main_picture_container:
             picture_urls = [
                 'http://www.ortizyortega.com.ar' +
-                soup.find('img', {'id': 'bigpic'})['data-zoom-image']]
+                main_picture_container['data-zoom-image']]
+        else:
+            picture_urls = None
+
         name = soup.find('h2', 'product_name').text.strip()
 
         p = Product(
