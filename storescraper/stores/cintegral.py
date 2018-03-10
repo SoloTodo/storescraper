@@ -132,14 +132,11 @@ class Cintegral(Store):
         price_box = soup.find('div', 'price-box')
         special_price_container = price_box.find('p', 'special-price')
         if special_price_container:
-            normal_price = Decimal(remove_words(price_box.find(
-                'p', 'old-price').find('span', 'price').text.strip()))
-            offer_price = Decimal(remove_words(special_price_container.find(
+            price = Decimal(remove_words(special_price_container.find(
                 'span', 'price').text.strip()))
         else:
-            normal_price = Decimal(remove_words(price_box.find(
+            price = Decimal(remove_words(price_box.find(
                 'span', 'regular-price').find('span', 'price').text.strip()))
-            offer_price = normal_price
 
         picture_urls = [link['href'] for link in soup.findAll('a', 'lightbox')]
 
@@ -151,8 +148,8 @@ class Cintegral(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             part_number=part_number,

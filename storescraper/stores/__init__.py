@@ -57,6 +57,7 @@ from .imp_dali import ImpDali
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
+from .johnson import Johnson
 from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
 from .kabum import Kabum
