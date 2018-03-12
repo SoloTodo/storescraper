@@ -74,8 +74,12 @@ class Fravega(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        response = session.get(url)
 
+        if 'https://www.fravega.com/Sistema/404' in response.url:
+            return []
+
+        page_source = response.text
         pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
                                  page_source).groups()[0]
         pricing_data = json.loads(pricing_data)
