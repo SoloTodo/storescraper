@@ -134,6 +134,8 @@ class Corona(Store):
         else:
             description = None
 
+        sku = soup.find('div', 'skuReference').text.strip()
+
         # Pictures
 
         picture_urls = []
@@ -168,7 +170,7 @@ class Corona(Store):
 
         for sku_data in skus_data['skus']:
             name = sku_data['skuname']
-            sku = str(sku_data['sku'])
+            key = str(sku_data['sku'])
             stock = sku_data['availablequantity']
 
             normal_price = Decimal(sku_data['bestPrice'] / 100)
@@ -184,7 +186,7 @@ class Corona(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 normal_price,
                 sku_offer_price,
