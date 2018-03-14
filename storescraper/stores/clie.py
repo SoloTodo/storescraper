@@ -142,7 +142,7 @@ class Clie(Store):
             category,
             url,
             url,
-            sku,
+            part_number,
             stock,
             normal_price,
             offer_price,
