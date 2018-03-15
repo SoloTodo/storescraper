@@ -22,8 +22,8 @@ class TiendaMovistar(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('smartphone-liberados.html', 'Cell'),
-            ('tablets.html', 'Tablet'),
+            ('catalogsearch/result/index/?q=a', 'Cell'),
+            ('tablets.html?foo=bar', 'Tablet'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -36,7 +36,7 @@ class TiendaMovistar(Store):
             page = 1
 
             while True:
-                category_url = 'https://tienda.movistar.cl/{}?p={}'.format(
+                category_url = 'https://tienda.movistar.cl/{}&p={}'.format(
                     category_path, page)
 
                 if page >= 10:
