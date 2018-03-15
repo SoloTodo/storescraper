@@ -128,7 +128,7 @@ class Falabella(Store):
 
             # Falabella tends to... fail... so try different requests using
             # the different available sorters... twice... just in case.
-            category_product_urls = None
+            category_product_urls = []
 
             for i in range(2 * len(sorters)):
                 try:
