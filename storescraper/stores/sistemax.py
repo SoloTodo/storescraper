@@ -139,7 +139,7 @@ class Sistemax(Store):
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        sub_path = soup.find('div', 'category_list')
+        sub_path = soup.find('div', {'id': 'content'}).find('ul')
         if sub_path:
             for sub_url in sub_path.findAll('a'):
                 product_urls += \
