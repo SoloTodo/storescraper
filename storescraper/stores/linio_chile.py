@@ -32,6 +32,8 @@ class LinioChile(Store):
             ['tv-y-video/televisores/', 'Television'],
             ['tablets/tablet', 'Tablet'],
             ['impresoras-y-scanners/impresoras', 'Printer'],
+            ['impresoras/impresoras-laser', 'Printer'],
+            ['impresoras-y-scanners/multifuncionales', 'Printer'],
             ['nintendo-videojuegos/consolas-nintendo/', 'VideoGameConsole'],
             ['playstation-videojuegos/consolas-playstation/',
              'VideoGameConsole'],
