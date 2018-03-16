@@ -79,6 +79,11 @@ class TiendaMovistar(Store):
 
         base_name = soup.find('h1', {'itemprop': 'name'}).text.strip()
 
+        if 'seminuevo' in base_name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         description = ''
         for panel_id in ['acctab-description', 'acctab-additional']:
             description += html_to_markdown(
@@ -123,7 +128,8 @@ class TiendaMovistar(Store):
                     'CLP',
                     sku=sku,
                     description=description,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    condition=condition
                 )
 
                 products.append(p)
