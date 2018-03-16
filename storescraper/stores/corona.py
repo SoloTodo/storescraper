@@ -175,7 +175,7 @@ class Corona(Store):
 
             normal_price = Decimal(sku_data['bestPrice'] / 100)
 
-            if offer_price:
+            if offer_price and offer_price < normal_price:
                 sku_offer_price = offer_price
             else:
                 sku_offer_price = normal_price

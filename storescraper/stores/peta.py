@@ -127,8 +127,8 @@ class Peta(Store):
             stock = 0
 
         price_containers = soup.findAll('span', 'price')
-        normal_price = Decimal(remove_words(price_containers[1].string))
-        offer_price = Decimal(remove_words(price_containers[0].string))
+        # normal_price = Decimal(remove_words(price_containers[1].string))
+        price = Decimal(remove_words(price_containers[0].string))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'product.info.description'})))
@@ -144,8 +144,8 @@ class Peta(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             part_number=part_number,
