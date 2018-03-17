@@ -37,8 +37,8 @@ class Peta(Store):
              'Notebook'],
             # ['equipos-computadores-tablets-aio-ebooks/moviles/ultrabooks.html',
             #  'Notebook'],
-            ['equipos-computadores-tablets-aio-ebooks/moviles/'
-             'equipos-2-en-1.html', 'Notebook'],
+            # ['equipos-computadores-tablets-aio-ebooks/moviles/'
+            #  'equipos-2-en-1.html', 'Notebook'],
             # ['apple/mac/macbook.html', 'Notebook'],
             # ['apple/mac/macbook-air.html', 'Notebook'],
             # ['apple/mac/macbook-pro.html', 'Notebook'],
