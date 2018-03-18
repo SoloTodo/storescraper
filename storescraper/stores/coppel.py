@@ -55,6 +55,9 @@ class Coppel(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        if soup.find('div', 'error404'):
+            return []
+
         name = soup.find('h1', 'main_header').text.strip()
         sku = soup.find('input', {'id': 'partNmb'})['value'].strip()
 
