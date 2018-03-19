@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -12,6 +13,8 @@ class Tottus(Store):
     def categories(cls):
         return [
             'Television',
+            'Cell',
+            'Tablet'
         ]
 
     @classmethod
@@ -19,7 +22,10 @@ class Tottus(Store):
         url_base = 'http://www.tottus.cl'
 
         category_paths = [
-            ['Electro-Hogar-Electro-TV/_/N-psmyna', 'Television'],
+            ['Electro-y-Hogar-Electro-Televisores/_/N-psmyna', 'Television'],
+            ['Supermercado-Electro-y-Hogar-Electro-Celulares/_/N-7olx2n',
+             'Cell'],
+            ['Electro-y-Hogar-Electro-Notebook-y-Tablet/_/N-d1r0b2', 'Tablet'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -48,6 +54,7 @@ class Tottus(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -61,18 +68,30 @@ class Tottus(Store):
         else:
             stock = -1
 
-        prices_container = soup.find('div', 'price-selector')
+        if soup.find('div', 'offer-imbatible'):
+            prices_raw_text = soup.find(
+                'div', 'active-offer').find('span', 'red').text
+            offer_price_text, normal_price_text = \
+                re.findall(r'\$([\d.]+)', prices_raw_text)
 
-        offer_price_container = prices_container.find('span', 'red')
-
-        if offer_price_container:
-            price = Decimal(remove_words(
-                offer_price_container.text
-            ))
+            normal_price = Decimal(remove_words(normal_price_text))
+            offer_price = Decimal(remove_words(offer_price_text))
         else:
-            price = Decimal(remove_words(
-                prices_container.find('span', 'active-price').find('span').text
-            ))
+            prices_container = soup.find('div', 'price-selector')
+
+            offer_price_container = prices_container.find('span', 'red')
+
+            if offer_price_container:
+                price = Decimal(remove_words(
+                    offer_price_container.text
+                ))
+            else:
+                price = Decimal(remove_words(
+                    prices_container.find(
+                        'span', 'active-price').find('span').text
+                ))
+
+            normal_price = offer_price = price
 
         description = html_to_markdown(str(soup.find('div', {'id': 'tab_1'})))
 
@@ -87,8 +106,8 @@ class Tottus(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,
