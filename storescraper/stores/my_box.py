@@ -72,7 +72,7 @@ class MyBox(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        stock = int(re.search(r"productAvailableForOrder='(\d+)'",
+        stock = int(re.search(r"quantityAvailable=(\d+)",
                               page_source).groups()[0])
         if stock:
             stock = -1
