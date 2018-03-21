@@ -86,6 +86,21 @@ class Wom(Store):
                 'CLP',
             )
             products.append(p)
+
+            # Plan PVP Portabilidad (compra equipo al portarse)
+            p = Product(
+                'WOM PVP Portabilidad',
+                cls.__name__,
+                category,
+                url,
+                url,
+                'WOM PVP Portabilidad',
+                -1,
+                Decimal(0),
+                Decimal(0),
+                'CLP',
+            )
+            products.append(p)
         elif url == cls.planes_url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
@@ -222,29 +237,48 @@ class Wom(Store):
             )
             products.append(product)
 
-            prepago_container = soup.find('span', 'm-b-40')
-            if prepago_container and idx == 0:
-                price = Decimal(
-                    remove_words(
-                        prepago_container.string
-                    )
-                )
+        # Prepago normal
+        prepago_container = soup.find('span', 'm-b-40')
+        if prepago_container:
+            price = Decimal(remove_words(prepago_container.string))
 
-                product = Product(
-                    name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} {}'.format(name, 'WOM Prepago'),
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    cell_plan_name='WOM Prepago',
-                    picture_urls=picture_urls,
-                    description=description
-                )
-                products.append(product)
+            product = Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} {}'.format(name, 'WOM Prepago'),
+                -1,
+                price,
+                price,
+                'CLP',
+                cell_plan_name='WOM Prepago',
+                picture_urls=picture_urls,
+                description=description
+            )
+            products.append(product)
+
+        # Prepago portabilidad
+        pvp_container = soup.find('span', 'tx-rose')
+        if pvp_container:
+            price = Decimal(remove_words(pvp_container.text))
+
+            product = Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} {}'.format(name, 'WOM PVP Portabilidad'),
+                -1,
+                price,
+                price,
+                'CLP',
+                cell_plan_name='WOM PVP Portabilidad',
+                picture_urls=picture_urls,
+                description=description
+            )
+            products.append(product)
 
         return products
