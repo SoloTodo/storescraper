@@ -22,10 +22,9 @@ class Tottus(Store):
         url_base = 'http://www.tottus.cl'
 
         category_paths = [
-            ['Electro-y-Hogar-Electro-Televisores/_/N-psmyna', 'Television'],
-            ['Supermercado-Electro-y-Hogar-Electro-Celulares/_/N-7olx2n',
-             'Cell'],
-            ['Electro-y-Hogar-Electro-Notebook-y-Tablet/_/N-d1r0b2', 'Tablet'],
+            ['Televisores/126.1.1', 'Television'],
+            ['Celulares/cat700022', 'Cell'],
+            ['Notebook-y-Tablet/cat700021', 'Tablet'],
         ]
 
         session = session_with_proxy(extra_args)

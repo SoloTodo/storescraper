@@ -128,8 +128,13 @@ class PcOfertas(Store):
             stock = 0
 
         price_containers = soup.findAll('span', 'price')
-        normal_price = Decimal(remove_words(price_containers[1].string))
+
         offer_price = Decimal(remove_words(price_containers[0].string))
+
+        if len(price_containers) == 2:
+            normal_price = Decimal(remove_words(price_containers[1].string))
+        else:
+            normal_price = offer_price
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'product.info.description'})))
