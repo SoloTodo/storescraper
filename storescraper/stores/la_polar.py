@@ -73,7 +73,7 @@ class LaPolar(Store):
             ['linea_blanca/lavado_secado4/secadoras2', 'WashingMachine'],
             ['linea_blanca/lavado_secado4/centrifugas2', 'WashingMachine'],
             ['linea_blanca/climatizacion/calefont3', 'WaterHeater'],
-            ['linea_blanca/climatizacion/enfriadores', 'AirConditioner'],
+            # ['linea_blanca/climatizacion/enfriadores', 'AirConditioner'],
             ['linea_blanca/climatizacion/estufas_a_parafina2', 'SpaceHeater'],
             # ['linea_blanca/climatizacion/estufas_electricas2',
             # 'SpaceHeater'],
