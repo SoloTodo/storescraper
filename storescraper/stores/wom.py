@@ -276,6 +276,7 @@ class Wom(Store):
                 price,
                 'CLP',
                 cell_plan_name='WOM PVP Portabilidad',
+                cell_monthly_payment=Decimal(0),
                 picture_urls=picture_urls,
                 description=description
             )
