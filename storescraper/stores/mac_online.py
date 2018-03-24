@@ -50,8 +50,12 @@ class MacOnline(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         products = []
         session = session_with_proxy(extra_args)
+        response = session.get(url)
 
-        page_source = session.get(url).text
+        if not response.ok:
+            return []
+
+        page_source = response.text
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
