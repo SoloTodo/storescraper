@@ -74,6 +74,10 @@ class SodimacArgentina(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        prices_box = soup.find('section', 'prices-box')
+        if not prices_box:
+            return []
+
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
 
         model = soup.find('h1', 'name').text
@@ -97,8 +101,7 @@ class SodimacArgentina(Store):
         else:
             stock = -1
 
-        op_unica_cmr = bool(soup.find('section', 'prices-box').findAll(
-            'span', 'cmr-icon'))
+        op_unica_cmr = bool(prices_box.findAll('span', 'cmr-icon'))
 
         if op_unica_cmr:
             # CMR Price
