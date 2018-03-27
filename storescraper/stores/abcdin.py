@@ -62,9 +62,9 @@ class AbcDin(Store):
             ['10004', 'OpticalDiskPlayer'],
             ['10009', 'HomeTheater'],
             ['10082', 'UsbFlashDrive'],
-            ['14008', 'VideoGameConsole'],  # PS3
+            # ['14008', 'VideoGameConsole'],  # PS3
             ['14001', 'VideoGameConsole'],  # PS4
-            ['14009', 'VideoGameConsole'],  # Xbox 360
+            # ['14009', 'VideoGameConsole'],  # Xbox 360
             ['14005', 'VideoGameConsole'],  # Xbox One
             ['14011', 'VideoGameConsole'],  # Switch
             ['14012', 'VideoGameConsole'],  # 3DS
@@ -83,6 +83,8 @@ class AbcDin(Store):
         for category_id, local_category in ajax_resources:
             if local_category != category:
                 continue
+
+            print(category_id)
 
             url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
                   'searchTermScope=&searchType=10&filterTerm=' \
