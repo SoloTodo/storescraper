@@ -58,7 +58,12 @@ class HpOnline(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.url != url:
+            return []
+
+        page_source = response.text
 
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
                                 page_source).groups()[0]
