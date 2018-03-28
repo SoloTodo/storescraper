@@ -119,20 +119,18 @@ class LgChile(Store):
 
         variant_urls = []
 
-        colors_container = soup.find('ul', 'list_colors')
+        colors_container = soup.find('div', 'list-colors')
 
         if colors_container:
             for color_link in colors_container.findAll('a'):
                 variant_url = cls.base_url + color_link['href']
-                print(variant_url)
                 variant_urls.append(variant_url)
 
-        sizes_container = soup.find('ul', 'list-sizes')
+        sizes_container = soup.find('div', 'list-sizes')
 
         if sizes_container:
             for size_link in sizes_container.findAll('a'):
                 variant_url = cls.base_url + size_link['href']
-                print(variant_url)
                 variant_urls.append(variant_url)
 
         products = []
@@ -150,17 +148,10 @@ class LgChile(Store):
 
     @classmethod
     def _retrieve_single_product(cls, url, category, soup):
-        commercial_name = soup.find('h1').text.strip()
-        specs = soup.find('ul', 'specs').findAll('li')
+        model_name = soup.find('title').text.split('|')[0].strip()
+        commercial_name = soup.find('h2', {'itemprop': 'name'}).text.strip()
 
-        if len(specs) > 1:
-            model_name = specs[0].text.strip()
-            color = specs[1].text.strip()
-
-            name = '{} {} ({})'.format(commercial_name, model_name, color)
-        else:
-            model_name = specs[0].text.strip()
-            name = '{} {}'.format(commercial_name, model_name)
+        name = '{} {}'.format(commercial_name, model_name)
 
         key = soup.find('html')['data-product-id']
 
