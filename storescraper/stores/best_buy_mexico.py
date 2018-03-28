@@ -76,8 +76,7 @@ class BestBuyMexico(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        if soup.find('img', {'src': 'https://mexico.bbystatic.com/images/'
-                                    'lo-sentimos.png'}):
+        if soup.find('title').text.strip() == 'Lo Sentimos 404':
             return []
 
         name = soup.find('h1').text.strip()
@@ -105,7 +104,13 @@ class BestBuyMexico(Store):
             picture_urls = [picture['src'] for picture in picture_tags]
         else:
             sku = soup.find('span', {'id': 'sku-value'}).text.strip()
-            part_number = soup.find('span', {'id': 'model-value'}).text.strip()
+
+            part_number_container = soup.find('span', {'id': 'model-value'})
+
+            if part_number_container:
+                part_number = part_number_container.text.strip()
+            else:
+                part_number = None
 
             ean = None
             ean_container = soup.find('td', text='EAN/UPC')
@@ -133,7 +138,7 @@ class BestBuyMexico(Store):
             for tag in soup.findAll('li', 'thumbnail-image-wrapper'):
                 picture_url = tag.find('img')['src']
                 if picture_url:
-                    picture_urls.append('https:' + picture_url)
+                    picture_urls.append(picture_url)
 
             if not picture_urls:
                 picture_urls = None
