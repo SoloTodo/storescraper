@@ -79,15 +79,14 @@ class TiendaMovistar(Store):
 
         base_name = soup.find('h1', {'itemprop': 'name'}).text.strip()
 
-        if 'seminuevo' in base_name.lower():
+        description = ''
+        for panel in soup.findAll('div', 'panel'):
+            description += html_to_markdown(str(panel)) + '\n\n'
+
+        if 'seminuevo' in description.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
-
-        description = ''
-        for panel_id in ['acctab-description', 'acctab-additional']:
-            description += html_to_markdown(
-                str(soup.find('div', {'id': panel_id}))) + '\n\n'
 
         color_data = re.search(r'Product.Config\((.+?)\)',
                                page_source)
