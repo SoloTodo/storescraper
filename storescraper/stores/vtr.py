@@ -191,7 +191,7 @@ class Vtr(Store):
 
                         price = Decimal(remove_words(price_text))
 
-                        plan_name = '{} {}{}'.format(
+                        plan_name = 'VTR {} {}{}'.format(
                             plan_type,
                             row.findAll('span', 'units')[1].text.strip(),
                             suffix)
