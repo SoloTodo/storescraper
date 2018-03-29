@@ -83,6 +83,7 @@ class LinioChile(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
@@ -97,9 +98,22 @@ class LinioChile(Store):
         name = pricing_data['product_name']
         sku = pricing_data['sku_config']
         part_number = pricing_data['ean_code']
+
         price = Decimal(pricing_data['special_price'])
 
         soup = BeautifulSoup(page_source, 'html.parser')
+
+        condition_dict = {
+            'Nuevo': 'https://schema.org/NewCondition',
+            'Reacondicionado': 'https://schema.org/RefurbishedCondition',
+        }
+
+        condition_label = soup.find('span', 'badge-condition-type')
+
+        if condition_label:
+            condition = condition_dict[condition_label.text.strip()]
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description-container')))
@@ -132,7 +146,8 @@ class LinioChile(Store):
             sku=sku,
             part_number=part_number,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
