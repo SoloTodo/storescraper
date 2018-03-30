@@ -104,29 +104,27 @@ class Entel(Store):
 
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-            plan_tabs = soup.find('div', {'class': 'row tabs'})
+            plan_tabs = soup.findAll('div', 'align-left')
             if plan_tabs:
                 break
 
             tries += 1
 
-        plan_tabs = plan_tabs.findAll('div', 'tab')
-        content_tabs = soup.find('div', 'content-tabs').findAll(
-            'div', 'content-tab')
-
         products = []
 
-        for plan_tab, content_tab in zip(plan_tabs, content_tabs):
-            base_plan_name = plan_tab.text.replace('\n', ' ').strip()
+        for plan_tab in plan_tabs:
+            base_plan_name = plan_tab.find('h5').text.strip()
+
+            print(base_plan_name)
 
             for suffix in ['', ' Portabilidad']:
                 name = base_plan_name + suffix
 
-                normal_price_container = content_tab.find(
-                    'div', 'col3').find('p', 't2')
+                normal_price_container = plan_tab.find(
+                    'p', 'valor-dcto-caja-precio')
+
                 highlighted_price = Decimal(remove_words(
-                    content_tab.find('div', 'col3').find(
-                        'p', 't4').text))
+                    plan_tab.find('p', 'monto').text))
 
                 if normal_price_container:
                     normal_price = Decimal(remove_words(
