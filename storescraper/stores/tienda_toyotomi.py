@@ -28,7 +28,7 @@ class TiendaToyotomi(Store):
             ['24_31', 'VacuumCleaner'],
             ['20_2', 'SpaceHeater'],
             ['20_1', 'SpaceHeater'],
-            ['20_23', 'SpaceHeater'],
+            # ['20_23', 'SpaceHeater'],
             ['20_21', 'SpaceHeater'],
             ['20_46', 'SpaceHeater'],
             ['20_3', 'SpaceHeater'],
@@ -44,6 +44,7 @@ class TiendaToyotomi(Store):
 
             category_url = 'http://tienda.toyotomi.cl/index.php?cPath=' + \
                            category_path
+            print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             raw_links = soup.findAll('li', 'wrapper_prods')
