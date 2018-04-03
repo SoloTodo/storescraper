@@ -111,7 +111,8 @@ class Americanas(Store):
 
         sizes = ['extraLarge', 'large', 'big', 'medium']
 
-        description = main_page_json['description']['content']
+        description = html_to_markdown(html.unescape(
+            main_page_json['description']['content']))
 
         products = []
         for page_id, page_json in product_json.items():
