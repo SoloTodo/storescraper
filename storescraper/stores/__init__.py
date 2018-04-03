@@ -137,4 +137,5 @@ from .walmart_mexico import WalmartMexico
 from .wei import Wei
 from .winpy import Winpy
 from .wom import Wom
+from .xl_store import XlStore
 from .zmart import Zmart
