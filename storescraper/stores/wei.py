@@ -59,7 +59,7 @@ class Wei(Store):
             ['660', 'Motherboard'],  # 1150
             ['687', 'Motherboard'],  # 1151
             # ['1131', 'Motherboard'],  # 1155
-            ['1133', 'Motherboard'],  # 2011
+            # ['1133', 'Motherboard'],  # 2011
             ['730', 'Motherboard'],  # PLACAS GAMER
             ['1162', 'CpuCooler'],  # Ventilacion
             ['602', 'Processor'],  # FM2
