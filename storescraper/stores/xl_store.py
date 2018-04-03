@@ -27,7 +27,8 @@ class XlStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['Almacenamiento/Subcategoria/Disco%20Duro', 'StorageDrive'],
+            ['Almacenamiento/Subcategoria/Disco%20Duro',
+             'ExternalStorageDrive'],
             ['Almacenamiento/Subcategoria/USB', 'UsbFlashDrive'],
             ['Almacenamiento/Subcategoria/Flash%20Card%20-%20SD', 'MemoryCard'],
         ]
