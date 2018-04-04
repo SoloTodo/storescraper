@@ -21,6 +21,7 @@ class MacOnline(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl'
         discovered_urls = []
 
         category_paths = [
@@ -50,6 +51,7 @@ class MacOnline(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         products = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl'
         response = session.get(url)
 
         if not response.ok:
@@ -58,13 +60,9 @@ class MacOnline(Store):
         page_source = response.text
 
         soup = BeautifulSoup(page_source, 'html.parser')
-
         default_picture_url = soup.find('img', {'itemprop': 'image'})['src']
-
         json_data = re.search(r'options: (.*)', page_source)
-
         json_data = json.loads(json_data.groups()[0][:-1])
-
         json_products = cls.__extract_products(json_data)
 
         for json_product in json_products.values():

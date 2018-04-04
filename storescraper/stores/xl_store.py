@@ -30,7 +30,8 @@ class XlStore(Store):
             ['Almacenamiento/Subcategoria/Disco%20Duro',
              'ExternalStorageDrive'],
             ['Almacenamiento/Subcategoria/USB', 'UsbFlashDrive'],
-            ['Almacenamiento/Subcategoria/Flash%20Card%20-%20SD', 'MemoryCard'],
+            ['Almacenamiento/Subcategoria/Flash%20Card%20-%20SD',
+             'MemoryCard'],
         ]
 
         discovery_urls = []

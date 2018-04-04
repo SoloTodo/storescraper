@@ -112,6 +112,7 @@ class Ripley(Store):
                     raise Exception('Page overflow')
 
                 page_url = url_base.format(category_path, page)
+                print(page_url)
                 soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
 
                 product_link_containers = soup.find(

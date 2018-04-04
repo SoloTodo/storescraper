@@ -75,11 +75,14 @@ class Hites(Store):
             if local_category != category:
                 continue
 
-            category_url = url_base + category_id
+            category_url = 'https://www.hites.com/tienda/ProductListingView?' \
+                           'categoryId={}&storeId=10151&pageSize=1000' \
+                           ''.format(category_id)
 
-            soup = BeautifulSoup(session.post(
-                category_url,
-                'pageSize=1000&storeId=10151', timeout=10).text, 'html.parser')
+            print(category_url)
+
+            soup = BeautifulSoup(session.get(category_url, timeout=10).text,
+                                 'html.parser')
 
             divs = soup.findAll('div', 'product')
             category_product_urls = [div.find('a')['href'] for div in divs]

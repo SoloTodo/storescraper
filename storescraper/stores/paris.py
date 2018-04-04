@@ -1,7 +1,5 @@
 import json
-import random
 import re
-import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -86,12 +84,10 @@ class Paris(Store):
             if category != local_category:
                 continue
 
-            random_component = random.randint(1, 1000)
-
             category_url = 'https://www.paris.cl/webapp/wcs/stores/servlet/' \
                            'AjaxCatalogSearchResultView?sType=SimpleSearch&' \
-                           'pageSize=1000&storeId=10801&categoryId={}&' \
-                           'rnd={}'.format(path, random_component)
+                           'pageSize=1000&storeId=10801&categoryId={}' \
+                           ''.format(path)
             print(category_url)
             soup = BeautifulSoup(session.get(
                 category_url, timeout=30).text, 'html.parser')
@@ -103,16 +99,7 @@ class Paris(Store):
                     category, path))
 
             for cell in product_containers:
-                product_link = cell.find('a', {'id': 'myBtn'})
-
-                product_js = product_link['onclick']
-                # print(product_js)
-                product_id = re.search(
-                    r"showPopup\('(\d+)'", product_js)
-                if not product_id:
-                    # "Producto con precio pendiente"
-                    continue
-                product_id = product_id.groups()[0]
+                product_id = cell['id'].split('_')[1]
                 product_url = 'https://www.paris.cl/tienda/ProductDisplay?' \
                               'storeId=10801&productId=' + product_id
                 product_urls.append(product_url)
@@ -123,17 +110,7 @@ class Paris(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
 
-        random_component = random.randint(1, 1000)
-
-        parsed_url = urllib.parse.urlparse(url)
-        qs = dict(urllib.parse.parse_qsl(parsed_url.query))
-        qs['rnd'] = random_component
-        new_parsed_url = parsed_url._replace(query=urllib.parse.urlencode(qs))
-        url_for_request = urllib.parse.urlunparse(new_parsed_url)
-
-        print(url_for_request)
-
-        page_source = session.get(url_for_request, timeout=30).text
+        page_source = session.get(url, timeout=30).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('img', {
