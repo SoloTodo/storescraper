@@ -38,18 +38,6 @@ class Entel(Store):
                               'personas/products/' + device['slug']
                 product_urls.append(product_url)
 
-            # Prepago
-
-            json_prepago = json.loads(session.get(
-                'https://miportal.entel.cl/lista-productos?Nrpp=100&'
-                'format=json-rest').text)
-
-            for record in json_prepago['response']['main'][1]['records']:
-                cell_id = record['attributes']['productId'][0]
-                cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
-                           cell_id
-                product_urls.append(cell_url)
-
         if category == 'CellPlan':
             product_urls.append(cls.prepago_url)
             for path in ['index.iws', 'index2.iws']:
@@ -82,9 +70,6 @@ class Entel(Store):
         elif 'equipos.entel.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
-        elif 'miportal.entel.cl' in url:
-            # Equipo prepago
-            products.extend(cls._celular_prepago(url, extra_args))
         else:
             raise Exception('Invalid URL: ' + url)
         return products
@@ -176,15 +161,13 @@ class Entel(Store):
         session = session_with_proxy(extra_args)
         slug = url.split('/')[-1]
 
-        details_url = 'https://equipos.entel.cl/device/{}.json'.format(
-            slug)
+        details_url = 'https://equipos.entel.cl/device/{}.json'.format(slug)
+
+        print(details_url)
 
         details_json = json.loads(session.get(details_url).text)
-
         product_name = details_json['title']
-
         products = []
-
         pricing_variants = {}
 
         for variant in details_json['variants']:
@@ -289,54 +272,26 @@ class Entel(Store):
                     )
                     products.append(product)
 
-        return products
+            prepaid_prices = pricing_variant['prepaid_prices']
 
-    @classmethod
-    def _celular_prepago(cls, url, extra_args):
-        print(url)
-        session = session_with_proxy(extra_args)
+            if prepaid_prices:
+                prepago_price = Decimal(
+                    pricing_variant['prepaid_prices']['sale_price'])
 
-        products = []
-
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        json_data = json.loads(soup.find('var', {'id': 'renderData'}).string)
-
-        for sku in json_data['renderSkusBean']['skus']:
-            price_container = sku['skuPrice']
-            if not price_container:
-                continue
-
-            price = Decimal(price_container).quantize(0)
-
-            if sku['available']:
-                stock = -1
-            else:
-                stock = 0
-
-            sku_id = sku['skuId']
-
-            pictures_container = soup.findAll('div', {'name': sku_id})[2]
-
-            picture_urls = []
-            for container in pictures_container.findAll('img'):
-                picture_urls.append('https://miportal.entel.cl' +
-                                    container['src'])
-
-            product = Product(
-                sku['skuName'],
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                sku_id,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku_id,
-                cell_plan_name='Entel Prepago',
-                picture_urls=picture_urls,
-            )
-            products.append(product)
+                product = Product(
+                    variant_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - Entel Prepago'.format(variant_name),
+                    -1,
+                    prepago_price,
+                    prepago_price,
+                    'CLP',
+                    cell_plan_name='Entel Prepago',
+                    picture_urls=picture_urls
+                )
+                products.append(product)
 
         return products

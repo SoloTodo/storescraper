@@ -122,6 +122,7 @@ from .syd import Syd
 from .tecnoglobal import Tecnoglobal
 from .terabyte import Terabyte
 from .tienda_claro import TiendaClaro
+from .tienda_entel import TiendaEntel
 from .tienda_movistar import TiendaMovistar
 from .tienda_toyotomi import TiendaToyotomi
 from .todo_juegos import TodoJuegos
