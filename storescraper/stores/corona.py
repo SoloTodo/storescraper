@@ -3,7 +3,7 @@ import urllib
 
 import re
 from bs4 import BeautifulSoup
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -154,11 +154,10 @@ class Corona(Store):
             offer_price_text = corona_price_container.string.split(
                 '$')[-1].split('Con')[0]
 
-            if 'x' in offer_price_text or 'X' in offer_price_text or \
-                    offer_price_text == '-' or 'Despacho' in offer_price_text:
-                pass
-            else:
+            try:
                 offer_price = Decimal(remove_words(offer_price_text))
+            except InvalidOperation:
+                pass
 
         # SKUS pricing
 
