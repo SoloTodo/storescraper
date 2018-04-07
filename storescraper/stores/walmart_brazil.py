@@ -1,3 +1,4 @@
+import html
 import urllib
 
 import demjson
@@ -119,7 +120,8 @@ class WalmartBrazil(Store):
             else:
                 stock = 0
 
-            description = product_entry['productDescription']
+            description = html_to_markdown(html.unescape(
+                product_entry['productDescription']))
 
             p = Product(
                 name,
