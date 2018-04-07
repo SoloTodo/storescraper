@@ -273,8 +273,13 @@ class Movistar(Store):
                     else:
                         monthly_payment = Decimal('0')
 
+                    if row.find('a', 'bg-verde'):
+                        stock = -1
+                    else:
+                        stock = 0
+
                     cell_prices.append(
-                        (plan_name, initial_payment, monthly_payment))
+                        (plan_name, initial_payment, monthly_payment, stock))
 
         color_variants = soup.find('ul', 'list-colors')
         for container in color_variants.findAll('li')[1:]:
@@ -282,7 +287,8 @@ class Movistar(Store):
 
             variant_name = '{} Color {}'.format(cell_name, color_name)
 
-            for plan_name, initial_payment, monthly_payment in cell_prices:
+            for plan_name, initial_payment, monthly_payment, stock in \
+                    cell_prices:
                 products.append(Product(
                     variant_name,
                     cls.__name__,
@@ -290,7 +296,7 @@ class Movistar(Store):
                     url,
                     url,
                     '{} - {}'.format(device_id, plan_name),
-                    -1,
+                    stock,
                     initial_payment,
                     initial_payment,
                     'CLP',
