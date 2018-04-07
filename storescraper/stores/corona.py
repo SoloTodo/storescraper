@@ -155,7 +155,7 @@ class Corona(Store):
                 '$')[-1].split('Con')[0]
 
             if 'x' in offer_price_text or 'X' in offer_price_text or \
-                    offer_price_text == '-':
+                    offer_price_text == '-' or 'Despacho' in offer_price_text:
                 pass
             else:
                 offer_price = Decimal(remove_words(offer_price_text))
