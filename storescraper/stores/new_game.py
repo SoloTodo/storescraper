@@ -49,13 +49,13 @@ class NewGame(Store):
         sku = urllib.parse.parse_qs(
             urllib.parse.urlparse(url).query)['type'][0]
 
-        stock_url = 'http://www.newgame.cl/agregarcarro.php?value=' + sku
-        stock_text = session.get(stock_url).text.split('|')[0]
+        stock_text = soup.find('div', 'stock').find(
+            'span').text.split(':')[1].strip()
 
-        if stock_text in ['STOCK', 'STOCKTEMP']:
-            stock = 0
+        if stock_text == 'Disponible':
+            stock = -1
         else:
-            stock = int(stock_text)
+            stock = 0
 
         offer_price = soup.findAll('div', 'preciobig')[1].find('span')
         offer_price = Decimal(remove_words(offer_price.text))
