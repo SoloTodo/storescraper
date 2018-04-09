@@ -64,6 +64,20 @@ class Entel(Store):
                 'CLP',
             )
             products.append(p)
+
+            # Plan PVP (compra equipo sin cuota de arriendo)
+            products.append(Product(
+                'Entel PVP',
+                cls.__name__,
+                category,
+                url,
+                url,
+                'Entel PVP',
+                -1,
+                Decimal(0),
+                Decimal(0),
+                'CLP',
+            ))
         elif 'entel.cl/planes/' in url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
@@ -203,6 +217,8 @@ class Entel(Store):
                  'portability_price'),
             ]
 
+            sale_price = None
+
             # Use the prices of the first variant with the same capacity
             for plan in pricing_variant['plans']:
                 plan = plan['plan']
@@ -210,6 +226,11 @@ class Entel(Store):
                                          'multi_smart',
                                          'cuenta_controlada']:
                     continue
+
+                if sale_price and sale_price != Decimal(plan['sale_price']):
+                    raise Exception('Mismatch sale price')
+
+                sale_price = Decimal(plan['sale_price'])
 
                 for plan_suffix, field_names, monthly_payment_field \
                         in plan_choices:
@@ -271,6 +292,22 @@ class Entel(Store):
                         cell_monthly_payment=cell_monthly_payment
                     )
                     products.append(product)
+
+            products.append(Product(
+                variant_name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - Entel PVP'.format(variant_name),
+                -1,
+                sale_price,
+                sale_price,
+                'CLP',
+                cell_plan_name='Entel PVP',
+                picture_urls=picture_urls,
+                cell_monthly_payment=Decimal(0)
+            ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
 
