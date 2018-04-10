@@ -45,7 +45,7 @@ class Wei(Store):
             ['1264', 'Notebook'],  # Notebooks ultralivianos
             ['731', 'Notebook'],  # NOTEBOOK GAMER
             ['1257', 'Mouse'],  # Mouse
-            # ['1138', 'ExternalStorageDrive'],  # Discos externos
+            ['1138', 'ExternalStorageDrive'],  # Discos externos
             ['665', 'ExternalStorageDrive'],  # Discos externos FORMATO 2.5"
             ['664', 'ExternalStorageDrive'],  # Discos externos FORMATO 3.5"
             ['515', 'SolidStateDrive'],  # SSD
@@ -58,9 +58,11 @@ class Wei(Store):
             # ['668', 'Motherboard'],  # FM2+
             ['660', 'Motherboard'],  # 1150
             ['687', 'Motherboard'],  # 1151
+            ['761', 'Motherboard'],  # 2066
+            ['765', 'Motherboard'],  # AM4
             # ['1131', 'Motherboard'],  # 1155
             # ['1133', 'Motherboard'],  # 2011
-            ['730', 'Motherboard'],  # PLACAS GAMER
+            # ['730', 'Motherboard'],  # PLACAS GAMER
             ['1162', 'CpuCooler'],  # Ventilacion
             ['602', 'Processor'],  # FM2
             # ['674', 'Processor'],  # FM2+
@@ -68,6 +70,7 @@ class Wei(Store):
             ['657', 'Processor'],  # 1150
             ['691', 'Processor'],  # 1151
             ['1125', 'Processor'],  # 2011
+            ['764', 'Processor'],  # 2066
             ['1220', 'ComputerCase'],  # Gabinetes c/ PSU
             ['1221', 'ComputerCase'],  # Gabinetes s/ PSU
             ['729', 'ComputerCase'],  # GABINETES GAMER

@@ -85,8 +85,12 @@ class LinioChile(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        response = session.get(url)
 
-        page_source = session.get(url).text
+        if response.url != url:
+            return None
+
+        page_source = response.text
 
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
                                 page_source).groups()[0]
