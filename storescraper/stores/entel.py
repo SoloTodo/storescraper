@@ -232,7 +232,7 @@ class Entel(Store):
             ]
 
             pvp_price = None
-            pvp_portability_price = None
+            pvp_portability_price = Decimal('Infinity')
 
             # Use the prices of the first variant with the same capacity
             for plan in pricing_variant['plans']:
@@ -247,10 +247,12 @@ class Entel(Store):
 
                 pvp_price = Decimal(plan['sale_price'])
 
-                if plan['discount_percentage'] and \
-                        pvp_portability_price is None:
-                    pvp_portability_price = Decimal(
+                if plan['title'] in ['Libre 30GB', 'Controlado 7GB']:
+                    listed_pvp_portability_price = Decimal(
                         plan['discount_percentage'])
+
+                    if listed_pvp_portability_price < pvp_portability_price:
+                        pvp_portability_price = listed_pvp_portability_price
 
                 for plan_suffix, field_names, monthly_payment_field \
                         in plan_choices:
@@ -328,7 +330,7 @@ class Entel(Store):
                 cell_monthly_payment=Decimal(0)
             ))
 
-            if pvp_portability_price:
+            if pvp_portability_price.is_finite():
                 products.append(Product(
                     variant_name,
                     cls.__name__,
