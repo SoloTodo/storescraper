@@ -56,7 +56,7 @@ class Wei(Store):
             # ['1127', 'Motherboard'],  # AM3
             # ['1128', 'Motherboard'],  # AM3+
             # ['668', 'Motherboard'],  # FM2+
-            ['660', 'Motherboard'],  # 1150
+            # ['660', 'Motherboard'],  # 1150
             ['687', 'Motherboard'],  # 1151
             ['761', 'Motherboard'],  # 2066
             ['765', 'Motherboard'],  # AM4
