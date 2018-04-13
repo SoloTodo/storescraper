@@ -93,6 +93,8 @@ class WalmartMexico(Store):
                 break
             picture_urls.append(tentative_url)
 
+        base_description = ', '.join(product_json['Benefits']) + '\n\n'
+
         products = []
 
         for variant in product_json['variants']:
@@ -113,7 +115,12 @@ class WalmartMexico(Store):
                     part_number = attr['Value']
                     break
 
-            description = variant['data']['Details']
+            description = base_description
+            for attr_entry in variant['data']['Attributes']:
+                description += '{} {} \n\n'.format(attr_entry['Name'],
+                                                   attr_entry['Value'])
+
+            description += variant['data']['Details']
 
             p = Product(
                 name,

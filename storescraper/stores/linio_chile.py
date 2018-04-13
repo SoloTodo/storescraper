@@ -88,7 +88,7 @@ class LinioChile(Store):
         response = session.get(url)
 
         if response.url != url:
-            return None
+            return []
 
         page_source = response.text
 
