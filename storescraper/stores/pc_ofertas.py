@@ -90,14 +90,12 @@ class PcOfertas(Store):
 
                 for cell in soup.find(
                         'ol', 'product-items').findAll('li', 'product-item'):
-                    product_id_container = cell.find('input',
-                                                     {'name': 'product'})
+                    product_id_container = json.loads(
+                        cell.find('a', 'towishlist')['data-post'])
+                    product_id = product_id_container['data']['product']
 
-                    if not product_id_container:
-                        raise Exception('Empty category:' + category_url)
-
-                    product_url = 'http://www.pcofertas.cl/catalog/product/' \
-                                  'view/id/' + product_id_container['value']
+                    product_url = 'https://www.peta.cl/catalog/product/' \
+                                  'view/id/' + product_id
                     local_product_urls.append(product_url)
 
                 pager = soup.find('div', 'pages')
