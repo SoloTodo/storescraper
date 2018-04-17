@@ -64,34 +64,34 @@ class Entel(Store):
                 'CLP',
             ))
 
-            # Plan PVP (compra equipo sin cuota de arriendo)
-            products.append(Product(
-                'Entel PVP',
-                cls.__name__,
-                category,
-                url,
-                url,
-                'Entel PVP',
-                -1,
-                Decimal(0),
-                Decimal(0),
-                'CLP',
-            ))
-
-            # Plan PVP Portabilidad (compra equipo en portabilidad sin cuota
-            # de arriendo)
-            products.append(Product(
-                'Entel PVP Portabilidad',
-                cls.__name__,
-                category,
-                url,
-                url,
-                'Entel PVP Portabilidad',
-                -1,
-                Decimal(0),
-                Decimal(0),
-                'CLP',
-            ))
+            # # Plan PVP (compra equipo sin cuota de arriendo)
+            # products.append(Product(
+            #     'Entel PVP',
+            #     cls.__name__,
+            #     category,
+            #     url,
+            #     url,
+            #     'Entel PVP',
+            #     -1,
+            #     Decimal(0),
+            #     Decimal(0),
+            #     'CLP',
+            # ))
+            #
+            # # Plan PVP Portabilidad (compra equipo en portabilidad sin cuota
+            # # de arriendo)
+            # products.append(Product(
+            #     'Entel PVP Portabilidad',
+            #     cls.__name__,
+            #     category,
+            #     url,
+            #     url,
+            #     'Entel PVP Portabilidad',
+            #     -1,
+            #     Decimal(0),
+            #     Decimal(0),
+            #     'CLP',
+            # ))
         elif 'entel.cl/planes/' in url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
@@ -231,28 +231,33 @@ class Entel(Store):
                  'portability_price'),
             ]
 
-            pvp_price = None
-            pvp_portability_price = Decimal('Infinity')
+            # pvp_price = None
+            # pvp_portability_price = Decimal('Infinity')
 
             # Use the prices of the first variant with the same capacity
             for plan in pricing_variant['plans']:
                 plan = plan['plan']
+
                 if plan['plan_type'] in ['cargo_fijo', 'voz',
                                          'multi_smart',
                                          'cuenta_controlada']:
                     continue
 
-                if pvp_price and pvp_price != Decimal(plan['sale_price']):
-                    raise Exception('Mismatch sale price')
+                if plan['modality'] != 'contratacion':
+                    continue
 
-                pvp_price = Decimal(plan['sale_price'])
-
-                if plan['title'] in ['Libre 30GB', 'Controlado 7GB']:
-                    listed_pvp_portability_price = Decimal(
-                        plan['discount_percentage'])
-
-                    if listed_pvp_portability_price < pvp_portability_price:
-                        pvp_portability_price = listed_pvp_portability_price
+                # if pvp_price and pvp_price != Decimal(plan['sale_price']):
+                #     raise Exception('Mismatch sale price')
+                #
+                # pvp_price = Decimal(plan['sale_price'])
+                #
+                # if plan['title'] in ['Libre 30GB', 'Controlado 7GB'] and
+                # plan['discount_percentage']:
+                #     listed_pvp_portability_price = Decimal(
+                #         plan['discount_percentage'])
+                #
+                #     if listed_pvp_portability_price < pvp_portability_price:
+                #         pvp_portability_price = listed_pvp_portability_price
 
                 for plan_suffix, field_names, monthly_payment_field \
                         in plan_choices:
@@ -314,38 +319,38 @@ class Entel(Store):
                         cell_monthly_payment=cell_monthly_payment
                     ))
 
-            products.append(Product(
-                variant_name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - Entel PVP'.format(variant_name),
-                -1,
-                pvp_price,
-                pvp_price,
-                'CLP',
-                cell_plan_name='Entel PVP',
-                picture_urls=picture_urls,
-                cell_monthly_payment=Decimal(0)
-            ))
-
-            if pvp_portability_price.is_finite():
-                products.append(Product(
-                    variant_name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} - Entel PVP Portabilidad'.format(variant_name),
-                    -1,
-                    pvp_portability_price,
-                    pvp_portability_price,
-                    'CLP',
-                    cell_plan_name='Entel PVP Portabilidad',
-                    picture_urls=picture_urls,
-                    cell_monthly_payment=Decimal(0)
-                ))
+            # products.append(Product(
+            #     variant_name,
+            #     cls.__name__,
+            #     'Cell',
+            #     url,
+            #     url,
+            #     '{} - Entel PVP'.format(variant_name),
+            #     -1,
+            #     pvp_price,
+            #     pvp_price,
+            #     'CLP',
+            #     cell_plan_name='Entel PVP',
+            #     picture_urls=picture_urls,
+            #     cell_monthly_payment=Decimal(0)
+            # ))
+            #
+            # if pvp_portability_price.is_finite():
+            #     products.append(Product(
+            #         variant_name,
+            #         cls.__name__,
+            #         'Cell',
+            #         url,
+            #         url,
+            #         '{} - Entel PVP Portabilidad'.format(variant_name),
+            #         -1,
+            #         pvp_portability_price,
+            #         pvp_portability_price,
+            #         'CLP',
+            #         cell_plan_name='Entel PVP Portabilidad',
+            #         picture_urls=picture_urls,
+            #         cell_monthly_payment=Decimal(0)
+            #     ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
 
