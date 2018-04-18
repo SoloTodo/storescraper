@@ -15,6 +15,9 @@ class Ribeiro(Store):
             'WaterHeater',
             'WashingMachine',
             'Stove',
+            'UsbFlashDrive',
+            'MemoryCard',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -37,6 +40,12 @@ class Ribeiro(Store):
              'N-orsxeo', 'Stove'],
             ['heladeras-cocina-y-lavado-cocinas-anafes/_/'
              'N-orsxeo', 'Stove'],
+            ['celulares-informatica-y-gaming-accesorios-de-tecnologia-'
+             'pendrives/_/N-1g03f3', 'UsbFlashDrive'],
+            ['televisores-audio-foto-y-video-foto-y-video-memorias/'
+             '_/N-1enokiq', 'MemoryCard'],
+            ['celulares-informatica-y-gaming-accesorios-de-tecnologia-'
+             'software-y-otros/_/N-wu7x14', 'ExternalStorageDrive'],
         ]
 
         product_urls = []
