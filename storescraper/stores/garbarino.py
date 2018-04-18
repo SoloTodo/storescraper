@@ -18,6 +18,9 @@ class Garbarino(Store):
             'WaterHeater',
             'WashingMachine',
             'Stove',
+            'UsbFlashDrive',
+            'MemoryCard',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -33,6 +36,11 @@ class Garbarino(Store):
             ['cocinas/4282', 'Stove'],
             ['anafes/4286', 'Stove'],
             ['hornos/4283', 'Stove'],
+            ['pendrives/4553', 'UsbFlashDrive'],
+            ['accesorios-fotografia/4357', 'MemoryCard'],
+            ['memorias/4938', 'MemoryCard'],
+            ['memorias/4935', 'MemoryCard'],
+            ['discos-rigidos-externos/4549', 'ExternalStorageDrive'],
         ]
 
         product_urls = []
