@@ -19,6 +19,7 @@ from .cetrogar import Cetrogar
 from .cintegral import Cintegral
 from .claro import Claro
 from .clie import Clie
+from .compumundo import Compumundo
 from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
