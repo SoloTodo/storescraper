@@ -16,6 +16,9 @@ class Musimundo(Store):
             'WaterHeater',
             'WashingMachine',
             'Stove',
+            'UsbFlashDrive',
+            'MemoryCard',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -49,6 +52,12 @@ class Musimundo(Store):
              '1671~anafe-electrico-vitroceramico', 'Stove'],
             ['1661~electrohogar/1665~hornoscocinas/'
              '1672~hornos-para-empotrar', 'Stove'],
+            ['1625~computacion/1647~accesorios-de-informatica/1656~pen-drive',
+             'UsbFlashDrive'],
+            ['1625~computacion/1647~accesorios-de-informatica/'
+             '1652~memorias-extraibles', 'MemoryCard'],
+            ['1625~computacion/1647~accesorios-de-informatica/'
+             '1655~disco-portatil', 'ExternalStorageDrive'],
         ]
 
         product_urls = []
