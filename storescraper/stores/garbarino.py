@@ -1,4 +1,3 @@
-import json
 import re
 
 from bs4 import BeautifulSoup
@@ -81,10 +80,9 @@ class Garbarino(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-
         page_source = session.get(url).text
-
         soup = BeautifulSoup(page_source, 'html.parser')
 
         panel_classes = ['gb-description', 'gb-tech-spec']
@@ -101,32 +99,25 @@ class Garbarino(Store):
                 continue
             picture_urls.append('https:' + picture_url)
 
-        pricing_data = json.loads(re.search(
-            r'dataLayer = ([\S\s]+?);', page_source).groups()[0])
-        pricing_data = pricing_data[0]['ecommerce']['detail']['products']
+        name = soup.find('h1').text.strip()
+        sku = url.split('/')[-1]
+        price = soup.find('meta', {'property': 'og:price:amount'})['content']
+        price = Decimal(price.replace('.', '').replace(',', '.'))
 
-        products = []
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            -1,
+            price,
+            price,
+            'ARS',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )
 
-        for product_json in pricing_data:
-            name = product_json['name']
-            sku = product_json['id']
-            price = Decimal(product_json['price'])
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                -1,
-                price,
-                price,
-                'ARS',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls
-            )
-            products.append(p)
-
-        return products
+        return [p]
