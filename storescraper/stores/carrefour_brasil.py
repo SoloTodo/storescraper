@@ -82,7 +82,11 @@ class CarrefourBrasil(Store):
                       'yCmsContentSlot productDetailsPageShortDescription')))
 
         picture_tags = soup.find('div', 'gallery-image').findAll('img')
-        picture_urls = [tag['data-zoom-image'] for tag in picture_tags]
+        picture_urls = [tag['data-zoom-image'] for tag in picture_tags
+                        if tag.has_attr('data-zoom-image')]
+
+        if not picture_urls:
+            picture_urls = None
 
         p = Product(
             name,

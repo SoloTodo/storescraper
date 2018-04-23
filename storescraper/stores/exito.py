@@ -66,7 +66,7 @@ class Exito(Store):
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(url)
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        soup = BeautifulSoup(driver.page_source, 'html5lib')
 
         part_number = soup.find(
             'div', 'reference').text.replace(

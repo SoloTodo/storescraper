@@ -44,8 +44,8 @@ class AmaHogar(Store):
             print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            containers = soup.find('div', {'id': 'product_list'}).findAll(
-                'div', 'product_block')
+            containers = soup.find('div', 'product_list').findAll(
+                'div', 'product_list_item')
 
             if not containers:
                 raise Exception('Empty category: ' + category_url)
@@ -58,27 +58,28 @@ class AmaHogar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1').text.strip()
         key = soup.find('input', {'name': 'id_product'})['value'].strip()
-        sku = soup.find('span', 'editable').text.strip()
-        stock = int(soup.find('span', {'id': 'quantityAvailable'}).text)
-        description = html_to_markdown(str(soup.find('div', {'id': 'idTab1'})))
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        price_string = soup.find('span', {'id': 'our_price_display'}).text
+        stock_container = soup.find('span', 'product-quantities')
 
+        if stock_container:
+            stock = int(stock_container['data-stock'])
+        else:
+            stock = -1
+
+        description = html_to_markdown(str(soup.find('div', 'tab-content ')))
+
+        price_string = soup.find('span', {'itemprop': 'price'})['content']
         normal_price = Decimal(remove_words(price_string))
         offer_price = normal_price
 
-        picture_urls = None
-
-        pictures_container = soup.find('ul', {'id': 'thumbs_list_frame'})
-        if pictures_container:
-            picture_urls = []
-            for link in pictures_container.findAll('a'):
-                picture_urls.append(link['href'])
+        picture_urls = [tag['href'] for tag in soup.findAll('a', 'replace-2x')]
 
         p = Product(
             name,

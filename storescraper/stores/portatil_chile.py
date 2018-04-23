@@ -37,6 +37,7 @@ class PortatilChile(Store):
             while True:
                 print(category_path, page)
                 category_url = url_base.format(category_path, page)
+                print(category_url)
 
                 json_data = json.loads(session.get(category_url,
                                                    verify=False).text)

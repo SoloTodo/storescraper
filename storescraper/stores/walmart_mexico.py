@@ -40,6 +40,7 @@ class WalmartMexico(Store):
             category_url = '{}WebControls/hlGetProductsByLine.ashx?linea={}' \
                            '&start=0&raw=1000' \
                            ''.format(base_url, category_path)
+            print(category_url)
 
             data = json.loads(session.get(
                 category_url, verify=False).content.decode('latin-1'))

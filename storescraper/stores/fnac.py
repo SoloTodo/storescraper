@@ -27,6 +27,8 @@ class Fnac(Store):
              'MemoryCard'],
             ['foto/acessorios-de-foto/cartoes-de-memoria',
              'MemoryCard'],
+            # Just because the other sections are empty
+            ['informatica/softwares', 'MemoryCard'],
         ]
 
         product_urls = []
@@ -53,6 +55,7 @@ class Fnac(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 

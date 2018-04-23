@@ -31,8 +31,8 @@ class Carrefour(Store):
              'WashingMachine'],
             ['electrohogar-1/cocinas-y-purificadores.html?cat=460',
              'Stove'],  # Cocinas a gas
-            ['electrohogar-1/cocinas-y-purificadores.html?cat=461',
-             'Stove'],  # Cocinas electricas
+            # ['electrohogar-1/cocinas-y-purificadores.html?cat=461',
+            #  'Stove'],  # Cocinas electricas
             ['electrohogar-1/hornos-y-anafes.html',
              'Stove'],
         ]
