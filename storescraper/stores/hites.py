@@ -38,9 +38,6 @@ class Hites(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://www.hites.com/tienda/ProductListingView?' \
-                   'categoryId='
-
         url_extensions = [
             ['14002', 'Refrigerator'],
             ['14067', 'Notebook'],
@@ -134,12 +131,12 @@ class Hites(Store):
 
             name = soup.find('h1', {'role': 'heading'}).text
             price_str = soup.find(
-                'input', {'id': 'hitesprice_paymentTerms'})['value']
+                'input', {'id': 'hitesprice_paymentTerms'})
 
-            if not price_str:
+            if not price_str or not price_str['value']:
                 return []
 
-            normal_price = Decimal(price_str)
+            normal_price = Decimal(price_str['value'])
             offer_price = normal_price
         else:
             stock = -1
