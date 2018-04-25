@@ -31,7 +31,7 @@ class Cintegral(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'http://www.cintegral.cl/'
+        url_base = 'https://www.cintegral.cl/'
 
         url_extensions = [
             ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
@@ -81,7 +81,7 @@ class Cintegral(Store):
 
                 url = category_url + '?p=' + str(page)
                 print(url)
-                json_data = json.loads(session.get(url).text)
+                json_data = json.loads(session.get(url, verify=False).text)
                 soup = BeautifulSoup(json_data['listing'], 'html.parser')
 
                 done = False
@@ -111,7 +111,7 @@ class Cintegral(Store):
         print(url)
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('li', 'product').find('strong').text.split(
