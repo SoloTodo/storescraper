@@ -90,8 +90,8 @@ class LinioChile(Store):
         if response.url != url:
             return []
 
+        key = re.search(r'-([a-zA-Z0-9]+)$', url).groups()[0]
         page_source = response.text
-
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)[0]
@@ -142,7 +142,7 @@ class LinioChile(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
