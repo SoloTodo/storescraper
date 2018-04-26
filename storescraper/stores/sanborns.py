@@ -39,9 +39,10 @@ class Sanborns(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.sanborns.com.mx/_layouts/' \
-                               'wpSanborns/GetProductos.aspx?idFamily={}&' \
-                               'page={}'.format(category_path, page)
+                category_url = 'https://www.sanborns.com.mx/categoria/' \
+                               '{}/cat/pagina/{}'.format(category_path, page)
+
+                print(category_url)
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
@@ -49,7 +50,7 @@ class Sanborns(Store):
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                link_containers = soup.findAll('div', 'producto')
+                link_containers = soup.findAll('article', 'productbox')
 
                 if not link_containers:
                     if page == 1:
@@ -57,7 +58,8 @@ class Sanborns(Store):
                     break
 
                 for link_container in link_containers:
-                    product_url = link_container.find('a')['href']
+                    product_url = 'https://www.sanborns.com.mx' + \
+                                  link_container.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -66,47 +68,39 @@ class Sanborns(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
-        query_string = urllib.parse.urlparse(url).query
-        sku = urllib.parse.parse_qs(query_string)['ean'][0]
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        ean = sku
+        skus = soup.findAll('div', 'skuTienda')
+        sku = skus[0].text.replace('SKU#. ', '').strip()
+        ean = skus[1].text.replace('EAN#. ', '').strip()
+
         if len(ean) == 12:
             ean = '0' + ean
         if not check_ean13(ean):
             ean = None
 
-        page_source = session.get(url).text
-
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
                                 page_source).groups()[0]
         pricing_data = demjson.decode(pricing_str)[0]
 
-        json_product = pricing_data['ecommerce']['detail']['products '][0]
+        json_product = pricing_data['ecommerce']['detail']['products'][0]
 
         name = '{} {}'.format(json_product['brand'], json_product['name'])
         price = Decimal(json_product['price'])
 
-        soup = BeautifulSoup(page_source, 'html.parser')
-        picture_urls = ['https://www.sanborns.com.mx' + tag['href'] for tag in
-                        soup.findAll('a', 'zoom')]
+        picture_urls = [soup.find('img', 'tienda_Detalle')['src']]
 
-        specs_url = 'https://www.sanborns.com.mx/_Layouts/wpSanborns/' \
-                    'Especificaciones.aspx?ean={}'.format(sku)
-
-        specs_soup = BeautifulSoup(session.get(specs_url).text, 'html.parser')
-
-        specs_table = specs_soup.find('table')
-
+        specs_table = soup.find('dl', 'descTable')
         description = html_to_markdown(str(specs_table))
-
         part_number = None
 
-        for row in specs_table.findAll('tr'):
-            label = row.find('td').text.lower().strip()
-            if label == 'modelo':
-                part_number = row.findAll('td')[1].text.strip()
+        for idx, header in enumerate(specs_table.findAll('dt')):
+            if header.text.lower().strip() == 'modelo':
+                part_number = specs_table.findAll('dd')[idx].text.strip()
                 break
 
         p = Product(

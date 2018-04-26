@@ -118,6 +118,9 @@ class Easy(Store):
 
         name = name.text.strip()
 
+        if soup.find('span', {'itemprop': 'price'}).text.strip():
+            return []
+
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content'].strip()
         description = html_to_markdown(str(soup.find('div', 'box_2')))
 
