@@ -144,6 +144,9 @@ class Americanas(Store):
                         ean = '0' + ean
                     if not check_ean13(ean):
                         ean = None
+
+                    if ean and ean == '0000000000000':
+                        ean = None
                 else:
                     ean = None
 

@@ -118,6 +118,7 @@ from .sodimac_argentina import SodimacArgentina
 from .solar_led import SolarLed
 from .sony_style import SonyStyle
 from .sp_digital import SpDigital
+from .spider import Spider
 from .syd import Syd
 from .tecnoglobal import Tecnoglobal
 from .terabyte import Terabyte
