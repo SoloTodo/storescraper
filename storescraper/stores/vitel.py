@@ -23,10 +23,10 @@ class Vitel(Store):
 
         category_paths = [
             # Ampolletas LED
-            ['products/4/iluminacion-led/9/lamparas-led', 'Lamp'],
-            # Proyectores
-            ['products/4/iluminacion-led/10/proyectores-de-area',
-             'LightProjector'],
+            ['iluminacion/lamparas-tubos-led.html', 'Lamp'],
+            # Proyectores LED con DS43
+            ['iluminacion.html?cat=60', 'LightProjector'],
+            ['iluminacion.html?cat=318', 'LightProjector'],
         ]
 
         product_urls = []
@@ -38,40 +38,34 @@ class Vitel(Store):
 
             category_url = base_url + category_path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            product_containers = soup.findAll('div', 'c-producto')
+            product_containers = soup.findAll('li', 'product-items')
 
             if not product_containers:
                 raise Exception('Emtpy category: ' + category_url)
 
             for container in product_containers:
-                product_id = container.find('div', 'c-boton-producto').find(
-                    'div')['id']
-                product_url = base_url + \
-                    'producto_detalle.php/?idproducto=' + product_id
+                product_url = container.find('a')['href']
                 product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        name = soup.find('span', 'txt-titulo-grandes').text.strip()
+        name = soup.find('h1', 'page-title').text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        query_string = urllib.parse.urlparse(url).query
-        sku = urllib.parse.parse_qs(query_string)['idproducto'][0]
-
-        price = Decimal(remove_words(soup.find(
-            'span', 'texto-precio-oferta2').string))
+        price = Decimal(soup.find(
+            'span', 'price-wrapper')['data-price-amount'])
 
         price *= Decimal('1.19')
         price = price.quantize(0)
 
-        description = html_to_markdown(str(soup.find('div', 'tab_container')))
+        description = html_to_markdown(str(soup.find('div', 'description')))
 
-        picture_urls = ['http://www.vitel.cl/' +
-                        soup.find('div', 'slides_container').find(
-                            'img')['src']]
+        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
 
         p = Product(
             name,
