@@ -188,8 +188,10 @@ class AbcDin(Store):
             sorted_pictures = sorted(
                 pictures_dict['ItemAngleFullImage'].items(),
                 key=lambda pair: int(pair[0].replace('image_', '')))
-            picture_urls = ['https://www.abcdin.cl' + picture_pair[1]
-                            for picture_pair in sorted_pictures]
+            picture_urls = [
+                'https://www.abcdin.cl' + picture_pair[1].replace(' ', '')
+                for picture_pair in sorted_pictures
+            ]
         else:
             picture_urls = [
                 'https://www.abcdin.cl' +
