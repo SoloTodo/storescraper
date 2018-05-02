@@ -125,7 +125,7 @@ class BestBuyMexico(Store):
                     ean = None
 
             normal_price = Decimal(soup.find(
-                'div', 'pb-purchase-price').text.replace(
+                'div', 'product-price').text.replace(
                 u'$', '').replace(',', ''))
 
             offer_price = normal_price

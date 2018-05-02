@@ -61,40 +61,27 @@ class OfficeMaxMexico(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
-                                 page_source).groups()[0]
-        pricing_data = json.loads(pricing_data)
-
         skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
                               page_source).groups()[0]
         skus_data = json.loads(skus_data)
-        name = '{} {}'.format(pricing_data['productBrandName'],
-                              pricing_data['productName'])
-        price = Decimal(pricing_data['productPriceTo'])
-
         soup = BeautifulSoup(page_source, 'html.parser')
 
         part_number = soup.find('td', {'class': 'value-field Modelo'}).text
 
-        picture_urls = [tag['rel'][0] for tag in
+        picture_urls = [tag['rel'][0].split('?')[0] for tag in
                         soup.findAll('a', {'id': 'botaoZoom'})]
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'product-specifications'})))
         products = []
-
-        if 'productEans' in pricing_data:
-            ean = pricing_data['productEans'][0]
-            if len(ean) == 12:
-                ean = '0' + ean
-            if not check_ean13(ean):
-                ean = None
-        else:
-            ean = None
 
         for sku_data in skus_data['skus']:
             sku = str(sku_data['sku'])
-            stock = pricing_data['skuStocks'][sku]
+            name = sku_data['skuname']
+            price = Decimal(sku_data['bestPrice']) / Decimal(100)
+
+            if sku_data['available']:
+                stock = -1
+            else:
+                stock = 0
 
             p = Product(
                 name,
@@ -108,9 +95,7 @@ class OfficeMaxMexico(Store):
                 price,
                 'MXN',
                 sku=sku,
-                ean=ean,
                 part_number=part_number,
-                description=description,
                 picture_urls=picture_urls
             )
             products.append(p)
