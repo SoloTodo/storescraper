@@ -32,7 +32,7 @@ class Deltron(Store):
         product_urls = []
 
         category_paths = [
-            ['NBK', 'Notebook'],
+            # ['NBK', 'Notebook'],
             ['HD', 'StorageDrive'],
             ['HDE', 'ExternalStorageDrive'],
             # ['MC&product_line=MCCF', 'MemoryCard'],

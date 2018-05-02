@@ -16,7 +16,7 @@ class FalabellaPeru(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
+            # 'Notebook',
             'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard'
@@ -25,10 +25,10 @@ class FalabellaPeru(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_paths = [
-            ['cat1590466/Laptops', 'Notebook'],
-            ['cat3150461/Laptops-2-en-1', 'Notebook'],
+            # ['cat1590466/Laptops', 'Notebook'],
+            # ['cat3150461/Laptops-2-en-1', 'Notebook'],
             # ['cat1590470/McBook', 'Notebook'],
-            ['cat1590476/Laptops-Gamers', 'Notebook'],
+            # ['cat1590476/Laptops-Gamers', 'Notebook'],
             ['cat40480/Disco-Duro-y-USB', 'ExternalStorageDrive'],
         ]
 

@@ -19,8 +19,8 @@ class Hiraoka(Store):
         url_base = 'http://www.hiraoka.com.pe/'
 
         category_paths = [
-            ['029', 'Notebook'],      # Notebooks
-            ['031', 'Notebook'],      # Convertibles
+            # ['029', 'Notebook'],      # Notebooks
+            # ['031', 'Notebook'],      # Convertibles
             ['123', 'UsbFlashDrive'],
         ]
 
