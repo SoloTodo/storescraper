@@ -25,7 +25,6 @@ class Exito(Store):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
-        # driver = webdriver.Chrome()
         base_url = 'http://www.exito.com'
 
         url_extensions = [
