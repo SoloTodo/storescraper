@@ -225,10 +225,14 @@ class Entel(Store):
             plan_choices = [
                 ('',
                  ('price_1',),
-                 'sale_price_promotion'),
+                 'sale_price_promotion',
+                 'sale_price'
+                 ),
                 (' Portabilidad',
                  ('portability_price_promotion', 'price_1'),
-                 'portability_price'),
+                 'portability_price',
+                 'discount_percentage'
+                 ),
             ]
 
             # pvp_price = None
@@ -246,23 +250,10 @@ class Entel(Store):
                 if plan['modality'] != 'contratacion':
                     continue
 
-                # if pvp_price and pvp_price != Decimal(plan['sale_price']):
-                #     raise Exception('Mismatch sale price')
-                #
-                # pvp_price = Decimal(plan['sale_price'])
-                #
-                # if plan['title'] in ['Libre 30GB', 'Controlado 7GB'] and
-                # plan['discount_percentage']:
-                #     listed_pvp_portability_price = Decimal(
-                #         plan['discount_percentage'])
-                #
-                #     if listed_pvp_portability_price < pvp_portability_price:
-                #         pvp_portability_price = listed_pvp_portability_price
-
-                for plan_suffix, field_names, monthly_payment_field \
-                        in plan_choices:
-                    plan_name = plan['title'] + plan_suffix
-                    plan_name = plan_name.replace('*', '').strip()
+                for plan_suffix, field_names, monthly_payment_field, \
+                        direct_buy_field in plan_choices:
+                    base_plan_name = plan['title'] + plan_suffix
+                    base_plan_name = base_plan_name.replace('*', '').strip()
 
                     for field_name in field_names:
                         price = plan[field_name]
@@ -283,74 +274,34 @@ class Entel(Store):
                         break
 
                     cell_monthly_payment = Decimal(plan[monthly_payment_field])
+                    direct_buy_price = Decimal(plan[direct_buy_field])
 
-                    product = Product(
-                        variant_name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {}'.format(variant_name, plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name=plan_name,
-                        picture_urls=picture_urls,
-                        cell_monthly_payment=cell_monthly_payment
-                    )
-                    products.append(product)
+                    buy_combinations = [
+                        (price, cell_monthly_payment, ''),
+                        (direct_buy_price, Decimal(0), ' Compra directa'),
+                    ]
 
-                    plan_name += ' Exclusivo Web'
+                    for initial_price, local_cell_monthly_payment, key_suffix \
+                            in buy_combinations:
+                        for suffix in ['', ' Exclusivo Web']:
+                            plan_name = base_plan_name + suffix
 
-                    products.append(Product(
-                        variant_name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {}'.format(variant_name, plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name=plan_name,
-                        picture_urls=picture_urls,
-                        cell_monthly_payment=cell_monthly_payment
-                    ))
-
-            # products.append(Product(
-            #     variant_name,
-            #     cls.__name__,
-            #     'Cell',
-            #     url,
-            #     url,
-            #     '{} - Entel PVP'.format(variant_name),
-            #     -1,
-            #     pvp_price,
-            #     pvp_price,
-            #     'CLP',
-            #     cell_plan_name='Entel PVP',
-            #     picture_urls=picture_urls,
-            #     cell_monthly_payment=Decimal(0)
-            # ))
-            #
-            # if pvp_portability_price.is_finite():
-            #     products.append(Product(
-            #         variant_name,
-            #         cls.__name__,
-            #         'Cell',
-            #         url,
-            #         url,
-            #         '{} - Entel PVP Portabilidad'.format(variant_name),
-            #         -1,
-            #         pvp_portability_price,
-            #         pvp_portability_price,
-            #         'CLP',
-            #         cell_plan_name='Entel PVP Portabilidad',
-            #         picture_urls=picture_urls,
-            #         cell_monthly_payment=Decimal(0)
-            #     ))
+                            products.append(Product(
+                                variant_name,
+                                cls.__name__,
+                                'Cell',
+                                url,
+                                url,
+                                '{} - {}{}'.format(variant_name, plan_name,
+                                                   key_suffix),
+                                -1,
+                                initial_price,
+                                initial_price,
+                                'CLP',
+                                cell_plan_name=plan_name,
+                                picture_urls=picture_urls,
+                                cell_monthly_payment=local_cell_monthly_payment
+                            ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
 

@@ -25,6 +25,7 @@ class Exito(Store):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         driver = webdriver.Chrome(chrome_options=options)
+        # driver = webdriver.Chrome()
         base_url = 'http://www.exito.com'
 
         url_extensions = [
@@ -45,6 +46,7 @@ class Exito(Store):
 
             catalog_url = base_url + '/browse/' + url_extension + \
                 '?No=0&Nrpp=80'
+            print(catalog_url)
             driver.get(catalog_url)
             base_soup = BeautifulSoup(driver.page_source, 'html.parser')
 
