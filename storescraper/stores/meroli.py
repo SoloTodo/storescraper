@@ -6,7 +6,8 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class Meroli(Store):
+class \
+        Meroli(Store):
     @classmethod
     def categories(cls):
         return [
@@ -26,7 +27,7 @@ class Meroli(Store):
             ['Calefones/24', 'WaterHeater'],
             ['Lavarropas/11', 'WashingMachine'],
             # ['Lavasecarropas/25', 'WashingMachine'],
-            ['Secarropas-por-Calor/31', 'WashingMachine'],
+            # ['Secarropas-por-Calor/31', 'WashingMachine'],
             ['Secarropas-Centrifugo/34', 'WashingMachine'],
             ['Cocinas/12', 'Stove'],
             ['Anafes/23', 'Stove'],
