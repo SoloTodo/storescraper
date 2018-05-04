@@ -24,7 +24,7 @@ class TiendaEntel(Store):
             'https://miportal.entel.cl/lista-productos?Nrpp=100&'
             'format=json-rest').text)
 
-        for record in json_prepago['response']['main'][1]['records']:
+        for record in json_prepago['response']['main'][2]['records']:
             cell_id = record['attributes']['productId'][0]
             cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
                        cell_id
