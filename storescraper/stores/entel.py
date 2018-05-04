@@ -274,34 +274,29 @@ class Entel(Store):
                         break
 
                     cell_monthly_payment = Decimal(plan[monthly_payment_field])
-                    direct_buy_price = Decimal(plan[direct_buy_field])
 
                     buy_combinations = [
                         (price, cell_monthly_payment, ''),
-                        (direct_buy_price, Decimal(0), ' Compra directa'),
                     ]
 
-                    for initial_price, local_cell_monthly_payment, key_suffix \
-                            in buy_combinations:
-                        for suffix in ['', ' Exclusivo Web']:
-                            plan_name = base_plan_name + suffix
+                    for suffix in ['', ' Exclusivo Web']:
+                        plan_name = base_plan_name + suffix
 
-                            products.append(Product(
-                                variant_name,
-                                cls.__name__,
-                                'Cell',
-                                url,
-                                url,
-                                '{} - {}{}'.format(variant_name, plan_name,
-                                                   key_suffix),
-                                -1,
-                                initial_price,
-                                initial_price,
-                                'CLP',
-                                cell_plan_name=plan_name,
-                                picture_urls=picture_urls,
-                                cell_monthly_payment=local_cell_monthly_payment
-                            ))
+                        products.append(Product(
+                            variant_name,
+                            cls.__name__,
+                            'Cell',
+                            url,
+                            url,
+                            '{} - {}'.format(variant_name, plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name=plan_name,
+                            picture_urls=picture_urls,
+                            cell_monthly_payment=cell_monthly_payment
+                        ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
 
