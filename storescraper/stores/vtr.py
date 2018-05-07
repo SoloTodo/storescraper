@@ -147,8 +147,8 @@ class Vtr(Store):
         name = soup.find('h2').find('strong').text.strip()
         sku = re.search(r'prod(\d+)', url).groups()[0]
 
-        picture_urls = ['https://vtr.com' + tag['src'].strip() for tag in
-                        soup.findAll('img', 'color-0')]
+        picture_urls = ['https://vtr.com' + tag['src'].strip().replace(
+            ' ', '%20') for tag in soup.findAll('img', 'color-0')]
 
         description = ''
 

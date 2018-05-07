@@ -59,7 +59,7 @@ class LaPolar(Store):
             ['electronica/celulares/smartphones', 'Cell'],
             ['electronica/celulares/telefonos_basicos', 'Cell'],
             ['electronica/audio/equipos_de_musica', 'StereoSystem'],
-            ['electronica/audio/home_theater', 'HomeTheater'],
+            # ['electronica/audio/home_theater', 'HomeTheater'],
             ['electronica/videojuegos/todo_consolas', 'VideoGameConsole'],
             ['tecnologia/accesorios_computacion/disco_duro_externo',
              'ExternalStorageDrive'],
