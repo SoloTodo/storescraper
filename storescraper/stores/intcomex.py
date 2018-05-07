@@ -4,7 +4,7 @@ from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, PhantomJS
 
 
 class Intcomex(Store):
@@ -151,22 +151,21 @@ class Intcomex(Store):
     @classmethod
     def _session_cookies(cls, extra_args, refresh=True):
         if not cls.SESSION_COOKIES or refresh:
-            driver = webdriver.PhantomJS(service_args=['--load-images=no'])
-            # driver = webdriver.Chrome()
+            with PhantomJS() as driver:
+                # driver = webdriver.Chrome()
 
-            driver.get('https://store.intcomex.com/es-XCL/Account/Login')
+                driver.get('https://store.intcomex.com/es-XCL/Account/Login')
 
-            driver.find_element_by_id('User').send_keys(extra_args['username'])
-            password_field = driver.find_element_by_id('Password')
-            password_field.send_keys(extra_args['password'])
-            password_field.submit()
+                driver.find_element_by_id('User').send_keys(
+                    extra_args['username'])
+                password_field = driver.find_element_by_id('Password')
+                password_field.send_keys(extra_args['password'])
+                password_field.submit()
 
-            cookies = {}
-            for cookie_entry in driver.get_cookies():
-                cookies[cookie_entry['name']] = cookie_entry['value']
+                cookies = {}
+                for cookie_entry in driver.get_cookies():
+                    cookies[cookie_entry['name']] = cookie_entry['value']
 
-            driver.close()
-
-            cls.SESSION_COOKIES = cookies
+                cls.SESSION_COOKIES = cookies
 
         return cls.SESSION_COOKIES

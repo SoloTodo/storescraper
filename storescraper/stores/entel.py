@@ -8,7 +8,7 @@ from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, PhantomJS
 
 
 class Entel(Store):
@@ -64,34 +64,6 @@ class Entel(Store):
                 'CLP',
             ))
 
-            # # Plan PVP (compra equipo sin cuota de arriendo)
-            # products.append(Product(
-            #     'Entel PVP',
-            #     cls.__name__,
-            #     category,
-            #     url,
-            #     url,
-            #     'Entel PVP',
-            #     -1,
-            #     Decimal(0),
-            #     Decimal(0),
-            #     'CLP',
-            # ))
-            #
-            # # Plan PVP Portabilidad (compra equipo en portabilidad sin cuota
-            # # de arriendo)
-            # products.append(Product(
-            #     'Entel PVP Portabilidad',
-            #     cls.__name__,
-            #     category,
-            #     url,
-            #     url,
-            #     'Entel PVP Portabilidad',
-            #     -1,
-            #     Decimal(0),
-            #     Decimal(0),
-            #     'CLP',
-            # ))
         elif 'entel.cl/planes/' in url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
@@ -104,84 +76,81 @@ class Entel(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        driver = webdriver.PhantomJS()
+        with PhantomJS() as driver:
+            tries = 1
 
-        tries = 1
+            while True:
+                if tries >= 10:
+                    raise Exception('Try overflow getting plans')
+                print('Try: {}'.format(tries))
+                driver.get(url)
+                time.sleep(5)
 
-        while True:
-            if tries >= 10:
-                raise Exception('Try overflow getting plans')
-            print('Try: {}'.format(tries))
-            driver.get(url)
-            time.sleep(5)
+                soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
+                plan_tabs = soup.findAll('div', 'align-left')
+                if plan_tabs:
+                    break
 
-            plan_tabs = soup.findAll('div', 'align-left')
-            if plan_tabs:
-                break
+                tries += 1
 
-            tries += 1
+            products = []
 
-        products = []
+            for plan_tab in plan_tabs:
+                base_plan_name = plan_tab.find('h5').text.strip()
 
-        for plan_tab in plan_tabs:
-            base_plan_name = plan_tab.find('h5').text.strip()
+                print(base_plan_name)
 
-            print(base_plan_name)
+                for suffix in ['', ' Portabilidad']:
+                    name = base_plan_name + suffix
 
-            for suffix in ['', ' Portabilidad']:
-                name = base_plan_name + suffix
+                    normal_price_container = plan_tab.find(
+                        'p', 'valor-dcto-caja-precio')
 
-                normal_price_container = plan_tab.find(
-                    'p', 'valor-dcto-caja-precio')
+                    highlighted_price = Decimal(remove_words(
+                        plan_tab.find('p', 'monto').text))
 
-                highlighted_price = Decimal(remove_words(
-                    plan_tab.find('p', 'monto').text))
+                    if normal_price_container:
+                        normal_price = Decimal(remove_words(
+                            normal_price_container.text))
+                        web_price = highlighted_price
+                    else:
+                        normal_price = web_price = highlighted_price
 
-                if normal_price_container:
-                    normal_price = Decimal(remove_words(
-                        normal_price_container.text))
-                    web_price = highlighted_price
-                else:
-                    normal_price = web_price = highlighted_price
+                    product = Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        name,
+                        -1,
+                        normal_price,
+                        normal_price,
+                        'CLP',
+                    )
+                    products.append(product)
 
-                product = Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    name,
-                    -1,
-                    normal_price,
-                    normal_price,
-                    'CLP',
-                )
-                products.append(product)
+                    # Exclusivo web
 
-                # Exclusivo web
+                    name = base_plan_name + suffix + ' Exclusivo Web'
 
-                name = base_plan_name + suffix + ' Exclusivo Web'
+                    price = web_price.quantize(0)
 
-                price = web_price.quantize(0)
-
-                product = Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    name,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                )
-                products.append(product)
-
-        driver.close()
-        return products
+                    product = Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        name,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                    )
+                    products.append(product)
+                return products
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
@@ -235,9 +204,6 @@ class Entel(Store):
                  ),
             ]
 
-            # pvp_price = None
-            # pvp_portability_price = Decimal('Infinity')
-
             # Use the prices of the first variant with the same capacity
             for plan in pricing_variant['plans']:
                 plan = plan['plan']
@@ -274,10 +240,6 @@ class Entel(Store):
                         break
 
                     cell_monthly_payment = Decimal(plan[monthly_payment_field])
-
-                    buy_combinations = [
-                        (price, cell_monthly_payment, ''),
-                    ]
 
                     for suffix in ['', ' Exclusivo Web']:
                         plan_name = base_plan_name + suffix

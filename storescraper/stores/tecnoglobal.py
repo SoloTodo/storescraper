@@ -6,7 +6,7 @@ from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, check_ean13
+from storescraper.utils import session_with_proxy, check_ean13, PhantomJS
 
 
 class Tecnoglobal(Store):
@@ -177,24 +177,20 @@ class Tecnoglobal(Store):
     @classmethod
     def _session_cookies(cls, extra_args, refresh=True):
         if not cls.SESSION_COOKIES or refresh:
-            driver = webdriver.PhantomJS(service_args=['--load-images=no'])
-            # driver = webdriver.Chrome()
+            with PhantomJS() as driver:
+                driver.get('http://www.tecnoglobal.cl/')
 
-            driver.get('http://www.tecnoglobal.cl/')
+                driver.find_element_by_name('lo_usuario').send_keys(
+                    extra_args['username'])
+                driver.find_element_by_name('lo_passwd').send_keys(
+                    extra_args['password'])
 
-            driver.find_element_by_name('lo_usuario').send_keys(
-                extra_args['username'])
-            driver.find_element_by_name('lo_passwd').send_keys(
-                extra_args['password'])
+                driver.execute_script('login()')
 
-            driver.execute_script('login()')
+                cookies = {}
+                for cookie_entry in driver.get_cookies():
+                    cookies[cookie_entry['name']] = cookie_entry['value']
 
-            cookies = {}
-            for cookie_entry in driver.get_cookies():
-                cookies[cookie_entry['name']] = cookie_entry['value']
-
-            driver.close()
-
-            cls.SESSION_COOKIES = cookies
+                cls.SESSION_COOKIES = cookies
 
         return cls.SESSION_COOKIES

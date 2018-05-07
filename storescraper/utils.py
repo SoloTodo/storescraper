@@ -7,6 +7,7 @@ import re
 import math
 
 import requests
+from selenium import webdriver
 
 CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
@@ -129,3 +130,29 @@ def session_with_proxy(extra_args):
 
 class InvalidSessionCookieException(Exception):
     pass
+
+
+class HeadlessChrome:
+    def __init__(self, timeout=30):
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        self.driver = webdriver.Chrome(chrome_options=options)
+        self.driver.set_page_load_timeout(timeout)
+
+    def __enter__(self):
+        return self.driver
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.driver.close()
+
+
+class PhantomJS:
+    def __init__(self, service_args=['--load-images=no'], timeout=30):
+        self.driver = webdriver.PhantomJS(service_args=service_args)
+        self.driver.set_page_load_timeout(timeout)
+
+    def __enter__(self):
+        return self.driver
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.driver.close()

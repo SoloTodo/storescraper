@@ -8,7 +8,7 @@ from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, PhantomJS
 
 
 class Kabum(Store):
@@ -153,17 +153,13 @@ class Kabum(Store):
     @classmethod
     def _session_cookies(cls):
         if not cls.SESSION_COOKIES:
-            driver = webdriver.PhantomJS(service_args=['--load-images=no'])
-            # driver = webdriver.Chrome()
+            with PhantomJS() as driver:
+                driver.get('https://www.kabum.com.br/')
 
-            driver.get('https://www.kabum.com.br/')
+                cookies = {}
+                for cookie_entry in driver.get_cookies():
+                    cookies[cookie_entry['name']] = cookie_entry['value']
 
-            cookies = {}
-            for cookie_entry in driver.get_cookies():
-                cookies[cookie_entry['name']] = cookie_entry['value']
-
-            driver.close()
-
-            cls.SESSION_COOKIES = cookies
+                cls.SESSION_COOKIES = cookies
 
         return cls.SESSION_COOKIES
