@@ -106,7 +106,11 @@ class Clie(Store):
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         name = soup.findAll('td', 'texto-precio-ahorro')[1].text.strip()
-        stock = int(soup.find('td', 'stock-product').text.split()[0])
+
+        if soup.find('img', {'src': 'images/ficha/ico_sin_stock.gif'}):
+            stock = 0
+        else:
+            stock = int(soup.find('td', 'stock-product').text.split()[0])
         sku = soup.find('td', 'sku').text.split()[-1]
 
         part_number = soup.findAll('td', 'texto-precio-ahorro')[2]\
