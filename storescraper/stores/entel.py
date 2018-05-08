@@ -4,8 +4,6 @@ import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from selenium import webdriver
-
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, PhantomJS
@@ -40,9 +38,7 @@ class Entel(Store):
 
         if category == 'CellPlan':
             product_urls.append(cls.prepago_url)
-            for path in ['index.iws', 'index2.iws']:
-                plan_url = 'http://www.entel.cl/planes/' + path
-                product_urls.append(plan_url)
+            product_urls.append('http://www.entel.cl/planes/')
 
         return product_urls
 
@@ -94,74 +90,66 @@ class Entel(Store):
 
                 tries += 1
 
-            products = []
+        products = []
 
-            for plan_tab in plan_tabs:
-                base_plan_name = plan_tab.find('h5').text.strip()
+        for plan_tab in plan_tabs:
+            base_plan_name = plan_tab.find('h5').text.strip()
 
-                print(base_plan_name)
+            for suffix in ['', ' Portabilidad']:
+                name = base_plan_name + suffix
 
-                for suffix in ['', ' Portabilidad']:
-                    name = base_plan_name + suffix
+                normal_price_container = plan_tab.find(
+                    'p', 'valor-dcto-caja-precio')
 
-                    normal_price_container = plan_tab.find(
-                        'p', 'valor-dcto-caja-precio')
+                highlighted_price = Decimal(remove_words(
+                    plan_tab.find('p', 'monto').text))
 
-                    highlighted_price = Decimal(remove_words(
-                        plan_tab.find('p', 'monto').text))
+                if normal_price_container:
+                    normal_price = Decimal(remove_words(
+                        normal_price_container.text))
+                    web_price = highlighted_price
+                else:
+                    normal_price = web_price = highlighted_price
 
-                    if normal_price_container:
-                        normal_price = Decimal(remove_words(
-                            normal_price_container.text))
-                        web_price = highlighted_price
-                    else:
-                        normal_price = web_price = highlighted_price
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'CellPlan',
+                    url,
+                    url,
+                    name,
+                    -1,
+                    normal_price,
+                    normal_price,
+                    'CLP',
+                ))
 
-                    product = Product(
-                        name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        name,
-                        -1,
-                        normal_price,
-                        normal_price,
-                        'CLP',
-                    )
-                    products.append(product)
+                # Exclusivo web
 
-                    # Exclusivo web
+                name = base_plan_name + suffix + ' Exclusivo Web'
 
-                    name = base_plan_name + suffix + ' Exclusivo Web'
+                price = web_price.quantize(0)
 
-                    price = web_price.quantize(0)
-
-                    product = Product(
-                        name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        name,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                    )
-                    products.append(product)
-                return products
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'CellPlan',
+                    url,
+                    url,
+                    name,
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                ))
+        return products
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        print(url)
         session = session_with_proxy(extra_args)
         slug = url.split('/')[-1]
 
         details_url = 'https://equipos.entel.cl/device/{}.json'.format(slug)
-
-        print(details_url)
-
         details_json = json.loads(session.get(details_url).text)
         product_name = details_json['title']
         products = []
