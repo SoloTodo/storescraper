@@ -54,7 +54,7 @@ class Falabella(Store):
             ['cat2450060/Notebooks-2-en-1', 'Notebook'],
             ['cat5860030/MacBooks', 'Notebook'],
             ['cat11290006/Gamer', 'Notebook'],
-            ['cat70043/Televisores', 'Television'],
+            ['cat7190148/Televisores-LED', 'Television'],
             ['cat7230007/Tablet', 'Tablet'],
             ['cat4074/No-Frost', 'Refrigerator'],
             ['cat4091/Side-by-Side', 'Refrigerator'],
@@ -88,7 +88,10 @@ class Falabella(Store):
             ['cat2062/Monitores', 'Monitor'],
             ['cat2013/Calefont-y-Termos', 'WaterHeater'],
             ['cat3155/Mouse', 'Mouse'],
-            ['cat3097/Estufas', 'SpaceHeater'],
+            ['cat9900007/Estufas-Parafina', 'SpaceHeater'],
+            ['cat9910024/Estufas-Gas', 'SpaceHeater'],
+            ['cat9910006/Estufas-Electricas', 'SpaceHeater'],
+            ['cat9910027/Estufas-Pellet-y-Lena', 'SpaceHeater'],
             ['cat4290063/SmartWatch', 'Smartwatch'],
         ]
 
@@ -114,6 +117,8 @@ class Falabella(Store):
         for url_path, local_category in url_paths:
             if local_category != category:
                 continue
+
+            print(url_path)
 
             sorters = [
                 None,  # No sorting

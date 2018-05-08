@@ -19,7 +19,7 @@ class CostcoMexico(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.costco.com.mx'
+        base_url = 'https://www.costco.com.mx'
 
         category_paths = [
             ['negocios-y-papeleria/accesorios-de-escritorio/'
@@ -70,16 +70,15 @@ class CostcoMexico(Store):
         name = soup.find('h1', 'txtlrg').text.strip()
         sku = soup.find('input', {'name': 'productCode'})['value'].strip()
 
-        price_container = soup.find('div', 'productdetail_inclprice')
-
-        price = price_container.find('span').text
+        price_container = soup.find('div', 'productdetail_exclprice')
+        price = price_container.findAll('span', 'right')[-1].text
         price = Decimal(price.replace(',', '').replace('$', ''))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'productDetailInfo'})))
 
         picture_containers = soup.findAll('li', 'ql_product_thumbnail')
-        picture_urls = ['http://www.costco.com.mx' + tag.find('a')['href']
+        picture_urls = ['https://www.costco.com.mx' + tag.find('a')['href']
                         for tag in picture_containers]
 
         p = Product(
