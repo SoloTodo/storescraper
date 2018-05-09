@@ -37,6 +37,11 @@ class Americanas(Store):
         product_urls = []
         step = 90
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        session.headers['Accept-Language'] = \
+            'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
 
         sortings = [
             'bestSellers',
@@ -89,6 +94,11 @@ class Americanas(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        session.headers['Accept-Language'] = \
+            'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
 
         response = session.get(url)
 

@@ -59,6 +59,7 @@ class Exito(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         with HeadlessChrome() as driver:
+            driver.get(url)
             soup = BeautifulSoup(driver.page_source, 'html5lib')
 
             part_number = soup.find(
