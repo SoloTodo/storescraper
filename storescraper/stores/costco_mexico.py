@@ -70,9 +70,15 @@ class CostcoMexico(Store):
         name = soup.find('h1', 'txtlrg').text.strip()
         sku = soup.find('input', {'name': 'productCode'})['value'].strip()
 
-        price_container = soup.find('div', 'productdetail_exclprice')
-        price = price_container.findAll('span', 'right')[-1].text
-        price = Decimal(price.replace(',', '').replace('$', ''))
+        price_container = soup.find('div', 'productdetail_inclprice')
+
+        if price_container:
+            price_container = price_container.find('span', 'txtlrg')
+        else:
+            price_container = soup.find('div', 'productdetail_exclprice')
+            price_container = price_container.findAll('span', 'right')[-1]
+
+        price = Decimal(price_container.text.replace(',', '').replace('$', ''))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'productDetailInfo'})))

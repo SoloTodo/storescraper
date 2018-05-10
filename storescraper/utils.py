@@ -136,6 +136,8 @@ class HeadlessChrome:
     def __init__(self, timeout=30):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
+        prefs = {"profile.managed_default_content_settings.images": 2}
+        options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(chrome_options=options)
         self.driver.set_page_load_timeout(timeout)
 

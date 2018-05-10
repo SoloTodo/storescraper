@@ -36,6 +36,11 @@ class CasasBahia(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        session.headers['Accept-Language'] = \
+            'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -79,6 +84,11 @@ class CasasBahia(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        session.headers['Accept-Language'] = \
+            'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
         page_source = session.get(url).text
 
         pricing_data = re.search(r'var siteMetadata = ([\S\s]+?);',
