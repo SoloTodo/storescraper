@@ -107,6 +107,8 @@ class Johnson(Store):
             r"var tcPrice_DL = '(\d*)'", page_source).groups()[0]
         if offer_price:
             offer_price = Decimal(offer_price)
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
