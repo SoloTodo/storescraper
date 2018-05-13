@@ -51,7 +51,7 @@ class Pontofrio(Store):
 
             while True:
                 category_url = \
-                    'http://www.pontofrio.com.br/{}&paginaAtual={}' \
+                    'https://www.pontofrio.com.br/{}&paginaAtual={}' \
                     ''.format(category_path, page)
 
                 if page >= 100:
