@@ -19,9 +19,9 @@ class Enel(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # Ampolletas LED
-            ['59-ampolletas-led', 'Lamp'],
-            ['105-aire-acondicionado-sin-instalacion', 'AirConditioner'],
+            ['279-ver-todo', 'Lamp'],
+            ['105-split-sin-instalacion', 'AirConditioner'],
+            ['216-aire-acondicionados-portatiles', 'AirConditioner'],
         ]
 
         product_urls = []
@@ -31,10 +31,8 @@ class Enel(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.tiendaenel.cl/' + category_path
-
+            category_url = 'https://www.tiendaenel.cl/' + category_path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-
             product_containers = soup.findAll('section', 'cs-product')
 
             if not product_containers:

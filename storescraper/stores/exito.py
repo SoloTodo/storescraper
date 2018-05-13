@@ -21,7 +21,7 @@ class Exito(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.exito.com'
+        base_url = 'https://www.exito.com'
 
         url_extensions = [
             ['Tecnologia-Celulares_y_accesorios-Accesorios_para_celular-'
@@ -59,6 +59,7 @@ class Exito(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         with HeadlessChrome() as driver:
+            driver.get('https://www.exito.com/')
             driver.get(url)
             soup = BeautifulSoup(driver.page_source, 'html5lib')
 
@@ -79,7 +80,7 @@ class Exito(Store):
             price_container = soup.find('div', 'col-data').find(
                 'span', 'money')
             if price_container:
-                price = Decimal(price_container.text)
+                price = Decimal(price_container.text.replace(',', ''))
                 stock = -1
             else:
                 stock = 0

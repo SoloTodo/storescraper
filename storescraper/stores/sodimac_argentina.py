@@ -24,8 +24,8 @@ class SodimacArgentina(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['cat1730004/Heladeras-Frio-Directo', 'Refrigerator'],
-            ['cat1730006/Heladeras-No-Frost', 'Refrigerator'],
+            ['cat3180005/Bano,-Cocina-y-Linea-Blanca/N-1z110noZ1z110nw',
+             'Refrigerator'],
             ['cat20630/Aires-Acondicionados', 'AirConditioner'],
             ['cat20528/Calefones', 'WaterHeater'],
             ['cat260052/Lavarropas', 'WashingMachine'],

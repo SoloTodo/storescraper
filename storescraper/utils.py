@@ -8,6 +8,7 @@ import math
 
 import requests
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 
 CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
@@ -136,8 +137,9 @@ class HeadlessChrome:
     def __init__(self, timeout=30):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        prefs = {"profile.managed_default_content_settings.images": 2}
-        options.add_experimental_option("prefs", prefs)
+        options.add_argument('--blink-settings=imagesEnabled=false')
+        # prefs = {"profile.managed_default_content_settings.images": 2}
+        # options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(chrome_options=options)
         self.driver.set_page_load_timeout(timeout)
 
@@ -150,7 +152,14 @@ class HeadlessChrome:
 
 class PhantomJS:
     def __init__(self, service_args=['--load-images=no'], timeout=30):
-        self.driver = webdriver.PhantomJS(service_args=service_args)
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
+        dcap["phantomjs.page.settings.userAgent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
+            "(KHTML, like Gecko) Chrome/15.0.87"
+        )
+
+        self.driver = webdriver.PhantomJS(service_args=service_args,
+                                          desired_capabilities=dcap)
         self.driver.set_page_load_timeout(timeout)
 
     def __enter__(self):
