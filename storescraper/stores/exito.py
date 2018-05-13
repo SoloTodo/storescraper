@@ -8,7 +8,7 @@ from storescraper.utils import html_to_markdown, HeadlessChrome
 
 class Exito(Store):
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 1
+    preferred_products_for_url_concurrency = 3
 
     @classmethod
     def categories(cls):
@@ -69,6 +69,12 @@ class Exito(Store):
 
             name = soup.find('h1', 'name').text.strip()
             sku = soup.find('div', 'product')['id'][3:]
+
+            if len(part_number) > 40:
+                raise Exception('Invalid part number: {}'.format(url))
+
+            if len(sku) > 40:
+                raise Exception('Invalid SKU: {}'.format(url))
 
             description = ''
             for panel in soup.findAll('div', 'tabs-pdp')[:-1]:
