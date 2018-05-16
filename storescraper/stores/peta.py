@@ -124,15 +124,23 @@ class Peta(Store):
         else:
             stock = 0
 
-        price_containers = soup.findAll('span', 'price')
-        normal_price = Decimal(remove_words(price_containers[1].string))
-        offer_price = Decimal(remove_words(price_containers[0].string))
+        price_container = soup.find('div', 'product-info-price').find(
+            'span', 'price')
+        price = Decimal(remove_words(price_container.string))
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'product.info.description'})))
+        description = ''
 
-        picture_encoded_urls = re.findall(r'"full":(".+?")', page_source)
-        picture_urls = [json.loads(tag) for tag in picture_encoded_urls]
+        for panel_id in ['product.info.description', 'additional']:
+            panel = soup.find('div', {'id': panel_id})
+            if panel:
+                description += html_to_markdown(str(panel)) + '\n\n'
+
+        picture_containers = soup.findAll('a', 'MagicZoom')
+
+        if picture_containers:
+            picture_urls = [tag['href'] for tag in picture_containers]
+        else:
+            picture_urls = None
 
         p = Product(
             name,
@@ -142,8 +150,8 @@ class Peta(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             part_number=part_number,

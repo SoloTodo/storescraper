@@ -112,7 +112,7 @@ class Movistar(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url).text, 'html5lib')
         products = []
 
         plan_containers = soup.find('section', 'listadoplanes-box').findAll(
