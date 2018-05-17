@@ -114,7 +114,7 @@ class Winpy(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.url == 'https://www.winpy.cl/no-encontrada':
+        if response.url != url:
             return []
 
         page_source = response.text
