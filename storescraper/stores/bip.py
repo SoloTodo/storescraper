@@ -133,6 +133,11 @@ class Bip(Store):
         name = soup.find('h2', 'title-product').text.strip()
         sku = soup.find('span', 'text-stock').text.strip()
 
+        if soup.find('span', 'text-to-bg'):
+            stock = -1
+        else:
+            stock = 0
+
         price_containers = soup.findAll('p', 'precio')
 
         offer_price = Decimal(remove_words(price_containers[0].text.strip()))
@@ -151,7 +156,7 @@ class Bip(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             normal_price,
             offer_price,
             'CLP',
