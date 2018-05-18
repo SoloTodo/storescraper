@@ -1,4 +1,3 @@
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -30,54 +29,61 @@ class Bip(Store):
             'Television',
             'Mouse',
             'Printer',
+            'Camera',
+            'AllInOne',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://www.bip.cl/ecommerce/'
-        url_buscar_productos = 'index_2.php?modulo=busca&'
-
         url_extensions = [
             # Notebooks
-            ['categoria=167&categoria_papa=166', 'Notebook'],
+            ['166', 'Notebook'],
+            # Cámaras digitales
+            ['2', 'Camera'],
+            # All in One
+            ['218', 'AllInOne'],
             # Tarjetas de video
-            ['categoria=118&categoria_papa=97', 'VideoCard'],
+            ['118', 'VideoCard'],
             # Proces
-            ['categoria=784', 'Processor'],
-            # LCD
-            ['categoria=761&categoria_papa=759', 'Monitor'],
+            ['784', 'Processor'],
+            # Monitores
+            ['761', 'Monitor'],
             # Placas madre
-            ['categoria=785', 'Motherboard'],
+            ['785', 'Motherboard'],
             # RAM PC
-            ['categoria=132', 'Ram'],
+            ['132', 'Ram'],
             # RAM Notebook
-            ['categoria=178', 'Ram'],
-            # RAM Servidor
-            ['categoria=179', 'Ram'],
+            ['178', 'Ram'],
             # Disco Duro 2,5'
-            ['categoria=125&categoria_papa=123', 'StorageDrive'],
+            ['125', 'StorageDrive'],
             # Disco Duro 3,5'
-            ['categoria=124&categoria_papa=123', 'StorageDrive'],
+            ['124', 'StorageDrive'],
             # Disco Duro SSD
-            ['categoria=413&categoria_papa=123', 'SolidStateDrive'],
+            ['413', 'SolidStateDrive'],
             # Fuentes de poder
-            ['categoria=88&categoria_papa=114', 'PowerSupply'],
+            ['88', 'PowerSupply'],
             # Gabinetes
-            ['categoria=8&categoria_papa=114', 'ComputerCase'],
+            ['8', 'ComputerCase'],
+            # Gabinetes gamer
+            ['707', 'ComputerCase'],
             # Coolers CPU
-            ['categoria=5&categoria_papa=248', 'CpuCooler'],
+            ['5', 'CpuCooler'],
             # Tablets
-            ['categoria=421&categoria_papa=286', 'Tablet'],
-            # Discos externos
-            ['categoria=230&categoria_papa=123', 'ExternalStorageDrive'],
+            ['286', 'Tablet'],
+            # Discos externos 2.5
+            ['128', 'ExternalStorageDrive'],
             # USB Flash
-            ['categoria=528&categoria_papa=123', 'UsbFlashDrive'],
+            ['528', 'UsbFlashDrive'],
             # Memory card
-            ['categoria=82&categoria_papa=24', 'MemoryCard'],
+            ['82', 'MemoryCard'],
             # Mouse
-            ['categoria=20&categoria_papa=185', 'Mouse'],
-            # Impresora
-            ['categoria=769&categoria_papa=768', 'Printer'],
+            ['20', 'Mouse'],
+            # Mouse Gamer
+            ['703', 'Mouse'],
+            # Impresoras
+            ['769', 'Printer'],
+            # Plotter
+            ['770', 'Printer'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -88,31 +94,33 @@ class Bip(Store):
             if local_category != category:
                 continue
 
-            page = 0
+            offset = 0
 
             while True:
-                if page >= 10:
+                if offset >= 200:
                     raise Exception('Page overflow: ' + url_extension)
 
-                url_webpage = url_base + url_buscar_productos + url_extension \
-                    + '&pagina=' + str(page)
+                url_webpage = 'https://www.bip.cl/categoria/{}/{}'.format(
+                    url_extension, offset
+                )
 
                 print(url_webpage)
 
                 data = session.get(url_webpage).text
 
-                soup = BeautifulSoup(data, 'html.parser')
-                raw_links = soup.findAll('a', 'menuprod')[::2]
+                soup = BeautifulSoup(data, 'html5lib')
+                product_containers = soup.findAll('div', 'producto')
 
-                if not raw_links:
-                    if page == 0:
+                if not product_containers:
+                    if offset == 0:
                         raise Exception('Empty category: ' + url_webpage)
                     break
 
-                for raw_link in raw_links:
-                    product_urls.append(url_base + raw_link['href'])
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
 
-                page += 1
+                offset += 20
 
         return product_urls
 
@@ -120,41 +128,21 @@ class Bip(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         data = session.get(url).text
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, 'html5lib')
 
-        name = soup.find('td', 'menuprodg').find('h1').text.strip()
-        sku = soup.find('input', {'name': 'id_producto'})['value']
+        name = soup.find('h2', 'title-product').text.strip()
+        sku = soup.find('span', 'text-stock').text.strip()
 
-        stock_source = soup.find('input', {'name': 'COMPRAR'})['onclick']
-        stock = int(re.search(r'var x=(\d+);', stock_source).groups()[0])
+        price_containers = soup.findAll('p', 'precio')
 
-        if stock == 0:
-            stock_info = soup.find('td', 'disp')
-            stock_string = ''.join(str(stock) for stock in stock_info.contents)
-            if 'Agotado' not in stock_string and \
-                    'Producto a Pedido' not in stock_string:
-                stock = -1
+        offer_price = Decimal(remove_words(price_containers[0].text.strip()))
+        normal_price = Decimal(remove_words(price_containers[2].text.strip()))
 
-        inet_price_cell = soup.find('td', 'prcm')
-        offer_price = Decimal(remove_words(inet_price_cell.string))
+        description = html_to_markdown(
+                str(soup.find('div', {'id': 'description'})))
 
-        normal_price_cell = soup.findAll('td', 'prc8')[1]
-        normal_price = Decimal(remove_words(normal_price_cell.string))
-
-        if offer_price > normal_price:
-            offer_price = normal_price
-
-        description = ''
-
-        description_container = soup.find('table', 'brd')
-        if description_container:
-            description = html_to_markdown(
-                str(description_container.find('td')))
-
-        picture_urls = []
-        for picture_link in soup.find('td', 'bdyzoom').findAll('a'):
-            picture_url = 'https://www.bip.cl' + picture_link['href']
-            picture_urls.append(picture_url)
+        picture_urls = [tag['src'] for tag in
+                        soup.findAll('img', 'primary-img')]
 
         p = Product(
             name,
@@ -163,7 +151,7 @@ class Bip(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             normal_price,
             offer_price,
             'CLP',
