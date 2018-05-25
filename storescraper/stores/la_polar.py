@@ -53,7 +53,7 @@ class LaPolar(Store):
             ['linea_blanca/refrigeradores/frio_directo', 'Refrigerator'],
             ['linea_blanca/refrigeradores/frigobar', 'Refrigerator'],
             ['linea_blanca/refrigeradores/freezer', 'Refrigerator'],
-            ['tecnologia/impresoras/impresoras_laser', 'Printer'],
+            # ['tecnologia/impresoras/impresoras_laser', 'Printer'],
             ['tecnologia/impresoras/impresoras_a_tinta', 'Printer'],
             ['tecnologia/impresoras/multifuncionales', 'Printer'],
             ['electronica/celulares/smartphones', 'Cell'],

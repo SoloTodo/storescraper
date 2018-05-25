@@ -53,7 +53,7 @@ class CasasBahia(Store):
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = \
-                    'http://www.casasbahia.com.br/{}&paginaAtual={}' \
+                    'https://www.casasbahia.com.br/{}&paginaAtual={}' \
                     ''.format(category_path, page)
 
                 print(category_url)
