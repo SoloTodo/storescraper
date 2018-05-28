@@ -127,6 +127,9 @@ class LaPolar(Store):
         offer_price = Decimal(
             re.search(r'laPolarCard: Number\((\d+)\)',
                       page_source).groups()[0])
+        
+        if offer_price > normal_price:
+            offer_price = normal_price
 
         available_online = int(
             re.search(r'isAvailableOnline: (\d+),', page_source).groups()[0])
