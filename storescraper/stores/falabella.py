@@ -244,8 +244,9 @@ class Falabella(Store):
         full_name = '{} {}'.format(brand, model)
 
         if 'meatStickers' in product_data['state']['product'] and \
-                product_data['state']['product']['meatStickers']['first'][
-                    'title'] == 'CYBER':
+                'first' in product_data['state']['product']['meatStickers']\
+                and product_data['state']['product']['meatStickers']['first'][
+                'title'] == 'CYBER':
             description += ' STCYBER'
 
         global_id = product_data['state']['product']['id']
