@@ -148,6 +148,9 @@ class Sodimac(Store):
         description = '\n\n'.join([html_to_markdown(str(panel)) for panel in
                                    soup.findAll('section', 'prod-car')])
 
+        if soup.find('span', 'cartcyber-txt'):
+            description += ' STCYBER'
+
         # Pictures
 
         pictures_resource_url = 'http://sodimac.scene7.com/is/image/' \

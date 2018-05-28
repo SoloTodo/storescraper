@@ -46,8 +46,6 @@ class PcFactory(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        step = 100
-
         url_extensions = [
             ['425', '735', 'Notebook'],  # Notebooks
             ['426', '735', 'Notebook'],  # Convertibles
@@ -143,6 +141,8 @@ class PcFactory(Store):
 
         response_data = json.loads(raw_json)
         product_data = response_data['producto']
+
+        print(product_data)
 
         if not product_data:
             return []

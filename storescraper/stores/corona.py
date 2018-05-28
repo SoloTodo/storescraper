@@ -132,7 +132,10 @@ class Corona(Store):
         if description_text:
             description = html_to_markdown(description_text.group())
         else:
-            description = None
+            description = ''
+
+        if soup.find('p', 'flag-cyberday-mayo'):
+            description += ' STCYBER'
 
         sku = soup.find('div', 'skuReference').text.strip()
 

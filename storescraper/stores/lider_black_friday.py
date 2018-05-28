@@ -117,7 +117,8 @@ class LiderBlackFriday(Store):
                 normal_price,
                 offer_price,
                 'CLP',
-                sku=sku
+                sku=sku,
+                description=' STCYBER'
             )
 
             products.append(p)
