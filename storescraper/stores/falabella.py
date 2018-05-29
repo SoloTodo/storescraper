@@ -54,6 +54,7 @@ class Falabella(Store):
             ['cat2450060/Notebooks-2-en-1', 'Notebook'],
             ['cat5860030/MacBooks', 'Notebook'],
             ['cat11290006/Gamer', 'Notebook'],
+            ['cat7190196/Ver-todo-Computadores', 'Notebook'],
             ['cat7190148/Televisores-LED', 'Television'],
             ['cat7230007/Tablet', 'Tablet'],
             ['cat4074/No-Frost', 'Refrigerator'],
