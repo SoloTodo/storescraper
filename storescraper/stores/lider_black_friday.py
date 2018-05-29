@@ -39,7 +39,7 @@ class LiderBlackFriday(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        return ['http://cyber.lider.cl/']
+        return ['https://cyber.lider.cl/']
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -60,8 +60,8 @@ class LiderBlackFriday(Store):
         session = session_with_proxy(extra_args)
 
         product_to_stock = {}
-        stocks = json.loads(session.get('http://cyber.lider.cl/'
-                                        'inventario/ff_inv_landing.json').text)
+        stocks = json.loads(session.get('https://cyber.lider.cl/'
+                                        'ff_inv_landing.json').text)
 
         for stocks in stocks['Inventory']:
             for sku, sku_stock_info in stocks.items():
@@ -69,7 +69,7 @@ class LiderBlackFriday(Store):
 
         json_products = json.loads(
             requests.get(
-                'http://cyber.lider.cl/products.json').text)['products']
+                'https://cyber.lider.cl/products.json').text)['products']
 
         products = []
         category_keyword = categories_dict[category] if category else None
@@ -79,7 +79,7 @@ class LiderBlackFriday(Store):
                     json_product['categorias']:
                 continue
 
-            product_url = 'http://cyber.lider.cl/#!/product/' \
+            product_url = 'https://cyber.lider.cl/#!/product/' \
                           + json_product['ID']
 
             brand = json_product['brand']
