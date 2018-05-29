@@ -166,7 +166,7 @@ class AbcDin(Store):
         normal_price = prices_containers[1].text
         normal_price = Decimal(remove_words(normal_price))
 
-        if len(prices_containers) == 3:
+        if len(prices_containers) >= 3:
             offer_price = Decimal(remove_words(prices_containers[2].text))
         else:
             offer_price = normal_price
