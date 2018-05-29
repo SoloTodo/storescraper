@@ -28,6 +28,7 @@ class LinioChile(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['computacion/pc-portatil', 'Notebook'],
+            ['zona-gamer/notebook-gamer', 'Notebook'],
             ['celulares-y-smartphones/liberados', 'Cell'],
             ['tv-y-video/televisores/', 'Television'],
             ['tablets/tablet', 'Tablet'],
