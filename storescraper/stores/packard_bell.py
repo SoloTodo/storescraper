@@ -21,12 +21,13 @@ class PackardBell(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['127-Notebooks.html', 'Notebook'],
-            ['176-Ultradelgado.html', 'Notebook'],
-            ['175-Gamer.html', 'Notebook'],
-            ['171-Convertible.html', 'Notebook'],
-            ['146-Monitores.html', 'Monitor'],
-            ['145-Tablets.html', 'Tablet'],
+            ['catalogo/127-Notebooks.html', 'Notebook'],
+            ['cyberday', 'Notebook'],
+            ['catalogo/176-Ultradelgado.html', 'Notebook'],
+            ['catalogo/175-Gamer.html', 'Notebook'],
+            ['catalogo/171-Convertible.html', 'Notebook'],
+            ['catalogo/146-Monitores.html', 'Monitor'],
+            ['catalogo/145-Tablets.html', 'Tablet'],
         ]
 
         product_urls = []
@@ -35,7 +36,7 @@ class PackardBell(Store):
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-            category_url = 'http://www.netnow.cl/catalogo/' + category_path
+            category_url = 'http://www.netnow.cl/' + category_path
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             links = soup.findAll('a', 'Producto_Detalles')
