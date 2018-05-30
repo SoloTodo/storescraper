@@ -157,7 +157,7 @@ class Wom(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        is_cell = soup.find('a', 'cent-block')
+        is_cell = soup.find('a', 'btn-ghost')
 
         if not is_cell:
             return []
