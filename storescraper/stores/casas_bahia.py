@@ -11,6 +11,9 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class CasasBahia(Store):
+    preferred_discover_urls_concurrency = 3
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [

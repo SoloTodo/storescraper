@@ -40,24 +40,45 @@ class WalmartMexico(Store):
             if local_category != category:
                 continue
 
-            category_url = '{}WebControls/hlGetProductsByLine.ashx?linea={}' \
-                           '&start=0&raw=1000' \
-                           ''.format(base_url, category_path)
-            print(category_url)
+            current_index = 0
 
-            data = json.loads(session.get(
-                category_url, verify=False).content.decode('latin-1'))
+            local_urls = []
 
-            if not data:
-                raise Exception('Empty URL: ' + category_url)
+            while True:
+                category_url = '{}WebControls/hlGetProductsByLine.ashx?' \
+                               'linea={}&start={}&raw=10' \
+                               ''.format(base_url, category_path,
+                                         current_index)
+                print(category_url)
 
-            for entry in data:
-                product_path = entry['ProductUrl'].strip()
+                data = json.loads(session.get(
+                    category_url, verify=False).content.decode('latin-1'))
 
-                if not product_path:
-                    continue
-                product_url = base_url + product_path
-                product_urls.append(product_url)
+                if not data:
+                    if current_index == 0:
+                        raise Exception('Empty URL: ' + category_url)
+                    break
+
+                done = False
+
+                for entry in data:
+                    product_path = entry['ProductUrl'].strip()
+
+                    if not product_path:
+                        continue
+                    product_url = base_url + product_path
+
+                    if product_url in local_urls:
+                        done = True
+                        break
+
+                    local_urls.append(product_url)
+                    product_urls.append(product_url)
+
+                if done:
+                    break
+
+                current_index += 10
 
         return product_urls
 
