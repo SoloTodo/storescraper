@@ -30,17 +30,32 @@ class Sams(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers = {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'DNT': '1',
+            'Host': 'www.sams.com.mx',
+            'Pragma': 'no-cache',
+            'Referer': 'https://www.sams.com.mx/electronica-y-computacion/c'
+                       'omputacion/memorias-y-discos-duros/_/N-8l0',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
+                          '(KHTML, like Gecko) Chrome/66.0.3359.181 Safari/'
+                          '537.36',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
 
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
 
-            category_url = '{}/sams/browse/{}?_={}'.format(
-                base_url, category_path, datetime.now().toordinal())
+            category_url = '{}/sams/browse/{}'.format(base_url, category_path)
             print(category_url)
 
-            json_data = json.loads(session.get(category_url,
-                                               verify=False).text)
+            response = session.get(category_url, verify=False).text
+            json_data = json.loads(response)
 
             containers = json_data['mainArea']
             products_container = None

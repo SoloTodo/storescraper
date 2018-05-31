@@ -62,8 +62,10 @@ class Megatone(Store):
                     'intervaloPrecios': '',
                     'tipoListado': 'Grilla',
                     'orden': '0',
-                    'productosBuscados': ''
+                    'productosBuscados': '',
+                    'filtroCuotas': ''
                 }
+
                 request_params = json.dumps(request_params)
                 session.headers['Content-Type'] = 'application/json'
                 response = session.post(
@@ -82,7 +84,7 @@ class Megatone(Store):
 
                 for container in containers:
                     product_url = 'https://www.megatone.net' + \
-                          container.find('a')['href']
+                                  container.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
