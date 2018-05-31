@@ -54,8 +54,8 @@ class ExtraBrasil(Store):
 
                 print(category_url)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(
+                    session.get(category_url, timeout=30).text, 'html.parser')
 
                 containers = soup.findAll('div', 'hproduct')
 
@@ -81,7 +81,7 @@ class ExtraBrasil(Store):
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         session.headers['Accept-Language'] = \
             'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
-        page_source = session.get(url).text
+        page_source = session.get(url, timeout=30).text
 
         pricing_data = re.search(r'var siteMetadata = ([\S\s]+?);',
                                  page_source)
