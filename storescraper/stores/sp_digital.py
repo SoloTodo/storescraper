@@ -35,6 +35,7 @@ class SpDigital(Store):
             'UsbFlashDrive',
             'Television',
             'Camera',
+            'Projector'
         ]
 
     @classmethod
@@ -72,6 +73,7 @@ class SpDigital(Store):
             ['412', 'UsbFlashDrive'],
             ['417', 'Television'],
             ['387', 'Camera'],
+            ['416', 'Projector'],
         ]
 
         product_urls = []
