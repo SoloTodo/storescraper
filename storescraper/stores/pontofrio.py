@@ -57,7 +57,7 @@ class Pontofrio(Store):
                     'https://www.pontofrio.com.br/{}&paginaAtual={}' \
                     ''.format(category_path, page)
 
-                if page >= 100:
+                if page >= 120:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(

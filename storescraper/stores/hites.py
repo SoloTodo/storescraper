@@ -88,8 +88,6 @@ class Hites(Store):
                     category_url))
 
             for div in divs:
-                is_cyber = div.find('div', 'ribbons_precyber')
-
                 product_url = div.find('a')['href']
                 product_url = product_url.replace('http://', 'https://')
 
@@ -107,14 +105,6 @@ class Hites(Store):
 
                     product_url = \
                         'https://www.hites.com/tienda/ProductDisplay?' + newqs
-
-                if '?' in product_url:
-                    separator = '&'
-                else:
-                    separator = '?'
-
-                if is_cyber:
-                    product_url += '{}is_cyber=1'.format(separator)
 
                 product_urls.append(product_url)
 
@@ -135,9 +125,6 @@ class Hites(Store):
 
         for panel in soup.findAll('div', 'descripcion-producto'):
             description += html_to_markdown(str(panel)) + '\n\n'
-
-        if 'is_cyber' in url:
-            description += ' STCYBER'
 
         if soup.find('div', 'noDisponible_button'):
             stock = 0

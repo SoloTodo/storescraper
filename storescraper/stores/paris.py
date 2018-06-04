@@ -157,9 +157,6 @@ class Paris(Store):
 
         description = html_to_markdown(str(soup.find('div', 'description')))
 
-        if 'Cyberday_event1' in page_source:
-            description += ' STCYBER'
-
         image_id = re.search(
             r"var field3_DL = '(.*)';", page_source).groups()[0]
 

@@ -181,9 +181,6 @@ class AbcDin(Store):
             baseurl='https://www.abcdin.cl'
         )
 
-        if 'kwcyber2018' in soup.find('meta', {'name': 'keywords'})['content']:
-            description += ' STCYBER'
-
         pictures_data = json.loads(soup.find('div', 'jsonProduct').text)
         pictures_dict = pictures_data[0]['Attributes']
 

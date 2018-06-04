@@ -95,6 +95,7 @@ from .paris import Paris
 from .pc_express import PcExpress
 from .pc_factory import PcFactory
 from .pc_ofertas import PcOfertas
+from .pch_mayoreo import PchMayoreo
 from .peta import Peta
 from .pichau import Pichau
 from .pontofrio import Pontofrio

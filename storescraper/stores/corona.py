@@ -134,9 +134,6 @@ class Corona(Store):
         else:
             description = ''
 
-        if soup.find('p', 'flag-cyberday-mayo'):
-            description += ' STCYBER'
-
         sku = soup.find('div', 'skuReference').text.strip()
 
         # Pictures

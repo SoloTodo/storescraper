@@ -145,11 +145,6 @@ class LaPolar(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'description'})))
 
-        is_cyber = re.search('isCyberdayProduct: (.*),',
-                             page_source).groups()[0]
-        if is_cyber == 'true':
-            description += ' STCYBER'
-
         picture_tags = soup.findAll('img', {'temprop': 'thumbnailUrl'})
         picture_urls = [tag['data-img-large'] for tag in picture_tags]
 

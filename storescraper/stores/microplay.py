@@ -16,20 +16,28 @@ class Microplay(Store):
     def categories(cls):
         return [
             'Mouse',
+            'VideoGameConsole',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computacion', 'mouse', 'Mouse'],
-            ['gamer', 'mouse-2', 'Mouse'],
+            ['computacion', {'categorias': 'mouse'}, 'Mouse'],
+            ['gamer', {'categorias': 'mouse-2'}, 'Mouse'],
+            ['juegos', {'plataformas': 'xbox-one', 'consolas': 'consola'},
+             'VideoGameConsole'],
+            ['juegos', {'plataformas': 'nintendo-3ds', 'consolas': 'consola'},
+             'VideoGameConsole'],
+            ['juegos',
+             {'plataformas': 'nintendo-switch', 'consolas': 'consola'},
+             'VideoGameConsole'],
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
-        for catalogo_name, categoria_name, local_category in category_paths:
+        for catalogo_name, filters, local_category in category_paths:
             if local_category != category:
                 continue
             p = 1
@@ -40,7 +48,7 @@ class Microplay(Store):
 
                 request_pars = {
                     'familia': {'catalogo': catalogo_name},
-                    'filtro': {'categorias': categoria_name},
+                    'filtro': filters,
                     'control': []
                 }
                 request_pars = json.dumps(request_pars)
@@ -112,7 +120,8 @@ class Microplay(Store):
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'box-descripcion'})))
-        picture_urls = [tag['href'] for tag in soup.findAll('a', 'fancybox')]
+        picture_urls = [tag['href'] for tag in
+                        soup.find('div', 'galeria').findAll('a', 'fancybox')]
 
         p = Product(
             name,

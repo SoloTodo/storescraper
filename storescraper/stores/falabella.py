@@ -244,12 +244,6 @@ class Falabella(Store):
         model = product_data['state']['product']['displayName']
         full_name = '{} {}'.format(brand, model)
 
-        if 'meatStickers' in product_data['state']['product'] and \
-                'first' in product_data['state']['product']['meatStickers']\
-                and product_data['state']['product']['meatStickers']['first'][
-                'title'] == 'CYBER':
-            description += ' STCYBER'
-
         global_id = product_data['state']['product']['id']
         media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
 

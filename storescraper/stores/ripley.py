@@ -183,10 +183,6 @@ class Ripley(Store):
 
         description += '\n\n'
 
-        if soup.find('img',
-                     {'src': '//home.ripley.cl/promo-badges/cyber.svg'}):
-            description += ' STCYBER'
-
         picture_urls = []
         for path in specs_json['images']:
             picture_url = path

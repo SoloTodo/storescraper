@@ -22,7 +22,6 @@ class PackardBell(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['catalogo/127-Notebooks.html', 'Notebook'],
-            ['cyberday', 'Notebook'],
             ['catalogo/176-Ultradelgado.html', 'Notebook'],
             ['catalogo/175-Gamer.html', 'Notebook'],
             ['catalogo/171-Convertible.html', 'Notebook'],
