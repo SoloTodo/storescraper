@@ -79,6 +79,7 @@ from .magazine_luiza import MagazineLuiza
 from .magens import Magens
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
+from .mercadolibre_daewoo import MercadolibreDaewoo
 from .meroli import Meroli
 from .microplay import Microplay
 from .movistar import Movistar

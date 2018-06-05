@@ -70,7 +70,8 @@ class Americanas(Store):
 
                     print(category_url)
 
-                    category_page = json.loads(session.get(category_url).text)
+                    category_page = json.loads(session.get(
+                        category_url, timeout=30).text)
 
                     if 'products' not in category_page or \
                             not category_page['products']:
@@ -100,7 +101,7 @@ class Americanas(Store):
         session.headers['Accept-Language'] = \
             'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
 
-        response = session.get(url)
+        response = session.get(url, timeout=30)
 
         if response.url != url:
             return []
