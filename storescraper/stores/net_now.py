@@ -9,7 +9,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
 
-class PackardBell(Store):
+class NetNow(Store):
     @classmethod
     def categories(cls):
         return [

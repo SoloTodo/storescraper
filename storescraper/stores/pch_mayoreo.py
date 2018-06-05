@@ -134,8 +134,15 @@ class PchMayoreo(Store):
                     continue
                 stock += int(stock_text)
 
-        price = soup.find('span', 'price').text.split('&nbsp;')[0]
-        price = Decimal(price.split('\xa0')[1])
+        price_components = soup.find('span', 'price').text.split(
+            '&nbsp;')[0].split('\xa0')
+        price = Decimal(price_components[1].replace(',', ''))
+
+        currencies_dict = {
+            'mxn': 'MXN',
+            'dlls': 'USD',
+        }
+        currency = currencies_dict[price_components[2].strip()]
 
         description = html_to_markdown(str(soup.find('div', 'box-collateral')))
         picture_urls = [soup.find('p', 'product-image').find('img')['src']]
@@ -150,7 +157,7 @@ class PchMayoreo(Store):
             stock,
             price,
             price,
-            'USD',
+            currency,
             sku=sku,
             part_number=part_number,
             description=description,

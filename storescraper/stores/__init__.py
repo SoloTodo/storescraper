@@ -85,11 +85,11 @@ from .movistar import Movistar
 from .movistar_one import MovistarOne
 from .musimundo import Musimundo
 from .my_box import MyBox
+from .net_now import NetNow
 from .new_game import NewGame
 from .office_depot import OfficeDepot
 from .office_max_mexico import OfficeMaxMexico
 from .ortiz_y_ortega import OrtizYOrtega
-from .packard_bell import PackardBell
 from .panamericana import Panamericana
 from .paris import Paris
 from .pc_express import PcExpress

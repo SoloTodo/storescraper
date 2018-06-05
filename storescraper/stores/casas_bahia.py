@@ -52,7 +52,7 @@ class CasasBahia(Store):
             page = 1
 
             while True:
-                if page >= 100:
+                if page >= 120:
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = \
