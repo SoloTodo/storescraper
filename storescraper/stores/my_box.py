@@ -22,7 +22,8 @@ class MyBox(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler'
+            'CpuCooler',
+            'Keyboard',
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class MyBox(Store):
             ['19-fuentes-de-poder', 'PowerSupply'],
             ['16-gabinetes', 'ComputerCase'],
             ['53-refrigeracion', 'CpuCooler'],
+            ['77-teclado-keyboard', 'Keyboard'],
         ]
 
         product_urls = []

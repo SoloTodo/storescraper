@@ -26,7 +26,8 @@ class InforIngen(Store):
             'Television',
             'Mouse',
             'Notebook',
-            'Printer'
+            'Printer',
+            'Keyboard'
         ]
 
     @classmethod
@@ -46,6 +47,7 @@ class InforIngen(Store):
             ['92_95', 'CpuCooler'],  # Coolers CPU Aire
             ['92_96', 'CpuCooler'],  # Coolers CPU Liquido
             ['98', 'Monitor'],  # Monitores LCD
+            ['105_106', 'Mouse'],  # Teclados y mouse
         ]
 
         product_urls = []

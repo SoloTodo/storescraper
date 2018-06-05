@@ -37,6 +37,7 @@ class SpDigital(Store):
             'Camera',
             'Projector',
             'AllInOne',
+            'Keyboard',
         ]
 
     @classmethod
@@ -76,6 +77,7 @@ class SpDigital(Store):
             ['387', 'Camera'],
             ['416', 'Projector'],
             ['370', 'AllInOne'],
+            ['342', 'Keyboard'],
         ]
 
         product_urls = []

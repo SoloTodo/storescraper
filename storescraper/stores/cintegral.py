@@ -27,6 +27,7 @@ class Cintegral(Store):
             'Printer',
             'Cell',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -61,6 +62,7 @@ class Cintegral(Store):
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
             ['monitores-y-proyeccion/monitores.html', 'Monitor'],
             ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
+            ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
         ]
 
         product_urls = []

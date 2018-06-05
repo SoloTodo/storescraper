@@ -26,6 +26,7 @@ class Sistemax(Store):
             'CpuCooler',
             'Mouse',
             'Notebook',
+            'Keyboard',
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class Sistemax(Store):
             ['95', 'CpuCooler'],  # Coolers CPU
             ['93', 'Mouse'],  # Mouse
             ['115', 'Notebook'],  # Notebook
+            ['92', 'Keyboard'],  # Teclados
         ]
 
         product_urls = []

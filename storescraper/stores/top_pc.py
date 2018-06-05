@@ -22,6 +22,8 @@ class TopPc(Store):
             'PowerSupply',
             'ComputerCase',
             'CpuCooler',
+            'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -39,6 +41,8 @@ class TopPc(Store):
             ['27', 'PowerSupply'],  # Fuentes de poder
             ['26', 'ComputerCase'],  # Gabinetes
             ['108', 'CpuCooler'],  # Coolers CPU
+            ['67', 'Mouse'],
+            ['66', 'Keyboard'],
         ]
 
         product_urls = []

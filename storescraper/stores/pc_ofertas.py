@@ -29,6 +29,7 @@ class PcOfertas(Store):
             'Tablet',
             'Printer',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -68,6 +69,7 @@ class PcOfertas(Store):
             ['partes-y-piezas/almacenamiento/externos.html',
              'ExternalStorageDrive'],
             ['accesorios-y-perifericos/perifericos/mouse/mouse.html', 'Mouse'],
+            ['accesorios-y-perifericos/perifericos/teclados.html', 'Keyboard'],
         ]
 
         session = session_with_proxy(extra_args)

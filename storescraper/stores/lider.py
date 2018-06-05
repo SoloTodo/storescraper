@@ -37,6 +37,8 @@ class Lider(Store):
             'Projector',
             'SpaceHeater',
             'AirConditioner',
+            'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -99,6 +101,8 @@ class Lider(Store):
             #  'SpaceHeater'],
             [u'Electrohogar/Ventilación/Aire-acondicionado/_/N-xkrp9o',
              'AirConditioner'],
+            [u'Computación/Accesorios-de-Computación/Teclados-y-Mouse/_/'
+             u'N-1bez12', 'Mouse'],
         ]
 
         product_urls = []

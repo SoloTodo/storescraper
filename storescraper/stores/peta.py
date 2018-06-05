@@ -28,6 +28,7 @@ class Peta(Store):
             'Tablet',
             'Printer',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -66,7 +67,8 @@ class Peta(Store):
             ['partes-y-piezas/impresoras/http-laserwaca-com.html', 'Printer'],
             ['partes-y-piezas/almacenamiento/externos.html',
              'ExternalStorageDrive'],
-            ['accesorios/perifericos/mouse.html', 'Mouse']
+            ['accesorios/perifericos/mouse.html', 'Mouse'],
+            ['accesorios/perifericos/teclados.html', 'Keyboard'],
         ]
 
         session = session_with_proxy(extra_args)

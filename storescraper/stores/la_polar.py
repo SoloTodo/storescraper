@@ -37,6 +37,8 @@ class LaPolar(Store):
             'Projector',
             'SpaceHeater',
             'Smartwatch',
+            'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -79,6 +81,7 @@ class LaPolar(Store):
             ['linea_blanca/cocina/hornos_electricos', 'Oven'],
             ['linea_blanca/electrodomesticos/aspiradoras', 'VacuumCleaner'],
             ['tecnologia/accesorios_computacion/otros', 'MemoryCard'],
+            ['tecnologia3/accesorios_computacion/mouse_i_teclados', 'Mouse'],
         ]
 
         session = session_with_proxy(extra_args)

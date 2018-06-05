@@ -36,6 +36,7 @@ class Wei(Store):
             'Mouse',
             'Printer',
             'VideoGameConsole',
+            'Keyboard',
         ]
 
     @classmethod
@@ -89,6 +90,7 @@ class Wei(Store):
             ['1245', 'Monitor'],  # MONITORES LED, LCD, TFT
             ['1248', 'Television'],  # TELEVISORES LCDTV
             ['678', 'Tablet'],  # Tablets
+            ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
             # ['673', 'Processor'],  # AM1
             # ['635', 'Lamp'],  # FOCOS LED
             # ['627', 'Lamp'],  # AMPOLLETAS LED

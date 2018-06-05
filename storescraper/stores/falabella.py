@@ -44,6 +44,7 @@ class Falabella(Store):
             'SolidStateDrive',
             'Mouse',
             'SpaceHeater',
+            'Keyboard',
         ]
 
     @classmethod
@@ -94,6 +95,9 @@ class Falabella(Store):
             ['cat9910006/Estufas-Electricas', 'SpaceHeater'],
             ['cat9910027/Estufas-Pellet-y-Lena', 'SpaceHeater'],
             ['cat4290063/SmartWatch', 'Smartwatch'],
+            ['cat4730023/Teclados-Gamers', 'Keyboard'],
+            ['cat2370002/Teclados', 'Keyboard'],
+            ['cat2930003/Teclados-Smart', 'Keyboard'],
         ]
 
         session = session_with_proxy(extra_args)

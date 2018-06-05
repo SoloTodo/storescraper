@@ -38,6 +38,8 @@ class Paris(Store):
             'SolidStateDrive',
             'SpaceHeater',
             'Smartwatch',
+            'Mouse',
+            'Keyboard'
         ]
 
     @classmethod
@@ -75,6 +77,7 @@ class Paris(Store):
             ['51281600', 'WaterHeater'],
             ['51206179', 'SpaceHeater'],
             ['51378608', 'Smartwatch'],
+            ['51206233', 'Mouse'],
         ]
 
         session = session_with_proxy(extra_args)

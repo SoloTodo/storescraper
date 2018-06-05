@@ -17,6 +17,7 @@ class Microplay(Store):
         return [
             'Mouse',
             'VideoGameConsole',
+            'Keyboard',
         ]
 
     @classmethod
@@ -31,6 +32,8 @@ class Microplay(Store):
             ['juegos',
              {'plataformas': 'nintendo-switch', 'consolas': 'consola'},
              'VideoGameConsole'],
+            ['computacion', {'categorias': 'teclados-3'}, 'Keyboard'],
+            ['gamer', {'categorias': 'teclados-4'}, 'Keyboard'],
         ]
 
         product_urls = []

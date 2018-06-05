@@ -31,6 +31,7 @@ class Bip(Store):
             'Printer',
             'Camera',
             'AllInOne',
+            'Keyboard',
         ]
 
     @classmethod
@@ -84,6 +85,8 @@ class Bip(Store):
             ['769', 'Printer'],
             # Plotter
             ['770', 'Printer'],
+            # Teclados
+            ['12', 'Keyboard'],
         ]
 
         session = session_with_proxy(extra_args)

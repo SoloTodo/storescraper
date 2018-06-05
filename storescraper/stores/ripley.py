@@ -37,6 +37,8 @@ class Ripley(Store):
             'SolidStateDrive',
             'SpaceHeater',
             'Smartwatch',
+            'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -95,6 +97,7 @@ class Ripley(Store):
             ['electrohogar/bano/calefont-y-termos', 'WaterHeater'],
             ['electrohogar/climatizacion/estufas', 'SpaceHeater'],
             ['telefonia/smartwatches-and-wearables/smartwatch', 'Smartwatch'],
+            ['computacion/accesorios/mouse-y-teclados', 'Mouse'],
         ]
 
         session = session_with_proxy(extra_args)

@@ -42,51 +42,53 @@ class PcFactory(Store):
             'AllInOne',
             'Mouse',
             'OpticalDrive',
+            'Keyboard',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['425', '735', 'Notebook'],  # Notebooks
-            ['426', '735', 'Notebook'],  # Convertibles
-            ['659', '735', 'Notebook'],  # Ultralivianos
-            ['454', '334', 'VideoCard'],  # Tarjetas de video AMD
-            ['378', '334', 'VideoCard'],  # Tarjetas de video NVIDIA
-            ['488', '735', 'Tablet'],  # Tablets
-            ['432', '645', 'Cell'],  # Celulares
-            ['6', '643', 'Camera'],  # Camaras compactas
-            ['620', '643', 'Camera'],  # Camaras semiprofesional
-            ['422', '706', 'ExternalStorageDrive'],
-            ['218', '706', 'UsbFlashDrive'],
-            ['48', '264', 'MemoryCard'],
-            ['46', '256', 'Projector'],
-            ['438', '374', 'VideoGameConsole'],
+            ['425', 'Notebook'],  # Notebooks
+            ['426', 'Notebook'],  # Convertibles
+            ['659', 'Notebook'],  # Ultralivianos
+            ['454', 'VideoCard'],  # Tarjetas de video AMD
+            ['378', 'VideoCard'],  # Tarjetas de video NVIDIA
+            ['488', 'Tablet'],  # Tablets
+            ['432', 'Cell'],  # Celulares
+            ['6', 'Camera'],  # Camaras compactas
+            ['620', 'Camera'],  # Camaras semiprofesional
+            ['422', 'ExternalStorageDrive'],
+            ['218', 'UsbFlashDrive'],
+            ['48', 'MemoryCard'],
+            ['46', 'Projector'],
+            ['438', 'VideoGameConsole'],
             # ['34', '891', 'StereoSystem'],
-            ['889', '268', 'StereoSystem'],
-            ['475', '737', 'AllInOne'],
-            ['22', '304', 'Mouse'],
-            ['789', '788', 'Television'],
-            ['286', '633', 'OpticalDrive'],
-            ['272', '272', 'Processor'],  # Procesadores
-            ['250', '256', 'Monitor'],  # Monitores LCD
-            ['292', '292', 'Motherboard'],  # Placas madre
-            ['112', '264', 'Ram'],  # Memoria PC
-            ['100', '264', 'Ram'],  # Memoria Notebook
-            ['340', '312', 'StorageDrive'],  # HDD PC
-            ['585', '312', 'SolidStateDrive'],  # SSD
-            ['421', '312', 'StorageDrive'],  # HDD Notebook
-            ['54', '326', 'PowerSupply'],  # Fuentes de poder
-            ['16', '326', 'ComputerCase'],  # Gabinetes con PSU
-            ['328', '326', 'ComputerCase'],  # Gabinetes sin PSU
-            ['42', '300', 'CpuCooler'],  # Refrigeracion
-            ['262', '262', 'Printer'],  # Impresoras Laser
+            ['889', 'StereoSystem'],
+            ['475', 'AllInOne'],
+            ['22', 'Mouse'],
+            ['789', 'Television'],
+            ['286', 'OpticalDrive'],
+            ['272', 'Processor'],  # Procesadores
+            ['250', 'Monitor'],  # Monitores LCD
+            ['292', 'Motherboard'],  # Placas madre
+            ['112', 'Ram'],  # Memoria PC
+            ['100', 'Ram'],  # Memoria Notebook
+            ['340', 'StorageDrive'],  # HDD PC
+            ['585', 'SolidStateDrive'],  # SSD
+            ['421', 'StorageDrive'],  # HDD Notebook
+            ['54', 'PowerSupply'],  # Fuentes de poder
+            ['16', 'ComputerCase'],  # Gabinetes con PSU
+            ['328', 'ComputerCase'],  # Gabinetes sin PSU
+            ['42', 'CpuCooler'],  # Refrigeracion
+            ['262', 'Printer'],  # Impresoras Laser
+            ['36', 'Keyboard'],  # Teclados
         ]
 
         session = session_with_proxy(extra_args)
         session.get('https://www.pcfactory.cl')
 
         product_urls = []
-        for categoria, papa, extension_category in url_extensions:
+        for categoria, extension_category in url_extensions:
             if extension_category != category:
                 continue
 

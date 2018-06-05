@@ -15,6 +15,7 @@ class Zmart(Store):
         return [
             'VideoGameConsole',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -27,6 +28,7 @@ class Zmart(Store):
             ['ConsolasSwitch', 'VideoGameConsole'],
             ['Consolas3DS', 'VideoGameConsole'],
             [37, 'Mouse'],
+            [38, 'Keyboard'],
         ]
 
         product_urls = []

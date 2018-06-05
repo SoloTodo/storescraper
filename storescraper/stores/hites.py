@@ -34,6 +34,7 @@ class Hites(Store):
             'AllInOne',
             'SpaceHeater',
             'CellAccesory',
+            'Keyboard',
         ]
 
     @classmethod
@@ -62,6 +63,7 @@ class Hites(Store):
             # ['14051', 'SpaceHeater'],
             # ['14052', 'SpaceHeater'],
             # ['14056', 'SpaceHeater'],  # Termoventiladores
+            ['14107', 'Keyboard'],
         ]
 
         product_urls = []

@@ -14,12 +14,14 @@ class NewGame(Store):
     def categories(cls):
         return [
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['accion=hijo&plt=pc&cat=14', 'Mouse'],
+            ['accion=hijo&plt=pc&cat=15', 'Keyboard'],
         ]
 
         product_urls = []

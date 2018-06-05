@@ -30,7 +30,8 @@ class Winpy(Store):
             'CpuCooler',
             'Printer',
             'ExternalStorageDrive',
-            'Mouse'
+            'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -64,6 +65,7 @@ class Winpy(Store):
             ['impresoras/', 'Printer'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
             ['accesorios/mouse-y-teclados/', 'Mouse'],
+            ['zona-teclados-mecanicos/', 'Keyboard'],
         ]
 
         product_urls = []

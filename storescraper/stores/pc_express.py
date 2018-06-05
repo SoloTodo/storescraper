@@ -30,6 +30,7 @@ class PcExpress(Store):
             'Printer',
             'Television',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -54,10 +55,13 @@ class PcExpress(Store):
             ['73_171', 'Monitor'],
             # ['73_129', 'Television'],
             ['74_133', 'Mouse'],
+            ['313_319', 'Mouse'],
             ['75_136', 'Notebook'],
             ['75_223', 'Tablet'],
             # ['241_269', 'Tablet'],
             ['83', 'VideoCard'],
+            ['135', 'Keyboard'],
+            ['313_318', 'Keyboard'],
         ]
 
         product_urls = []

@@ -24,6 +24,7 @@ class AllTec(Store):
             'ComputerCase',
             'CpuCooler',
             'Mouse',
+            'Keyboard',
         ]
 
     @classmethod
@@ -39,6 +40,8 @@ class AllTec(Store):
             ['24-mouse', 'Mouse'],
             ['43-impresoras', 'Printer'],
             ['55-tarjetas-de-video', 'VideoCard'],
+            ['23-teclados', 'Keyboard'],
+            ['62-gamer', 'Keyboard'],
         ]
 
         url_extensions = [
