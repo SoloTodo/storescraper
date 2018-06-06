@@ -94,9 +94,10 @@ class SonyStyle(Store):
         for sku_data in skus_data['skus']:
             sku = str(sku_data['sku'])
             stock = pricing_data['skuStocks'][sku]
+            sku_name = '{} / {}'.format(name, sku_data['skuname'])
 
             p = Product(
-                name,
+                sku_name,
                 cls.__name__,
                 category,
                 url,
