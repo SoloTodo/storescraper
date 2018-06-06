@@ -170,7 +170,7 @@ class MovistarOne(Store):
                     'Cell',
                     url,
                     url,
-                    '{} - {}'.format(device_id, plan_name),
+                    '{} - {} - {}'.format(device_id, color_name, plan_name),
                     stock,
                     initial_payment,
                     initial_payment,
