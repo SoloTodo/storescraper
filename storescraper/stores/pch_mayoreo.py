@@ -115,12 +115,13 @@ class PchMayoreo(Store):
         sku_text = sku_and_part_number_text[0]
         sku = re.search('CLAVE: (\S*)', sku_text).groups()[0]
 
-        if len(sku_and_part_number_text) >= 2:
-            part_number_text = sku_and_part_number_text[1]
-            part_number = re.search(
-                'CLAVE FABRICANTE: (\S*)', part_number_text).groups()[0]
-        else:
-            part_number = None
+        part_number = None
+
+        for section in sku_and_part_number_text:
+            if 'CLAVE FABRICANTE' in section:
+                part_number = re.search(
+                    'CLAVE FABRICANTE: (\S*)', section).groups()[0]
+                break
 
         stock = 0
 
