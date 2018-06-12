@@ -135,8 +135,8 @@ class PchMayoreo(Store):
                     continue
                 stock += int(stock_text)
 
-        price_components = soup.find('span', 'price').text.split(
-            '&nbsp;')[0].split('\xa0')
+        price_components = soup.find('div', 'price-box').find(
+            'span', 'price').text.split('&nbsp;')[0].split('\xa0')
         price = Decimal(price_components[1].replace(',', ''))
 
         currencies_dict = {
