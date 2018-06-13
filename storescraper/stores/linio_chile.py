@@ -22,6 +22,7 @@ class LinioChile(Store):
             'WashingMachine',
             'Oven',
             'VacuumCleaner',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -44,6 +45,7 @@ class LinioChile(Store):
             ['lavado-y-secado/secadoras/', 'WashingMachine'],
             ['pequenos-electrodomesticos/microondas-y-hornos/', 'Oven'],
             ['pequenos-electrodomesticos/aspiradoras/', 'VacuumCleaner'],
+            ['discos-duros/discos-duros-externos/', 'ExternalStorageDrive'],
         ]
 
         product_urls = []
