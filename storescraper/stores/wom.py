@@ -238,48 +238,46 @@ class Wom(Store):
             products.append(product)
 
         # Prepago normal
-        prepago_container = soup.find('span', 'm-b-40')
-        if prepago_container:
-            price = Decimal(remove_words(prepago_container.string))
+        prepago_container = soup.find('div', 'bord-right')
+        price = Decimal(remove_words(prepago_container.find('span').text))
 
-            product = Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} {}'.format(name, 'WOM Prepago'),
-                -1,
-                price,
-                price,
-                'CLP',
-                cell_plan_name='WOM Prepago',
-                picture_urls=picture_urls,
-                description=description
-            )
-            products.append(product)
+        product = Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} {}'.format(name, 'WOM Prepago'),
+            -1,
+            price,
+            price,
+            'CLP',
+            cell_plan_name='WOM Prepago',
+            picture_urls=picture_urls,
+            description=description
+        )
+        products.append(product)
 
         # Prepago portabilidad
         pvp_container = soup.find('span', 'tx-rose')
-        if pvp_container:
-            price = Decimal(remove_words(pvp_container.text))
+        price = Decimal(remove_words(pvp_container.text))
 
-            product = Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} {}'.format(name, 'WOM PVP Portabilidad'),
-                -1,
-                price,
-                price,
-                'CLP',
-                cell_plan_name='WOM PVP Portabilidad',
-                cell_monthly_payment=Decimal(0),
-                picture_urls=picture_urls,
-                description=description
-            )
-            products.append(product)
+        product = Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} {}'.format(name, 'WOM PVP Portabilidad'),
+            -1,
+            price,
+            price,
+            'CLP',
+            cell_plan_name='WOM PVP Portabilidad',
+            cell_monthly_payment=Decimal(0),
+            picture_urls=picture_urls,
+            description=description
+        )
+        products.append(product)
 
         return products
