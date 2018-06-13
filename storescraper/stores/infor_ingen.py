@@ -27,7 +27,8 @@ class InforIngen(Store):
             'Mouse',
             'Notebook',
             'Printer',
-            'Keyboard'
+            'Keyboard',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -48,6 +49,8 @@ class InforIngen(Store):
             ['92_96', 'CpuCooler'],  # Coolers CPU Liquido
             ['98', 'Monitor'],  # Monitores LCD
             ['105_106', 'Mouse'],  # Teclados y mouse
+            ['105_123', 'Notebook'],  # Notebooks
+            ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
         ]
 
         product_urls = []
