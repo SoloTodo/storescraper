@@ -118,7 +118,7 @@ from .sistemax import Sistemax
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
 from .solar_led import SolarLed
-from .sony_style import SonyStyle
+from .sony_store import SonyStore
 from .sp_digital import SpDigital
 from .spider import Spider
 from .syd import Syd

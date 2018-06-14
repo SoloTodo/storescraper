@@ -9,7 +9,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
     check_ean13
 
 
-class SonyStyle(Store):
+class SonyStore(Store):
     @classmethod
     def categories(cls):
         return [
@@ -43,7 +43,8 @@ class SonyStyle(Store):
             category_url = 'https://store.sony.cl/{}?PS=48'.format(
                 category_path)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(category_url, verify=False).text,
+                                 'html.parser')
 
             containers = soup.findAll('div', 'prod')
 
@@ -59,7 +60,7 @@ class SonyStyle(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        page_source = session.get(url, verify=False).text
 
         pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
                                  page_source).groups()[0]

@@ -83,48 +83,29 @@ class Microplay(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'}).string.strip()
-        with_stock_web = soup.find('a', 'btn-agregar')
+        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
+        sku = re.search('ecomm_prodid: (\d+)', page_source).groups()[0]
 
-        if with_stock_web:
-            sku = with_stock_web['data-product_id']
-        else:
-            sku_container = soup.find('a', 'consulta_stock')
-            if sku_container:
-                sku = sku_container['rel'][0]
-            else:
-                return []
+        with_stock_web = soup.find('a', 'btn-agregar2')
+        with_stock_store = soup.find('a', {'href': '#div_sucursales'})
 
-        if with_stock_web:
+        if with_stock_web or with_stock_store:
             stock = -1
         else:
-            params = {
-                'id': sku,
-                'preferencia': ''
-            }
-            data = urllib.parse.urlencode(params)
-            session.headers[
-                'Content-Type'] = 'application/x-www-form-urlencoded'
-            response = session.post(
-                'https://www.microplay.cl/sucursales/producto', data=data)
+            stock = 0
 
-            stock_soup = BeautifulSoup(response.text)
-
-            if stock_soup.find('a', 'tooltip_sucursales'):
-                stock = -1
-            else:
-                stock = 0
-
-        price = re.search(
-            r'(\d+\.\d+)', soup.find('div', 'precios_usado').text).groups()[0]
-        price = Decimal(remove_words(price))
+        price = re.search('ecomm_totalvalue: (\d+).00',
+                          page_source).groups()[0]
+        price = Decimal(price)
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'box-descripcion'})))
         picture_urls = [tag['href'] for tag in
-                        soup.find('div', 'galeria').findAll('a', 'fancybox')]
+                        soup.find('div', 'owl-carousel').findAll(
+                            'a', 'fancybox')]
 
         p = Product(
             name,

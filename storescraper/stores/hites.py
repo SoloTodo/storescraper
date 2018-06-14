@@ -144,7 +144,12 @@ class Hites(Store):
             stock = -1
 
             catentry_id = re.search(r'"catentry_id" : "(\d+)"',
-                                    page_source).groups()[0]
+                                    page_source)
+
+            if not catentry_id:
+                return []
+
+            catentry_id = catentry_id.groups()[0]
 
             ajax_url = 'https://www.hites.com/tienda/' \
                        'GetCatalogEntryDetailsByIDView?storeId=10151' \
