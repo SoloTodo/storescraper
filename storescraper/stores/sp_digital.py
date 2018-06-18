@@ -87,6 +87,8 @@ class SpDigital(Store):
 
             p = 1
 
+            local_product_urls = []
+
             while True:
                 if p >= 50:
                     raise Exception('Page overflow for: {}'.format(
@@ -106,18 +108,19 @@ class SpDigital(Store):
                     else:
                         break
 
-                last_page = False
+                done = False
 
                 for container in product_containers:
                     product_url = 'https://www.spdigital.cl' + \
                            container.find('a')['href']
-                    if product_url in product_urls:
-                        last_page = True
+                    if product_url in local_product_urls:
+                        done = True
                         break
 
                     product_urls.append(product_url)
+                    local_product_urls.append(product_url)
 
-                if last_page:
+                if done:
                     break
 
                 p += 1

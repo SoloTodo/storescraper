@@ -83,8 +83,7 @@ class AlKosto(Store):
         for panel in panels:
             description += html_to_markdown(str(panel)) + '\n\n'
 
-        if soup.find('link', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        if soup.find('p', 'in-stock'):
             stock = -1
         else:
             stock = 0
@@ -95,7 +94,7 @@ class AlKosto(Store):
             picture_urls.append(picture_tag['src'])
 
         price_container = soup.find('div', 'product-shop')
-        normal_price = price_container.find('span', {'itemprop': 'price'})
+        normal_price = price_container.findAll('span', 'price')[1]
 
         normal_price = Decimal(remove_words(normal_price.string))
 

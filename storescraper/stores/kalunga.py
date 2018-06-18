@@ -47,7 +47,7 @@ class Kalunga(Store):
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
-            containers = soup.findAll('li', 'product-item')
+            containers = soup.findAll('div', 'blocoproduto')
 
             if not containers:
                 raise Exception('Empty category: ' + category_url)
