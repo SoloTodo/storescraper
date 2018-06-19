@@ -4,6 +4,7 @@ import json
 import re
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -107,6 +108,10 @@ class Americanas(Store):
             return []
 
         page_source = response.text
+
+        soup = BeautifulSoup(page_source, 'html.parser')
+        if soup.find('svg', 'not-found-image'):
+            return []
 
         main_page_json = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                    page_source)
