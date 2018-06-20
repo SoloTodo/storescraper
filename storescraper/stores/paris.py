@@ -192,12 +192,12 @@ class Paris(Store):
 
         child = product_data['_source']['children'][0]
 
-        if child['SKU'].replace('-999-', '-PPP-') == sku:
-            image_id = child['ESTILOCOLOR']
-            stock = child['stocktienda'] + child['stockcd']
-        else:
+        if sku.startswith('CB'):
             image_id = sku
             stock = -1
+        else:
+            image_id = child['ESTILOCOLOR']
+            stock = child['stocktienda'] + child['stockcd']
 
         pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
                                 'Cencosud/{}?req=set,json'.format(image_id)
