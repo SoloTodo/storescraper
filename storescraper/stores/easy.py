@@ -168,6 +168,8 @@ class Easy(Store):
                 picture_entries = [picture_entries]
 
             for picture_entry in picture_entries:
+                if 'i' not in picture_entry:
+                    continue
                 picture_url = 'https://s7d2.scene7.com/is/image/{}?' \
                               'scl=1.0'.format(picture_entry['i']['n'])
                 picture_urls.append(picture_url)

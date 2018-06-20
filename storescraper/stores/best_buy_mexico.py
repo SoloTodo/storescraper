@@ -1,3 +1,6 @@
+import json
+import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -21,52 +24,42 @@ class BestBuyMexico(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computadoras/gaming.html?comp_compu_acc_tipo_dispositivo='
-             'Unidades+de+estado+sólido', 'SolidStateDrive'],
-            ['computadoras/discos-duros-y-almacenamiento.html?'
-             'comp_compu_acc_tipo_dispositivo=Discos+Duros',
-             'ExternalStorageDrive'],
-            ['computadoras/discos-duros-y-almacenamiento.html?'
-             'comp_compu_acc_tipo_dispositivo=Micro+SD', 'MemoryCard'],
-            ['computadoras/discos-duros-y-almacenamiento.html?'
-             'comp_compu_acc_tipo_dispositivo=Unidades+de+estado+sólido',
-             'SolidStateDrive'],
-            ['computadoras/discos-duros-y-almacenamiento.html?'
-             'comp_compu_acc_tipo_dispositivo=USB',
-             'UsbFlashDrive'],
-            ['tablets-y-celulares/accesorios-para-celulares.html?'
-             'comp_compu_acc_tipo_dispositivo=Tarjetas+de+memoria',
-             'MemoryCard'],
-            ['tablets-y-celulares/accesorios-para-tablets.html?'
-             'comp_compu_acc_tipo_dispositivo=Tarjetas+de+memoria',
-             'MemoryCard'],
+            ['1000067', 'SolidStateDrive'],
+            ['1000068', 'UsbFlashDrive'],
+            ['c69', 'MemoryCard']
         ]
 
         product_urls = []
-
         session = session_with_proxy(extra_args)
 
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
 
-            category_url = 'https://www.bestbuy.com.mx/productos/' \
-                           '{}&limit=all'.format(category_path)
+            page = 1
 
-            soup = BeautifulSoup(session.get(category_url).text,
-                                 'html.parser')
+            while True:
+                category_url = 'https://www.bestbuy.com.mx/c/api/listing?' \
+                               'query=categoryId%24{}&page={}' \
+                               ''.format(category_path, page)
 
-            product_cells = soup.findAll('div', 'product-line-item-line')
+                print(category_url)
 
-            if not product_cells:
-                product_cells = soup.findAll('li', 'item')
+                products_data = json.loads(session.get(category_url).text)
+                product_cells = products_data['products']
 
-            if not product_cells:
-                raise Exception('No products found: {}'.format(category_url))
+                if not product_cells:
+                    if page == 1:
+                        raise Exception('No products found: {}'.format(
+                            category_url))
 
-            for product_cell in product_cells:
-                product_url = product_cell.find('a')['href']
-                product_urls.append(product_url)
+                    break
+
+                for product_cell in product_cells:
+                    product_url = product_cell['seoPdpUrl']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
@@ -74,74 +67,28 @@ class BestBuyMexico(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        page_source = session.get(url).text
 
-        if soup.find('title').text.strip() == 'Lo Sentimos 404':
-            return []
+        match = re.search(r'JSON.parse\("(.+)", reviver\);', page_source)
+        product_data = json.loads(match.groups()[0].encode('utf-8').decode(
+            'unicode_escape'))
 
-        name = soup.find('h1').text.strip()
+        name = product_data['title']
+        sku = product_data['skuId']
+        normal_price = Decimal(product_data['customerPrice'])
+        offer_price = normal_price
+        part_number = product_data.get('modelNumber')
+        ean = product_data['upc']
 
-        pricing_tag = soup.find(
-            'script', {'src': 'http://media.flixfacts.com/js/loader.js'})
+        if len(ean) == 12:
+            ean = '0' + ean
 
-        if pricing_tag:
-            sku = pricing_tag['data-flix-sku'].strip()
-            part_number = pricing_tag['data-flix-mpn'].strip()
-            ean = pricing_tag['data-flix-ean'].strip()
-
-            if len(ean) == 12:
-                ean = '0' + ean
-
-            normal_price = Decimal(soup.find('span', 'price').text.replace(
-                u'$\xa0', '').replace(',', ''))
-
-            offer_price = normal_price
-
-            description = html_to_markdown(
-                str(soup.find('div', {'id': 'tabcnt_description'})))
-
-            picture_tags = soup.find('div', 'product-img-box').findAll('img')
-            picture_urls = [picture['src'] for picture in picture_tags]
-        else:
-            sku = soup.find('span', {'id': 'sku-value'}).text.strip()
-
-            part_number_container = soup.find('span', {'id': 'model-value'})
-
-            if part_number_container:
-                part_number = part_number_container.text.strip()
-            else:
-                part_number = None
-
-            ean = None
-            ean_container = soup.find('td', text='EAN/UPC')
-            if ean_container:
-                ean = ean_container.parent.find(
-                    'td', 'specification-value').text
-
-                if len(ean) == 12:
-                    ean = '0' + ean
-
-                if not check_ean13(ean):
-                    ean = None
-
-            normal_price = Decimal(soup.find(
-                'div', 'product-price').text.replace(
-                u'$', '').replace(',', ''))
-
-            offer_price = normal_price
-
-            description = html_to_markdown(
-                str(soup.find('div', 'descriptionContainer')))
-
-            picture_urls = []
-
-            for tag in soup.findAll('li', 'thumbnail-image-wrapper'):
-                picture_url = tag.find('img')['src']
-                if picture_url:
-                    picture_urls.append(picture_url)
-
-            if not picture_urls:
-                picture_urls = None
+        soup = BeautifulSoup(page_source, 'html.parser')
+        description = html_to_markdown(
+            str(soup.find('div', 'bbmx-product-description')))
+        picture_urls = [tag['src'] for tag in
+                        soup.findAll('img', {'data-track':
+                                             'enlarge-image:image'})]
 
         p = Product(
             name,

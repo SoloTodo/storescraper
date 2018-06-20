@@ -107,10 +107,10 @@ class InforIngen(Store):
         stock = int(soup.find('b', text='STOCK TIENDA:').next.next)
 
         price_containers = pricing_container.find(
-            'img', {'align': 'absmiddle'}).parent
+            'img', {'align': 'absmiddle'}).parent.findAll('h2')
 
-        normal_price = Decimal(remove_words(price_containers.find('h2').text))
-        offer_price = Decimal(remove_words(price_containers.find('h7').text))
+        normal_price = Decimal(remove_words(price_containers[0].text))
+        offer_price = Decimal(remove_words(price_containers[1].text))
 
         if offer_price > normal_price:
             offer_price = normal_price
