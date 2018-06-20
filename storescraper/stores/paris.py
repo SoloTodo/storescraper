@@ -178,50 +178,48 @@ class Paris(Store):
         description = html_to_markdown(product_data['_source']
                                        ['longDescription'])
 
-        products = []
+        # Only use the first child, the other are variations of color for
+        # products that don't interest us
 
-        if len(product_data['_source']['children']) != 1:
-            raise Exception(url)
+        child = product_data['_source']['children'][0]
 
-        for child in product_data['_source']['children']:
-            name = child['name']
-            normal_price = Decimal(child['price_internet'])
-            offer_price = normal_price
-            stock = child['stocktienda'] + child['stockcd']
-            image_id = child['ESTILOCOLOR']
+        name = child['name']
+        normal_price = Decimal(child['price_internet'])
+        offer_price = normal_price
+        stock = child['stocktienda'] + child['stockcd']
+        image_id = child['ESTILOCOLOR']
 
-            pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
-                                    'Cencosud/{}?req=set,json'.format(image_id)
+        pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
+                                'Cencosud/{}?req=set,json'.format(image_id)
 
-            pictures_json = json.loads(
-                re.search(r's7jsonResponse\((.+),""\);',
-                          session.get(pictures_resource_url).text).groups()[0])
-            picture_urls = []
+        pictures_json = json.loads(
+            re.search(r's7jsonResponse\((.+),""\);',
+                      session.get(pictures_resource_url).text).groups()[0])
+        picture_urls = []
 
-            picture_entries = pictures_json['set']['item']
-            if not isinstance(picture_entries, list):
-                picture_entries = [picture_entries]
+        picture_entries = pictures_json['set']['item']
+        if not isinstance(picture_entries, list):
+            picture_entries = [picture_entries]
 
-            for picture_entry in picture_entries:
-                picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
-                              ''.format(picture_entry['i']['n'])
-                picture_urls.append(picture_url)
+        for picture_entry in picture_entries:
+            picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
+                          ''.format(picture_entry['i']['n'])
+            picture_urls.append(picture_url)
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls
-            )
-            products.append(p)
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )
 
-        return products
+        return [p]
