@@ -192,7 +192,7 @@ class Paris(Store):
 
         child = product_data['_source']['children'][0]
 
-        if child['name'] == name:
+        if child['SKU'].replace('-999-', '-PPP-') == sku:
             image_id = child['ESTILOCOLOR']
             stock = child['stocktienda'] + child['stockcd']
         else:
