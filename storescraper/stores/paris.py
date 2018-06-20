@@ -1,7 +1,6 @@
 import json
 import re
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
@@ -45,159 +44,184 @@ class Paris(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['51206207', 'Notebook'],
-            ['51325099', 'Notebook'],
-            ['51445598', 'Notebook'],
-            ['51436669', 'Television'],
-            ['51206208', 'Tablet'],
-            ['51206164', 'Refrigerator'],
-            ['51206220', 'Printer'],  # Multifuncionales
-            ['51206221', 'Printer'],  # Laser
-            ['51206182', 'Oven'],
-            ['51206183', 'Oven'],
-            ['51206185', 'VacuumCleaner'],
-            ['51206169', 'WashingMachine'],
-            ['51206171', 'WashingMachine'],
-            ['51206170', 'WashingMachine'],
-            ['51296122', 'Cell'],
-            ['51206214', 'Cell'],
-            ['51206145', 'Camera'],
-            ['51206144', 'Camera'],
-            ['51568122', 'StereoSystem'],   # Microcomponente
-            ['51568123', 'StereoSystem'],   # Minicomponente
-            # ['51437112', 'OpticalDiskPlayer'],
-            ['51568103', 'HomeTheater'],  # Home theater
-            ['51206225', 'ExternalStorageDrive'],
-            ['51206226', 'UsbFlashDrive'],
-            ['51225099', 'MemoryCard'],
-            ['51206217', 'Projector'],
-            ['51206137', 'VideoGameConsole'],
-            ['51334105', 'AllInOne'],
-            ['51219599', 'AirConditioner'],
-            ['51281600', 'WaterHeater'],
-            ['51206179', 'SpaceHeater'],
-            ['51378608', 'Smartwatch'],
-            ['51206233', 'Mouse'],
+            [None, 'Tecno/Computadores/Notebook', 'Notebook'],
+            [None, 'Tecno/Computadores/Apple', 'Notebook'],
+            [None, 'Tecno/Computadores/Convertibles 2 en 1', 'Notebook'],
+            [None, 'Tecno/Computadores/PC Gamers', 'Notebook'],
+            [None, 'Tecno/Gamers/Notebooks', 'Notebook'],
+            ['Electro/Televisión', None, 'Television'],
+            [None, 'Tecno/Computadores/iPad & Tablet', 'Tablet'],
+            ['Línea Blanca/Refrigeración', None, 'Refrigerator'],
+            [None, 'Tecno/Impresión/Multifuncionales', 'Printer'],
+            [None, 'Tecno/Impresión/Láser', 'Printer'],
+            [None, 'Línea Blanca/Cocina/Hornos empotrables', 'Oven'],
+            [None, 'Línea Blanca/Cocina/Microondas', 'Oven'],
+            [None, 'Línea Blanca/Electrodomésticos/Microondas', 'Oven'],
+            [None, 'Línea Blanca/Lavado y Secado/Todas las lavadoras',
+             'VacuumCleaner'],
+            [None, 'Línea Blanca/Lavado y Secado/Lavadora-Secadoras',
+             'WashingMachine'],
+            [None, 'Línea Blanca/Lavado y Secado/Secadoras y Centrifugas',
+             'WashingMachine'],
+            [None, 'Tecno/Celulares/Smartphones', 'Cell'],
+            [None, '//Nueva Linea J de Samsung', 'Cell'],
+            [None, 'Tecno/Celulares/Básicos', 'Cell'],
+            [None, 'Tecno/Fotografía/Cámaras Compactas', 'Camera'],
+            [None, 'Tecno/Fotografía/Cámaras Semiprofesionales', 'Camera'],
+            [None, 'Electro/Audio/Micro y Minicomponentes', 'StereoSystem'],
+            [None, 'Electro/Accesorios para TV/Home Theater', 'HomeTheater'],
+            [None, 'Electro/HIFI/Home Cinema', 'HomeTheater'],
+            [None, 'Tecno/Accesorios Computación/Discos Duros ',
+             'ExternalStorageDrive'],
+            [None, 'Tecno/Accesorios Computación/Pendrives', 'UsbFlashDrive'],
+            [None, 'Tecno/Accesorios Fotografía/Tarjetas de Memoria',
+             'MemoryCard'],
+            [None, 'Tecno/Accesorios Computación/Proyectores', 'Projector'],
+            [None, 'Tecno/Gamers/Consolas', 'VideoGameConsole'],
+            ['Tecno/Consolas VideoJuegos', None, 'VideoGameConsole'],
+            [None, 'Tecno/Computadores/Desktop & All-In-One', 'AllInOne'],
+            [None, 'Línea Blanca/Climatización/Aire Acondicionado',
+             'AirConditioner'],
+            [None, 'Línea Blanca/Climatización/Calefont', 'WaterHeater'],
+            ['Línea Blanca/Estufas ', None, 'SpaceHeater'],
+            [None, 'Tecno/Celulares/Wearables', 'Smartwatch'],
+            [None, 'Tecno/Gamers/Teclados y Mouse', 'Mouse'],
+            [None, 'Tecno/Accesorios Computación/Mouse y Teclados', 'Mouse'],
+            [None, 'Electro/Accesorios para TV/Bluray y DVD',
+             'OpticalDiskPlayer'],
+            [None, 'Tecno/Gamers/Monitores', 'Monitor'],
+            [None, 'Tecno/Accesorios Computación/Monitor Gamer', 'Monitor'],
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
         product_urls = []
 
-        for path, local_category in category_paths:
+        for cat_2, cat_3, local_category in category_paths:
             if category != local_category:
                 continue
 
-            category_url = 'https://www.paris.cl/webapp/wcs/stores/servlet/' \
-                           'AjaxCatalogSearchResultView?sType=SimpleSearch&' \
-                           'pageSize=1000&storeId=10801&categoryId={}' \
-                           ''.format(path)
-            print(category_url)
-            soup = BeautifulSoup(session.get(
-                category_url, timeout=30).text, 'html.parser')
+            terms = {}
 
-            product_containers = soup.findAll('div', 'boxProduct')
+            if cat_2:
+                terms['cat_2.raw'] = cat_2
 
-            if not product_containers:
-                raise Exception('Empty category: {} - {}'.format(
-                    category, path))
+            if cat_3:
+                terms['cat_3.raw'] = cat_3
 
-            for cell in product_containers:
-                product_id = cell['id'].split('_')[1]
-                product_url = 'https://www.paris.cl/tienda/ProductDisplay?' \
-                              'storeId=10801&productId=' + product_id
+            query = {
+                "query": {
+                    "function_score": {
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "term": terms
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "size": 1000,
+                "from": 0
+            }
+
+            response = session.post('https://www.paris.cl/store-api/pyload/'
+                                    '_search', json.dumps(query))
+            products_data = json.loads(response.text)['hits']['hits']
+
+            if not products_data:
+                raise Exception('Empty category: {} {} {}'.format(
+                    category, cat_2, cat_3))
+
+            for cell in products_data:
+                product_url = cell['_source']['product_can']
                 product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
 
-        page_source = session.get(url, timeout=30).text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        es_id = re.search(r'/producto/(.+)$', url).groups()[0]
 
-        if soup.find('img', {
-                'src': 'https://paris.scene7.com/is/image/Cencosud/'
-                       'Error%5FGenerico%5FB?$full%2Djpeg$'}):
-            print('Error generico found (#1)')
-            return []
+        query = {
+            "query": {
+                "bool": {
+                    "minimum_should_match": 1,
+                    "should": [
+                        {
+                            "term": {
+                                "url.keyword": es_id
+                            }
+                        },
+                        {
+                            "term": {
+                                "children.url.keyword": es_id
+                            }
+                        }
+                    ]
+                }
+            }
+        }
 
-        if soup.find('h1', {'role': 'main'}):
-            print('Error generico found (#2)')
-            return []
+        response = session.post(
+            'https://www.paris.cl/store-api/pyload/_search',
+            json.dumps(query))
+        product_data = json.loads(response.text)['hits']['hits'][0]
 
-        name = soup.find('h1', {'id': 'catalog_link'})
+        sku = product_data['_id']
+        description = html_to_markdown(product_data['_source']
+                                       ['longDescription'])
 
-        if not name:
-            print('No name found')
-            return []
+        products = []
 
-        name = name.text.strip()
+        if len(product_data['_source']['children']) != 1:
+            raise Exception(url)
 
-        sku = soup.find('div', {'id': 'detalles-sku'}).text.replace(
-            'SKU: ', '').strip()
-        normal_price = re.search(
-            r"var offerPrice_DL = '(\d*)'", page_source).groups()[0]
-        if not normal_price:
-            return []
-
-        normal_price = Decimal(normal_price)
-
-        offer_price = re.search(
-            r"var tcPrice_DL = '(\d*)'", page_source).groups()[0]
-        if offer_price:
-            offer_price = Decimal(offer_price)
-        else:
+        for child in product_data['_source']['children']:
+            name = child['name']
+            normal_price = Decimal(child['price_internet'])
             offer_price = normal_price
+            stock = child['stocktienda'] + child['stockcd']
+            image_id = child['ESTILOCOLOR']
 
-        stock = re.search(
-            r"var itemQuantity_DL = '(.+)'",
-            page_source)
-        if stock:
-            stock = int(stock.groups()[0].replace('.', ''))
-        else:
-            stock = 0
+            pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
+                                    'Cencosud/{}?req=set,json'.format(image_id)
 
-        description = html_to_markdown(str(soup.find('div', 'description')))
+            pictures_json = json.loads(
+                re.search(r's7jsonResponse\((.+),""\);',
+                          session.get(pictures_resource_url).text).groups()[0])
+            picture_urls = []
 
-        image_id = re.search(
-            r"var field3_DL = '(.*)';", page_source).groups()[0]
+            picture_entries = pictures_json['set']['item']
+            if not isinstance(picture_entries, list):
+                picture_entries = [picture_entries]
 
-        if not image_id:
-            image_id = re.search(
-                r"var partNumber_DL = '(.+)';", page_source).groups()[0]
+            for picture_entry in picture_entries:
+                picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
+                              ''.format(picture_entry['i']['n'])
+                picture_urls.append(picture_url)
 
-        pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
-                                'Cencosud/{}?req=set,json'.format(image_id)
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls
+            )
+            products.append(p)
 
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      session.get(pictures_resource_url).text).groups()[0])
-        picture_urls = []
-
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
-
-        for picture_entry in picture_entries:
-            picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
-                          ''.format(picture_entry['i']['n'])
-            picture_urls.append(picture_url)
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls
-        )
-
-        return [p]
+        return products
