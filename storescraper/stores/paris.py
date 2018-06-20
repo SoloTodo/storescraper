@@ -175,19 +175,29 @@ class Paris(Store):
         product_data = json.loads(response.text)['hits']['hits'][0]
 
         sku = product_data['_id']
+        name = product_data['_source']['name']
         description = html_to_markdown(product_data['_source']
                                        ['longDescription'])
+
+        normal_price = Decimal(product_data['_source']['price_internet'])
+
+        offer_price = product_data['_source']['price_tc']
+        if offer_price:
+            offer_price = Decimal(offer_price)
+        else:
+            offer_price = normal_price
 
         # Only use the first child, the other are variations of color for
         # products that don't interest us
 
         child = product_data['_source']['children'][0]
 
-        name = child['name']
-        normal_price = Decimal(child['price_internet'])
-        offer_price = normal_price
-        stock = child['stocktienda'] + child['stockcd']
-        image_id = child['ESTILOCOLOR']
+        if child['name'] == name:
+            image_id = child['ESTILOCOLOR']
+            stock = child['stocktienda'] + child['stockcd']
+        else:
+            image_id = sku
+            stock = -1
 
         pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
                                 'Cencosud/{}?req=set,json'.format(image_id)
