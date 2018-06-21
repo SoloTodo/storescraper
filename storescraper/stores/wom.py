@@ -119,10 +119,11 @@ class Wom(Store):
 
         plan_prices = {
             'ver-plan-5': Decimal(9990),
-            'ver-plan-15': Decimal(15990),
-            'ver-plan-25': Decimal(19990),
-            'ver-plan-35': Decimal(25990),
-            'ver-plan-ilimitado': Decimal(29990),
+            'ver-plan-15': Decimal(12990),
+            'ver-plan-25': Decimal(15990),
+            'ver-plan-35': Decimal(19990),
+            'ver-plan-ilimitado': Decimal(25990),
+            'ver-plan-55': Decimal(29990),
         }
 
         plan_containers = soup.findAll('article', 'box_plan')
