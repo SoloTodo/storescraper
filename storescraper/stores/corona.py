@@ -172,6 +172,9 @@ class Corona(Store):
             key = str(sku_data['sku'])
             stock = sku_data['availablequantity']
 
+            if stock == 99999:
+                stock = -1
+
             normal_price = Decimal(sku_data['bestPrice'] / 100)
 
             if offer_price and offer_price < normal_price:

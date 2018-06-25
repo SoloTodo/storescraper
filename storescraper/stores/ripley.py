@@ -157,7 +157,7 @@ class Ripley(Store):
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0
         else:
-            stock = specs_json['xCatEntryQuantity']
+            stock = -1
 
         if 'offerPrice' in specs_json['prices']:
             normal_price = Decimal(specs_json['prices']['offerPrice'])
