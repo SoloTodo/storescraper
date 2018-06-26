@@ -94,6 +94,9 @@ class Byp(Store):
         offer_price = normal_price
         stock = int(float(pricing_json['stock']))
 
+        if stock > 0:
+            stock = -1
+
         description = html_to_markdown(str(soup.find('div', 'panel')))
 
         picture_urls = [link['href'] for link in

@@ -58,9 +58,20 @@ class Movistar(Store):
                 while True:
                     print(sorting_option, page)
                     data = data_template.format(page, sorting_option)
-                    response = session.post(req_url, data)
 
-                    json_data = json.loads(response.text)
+                    retries = 5
+
+                    while True:
+                        try:
+                            response = session.post(req_url, data, timeout=30)
+                            json_data = json.loads(response.text)
+                            break
+                        except:
+                            if not retries:
+                                raise
+
+                            retries -= 1
+                            continue
 
                     for device in json_data['Devices']:
                         device_soup = BeautifulSoup(
@@ -112,7 +123,7 @@ class Movistar(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html5lib')
+        soup = BeautifulSoup(session.get(url, timeout=30).text, 'html5lib')
         products = []
 
         plan_containers = soup.find('section', 'listadoplanes-box').findAll(
@@ -206,7 +217,7 @@ class Movistar(Store):
         device_id = re.search('(\d+)$', url).groups()[0]
 
         products = []
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, timeout=30).text, 'html.parser')
 
         manufacturer = soup.find('p', 'top-name').string.strip()
         cell_name = soup.find('h1', {'id': 'devicename'}).text.strip()
