@@ -311,7 +311,7 @@ class Movistar(Store):
                     initial_payment,
                     initial_payment,
                     'CLP',
-                    cell_plan_name=plan_name,
+                    cell_plan_name=plan_name[:50],
                     cell_monthly_payment=monthly_payment
                 ))
 

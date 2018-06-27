@@ -25,8 +25,12 @@ class Product:
                  condition='https://schema.org/NewCondition'):
         assert isinstance(key, str)
         assert isinstance(stock, int)
-
+        assert len(name) <= 256
+        assert len(key) <= 256
         assert offer_price <= normal_price
+
+        if cell_plan_name:
+            assert len(cell_plan_name) <= 50
 
         if picture_urls:
             for picture_url in picture_urls:
