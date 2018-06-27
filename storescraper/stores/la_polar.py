@@ -48,6 +48,9 @@ class LaPolar(Store):
             ['electronica/televisores/led2', 'Television'],
             ['electronica/televisores/smart_tv', 'Television'],
             ['electronica/televisores/oled_i_qled_i_curvo', 'Television'],
+            ['electronica/tv_por_pulgadas/hasta_40_pulgadas', 'Television'],
+            ['electronica/tv_por_pulgadas/42_pulgadas_a_50_pulgadas', 'Television'],
+            ['electronica/tv_por_pulgadas/55_pulgadas_mas', 'Television'],
             ['electronica/televisores/dvd_i_blu_ray', 'OpticalDiskPlayer'],
             ['tecnologia/computadores/tablet', 'Tablet'],
             ['linea_blanca/refrigeradores/side_by_side', 'Refrigerator'],
@@ -107,7 +110,7 @@ class LaPolar(Store):
                               ''.format(entry['plu'])
                 product_urls.append(product_url)
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
