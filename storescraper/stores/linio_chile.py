@@ -32,7 +32,7 @@ class LinioChile(Store):
             ['zona-gamer/notebook-gamer', 'Notebook'],
             ['celulares-y-smartphones/liberados', 'Cell'],
             ['tv-y-video/televisores/', 'Television'],
-            ['tv-audio-y-foto/', 'Television'],
+            # ['tv-audio-y-foto/', 'Television'],
             ['tablets/tablet', 'Tablet'],
             ['impresoras-y-scanners/impresoras', 'Printer'],
             ['impresoras/impresoras-laser', 'Printer'],

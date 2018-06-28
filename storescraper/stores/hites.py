@@ -94,9 +94,9 @@ class Hites(Store):
                 product_url = product_url.replace('http://', 'https://')
 
                 if 'ProductDisplay' in product_url:
-                    parsed_product = urllib.parse.urlparse.urlparse(
+                    parsed_product = urllib.parse.urlparse(
                         product_url)
-                    parameters = urllib.parse.urlparse.parse_qs(
+                    parameters = urllib.parse.parse_qs(
                         parsed_product.query)
 
                     parameters = {
