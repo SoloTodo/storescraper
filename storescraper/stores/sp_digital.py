@@ -25,7 +25,6 @@ class SpDigital(Store):
             'Processor',
             'VideoCard',
             'CpuCooler',
-            'Notebook',
             'Printer',
             'Ram',
             'Monitor',
@@ -55,7 +54,6 @@ class SpDigital(Store):
             ['474', 'Notebook'],
             ['556', 'Notebook'],
             # ['362', 'HomeTheater'],
-            # ['359', 'OpticalDiskPlayer'],
             # ['359', 'OpticalDiskPlayer'],
             ['376', 'PowerSupply'],
             ['375', 'ComputerCase'],
@@ -97,7 +95,7 @@ class SpDigital(Store):
                 url = 'https://www.spdigital.cl/categories/view/{}/page:' \
                       '{}?o=withstock'.format(category_id, p)
                 print(url)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(url).text, 'html5lib')
 
                 product_containers = soup.findAll('div', 'product-item-mosaic')
 
