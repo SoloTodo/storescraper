@@ -137,6 +137,9 @@ class SpDigital(Store):
         if not part_number:
             return []
 
+        if soup.find('span', 'product-view-price-a-pedido'):
+            return []
+
         part_number = part_number.text.strip()
 
         name = soup.find('h1').text.strip()

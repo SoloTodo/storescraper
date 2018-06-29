@@ -114,9 +114,9 @@ class Falabella(Store):
                           '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
                           'Safari/537.36'
         })
-        session.get('https://www.falabella.com/falabella-cl/')
+        session.get('https://www.falabella.com/falabella-cl/', timeout=30)
         session.get('https://www.falabella.com/falabella-cl/'
-                    'includes/ajaxFirstNameAndCartQuantity.jsp')
+                    'includes/ajaxFirstNameAndCartQuantity.jsp', timeout=30)
         discovered_urls = []
 
         for url_path, local_category in url_paths:
@@ -195,7 +195,7 @@ class Falabella(Store):
                                 query_args, separators=(',', ':')), safe=''))
 
                 res = json.loads(
-                    session.get(pag_url).content.decode('utf-8'))
+                    session.get(pag_url, timeout=30).content.decode('utf-8'))
 
             if not res['state']['resultList'] and page == 1:
                 raise Exception('Empty category path: ' + url_path)
@@ -217,7 +217,7 @@ class Falabella(Store):
     @classmethod
     def _products_for_url(cls, url, retries=5, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        content = session.get(url).text.replace('&#10;', '')
+        content = session.get(url, timeout=30).text.replace('&#10;', '')
 
         soup = BeautifulSoup(content, 'html.parser')
 
@@ -253,9 +253,10 @@ class Falabella(Store):
 
         pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
                                 'Falabella/{}?req=set,json'.format(global_id)
+        pictures_response = session.get(pictures_resource_url, timeout=30).text
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
-                      session.get(pictures_resource_url).text).groups()[0])
+                      pictures_response).groups()[0])
 
         picture_urls = []
 
