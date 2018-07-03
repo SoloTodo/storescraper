@@ -29,6 +29,7 @@ class Peta(Store):
             'Printer',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

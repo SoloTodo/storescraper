@@ -38,7 +38,8 @@ class Paris(Store):
             'SpaceHeater',
             'Smartwatch',
             'Mouse',
-            'Keyboard'
+            'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

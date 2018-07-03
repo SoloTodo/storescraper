@@ -31,6 +31,7 @@ class PcExpress(Store):
             'Television',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -62,6 +63,7 @@ class PcExpress(Store):
             ['83', 'VideoCard'],
             ['135', 'Keyboard'],
             ['313_318', 'Keyboard'],
+            ['131', 'KeyboardMouseCombo'],
         ]
 
         product_urls = []

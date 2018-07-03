@@ -32,6 +32,7 @@ class Winpy(Store):
             'ExternalStorageDrive',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

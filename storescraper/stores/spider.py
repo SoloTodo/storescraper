@@ -30,6 +30,7 @@ class Spider(Store):
             'Tablet',
             'Printer',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -54,6 +55,7 @@ class Spider(Store):
             ('48', 'Printer'),
             ('55', 'Mouse'),
             ('56', 'Keyboard'),
+            ('57', 'KeyboardMouseCombo'),
         ]
 
         product_urls = []

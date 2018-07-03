@@ -43,6 +43,7 @@ class PcFactory(Store):
             'Mouse',
             'OpticalDrive',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -82,6 +83,7 @@ class PcFactory(Store):
             ['42', 'CpuCooler'],  # Refrigeracion
             ['262', 'Printer'],  # Impresoras Laser
             ['36', 'Keyboard'],  # Teclados
+            ['418', 'KeyboardMouseCombo'],  # Combo teclado mouse
         ]
 
         session = session_with_proxy(extra_args)

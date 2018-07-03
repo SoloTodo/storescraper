@@ -24,6 +24,7 @@ class TopPc(Store):
             'CpuCooler',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -43,6 +44,7 @@ class TopPc(Store):
             ['108', 'CpuCooler'],  # Coolers CPU
             ['67', 'Mouse'],
             ['66', 'Keyboard'],
+            ['65', 'KeyboardMouseCombo'],
         ]
 
         product_urls = []

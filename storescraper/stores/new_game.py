@@ -15,6 +15,7 @@ class NewGame(Store):
         return [
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -22,6 +23,7 @@ class NewGame(Store):
         category_paths = [
             ['accion=hijo&plt=pc&cat=14', 'Mouse'],
             ['accion=hijo&plt=pc&cat=15', 'Keyboard'],
+            ['accion=hijo&plt=pc&cat=29', 'KeyboardMouseCombo'],
         ]
 
         product_urls = []

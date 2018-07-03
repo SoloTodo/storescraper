@@ -45,6 +45,7 @@ class Falabella(Store):
             'Mouse',
             'SpaceHeater',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

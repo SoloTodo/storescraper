@@ -28,6 +28,7 @@ class Cintegral(Store):
             'Cell',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -63,6 +64,8 @@ class Cintegral(Store):
             ['monitores-y-proyeccion/monitores.html', 'Monitor'],
             ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
             ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
+            ['pc-y-portatiles/mouse-teclados/combo-mouse-teclado.html',
+             'KeyboardMouseCombo'],
         ]
 
         product_urls = []

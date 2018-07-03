@@ -39,6 +39,7 @@ class LaPolar(Store):
             'Smartwatch',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

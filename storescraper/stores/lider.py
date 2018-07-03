@@ -39,6 +39,7 @@ class Lider(Store):
             'AirConditioner',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

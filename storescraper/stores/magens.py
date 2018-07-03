@@ -31,7 +31,8 @@ class Magens(Store):
             'Tablet',
             'Printer',
             'Mouse',
-            'Keyboard'
+            'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

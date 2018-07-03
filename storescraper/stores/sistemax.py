@@ -27,6 +27,7 @@ class Sistemax(Store):
             'Mouse',
             'Notebook',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

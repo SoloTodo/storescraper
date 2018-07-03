@@ -25,6 +25,7 @@ class AllTec(Store):
             'CpuCooler',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

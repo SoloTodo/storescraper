@@ -18,6 +18,7 @@ class Microplay(Store):
             'Mouse',
             'VideoGameConsole',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -34,6 +35,9 @@ class Microplay(Store):
              'VideoGameConsole'],
             ['computacion', {'categorias': 'teclados-3'}, 'Keyboard'],
             ['gamer', {'categorias': 'teclados-4'}, 'Keyboard'],
+            ['juegos', {'plataformas': 'pc',
+                        'accesorios': 'mouse-teclados'},
+             'Keyboard'],
         ]
 
         product_urls = []

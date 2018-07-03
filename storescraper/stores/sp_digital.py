@@ -37,6 +37,7 @@ class SpDigital(Store):
             'Projector',
             'AllInOne',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -76,6 +77,7 @@ class SpDigital(Store):
             ['416', 'Projector'],
             ['370', 'AllInOne'],
             ['342', 'Keyboard'],
+            ['339', 'KeyboardMouseCombo'],
         ]
 
         product_urls = []

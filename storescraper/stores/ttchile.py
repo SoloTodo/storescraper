@@ -26,6 +26,7 @@ class TtChile(Store):
             'CpuCooler',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -52,6 +53,7 @@ class TtChile(Store):
             ['subpro.php?ic=28&isc=87', 'CpuCooler'],  # Ref. liquida
             ['subpro.php?ic=19&isc=16', 'Mouse'],
             ['subpro.php?ic=19&isc=17', 'Keyboard'],
+            ['subpro.php?ic=19&isc=18', 'KeyboardMouseCombo'],
         ]
 
         product_urls = []

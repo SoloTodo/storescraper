@@ -35,6 +35,8 @@ class Hites(Store):
             'SpaceHeater',
             'CellAccesory',
             'Keyboard',
+            'KeyboardMouseCombo',
+            'Mouse',
         ]
 
     @classmethod
@@ -64,6 +66,7 @@ class Hites(Store):
             # ['14052', 'SpaceHeater'],
             # ['14056', 'SpaceHeater'],  # Termoventiladores
             ['14107', 'Keyboard'],
+            ['14094', 'Mouse'],
         ]
 
         product_urls = []

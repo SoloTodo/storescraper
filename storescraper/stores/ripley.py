@@ -39,6 +39,7 @@ class Ripley(Store):
             'Smartwatch',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

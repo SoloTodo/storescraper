@@ -37,6 +37,7 @@ class Wei(Store):
             'Printer',
             'VideoGameConsole',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
@@ -91,6 +92,7 @@ class Wei(Store):
             ['1248', 'Television'],  # TELEVISORES LCDTV
             ['678', 'Tablet'],  # Tablets
             ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
+            ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
             # ['673', 'Processor'],  # AM1
             # ['635', 'Lamp'],  # FOCOS LED
             # ['627', 'Lamp'],  # AMPOLLETAS LED

@@ -32,6 +32,7 @@ class Bip(Store):
             'Camera',
             'AllInOne',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

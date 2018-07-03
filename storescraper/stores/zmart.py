@@ -16,6 +16,7 @@ class Zmart(Store):
             'VideoGameConsole',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod

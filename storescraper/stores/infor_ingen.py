@@ -28,6 +28,7 @@ class InforIngen(Store):
             'Notebook',
             'Printer',
             'Keyboard',
+            'KeyboardMouseCombo',
             'ExternalStorageDrive',
         ]
 

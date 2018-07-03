@@ -30,6 +30,7 @@ class PcOfertas(Store):
             'Printer',
             'Mouse',
             'Keyboard',
+            'KeyboardMouseCombo',
         ]
 
     @classmethod
