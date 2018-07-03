@@ -56,7 +56,8 @@ class MyBox(Store):
 
             print(category_url)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(category_url, timeout=30).text,
+                                 'html.parser')
             prod_list = soup.find('ul', {'id': 'product_list'})
 
             if not prod_list:
@@ -75,7 +76,7 @@ class MyBox(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        page_source = session.get(url, timeout=30).text
 
         stock = int(re.search(r"quantityAvailable=(\d+)",
                               page_source).groups()[0])
