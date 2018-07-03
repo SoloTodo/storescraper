@@ -68,8 +68,13 @@ class NewGame(Store):
         description = html_to_markdown(
             str(soup.find('div', 'contenido-juego')))
 
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'nivoSlider').findAll('img')]
+        pictures_container = soup.find('div', 'nivoSlider')
+
+        if pictures_container:
+            picture_urls = [tag['src'] for tag in
+                            pictures_container.findAll('img')]
+        else:
+            picture_urls = None
 
         p = Product(
             name,

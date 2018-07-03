@@ -36,33 +36,21 @@ class Sanborns(Store):
             if local_category != category:
                 continue
 
-            page = 1
+            category_url = 'https://www.sanborns.com.mx/categoria/' \
+                           '{}/'.format(category_path)
 
-            while True:
-                category_url = 'https://www.sanborns.com.mx/categoria/' \
-                               '{}/cat/pagina/{}'.format(category_path, page)
+            soup = BeautifulSoup(session.get(category_url).text,
+                                 'html.parser')
 
-                print(category_url)
+            link_containers = soup.findAll('article', 'productbox')
 
-                if page >= 10:
-                    raise Exception('Page overflow: ' + category_url)
+            if not link_containers:
+                raise Exception('Empty category: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
-
-                link_containers = soup.findAll('article', 'productbox')
-
-                if not link_containers:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_url)
-                    break
-
-                for link_container in link_containers:
-                    product_url = 'https://www.sanborns.com.mx' + \
-                                  link_container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            for link_container in link_containers:
+                product_url = 'https://www.sanborns.com.mx' + \
+                              link_container.find('a')['href']
+                product_urls.append(product_url)
 
         return product_urls
 

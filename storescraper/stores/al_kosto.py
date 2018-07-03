@@ -61,6 +61,7 @@ class AlKosto(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -93,10 +94,15 @@ class AlKosto(Store):
         for picture_tag in soup.find('li', 'image-extra').findAll('img'):
             picture_urls.append(picture_tag['src'])
 
-        price_container = soup.find('div', 'product-shop')
-        normal_price = price_container.findAll('span', 'price')[1]
+        product_box = soup.find('div', 'product-shop')
 
-        normal_price = Decimal(remove_words(normal_price.string))
+        price_container = product_box.find('span', {'itemprop': 'price'})
+
+        if price_container:
+            normal_price = Decimal(price_container['content'])
+        else:
+            price_container = product_box.findAll('span', 'price')[1]
+            normal_price = Decimal(remove_words(price_container.string))
 
         offer_price = normal_price
 
