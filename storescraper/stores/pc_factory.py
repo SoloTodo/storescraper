@@ -44,6 +44,7 @@ class PcFactory(Store):
             'OpticalDrive',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -84,6 +85,10 @@ class PcFactory(Store):
             ['262', 'Printer'],  # Impresoras Laser
             ['36', 'Keyboard'],  # Teclados
             ['418', 'KeyboardMouseCombo'],  # Combo teclado mouse
+            ['850', 'Headphones'],  # Audifonos
+            ['895', 'Headphones'],  # Audifonos
+            ['860', 'Headphones'],  # Audífonos DJ
+            ['861', 'Headphones'],  # Audífonos Monitoreo
         ]
 
         session = session_with_proxy(extra_args)
