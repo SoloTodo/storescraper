@@ -116,6 +116,7 @@ class Peta(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -129,9 +130,10 @@ class Peta(Store):
         else:
             stock = 0
 
-        price_container = soup.find('div', 'product-info-price').find(
+        price_containers = soup.find('div', 'product-info-price').findAll(
             'span', 'price')
-        price = Decimal(remove_words(price_container.string))
+        normal_price = Decimal(remove_words(price_containers[0].string))
+        offer_price = Decimal(remove_words(price_containers[-2].string))
 
         description = ''
 
@@ -155,8 +157,8 @@ class Peta(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=part_number,
