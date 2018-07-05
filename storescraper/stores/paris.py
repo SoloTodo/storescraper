@@ -90,7 +90,7 @@ class Paris(Store):
             [None, 'Tecno/Accesorios Computación/Mouse y Teclados', 'Mouse'],
             [None, 'Electro/Accesorios para TV/Bluray y DVD',
              'OpticalDiskPlayer'],
-            [None, 'Tecno/Gamers/Monitores', 'Monitor'],
+            # [None, 'Tecno/Gamers/Monitores', 'Monitor'],
             [None, 'Tecno/Accesorios Computación/Monitor Gamer', 'Monitor'],
         ]
 
