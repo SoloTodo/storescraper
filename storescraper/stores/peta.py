@@ -30,6 +30,7 @@ class Peta(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -70,6 +71,7 @@ class Peta(Store):
              'ExternalStorageDrive'],
             ['accesorios/perifericos/mouse.html', 'Mouse'],
             ['accesorios/perifericos/teclados.html', 'Keyboard'],
+            ['foto-video/audio/audifonos.html', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)

@@ -59,7 +59,7 @@ class Paris(Store):
             [None, 'Línea Blanca/Cocina/Microondas', 'Oven'],
             [None, 'Línea Blanca/Electrodomésticos/Microondas', 'Oven'],
             [None, 'Línea Blanca/Lavado y Secado/Todas las lavadoras',
-             'VacuumCleaner'],
+             'WashingMachine'],
             [None, 'Línea Blanca/Lavado y Secado/Lavadora-Secadoras',
              'WashingMachine'],
             [None, 'Línea Blanca/Lavado y Secado/Secadoras y Centrifugas',

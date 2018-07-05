@@ -38,6 +38,7 @@ class SpDigital(Store):
             'AllInOne',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -78,6 +79,7 @@ class SpDigital(Store):
             ['370', 'AllInOne'],
             ['342', 'Keyboard'],
             ['339', 'KeyboardMouseCombo'],
+            ['337', 'Headphones'],
         ]
 
         product_urls = []

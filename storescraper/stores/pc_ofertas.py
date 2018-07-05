@@ -31,6 +31,7 @@ class PcOfertas(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -71,6 +72,7 @@ class PcOfertas(Store):
              'ExternalStorageDrive'],
             ['accesorios-y-perifericos/perifericos/mouse/mouse.html', 'Mouse'],
             ['accesorios-y-perifericos/perifericos/teclados.html', 'Keyboard'],
+            ['audiovisual/audio/audifonos.html', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
