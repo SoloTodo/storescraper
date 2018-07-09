@@ -80,8 +80,10 @@ class Lider(Store):
              'WashingMachine'],
             ['Celulares-y-Fotografía/Celulares-y-Teléfonos/'
              'Equipos-Smartphone/_/N-1orftrb', 'Cell'],
-            # ['Tecnología/Audio/Equipos-de-Música/_/N-ss8ejy',
-            #  'StereoSystem'],
+            ['Electrónica/Equipos-de-Audio/Equipos-de-Música/_/N-ss8ejy',
+             'StereoSystem'],
+            ['Electrónica/Equipos-de-Audio/Audio-Portable/_/N-qfhc1c',
+             'StereoSystem'],
             ['Computación/Almacenamiento/Discos-Duros/_/N-1fztdr9',
              'ExternalStorageDrive'],
             ['Computación/Almacenamiento/Pendrives/_/N-fv774a',

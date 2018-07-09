@@ -81,7 +81,7 @@ class Sodimac(Store):
                                        random.randint(0, 100))
                 print(url)
 
-                response = session.get(url)
+                response = session.get(url, timeout=30)
 
                 if '/product/' in response.url:
                     product_urls.append(response.url)
@@ -108,7 +108,8 @@ class Sodimac(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
 
-        response = session.get(url)
+        response = session.get(url, timeout=30)
+
         if 'http://www.sodimac.cl/sodimac-cl/noSearchResult' in response.url:
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -156,7 +157,8 @@ class Sodimac(Store):
                                 'SodimacCL/{}?req=set,json'.format(sku)
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
-                      session.get(pictures_resource_url).text).groups()[0])
+                      session.get(pictures_resource_url,
+                                  timeout=30).text).groups()[0])
 
         picture_urls = []
 
