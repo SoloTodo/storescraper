@@ -1,4 +1,5 @@
 import json
+import random
 
 import re
 from bs4 import BeautifulSoup
@@ -76,7 +77,8 @@ class Sodimac(Store):
 
             while True:
                 url = 'http://www.sodimac.cl/sodimac-cl/category/{}?No={}' \
-                      ''.format(category_path, page)
+                      '&rnd={}'.format(category_path, page,
+                                       random.randint(0, 100))
                 print(url)
 
                 response = session.get(url)
