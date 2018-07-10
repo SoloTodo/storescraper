@@ -35,6 +35,7 @@ class AbcDin(Store):
             'VideoGameConsole',
             'AllInOne',
             'WaterHeater',
+            'Headphones',
         ]
 
     @classmethod
@@ -74,6 +75,7 @@ class AbcDin(Store):
             ['10061', 'SpaceHeater'],  # Estufas electricas
             ['10063', 'SpaceHeater'],  # Estufas a lena
             ['24055', 'Smartwatch'],
+            ['10013', 'Headphones'],
         ]
 
         discovered_urls = []
