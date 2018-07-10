@@ -50,9 +50,7 @@ class PcFactory(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['425', 'Notebook'],  # Notebooks
-            ['426', 'Notebook'],  # Convertibles
-            ['659', 'Notebook'],  # Ultralivianos
+            ['735', 'Notebook'],  # Notebooks
             ['454', 'VideoCard'],  # Tarjetas de video AMD
             ['378', 'VideoCard'],  # Tarjetas de video NVIDIA
             ['488', 'Tablet'],  # Tablets
