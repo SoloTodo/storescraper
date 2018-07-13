@@ -106,7 +106,7 @@ class LinioChile(Store):
         name = pricing_data['product_name']
         sku = pricing_data['sku_config']
 
-        reference_code = pricing_data['ean_code']
+        reference_code = pricing_data['ean_code'].strip()
         ean = None
 
         if check_ean13(reference_code):
