@@ -67,6 +67,9 @@ class NewGame(Store):
         normal_price = soup.findAll('div', 'preciobig')[0].find('span')
         normal_price = Decimal(remove_words(normal_price.text))
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = html_to_markdown(
             str(soup.find('div', 'contenido-juego')))
 
