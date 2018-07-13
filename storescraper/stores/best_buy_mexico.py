@@ -6,8 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    check_ean13
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class BestBuyMexico(Store):

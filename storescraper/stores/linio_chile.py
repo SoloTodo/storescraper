@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, check_ean13
 
 
 class LinioChile(Store):
@@ -29,7 +29,7 @@ class LinioChile(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['computacion/pc-portatil', 'Notebook'],
-            ['zona-gamer/notebook-gamer', 'Notebook'],
+            # ['zona-gamer/notebook-gamer', 'Notebook'],
             ['celulares-y-smartphones/liberados', 'Cell'],
             ['tv-y-video/televisores/', 'Television'],
             # ['tv-audio-y-foto/', 'Television'],
@@ -105,7 +105,14 @@ class LinioChile(Store):
 
         name = pricing_data['product_name']
         sku = pricing_data['sku_config']
-        part_number = pricing_data['ean_code']
+
+        reference_code = pricing_data['ean_code']
+        ean = None
+
+        if check_ean13(reference_code):
+            ean = reference_code
+        else:
+            name = '{} - {}'.format(name, reference_code)
 
         price = Decimal(pricing_data['special_price'])
 
@@ -152,7 +159,7 @@ class LinioChile(Store):
             price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            ean=ean,
             description=description,
             picture_urls=picture_urls,
             condition=condition
