@@ -144,7 +144,8 @@ class Winpy(Store):
             stock = 0
             pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
                                     page_source).groups()[0]
-            pricing_json = demjson.decode(pricing_str.replace('\xa0', ''))
+            pricing_json = demjson.decode(pricing_str.replace('Â', '').replace(
+                '\xa0', ''))
             normal_price = Decimal(remove_words(
                 pricing_json[0]['ecommerce']['detail']['products'][0]['price'])
             )
