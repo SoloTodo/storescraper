@@ -180,7 +180,12 @@ class Paris(Store):
         description = html_to_markdown(product_data['_source']
                                        ['longDescription'])
 
-        normal_price = Decimal(product_data['_source']['price_internet'])
+        normal_price = product_data['_source']['price_internet']
+
+        if not normal_price:
+            return []
+
+        normal_price = Decimal(normal_price)
 
         offer_price = product_data['_source']['price_tc']
         if offer_price:
