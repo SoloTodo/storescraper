@@ -33,6 +33,7 @@ class Bip(Store):
             'AllInOne',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -88,6 +89,8 @@ class Bip(Store):
             ['770', 'Printer'],
             # Teclados
             ['12', 'Keyboard'],
+            # Audífono/Micrófono
+            ['70', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
