@@ -11,15 +11,16 @@ class DavidAndJoseph(Store):
     @classmethod
     def categories(cls):
         return [
-            'Monitor'
+            'Monitor',
+            'Headphones',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # Memory card
             ['video-pro/edicion-y-post-produccion/monitores-para-edicion',
              'Monitor'],
+            ['audio-pro/audifonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)

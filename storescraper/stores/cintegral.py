@@ -29,6 +29,7 @@ class Cintegral(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -66,6 +67,7 @@ class Cintegral(Store):
             ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
             ['pc-y-portatiles/mouse-teclados/combo-mouse-teclado.html',
              'KeyboardMouseCombo'],
+            ['audio/audifonos.html', 'Headphones']
         ]
 
         product_urls = []

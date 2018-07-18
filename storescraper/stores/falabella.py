@@ -46,6 +46,7 @@ class Falabella(Store):
             'SpaceHeater',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -99,6 +100,7 @@ class Falabella(Store):
             ['cat4730023/Teclados-Gamers', 'Keyboard'],
             ['cat2370002/Teclados', 'Keyboard'],
             ['cat2930003/Teclados-Smart', 'Keyboard'],
+            ['cat1640002/Audifonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
