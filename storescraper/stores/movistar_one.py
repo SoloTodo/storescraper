@@ -81,7 +81,7 @@ class MovistarOne(Store):
         device_id = re.search('(\d+)$', url).groups()[0]
 
         products = []
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url).text, 'html5lib')
 
         manufacturer = soup.find('p', 'top-name').string.strip()
         cell_name = soup.find('h1', {'id': 'devicename'}).text.strip()
@@ -98,7 +98,8 @@ class MovistarOne(Store):
         for dom_element_id, plan_combination_suffix in plan_combinations:
             for internet_prefix in [None, ' Exclusivo Web']:
                 plan_combination_table = soup.find(
-                    'div', {'id': dom_element_id}).find('table')
+                    'div', {'id': dom_element_id}).find(
+                    'table', 'table-offers-phone')
 
                 anchor_elements = plan_combination_table.findAll('p', {
                     'id': 'priceOffer'})
