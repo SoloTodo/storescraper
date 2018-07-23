@@ -38,70 +38,53 @@ class Wei(Store):
             'VideoGameConsole',
             'Keyboard',
             'KeyboardMouseCombo',
+            'AllInOne',
+            'Headphones',
+            'Projector',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_urls = [
-            ['1267', 'Notebook'],  # Notebooks
-            ['1264', 'Notebook'],  # Notebooks ultralivianos
+            ['752', 'Tablet'],  # Tablets
+            ['678', 'Tablet'],  # TABLETS
+            ['755', 'Notebook'],  # Notebooks
             ['731', 'Notebook'],  # NOTEBOOK GAMER
-            ['1257', 'Mouse'],  # Mouse
+            ['1252', 'Mouse'],  # Mouse
+            ['732', 'Mouse'],  # ACCESORIOS GAMER
             ['1138', 'ExternalStorageDrive'],  # Discos externos
-            ['665', 'ExternalStorageDrive'],  # Discos externos FORMATO 2.5"
-            ['664', 'ExternalStorageDrive'],  # Discos externos FORMATO 3.5"
             ['515', 'SolidStateDrive'],  # SSD
-            ['1141', 'MemoryCard'],  # Tarjetas de memoria
-            ['511', 'StorageDrive'],  # HDD PC SATA
-            ['513', 'StorageDrive'],  # HDD Notebook SATA
             ['1142', 'UsbFlashDrive'],  # Pendrive
-            # ['1127', 'Motherboard'],  # AM3
-            # ['1128', 'Motherboard'],  # AM3+
-            # ['668', 'Motherboard'],  # FM2+
-            # ['660', 'Motherboard'],  # 1150
-            ['687', 'Motherboard'],  # 1151
-            ['761', 'Motherboard'],  # 2066
-            ['765', 'Motherboard'],  # AM4
-            # ['1131', 'Motherboard'],  # 1155
-            # ['1133', 'Motherboard'],  # 2011
-            # ['730', 'Motherboard'],  # PLACAS GAMER
-            ['1162', 'CpuCooler'],  # Ventilacion
-            # ['602', 'Processor'],  # FM2
-            # ['674', 'Processor'],  # FM2+
-            ['1119', 'Processor'],  # AM3+
-            ['657', 'Processor'],  # 1150
-            ['691', 'Processor'],  # 1151
-            ['1125', 'Processor'],  # 2011
-            ['764', 'Processor'],  # 2066
-            ['1220', 'ComputerCase'],  # Gabinetes c/ PSU
-            ['1221', 'ComputerCase'],  # Gabinetes s/ PSU
+            ['701', 'StorageDrive'],  # DISCO DURO SERVER
+            ['511', 'StorageDrive'],  # DISCOS DUROS INTERNOS
+            ['513', 'StorageDrive'],  # DISCOS DUROS NOTEBOOK
+            ['762', 'AllInOne'],  # AIO
+            ['769', 'AllInOne'],  # ALL IN ONE - AIO
+            ['770', 'Headphones'],  # AUDIFONOS CON MICROFONO
+            ['1176', 'Headphones'],  # AUDíFONOS
+            ['1126', 'Motherboard'],  # PLACAS MADRES
+            ['1219', 'ComputerCase'],  # GABINETES
             ['729', 'ComputerCase'],  # GABINETES GAMER
-            ['1239', 'Ram'],  # RAM PC
-            ['1241', 'Ram'],  # RAM Notebook
+            ['1222', 'PowerSupply'],  # FUENTES DE PODER (PSU)
+            ['1305', 'VideoCard'],  # TARJETAS DE VIDEO
+            ['1117', 'Processor'],  # Procesadores
+            ['1238', 'Ram'],  # MEMORIAS
             ['1240', 'Ram'],  # MEMORIA PC GAMER
-            ['1222', 'PowerSupply'],  # Fuentes de poder
-            ['1307', 'VideoCard'],  # Tarjetas de video AMD
-            ['1306', 'VideoCard'],  # Tarjetas de video NVIDIA
-            ['1209', 'VideoGameConsole'],  # Consolas
-            ['1228', 'Printer'],  # IMPRESORA TINTA
-            ['1227', 'Printer'],  # Impresoras Laser
-            ['715', 'Printer'],  # MULTIFUNCIONALES LASER
-            ['1231', 'Printer'],  # MULTIFUNCIONALES TINTA
-            ['1234', 'Printer'],  # PLOTTER
+            ['1162', 'CpuCooler'],  # VENTILADORES / FAN
+            ['1241', 'Ram'],  # RAM Notebook
+            ['1242', 'Ram'],  # MEMORIA SERVER
+            ['1267', 'Notebook'],  # NOTEBOOKS
+            ['784', 'Printer'],  # IMPRESORA TINTA
+            ['773', 'Printer'],  # IMPRESORAS LASER
+            ['775', 'Printer'],  # IMPRESORAS MULTIFUNCIONALES
+            ['1226', 'Printer'],  # IMPRESORAS TINTA
+            ['1249', 'Projector'],  # PROYECTORES
             ['1245', 'Monitor'],  # MONITORES LED, LCD, TFT
-            ['1248', 'Television'],  # TELEVISORES LCDTV
-            ['678', 'Tablet'],  # Tablets
+            ['1248', 'Television'],  # TELEVISORES
+            ['1295', 'Cell'],  # SMARTPHONES
+            ['1141', 'MemoryCard'],  # Tarjetas de memoria
             ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
             ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
-            # ['673', 'Processor'],  # AM1
-            # ['635', 'Lamp'],  # FOCOS LED
-            # ['627', 'Lamp'],  # AMPOLLETAS LED
-            # ['628', 'Lamp'],  # DICROICOS LED
-            # ['630', 'LightTube'],  # TUBOS LED
-            # ['638', 'LightTube'],  # TUBOS LED
-            # ['636', 'LightProjector'],  # PROYECTORES DE AREA LED
-            # ['676', 'Motherboard'],   # AM1
-            # ['719', 'Processor'],   # CPU AMD AM4 CON PLACA MADRE Y COOLER
         ]
 
         session = session_with_proxy(extra_args)
