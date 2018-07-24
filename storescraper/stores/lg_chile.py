@@ -7,7 +7,7 @@ from storescraper.utils import session_with_proxy
 
 
 class LgChile(Store):
-    base_url = 'http://www.lg.com'
+    base_url = 'https://www.lg.com'
 
     @classmethod
     def categories(cls):
@@ -61,12 +61,6 @@ class LgChile(Store):
             ('CT32002362', 'CT32002362', 'Notebook', True),
             ('CT20106055', 'CT20106055', 'OpticalDrive', True),
             ('CT20106055', 'CT20106055', 'OpticalDrive', False),
-            # ('CT30016640', 'CT30016642', 'StereoSystem', False),
-            # ('CT30016640', 'CT31903290', 'StereoSystem', False),
-            # ('CT30006480', 'CT30006480', 'Projector', False),
-            # ('CT30011860', 'CT30011860', 'Cell', False),
-            # ('CT20106039', 'CT20106039', 'Oven', True),
-            # ('CT20106045', 'CT20106045', 'VacuumCleaner', True),
         ]
 
         discovered_urls = []
