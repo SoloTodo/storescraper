@@ -117,7 +117,11 @@ class LgChile(Store):
 
         if colors_container:
             for color_link in colors_container.findAll('a'):
-                variant_url = cls.base_url + color_link['href']
+                if color_link['href'] == '#':
+                    variant_url = url
+                else:
+                    variant_url = cls.base_url + color_link['href']
+
                 variant_urls.append(variant_url)
 
         sizes_container = soup.find('div', 'list-sizes')
