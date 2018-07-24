@@ -30,6 +30,7 @@ class Cintegral(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'AllInOne',
         ]
 
     @classmethod
@@ -67,7 +68,8 @@ class Cintegral(Store):
             ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
             ['pc-y-portatiles/mouse-teclados/combo-mouse-teclado.html',
              'KeyboardMouseCombo'],
-            ['audio/audifonos.html', 'Headphones']
+            ['audio/audifonos.html', 'Headphones'],
+            ['pc-y-portatiles/escritorio/todo-en-uno-aio.html', 'AllInOne'],
         ]
 
         product_urls = []
