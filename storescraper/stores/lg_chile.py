@@ -149,7 +149,7 @@ class LgChile(Store):
         model_name = soup.find('title').text.split('|')[0].strip()
         commercial_name = soup.find('h2', {'itemprop': 'name'}).text.strip()
 
-        name = '{} {}'.format(commercial_name, model_name)
+        name = '{} {}'.format(commercial_name, model_name)[:250]
 
         key = soup.find('html')['data-product-id']
 
