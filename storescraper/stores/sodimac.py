@@ -110,7 +110,7 @@ class Sodimac(Store):
 
         response = session.get(url, timeout=30)
 
-        if 'http://www.sodimac.cl/sodimac-cl/noSearchResult' in response.url:
+        if 'http://www.sodimac.cl/sodimac-cl/404' in response.url:
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
