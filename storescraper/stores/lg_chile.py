@@ -113,34 +113,22 @@ class LgChile(Store):
 
         variant_urls = []
 
-        colors_container = soup.find('div', 'list-colors')
-
-        if colors_container:
-            for color_link in colors_container.findAll('a'):
-                if color_link['href'] == '#':
-                    variant_url = url
-                else:
-                    variant_url = cls.base_url + color_link['href']
-
-                variant_urls.append(variant_url)
-
         sizes_container = soup.find('div', 'list-sizes')
 
         if sizes_container:
             for size_link in sizes_container.findAll('a'):
                 variant_url = cls.base_url + size_link['href']
                 variant_urls.append(variant_url)
+        else:
+            variant_urls.append(url)
 
         products = []
 
-        if variant_urls:
-            for variant_url in variant_urls:
-                variant_soup = BeautifulSoup(session.get(
-                    variant_url, timeout=20).text, 'html.parser')
-                products.append(cls._retrieve_single_product(
-                    variant_url, category, variant_soup))
-        else:
-            products.append(cls._retrieve_single_product(url, category, soup))
+        for variant_url in variant_urls:
+            variant_soup = BeautifulSoup(session.get(
+                variant_url, timeout=20).text, 'html.parser')
+            products.extend(cls._retrieve_single_product(
+                variant_url, category, variant_soup))
 
         return products
 
@@ -149,23 +137,50 @@ class LgChile(Store):
         model_name = soup.find('title').text.split('|')[0].strip()
         commercial_name = soup.find('h2', {'itemprop': 'name'}).text.strip()
 
-        name = '{} {}'.format(commercial_name, model_name)[:250]
-
-        key = soup.find('html')['data-product-id']
+        base_name = '{} {}'.format(commercial_name, model_name)
 
         picture_urls = [cls.base_url + soup.find(
             'img', {'itemprop': 'contentUrl'})['src'].replace(' ', '%20')]
 
-        return Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            -1,
-            Decimal(0),
-            Decimal(0),
-            'CLP',
-            picture_urls=picture_urls
-        )
+        colors_container = soup.find('div', 'list-colors')
+
+        if colors_container:
+            products = []
+
+            for color_link in colors_container.findAll('a'):
+                color_name = color_link['adobe-value']
+                key = color_link['data-sub-model-id']
+
+                name = '{} {}'.format(base_name, color_name)[:250]
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    -1,
+                    Decimal(0),
+                    Decimal(0),
+                    'CLP',
+                    picture_urls=picture_urls
+                ))
+
+            return products
+        else:
+            key = soup.find('html')['data-product-id']
+
+            return [Product(
+                base_name[:250],
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                -1,
+                Decimal(0),
+                Decimal(0),
+                'CLP',
+                picture_urls=picture_urls
+            )]
