@@ -105,6 +105,7 @@ class PcFactory(Store):
 
                 category_url = 'https://www.pcfactory.cl/?categoria={}' \
                                '&pagina={}'.format(categoria, page)
+                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 

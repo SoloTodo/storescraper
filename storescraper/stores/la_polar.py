@@ -63,7 +63,7 @@ class LaPolar(Store):
             # ['tecnologia/impresoras/impresoras_laser', 'Printer'],
             ['tecnologia/impresoras/impresoras_a_tinta', 'Printer'],
             ['tecnologia/impresoras/multifuncionales', 'Printer'],
-            ['electronica/celulares/smartphones', 'Cell'],
+            # ['electronica/celulares/smartphones', 'Cell'],
             ['electronica/celulares/telefonos_basicos', 'Cell'],
             ['electronica/audio/equipos_de_musica', 'StereoSystem'],
             # ['electronica/audio/home_theater', 'HomeTheater'],
@@ -111,6 +111,17 @@ class LaPolar(Store):
                 product_url = 'https://tienda.lapolar.cl/producto/sku/{}' \
                               ''.format(entry['plu'])
                 product_urls.append(product_url)
+
+        if category == 'Cell':
+            url = 'https://www.lapolar.cl/internet/catalogo/fbind/postplu/' \
+                  'destacados-smartphones'
+            cells_data = json.loads(session.get(url).text)['lista_completa']
+
+            for row in cells_data:
+                for cell in row['sub_lista']:
+                    product_url = 'https://tienda.lapolar.cl/producto/sku/{}' \
+                                  ''.format(cell['prid'])
+                    product_urls.append(product_url)
 
         return list(set(product_urls))
 
