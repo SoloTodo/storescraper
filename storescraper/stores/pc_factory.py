@@ -136,21 +136,24 @@ class PcFactory(Store):
         print(url)
         session = session_with_proxy(extra_args)
 
-        session.get(url)
+        for i in range(10):
+            session.get(url)
 
-        response = session.get(
-            'https://www.pcfactory.cl/public/scripts/dynamic/initData.js?_={}'
-            ''.format(datetime.now().timestamp()),
-            )
+            response = session.get(
+                'https://www.pcfactory.cl/public/scripts/dynamic/initData'
+                '.js?_={}'.format(datetime.now().timestamp()))
 
-        raw_json = re.search(
-            r'window.pcFactory.dataGlobal.serverData			=  (.+)',
-            response.text).groups()[0][:-1]
+            raw_json = re.search(
+                r'window.pcFactory.dataGlobal.serverData			=  (.+)',
+                response.text).groups()[0][:-1]
 
-        response_data = json.loads(raw_json)
+            response_data = json.loads(raw_json)
+            if 'producto' in response_data:
+                break
+        else:
+            raise Exception('Too many retries')
+
         product_data = response_data['producto']
-
-        print(product_data)
 
         if not product_data:
             return []
