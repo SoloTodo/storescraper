@@ -15,7 +15,8 @@ class MacOnline(Store):
         return [
             'Notebook',
             'Monitor',
-            'Tablet'
+            'Tablet',
+            'Headphones'
         ]
 
     @classmethod

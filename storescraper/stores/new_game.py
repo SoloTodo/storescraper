@@ -33,12 +33,15 @@ class NewGame(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.newgame.cl/index.php?' + category_path
+            category_url = 'https://www.newgame.cl/index.php?' + category_path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             product_cells = soup.findAll('a', 'juego')
 
+            if not product_cells:
+                raise Exception('Empty category: {}'.format(category_url))
+
             for product_cell in product_cells:
-                product_url = 'http://www.newgame.cl/' + product_cell['href']
+                product_url = 'https://www.newgame.cl/' + product_cell['href']
                 product_urls.append(product_url)
 
         return product_urls

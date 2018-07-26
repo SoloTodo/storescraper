@@ -55,10 +55,8 @@ class Wei(Store):
             ['1138', 'ExternalStorageDrive'],  # Discos externos
             ['515', 'SolidStateDrive'],  # SSD
             ['1142', 'UsbFlashDrive'],  # Pendrive
-            ['701', 'StorageDrive'],  # DISCO DURO SERVER
             ['511', 'StorageDrive'],  # DISCOS DUROS INTERNOS
-            ['513', 'StorageDrive'],  # DISCOS DUROS NOTEBOOK
-            ['762', 'AllInOne'],  # AIO
+            # ['762', 'AllInOne'],  # AIO
             ['769', 'AllInOne'],  # ALL IN ONE - AIO
             ['770', 'Headphones'],  # AUDIFONOS CON MICROFONO
             ['1176', 'Headphones'],  # AUDíFONOS
