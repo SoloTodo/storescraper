@@ -134,6 +134,9 @@ class LinioChile(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description-container')))
 
+        if soup.find('div', 'badge-international-shipping'):
+            description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
+
         picture_urls = ['https:' + tag.find('img')['data-lazy'] for tag in
                         soup.findAll('div', {'id': 'image-product'})]
 
