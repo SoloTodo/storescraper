@@ -37,6 +37,7 @@ class Hites(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Mouse',
+            'Headphones',
         ]
 
     @classmethod
@@ -67,6 +68,7 @@ class Hites(Store):
             # ['14056', 'SpaceHeater'],  # Termoventiladores
             ['14107', 'Keyboard'],
             ['14094', 'Mouse'],
+            ['14092', 'Headphones'],
         ]
 
         product_urls = []

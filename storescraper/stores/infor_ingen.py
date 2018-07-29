@@ -30,6 +30,7 @@ class InforIngen(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'ExternalStorageDrive',
+            'Headphones',
         ]
 
     @classmethod
@@ -52,6 +53,7 @@ class InforIngen(Store):
             ['105_106', 'Mouse'],  # Teclados y mouse
             ['105_123', 'Notebook'],  # Notebooks
             ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
+            ['90_91', 'Headphones'],  # Audífonos
         ]
 
         product_urls = []
