@@ -56,7 +56,6 @@ class Wei(Store):
             ['515', 'SolidStateDrive'],  # SSD
             ['1142', 'UsbFlashDrive'],  # Pendrive
             ['511', 'StorageDrive'],  # DISCOS DUROS INTERNOS
-            # ['762', 'AllInOne'],  # AIO
             ['769', 'AllInOne'],  # ALL IN ONE - AIO
             ['770', 'Headphones'],  # AUDIFONOS CON MICROFONO
             ['1176', 'Headphones'],  # AUDíFONOS
@@ -67,10 +66,7 @@ class Wei(Store):
             ['1305', 'VideoCard'],  # TARJETAS DE VIDEO
             ['1117', 'Processor'],  # Procesadores
             ['1238', 'Ram'],  # MEMORIAS
-            ['1240', 'Ram'],  # MEMORIA PC GAMER
             ['1162', 'CpuCooler'],  # VENTILADORES / FAN
-            ['1241', 'Ram'],  # RAM Notebook
-            ['1242', 'Ram'],  # MEMORIA SERVER
             ['1267', 'Notebook'],  # NOTEBOOKS
             ['784', 'Printer'],  # IMPRESORA TINTA
             ['773', 'Printer'],  # IMPRESORAS LASER

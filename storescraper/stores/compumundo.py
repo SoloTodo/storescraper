@@ -88,7 +88,10 @@ class Compumundo(Store):
         picture_urls = []
 
         for container in soup.findAll('li', 'gb-js-popup-thumbnail'):
-            image_url = 'https:' + container.find('a')['href']
+            image_url = container.find('a')['href']
+            if 'http' in image_url:
+                continue
+            image_url = 'https:' + image_url
             image_url = image_url.replace('_1000', '')
             picture_urls.append(image_url)
 
