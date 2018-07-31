@@ -27,7 +27,6 @@ class Corona(Store):
             'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
-            'HomeTheater',
             'VideoGameConsole',
             'AllInOne',
             'WaterHeater',
@@ -49,7 +48,7 @@ class Corona(Store):
             ['C:/8/11/12/', None, 'WashingMachine'],
             ['C:/44/45/', None, 'Cell'],
             ['C:/9/48/49/', None, 'StereoSystem'],
-            # ['tecnologia/audio/home-theater', None, 'HomeTheater'],
+            # ['tecnologia/audio/home-theater', None, 'StereoSystem'],
             ['C:/9/35/37/', None, 'OpticalDiskPlayer'],
             ['C:/8/11/14/', '&fq=specificationFilter_32'
                             '%3aAspiradoras', 'VacuumCleaner'],

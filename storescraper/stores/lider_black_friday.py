@@ -27,7 +27,6 @@ class LiderBlackFriday(Store):
             'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
-            'HomeTheater',
             'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard',

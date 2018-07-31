@@ -28,7 +28,6 @@ class Lider(Store):
             'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
-            'HomeTheater',
             'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard',

@@ -28,7 +28,6 @@ class AbcDin(Store):
             'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
-            'HomeTheater',
             'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard',
@@ -61,7 +60,7 @@ class AbcDin(Store):
             ['10007', 'StereoSystem'],
             ['10008', 'StereoSystem'],
             ['10004', 'OpticalDiskPlayer'],
-            ['10009', 'HomeTheater'],
+            ['10009', 'StereoSystem'],
             ['10082', 'UsbFlashDrive'],
             # ['14008', 'VideoGameConsole'],  # PS3
             ['14001', 'VideoGameConsole'],  # PS4

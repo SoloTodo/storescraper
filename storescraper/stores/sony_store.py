@@ -18,7 +18,6 @@ class SonyStore(Store):
             'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
-            'HomeTheater',
             'Tablet',
         ]
 
@@ -31,7 +30,7 @@ class SonyStore(Store):
             ['audio/sistemas-de-audio', 'StereoSystem'],
             ['televisores-y-teatro-en-casa/reproductores-de-blu-ray-disc'
              '-y-dvd', 'OpticalDiskPlayer'],
-            ['televisores-y-teatro-en-casa/teatro-en-casa', 'HomeTheater'],
+            ['televisores-y-teatro-en-casa/teatro-en-casa', 'StereoSystem'],
         ]
 
         product_urls = []
