@@ -49,7 +49,12 @@ class NewGame(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return None
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         name = soup.find('div', 'detalle-nombre').text.strip()
 
