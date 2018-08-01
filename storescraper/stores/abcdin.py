@@ -57,10 +57,15 @@ class AbcDin(Store):
             ['10033', 'WashingMachine'],
             ['24553', 'Cell'],  # Smartphones
             ['10018', 'Camera'],
-            ['10007', 'StereoSystem'],
-            ['10008', 'StereoSystem'],
+            ['37051', 'StereoSystem'],  # Parlantes portátiles
+            ['44051', 'StereoSystem'],  # Accesorios audio
+            ['10007', 'StereoSystem'],  # Minicomponentes
+            ['10008', 'StereoSystem'],  # Microcomponentes
+            ['10009', 'StereoSystem'],  # Home Theater
+            ['10010', 'StereoSystem'],  # Radios
+            ['10012', 'StereoSystem'],  # Reproductores de Música
+            ['10501', 'StereoSystem'],  # Tornamesas
             ['10004', 'OpticalDiskPlayer'],
-            ['10009', 'StereoSystem'],
             ['10082', 'UsbFlashDrive'],
             # ['14008', 'VideoGameConsole'],  # PS3
             ['14001', 'VideoGameConsole'],  # PS4
