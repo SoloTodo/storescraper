@@ -39,6 +39,7 @@ class Lider(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -103,6 +104,10 @@ class Lider(Store):
              'AirConditioner'],
             [u'Computación/Accesorios-de-Computación/Teclados-y-Mouse/_/'
              u'N-1bez12', 'Mouse'],
+            [u'Electrónica/Equipos-de-Audio/Audífonos/_/N-cizzb6',
+             'Headphones'],
+            [u'Computación/Accesorios-de-Computación/Audífonos/_/N-1wf1kx5',
+             'Headphones'],
         ]
 
         product_urls = []
