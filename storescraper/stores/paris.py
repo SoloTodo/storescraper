@@ -64,7 +64,7 @@ class Paris(Store):
             [None, 'Línea Blanca/Lavado y Secado/Secadoras y Centrifugas',
              'WashingMachine'],
             [None, 'Tecno/Celulares/Smartphones', 'Cell'],
-            [None, '//Nueva Linea J de Samsung', 'Cell'],
+            # [None, '//Nueva Linea J de Samsung', 'Cell'],
             [None, 'Tecno/Celulares/Básicos', 'Cell'],
             [None, 'Tecno/Fotografía/Cámaras Compactas', 'Camera'],
             [None, 'Tecno/Fotografía/Cámaras Semiprofesionales', 'Camera'],

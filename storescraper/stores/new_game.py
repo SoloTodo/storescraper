@@ -1,3 +1,4 @@
+import re
 import urllib
 
 from bs4 import BeautifulSoup
@@ -41,8 +42,7 @@ class NewGame(Store):
                 raise Exception('Empty category: {}'.format(category_url))
 
             for product_cell in product_cells:
-                product_url = 'https://www.newgame.cl/' + product_cell['href']
-                product_urls.append(product_url)
+                product_urls.append(product_cell['href'])
 
         return product_urls
 
@@ -53,8 +53,7 @@ class NewGame(Store):
 
         name = soup.find('div', 'detalle-nombre').text.strip()
 
-        sku = urllib.parse.parse_qs(
-            urllib.parse.urlparse(url).query)['type'][0]
+        sku = re.search(r'detalle/(\d+)/', url).groups()[0]
 
         stock_text = soup.find('div', 'stock').find(
             'span').text.split(':')[1].strip()
