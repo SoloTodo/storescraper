@@ -101,9 +101,6 @@ class LinioChile(Store):
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)[0]
 
-        if isinstance(pricing_data, list):
-            return []
-
         name = pricing_data['product_name']
         sku = pricing_data['sku_config']
 
@@ -134,10 +131,6 @@ class LinioChile(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description-container')))
 
-        if soup.find('div', 'feature-information').find(
-                'div', 'badge-international-shipping'):
-            description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
-
         picture_urls = ['https:' + tag.find('img')['data-lazy'] for tag in
                         soup.findAll('div', {'id': 'image-product'})]
 
@@ -146,6 +139,10 @@ class LinioChile(Store):
 
         if not availability_container:
             stock = 0
+        elif soup.find('div', 'feature-information').find(
+                'div', 'badge-international-shipping'):
+            stock = 0
+            description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
         elif soup.find('meta', {'itemprop': 'availability'})['href'] == \
                 'http://schema.org/InStock':
             stock = -1
