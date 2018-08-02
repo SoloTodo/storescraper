@@ -17,6 +17,7 @@ class NewGame(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -25,6 +26,7 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=14', 'Mouse'],
             ['accion=hijo&plt=pc&cat=15', 'Keyboard'],
             ['accion=hijo&plt=pc&cat=29', 'KeyboardMouseCombo'],
+            ['accion=hijo&plt=pc&cat=17', 'Headphones'],
         ]
 
         product_urls = []

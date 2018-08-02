@@ -19,6 +19,7 @@ class Microplay(Store):
             'VideoGameConsole',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -38,6 +39,8 @@ class Microplay(Store):
             ['juegos', {'plataformas': 'pc',
                         'accesorios': 'mouse-teclados'},
              'Keyboard'],
+            ['computacion', {'categorias':'audifonos-microfonos-12'},
+             'Headphones'],
         ]
 
         product_urls = []
