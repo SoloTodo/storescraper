@@ -39,6 +39,7 @@ class Paris(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -91,6 +92,7 @@ class Paris(Store):
              'OpticalDiskPlayer'],
             # [None, 'Tecno/Gamers/Monitores', 'Monitor'],
             [None, 'Tecno/Accesorios Computación/Monitor Gamer', 'Monitor'],
+            [None, 'Electro/Audio/Audífonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
