@@ -31,6 +31,7 @@ class Cintegral(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'AllInOne',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -70,6 +71,7 @@ class Cintegral(Store):
              'KeyboardMouseCombo'],
             ['audio/audifonos.html', 'Headphones'],
             ['pc-y-portatiles/escritorio/todo-en-uno-aio.html', 'AllInOne'],
+            ['audio/parlantes.html', 'StereoSystem'],
         ]
 
         product_urls = []

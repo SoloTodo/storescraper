@@ -27,6 +27,7 @@ class AllTec(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -53,6 +54,7 @@ class AllTec(Store):
             ['93-cpu-cooler', 'CpuCooler'],
             ['92-water-cooling', 'CpuCooler'],
             ['25-auriculares', 'Headphones'],
+            ['26-parlantes', 'StereoSystem'],
         ]
 
         session = session_with_proxy(extra_args)

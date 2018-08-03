@@ -47,8 +47,8 @@ class Corona(Store):
                             '%3aMicroondas', 'Oven'],
             ['C:/8/11/12/', None, 'WashingMachine'],
             ['C:/44/45/', None, 'Cell'],
-            ['C:/9/48/49/', None, 'StereoSystem'],
-            # ['tecnologia/audio/home-theater', None, 'StereoSystem'],
+            ['C:/9/48/90/', None, 'StereoSystem'],  # Hi-Fi
+            ['C:/9/48/49/', None, 'StereoSystem'],  # Equipos de música
             ['C:/9/35/37/', None, 'OpticalDiskPlayer'],
             ['C:/8/11/14/', '&fq=specificationFilter_32'
                             '%3aAspiradoras', 'VacuumCleaner'],
