@@ -39,7 +39,7 @@ class Microplay(Store):
             ['juegos', {'plataformas': 'pc',
                         'accesorios': 'mouse-teclados'},
              'Keyboard'],
-            ['computacion', {'categorias':'audifonos-microfonos-12'},
+            ['computacion', {'categorias': 'audifonos-microfonos-12'},
              'Headphones'],
         ]
 

@@ -1,12 +1,10 @@
-import json
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
-    check_ean13, remove_words
+    remove_words
 
 
 class ProMovil(Store):
@@ -69,13 +67,16 @@ class ProMovil(Store):
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
 
-        offer_price = Decimal(remove_words(soup.find('span', {'id': 'our_price_display'}).text))
+        offer_price = Decimal(remove_words(
+            soup.find('span', {'id': 'our_price_display'}).text))
 
         normal_price_container = soup.find(
             'span', {'id': 'unit_price_display'})
 
         if normal_price_container:
             normal_price = Decimal(remove_words(normal_price_container.text))
+            if normal_price < offer_price:
+                normal_price = offer_price
         else:
             normal_price = offer_price
 
