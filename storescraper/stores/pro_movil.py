@@ -82,6 +82,9 @@ class ProMovil(Store):
 
         stock = int(soup.find('span', {'id': 'quantityAvailable'}).text)
 
+        if stock < 0:
+            stock = 0
+
         description = html_to_markdown(
             str(soup.find('div', 'pb-center-column')))
 
