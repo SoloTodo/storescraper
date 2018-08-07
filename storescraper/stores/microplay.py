@@ -97,9 +97,8 @@ class Microplay(Store):
         sku = re.search('ecomm_prodid: (\d+)', page_source).groups()[0]
 
         with_stock_web = soup.find('a', 'btn-agregar2')
-        with_stock_store = soup.find('a', {'href': '#div_sucursales'})
 
-        if with_stock_web or with_stock_store:
+        if with_stock_web:
             stock = -1
         else:
             stock = 0
