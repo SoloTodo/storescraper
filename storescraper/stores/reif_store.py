@@ -14,7 +14,8 @@ class ReifStore(Store):
         return [
             'Notebook',
             'Cell',
-            'Tablet'
+            'Tablet',
+            'Headphones',
         ]
 
     @classmethod
@@ -23,6 +24,7 @@ class ReifStore(Store):
             ['88-portatil', 'Notebook'],
             ['14-iphone', 'Cell'],
             ['12-ipad', 'Tablet'],
+            ['127-audifonos', 'Headphones'],
         ]
 
         product_urls = []
