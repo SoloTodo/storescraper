@@ -42,6 +42,7 @@ from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
 from .fnac import Fnac
 from .fravega import Fravega
+from .gamer_house import GamerHouse
 from .garbarino import Garbarino
 from .gearbest import GearBest
 from .globalmac import GlobalMac
