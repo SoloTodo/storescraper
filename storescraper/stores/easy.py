@@ -70,6 +70,7 @@ class Easy(Store):
              'AirConditioner'],
             # ['electrohogar/climatizacion/aire-acondicionado-split',
             # 'AirConditioner'],
+            ['audio', 'StereoSystem'],
         ]
 
         session = session_with_proxy(extra_args)
