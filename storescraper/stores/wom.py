@@ -1,4 +1,6 @@
+import json
 import urllib
+from collections import OrderedDict
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -33,39 +35,34 @@ class Wom(Store):
             session = session_with_proxy(extra_args)
             session.headers[
                 'Content-Type'] = 'application/x-www-form-urlencoded'
-            equipos_url = 'http://www.wom.cl/equipos/include/filtro/' \
-                          'filtro2.php'
+            equipos_url = 'http://www.wom.cl/equipos/inc/func.savedata.php'
 
-            orderings = ['menor', 'mayor']
+            page = 1
 
-            for ordering in orderings:
-                print(ordering)
-                page = 1
+            while True:
+                params = {
+                    'action': '1',
+                    'page_number': page
+                }
+                data = urllib.parse.urlencode(params)
+                response = session.post(equipos_url, data=data)
 
-                while True:
-                    print(page)
-                    params = {
-                        u'busqueda': '',
-                        u'orden': ordering,
-                        'page': page
-                    }
-                    data = urllib.parse.urlencode(params)
-                    response = session.post(equipos_url, data=data)
-                    soup = BeautifulSoup(response.text, 'html.parser')
+                json_response = json.loads(response.text)
+                soup = BeautifulSoup(json_response['msg'], 'html.parser')
 
-                    cell_links = soup.findAll('a', 'btn-fb')
+                cell_containers = soup.findAll('article')
 
-                    if not cell_links:
-                        break
+                if not cell_containers:
+                    if page == 1:
+                        raise Exception('No cell found')
+                    break
 
-                    for cell_link in cell_links:
-                        cell_url = 'http://www.wom.cl/equipos/{0}'.format(
-                            cell_link['href']
-                        )
-                        if cell_url not in product_urls:
-                            product_urls.append(cell_url)
+                for cell_container in cell_containers:
+                    cell_url = 'http://www.wom.cl/equipos/' + \
+                               cell_container.find('a')['href']
+                    product_urls.append(cell_url)
 
-                    page += 1
+                page += 1
         return product_urls
 
     @classmethod
@@ -158,127 +155,84 @@ class Wom(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        is_cell = soup.find('a', 'btn-ghost')
-
-        if not is_cell:
-            return []
-
-        data_container = soup.find('div', 'midle-align-wrap')
-
-        cell_brand = data_container.find('h2').string.strip()
-        cell_model = data_container.find('h1').string.strip()
-
-        name = '{} {}'.format(cell_brand, cell_model)
-
-        picture_urls = ['http://www.wom.cl' + tag['src'] for tag in
-                        soup.find('div', 'equipo').findAll('img')]
+        name = soup.find('div', 'name_phone').text.replace('\n', ' ').strip()
         description = html_to_markdown(
-            str(soup.find('ul', 'descripcion')))
+            str(soup.find('div', 'box_detalles_tecnicos')))
+
+        picture_urls = []
+        for tag in soup.findAll('span', 'vista-minuatura'):
+            image_url = 'http://www.wom.cl' + tag.find('img')['data-img']
+            picture_urls.append(image_url)
 
         products = []
 
-        plan_association_containers = soup.findAll(
-            'div', 'info-planes-equipo')
-        plan_association_containers += soup.findAll(
-            'div', 'info-planes-equipo2')
+        rent_prices = OrderedDict()
+        rent_prices_container = soup.find(
+            'section', {'data-modal': 'plan_arriendalo'})
 
-        for idx, container in enumerate(plan_association_containers):
-            plan_name = container.find('h3').contents[1].strip().replace(
-                ' <br>', '')
+        for plan_container in rent_prices_container.findAll(
+                'div', 'bolsa_modal'):
+            plan_name = plan_container.find(
+                'p', 'bolsa_modal-title').text.strip()
+            plan_price = Decimal(remove_words(plan_container.findAll(
+                'span', 'precio')[1].text))
+            rent_prices[plan_name] = plan_price
 
-            cell_monthly_payment = Decimal(remove_words(
-                container.find('strong', 'valor').text))
+        # Plan con número nuevo
 
-            portability_price = Decimal(
-                remove_words(
-                    container.findAll(
-                        'p', 'valor-cuota')[1].contents[1].replace(
-                        '*', '')))
+        modalities = [
+            {
+                'suffix': '',
+                'selector': 'plannumero'
+            },
+            {
+                'suffix': ' Portabilidad',
+                'selector': 'portate'
+            }
+        ]
 
-            portability_plan_name = plan_name + ' Portabilidad'
+        for modality in modalities:
+            container = soup.find('div', {'data-tab': modality['selector']})
+            initial_prices = container.findAll('span', 'body_precio')
 
-            product = Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} {}'.format(name, portability_plan_name),
-                -1,
-                portability_price,
-                portability_price,
-                'CLP',
-                cell_plan_name=portability_plan_name,
-                picture_urls=picture_urls,
-                description=description,
-                cell_monthly_payment=cell_monthly_payment
-            )
+            combinations = [
+                {
+                    'suffix': '',
+                    'use_monthly_payment': False
+                },
+                {
+                    'suffix': ' Cuotas',
+                    'use_monthly_payment': True
+                }
+            ]
 
-            products.append(product)
+            for idx, combination in enumerate(combinations):
+                initial_price = Decimal(remove_words(initial_prices[idx].text))
 
-            normal_price = Decimal(
-                remove_words(
-                    container.find('p', 'sin-port-dos').contents[1]))
+                for plan_name, monthly_payment in rent_prices.items():
+                    if combination['use_monthly_payment']:
+                        cell_monthly_payment = monthly_payment
+                    else:
+                        cell_monthly_payment = Decimal(0)
 
-            product = Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} {}'.format(name, plan_name),
-                -1,
-                normal_price,
-                normal_price,
-                'CLP',
-                cell_plan_name=plan_name,
-                picture_urls=picture_urls,
-                description=description,
-                cell_monthly_payment=cell_monthly_payment
-            )
-            products.append(product)
-
-        # Prepago normal
-        prepago_container = soup.find('div', 'bord-right')
-        price = Decimal(remove_words(prepago_container.find('span').text))
-
-        product = Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            '{} {}'.format(name, 'WOM Prepago'),
-            -1,
-            price,
-            price,
-            'CLP',
-            cell_plan_name='WOM Prepago',
-            picture_urls=picture_urls,
-            description=description
-        )
-        products.append(product)
-
-        # Prepago portabilidad
-        pvp_container = soup.find('span', 'tx-rose')
-        price = Decimal(remove_words(pvp_container.text))
-
-        product = Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            '{} {}'.format(name, 'WOM PVP Portabilidad'),
-            -1,
-            price,
-            price,
-            'CLP',
-            cell_plan_name='WOM PVP Portabilidad',
-            cell_monthly_payment=Decimal(0),
-            picture_urls=picture_urls,
-            description=description
-        )
-        products.append(product)
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} {}{}{}'.format(name, plan_name,
+                                           modality['suffix'],
+                                           combination['suffix']),
+                        -1,
+                        initial_price,
+                        initial_price,
+                        'CLP',
+                        cell_plan_name='{}{}'.format(plan_name,
+                                                     modality['suffix']),
+                        picture_urls=picture_urls,
+                        description=description,
+                        cell_monthly_payment=cell_monthly_payment
+                    ))
 
         return products
