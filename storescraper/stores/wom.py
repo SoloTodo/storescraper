@@ -235,4 +235,25 @@ class Wom(Store):
                         cell_monthly_payment=cell_monthly_payment
                     ))
 
+        prepago_container = soup.find('div', {'data-tab': 'equipoprepago'})
+        prepago_price = Decimal(remove_words(prepago_container.find(
+            'span', 'body_precio').text))
+
+        products.append(Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} WOM Prepago'.format(name),
+            -1,
+            prepago_price,
+            prepago_price,
+            'CLP',
+            cell_plan_name='WOM Prepago',
+            picture_urls=picture_urls,
+            description=description,
+            cell_monthly_payment=Decimal(0)
+        ))
+
         return products
