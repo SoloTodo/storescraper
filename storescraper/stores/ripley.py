@@ -43,7 +43,7 @@ class Ripley(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://simple.ripley.cl/{}?page={}&pageSize=50&orderBy=3'
+        url_base = 'https://simple.ripley.cl/{}?page={}'
 
         category_urls = [
             ['tecno/computacion/notebooks', 'Notebook'],

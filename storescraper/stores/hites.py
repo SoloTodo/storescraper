@@ -164,6 +164,8 @@ class Hites(Store):
             json_body = re.search(r'/\*([\S\s]+)\*/', ajax_body).groups()[0]
             json_body = json_body.replace('\n', '').replace('\t', '').replace(
                 '\r', '').replace('\x1a', '')
+            json_body = re.sub(r'\"longDescription\": [\S\s]+\"keyword"',
+                               '\"keyword\"', json_body)
             json_body = json.loads(json_body)['catalogEntry']
 
             name = json_body['description'][0]['name']
