@@ -1,4 +1,5 @@
 import json
+import random
 
 import re
 from bs4 import BeautifulSoup
@@ -88,7 +89,8 @@ class PcOfertas(Store):
             local_product_urls = []
 
             while True:
-                category_url = url + '?product_list_limit=24&p=' + str(p)
+                category_url = '{}?product_list_limit=24&p={}&_={}'.format(
+                    url, p, random.randint(1, 1000))
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
@@ -118,7 +120,9 @@ class PcOfertas(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        request_url = '{}?_={}'.format(url, random.randint(1, 1000))
+        print(request_url)
+        page_source = session.get(request_url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('span', {'itemprop': 'name'}).text.strip()

@@ -55,10 +55,12 @@ class Hites(Store):
             ['14015', 'WashingMachine'],
             ['14108', 'Cell'],
             ['14074', 'Camera'],
-            ['14082', 'StereoSystem'],
-            ['14083', 'StereoSystem'],
+            ['14082', 'StereoSystem'],  # Microcomponentes
+            ['14083', 'StereoSystem'],  # Minicomponentes
+            ['14084', 'StereoSystem'],  # Audio Portable
+            ['14103', 'StereoSystem'],  # Parlantes portables y Speaker
             ['14120', 'OpticalDiskPlayer'],
-            # ['14079', 'StereoSystem'],
+            ['14079', 'StereoSystem'],  # Hi-Fi y Home Theater
             ['14087', 'VideoGameConsole'],
             ['14065', 'AllInOne'],
             # ['14054', 'SpaceHeater'],

@@ -24,7 +24,7 @@ class Tottus(Store):
         category_paths = [
             ['Televisores/126.1.1', 'Television'],
             ['Celulares/cat700022', 'Cell'],
-            ['Notebook-y-Tablet/cat700021', 'Tablet'],
+            # ['Notebook-y-Tablet/cat700021', 'Tablet'],
         ]
 
         session = session_with_proxy(extra_args)
