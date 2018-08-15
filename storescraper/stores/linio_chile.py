@@ -24,6 +24,8 @@ class LinioChile(Store):
             'Oven',
             'VacuumCleaner',
             'ExternalStorageDrive',
+            'Keyboard',
+            'Mouse',
         ]
 
     @classmethod
@@ -48,6 +50,8 @@ class LinioChile(Store):
             ['pequenos-electrodomesticos/microondas-y-hornos/', 'Oven'],
             ['pequenos-electrodomesticos/aspiradoras/', 'VacuumCleaner'],
             ['discos-duros/discos-duros-externos/', 'ExternalStorageDrive'],
+            ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
+            ['mouse-kit/mouse/', 'Mouse'],
         ]
 
         product_urls = []
@@ -62,6 +66,7 @@ class LinioChile(Store):
             while True:
                 category_url = 'https://www.linio.cl/c/{}?page={}'.format(
                     category_path, page)
+                print(category_url)
 
                 if page >= 40:
                     raise Exception('Page overflow: ' + category_url)
@@ -78,6 +83,10 @@ class LinioChile(Store):
                     break
 
                 for product_container in products_containers:
+                    if product_container.find(
+                            'div', 'badge-international-shipping'):
+                        continue
+
                     product_url = 'https://www.linio.cl' + \
                                   product_container.find('a')['href']
                     product_urls.append(product_url)
