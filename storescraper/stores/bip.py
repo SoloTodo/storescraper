@@ -145,7 +145,7 @@ class Bip(Store):
 
         stocks_container = soup.find('div', 'sucursales-stock')
 
-        if stocks_container.find('i', 'fa-check-circle'):
+        if stocks_container and stocks_container.find('i', 'fa-check-circle'):
             stock = -1
         else:
             stock = 0
