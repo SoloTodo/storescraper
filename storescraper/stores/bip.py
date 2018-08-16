@@ -143,7 +143,9 @@ class Bip(Store):
         name = soup.find('h2', 'title-product').text.strip()
         sku = soup.find('span', 'text-stock').text.strip()
 
-        if soup.find('span', 'text-to-bg'):
+        stocks_container = soup.find('div', 'sucursales-stock')
+
+        if stocks_container.find('i', 'fa-check-circle'):
             stock = -1
         else:
             stock = 0
