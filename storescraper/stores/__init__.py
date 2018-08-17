@@ -80,6 +80,12 @@ from .magazine_luiza import MagazineLuiza
 from .magens import Magens
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
+from .mercadolibre_argentina import MercadoLibreArgentina
+from .mercadolibre_argentina_adata import MercadoLibreArgentinaAdata
+from .mercadolibre_argentina_sandisk import MercadoLibreArgentinaSandisk
+from .mercadolibre_argentina_seagate import MercadoLibreArgentinaSeagate
+from .mercadolibre_argentina_western_digital import \
+    MercadoLibreArgentinaWesternDigital
 from .mercadolibre_daewoo import MercadolibreDaewoo
 from .meroli import Meroli
 from .microplay import Microplay
