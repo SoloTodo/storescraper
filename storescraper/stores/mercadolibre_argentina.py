@@ -83,7 +83,7 @@ class MercadoLibreArgentina(Store):
             -1,
             price,
             price,
-            'CLP',
+            'ARS',
             sku=sku,
             description=description,
             picture_urls=picture_urls
