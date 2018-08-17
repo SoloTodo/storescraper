@@ -129,6 +129,7 @@ from .solar_led import SolarLed
 from .sony_store import SonyStore
 from .sp_digital import SpDigital
 from .spider import Spider
+from .stylus import Stylus
 from .syd import Syd
 from .tecnoglobal import Tecnoglobal
 from .terabyte import Terabyte
