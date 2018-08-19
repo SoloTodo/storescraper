@@ -39,6 +39,7 @@ class Ripley(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -90,6 +91,7 @@ class Ripley(Store):
              'AirConditioner'],
             ['electro/climatizacion/estufas-y-calefactores', 'SpaceHeater'],
             ['telefonia/smartwatches-and-wearables/smartwatch', 'Smartwatch'],
+            ['tecno/audio-y-musica/audifonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
