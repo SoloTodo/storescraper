@@ -57,8 +57,12 @@ class Vitel(Store):
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        price = Decimal(soup.find(
-            'span', 'price-wrapper')['data-price-amount'])
+        price_container = soup.find('span', 'price-wrapper')
+
+        if not price_container:
+            return []
+
+        price = Decimal(price_container['data-price-amount'])
 
         price *= Decimal('1.19')
         price = price.quantize(0)

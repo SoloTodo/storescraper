@@ -41,8 +41,8 @@ class Ribeiro(Store):
             #  'N-orsxeo', 'Stove'],
             # ['heladeras-cocina-y-lavado-cocinas-anafes/_/'
             #  'N-orsxeo', 'Stove'],
-            ['celulares-informatica-y-gaming-accesorios-de-tecnologia-'
-             'pendrives/_/N-1g03f3', 'UsbFlashDrive'],
+            # ['celulares-informatica-y-gaming-accesorios-de-tecnologia-'
+            #  'pendrives/_/N-1g03f3', 'UsbFlashDrive'],
             ['televisores-audio-foto-y-video-foto-y-video-memorias/'
              '_/N-1enokiq', 'MemoryCard'],
             ['celulares-informatica-y-gaming-accesorios-de-tecnologia-'

@@ -31,7 +31,7 @@ class SearsMexico(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://www.sears.com.mx/categoria/{}/?ver=todos' \
+            category_url = 'https://www.sears.com.mx/categoria/{}/?ver=todos' \
                            ''.format(category_path)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
@@ -49,7 +49,7 @@ class SearsMexico(Store):
                 if 'gb' not in name and 'tb' not in name:
                     continue
 
-                product_url = 'http://www.sears.com.mx/producto/' + \
+                product_url = 'https://www.sears.com.mx/producto/' + \
                               product_link['href']
                 product_urls.append(product_url)
 
@@ -57,10 +57,11 @@ class SearsMexico(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         pricing_tag = soup.find(
-            'script', {'src': 'http://media.flixfacts.com/js/loader.js'})
+            'script', {'src': 'https://media.flixfacts.com/js/loader.js'})
 
         sku = pricing_tag['data-flix-sku']
 
