@@ -49,32 +49,18 @@ class Garbarino(Store):
             if local_category != category:
                 continue
 
-            page = 1
+            category_url = 'https://www.garbarino.com/productos/{}' \
+                           ''.format(category_path)
+            print(category_url)
 
-            while True:
-                print(category_path, page)
+            page_source = session.get(category_url).text
+            soup = BeautifulSoup(page_source, 'html5lib')
+            containers = soup.findAll('div', 'itemBox')
 
-                category_url = 'https://www.garbarino.com/productos/{}?' \
-                               'page={}'.format(category_path, page)
-
-                page_source = session.get(category_url).text
-                page_source = re.search(r'(<ul class="gb-list-grid">[\s\S]*)',
-                                        page_source)
-
-                if not page_source:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_url)
-                    break
-
-                soup = BeautifulSoup(page_source.groups()[0], 'html.parser')
-                containers = soup.findAll('div', 'gb-list-cluster')
-
-                for container in containers:
-                    product_url = 'https://www.garbarino.com' + \
-                          container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            for container in containers:
+                product_url = 'https://www.garbarino.com' + \
+                      container.find('a')['href']
+                product_urls.append(product_url)
 
         return product_urls
 

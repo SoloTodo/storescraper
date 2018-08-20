@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -36,8 +38,9 @@ class IluminaLed(Store):
             category_url = 'http://www.iluminaled.cl/{}?count=100&paged=' \
                            ''.format(category_path)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            print(category_url)
 
+            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             product_containers = soup.findAll('li', 'product')
 
             if not product_containers:
@@ -51,37 +54,84 @@ class IluminaLed(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find('span', 'add_to_wishlist')['data-product-id'].strip()
 
-        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+        base_name = soup.find('h1', 'product_title').text.strip()
+        description = html_to_markdown(str(soup.find('div', 'description')))
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
+        variations_form = soup.find('form', 'variations_form')
 
-        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
+        products = []
 
-        if soup.find('button', 'single_add_to_cart_button'):
-            stock = -1
+        if variations_form:
+            variations_data = json.loads(
+                variations_form['data-product_variations'])
+            for variant_data in variations_data:
+                name = '{} - {}'.format(
+                    base_name,
+                    variant_data['attributes']['attribute_pa_color'])
+                sku = str(variant_data['variation_id'])
+
+                if variant_data['is_purchasable']:
+                    stock = -1
+                else:
+                    stock = 0
+
+                price = Decimal(variant_data['display_price'])
+                picture_urls = [variant_data['image_src']]
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    description=description,
+                    picture_urls=picture_urls
+                ))
         else:
-            stock = 0
+            name = base_name
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls
-        )
+            availability_container = \
+                soup.find('link', {'itemprop': 'availability'})
 
-        return [p]
+            if availability_container['href'] == 'http://schema.org/InStock':
+                stock = -1
+            else:
+                stock = 0
+
+            sku = soup.find('input', {'name': 'add-to-cart'})
+
+            if not sku:
+                return []
+
+            sku = sku['value']
+            price = Decimal(
+                soup.find('meta', {'itemprop': 'price'})['content'])
+            picture_urls = [soup.find('img', 'woocommerce-main-image')['src']]
+
+            products.append(Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls
+            ))
+
+        return products

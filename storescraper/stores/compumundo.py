@@ -44,12 +44,13 @@ class Compumundo(Store):
 
             category_url = '{}/productos/{}'.format(base_url, category_path)
 
-            page_source = session.get(category_url).text
-            sanitized_page_source = re.findall(
-                r'<ul class="gb-list-grid">[\s\S]*', page_source)[0]
-            soup = BeautifulSoup(sanitized_page_source, 'html.parser')
+            print(category_url)
 
-            product_cells = soup.findAll('div', 'gb-list-cluster')
+            page_source = session.get(category_url).text
+
+            soup = BeautifulSoup(page_source, 'html5lib')
+
+            product_cells = soup.findAll('div', 'itemBox')
 
             if not product_cells:
                 raise Exception('Empty category: ' + category_url)

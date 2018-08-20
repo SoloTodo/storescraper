@@ -35,6 +35,7 @@ class MacOnline(Store):
             if local_category != category:
                 continue
             category_url = 'https://maconline.com/t/{}'.format(category_path)
+            print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
@@ -63,28 +64,71 @@ class MacOnline(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
         default_picture_url = soup.find('img', {'itemprop': 'image'})['src']
         json_data = re.search(r'options: (.*)', page_source)
-        json_data = json.loads(json_data.groups()[0][:-1])
-        json_products = cls.__extract_products(json_data)
 
-        for json_product in json_products.values():
-            name = json_product['name']
-            part_number = json_product['sku']
-            sku = str(json_product['id'])
-            description = html_to_markdown(json_product['technical_details'])
-            description += '\n\n' + html_to_markdown(
-                json_product['description'])
+        if json_data:
+            json_data = json.loads(json_data.groups()[0][:-1])
+            json_products = cls.__extract_products(json_data)
 
-            stock = sum(json.loads(json_product['stock_locations']).values())
+            for json_product in json_products.values():
+                name = json_product['name']
+                part_number = json_product['sku']
+                sku = str(json_product['id'])
+                description = html_to_markdown(
+                    json_product['technical_details'])
+                description += '\n\n' + html_to_markdown(
+                    json_product['description'])
 
-            price = Decimal(remove_words(json_product['price']))
+                stock = sum(json.loads(
+                    json_product['stock_locations']).values())
 
-            picture_tag = soup.find('li', 'tmb-' + sku)
-            if picture_tag:
-                picture_urls = [picture_tag.find('a')['href']]
+                price = Decimal(remove_words(json_product['price']))
+
+                picture_tag = soup.find('li', 'tmb-' + sku)
+                if picture_tag:
+                    picture_urls = [picture_tag.find('a')['href']]
+                else:
+                    picture_urls = [default_picture_url]
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    part_number=part_number,
+                    description=description,
+                    picture_urls=picture_urls
+                ))
+        else:
+            name = soup.find('h1', 'product-title').text.strip()
+            sku = soup.find('em', 'sku-title').text.strip()
+            part_number = sku
+
+            availability = soup.find('link', {'itemprop': 'availability'})
+
+            if availability and availability['href'] == \
+                    'https://schema.org/InStock':
+                stock = -1
             else:
-                picture_urls = [default_picture_url]
+                stock = 0
 
-            p = Product(
+            price = Decimal(remove_words(
+                soup.find('span', {'itemprop': 'price'}).text.replace(
+                    '&#36;', '')))
+
+            description = html_to_markdown(
+                str(soup.find('div', {'id': 'tab-description'})))
+
+            picture_urls = [tag.find('a')['href']
+                            for tag in soup.findAll('li', 'tmb-all')]
+
+            products.append(Product(
                 name,
                 cls.__name__,
                 category,
@@ -99,9 +143,7 @@ class MacOnline(Store):
                 part_number=part_number,
                 description=description,
                 picture_urls=picture_urls
-            )
-
-            products.append(p)
+            ))
 
         return products
 
