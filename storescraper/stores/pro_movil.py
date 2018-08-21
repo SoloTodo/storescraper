@@ -80,7 +80,12 @@ class ProMovil(Store):
         else:
             normal_price = offer_price
 
-        stock = int(soup.find('span', {'id': 'quantityAvailable'}).text)
+        stock_container = soup.find('span', {'id': 'quantityAvailable'})
+
+        if stock_container:
+            stock = int(stock_container.text)
+        else:
+            stock = 0
 
         if stock < 0:
             stock = 0

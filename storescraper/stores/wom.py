@@ -48,7 +48,7 @@ class Wom(Store):
                 response = session.post(equipos_url, data=data)
 
                 json_response = json.loads(response.text)
-                soup = BeautifulSoup(json_response['msg'], 'html.parser')
+                soup = BeautifulSoup(json_response['html1'], 'html.parser')
 
                 cell_containers = soup.findAll('article')
 
