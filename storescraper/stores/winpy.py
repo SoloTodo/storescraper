@@ -43,9 +43,8 @@ class Winpy(Store):
 
         category_paths = [
             ['portatiles/notebooks/', 'Notebook'],
-            # ['portatiles/ultrabook/', 'Notebook'],
             ['portatiles/mobile-workstation/', 'Notebook'],
-            # ['zona-notebook-gamers/', 'Notebook'],
+            ['zona-notebook-gamers/', 'Notebook'],
             ['apple/macbook-air/', 'Notebook'],
             ['apple/macbook/', 'Notebook'],
             # ['apple/macbook-pro/', 'Notebook'],
