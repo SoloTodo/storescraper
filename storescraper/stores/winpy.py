@@ -45,9 +45,9 @@ class Winpy(Store):
             ['portatiles/notebooks/', 'Notebook'],
             # ['portatiles/ultrabook/', 'Notebook'],
             ['portatiles/mobile-workstation/', 'Notebook'],
-            ['zona-notebook-gamers/', 'Notebook'],
-            # ['apple/macbook-air/', 'Notebook'],
-            # ['apple/macbook/', 'Notebook'],
+            # ['zona-notebook-gamers/', 'Notebook'],
+            ['apple/macbook-air/', 'Notebook'],
+            ['apple/macbook/', 'Notebook'],
             # ['apple/macbook-pro/', 'Notebook'],
             ['apple/macbook-pro-retina/', 'Notebook'],
             ['portatiles/tablet/', 'Tablet'],
@@ -82,12 +82,12 @@ class Winpy(Store):
             url = base_url + '/' + category_path
 
             page = 1
-            local_product_urls = []
             while True:
                 if page >= 20:
                     raise Exception('Page overflow: ' + category_path)
 
                 url_with_page = url + 'paged/' + str(page) + '/'
+                print(url_with_page)
                 soup = BeautifulSoup(session.get(url_with_page).text,
                                      'html.parser')
                 product_containers = soup.find('section', {'id': 'productos'})
@@ -98,20 +98,15 @@ class Winpy(Store):
                         raise Exception('Empty category: ' + category_path)
                     break
 
-                break_flag = False
                 for container in product_containers:
                     product_url = 'https://www.winpy.cl' + \
                                   container.find('a')['href']
-                    if product_url in local_product_urls:
-                        break_flag = True
-                        break
-                    local_product_urls.append(product_url)
+                    product_urls.append(product_url)
 
-                if break_flag:
+                if not soup.find('div', 'paginador'):
                     break
 
                 page += 1
-            product_urls.extend(local_product_urls)
 
         return product_urls
 
