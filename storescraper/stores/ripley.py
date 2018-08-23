@@ -105,7 +105,7 @@ class Ripley(Store):
             page = 1
 
             while True:
-                if page > 30:
+                if page > 40:
                     raise Exception('Page overflow')
 
                 page_url = url_base.format(category_path, page)
