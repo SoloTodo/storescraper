@@ -67,7 +67,7 @@ class Hites(Store):
             # ['14051', 'SpaceHeater'],
             # ['14052', 'SpaceHeater'],
             # ['14056', 'SpaceHeater'],  # Termoventiladores
-            ['14107', 'Keyboard'],
+            # ['14107', 'Keyboard'],
             ['14094', 'Mouse'],
             ['14092', 'Headphones'],
         ]
