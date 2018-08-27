@@ -215,11 +215,8 @@ class AbcDin(Store):
             normal_price,
             offer_price,
             'CLP',
-            part_number=None,
             sku=sku,
             description=description,
-            cell_plan_name=None,
-            cell_monthly_payment=None,
             picture_urls=picture_urls
         )
 

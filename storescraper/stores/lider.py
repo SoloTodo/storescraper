@@ -236,8 +236,6 @@ class Lider(Store):
             sku=sku,
             part_number=part_number,
             description=description,
-            cell_plan_name=None,
-            cell_monthly_payment=None,
             picture_urls=picture_urls
         )
 

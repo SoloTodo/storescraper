@@ -252,8 +252,7 @@ class Wom(Store):
             'CLP',
             cell_plan_name='WOM Prepago',
             picture_urls=picture_urls,
-            description=description,
-            cell_monthly_payment=Decimal(0)
+            description=description
         ))
 
         return products

@@ -312,8 +312,6 @@ class Falabella(Store):
                 'CLP',
                 sku=sku,
                 description=description,
-                cell_plan_name=None,
-                cell_monthly_payment=None,
                 picture_urls=picture_urls
             )
 
