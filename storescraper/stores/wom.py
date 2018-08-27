@@ -206,6 +206,9 @@ class Wom(Store):
                 }
             ]
 
+            if len(initial_prices) == 1:
+                combinations = combinations[:1]
+
             for idx, combination in enumerate(combinations):
                 initial_price = Decimal(remove_words(initial_prices[idx].text))
 
