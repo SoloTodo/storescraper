@@ -33,6 +33,7 @@ class PcExpress(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -69,6 +70,7 @@ class PcExpress(Store):
             ['321', 'Headphones'],   # Audifonos Gamers
             ['353', 'Headphones'],   # Audífonos Micrófono Bluetooth
             ['64_282', 'Headphones'],   # Audifonos Microfono
+            ['147', 'StereoSystem'],   # Parlantes
         ]
 
         product_urls = []

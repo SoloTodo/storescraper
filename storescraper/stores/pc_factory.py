@@ -62,8 +62,12 @@ class PcFactory(Store):
             ['48', 'MemoryCard'],
             ['46', 'Projector'],
             ['438', 'VideoGameConsole'],
-            # ['34', '891', 'StereoSystem'],
-            ['889', 'StereoSystem'],
+            ['889', 'StereoSystem'],  # Equipos de Música
+            ['890', 'StereoSystem'],  # Audio All in One
+            ['798', 'StereoSystem'],  # Microcomponentes
+            ['700', 'StereoSystem'],  # Minicomponentes
+            ['831', 'StereoSystem'],  # Parlantes PC
+            ['34', 'StereoSystem'],  # Parlantes Portátiles
             ['475', 'AllInOne'],
             ['22', 'Mouse'],
             ['789', 'Television'],
