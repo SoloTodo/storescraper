@@ -83,21 +83,6 @@ class Wom(Store):
                 'CLP',
             )
             products.append(p)
-
-            # Plan PVP Portabilidad (compra equipo al portarse)
-            p = Product(
-                'WOM PVP Portabilidad',
-                cls.__name__,
-                category,
-                url,
-                url,
-                'WOM PVP Portabilidad',
-                -1,
-                Decimal(0),
-                Decimal(0),
-                'CLP',
-            )
-            products.append(p)
         elif url == cls.planes_url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
@@ -139,7 +124,9 @@ class Wom(Store):
                     adjusted_plan_name = '{}{} ({})'.format(
                         plan_name, suffix, variant)
 
-                    product = Product(
+                    print(adjusted_plan_name)
+
+                    products.append(Product(
                         adjusted_plan_name,
                         cls.__name__,
                         'CellPlan',
@@ -150,9 +137,7 @@ class Wom(Store):
                         plan_price,
                         plan_price,
                         'CLP',
-                    )
-
-                products.append(product)
+                    ))
 
         return products
 
