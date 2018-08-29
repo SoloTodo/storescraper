@@ -125,25 +125,32 @@ class Wom(Store):
 
         plan_containers = soup.findAll('article', 'box_plan')
 
+        variants = [
+            'sin cuota de arriendo',
+            'con cuota de arriendo',
+        ]
+
         for container in plan_containers:
-            plan_name = container['id']
-            plan_price = plan_prices[container['id']]
+            for variant in variants:
+                plan_name = container['id']
+                plan_price = plan_prices[container['id']]
 
-            for suffix in ['', ' Portabilidad']:
-                adjusted_plan_name = plan_name + suffix
+                for suffix in ['', ' Portabilidad']:
+                    adjusted_plan_name = '{}{} ({})'.format(
+                        plan_name, suffix, variant)
 
-                product = Product(
-                    adjusted_plan_name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    adjusted_plan_name,
-                    -1,
-                    plan_price,
-                    plan_price,
-                    'CLP',
-                )
+                    product = Product(
+                        adjusted_plan_name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        adjusted_plan_name,
+                        -1,
+                        plan_price,
+                        plan_price,
+                        'CLP',
+                    )
 
                 products.append(product)
 
@@ -191,20 +198,20 @@ class Wom(Store):
             }
         ]
 
+        combinations = [
+            {
+                'suffix': '',
+                'use_monthly_payment': False
+            },
+            {
+                'suffix': ' Cuotas',
+                'use_monthly_payment': True
+            }
+        ]
+
         for modality in modalities:
             container = soup.find('div', {'data-tab': modality['selector']})
             initial_prices = container.findAll('span', 'body_precio')
-
-            combinations = [
-                {
-                    'suffix': '',
-                    'use_monthly_payment': False
-                },
-                {
-                    'suffix': ' Cuotas',
-                    'use_monthly_payment': True
-                }
-            ]
 
             if len(initial_prices) == 1:
                 combinations = combinations[:1]
@@ -231,8 +238,9 @@ class Wom(Store):
                         initial_price,
                         initial_price,
                         'CLP',
-                        cell_plan_name='{}{}'.format(plan_name,
-                                                     modality['suffix']),
+                        cell_plan_name='{}{}{}'.format(plan_name,
+                                                       modality['suffix'],
+                                                       combination['suffix']),
                         picture_urls=picture_urls,
                         description=description,
                         cell_monthly_payment=cell_monthly_payment
