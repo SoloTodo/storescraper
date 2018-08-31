@@ -73,7 +73,7 @@ class LaPolar(Store):
             ['electronica/videojuegos/todo_consolas', 'VideoGameConsole'],
             ['tecnologia/accesorios_computacion/disco_duro_externo',
              'ExternalStorageDrive'],
-            ['tecnologia/accesorios_computacion/proyectores', 'Projector'],
+            # ['tecnologia/accesorios_computacion/proyectores', 'Projector'],
             ['tecnologia/accesorios_computacion/pendrives',
              'UsbFlashDrive'],
             ['linea_blanca/lavado_secado/lavadoras', 'WashingMachine'],

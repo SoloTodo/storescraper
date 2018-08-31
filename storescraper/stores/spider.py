@@ -37,7 +37,7 @@ class Spider(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ('41', 'Notebook'),
-            ('43', 'Notebook'),
+            # ('43', 'Notebook'),   # Ultrabooks
             ('26', 'StorageDrive'),
             ('44', 'SolidStateDrive'),
             ('29', 'Motherboard'),
