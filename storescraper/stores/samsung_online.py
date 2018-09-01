@@ -13,7 +13,8 @@ class SamsungOnline(Store):
     def categories(cls):
         return [
             'Cell',
-            'Tablet'
+            'Tablet',
+            'Headphones',
         ]
 
     @classmethod
@@ -21,6 +22,8 @@ class SamsungOnline(Store):
         category_paths = [
             ['smartphones', 'Cell'],
             ['tablets', 'Tablet'],
+            ['audio/level', 'Headphones'],
+            ['audio/auriculares', 'Headphones'],
         ]
 
         product_urls = []
@@ -36,7 +39,7 @@ class SamsungOnline(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                category_url = 'http://www.samsungonline.cl/{}?limit=48&p={}' \
+                category_url = 'https://www.tiendasmart.cl/{}?limit=48&p={}' \
                                ''.format(category_path, page)
 
                 soup = BeautifulSoup(session.get(category_url).text,

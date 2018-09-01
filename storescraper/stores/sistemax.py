@@ -28,6 +28,7 @@ class Sistemax(Store):
             'Notebook',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
         ]
 
     @classmethod
@@ -48,6 +49,7 @@ class Sistemax(Store):
             ['93', 'Mouse'],  # Mouse
             ['115', 'Notebook'],  # Notebook
             ['92', 'Keyboard'],  # Teclados
+            ['99_102', 'Headphones'],  # AUDIFONOS
         ]
 
         product_urls = []
@@ -76,7 +78,6 @@ class Sistemax(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        html = session.get(url).text
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1').text.strip()
