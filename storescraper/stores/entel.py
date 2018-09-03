@@ -92,56 +92,63 @@ class Entel(Store):
 
         products = []
 
+        variants = [
+            'sin cuota de arriendo',
+            'con cuota de arriendo',
+        ]
+
         for plan_tab in plan_tabs:
             base_plan_name = plan_tab.find('h5').text.strip()
 
             for suffix in ['', ' Portabilidad']:
-                name = base_plan_name + suffix
+                for variant in variants:
+                    name = '{}{} ({})'.format(base_plan_name, suffix, variant)
 
-                normal_price_container = plan_tab.find(
-                    'p', 'valor-dcto-caja-precio')
+                    normal_price_container = plan_tab.find(
+                        'p', 'valor-dcto-caja-precio')
 
-                highlighted_price = Decimal(remove_words(
-                    plan_tab.find('p', 'monto').text))
+                    highlighted_price = Decimal(remove_words(
+                        plan_tab.find('p', 'monto').text))
 
-                if normal_price_container:
-                    normal_price = Decimal(remove_words(
-                        normal_price_container.text))
-                    web_price = highlighted_price
-                else:
-                    normal_price = web_price = highlighted_price
+                    if normal_price_container:
+                        normal_price = Decimal(remove_words(
+                            normal_price_container.text))
+                        web_price = highlighted_price
+                    else:
+                        normal_price = web_price = highlighted_price
 
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    name,
-                    -1,
-                    normal_price,
-                    normal_price,
-                    'CLP',
-                ))
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        name,
+                        -1,
+                        normal_price,
+                        normal_price,
+                        'CLP',
+                    ))
 
-                # Exclusivo web
+                    # Exclusivo web
 
-                name = base_plan_name + suffix + ' Exclusivo Web'
+                    name = '{}{} Exclusivo web ({})'.format(
+                        base_plan_name, suffix, variant)
 
-                price = web_price.quantize(0)
+                    price = web_price.quantize(0)
 
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    name,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                ))
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        name,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                    ))
         return products
 
     @classmethod
@@ -228,9 +235,30 @@ class Entel(Store):
                         break
 
                     cell_monthly_payment = Decimal(plan[monthly_payment_field])
+                    buyout_payment = Decimal(plan[direct_buy_field])
 
                     for suffix in ['', ' Exclusivo Web']:
                         plan_name = base_plan_name + suffix
+
+                        # Con cuota de arriendo
+
+                        products.append(Product(
+                            variant_name + ' Cuotas',
+                            cls.__name__,
+                            'Cell',
+                            url,
+                            url,
+                            '{} - {} Cuotas'.format(variant_name, plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name=plan_name + ' Cuotas',
+                            picture_urls=picture_urls,
+                            cell_monthly_payment=cell_monthly_payment
+                        ))
+
+                        # Sin cuota de arriendo
 
                         products.append(Product(
                             variant_name,
@@ -240,12 +268,12 @@ class Entel(Store):
                             url,
                             '{} - {}'.format(variant_name, plan_name),
                             -1,
-                            price,
-                            price,
+                            buyout_payment,
+                            buyout_payment,
                             'CLP',
                             cell_plan_name=plan_name,
                             picture_urls=picture_urls,
-                            cell_monthly_payment=cell_monthly_payment
+                            cell_monthly_payment=Decimal(0)
                         ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
