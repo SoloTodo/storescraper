@@ -243,7 +243,7 @@ class Entel(Store):
                         # Con cuota de arriendo
 
                         products.append(Product(
-                            variant_name + ' Cuotas',
+                            variant_name,
                             cls.__name__,
                             'Cell',
                             url,
