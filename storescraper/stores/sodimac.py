@@ -28,6 +28,7 @@ class Sodimac(Store):
             'Tablet',
             'SpaceHeater',
             'Cell',
+            'Headphones',
         ]
 
     @classmethod
@@ -64,6 +65,8 @@ class Sodimac(Store):
             ['cat1590078/Estufas-Tiro-Forzado', 'SpaceHeater'],
             ['scat301608/Estufas-a-Lena', 'SpaceHeater'],
             ['cat3870010/Smartphones', 'Cell'],
+            ['cat3870001/Audifonos', 'Headphones'],
+            ['cat3870011/Audifonos-para-celulares', 'Headphones'],
         ]
 
         product_urls = []

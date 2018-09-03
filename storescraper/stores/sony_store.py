@@ -19,6 +19,7 @@ class SonyStore(Store):
             'StereoSystem',
             'OpticalDiskPlayer',
             'Tablet',
+            'Headphones',
         ]
 
     @classmethod
@@ -31,6 +32,7 @@ class SonyStore(Store):
             ['televisores-y-teatro-en-casa/reproductores-de-blu-ray-disc'
              '-y-dvd', 'OpticalDiskPlayer'],
             ['televisores-y-teatro-en-casa/teatro-en-casa', 'StereoSystem'],
+            ['audio/audifonos', 'Headphones'],
         ]
 
         product_urls = []
