@@ -32,6 +32,9 @@ class Cintegral(Store):
             'Headphones',
             'AllInOne',
             'StereoSystem',
+            'SolidStateDrive',
+            'MemoryCard',
+            'UsbFlashDrive',
         ]
 
     @classmethod
