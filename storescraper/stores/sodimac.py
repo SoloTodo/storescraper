@@ -50,7 +50,7 @@ class Sodimac(Store):
             ['cat3810002/Televisores', 'Television'],  # Televisores
             ['cat3390002/Notebook', 'Notebook'],  # Notebooks
             ['cat2930160/Reflectores-LED', 'LightProjector'],  # Proyectores
-            ['scat100321/Aire-Acondicionado', 'AirConditioner'],  # AC
+            ['cat4780002/Aires-Acondicionados-Split', 'AirConditioner'],  # AC
             ['scat663002/Calefont-tiro-natural', 'WaterHeater'],
             ['cat2080050/Calefont-tiro-forzado', 'WaterHeater'],
             ['scat923316/Termos-electricos-hogar', 'WaterHeater'],
