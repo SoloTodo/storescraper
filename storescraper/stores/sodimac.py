@@ -85,7 +85,7 @@ class Sodimac(Store):
             page = 0
 
             while True:
-                url = 'http://www.sodimac.cl/sodimac-cl/category/{}?No={}' \
+                url = 'https://www.sodimac.cl/sodimac-cl/category/{}?No={}' \
                       '&rnd={}'.format(category_path, page,
                                        random.randint(0, 100))
                 print(url)
@@ -106,7 +106,7 @@ class Sodimac(Store):
                     break
 
                 for div in mosaic_divs:
-                    product_url = 'http://www.sodimac.cl/sodimac-cl/' \
+                    product_url = 'https://www.sodimac.cl/sodimac-cl/' \
                                   'product/' + div['data']
                     product_urls.append(product_url)
                 page += 16
@@ -163,7 +163,7 @@ class Sodimac(Store):
 
         # Pictures
 
-        pictures_resource_url = 'http://sodimac.scene7.com/is/image/' \
+        pictures_resource_url = 'https://sodimac.scene7.com/is/image/' \
                                 'SodimacCL/{}?req=set,json'.format(sku)
         pictures_json = json.loads(
             re.search(r's7jsonResponse\((.+),""\);',
