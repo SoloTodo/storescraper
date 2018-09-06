@@ -15,6 +15,7 @@ class SamsungOnline(Store):
             'Cell',
             'Tablet',
             'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod

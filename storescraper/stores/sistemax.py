@@ -29,6 +29,7 @@ class Sistemax(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -50,6 +51,7 @@ class Sistemax(Store):
             ['115', 'Notebook'],  # Notebook
             ['92', 'Keyboard'],  # Teclados
             ['99_102', 'Headphones'],  # AUDIFONOS
+            ['99_100', 'StereoSystem'],  # PARLANTES
         ]
 
         product_urls = []

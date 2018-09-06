@@ -29,6 +29,7 @@ class Sodimac(Store):
             'SpaceHeater',
             'Cell',
             'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -67,6 +68,11 @@ class Sodimac(Store):
             ['cat3870010/Smartphones', 'Cell'],
             ['cat3870001/Audifonos', 'Headphones'],
             ['cat3870011/Audifonos-para-celulares', 'Headphones'],
+            ['scat913770/Equipos-de-Musica', 'StereoSystem'],
+            ['cat4850257/Home-Theater-y-Soundbars', 'StereoSystem'],
+            ['cat8350012/Parlantes-bluetooth', 'StereoSystem'],
+            ['cat4850400/Parlantes-y-Karaokes', 'StereoSystem'],
+            ['cat8350014/Tornamesas', 'StereoSystem'],
         ]
 
         product_urls = []
