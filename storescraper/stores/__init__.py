@@ -53,6 +53,7 @@ from .gtd import Gtd
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hp_online import HpOnline
+from .hp_store import HpStore
 from .ibyte import Ibyte
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali

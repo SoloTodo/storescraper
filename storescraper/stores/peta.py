@@ -122,7 +122,7 @@ class Peta(Store):
         request_url = '{}?_={}'.format(url, random.randint(1, 1000))
         print(request_url)
         page_source = session.get(request_url).text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html5lib')
 
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         part_number = soup.find('div', {'itemprop': 'sku'}).text.strip()
@@ -136,7 +136,7 @@ class Peta(Store):
         price_containers = soup.find('div', 'product-info-price').findAll(
             'span', 'price')
         normal_price = Decimal(remove_words(price_containers[0].string))
-        offer_price = Decimal(remove_words(price_containers[-2].string))
+        offer_price = Decimal(remove_words(price_containers[1].string))
 
         description = ''
 
