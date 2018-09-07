@@ -136,7 +136,7 @@ class Peta(Store):
         price_containers = soup.find('div', 'product-info-price').findAll(
             'span', 'price')
         normal_price = Decimal(remove_words(price_containers[0].string))
-        offer_price = Decimal(remove_words(price_containers[1].string))
+        offer_price = Decimal(remove_words(price_containers[-2].string))
 
         description = ''
 

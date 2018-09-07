@@ -85,13 +85,20 @@ class HpStore(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('p', 'titulo-atributo-ficha').find('span').text.strip()
         part_number = soup.find('li', 'product').text.split(':')[1].strip()
-        price = Decimal(remove_words(soup.find('span', 'regular-price').text))
+        price_container = soup.find('span', 'regular-price')
+
+        if not price_container:
+            price_container = soup.find('p', 'special-price')
+
+        price = Decimal(remove_words(price_container.find(
+            'span', 'price').text))
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
         picture_urls = [tag['href'] for tag in soup.findAll('a', 'lightbox')]
