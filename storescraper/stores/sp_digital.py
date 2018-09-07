@@ -55,7 +55,10 @@ class SpDigital(Store):
             ['365', 'Notebook'],
             ['474', 'Notebook'],
             ['556', 'Notebook'],
-            # ['362', 'StereoSystem'],
+            ['344', 'StereoSystem'],    # Parlantes
+            ['360', 'StereoSystem'],    # Equipos de Música
+            # ['362', 'StereoSystem'],    # Home Theater
+            ['512', 'StereoSystem'],    # 512
             # ['359', 'OpticalDiskPlayer'],
             ['376', 'PowerSupply'],
             ['375', 'ComputerCase'],

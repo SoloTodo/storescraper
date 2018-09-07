@@ -14,7 +14,9 @@ class Tottus(Store):
         return [
             'Television',
             'Cell',
-            'Tablet'
+            'Tablet',
+            'StereoSystem',
+            'Headphones',
         ]
 
     @classmethod
@@ -24,6 +26,7 @@ class Tottus(Store):
         category_paths = [
             ['Televisores/126.1.1', 'Television'],
             ['Celulares/cat700022', 'Cell'],
+            ['Audio-y-Video/cat770016', 'StereoSystem'],
             # ['Notebook-y-Tablet/cat700021', 'Tablet'],
         ]
 

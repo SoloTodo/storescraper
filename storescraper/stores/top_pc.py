@@ -25,6 +25,7 @@ class TopPc(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class TopPc(Store):
             ['67', 'Mouse'],
             ['66', 'Keyboard'],
             ['65', 'KeyboardMouseCombo'],
+            ['100', 'StereoSystem'],
         ]
 
         product_urls = []
