@@ -41,6 +41,7 @@ class Wei(Store):
             'AllInOne',
             'Headphones',
             'Projector',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -79,6 +80,8 @@ class Wei(Store):
             ['1141', 'MemoryCard'],  # Tarjetas de memoria
             ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
             ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
+            ['1175', 'StereoSystem'],  # PARLANTES
+            ['793', 'StereoSystem'],  # AMPLIFICADORES
         ]
 
         session = session_with_proxy(extra_args)

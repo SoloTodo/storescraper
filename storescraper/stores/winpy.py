@@ -35,6 +35,7 @@ class Winpy(Store):
             'KeyboardMouseCombo',
             'AllInOne',
             'Television',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -69,6 +70,7 @@ class Winpy(Store):
             ['accesorios/mouse-y-teclados/', 'Mouse'],
             ['zona-teclados-mecanicos/', 'Keyboard'],
             ['computadores/todo-en-uno/', 'AllInOne'],
+            ['electronica/parlantes/', 'StereoSystem'],
         ]
 
         product_urls = []

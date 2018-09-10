@@ -17,6 +17,8 @@ class Zmart(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'StereoSystem',
+            'Headphones',
         ]
 
     @classmethod
@@ -30,6 +32,7 @@ class Zmart(Store):
             ['Consolas3DS', 'VideoGameConsole'],
             [37, 'Mouse'],
             [38, 'Keyboard'],
+            [45, 'StereoSystem'],
         ]
 
         product_urls = []
