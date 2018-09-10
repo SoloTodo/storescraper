@@ -27,6 +27,8 @@ class TtChile(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Headphones',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -54,6 +56,8 @@ class TtChile(Store):
             ['subpro.php?ic=19&isc=16', 'Mouse'],
             ['subpro.php?ic=19&isc=17', 'Keyboard'],
             ['subpro.php?ic=19&isc=18', 'KeyboardMouseCombo'],
+            ['subpro.php?ic=22&isc=22', 'Headphones'],
+            ['subpro.php?ic=22&isc=23', 'StereoSystem'],
         ]
 
         product_urls = []

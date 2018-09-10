@@ -23,6 +23,7 @@ class Vivelo(Store):
             'Oven',
             'VacuumCleaner',
             'Monitor',
+            'Headphones',
         ]
 
     @classmethod
@@ -32,8 +33,10 @@ class Vivelo(Store):
             ['dispositivos-moviles/tablets.html', 'Tablet'],
             ['tv-audio-video/led.html', 'Television'],
             ['tv-audio-video/home-theater.html', 'StereoSystem'],
+            ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
+            ['tv-audio-video/audio/parlantes-bluetooth.html', 'StereoSystem'],
+            ['tv-audio-video/audio/audifonos.html', 'Headphones'],
             ['tv-audio-video/blu-ray.html', 'OpticalDiskPlayer'],
-            ['tv-audio-video/audio.html', 'StereoSystem'],
             ['linea-blanca/refrigeradores.html', 'Refrigerator'],
             ['linea-blanca/lavadoras-secadoras.html', 'WashingMachine'],
             ['linea-blanca/microondas.html', 'Oven'],
