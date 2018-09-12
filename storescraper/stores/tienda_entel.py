@@ -21,10 +21,10 @@ class TiendaEntel(Store):
         product_urls = []
 
         json_prepago = json.loads(session.get(
-            'https://miportal.entel.cl/lista-productos?Nrpp=100&'
+            'https://miportal.entel.cl/lista-productos?Nrpp=1000&'
             'format=json-rest').text)
 
-        for record in json_prepago['response']['main'][2]['records']:
+        for record in json_prepago['response']['main'][1]['records']:
             cell_id = record['attributes']['productId'][0]
             cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
                        cell_id
@@ -34,13 +34,26 @@ class TiendaEntel(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        return cls._products_for_url(url, extra_args)
+
+    @classmethod
+    def _products_for_url(cls, url, extra_args=None, retries=5):
         print(url)
         session = session_with_proxy(extra_args)
 
         products = []
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        json_data = json.loads(soup.find('var', {'id': 'renderData'}).string)
+        raw_json = soup.find('var', {'id': 'renderData'}).string.strip()
+
+        if not raw_json:
+            if retries:
+                return cls._products_for_url(url, extra_args,
+                                             retries=retries-1)
+            else:
+                raise Exception('JSON error')
+
+        json_data = json.loads(raw_json)
 
         for sku in json_data['renderSkusBean']['skus']:
             price_container = sku['skuPrice']
