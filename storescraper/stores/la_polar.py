@@ -48,7 +48,7 @@ class LaPolar(Store):
             ['tecnologia/computadores/todo_notebooks', 'Notebook'],
             ['electronica/televisores/led2', 'Television'],
             ['electronica/televisores/smart_tv', 'Television'],
-            ['electronica/televisores/oled_i_qled_i_curvo', 'Television'],
+            # ['electronica/televisores/oled_i_qled_i_curvo', 'Television'],
             ['electronica/tv_por_pulgadas/hasta_40_pulgadas', 'Television'],
             ['electronica/tv_por_pulgadas/42_pulgadas_a_50_pulgadas',
              'Television'],
