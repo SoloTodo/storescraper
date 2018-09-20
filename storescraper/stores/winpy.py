@@ -36,6 +36,7 @@ class Winpy(Store):
             'AllInOne',
             'Television',
             'StereoSystem',
+            'Headphones',
         ]
 
     @classmethod
@@ -71,6 +72,7 @@ class Winpy(Store):
             ['zona-teclados-mecanicos/', 'Keyboard'],
             ['computadores/todo-en-uno/', 'AllInOne'],
             ['electronica/parlantes/', 'StereoSystem'],
+            ['electronica/audifonos/', 'Headphones'],
         ]
 
         product_urls = []
