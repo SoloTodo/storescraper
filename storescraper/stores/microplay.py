@@ -41,6 +41,7 @@ class Microplay(Store):
              'Keyboard'],
             ['computacion', {'categorias': 'audifonos-microfonos-12'},
              'Headphones'],
+            ['gamer', {'categorias': 'audifonos-2'}, 'Headphones'],
         ]
 
         product_urls = []
