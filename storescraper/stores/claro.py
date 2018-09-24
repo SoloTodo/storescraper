@@ -13,9 +13,9 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 
 class Claro(Store):
-    planes_url = 'http://www.clarochile.cl/personas/servicios/' \
+    planes_url = 'https://www.clarochile.cl/personas/servicios/' \
                  'servicios-moviles/postpago/planes-y-precios/'
-    prepago_url = 'http://www.clarochile.cl/personas/servicios/' \
+    prepago_url = 'https://www.clarochile.cl/personas/servicios/' \
                   'servicios-moviles/prepago/'
     plan_variations = [
         ('', 'fi_precio', ''),
@@ -55,9 +55,9 @@ class Claro(Store):
                     else:
                         sku = plan_id
 
-                    plan_url = 'http://www.clarochile.cl/personas/servicios/' \
-                               'servicios-moviles/postpago/planes-y-precios/' \
-                               '{}/'.format(sku)
+                    plan_url = 'https://www.clarochile.cl/personas/servicios' \
+                               '/servicios-moviles/postpago/planes-y-precios' \
+                               '/{}/'.format(sku)
                     product_urls.append(plan_url)
 
         if category == 'Cell':
@@ -95,7 +95,9 @@ class Claro(Store):
             products.append(p)
         elif 'planes-y-precios' in url:
             # Plan Postpago
-            products.append(cls._plan(url, extra_args))
+            plan = cls._plan(url, extra_args)
+            if plan:
+                products.append(plan)
         elif 'equipos.clarochile.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
@@ -105,10 +107,15 @@ class Claro(Store):
 
     @classmethod
     def _plan(cls, url, extra_args):
-        variation_code_to_suffix = {e[2]: e[0] for e in cls.plan_variations}
+        print(url)
 
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return None
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         sku = [e for e in url.split('/') if e][-1]
 
@@ -118,6 +125,7 @@ class Claro(Store):
         else:
             variation_code = sku_parts[1]
 
+        variation_code_to_suffix = {e[2]: e[0] for e in cls.plan_variations}
         assert variation_code in variation_code_to_suffix
 
         pricing_container = soup.find('section', 'detallePlan')
@@ -150,6 +158,7 @@ class Claro(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
+        print(url)
         query_string = urllib.parse.urlparse(url).query
         cell_id = urllib.parse.parse_qs(query_string)['id'][0]
         session = session_with_proxy(extra_args)
@@ -160,7 +169,6 @@ class Claro(Store):
             'https://equipos.clarochile.cl/servicio/detalle', data=data)
 
         product_json = json.loads(response.text)[0]
-
         base_cell_name = '{} {}'.format(product_json['marca'],
                                         product_json['modelo_comercial'])
 
@@ -216,16 +224,21 @@ class Claro(Store):
             for plan_entry in product_json.get('planes', []):
                 base_plan_name = plan_entry['nombre']
 
-                variants = [
-                    ('', 'cuota_inicial'),
-                    (' Portabilidad', 'cuota_inicial_portado')
-                ]
-
-                for suffix, field_name in variants:
-                    price = remove_words(plan_entry[field_name])
-
-                    if price == '-':
-                        continue
+                for suffix in ['', ' Portabilidad']:
+                    if suffix:
+                        # Portabilidad
+                        cell_monthly_payment = Decimal(remove_words(
+                            plan_entry['valor_cuota_mensual_portabilidad']))
+                        if cell_monthly_payment:
+                            price = Decimal(remove_words(
+                                plan_entry['valor_pie']))
+                        else:
+                            price = remove_words(
+                                plan_entry['cuota_inicial_portado'])
+                    else:
+                        cell_monthly_payment = Decimal(0)
+                        price = Decimal(remove_words(
+                            plan_entry['cuota_inicial']))
 
                     price = Decimal(price)
 
@@ -244,7 +257,7 @@ class Claro(Store):
                         'CLP',
                         cell_plan_name=plan_name,
                         picture_urls=picture_urls,
-                        cell_monthly_payment=Decimal(0)
+                        cell_monthly_payment=cell_monthly_payment
                     )
                     products.append(product)
 
