@@ -37,6 +37,7 @@ class Hites(Store):
             'KeyboardMouseCombo',
             'Mouse',
             'Headphones',
+            'ExternalStorageDrive',
         ]
 
     @classmethod
@@ -70,6 +71,7 @@ class Hites(Store):
             # ['14107', 'Keyboard'],
             ['14094', 'Mouse'],
             ['14092', 'Headphones'],
+            ['14071', 'ExternalStorageDrive'],
         ]
 
         product_urls = []

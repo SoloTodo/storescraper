@@ -89,6 +89,7 @@ from .mercadolibre_argentina_seagate import MercadoLibreArgentinaSeagate
 from .mercadolibre_argentina_western_digital import \
     MercadoLibreArgentinaWesternDigital
 from .mercadolibre_daewoo import MercadolibreDaewoo
+from .mercadolibre_lg import MercadolibreLg
 from .meroli import Meroli
 from .microplay import Microplay
 from .movistar import Movistar
