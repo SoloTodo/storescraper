@@ -43,14 +43,14 @@ class LiderBlackFriday(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         categories_dict = {
-            'Notebook': 'Notebooks',
+            'Notebook': 'Computación',
             'Cell': 'Smartphones',
-            'Refrigerator': 'Línea Blanca',
+            'Refrigerator': 'Refrigeración',
             'Oven': 'Electrodomésticos',
             'Television': 'Televisión',
             'StereoSystem': 'Audio',
             'Printer': 'Impresoras',
-            'VideoGameConsole': 'Videojuegos'
+            'VideoGameConsole': 'Consolas'
         }
 
         if category and category not in categories_dict:
@@ -86,12 +86,14 @@ class LiderBlackFriday(Store):
             name = '{} {}'.format(brand, model)
             sku = json_product['sku']
 
+            print(sku)
+
             if isinstance(json_product['price'], list):
                 print(json_product)
                 continue
 
             normal_price = Decimal(json_product['price']['BasePriceSales'])
-            offer_price = Decimal(json_product['price']['BasePriceTLMC'])
+            offer_price = Decimal(json_product['price']['BasePriceTLMC'] or '0')
 
             if not offer_price:
                 offer_price = normal_price
