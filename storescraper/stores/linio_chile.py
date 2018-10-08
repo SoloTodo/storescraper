@@ -26,6 +26,7 @@ class LinioChile(Store):
             'ExternalStorageDrive',
             'Keyboard',
             'Mouse',
+            'AllInOne',
         ]
 
     @classmethod
@@ -52,6 +53,7 @@ class LinioChile(Store):
             ['discos-duros/discos-duros-externos/', 'ExternalStorageDrive'],
             ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
             ['mouse-kit/mouse/', 'Mouse'],
+            ['pc-escritorio/all-in-one/', 'AllInOne'],
         ]
 
         product_urls = []

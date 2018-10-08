@@ -14,13 +14,15 @@ class HpOnline(Store):
         return [
             'Notebook',
             'Printer',
+            'AllInOne',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['notebooks', 'Notebook'],
-            ['impresoras', 'Printer']
+            ['impresoras', 'Printer'],
+            ['desktops/desktops-all-in-one', 'AllInOne'],
         ]
 
         session = session_with_proxy(extra_args)
