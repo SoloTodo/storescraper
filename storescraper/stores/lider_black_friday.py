@@ -59,16 +59,16 @@ class LiderBlackFriday(Store):
         session = session_with_proxy(extra_args)
 
         product_to_stock = {}
-        stocks = json.loads(session.get('https://cyber.lider.cl/'
-                                        'ff_inv_landing.json').text)
-
-        for stocks in stocks['Inventory']:
-            for sku, sku_stock_info in stocks.items():
-                product_to_stock[sku] = sku_stock_info['stock']
+        # stocks = json.loads(session.get('https://cyber.lider.cl/'
+        #                                 'json/products.json').text)
+        #
+        # for stocks in stocks['Inventory']:
+        #     for sku, sku_stock_info in stocks.items():
+        #         product_to_stock[sku] = sku_stock_info['stock']
 
         json_products = json.loads(
-            requests.get(
-                'https://cyber.lider.cl/products.json').text)['products']
+            session.get(
+                'https://cyber.lider.cl/json/products.json').text)['products']
 
         products = []
         category_keyword = categories_dict[category] if category else None
