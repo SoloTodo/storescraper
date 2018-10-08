@@ -83,7 +83,7 @@ class LaPolar(Store):
             ['linea_blanca/lavado_secado/centrifugas', 'WashingMachine'],
             ['linea_blanca/climatizacion/calefont', 'WaterHeater'],
             # ['linea_blanca/climatizacion/enfriadores', 'AirConditioner'],
-            ['linea_blanca/climatizacion/estufas_a_parafina', 'SpaceHeater'],
+            # ['linea_blanca/climatizacion/estufas_a_parafina', 'SpaceHeater'],
             ['linea_blanca/climatizacion/estufas_electricas', 'SpaceHeater'],
             ['linea_blanca/cocina/microondas', 'Oven'],
             ['linea_blanca/cocina/hornos_electricos', 'Oven'],
