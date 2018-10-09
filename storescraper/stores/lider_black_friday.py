@@ -93,7 +93,8 @@ class LiderBlackFriday(Store):
                 continue
 
             normal_price = Decimal(json_product['price']['BasePriceSales'])
-            offer_price = Decimal(json_product['price']['BasePriceTLMC'] or '0')
+            offer_price = Decimal(
+                json_product['price']['BasePriceTLMC'] or '0')
 
             if not offer_price:
                 offer_price = normal_price

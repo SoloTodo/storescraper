@@ -6,7 +6,7 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
-    check_ean13
+    check_ean13, remove_words
 
 
 class LinioChile(Store):
@@ -106,6 +106,8 @@ class LinioChile(Store):
         if response.url != url:
             return []
 
+        soup = BeautifulSoup(response.text, 'html.parser')
+
         key = re.search(r'-([a-zA-Z0-9]+)$', url).groups()[0]
         page_source = response.text
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
@@ -123,7 +125,13 @@ class LinioChile(Store):
         else:
             name = '{} - {}'.format(name, reference_code)
 
-        price = Decimal(pricing_data['special_price'])
+        normal_price = Decimal(pricing_data['special_price'])
+
+        offfer_price_container = soup.find('div', 'price-promotional')
+        if offfer_price_container:
+            offer_price = Decimal(remove_words(offfer_price_container.text))
+        else:
+            offer_price = normal_price
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
@@ -168,8 +176,8 @@ class LinioChile(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             ean=ean,
