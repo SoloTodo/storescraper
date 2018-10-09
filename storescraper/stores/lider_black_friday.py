@@ -101,7 +101,7 @@ class LiderBlackFriday(Store):
             stock = product_to_stock.get('PROD_' + sku, None)
 
             if stock is None:
-                stock = -1
+                stock = 0
             elif stock < 0:
                 stock = 0
 
@@ -116,8 +116,7 @@ class LiderBlackFriday(Store):
                 normal_price,
                 offer_price,
                 'CLP',
-                sku=sku,
-                description=' STCYBER'
+                sku=sku
             )
 
             products.append(p)
