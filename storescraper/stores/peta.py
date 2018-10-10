@@ -37,10 +37,14 @@ class Peta(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks.html',
-             'Notebook'],
-            # ['equipos-computadores-tablets-aio-ebooks/moviles/ultrabooks.html',
-            #  'Notebook'],
+            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+             'notebooks-basicos.html', 'Notebook'],
+            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+             'notebooks-para-el-trabajo.html', 'Notebook'],
+            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+             'notebooks-para-edicion-grafica.html', 'Notebook'],
+            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+             'notebooks-gamers.html', 'Notebook'],
             # ['equipos-computadores-tablets-aio-ebooks/moviles/'
             #  'equipos-2-en-1.html', 'Notebook'],
             # ['apple/mac/macbook.html', 'Notebook'],

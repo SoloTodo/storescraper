@@ -49,7 +49,7 @@ class Wei(Store):
         category_urls = [
             ['752', 'Tablet'],  # Tablets
             ['678', 'Tablet'],  # TABLETS
-            ['755', 'Notebook'],  # Notebooks
+            ['1267', 'Notebook'],  # Notebooks
             ['731', 'Notebook'],  # NOTEBOOK GAMER
             ['1252', 'Mouse'],  # Mouse
             ['732', 'Mouse'],  # ACCESORIOS GAMER
