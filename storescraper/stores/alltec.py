@@ -110,16 +110,23 @@ class AllTec(Store):
         condition = soup.find('link',
                               {'itemprop': 'itemCondition'})['href'].strip()
 
-        description = html_to_markdown(str(soup.find(
-            'section', 'page-product-box')))
+        description = '{}\n\n{}'.format(
+            html_to_markdown(str(soup.find(
+                'div', {'itemprop': 'description'}))),
+            html_to_markdown(str(soup.find('section', 'page-product-box')))
+        )
 
         add_to_card_button = soup.find('p', {'id': 'add_to_cart'})
+
         stock = -1
         try:
             if 'unvisible' in add_to_card_button.parent['class']:
                 stock = 0
         except KeyError:
             pass
+
+        if 'NOTA: ' in description:
+            stock = 0
 
         offer_price_string = soup.find(
             'span', {'id': 'our_price_display'}).text
