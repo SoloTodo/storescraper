@@ -82,7 +82,7 @@ class ProMovil(Store):
 
         stock_container = soup.find('span', {'id': 'availability_value'})
 
-        if stock_container.text.strip() == 'Disponible para entrega inmediata':
+        if 'disponible' in stock_container.text.lower():
             stock = -1
         else:
             stock = 0
