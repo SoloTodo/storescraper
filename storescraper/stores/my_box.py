@@ -38,7 +38,7 @@ class MyBox(Store):
             ['54-tarjetas-de-video', 'VideoCard'],
             ['28-memoria-ram', 'Ram'],
             ['5-discos-duros', 'StorageDrive'],
-            ['105-discos-ssd', 'SolidStateDrive'],
+            ['126-tarjeta-m2-ssd', 'SolidStateDrive'],
             ['19-fuentes-de-poder', 'PowerSupply'],
             ['16-gabinetes', 'ComputerCase'],
             ['53-refrigeracion', 'CpuCooler'],

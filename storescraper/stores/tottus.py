@@ -74,7 +74,7 @@ class Tottus(Store):
             prices_raw_text = soup.find(
                 'div', 'active-offer').find('span', 'red').text
             offer_price_text, normal_price_text = \
-                re.findall(r'\$([\d.]+)', prices_raw_text)
+                re.findall(r'([\d.]+)', prices_raw_text)
 
             normal_price = Decimal(remove_words(normal_price_text))
             offer_price = Decimal(remove_words(offer_price_text))
