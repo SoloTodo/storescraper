@@ -56,9 +56,9 @@ class Jumbo(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + url_extension)
 
-                url_webpage = 'https://nuevo.jumbo.cl/buscapagina?sl=3a356ef2' \
-                              '-a2d4-4f1b-865f-c79b6fcf0f2a&PS=18&cc=18&sm=0&' \
-                              'PageNumber={}&fq={}'.format(
+                url_webpage = 'https://nuevo.jumbo.cl/buscapagina?sl=3a356ef' \
+                              '2-a2d4-4f1b-865f-c79b6fcf0f2a&PS=18&cc=18&sm=' \
+                              '0&PageNumber={}&fq={}'.format(
                                 page,
                                 urllib.parse.quote(url_extension, safe=''))
 

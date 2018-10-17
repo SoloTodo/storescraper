@@ -21,9 +21,9 @@ class NetNow(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
+            ['catalogo/180-Profesional.html', 'Notebook'],
+            ['catalogo/176-Ultradelgado.html', 'Notebook'],
             ['catalogo/127-Notebooks.html', 'Notebook'],
-            ['acerdays', 'Notebook'],
-            # ['catalogo/176-Ultradelgado.html', 'Notebook'],
             ['catalogo/175-Gamer.html', 'Notebook'],
             ['catalogo/171-Convertible.html', 'Notebook'],
             ['catalogo/146-Monitores.html', 'Monitor'],

@@ -38,10 +38,10 @@ class PcOfertas(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computadores-notebooks-y-tablets/moviles/notebooks.html',
-             'Notebook'],
-            ['computadores-notebooks-y-tablets/moviles/ultrabooks.html',
-             'Notebook'],
+            # ['computadores-notebooks-y-tablets/moviles/notebooks.html',
+            #  'Notebook'],
+            # ['computadores-notebooks-y-tablets/moviles/ultrabooks.html',
+            #  'Notebook'],
             # ['computadores-notebooks-y-tablets/moviles/equipos-2-en-1.html',
             #  'Notebook'],
             # ['apple/mac/macbook.html', 'Notebook'],
