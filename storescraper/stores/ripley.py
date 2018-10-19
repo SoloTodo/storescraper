@@ -189,6 +189,9 @@ class Ripley(Store):
         for path in specs_json['images']:
             picture_url = path
 
+            if picture_url.startswith('file://'):
+                continue
+
             if not picture_url.startswith('https'):
                 picture_url = 'https:' + picture_url
 

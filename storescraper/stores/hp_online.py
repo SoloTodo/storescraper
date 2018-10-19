@@ -58,28 +58,27 @@ class HpOnline(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         response = session.get(url)
 
-        if response.url != url:
+        if response.url != url or response.status_code == 404:
             return []
 
         page_source = response.text
 
-        pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
+        pricing_str = re.search(r'hpContainerPushData = ([\S\s]+?);',
                                 page_source).groups()[0]
-        pricing_data = json.loads(pricing_str)[0]
+        pricing_data = json.loads(pricing_str)['ecommerce'][
+            'detail']['products'][0]
 
-        if isinstance(pricing_data, list):
-            return []
-
-        name = pricing_data['product_name']
-        sku = pricing_data['sku_config']
-        part_number = pricing_data['ean_code']
-        price = Decimal(pricing_data['special_price'])
+        name = pricing_data['name']
+        part_number = pricing_data['id']
+        price = Decimal(pricing_data['price'])
 
         soup = BeautifulSoup(page_source, 'html.parser')
+        sku = soup.find('meta', {'itemprop': 'sku'})['content']
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description-container')))
