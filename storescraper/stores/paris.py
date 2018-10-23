@@ -215,19 +215,27 @@ class Paris(Store):
         pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
                                 'Cencosud/{}?req=set,json'.format(image_id)
 
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      session.get(pictures_resource_url).text).groups()[0])
-        picture_urls = []
+        print(pictures_resource_url)
 
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
+        pictures_json_match = re.search(
+            r's7jsonResponse\((.+),""\);',
+            session.get(pictures_resource_url).text
+        )
 
-        for picture_entry in picture_entries:
-            picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
-                          ''.format(picture_entry['i']['n'])
-            picture_urls.append(picture_url)
+        if pictures_json_match:
+            pictures_json = json.loads(pictures_json_match.groups()[0])
+            picture_urls = []
+
+            picture_entries = pictures_json['set']['item']
+            if not isinstance(picture_entries, list):
+                picture_entries = [picture_entries]
+
+            for picture_entry in picture_entries:
+                picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
+                              ''.format(picture_entry['i']['n'])
+                picture_urls.append(picture_url)
+        else:
+            picture_urls = None
 
         p = Product(
             name,

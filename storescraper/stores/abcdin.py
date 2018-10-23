@@ -49,6 +49,7 @@ class AbcDin(Store):
             ['10028', 'Refrigerator'],
             ['10029', 'Refrigerator'],
             ['10078', 'Printer'],
+            ['29587', 'Printer'],
             ['10041', 'Oven'],
             ['10042', 'Oven'],
             ['10043', 'VacuumCleaner'],
@@ -89,8 +90,6 @@ class AbcDin(Store):
         for category_id, local_category in ajax_resources:
             if local_category != category:
                 continue
-
-            print(category_id)
 
             url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
                   'searchTermScope=&searchType=10&filterTerm=' \
