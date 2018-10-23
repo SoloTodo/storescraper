@@ -100,20 +100,20 @@ class InforIngen(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         pricing_container = soup.find('div', {'id': 'product'}).parent
         name = pricing_container.find('h1').text.strip()
         sku = soup.find('input', {'name': 'product_id'})['value']
-
         stock = int(soup.find('b', text='ENTREGA INMEDIATA:').next.next)
 
         price_containers = pricing_container.find(
             'img', {'align': 'absmiddle'}).parent.findAll('h2')
 
-        normal_price = Decimal(remove_words(price_containers[0].text))
-        offer_price = Decimal(remove_words(price_containers[1].text))
+        normal_price = Decimal(remove_words(price_containers[1].text))
+        offer_price = Decimal(remove_words(price_containers[2].text))
 
         if offer_price > normal_price:
             offer_price = normal_price
