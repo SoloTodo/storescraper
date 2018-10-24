@@ -38,6 +38,8 @@ class Hites(Store):
             'Mouse',
             'Headphones',
             'ExternalStorageDrive',
+            'Monitor',
+            'Projector',
         ]
 
     @classmethod
@@ -72,6 +74,7 @@ class Hites(Store):
             ['14094', 'Mouse'],
             ['14092', 'Headphones'],
             ['14071', 'ExternalStorageDrive'],
+            ['14069', 'Monitor'],
         ]
 
         product_urls = []
