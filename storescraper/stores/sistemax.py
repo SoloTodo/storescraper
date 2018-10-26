@@ -7,7 +7,6 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
-import re
 
 
 class Sistemax(Store):
@@ -35,8 +34,8 @@ class Sistemax(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['84', 'VideoCard'],  # Tarjetas de video
             ['59', 'Processor'],  # Procesadores
+            ['84', 'VideoCard'],  # Tarjetas de video
             ['103', 'Monitor'],  # Monitores LCD
             ['66', 'Motherboard'],  # MB
             ['73_74', 'Ram'],  # RAM
@@ -53,6 +52,14 @@ class Sistemax(Store):
             ['99_102', 'Headphones'],  # AUDIFONOS
             ['99_100', 'StereoSystem'],  # PARLANTES
         ]
+
+        subcategory_urls = []
+
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
+
+
 
         product_urls = []
         session = session_with_proxy(extra_args)
@@ -141,16 +148,20 @@ class Sistemax(Store):
 
     @classmethod
     def _search_all_urls_and_types(cls, url, session):
+        print('Searching ', url)
         product_urls = []
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        sub_path = soup.find('div', {'id': 'content'}).find('ul')
-        if sub_path:
-            for sub_url in sub_path.findAll('a'):
+        sub_path_links = soup.find('div', {'id': 'content'}).findAll('li')
+        if sub_path_links:
+            print('Is subpath')
+            for sub_path_link in sub_path_links:
+                sub_url = sub_path_link.find('a')
                 product_urls += \
                     cls._search_all_urls_and_types(sub_url['href'], session)
         else:
+            print('Is final')
             link_containers = soup.findAll('div', 'product-list')
 
             for link_container in link_containers:
