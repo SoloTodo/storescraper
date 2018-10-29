@@ -53,13 +53,9 @@ class Sistemax(Store):
             ['99_100', 'StereoSystem'],  # PARLANTES
         ]
 
-        subcategory_urls = []
-
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-
-
 
         product_urls = []
         session = session_with_proxy(extra_args)

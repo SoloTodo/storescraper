@@ -71,7 +71,7 @@ class Sodimac(Store):
             ['scat913770/Equipos-de-Musica', 'StereoSystem'],
             ['cat4850257/Home-Theater-y-Soundbars', 'StereoSystem'],
             ['cat8350012/Parlantes-bluetooth', 'StereoSystem'],
-            ['cat4850400/Parlantes-y-Karaokes', 'StereoSystem'],
+            # ['cat4850400/Parlantes-y-Karaokes', 'StereoSystem'],
             ['cat8350014/Tornamesas', 'StereoSystem'],
         ]
 

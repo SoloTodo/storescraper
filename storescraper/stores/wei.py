@@ -81,7 +81,7 @@ class Wei(Store):
             ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
             ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
             ['1175', 'StereoSystem'],  # PARLANTES
-            ['793', 'StereoSystem'],  # AMPLIFICADORES
+            # ['793', 'StereoSystem'],  # AMPLIFICADORES
         ]
 
         session = session_with_proxy(extra_args)
