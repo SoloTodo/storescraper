@@ -1,13 +1,10 @@
 import json
 
-import requests
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class LiderBlackFriday(Store):
@@ -38,14 +35,15 @@ class LiderBlackFriday(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        return ['https://cyber.lider.cl/']
+        return ['https://blackfriday.lider.cl/?cat={}'.format(category)]
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         categories_dict = {
             'Notebook': 'Computación',
             'Cell': 'Smartphones',
-            'Refrigerator': 'Refrigeración',
+            # 'Refrigerator': 'Refrigeración',
+            'Refrigerator': 'Línea Blanca',
             'Oven': 'Electrodomésticos',
             'Television': 'Televisión',
             'StereoSystem': 'Audio',
@@ -59,7 +57,7 @@ class LiderBlackFriday(Store):
         session = session_with_proxy(extra_args)
 
         product_to_stock = {}
-        stocks = json.loads(session.get('https://cyber.lider.cl/'
+        stocks = json.loads(session.get('https://blackfriday.lider.cl/'
                                         'json/ff_inv_landing.json').text)
 
         for stocks in stocks['Inventory']:
@@ -68,7 +66,8 @@ class LiderBlackFriday(Store):
 
         json_products = json.loads(
             session.get(
-                'https://cyber.lider.cl/json/products.json').text)['products']
+                'https://blackfriday.lider.cl/json/products.json').text)[
+            'products']
 
         products = []
         category_keyword = categories_dict[category] if category else None
@@ -78,7 +77,7 @@ class LiderBlackFriday(Store):
                     json_product['categorias']:
                 continue
 
-            product_url = 'https://cyber.lider.cl/#!/product/' \
+            product_url = 'https://blackfriday.lider.cl/#!/product/' \
                           + json_product['ID']
 
             brand = json_product['brand']
