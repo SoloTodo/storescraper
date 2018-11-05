@@ -180,7 +180,12 @@ class Paris(Store):
         response = session.post(
             'https://www.paris.cl/store-api/pyload/_search',
             json.dumps(query))
-        product_data = json.loads(response.text)['hits']['hits'][0]
+        product_data = json.loads(response.text)['hits']['hits']
+
+        if not product_data:
+            return []
+
+        product_data = product_data[0]
 
         sku = product_data['_id']
         name = product_data['_source']['name']
