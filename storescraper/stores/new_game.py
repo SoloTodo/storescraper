@@ -18,6 +18,12 @@ class NewGame(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'Monitor',
+            'Ram',
+            'SolidStateDrive',
+            'MemoryCard',
+            'VideoCard',
+            'ComputerCase',
         ]
 
     @classmethod
@@ -27,6 +33,11 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=15', 'Keyboard'],
             ['accion=hijo&plt=pc&cat=29', 'KeyboardMouseCombo'],
             ['accion=hijo&plt=pc&cat=17', 'Headphones'],
+            ['accion=hijo&plt=pc&cat=76', 'Monitor'],
+            ['accion=hijo&plt=pc&cat=77', 'Ram'],
+            ['accion=hijo&plt=pc&cat=78', 'SolidStateDrive'],
+            ['accion=hijo&plt=pc&cat=80', 'VideoCard'],
+            ['accion=hijo&plt=pc&cat=81', 'ComputerCase'],
         ]
 
         product_urls = []
