@@ -143,6 +143,9 @@ class Hites(Store):
         normal_price = Decimal(json_data['prices']['offerPrice'])
         offer_price = Decimal(json_data['prices']['cardPrice'])
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = html_to_markdown(json_data['longDescription'])
 
         for attribute in json_data['attributes']:
