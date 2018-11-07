@@ -9,8 +9,6 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Hites(Store):
-    preferred_products_for_url_concurrency = 5
-
     @classmethod
     def categories(cls):
         return [
@@ -119,7 +117,6 @@ class Hites(Store):
                     slug = product_entry['productString']
                     product_url = 'https://www.hites.com/' + slug
                     product_urls.append(product_url)
-                    print(product_url)
 
                 page += 1
 
@@ -127,8 +124,6 @@ class Hites(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-
         session = session_with_proxy(extra_args)
         page_source = session.get(url, timeout=10).text
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -138,7 +133,13 @@ class Hites(Store):
         name = json_data['name']
         sku = json_data['partNumber']
 
-        stock = -1 if json_data['buyable'] else 0
+        if json_data['isOutOfStock']:
+            stock = 0
+            picture_urls = [json_data['fullImage']]
+        else:
+            stock = -1
+            picture_urls = json_data['children'][0]['images']
+
         normal_price = Decimal(json_data['prices']['offerPrice'])
         offer_price = Decimal(json_data['prices']['cardPrice'])
 
@@ -147,8 +148,6 @@ class Hites(Store):
         for attribute in json_data['attributes']:
             description += '\n{} {}'.format(attribute['name'],
                                             attribute['value'])
-
-        picture_urls = json_data['children'][0]['images']
 
         p = Product(
             name,
