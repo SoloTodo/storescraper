@@ -103,7 +103,8 @@ class HpStore(Store):
             str(soup.find('div', 'product-description')))
         picture_urls = [tag['href'] for tag in soup.findAll('a', 'lightbox')]
 
-        if soup.find('button', 'btn-cart'):
+        if soup.find('button', 'btn-cart') or \
+                soup.findAll('p', 'tienda-disponible'):
             stock = -1
         else:
             stock = 0
