@@ -67,7 +67,7 @@ class Sodimac(Store):
             ['scat301608/Estufas-a-Lena', 'SpaceHeater'],
             ['cat3870010/Smartphones', 'Cell'],
             ['cat3870001/Audifonos', 'Headphones'],
-            ['cat3870011/Audifonos-para-celulares', 'Headphones'],
+            # ['cat3870011/Audifonos-para-celulares', 'Headphones'],
             ['scat913770/Equipos-de-Musica', 'StereoSystem'],
             ['cat4850257/Home-Theater-y-Soundbars', 'StereoSystem'],
             ['cat8350012/Parlantes-bluetooth', 'StereoSystem'],
