@@ -134,11 +134,15 @@ class Hites(Store):
         sku = json_data['partNumber']
 
         if json_data['isOutOfStock']:
-            stock = 0
             picture_urls = [json_data['fullImage']]
+            stock = 0
         else:
-            stock = -1
             picture_urls = json_data['children'][0]['images']
+            stock = 0
+            for attribute in json_data['children'][0]['attributes']:
+                if attribute['identifier'] == 'SHIPMODE_HOMEDEL':
+                    if attribute['value'] == '1':
+                        stock = -1
 
         normal_price = Decimal(json_data['prices']['offerPrice'])
         offer_price = Decimal(json_data['prices']['cardPrice'])
@@ -149,8 +153,9 @@ class Hites(Store):
         description = html_to_markdown(json_data.get('longDescription', ''))
 
         for attribute in json_data['attributes']:
-            description += '\n{} {}'.format(attribute['name'],
-                                            attribute['value'])
+            if attribute['displayable']:
+                description += '\n{} {}'.format(attribute['name'],
+                                                attribute['value'])
 
         p = Product(
             name,
