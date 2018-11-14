@@ -73,7 +73,7 @@ class Magens(Store):
             found_products = 0
 
             while True:
-                if page > 30:
+                if page > 50:
                     raise Exception('Page overflow')
 
                 separator = '?'
