@@ -86,7 +86,7 @@ class Magens(Store):
                 print(category_url)
 
                 soup = BeautifulSoup(
-                    session.get(category_url, timeout=30).text, 'html.parser')
+                    session.get(category_url, timeout=90).text, 'html.parser')
 
                 product_containers = soup.findAll('article', 'product-block')
 
@@ -119,7 +119,7 @@ class Magens(Store):
             'ascii', 'ignore').decode('ascii')
         session = session_with_proxy(extra_args)
 
-        response = session.get(cleaned_url, timeout=30)
+        response = session.get(cleaned_url, timeout=90)
 
         if response.url == 'https://www.magens.cl/':
             return []
