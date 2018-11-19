@@ -34,6 +34,7 @@ class Magens(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'AllInOne',
         ]
 
     @classmethod
@@ -60,6 +61,7 @@ class Magens(Store):
             ['Impresora', 'Printer'],
             ['Mouse,%20Teclado%20Y%20Mousepad', 'Mouse'],
             ['Audifono', 'Headphones'],
+            ['All%20In%20One', 'AllInOne'],
         ]
 
         discovered_urls = []
