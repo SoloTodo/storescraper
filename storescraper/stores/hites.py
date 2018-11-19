@@ -125,7 +125,12 @@ class Hites(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, timeout=10).text
+        response = session.get(url, timeout=10)
+
+        if response.status_code == 404:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
