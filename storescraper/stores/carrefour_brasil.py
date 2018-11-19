@@ -18,16 +18,16 @@ class CarrefourBrasil(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['acessorios-de-informatica?termo=%3Arelevance%3A'
-             'navegacao%3Apen-drive', 'UsbFlashDrive'],
-            ['acessorios-de-informatica?termo=%3Arelevance%3A'
-             'navegacao%3Ahd-externo', 'ExternalStorageDrive'],
-            ['cameras-e-filmadoras?termo=%3Arelevance%3A'
-             'navegacao%3Acartao-de-memoria', 'MemoryCard'],
+            ['pen-drive', 'UsbFlashDrive'],
+            ['hd-externo', 'ExternalStorageDrive'],
+            ['cartao-de-memoria', 'MemoryCard'],
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -55,6 +55,10 @@ class CarrefourBrasil(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'})

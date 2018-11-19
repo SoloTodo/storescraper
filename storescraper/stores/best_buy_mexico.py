@@ -44,7 +44,14 @@ class BestBuyMexico(Store):
 
                 print(category_url)
 
-                products_data = json.loads(session.get(category_url).text)
+                response = session.get(category_url)
+
+                if response.status_code == 404:
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
+
+                products_data = json.loads(response.text)
                 product_cells = products_data['products']
 
                 if not product_cells:

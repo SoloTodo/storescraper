@@ -150,7 +150,9 @@ class Hites(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        description = html_to_markdown(json_data.get('longDescription', ''))
+        description = html_to_markdown(
+            json_data.get('longDescription', '') or ''
+        )
 
         for attribute in json_data['attributes']:
             if attribute['displayable']:

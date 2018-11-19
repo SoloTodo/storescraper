@@ -32,7 +32,7 @@ class Compumundo(Store):
             ['pendrive/4713', 'UsbFlashDrive'],
             ['tarjeta-de-memoria-celulares/3761', 'MemoryCard'],
             ['tarjeta-microsd-tablets/3777', 'MemoryCard'],
-            ['disco-rigido-externo/4716', 'ExternalStorageDrive'],
+            # ['disco-rigido-externo/4716', 'ExternalStorageDrive'],
         ]
 
         product_urls = []

@@ -44,8 +44,9 @@ class MagazineLuiza(Store):
                            ''.format(category_path)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-
-            containers = soup.findAll('li', 'product')
+            containers = soup.findAll(
+                'div', {'itemtype': 'http://schema.org/Product'}
+            )
 
             if not containers:
                 raise Exception('Empty category: ' + category_url)

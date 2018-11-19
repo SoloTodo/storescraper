@@ -39,7 +39,7 @@ class Fravega(Store):
             # ['C:/1000157/1000170/', 'Stove'],
             ['C:/1000008/1000461/1000060/', 'UsbFlashDrive'],
             ['C:/1000008/1000461/1000062/', 'MemoryCard'],
-            ['C:/1000008/1000461/1000053/', 'ExternalStorageDrive'],
+            # ['C:/1000008/1000461/1000053/', 'ExternalStorageDrive'],
         ]
 
         product_urls = []

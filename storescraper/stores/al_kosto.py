@@ -25,10 +25,11 @@ class AlKosto(Store):
         url_extensions = [
             # ['computadores-y-tablets/accesorios/accesorios-computadores/'
             #    'memorias-sd-hd/discos-duros/', 'ExternalStorageDrive'],
-            ['computadores-y-tablets/accesorios/accesorios-computadores/'
-             'memorias-sd-hd/micro-sd/', 'MemoryCard'],
-            ['computadores-y-tablets/accesorios/accesorios-computadores/'
-             'memorias-sd-hd/memoria-usb/', 'UsbFlashDrive'],
+            ['accesorios/accesorios-computadores-tablets/'
+             'accesorios-computadores/memorias-sd-hd/micro-sd', 'MemoryCard'],
+            ['accesorios/accesorios-computadores-tablets/'
+             'accesorios-computadores/memorias-sd-hd/memoria-usb',
+             'UsbFlashDrive'],
             ['accesorios/accesorios-computadores-tablets/'
              'accesorios-computadores/memorias-sd-hd', 'MemoryCard']
         ]
