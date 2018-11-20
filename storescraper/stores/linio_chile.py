@@ -59,43 +59,46 @@ class LinioChile(Store):
         product_urls = []
         session = session_with_proxy(extra_args)
 
+        sortings = ['relevance', 'price_asc', 'price_desc']
+
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
 
-            page = 1
+            for sorting in sortings:
+                page = 1
 
-            while True:
-                category_url = 'https://www.linio.cl/c/{}?page={}'.format(
-                    category_path, page)
-                print(category_url)
+                while True:
+                    category_url = 'https://www.linio.cl/c/{}?sortBy={}&page' \
+                                   '={}'.format(category_path, sorting, page)
+                    print(category_url)
 
-                if page >= 40:
-                    raise Exception('Page overflow: ' + category_url)
+                    if page >= 40:
+                        raise Exception('Page overflow: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                    soup = BeautifulSoup(session.get(category_url).text,
+                                         'html.parser')
 
-                products_containers = \
-                    soup.findAll('div', 'catalogue-product')
+                    products_containers = \
+                        soup.findAll('div', 'catalogue-product')
 
-                if not products_containers:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_url)
-                    break
+                    if not products_containers:
+                        if page == 1:
+                            raise Exception('Empty category: ' + category_url)
+                        break
 
-                for product_container in products_containers:
-                    if product_container.find(
-                            'div', 'badge-international-shipping'):
-                        continue
+                    for product_container in products_containers:
+                        if product_container.find(
+                                'div', 'badge-international-shipping'):
+                            continue
 
-                    product_url = 'https://www.linio.cl' + \
-                                  product_container.find('a')['href']
-                    product_urls.append(product_url)
+                        product_url = 'https://www.linio.cl' + \
+                                      product_container.find('a')['href']
+                        product_urls.append(product_url)
 
-                page += 1
+                    page += 1
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
