@@ -23,10 +23,10 @@ class Vitel(Store):
 
         category_paths = [
             # Ampolletas LED
-            ['iluminacion/lamparas-tubos-led.html', 'Lamp'],
+            ['iluminacion/lamparas-tubos-led', 'Lamp'],
             # Proyectores LED con DS43
-            ['iluminacion.html?cat=60', 'LightProjector'],
-            ['iluminacion.html?cat=318', 'LightProjector'],
+            # ['iluminacion.html?cat=60', 'LightProjector'],
+            # ['iluminacion.html?cat=318', 'LightProjector'],
         ]
 
         product_urls = []
@@ -37,6 +37,7 @@ class Vitel(Store):
                 continue
 
             category_url = base_url + category_path
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             product_containers = soup.findAll('li', 'product-items')
 

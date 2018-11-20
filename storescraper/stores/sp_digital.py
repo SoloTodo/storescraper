@@ -101,8 +101,9 @@ class SpDigital(Store):
 
                 url = 'https://www.spdigital.cl/categories/view/{}/page:' \
                       '{}?o=withstock'.format(category_id, p)
-                print(url)
-                soup = BeautifulSoup(session.get(url).text, 'html5lib')
+
+                response = cls._retrieve_page(session, url)
+                soup = BeautifulSoup(response.text, 'html5lib')
 
                 product_containers = soup.findAll('div', 'product-item-mosaic')
 
@@ -135,7 +136,8 @@ class SpDigital(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = cls._retrieve_page(session, url)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         part_number = soup.find('span', {'id': '_sku'})
 
@@ -208,3 +210,14 @@ class SpDigital(Store):
         )
 
         return [p]
+
+    @classmethod
+    def _retrieve_page(cls, session, url, retries=5):
+        print(url)
+        try:
+            return session.get(url, timeout=90)
+        except Exception:
+            if retries:
+                return cls._retrieve_page(session, url, retries-1)
+            else:
+                raise
