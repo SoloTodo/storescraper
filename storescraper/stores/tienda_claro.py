@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -20,60 +22,83 @@ class TiendaClaro(Store):
 
         if category == 'Cell':
             session = session_with_proxy(extra_args)
-            page = 1
+            offset = 0
 
             while True:
-                category_url = 'http://tienda.clarochile.cl/?limit=36&p=' + \
-                               str(page)
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                category_url = 'https://tienda.clarochile.cl/webapp/wcs/' \
+                               'stores/servlet/CategoryDisplay?categoryId=' \
+                               '10008&pageSize=18&storeId=10151&beginIndex=' \
+                               '{}'.format(offset)
+                print(category_url)
+                soup = BeautifulSoup(
+                    session.get(category_url, verify=False).text,
+                    'html.parser'
+                )
 
-                done = False
+                containers = soup.find(
+                    'div', 'product_listing_container').findAll(
+                    'div', 'product')
 
-                for container in soup.findAll('div', 'item'):
-                    product_url = container.find('a')['href']
+                if not containers:
+                    if offset == 0:
+                        raise Exception('Empty list')
 
-                    if product_url in product_urls:
-                        done = True
-                        break
-
-                    product_urls.append(product_url)
-
-                if done:
                     break
 
-                page += 1
+                for container in containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                offset += 18
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text,
+                             'html.parser')
 
-        name = soup.find('h2').text.strip()
-        sku = soup.find('meta', {'itemprop': 'sku'})['content']
+        base_name = soup.find('h1', 'main_header').text.strip()
+        page_id = soup.find('meta', {'name': 'pageId'})['content']
+        price_container = soup.find('span', {'id': 'offerPrice_{}'.format(
+            page_id)})
+        price = Decimal(remove_words(price_container.text))
+        json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
+            page_id)})
+        json_data = json.loads(json_container.text)
+        description = html_to_markdown(
+            str(soup.find('div', 'billing_method_div_custom')))
+        description += '\n\n{}'.format(html_to_markdown(
+            str(soup.find('div', 'descriptiveAttributes'))))
+        products = []
 
-        price = Decimal(remove_words(soup.find('span', 'price').text))
+        for product_entry in json_data:
+            sku = product_entry['catentry_id']
+            name = base_name
 
-        picture_urls = [tag['href'] for tag in soup.findAll('a', 'cloud-zoom')]
-        description = html_to_markdown(str(soup.find('div', 'tabs-content')))
+            for attribute_key in product_entry['Attributes'].keys():
+                attribute, value = attribute_key.split('_|_')
+                name += ' {} {}'.format(attribute, value)
 
-        product = Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            sku,
-            -1,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            cell_plan_name='Claro Prepago',
-            description=description,
-            picture_urls=picture_urls
-        )
+            picture_urls = ['https://tienda.clarochile.cl{}'.format(
+                product_entry['ItemImage467'])]
 
-        return [product]
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                sku,
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                cell_plan_name='Claro Prepago',
+                description=description,
+                picture_urls=picture_urls
+            ))
+
+        return products
