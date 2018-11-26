@@ -3,6 +3,7 @@ import json
 import re
 import urllib
 
+import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -14,7 +15,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class Claro(Store):
     planes_url = 'https://www.clarochile.cl/personas/servicios/' \
-                 'servicios-moviles/postpago/planes-y-precios/'
+                 'servicios-moviles/postpago/promociones-postpago/'
     prepago_url = 'https://www.clarochile.cl/personas/servicios/' \
                   'servicios-moviles/prepago/'
     plan_variations = [
@@ -38,27 +39,7 @@ class Claro(Store):
 
         if category == 'CellPlan':
             product_urls.append(cls.prepago_url)
-
-            page_source = session.get(cls.planes_url).text
-
-            plan_data_raw_json = re.search(
-                r'jsonPlanes.*\'(\[.*)',
-                page_source).groups()[0].split('\'')[0]
-
-            plan_data_json = json.loads(plan_data_raw_json)
-
-            for plan_entry in plan_data_json:
-                plan_id = plan_entry['fi_plan']
-                for suffix, field_name, sku_suffix in cls.plan_variations:
-                    if sku_suffix:
-                        sku = '{}_{}'.format(plan_id, sku_suffix)
-                    else:
-                        sku = plan_id
-
-                    plan_url = 'https://www.clarochile.cl/personas/servicios' \
-                               '/servicios-moviles/postpago/planes-y-precios' \
-                               '/{}/'.format(sku)
-                    product_urls.append(plan_url)
+            product_urls.append(cls.planes_url)
 
         if category == 'Cell':
             # Con plan
@@ -93,11 +74,10 @@ class Claro(Store):
                 'CLP',
             )
             products.append(p)
-        elif 'planes-y-precios' in url:
+        elif url == cls.planes_url:
             # Plan Postpago
-            plan = cls._plan(url, extra_args)
-            if plan:
-                products.append(plan)
+            planes = cls._planes(url, extra_args)
+            products.extend(planes)
         elif 'equipos.clarochile.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
@@ -106,55 +86,44 @@ class Claro(Store):
         return products
 
     @classmethod
-    def _plan(cls, url, extra_args):
+    def _planes(cls, url, extra_args):
         print(url)
 
+        planes_url = 'https://digital.clarochile.cl/wcm-iframe/' \
+                     'landing-postpago-dinamico/assets/js/planes.js'
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        raw_data = re.search(r'planes_moviles = ([\s\S]*)$', session.get(
+            planes_url).text)
+        json_data = demjson.decode(raw_data.groups()[0])
 
-        if response.status_code == 404:
-            return None
+        products = []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        portabilidad_modes = [
+            '',
+            ' Portabilidad',
+        ]
 
-        sku = [e for e in url.split('/') if e][-1]
+        for sku_entry in json_data:
+            for suffix in portabilidad_modes:
+                name = '{}{}'.format(sku_entry['nombre_titulo'], suffix)
+                price = Decimal(remove_words(
+                    sku_entry['valor_fijo_portabilidad_propio']))
+                key = '{}{}'.format(sku_entry['url_plan'], suffix)
 
-        sku_parts = sku.split('_')
-        if len(sku_parts) == 1:
-            variation_code = ''
-        else:
-            variation_code = sku_parts[1]
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'CellPlan',
+                    url,
+                    url,
+                    key,
+                    -1,
+                    price,
+                    price,
+                    'CLP'
+                ))
 
-        variation_code_to_suffix = {e[2]: e[0] for e in cls.plan_variations}
-        assert variation_code in variation_code_to_suffix
-
-        pricing_container = soup.find('section', 'detallePlan')
-
-        name = pricing_container.find('h3').text.strip() + \
-            variation_code_to_suffix[variation_code]
-
-        normal_price = Decimal(remove_words(
-            pricing_container.find('h2').text.replace('Mensuales', '')))
-        offer_price = normal_price
-
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'contenedorPrincipal'})))
-
-        product = Product(
-            name,
-            cls.__name__,
-            'CellPlan',
-            url,
-            url,
-            sku,
-            -1,
-            normal_price,
-            offer_price,
-            'CLP',
-            description=description
-        )
-
-        return product
+        return products
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
