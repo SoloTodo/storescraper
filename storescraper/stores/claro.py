@@ -227,14 +227,19 @@ class Claro(Store):
                 for suffix in ['', ' Portabilidad']:
                     if suffix:
                         # Portabilidad
-                        cell_monthly_payment = Decimal(remove_words(
-                            plan_entry['valor_cuota_mensual_portabilidad']))
-                        if cell_monthly_payment:
+
+                        if float(plan_entry['valor_total_portabilidad']):
+                            # Con cuota mensual de arriendo
+                            cell_monthly_payment = Decimal(remove_words(
+                                plan_entry[
+                                    'valor_cuota_mensual_portabilidad']))
                             price = Decimal(remove_words(
                                 plan_entry['valor_pie']))
                         else:
-                            price = remove_words(
-                                plan_entry['cuota_inicial_portado'])
+                            # Sin cuota mensual de arriendo
+                            cell_monthly_payment = Decimal(0)
+                            price = Decimal(remove_words(
+                                plan_entry['cuota_inicial_portado']))
                     else:
                         cell_monthly_payment = Decimal(0)
                         price = Decimal(remove_words(
