@@ -145,6 +145,8 @@ class Paris(Store):
 
             for cell in products_data:
                 product_url = cell['_source']['product_can']
+                if product_url == 'https://www.paris.cl/store/producto/':
+                    continue
                 product_urls.append(product_url)
 
         return product_urls
