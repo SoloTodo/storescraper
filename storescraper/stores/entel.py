@@ -1,12 +1,11 @@
 import json
 
-import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, PhantomJS
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Entel(Store):
@@ -72,23 +71,8 @@ class Entel(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        with PhantomJS() as driver:
-            tries = 1
-
-            while True:
-                if tries >= 10:
-                    raise Exception('Try overflow getting plans')
-                print('Try: {}'.format(tries))
-                driver.get(url)
-                time.sleep(5)
-
-                soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-                plan_tabs = soup.findAll('div', 'align-left')
-                if plan_tabs:
-                    break
-
-                tries += 1
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         products = []
 
@@ -97,25 +81,17 @@ class Entel(Store):
             'con cuota de arriendo',
         ]
 
-        for plan_tab in plan_tabs:
-            base_plan_name = plan_tab.find('h5').text.strip()
+        for plan_box in soup.findAll('div', 'box-planes'):
+            base_plan_name = plan_box.find('h3').text.split('$')[0].strip()
 
             for suffix in ['', ' Portabilidad']:
                 for variant in variants:
                     name = '{}{} ({})'.format(base_plan_name, suffix, variant)
 
-                    normal_price_container = plan_tab.find(
-                        'p', 'valor-dcto-caja-precio')
+                    price_container = plan_box.find(
+                        'span', 'green-txt')
 
-                    highlighted_price = Decimal(remove_words(
-                        plan_tab.find('p', 'monto').text))
-
-                    if normal_price_container:
-                        normal_price = Decimal(remove_words(
-                            normal_price_container.text))
-                        web_price = highlighted_price
-                    else:
-                        normal_price = web_price = highlighted_price
+                    price = Decimal(remove_words(price_container.text))
 
                     products.append(Product(
                         name,
@@ -125,8 +101,8 @@ class Entel(Store):
                         url,
                         name,
                         -1,
-                        normal_price,
-                        normal_price,
+                        price,
+                        price,
                         'CLP',
                     ))
 
@@ -134,8 +110,6 @@ class Entel(Store):
 
                     name = '{}{} Exclusivo web ({})'.format(
                         base_plan_name, suffix, variant)
-
-                    price = web_price.quantize(0)
 
                     products.append(Product(
                         name,
