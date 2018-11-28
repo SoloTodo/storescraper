@@ -76,7 +76,7 @@ class NewGame(Store):
         stock_text = soup.find('div', 'stock').find(
             'span').text.split(':')[1].strip()
 
-        if stock_text == 'Disponible':
+        if stock_text == 'Disponible' or stock_text == 'Últimas unidades':
             stock = -1
         else:
             stock = 0
