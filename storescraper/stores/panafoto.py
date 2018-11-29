@@ -14,6 +14,13 @@ class Panafoto(Store):
     def categories(cls):
         return [
             'Television',
+            'StereoSystem',
+            'OpticalDiskPlayer',
+            'Cell',
+            'Refrigerator',
+            'Oven',
+            'Monitor',
+            'Projector',
         ]
 
     @classmethod
@@ -25,7 +32,24 @@ class Panafoto(Store):
 
         category_filters = [
             ('["categories.level2:Categorías /// TV y Video /// Televisores"]',
-             'Television')
+             'Television'),
+            ('["categories.level2:Categorías /// TV y Video /// '
+             'Audio para TV"]',
+             'StereoSystem'),
+            ('["categories.level2:Categorías /// TV y Video /// '
+             'DVD y Blu-Ray"]', 'OpticalDiskPlayer'),
+            ('["categories.level2:Categorías /// Audio /// '
+             'Micro y Minicomponentes"]', 'StereoSystem'),
+            ('["categories.level2:Categorías /// Celulares y Tablets /// '
+             'Smartphones y Celulares"]', 'Cell'),
+            ('["categories.level2:Categorías /// Hogar /// Refrigeración"]',
+             'Refrigerator'),
+            ('["categories.level2:Categorías /// Electrodomésticos /// '
+             'Microondas"]', 'Oven'),
+            ('["categories.level3:Categorías /// Cómputo /// '
+             'Monitores y Proyectores /// Monitores"]', 'Monitor'),
+            ('["categories.level3:Categorías /// Cómputo /// '
+             'Monitores y Proyectores /// Proyectores"]', 'Projector'),
         ]
 
         session = session_with_proxy(extra_args)
