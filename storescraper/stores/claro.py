@@ -4,14 +4,11 @@ import re
 import urllib
 
 import demjson
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
-
+from storescraper.utils import session_with_proxy, remove_words
 
 class Claro(Store):
     planes_url = 'https://www.clarochile.cl/personas/servicios/' \
@@ -197,7 +194,7 @@ class Claro(Store):
                     if suffix:
                         # Portabilidad
 
-                        if float(plan_entry['valor_total_portabilidad']):
+                        if int(product_json['postpago_cuotas_view']):
                             # Con cuota mensual de arriendo
                             cell_monthly_payment = Decimal(remove_words(
                                 plan_entry[
