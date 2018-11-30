@@ -83,6 +83,9 @@ class Raenco(Store):
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
 
+        if not soup.find('span', 'addtocart-button'):
+            return []
+
         name = soup.find('h1').text.strip()
         sku = re.search(r'/(\d+)-detail$', url).groups()[0]
         stock = -1
