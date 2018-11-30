@@ -179,8 +179,9 @@ class Ripley(Store):
         description += '\n\nAtributo | Valor\n-- | --\n'
 
         for attribute in specs_json['attributes']:
-            description += '{} | {}\n'.format(attribute['name'],
-                                              attribute['value'])
+            if 'name' in attribute and 'value' in attribute:
+                description += '{} | {}\n'.format(attribute['name'],
+                                                  attribute['value'])
 
         description += '\n\n'
 
