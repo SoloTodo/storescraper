@@ -92,7 +92,12 @@ class Raenco(Store):
             price_container = soup.find('span', 'PricebasePrice')
 
         price = Decimal(price_container.text.replace('$', '').replace(',', ''))
-        part_number = re.search(r'data-flix-mpn="(.+)"', data).groups()[0]
+
+        part_number = None
+
+        part_number_container = re.search(r'data-flix-mpn="(.+)"', data)
+        if part_number_container:
+            part_number = part_number_container.groups()[0]
 
         picture_urls = ['https://www.raenco.com/images/virtuemart/product/{}'
                         '.jpg'.format(sku)]
