@@ -10,6 +10,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
+
 class Claro(Store):
     planes_url = 'https://www.clarochile.cl/personas/servicios/' \
                  'servicios-moviles/postpago/promociones-postpago/'

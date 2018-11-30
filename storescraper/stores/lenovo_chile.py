@@ -12,7 +12,8 @@ class LenovoChile(Store):
     def categories(cls):
         return [
             'Notebook',
-            'Tablet'
+            'Tablet',
+            'AllInOne',
         ]
 
     @classmethod
@@ -45,8 +46,12 @@ class LenovoChile(Store):
         name = soup.find('h1', 'desktopHeader').text.strip()
         sku = soup.find('meta', {'name': 'productid'})['content'].strip()
 
-        price_str = soup.find('meta', {'name': 'productprice'})['content']
-        price = Decimal(remove_words(price_str))
+        price_tag = soup.find('meta', {'name': 'productsaleprice'})
+
+        if not price_tag:
+            price_tag = soup.find('meta', {'name': 'productprice'})
+
+        price = Decimal(remove_words(price_tag['content']))
 
         description = html_to_markdown(
                 str(soup.find('div', {'id': 'tab-techspec'})))
