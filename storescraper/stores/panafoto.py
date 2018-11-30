@@ -1,4 +1,5 @@
 import json
+import re
 import urllib
 from decimal import Decimal
 
@@ -21,6 +22,7 @@ class Panafoto(Store):
             'Oven',
             'Monitor',
             'Projector',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -50,6 +52,8 @@ class Panafoto(Store):
              'Monitores y Proyectores /// Monitores"]', 'Monitor'),
             ('["categories.level3:Categorías /// Cómputo /// '
              'Monitores y Proyectores /// Proyectores"]', 'Projector'),
+            ('["categories.level3:Categorías /// Hogar /// Climatización /// '
+             'Aires acondicionados split"]', 'AirConditioner'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -100,6 +104,10 @@ class Panafoto(Store):
         sku = soup.find('form', {'id': 'product_addtocart_form'})[
             'data-product-sku']
 
+        part_number_match = re.search(
+            r"ccs_cc_args.push\(\['pn', '(.+)'\]\);", data)
+        part_number = part_number_match.groups()[0]
+
         if soup.find('div', 'unavailable'):
             stock = 0
         else:
@@ -137,6 +145,7 @@ class Panafoto(Store):
             price,
             'USD',
             sku=sku,
+            part_number=part_number,
             description=description,
             picture_urls=picture_urls
         )

@@ -116,6 +116,7 @@ from .pichau import Pichau
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
 from .pro_movil import ProMovil
+from .raenco import Raenco
 from .reif_store import ReifStore
 from .rhona import Rhona
 from .ribeiro import Ribeiro
