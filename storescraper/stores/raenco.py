@@ -98,7 +98,7 @@ class Raenco(Store):
 
         part_number = None
 
-        part_number_container = re.search(r'data-flix-mpn="(.+)"', data)
+        part_number_container = re.search(r'data-flix-mpn="(.+?)"', data)
         if part_number_container:
             part_number = part_number_container.groups()[0]
 
