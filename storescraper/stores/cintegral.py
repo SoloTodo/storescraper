@@ -39,7 +39,7 @@ class Cintegral(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://www.cintegral.cl/'
+        url_base = 'http://www.cintegral.cl/'
 
         url_extensions = [
             ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],

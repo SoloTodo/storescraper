@@ -39,6 +39,12 @@ class Product:
         if ean:
             assert check_ean13(ean), ean
 
+        if part_number and len(part_number) > 50:
+            raise Exception('Invalid part number: {}'.format(part_number))
+
+        if sku and len(sku) > 50:
+            raise Exception('Invalid SKU: {}'.format(sku))
+
         assert condition in Product.VALID_CONDITIONS
 
         self.name = name
