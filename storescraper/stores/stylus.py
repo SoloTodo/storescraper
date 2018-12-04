@@ -32,7 +32,7 @@ class Stylus(Store):
             ('Id_Subrubro=495', 'SolidStateDrive'),    # Discos rígidos -> SSD
             ('Id_Subrubro=611', 'SolidStateDrive'),    # Memorias -> SSD
             ('Id_Subrubro=396', 'MemoryCard'),    # Memorias -> Micro SD Card
-            ('Id_Subrubro=298', 'MemoryCard'),    # Memorias -> SD Card
+            # ('Id_Subrubro=298', 'MemoryCard'),    # Memorias -> SD Card
             ('Id_Rubro=2', 'UsbFlashDrive'),    # Pen Drives
         ]
 
