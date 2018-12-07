@@ -104,7 +104,7 @@ class Hites(Store):
 
                 response = session.get(category_url, timeout=30)
 
-                if response.status_code == 500:
+                if response.status_code in [404, 500]:
                     if page == 1:
                         raise Exception('Empty category: ' + category_url)
                     break
