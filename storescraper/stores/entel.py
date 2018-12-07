@@ -105,24 +105,6 @@ class Entel(Store):
                         price,
                         'CLP',
                     ))
-
-                    # Exclusivo web
-
-                    name = '{}{} Exclusivo web ({})'.format(
-                        base_plan_name, suffix, variant)
-
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        name,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                    ))
         return products
 
     @classmethod
@@ -211,44 +193,43 @@ class Entel(Store):
                     cell_monthly_payment = Decimal(plan[monthly_payment_field])
                     buyout_payment = Decimal(plan[direct_buy_field])
 
-                    for suffix in ['', ' Exclusivo Web']:
-                        plan_name = base_plan_name + suffix
+                    plan_name = base_plan_name
 
-                        # Con cuota de arriendo
+                    # Con cuota de arriendo
 
-                        products.append(Product(
-                            variant_name,
-                            cls.__name__,
-                            'Cell',
-                            url,
-                            url,
-                            '{} - {} Cuotas'.format(variant_name, plan_name),
-                            -1,
-                            price,
-                            price,
-                            'CLP',
-                            cell_plan_name=plan_name + ' Cuotas',
-                            picture_urls=picture_urls,
-                            cell_monthly_payment=cell_monthly_payment
-                        ))
+                    products.append(Product(
+                        variant_name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {} Cuotas'.format(variant_name, plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        cell_plan_name=plan_name + ' Cuotas',
+                        picture_urls=picture_urls,
+                        cell_monthly_payment=cell_monthly_payment
+                    ))
 
-                        # Sin cuota de arriendo
+                    # Sin cuota de arriendo
 
-                        products.append(Product(
-                            variant_name,
-                            cls.__name__,
-                            'Cell',
-                            url,
-                            url,
-                            '{} - {}'.format(variant_name, plan_name),
-                            -1,
-                            buyout_payment,
-                            buyout_payment,
-                            'CLP',
-                            cell_plan_name=plan_name,
-                            picture_urls=picture_urls,
-                            cell_monthly_payment=Decimal(0)
-                        ))
+                    products.append(Product(
+                        variant_name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {}'.format(variant_name, plan_name),
+                        -1,
+                        buyout_payment,
+                        buyout_payment,
+                        'CLP',
+                        cell_plan_name=plan_name,
+                        picture_urls=picture_urls,
+                        cell_monthly_payment=Decimal(0)
+                    ))
 
             prepaid_prices = pricing_variant['prepaid_prices']
 
