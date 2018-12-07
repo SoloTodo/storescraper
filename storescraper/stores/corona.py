@@ -89,7 +89,7 @@ class Corona(Store):
                           urllib.parse.quote_plus(category_path),
                           extra_url_args,
                           page)
-                if page >= 10:
+                if page >= 20:
                     raise Exception('Page overflow: ' + category_path)
                 print(url)
 
