@@ -39,7 +39,7 @@ class Cintegral(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'http://www.cintegral.cl/'
+        url_base = 'https://www.cintegral.cl/'
 
         url_extensions = [
             ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
@@ -129,8 +129,9 @@ class Cintegral(Store):
         page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('li', 'product').find('strong').text.split(
-            ':')[1].strip()
+        sku = re.search(
+            r'<p class="titulo-atributo-ficha">SKU: <span>(.+)</span></p>',
+            page_source).groups()[0]
         part_number = re.search(
             r"ccs_cc_args.push\(\['pn', '(.*)'\]\);", page_source).groups()[0]
         if not part_number:

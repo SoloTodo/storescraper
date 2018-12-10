@@ -12,6 +12,11 @@ from storescraper.utils import session_with_proxy, remove_words
 class Movistar(Store):
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://planes.movistar.cl/'
+    portability_choices = [
+        (3, ''),
+        (1, ' Portabilidad'),
+    ]
+    movistar1 = 0
 
     @classmethod
     def categories(cls):
@@ -143,22 +148,18 @@ class Movistar(Store):
         session.headers['x-requested-with'] = 'XMLHttpRequest'
         products = []
 
-        portability_choices = [
-            (3, ''),
-            (1, ' Portabilidad'),
-        ]
-
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
 
             for plan_id in plan_ids:
-                for portability_type_id, portabilty_suffix in \
-                        portability_choices:
+                for portability_type_id, portability_suffix in \
+                        cls.portability_choices:
                     payload = 'current%5Bsku%5D={}&current%5Bplan%5D={}&' \
-                              'current%5Bmovistar1%5D=0&current%5Bpayment%5D' \
-                              '=1&current%5Bcolor%5D={}&current%5Btype%5D={}' \
-                              ''.format(sku, plan_id.replace(' ', '+'),
-                                        color_id, portability_type_id)
+                              'current%5Bmovistar1%5D={}&current%5Bpayment' \
+                              '%5D=1&current%5Bcolor%5D={}&current%5Btype' \
+                              '%5D={}'.format(sku, plan_id.replace(' ', '+'),
+                                              cls.movistar1,
+                                              color_id, portability_type_id)
 
                     response = session.post(
                         'https://catalogo.movistar.cl/equipomasplan/'
@@ -169,56 +170,67 @@ class Movistar(Store):
                         continue
 
                     json_response = json.loads(response.text)
-                    soup = BeautifulSoup(json_response['offer'], 'html.parser')
-                    payment_options = soup.findAll('div', 'price')
+                    products.extend(cls._assemble_postpago_cells(
+                        json_response, name, url, sku, color_id, plan_id,
+                        portability_suffix))
 
-                    # Sin cuota de arriendo
-                    price = Decimal(remove_words(
-                        payment_options[0].contents[2]))
+        return products
 
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {} - {}{}'.format(sku, color_id, plan_id,
-                                                portabilty_suffix),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name='{}{}'.format(plan_id,
-                                                     portabilty_suffix),
-                        cell_monthly_payment=Decimal(0)
-                    ))
+    @classmethod
+    def _assemble_postpago_cells(cls, json_response, name, url, sku, color_id,
+                                 plan_id, portability_suffix):
+        soup = BeautifulSoup(json_response['offer'], 'html.parser')
+        payment_options = soup.findAll('div', 'price')
 
-                    # Con cuota de arriendo
-                    price = Decimal(remove_words(
-                        payment_options[1].contents[2]))
-                    monthly_payment_text = \
-                        soup.findAll('div', 'cuotes')[1].text
-                    monthly_payment_match = re.search(
-                        r'\$([\d|.]+)', monthly_payment_text)
-                    monthly_payment = Decimal(
-                        remove_words(monthly_payment_match.groups()[0]))
+        products = []
 
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {} - {}{} cuotas'.format(sku, color_id, plan_id,
-                                                       portabilty_suffix),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        sku=sku,
-                        cell_plan_name='{}{} cuotas'.format(
-                            plan_id, portabilty_suffix),
-                        cell_monthly_payment=monthly_payment
-                    ))
+        # Sin cuota de arriendo
+        price = Decimal(remove_words(
+            payment_options[0].contents[2]))
+
+        products.append(Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} - {} - {}{}'.format(sku, color_id, plan_id,
+                                    portability_suffix),
+            -1,
+            price,
+            price,
+            'CLP',
+            cell_plan_name='{}{}'.format(plan_id,
+                                         portability_suffix),
+            cell_monthly_payment=Decimal(0)
+        ))
+
+        # Con cuota de arriendo
+        price = Decimal(remove_words(
+            payment_options[1].contents[2]))
+        monthly_payment_text = \
+            soup.findAll('div', 'cuotes')[1].text
+        monthly_payment_match = re.search(
+            r'\$([\d|.]+)', monthly_payment_text)
+        monthly_payment = Decimal(
+            remove_words(monthly_payment_match.groups()[0]))
+
+        products.append(Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} - {} - {}{} cuotas'.format(sku, color_id, plan_id,
+                                           portability_suffix),
+            -1,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            cell_plan_name='{}{} cuotas'.format(
+                plan_id, portability_suffix),
+            cell_monthly_payment=monthly_payment
+        ))
 
         return products
