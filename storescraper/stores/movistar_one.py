@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from .movistar import Movistar
-from storescraper.utils import, remove_words
+from storescraper.utils import remove_words
 
 
 class MovistarOne(Movistar):
