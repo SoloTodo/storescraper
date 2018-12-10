@@ -1,4 +1,6 @@
 import json
+import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -87,12 +89,16 @@ class HpStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        data = session.get(url).text
+        soup = BeautifulSoup(data, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('p', 'titulo-atributo-ficha').find('span').text.strip()
-        part_number = soup.find('li', 'product').text.split(':')[1].strip()
         price_container = soup.find('span', 'regular-price')
+
+        pn_match = re.search(r'ccs_cc_args.push\(\[\'pn\', \'(.+)\'\]\);',
+                             data)
+        part_number = pn_match.groups()[0].strip() if pn_match else None
 
         if not price_container:
             price_container = soup.find('p', 'special-price')
