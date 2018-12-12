@@ -14,6 +14,7 @@ from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
 from .casa_del_audio import CasaDelAudio
 from .casa_musa import CasaMusa
+from .casa_royal import CasaRoyal
 from .casas_bahia import CasasBahia
 from .cetrogar import Cetrogar
 from .cintegral import Cintegral
