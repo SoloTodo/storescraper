@@ -117,7 +117,9 @@ class CasaRoyal(Store):
 
         for container in soup.find('div', 'galleria').findAll('a'):
             try:
-                picture_urls.append(container['data-zoom-image'])
+                picture_url = container['data-zoom-image']
+                if picture_url.strip():
+                    picture_urls.append(picture_url.strip())
             except KeyError:
                 pass
 
