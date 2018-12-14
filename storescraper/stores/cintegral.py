@@ -128,10 +128,9 @@ class Cintegral(Store):
 
         page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-        sku = re.search(
-            r'<p class="titulo-atributo-ficha">SKU: <span>(.+)</span></p>',
-            page_source).groups()[0]
+        name = soup.find(
+            'h1', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('li', 'product').text.split(':')[1].strip()
         part_number = re.search(
             r"ccs_cc_args.push\(\['pn', '(.*)'\]\);", page_source).groups()[0]
         if not part_number:
