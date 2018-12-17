@@ -65,7 +65,10 @@ class Falabella(Store):
             ['cat4048/Freezer', 'Refrigerator'],
             ['cat4049/Frigobar', 'Refrigerator'],
             ['cat1840004/Cavas-de-Vino', 'Refrigerator'],
-            ['cat2049/Impresoras', 'Printer'],
+            ['cat1820006/Impresoras-Multifuncionales', 'Printer'],
+            ['cat11970007/Impresoras-Laser', 'Printer'],
+            ['cat6680042/Impresoras-Tradicionales', 'Printer'],
+            ['cat11970009/Impresoras-Fotograficas', 'Printer'],
             ['cat3151/Microondas', 'Oven'],
             ['cat3114/Hornos-Electricos', 'Oven'],
             ['cat3025/Aspiradoras-y-Enceradoras', 'VacuumCleaner'],
@@ -181,7 +184,8 @@ class Falabella(Store):
         page = 1
 
         while True:
-            if page > 40:
+            print(page)
+            if page > 60:
                 raise Exception('Page overflow: ' + url_path)
 
             res = None
