@@ -1,3 +1,4 @@
+import json
 import re
 
 from bs4 import BeautifulSoup
@@ -15,63 +16,80 @@ class NetNow(Store):
         return [
             'Notebook',
             'Monitor',
-            'Tablet'
+            'Tablet',
+            'AllInOne',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['catalogo/180-Profesional.html', 'Notebook'],
-            ['catalogo/176-Ultradelgado.html', 'Notebook'],
-            ['catalogo/127-Notebooks.html', 'Notebook'],
-            ['catalogo/175-Gamer.html', 'Notebook'],
-            ['catalogo/171-Convertible.html', 'Notebook'],
-            ['catalogo/146-Monitores.html', 'Monitor'],
-            ['catalogo/145-Tablets.html', 'Tablet'],
+            ['25', 'Notebook'],  # Notebooks gamer
+            ['28', 'Notebook'],  # Notebooks
+            ['35', 'Notebook'],  # Ultradelgados
+            ['31', 'Notebook'],  # Convertibles
+            ['34', 'Notebook'],  # 2 en 1
+            ['38', 'AllInOne'],  # All in One
+            ['36', 'Monitor'],   # Monitors
+            ['47', 'Tablet'],    # Tablets
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in category_paths:
+        for category_id, local_category in category_paths:
             if local_category != category:
                 continue
-            category_url = 'http://www.netnow.cl/' + category_path
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            links = soup.findAll('a', 'Producto_Detalles')
+            page = 1
 
-            if not links:
-                raise Exception('Empty category: ' + category_url)
+            while True:
+                category_url = 'https://www.netnow.cl/site/c/{}/category/' \
+                               'productos?page={}'.format(category_id, page)
+                json_data = json.loads(session.get(category_url).text)
 
-            for link in links:
-                product_urls.append(link['href'])
+                if 'categorias' not in json_data:
+                    if page == 1:
+                        raise Exception('Empty category: {}'.format(
+                            category_id))
+
+                    break
+
+                for container in json_data['categorias'][0]['items']:
+                    soup = BeautifulSoup(container, 'html.parser')
+                    product_urls.append(soup.find('a')['href'])
+
+                page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('div', 'dnombre_producto').text.strip()
-        sku = soup.find('input', {'name': 'idProducto'})['value'].strip()
-        stock = int(re.search(
-            'Stock : (\d+)', soup.find(
-                'div', 'ddiferencia_precio').text).groups()[0])
+        sku = re.search(r'/p/(\d+)/', url).groups()[0]
+        model = soup.find('div', 'producto-nombre').text.strip()
+        part_number = soup.find('div', 'producto-subtitulo').text.strip()
+        name = '{} ({})'.format(model, part_number)
 
-        price = soup.find('div', 'dprecio_oferta').contents[1]
+        stock = int(re.search(
+            r'STOCK: (\d+)',
+            soup.find('div', 'producto-stock').text).groups()[0]
+        )
+
+        price = soup.find('div', 'producto-precio').text.split('(')[0]
         price = Decimal(remove_words(price))
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'Caracteristicas'})))
+            str(soup.find('table', 'producto-ficha-tabla')))
 
         picture_urls = []
-        for tag in soup.find('div', 'imagen_galeria').findAll('a'):
-            picture_url = re.search(r"largeimage: '(.+?)'",
-                                    str(tag)).groups()[0]
-            picture_urls.append(picture_url)
+        for tag in soup.findAll('div', 'producto-galeria-imagenes-item'):
+            picture_tag = tag.find('a')
+            if picture_tag:
+                picture_urls.append(picture_tag['href'])
 
         p = Product(
             name,
@@ -85,6 +103,7 @@ class NetNow(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             description=description,
             picture_urls=picture_urls
         )
