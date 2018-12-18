@@ -1,11 +1,11 @@
-import json
-import re
-
 from decimal import Decimal
+
+from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    remove_words
 
 
 class Paris(Store):
@@ -40,114 +40,100 @@ class Paris(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'ComputerCase',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            [None, 'Tecno/Computadores/Notebook', 'Notebook'],
-            [None, 'Tecno/Computadores/Apple', 'Notebook'],
-            [None, 'Tecno/Computadores/Convertibles 2 en 1', 'Notebook'],
-            [None, 'Tecno/Computadores/PC Gamers', 'Notebook'],
-            [None, 'Tecno/Gamers/Notebooks', 'Notebook'],
-            ['Electro/Televisión', None, 'Television'],
-            [None, 'Tecno/Computadores/iPad & Tablet', 'Tablet'],
-            ['Línea Blanca/Refrigeración', None, 'Refrigerator'],
-            [None, 'Tecno/Impresión/Multifuncionales', 'Printer'],
-            [None, 'Tecno/Impresión/Láser', 'Printer'],
-            [None, 'Línea Blanca/Cocina/Hornos empotrables', 'Oven'],
-            [None, 'Línea Blanca/Cocina/Microondas', 'Oven'],
-            [None, 'Línea Blanca/Electrodomésticos/Microondas', 'Oven'],
-            [None, 'Línea Blanca/Lavado y Secado/Todas las lavadoras',
-             'WashingMachine'],
-            [None, 'Línea Blanca/Lavado y Secado/Lavadora-Secadoras',
-             'WashingMachine'],
-            [None, 'Línea Blanca/Lavado y Secado/Secadoras y Centrifugas',
-             'WashingMachine'],
-            [None, 'Tecno/Celulares/Smartphones', 'Cell'],
-            # [None, '//Nueva Linea J de Samsung', 'Cell'],
-            [None, 'Tecno/Celulares/Básicos', 'Cell'],
-            [None, 'Tecno/Fotografía/Cámaras Compactas', 'Camera'],
-            [None, 'Tecno/Fotografía/Cámaras Semiprofesionales', 'Camera'],
-            [None, 'Electro/Audio/Parlantes BT Portables y Karaoke',
-             'StereoSystem'],
-            [None, 'Electro/Audio/Micro y Minicomponentes', 'StereoSystem'],
-            [None, 'Electro/HIFI/Home Cinema', 'StereoSystem'],
-            [None, 'Electro/HIFI/Audio HIFI', 'StereoSystem'],
-            [None, 'Electro/HIFI/Parlantes HIFI', 'StereoSystem'],
-            [None, 'Electro/HIFI/Combos HIFI', 'StereoSystem'],
-            [None, 'Electro/HIFI/Tornamesas y Vinilos', 'StereoSystem'],
-            [None, 'Electro/Accesorios para TV/Home Theater', 'StereoSystem'],
-            [None, 'Tecno/Accesorios Computación/Discos Duros ',
-             'ExternalStorageDrive'],
-            [None, 'Tecno/Accesorios Computación/Pendrives', 'UsbFlashDrive'],
-            [None, 'Tecno/Accesorios Fotografía/Tarjetas de Memoria',
+            ['tecnologia/computadores/notebooks', 'Notebook'],
+            ['tecnologia/computadores/pc-gamer', 'Notebook'],
+            ['tecnologia/gamer/notebooks', 'Notebook'],
+            ['tecnologia/computadores/convertibles-2-en-1', 'Notebook'],
+            ['tecnologia/computadores/apple', 'Notebook'],
+            ['tecnologia/computadores/ipad-tablet', 'Tablet'],
+            ['tecnologia/computadores/desktop-all-in-one', 'AllInOne'],
+            ['electro/television/todas', 'Television'],
+            ['electro/accesorios-tv/home-theater', 'StereoSystem'],
+            ['electro/audio-hifi/home-theater', 'StereoSystem'],
+            ['electro/accesorios-tv/bluray-dvd', 'OpticalDiskPlayer'],
+            ['electro/accesorios-tv/proyectores', 'Projector'],
+            ['tecnologia/accesorios-computacion/proyectores', 'Projector'],
+            ['electro/audio/parlantes-bluetooth-portables', 'StereoSystem'],
+            ['electro/audio/micro-minicomponentes', 'StereoSystem'],
+            ['electro/audo-hifi/audio', 'StereoSystem'],
+            ['electro/audio-hifi/parlantes', 'StereoSystem'],
+            ['electro/audio-hifi/combos', 'StereoSystem'],
+            ['electro/audio/audifonos', 'Headphones'],
+            ['electro/audio-hifi/audifonos', 'Headphones'],
+            ['tecnologia/gamer/headset', 'Headphones'],
+            ['tecnologia/celulares/smartphones', 'Cell'],
+            ['tecnologia/celulares/basicos', 'Cell'],
+            ['tecnologia/gamer/consolas', 'VideoGameConsole'],
+            ['tecnologia/consolas-videojuegos/ps4', 'VideoGameConsole'],
+            ['tecnologia/consolas-videojuegos/xbox-one', 'VideoGameConsole'],
+            ['tecnologia/consolas-videojuegos/nintendo', 'VideoGameConsole'],
+            ['tecnologia/consolas-videojuegos/nintendo', 'VideoGameConsole'],
+            ['tecnologia/gamer/teclados', 'Keyboard'],
+            ['tecnologia/accesorios-computacion/mouse-teclados', 'Mouse'],
+            ['tecnologia/gamer/monitores', 'Monitor'],
+            ['tecnologia/accesorios-computacion/monitor-gamer', 'Monitor'],
+            ['tecnologia/gamer/gabinetes', 'ComputerCase'],
+            ['tecnologia/impresion/multifuncionales', 'Printer'],
+            ['tecnologia/impresion/laser', 'Printer'],
+            ['tecnologia/accesorios-fotografia/tarjetas-memoria',
              'MemoryCard'],
-            [None, 'Tecno/Accesorios Computación/Proyectores', 'Projector'],
-            [None, 'Tecno/Gamers/Consolas', 'VideoGameConsole'],
-            ['Tecno/Consolas VideoJuegos', None, 'VideoGameConsole'],
-            [None, 'Tecno/Computadores/Desktop & All-In-One', 'AllInOne'],
-            [None, 'Línea Blanca/Climatización/Aire Acondicionado',
+            ['tecnologia/accesorios-computacion/discos-duros',
+             'ExternalStorageDrive'],
+            ['tecnologia/celulares/wearables', 'Smartwatch'],
+            ['linea-blanca/refrigeracion', 'Refrigerator'],
+            ['linea-blanca/lavado-secado/lavadoras-secadoras',
+             'WashingMachine'],
+            ['linea-blanca/lavado-secado/secadoras-centrifugas',
+             'WashingMachine'],
+            ['linea-blanca/estufas', 'SpaceHeater'],
+            ['linea-blanca/cocina/microondas', 'Oven'],
+            ['linea-blanca/cocina/hornos-empotrables', 'Oven'],
+            ['linea-blanca/electrodomesticos/microondas', 'Oven'],
+            ['linea-blanca/electrodomesticos/hornos-electricos', 'Oven'],
+            ['linea-blanca/climatizacion/aires-acondicionado',
              'AirConditioner'],
-            [None, 'Línea Blanca/Climatización/Calefont', 'WaterHeater'],
-            ['Línea Blanca/Estufas ', None, 'SpaceHeater'],
-            [None, 'Tecno/Celulares/Wearables', 'Smartwatch'],
-            [None, 'Tecno/Gamers/Teclados y Mouse', 'Mouse'],
-            [None, 'Tecno/Accesorios Computación/Mouse y Teclados', 'Mouse'],
-            [None, 'Electro/Accesorios para TV/Bluray y DVD',
-             'OpticalDiskPlayer'],
-            [None, 'Tecno/Gamers/Monitores', 'Monitor'],
-            [None, 'Tecno/Accesorios Computación/Monitor Gamer', 'Monitor'],
-            [None, 'Electro/Audio/Audífonos', 'Headphones'],
+            ['linea-blanca/climatizacion/calefont', 'WaterHeater'],
+            ['tecnologia/accesorios-computacion/pendrives', 'UsbFlashDrive'],
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
         product_urls = []
 
-        for cat_2, cat_3, local_category in category_paths:
+        for category_path, local_category in category_paths:
             if category != local_category:
                 continue
 
-            terms = {}
+            offset = 0
 
-            if cat_2:
-                terms['cat_2.raw'] = cat_2
+            while True:
+                if offset > 1000:
+                    raise Exception('Page overflow: ' + category_path)
 
-            if cat_3:
-                terms['cat_3.raw'] = cat_3
+                category_url = 'https://www2.paris.cl/{}/?sz=40&start={}' \
+                               ''.format(category_path, offset)
+                print(category_url)
+                soup = BeautifulSoup(session.get(category_url).text,
+                                     'html.parser')
 
-            query = {
-                "query": {
-                    "function_score": {
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "term": terms
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "size": 1000,
-                "from": 0
-            }
+                containers = soup.findAll('li', 'box-product')
 
-            response = session.post('https://www.paris.cl/store-api/pyload/'
-                                    '_search', json.dumps(query))
-            products_data = json.loads(response.text)['hits']['hits']
+                if not containers:
+                    if offset == 0:
+                        raise Exception('Empty category: ' + category_path)
+                    break
 
-            if not products_data:
-                raise Exception('Empty category: {} {} {}'.format(
-                    category, cat_2, cat_3))
+                for container in containers:
+                    product_path = container.find('a')['href'].split('?')[0]
+                    product_url = 'https://www2.paris.cl' + product_path
+                    product_urls.append(product_url)
 
-            for cell in products_data:
-                product_url = cell['_source']['product_can']
-                if product_url == 'https://www.paris.cl/store/producto/':
-                    continue
-                product_urls.append(product_url)
+                offset += 40
 
         return product_urls
 
@@ -155,94 +141,28 @@ class Paris(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
 
-        es_id = re.search(r'/producto/(.+)$', url).groups()[0]
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        name = soup.find('h4', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('input', {'id': 'pid'})['value']
+        offer_price_container = soup.find('div', 'cencosud-price')
 
-        query = {
-            "query": {
-                "bool": {
-                    "minimum_should_match": 1,
-                    "should": [
-                        {
-                            "term": {
-                                "url.keyword": es_id
-                            }
-                        },
-                        {
-                            "term": {
-                                "children.url.keyword": es_id
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-
-        response = session.post(
-            'https://www.paris.cl/store-api/pyload/_search',
-            json.dumps(query))
-        product_data = json.loads(response.text)['hits']['hits']
-
-        if not product_data:
-            return []
-
-        product_data = product_data[0]
-
-        sku = product_data['_id']
-        name = product_data['_source']['name']
-        description = html_to_markdown(product_data['_source']
-                                       ['longDescription'])
-
-        normal_price = product_data['_source']['price_internet']
-
-        if not normal_price:
-            return []
-
-        normal_price = Decimal(normal_price)
-
-        offer_price = product_data['_source']['price_tc']
-        if offer_price:
-            offer_price = Decimal(offer_price)
+        if offer_price_container:
+            offer_price = Decimal(remove_words(offer_price_container.text))
+            normal_price = Decimal(remove_words(soup.find(
+                'div', 'price-internet').text.split('$')[1].split('\n')[0]))
         else:
+            normal_price = Decimal(remove_words(
+                soup.find('div', 'default-price').text))
             offer_price = normal_price
 
-        # Only use the first child, the other are variations of color for
-        # products that don't interest us
+        picture_urls = []
+        for tag in soup.findAll('a', 'thumbnail-link'):
+            picture_url = tag['href'].split('?')[0]
+            picture_urls.append(picture_url)
 
-        child = product_data['_source']['children'][0]
-
-        if sku.startswith('CB'):
-            image_id = sku
-            stock = -1
-        else:
-            image_id = child['ESTILOCOLOR']
-            stock = child['stocktienda'] + child['stockcd']
-
-        pictures_resource_url = 'https://imagenes.paris.cl/is/image/' \
-                                'Cencosud/{}?req=set,json'.format(image_id)
-
-        print(pictures_resource_url)
-
-        pictures_json_match = re.search(
-            r's7jsonResponse\((.+),""\);',
-            session.get(pictures_resource_url).text
-        )
-
-        if pictures_json_match:
-            pictures_json = json.loads(pictures_json_match.groups()[0])
-            picture_urls = []
-
-            picture_entries = pictures_json['set']['item']
-            if not isinstance(picture_entries, list):
-                picture_entries = [picture_entries]
-
-            for picture_entry in picture_entries:
-                picture_url = 'https://imagenes.paris.cl/is/image/{}?scl=1.0' \
-                              ''.format(picture_entry['i']['n'])
-                picture_urls.append(picture_url)
-        else:
-            picture_urls = None
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'collapseDetails'})))
 
         p = Product(
             name,
@@ -251,7 +171,7 @@ class Paris(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             normal_price,
             offer_price,
             'CLP',
