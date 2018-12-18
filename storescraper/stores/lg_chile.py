@@ -24,7 +24,8 @@ class LgChile(Store):
             'Monitor',
             'CellAccesory',
             'Notebook',
-            'OpticalDrive'
+            'OpticalDrive',
+            'B2B'
         ]
 
     @classmethod
@@ -60,6 +61,9 @@ class LgChile(Store):
             ('CT32002362', 'CT32002362', 'Notebook', True),
             ('CT20106055', 'CT20106055', 'OpticalDrive', True),
             ('CT20106055', 'CT20106055', 'OpticalDrive', False),
+            ('CT32004943', 'CT32004943', 'B2B', True),  # Carteleria digital
+            ('CT32004944', 'CT32004944', 'B2B', True),  # Commercial TV
+            ('CT32004945', 'CT32004957', 'B2B', True),  # Wall Paper
         ]
 
         discovered_urls = []
