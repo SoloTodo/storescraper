@@ -129,8 +129,9 @@ class Paris(Store):
                     break
 
                 for container in containers:
-                    product_path = container.find('a')['href'].split('?')[0]
-                    product_url = 'https://www2.paris.cl' + product_path
+                    product_url = container.find('a')['href'].split('?')[0]
+                    if 'https' not in product_url:
+                        product_url = 'https://www2.paris.cl' + product_url
                     product_urls.append(product_url)
 
                 offset += 40
