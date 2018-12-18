@@ -141,8 +141,12 @@ class Paris(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        response = session.get(url)
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        if response.status_code == 410:
+            return []
+
+        soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h4', {'itemprop': 'name'}).text.strip()
         sku = soup.find('input', {'id': 'pid'})['value']
         offer_price_container = soup.find('div', 'cencosud-price')
