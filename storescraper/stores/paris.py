@@ -146,8 +146,13 @@ class Paris(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h4', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('input', {'id': 'pid'})['value']
+        sku = soup.find('div', 'pdp-main')['data-pid'].strip()
         offer_price_container = soup.find('div', 'cencosud-price')
+
+        if soup.find('div', 'out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
 
         if offer_price_container:
             offer_price = Decimal(remove_words(offer_price_container.text))
@@ -175,7 +180,7 @@ class Paris(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             normal_price,
             offer_price,
             'CLP',
