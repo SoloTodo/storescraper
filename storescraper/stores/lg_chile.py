@@ -8,6 +8,7 @@ from storescraper.utils import session_with_proxy
 
 class LgChile(Store):
     base_url = 'https://www.lg.com'
+    country_code = 'cl'
 
     @classmethod
     def categories(cls):
@@ -25,46 +26,13 @@ class LgChile(Store):
             'CellAccesory',
             'Notebook',
             'OpticalDrive',
-            'B2B'
+            'B2B',
+            'Headphones'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ('CT20106005', 'CT20106005', 'Television', True),
-            ('CT20106005', 'CT20106005', 'Television', False),
-            ('CT20106017', 'CT20106017', 'OpticalDiskPlayer', False),
-            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', True),
-            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', False),
-            ('CT20106020', 'CT20106021', 'StereoSystem', True),
-            ('CT20106020', 'CT20106021', 'StereoSystem', False),
-            ('CT30016640', 'CT30016642', 'StereoSystem', True),
-            ('CT30016640', 'CT31903290', 'StereoSystem', True),
-            ('CT20106023', 'CT20106025', 'StereoSystem', True),
-            ('CT20106023', 'CT20106025', 'StereoSystem', False),
-            ('CT30006480', 'CT30006480', 'Projector', True),
-            ('CT20106027', 'CT20106027', 'Cell', True),
-            ('CT20106027', 'CT20106027', 'Cell', False),
-            ('CT30011860', 'CT30011860', 'Cell', True),
-            ('CT20106034', 'CT20106034', 'Refrigerator', True),
-            ('CT20106034', 'CT20106034', 'Refrigerator', False),
-            ('CT20106039', 'CT20106039', 'Oven', False),
-            ('CT20106044', 'CT20106044', 'WashingMachine', True),
-            ('CT20106044', 'CT20106044', 'WashingMachine', False),
-            ('CT20106040', 'CT20106040', 'WashingMachine', True),
-            ('CT20106040', 'CT20106040', 'WashingMachine', False),
-            ('CT20106045', 'CT20106045', 'VacuumCleaner', False),
-            ('CT20106054', 'CT20106054', 'Monitor', True),
-            ('CT20106054', 'CT20106054', 'Monitor', False),
-            ('CT31903594', 'CT31903594', 'CellAccesory', True),
-            ('CT30018920', 'CT30018920', 'Notebook', True),
-            ('CT32002362', 'CT32002362', 'Notebook', True),
-            ('CT20106055', 'CT20106055', 'OpticalDrive', True),
-            ('CT20106055', 'CT20106055', 'OpticalDrive', False),
-            ('CT32004943', 'CT32004943', 'B2B', True),  # Carteleria digital
-            ('CT32004944', 'CT32004944', 'B2B', True),  # Commercial TV
-            ('CT32004945', 'CT32004957', 'B2B', True),  # Wall Paper
-        ]
+        category_paths = cls._category_paths()
 
         discovered_urls = []
 
@@ -81,9 +49,10 @@ class LgChile(Store):
             else:
                 status = 'DISCONTINUED'
 
-            category_url = '{}/cl/lgcompf4/category/filter.lg?page=view-all&' \
+            category_url = '{}/{}/lgcompf4/category/filter.lg?page=view-all&' \
                            'categoryId={}&subCategoryId={}&status={}'.format(
-                            cls.base_url, category_id, subcategory_id, status)
+                            cls.base_url, cls.country_code,
+                            category_id, subcategory_id, status)
 
             print(category_url)
 
@@ -187,3 +156,41 @@ class LgChile(Store):
                 'CLP',
                 picture_urls=picture_urls
             )]
+
+    @classmethod
+    def _category_paths(cls):
+        return [
+            ('CT20106005', 'CT20106005', 'Television', True),
+            ('CT20106005', 'CT20106005', 'Television', False),
+            ('CT20106017', 'CT20106017', 'OpticalDiskPlayer', False),
+            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', True),
+            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', False),
+            ('CT20106020', 'CT20106021', 'StereoSystem', True),
+            ('CT20106020', 'CT20106021', 'StereoSystem', False),
+            ('CT30016640', 'CT30016642', 'StereoSystem', True),
+            ('CT30016640', 'CT31903290', 'StereoSystem', True),
+            ('CT20106023', 'CT20106025', 'StereoSystem', True),
+            ('CT20106023', 'CT20106025', 'StereoSystem', False),
+            ('CT30006480', 'CT30006480', 'Projector', True),
+            ('CT20106027', 'CT20106027', 'Cell', True),
+            ('CT20106027', 'CT20106027', 'Cell', False),
+            ('CT30011860', 'CT30011860', 'Cell', True),
+            ('CT20106034', 'CT20106034', 'Refrigerator', True),
+            ('CT20106034', 'CT20106034', 'Refrigerator', False),
+            ('CT20106039', 'CT20106039', 'Oven', False),
+            ('CT20106044', 'CT20106044', 'WashingMachine', True),
+            ('CT20106044', 'CT20106044', 'WashingMachine', False),
+            ('CT20106040', 'CT20106040', 'WashingMachine', True),
+            ('CT20106040', 'CT20106040', 'WashingMachine', False),
+            ('CT20106045', 'CT20106045', 'VacuumCleaner', False),
+            ('CT20106054', 'CT20106054', 'Monitor', True),
+            ('CT20106054', 'CT20106054', 'Monitor', False),
+            ('CT31903594', 'CT31903594', 'CellAccesory', True),
+            ('CT30018920', 'CT30018920', 'Notebook', True),
+            ('CT32002362', 'CT32002362', 'Notebook', True),
+            ('CT20106055', 'CT20106055', 'OpticalDrive', True),
+            ('CT20106055', 'CT20106055', 'OpticalDrive', False),
+            ('CT32004943', 'CT32004943', 'B2B', True),  # Carteleria digital
+            ('CT32004944', 'CT32004944', 'B2B', True),  # Commercial TV
+            ('CT32004945', 'CT32004957', 'B2B', True),  # Wall Paper
+        ]

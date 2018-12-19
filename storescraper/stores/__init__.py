@@ -74,6 +74,7 @@ from .led_shop import LedShop
 from .led_studio import LedStudio
 from .lenovo_chile import LenovoChile
 from .lg_chile import LgChile
+from .lg_panama import LgPanama
 from .lider import Lider
 from .lider_black_friday import LiderBlackFriday
 from .linio_chile import LinioChile
