@@ -73,7 +73,7 @@ class Hites(Store):
             ['tecnologia/audio/parlantes-bluetooth', 'StereoSystem'],
             ['tecnologia/audio/karaokes', 'StereoSystem'],
             ['tecnologia/audio/minicomponentes', 'StereoSystem'],
-            ['tecnologia/audio/hi-fi-y-home-theater', 'StereoSystem'],
+            ['tecnologia/audio/soundbar-y-home-theater', 'StereoSystem'],
             ['tecnologia/audio/microcomponentes', 'StereoSystem'],
             ['tecnologia/audio/audifonos', 'Headphones'],
             ['celulares/accesorios/audifonos', 'Headphones'],

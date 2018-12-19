@@ -97,7 +97,12 @@ class Panafoto(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
+        data = response.text
         soup = BeautifulSoup(data, 'html.parser')
 
         name = soup.find('h1', 'page-title').text.strip()
@@ -133,21 +138,32 @@ class Panafoto(Store):
 
         picture_urls = [e['full'] for e in pictures]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'USD',
-            sku=sku,
-            part_number=part_number,
-            description=description,
-            picture_urls=picture_urls
-        )
+        variants_tag = soup.find('select', 'product-custom-option')
 
-        return [p]
+        if variants_tag:
+            suffixes = [' ' + tag.text.strip() for tag in
+                        variants_tag.findAll('option')[1:]]
+        else:
+            suffixes = ['']
+
+        products = []
+
+        for suffix in suffixes:
+            products.append(Product(
+                name + suffix,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku + suffix,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=sku,
+                part_number=part_number,
+                description=description,
+                picture_urls=picture_urls
+            ))
+
+        return products
