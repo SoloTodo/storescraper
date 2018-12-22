@@ -122,6 +122,7 @@ class LgChile(Store):
             for color_link in colors_container.findAll('a'):
                 color_name = color_link['adobe-value']
                 key = color_link['data-sub-model-id']
+                variant_url = 'https://www.lg.com' + color_link['href']
 
                 name = '{} {}'.format(base_name, color_name)[:250]
 
@@ -129,7 +130,7 @@ class LgChile(Store):
                     name,
                     cls.__name__,
                     category,
-                    url,
+                    variant_url,
                     url,
                     key,
                     -1,
