@@ -51,7 +51,7 @@ class LenovoChile(Store):
         if not price_tag:
             price_tag = soup.find('meta', {'name': 'productprice'})
 
-        price = Decimal(remove_words(price_tag['content']))
+        price = Decimal(remove_words(price_tag['content'].split(',')[0]))
 
         description = html_to_markdown(
                 str(soup.find('div', {'id': 'tab-techspec'})))
