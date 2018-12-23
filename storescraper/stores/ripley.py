@@ -48,7 +48,7 @@ class Ripley(Store):
 
         category_urls = [
             ['tecno/computacion/notebooks', 'Notebook'],
-            ['tecno/computacion/2-en-1convertibles', 'Notebook'],
+            # ['tecno/computacion/2-en-1convertibles', 'Notebook'],
             ['tecno/computacion/notebooks-gamer', 'Notebook'],
             ['tecno/computacion/tablets-y-tabletas-de-disenos', 'Tablet'],
             ['tecno/computacion/impresoras-y-tintas', 'Printer'],

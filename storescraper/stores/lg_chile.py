@@ -27,7 +27,8 @@ class LgChile(Store):
             'Notebook',
             'OpticalDrive',
             'B2B',
-            'Headphones'
+            'Headphones',
+            'Stove'
         ]
 
     @classmethod
