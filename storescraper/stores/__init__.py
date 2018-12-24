@@ -31,6 +31,7 @@ from .david_and_joseph import DavidAndJoseph
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
+from .do_it_center import DoItCenter
 from .easy import Easy
 from .easy_argentina import EasyArgentina
 from .efe import Efe
