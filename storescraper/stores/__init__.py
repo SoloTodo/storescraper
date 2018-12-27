@@ -12,6 +12,7 @@ from .bip import Bip
 from .byp import Byp
 from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
+from .casa_confort import CasaConfort
 from .casa_del_audio import CasaDelAudio
 from .casa_musa import CasaMusa
 from .casa_royal import CasaRoyal
