@@ -127,7 +127,10 @@ class Ripley(Store):
                         break
 
                 product_link_containers = product_link_containers.findAll(
-                    'a', 'catalog-item')
+                    'a', 'catalog-product-item')
+
+                if not product_link_containers:
+                    raise Exception('Category error: ' + category_path)
 
                 for link_tag in product_link_containers:
                     product_url = 'https://simple.ripley.cl' + link_tag['href']
