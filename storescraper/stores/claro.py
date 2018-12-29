@@ -3,7 +3,6 @@ import json
 import re
 import urllib
 
-import demjson
 from decimal import Decimal
 
 from storescraper.product import Product
@@ -13,7 +12,7 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class Claro(Store):
     planes_url = 'https://www.clarochile.cl/personas/servicios/' \
-                 'servicios-moviles/postpago/promociones-postpago/'
+                 'servicios-moviles/postpago/planes-y-precios/'
     prepago_url = 'https://www.clarochile.cl/personas/servicios/' \
                   'servicios-moviles/prepago/'
     plan_variations = [
@@ -87,12 +86,12 @@ class Claro(Store):
     def _planes(cls, url, extra_args):
         print(url)
 
-        planes_url = 'https://digital.clarochile.cl/wcm-iframe/' \
-                     'landing-postpago-dinamico/assets/js/planes.js'
         session = session_with_proxy(extra_args)
-        raw_data = re.search(r'planes_moviles = ([\s\S]*)$', session.get(
-            planes_url).text)
-        json_data = demjson.decode(raw_data.groups()[0])
+        data = session.get(cls.planes_url).text
+        raw_data = re.findall(
+            r'var jsonPlanes\s*= jQuery.parseJSON\(\'([\s\S]*?)\'\);', data)[0]
+        json_data = json.loads(raw_data)
+        print(json.dumps(json_data, indent=4))
 
         products = []
 
@@ -102,11 +101,14 @@ class Claro(Store):
         ]
 
         for sku_entry in json_data:
+            if sku_entry['lstFiltros'][0]['fi_opcion_filtro'] != 142:
+                continue
+
             for suffix in portabilidad_modes:
-                name = '{}{}'.format(sku_entry['nombre_titulo'], suffix)
-                price = Decimal(remove_words(
-                    sku_entry['valor_fijo_portabilidad_propio']))
-                key = '{}{}'.format(sku_entry['url_plan'], suffix)
+                name = '{}{}'.format(sku_entry['fc_nombre'].strip(), suffix)
+                print(name)
+                price = Decimal(sku_entry['fi_precio_television_espn'])
+                key = '{}{}'.format(sku_entry['fi_plan'], suffix)
 
                 products.append(Product(
                     name,
