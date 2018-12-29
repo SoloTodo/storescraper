@@ -27,6 +27,7 @@ from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
 from .costco_mexico import CostcoMexico
+from .creditos_mundiales import CreditosMundiales
 from .daewoo import Daewoo
 from .david_and_joseph import DavidAndJoseph
 from .dell import Dell
