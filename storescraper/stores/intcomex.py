@@ -29,7 +29,7 @@ class Intcomex(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('cpt.notebook', 'Notebook'),  # Portatiles
-            ('cpt.ultrabook', 'Notebook'),  # Ultrabooks
+            # ('cpt.ultrabook', 'Notebook'),  # Ultrabooks
             # ('cpt.twoinone', 'Notebook'),  # 2 en 1
             ('sto.exthd', 'ExternalStorageDrive'),  # Discos externos
             ('mem.usbflash', 'UsbFlashDrive'),  # Pendrives

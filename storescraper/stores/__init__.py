@@ -87,6 +87,7 @@ from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
 from .magens import Magens
+from .max import Max
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
 from .mercadolibre_argentina import MercadoLibreArgentina

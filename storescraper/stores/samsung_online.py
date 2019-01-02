@@ -23,7 +23,6 @@ class SamsungOnline(Store):
         category_paths = [
             ['smartphones', 'Cell'],
             ['tablets', 'Tablet'],
-            ['audio/level', 'Headphones'],
             ['audio/auriculares', 'Headphones'],
         ]
 

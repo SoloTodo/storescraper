@@ -52,7 +52,7 @@ class Winpy(Store):
             # ['apple/macbook-pro/', 'Notebook'],
             # ['apple/macbook-pro-retina/', 'Notebook'],
             ['portatiles/tablet/', 'Tablet'],
-            ['apple/ipad/', 'Tablet'],
+            # ['apple/ipad/', 'Tablet'],
             ['monitores/', 'Monitor'],
             ['partes-y-piezas/tarjetas-de-video/',
              'VideoCard'],

@@ -27,8 +27,9 @@ class Deltron(Store):
         session = session_with_proxy(extra_args)
         session_cookies = cls._session_cookies(extra_args)
 
-        url_base = 'http://www.deltron.com.pe/modulos/productos/items/' \
-                   'postsql.php?mproduct='
+        url_base = 'http://www2.deltron.com.pe/modulos/productos/items/' \
+                   'ctBuscador/templates/contenedor_web_2016.php?tamPag=' \
+                   '1000&GrupoLineaId='
         product_urls = []
 
         category_paths = [
@@ -45,17 +46,20 @@ class Deltron(Store):
                 continue
 
             category_url = url_base + category_path
+            print(category_url)
             response = session.get(category_url, cookies=session_cookies)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            cells = soup.findAll('td', {'height': '30'})
+            cells = soup.findAll('div', 'container-item-busc-dg')
 
             if not cells:
                 raise Exception('Empty category: ' + category_url)
 
             for cell in cells:
-                product_url = cell.find('a')['href']
-                product_urls.append(product_url)
+                product_path = cell.find('a')['href'].replace(
+                    'postsql.php', 'producto.php')
+                product_urls.append(
+                    'http://www2.deltron.com.pe' + product_path)
 
         return product_urls
 
@@ -75,6 +79,7 @@ class Deltron(Store):
 
     @classmethod
     def _products_for_url(cls, url, category, extra_args, session_cookies):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url, cookies=session_cookies).text
 
@@ -83,14 +88,22 @@ class Deltron(Store):
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        if not soup.findAll('font', {'size': '3'}):
+        if not soup.findAll('a', 'username-link'):
             raise InvalidSessionCookieException
 
-        name = soup.find('title').text.strip()
-        part_number = soup.find('h3').string.split(':')[1].strip()
-        sku = soup.find('font', {'face': 'COURIER'}).text.strip()
+        name = soup.find('h1', 'title-name-product').text.strip()
+        sku = soup.find('span', 'sku').text.strip()
+        part_number = None
 
-        stocks_table = soup.findAll('table', {'cellpadding': '4'})[2]
+        headings = soup.find('div', {'id': 'esp_tecnicas'}).findAll(
+            'td', 'heading-td')
+
+        for heading in headings:
+            if heading.text.strip() == 'NÚMERO DE PARTE':
+                part_number = heading.parent.findAll('td')[1].text.strip()
+                break
+
+        stocks_table = soup.find('table', {'id': 'tableWarehouse'})
         stock_cells = stocks_table.findAll('td', {'align': 'RIGHT'})[1::3]
 
         stock = 0
@@ -102,19 +115,15 @@ class Deltron(Store):
                 stock = -1
                 break
 
-        price_container = soup.find(
-            'td', {'style': 'font-size:24px;font-weight:bold;'})
+        price_container = soup.find('span', 'catalog-discount-tag').find(
+            'font', 'aquiando777')
+        price = Decimal(price_container.text.replace(',', ''))
 
-        if price_container:
-            price = Decimal(price_container.text.split('US$')[1].replace(
-                ',', ''))
-        else:
-            price = Decimal(soup.findAll(
-                'font', {'size': '3'})[1].string.replace(',', ''))
+        specs_container = soup.find('div', {'id': 'esp_tecnicas'})
+        description = html_to_markdown(str(specs_container))
 
-        description = html_to_markdown(str(soup.find('table', 'cuerpo')))
-
-        picture_urls = [soup.find('img', {'align': 'ABSCENTER'})['src']]
+        picture_urls = [tag['data-src'] for tag in
+                        soup.find('ul', {'id': 'imageGallery'}).findAll('li')]
 
         p = Product(
             name,

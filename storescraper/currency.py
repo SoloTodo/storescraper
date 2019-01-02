@@ -19,6 +19,7 @@ class Currency:
             'MXN': cls('$', '.', ',', 2),
             'PEN': cls('S/', '.', ',', 2),
             'USD': cls('$', ',', '.', 2),
+            'GTQ': cls('$', ',', '.', 2),
         }
 
         currency = known_codes[code]
