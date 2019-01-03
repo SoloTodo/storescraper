@@ -38,6 +38,7 @@ from .easy import Easy
 from .easy_argentina import EasyArgentina
 from .efe import Efe
 from .eglo import Eglo
+from .electronica_panamericana import ElectronicaPanamericana
 from .enel import Enel
 from .entel import Entel
 from .exito import Exito
