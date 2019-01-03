@@ -75,7 +75,7 @@ class Falabella(Store):
             ['cat4060/Lavadoras', 'WashingMachine'],
             ['cat1700002/Lavadora-Secadora', 'WashingMachine'],
             ['cat4088/Secadoras', 'WashingMachine'],
-            ['cat1280018/Celulares-Basicos', 'Cell'],
+            # ['cat1280018/Celulares-Basicos', 'Cell'],
             ['cat720161/Smartphones', 'Cell'],
             ['cat70028/Camaras-Compactas', 'Camera'],
             ['cat70029/Camaras-Semiprofesionales', 'Camera'],

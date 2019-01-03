@@ -123,6 +123,10 @@ class Sodimac(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        if soup.find('p', 'sinStock-online-p-SEO'):
+            return []
+
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
 
         pricing_container = soup.find('div', {'id': 'JsonArray'})
