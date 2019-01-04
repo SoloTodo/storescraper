@@ -72,6 +72,7 @@ from .jumbo_colombia import JumboColombia
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kuhn import Kuhn
+from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_polar import LaPolar
 from .led_light_chile import LedLightChile
 from .led_shop import LedShop
