@@ -87,9 +87,9 @@ class Max(Store):
                 if done:
                     break
 
-                product_urls.extend(local_urls)
-
                 page += 1
+
+            product_urls.extend(local_urls)
 
         return product_urls
 
