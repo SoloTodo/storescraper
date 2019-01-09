@@ -1,3 +1,4 @@
+from .agencias_way_online import AgenciasWayOnline
 from .clima_seguro import ClimaSeguro
 from .aire_center import AireCenter
 from .abcdin import AbcDin
@@ -147,6 +148,7 @@ from .sp_digital import SpDigital
 from .spider import Spider
 from .stylus import Stylus
 from .syd import Syd
+from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
 from .terabyte import Terabyte
 from .tienda_claro import TiendaClaro
