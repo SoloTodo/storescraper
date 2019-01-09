@@ -36,7 +36,7 @@ class TtChile(Store):
         base_url = 'http://www.ttchile.cl/'
 
         category_paths = [
-            ['subpro.php?ic=21&isc=20', 'Notebook'],  # Notebooks
+            # ['subpro.php?ic=21&isc=20', 'Notebook'],  # Notebooks
             # ['catpro.php?ic=45', 'Notebook'],  # Apple
             ['catpro.php?ic=31', 'VideoCard'],  # Tarjetas de video
             ['catpro.php?ic=25', 'Processor'],  # Procesadores AMD
@@ -44,12 +44,12 @@ class TtChile(Store):
             ['catpro.php?ic=18', 'Monitor'],  # LCD
             ['catpro.php?ic=23', 'Motherboard'],  # MB AMD
             ['catpro.php?ic=24', 'Motherboard'],  # MB Intel
-            ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR4
-            ['subpro.php?ic=16&isc=13', 'Ram'],  # RAM Notebook
+            # ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR4
+            # ['subpro.php?ic=16&isc=13', 'Ram'],  # RAM Notebook
             # ['subpro.php?ic=10&isc=6', 'StorageDrive'],  # HDD Notebook
             ['subpro.php?ic=10&isc=5', 'StorageDrive'],  # HDD SATA
-            ['subpro.php?ic=10&isc=7', 'SolidStateDrive'],  # SSD
-            ['catpro.php?ic=12', 'PowerSupply'],  # Fuentes de poder
+            # ['subpro.php?ic=10&isc=7', 'SolidStateDrive'],  # SSD
+            # ['catpro.php?ic=12', 'PowerSupply'],  # Fuentes de poder
             ['catpro.php?ic=13', 'ComputerCase'],  # Gabinetes
             ['subpro.php?ic=28&isc=38', 'CpuCooler'],  # Cooler CPU
             ['subpro.php?ic=28&isc=87', 'CpuCooler'],  # Ref. liquida
@@ -79,8 +79,8 @@ class TtChile(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(session.get(
+                    category_url, timeout=30).text, 'html.parser')
 
                 product_description = soup.findAll(
                     'table', 'tableEdicionProductos')[1:]
@@ -105,7 +105,8 @@ class TtChile(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(
+            url, timeout=30).text, 'html.parser')
 
         containers = soup.findAll('div', 'textOtrosPrecios')
 

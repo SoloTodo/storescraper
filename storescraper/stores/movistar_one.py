@@ -25,6 +25,9 @@ class MovistarOne(Movistar):
         if not json_response['current']['movistar1']:
             return []
 
+        adjusted_plan_id = plan_id.replace(
+            '_Ren', '_Porta')
+
         soup = BeautifulSoup(json_response['offer'], 'html.parser')
         products = []
         price = Decimal(remove_words(
@@ -42,7 +45,7 @@ class MovistarOne(Movistar):
             'Cell',
             url,
             url,
-            '{} - {} - {}{}'.format(sku, color_id, plan_id,
+            '{} - {} - {}{}'.format(sku, color_id, adjusted_plan_id,
                                     portability_suffix),
             -1,
             price,
@@ -50,7 +53,7 @@ class MovistarOne(Movistar):
             'CLP',
             sku=sku,
             cell_plan_name='{}{}'.format(
-                plan_id, portability_suffix),
+                adjusted_plan_id, portability_suffix),
             cell_monthly_payment=monthly_payment
         ))
 
