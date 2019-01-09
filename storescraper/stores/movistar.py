@@ -181,6 +181,9 @@ class Movistar(Store):
         soup = BeautifulSoup(json_response['offer'], 'html.parser')
         payment_options = soup.findAll('div', 'price')
 
+        adjusted_plan_id = plan_id.replace(
+            '_Ren', '_Porta')
+
         products = []
 
         # Sin cuota de arriendo
@@ -193,13 +196,13 @@ class Movistar(Store):
             'Cell',
             url,
             url,
-            '{} - {} - {}{}'.format(sku, color_id, plan_id,
+            '{} - {} - {}{}'.format(sku, color_id, adjusted_plan_id,
                                     portability_suffix),
             -1,
             price,
             price,
             'CLP',
-            cell_plan_name='{}{}'.format(plan_id,
+            cell_plan_name='{}{}'.format(adjusted_plan_id,
                                          portability_suffix),
             cell_monthly_payment=Decimal(0)
         ))
@@ -221,7 +224,7 @@ class Movistar(Store):
                 'Cell',
                 url,
                 url,
-                '{} - {} - {}{} cuotas'.format(sku, color_id, plan_id,
+                '{} - {} - {}{} cuotas'.format(sku, color_id, adjusted_plan_id,
                                                portability_suffix),
                 -1,
                 price,
@@ -229,7 +232,7 @@ class Movistar(Store):
                 'CLP',
                 sku=sku,
                 cell_plan_name='{}{} cuotas'.format(
-                    plan_id, portability_suffix),
+                    adjusted_plan_id, portability_suffix),
                 cell_monthly_payment=monthly_payment
             ))
 
