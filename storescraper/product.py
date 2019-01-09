@@ -30,7 +30,7 @@ class Product:
         assert offer_price <= normal_price
 
         if cell_plan_name:
-            assert len(cell_plan_name) <= 50
+            assert len(cell_plan_name) <= 60
 
         if picture_urls:
             for picture_url in picture_urls:

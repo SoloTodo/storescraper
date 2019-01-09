@@ -51,7 +51,6 @@ class Movistar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         products = []
         if url == cls.prepago_url:
             # Plan Prepago
