@@ -77,7 +77,8 @@ class Tecnofacil(Store):
             return []
 
         sku = sku_container.text.strip()
-        name = soup.find('div', 'product-name').find('h1').text.strip()
+        name = "{} ({})".format(soup.find('div', 'product-name')
+                                .find('h1').text.strip(), sku)
 
         if soup.find('p', 'availability').find('span').text.strip() \
                 == 'En existencia':
