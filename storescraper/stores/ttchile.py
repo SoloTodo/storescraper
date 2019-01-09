@@ -79,8 +79,8 @@ class TtChile(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(session.get(
+                    category_url, timeout=30).text, 'html.parser')
 
                 product_description = soup.findAll(
                     'table', 'tableEdicionProductos')[1:]
@@ -105,7 +105,8 @@ class TtChile(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(
+            url, timeout=30).text, 'html.parser')
 
         containers = soup.findAll('div', 'textOtrosPrecios')
 
