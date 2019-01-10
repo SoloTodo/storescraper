@@ -91,7 +91,7 @@ class AgenciasWayOnline(Store):
         price = Decimal(soup.find('span', 'PricesalesPrice').text
                         .replace('Q', '').replace(',', ''))
 
-        picture_urls = [tag['href'] for tag in soup.find
+        picture_urls = [tag['href'].replace(' ', '%20') for tag in soup.find
                         ('div', 'vm-product-media-container').findAll('a')]
 
         description = html_to_markdown(str(soup.find
