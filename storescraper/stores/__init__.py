@@ -133,6 +133,7 @@ from .ripley import Ripley
 from .ripley_peru import RipleyPeru
 from .rodo import Rodo
 from .sams import Sams
+from .samsung_chile import SamsungChile
 from .samsung_online import SamsungOnline
 from .sanborns import Sanborns
 from .saraiva import Saraiva
