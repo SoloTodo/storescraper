@@ -51,7 +51,6 @@ class MovistarOne(Movistar):
             price,
             price,
             'CLP',
-            sku=sku,
             cell_plan_name='{}{}'.format(
                 adjusted_plan_id, portability_suffix),
             cell_monthly_payment=monthly_payment

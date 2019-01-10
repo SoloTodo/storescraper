@@ -230,7 +230,6 @@ class Movistar(Store):
                 price,
                 price,
                 'CLP',
-                sku=sku,
                 cell_plan_name='{}{} cuotas'.format(
                     adjusted_plan_id, portability_suffix),
                 cell_monthly_payment=monthly_payment
