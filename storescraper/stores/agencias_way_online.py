@@ -53,7 +53,8 @@ class AgenciasWayOnline(Store):
                 if start:
                     url += '?start={}'.format(start)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(url, timeout=20).text,
+                                     'html.parser')
 
                 for container in soup.findAll(
                         'div', 'vm-product-media-container'):
@@ -76,8 +77,9 @@ class AgenciasWayOnline(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        data = session.get(url, timeout=20).text
         soup = BeautifulSoup(data, 'html.parser')
         sku_container = soup.find('h4', 'codigo')
 
@@ -85,13 +87,15 @@ class AgenciasWayOnline(Store):
             return []
 
         sku = sku_container.text.replace('Código: ', '')
-        name = soup.find('h1', 'title-product-item').text
+        model = soup.find('h4').text.replace('Modelo: ', '').strip()
+        name = '{} ({})'.format(soup.find('h1', 'title-product-item').text,
+                                model)
         stock = -1
 
         price = Decimal(soup.find('span', 'PricesalesPrice').text
                         .replace('Q', '').replace(',', ''))
 
-        picture_urls = [tag['href'] for tag in soup.find
+        picture_urls = [tag['href'].replace(' ', '%20') for tag in soup.find
                         ('div', 'vm-product-media-container').findAll('a')]
 
         description = html_to_markdown(str(soup.find

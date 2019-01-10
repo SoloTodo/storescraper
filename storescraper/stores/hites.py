@@ -100,6 +100,9 @@ class Hites(Store):
                 category_url = 'https://www.hites.com/{}?pageSize=48&page={}' \
                                ''.format(category_id, page)
 
+                if page >= 20:
+                    raise Exception('Page overflow: ' + category_url)
+
                 print(category_url)
 
                 response = session.get(category_url, timeout=30)
@@ -112,8 +115,14 @@ class Hites(Store):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 json_data = json.loads(soup.find(
                     'script', {'id': 'hy-data'}).text)
+                product_entries = json_data['result']['products']
 
-                for product_entry in json_data['result']['products']:
+                if not product_entries:
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
+
+                for product_entry in product_entries:
                     slug = product_entry['productString']
                     product_url = 'https://www.hites.com/' + slug
                     product_urls.append(product_url)
