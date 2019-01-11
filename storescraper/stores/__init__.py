@@ -155,8 +155,10 @@ from .terabyte import Terabyte
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_movistar import TiendaMovistar
+from .tienda_monge import TiendaMonge
 from .tienda_toyotomi import TiendaToyotomi
 from .todo_juegos import TodoJuegos
+from .tomalo import Tomalo
 from .top_pc import TopPc
 from .tottus import Tottus
 from .ttchile import TtChile
