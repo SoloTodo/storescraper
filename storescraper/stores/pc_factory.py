@@ -68,6 +68,7 @@ class PcFactory(Store):
             ['700', 'StereoSystem'],  # Minicomponentes
             ['831', 'StereoSystem'],  # Parlantes PC
             ['34', 'StereoSystem'],  # Parlantes Portátiles
+            ['797', 'StereoSystem'],  # Barras de Sonido
             ['475', 'AllInOne'],
             ['22', 'Mouse'],
             ['789', 'Television'],
