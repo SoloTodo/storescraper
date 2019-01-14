@@ -2,6 +2,8 @@ import json
 import urllib
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,9 +24,11 @@ class ClaroUp(Store):
         if category != 'Cell':
             return []
 
-        products_json = json.loads(session.get(
+        soup = BeautifulSoup(session.get(
             'https://equipos.clarochile.cl/servicio/catalogo'
-        ).text)
+        ).text, 'html.parser')
+
+        products_json = json.loads(soup.contents[-1])
 
         for idx, product_entry in enumerate(products_json):
             product_id = product_entry['id']
