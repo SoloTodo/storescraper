@@ -75,7 +75,9 @@ class SamsungChile(Store):
                 name = model['displayName']
                 model_url = 'https://www.samsung.com{}'.format(model['pdpUrl'])
                 key = model['modelCode']
-                picture_urls = []
+                picture_urls = ['https://images.samsung.com/'
+                                'is/image/samsung/{}'
+                                .format(model['thumbUrl'])]
 
                 for picture in model['galleryImage']:
                     picture_urls.append(
@@ -83,7 +85,7 @@ class SamsungChile(Store):
                         .format(picture))
 
                 products.append(Product(
-                    name,
+                    '{} ({})'.format(name, key),
                     cls.__name__,
                     category,
                     model_url,
