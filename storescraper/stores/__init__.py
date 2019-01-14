@@ -54,6 +54,7 @@ from .garbarino import Garbarino
 from .gearbest import GearBest
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
+from .gollo_tienda import GolloTienda
 from .grupo_cva import GrupoCva
 from .gtd import Gtd
 from .hiraoka import Hiraoka
@@ -66,6 +67,7 @@ from .imp_dali import ImpDali
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
+from .jetstereo import Jetstereo
 from .johnson import Johnson
 from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
@@ -75,6 +77,7 @@ from .kalunga import Kalunga
 from .kuhn import Kuhn
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_polar import LaPolar
+from .lady_lee import LadyLee
 from .led_light_chile import LedLightChile
 from .led_shop import LedShop
 from .led_studio import LedStudio
