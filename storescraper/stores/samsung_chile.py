@@ -117,7 +117,7 @@ class SamsungChile(Store):
             ('07180000', '&filter1=01z01',
              'cooking-appliances/microwave-ovens', 'Oven'),
             ('07170000', '', 'washing-machines/all-washing-machines',
-             'WashingMashine'),
+             'WashingMachine'),
             ('07070000', '', 'vacuum-cleaners/all-vacuum-cleaners',
              'VacuumCleaner'),
             ('21030000', '', 'monitors/all-monitors', 'Monitor'),
