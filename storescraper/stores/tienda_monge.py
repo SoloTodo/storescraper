@@ -1,11 +1,7 @@
 from bs4 import BeautifulSoup
-from decimal import Decimal
 
-from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
-
-import json
 
 
 class TiendaMonge(Store):

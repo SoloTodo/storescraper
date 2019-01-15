@@ -73,7 +73,11 @@ class SamsungChile(Store):
         for product in product_list:
             for model in product['modelList']:
                 name = model['displayName']
-                model_url = 'https://www.samsung.com{}'.format(model['pdpUrl'])
+                if 'www.samsung.com' in model['pdpUrl']:
+                    model_url = 'https:{}'.format(model['pdpUrl'])
+                else:
+                    model_url = 'https://www.samsung.com{}'\
+                        .format(model['pdpUrl'])
                 key = model['modelCode']
                 picture_urls = ['https://images.samsung.com/'
                                 'is/image/samsung/{}'
