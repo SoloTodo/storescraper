@@ -137,7 +137,6 @@ from .ripley_peru import RipleyPeru
 from .rodo import Rodo
 from .sams import Sams
 from .samsung_chile import SamsungChile
-from .samsung_online import SamsungOnline
 from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sears_mexico import SearsMexico
@@ -159,6 +158,7 @@ from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
+from .tienda_smart import TiendaSmart
 from .tienda_toyotomi import TiendaToyotomi
 from .todo_juegos import TodoJuegos
 from .tomalo import Tomalo

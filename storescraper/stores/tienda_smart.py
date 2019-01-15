@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class SamsungOnline(Store):
+class TiendaSmart(Store):
     @classmethod
     def categories(cls):
         return [
@@ -16,6 +16,7 @@ class SamsungOnline(Store):
             'Tablet',
             'Headphones',
             'StereoSystem',
+            'Smartwatch',
         ]
 
     @classmethod
@@ -24,6 +25,7 @@ class SamsungOnline(Store):
             ['smartphones', 'Cell'],
             ['tablets', 'Tablet'],
             ['audio/auriculares', 'Headphones'],
+            ['wearables', 'Smartwatch'],
         ]
 
         product_urls = []
