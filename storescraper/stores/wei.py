@@ -52,7 +52,7 @@ class Wei(Store):
             ['1267', 'Notebook'],  # Notebooks
             ['731', 'Notebook'],  # NOTEBOOK GAMER
             ['1252', 'Mouse'],  # Mouse
-            ['732', 'Mouse'],  # ACCESORIOS GAMER
+            # ['732', 'Mouse'],  # ACCESORIOS GAMER
             ['1138', 'ExternalStorageDrive'],  # Discos externos
             ['515', 'SolidStateDrive'],  # SSD
             ['1142', 'UsbFlashDrive'],  # Pendrive
