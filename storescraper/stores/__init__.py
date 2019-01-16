@@ -75,6 +75,7 @@ from .jumbo_colombia import JumboColombia
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kuhn import Kuhn
+from .la_curacao_online_salvador import LaCuracaoOnlineSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_polar import LaPolar
 from .lady_lee import LadyLee
