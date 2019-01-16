@@ -74,7 +74,7 @@ class TiendaEntel(Store):
             picture_urls = []
             for container in pictures_container.findAll('img'):
                 picture_urls.append('https://miportal.entel.cl' +
-                                    container['src'])
+                                    container['src'].replace(' ', '%20'))
 
             product = Product(
                 sku['skuName'],
