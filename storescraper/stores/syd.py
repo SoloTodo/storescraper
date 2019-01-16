@@ -69,8 +69,8 @@ class Syd(Store):
         name = soup.find('h2').text
         product_web_id = soup.find('input', {'id': 'productWebId'})['value']
 
-        picture_urls = [soup.find(
-            'img', 'img-thumbnail mk_main_img img-responsive')['src']]
+        picture_urls = [tag['href'] for tag in
+                        soup.findAll('a', 'zoom-img-trigger')]
 
         description = soup.find('div', 'row text-justify')
         description = description.findAll('p')
