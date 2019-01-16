@@ -1,18 +1,12 @@
-import re
-from bs4 import BeautifulSoup
+import json
 from decimal import Decimal
 
 from storescraper.product import Product
-from .movistar import Movistar
-from storescraper.utils import remove_words
+from storescraper.store import Store
+from storescraper.utils import remove_words, session_with_proxy
 
 
-class MovistarOne(Movistar):
-    portability_choices = [
-        (3, ''),
-    ]
-    movistar1 = 1
-
+class MovistarOne(Store):
     @classmethod
     def categories(cls):
         return [
@@ -20,40 +14,49 @@ class MovistarOne(Movistar):
         ]
 
     @classmethod
-    def _assemble_postpago_cells(cls, json_response, name, url, sku, color_id,
-                                 plan_id, portability_suffix):
-        if not json_response['current']['movistar1']:
-            return []
+    def discover_urls_for_category(cls, category, extra_args=None):
+        if category == 'Cell':
+            return ['https://ww2.movistar.cl/movistarone/productos.json']
+        return []
 
-        adjusted_plan_id = plan_id.replace(
-            '_Ren', '_Porta')
-
-        soup = BeautifulSoup(json_response['offer'], 'html.parser')
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        session = session_with_proxy(extra_args)
+        json_data = json.loads(session.get(url).text)
         products = []
-        price = Decimal(remove_words(
-            soup.find('div', 'price').contents[2]))
-        monthly_payment_text = \
-            soup.find('div', 'cuotes').text
-        monthly_payment_match = re.search(
-            r'\$([\d|.]+)', monthly_payment_text)
-        monthly_payment = Decimal(
-            remove_words(monthly_payment_match.groups()[0]))
 
-        products.append(Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            '{} - {} - {}{}'.format(sku, color_id, adjusted_plan_id,
-                                    portability_suffix),
-            -1,
-            price,
-            price,
-            'CLP',
-            cell_plan_name='{}{}'.format(
-                adjusted_plan_id, portability_suffix),
-            cell_monthly_payment=monthly_payment
-        ))
+        plans_dict = {
+            'Plan Libre HD': 'JLT Multimedia Libre_Porta cuotas',
+            'Plan Libre SD': 'Multimedia Libre SD Remoto A_Porta cuotas',
+            'Plan XL': 'JLZ Multimedia XL_Porta cuotas',
+            'Plan L': 'JLW Multimedia L_Porta cuotas',
+        }
+
+        for entry in json_data:
+            name = entry['telefono']
+            picture_urls = ['https://ww2.movistar.cl/movistarone/' +
+                            entry['imagenUrl']]
+
+            for plan_entry in entry['planes']:
+                cell_plan_name = plans_dict[plan_entry['tipoPlan']]
+                price = Decimal(remove_words(plan_entry['pieEquipo']))
+                cell_monthly_payment = Decimal(
+                    remove_words(plan_entry['cuotaMensualEquipo']))
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'Cell',
+                    'https://ww2.movistar.cl/movistarone/',
+                    url,
+                    '{} {}'.format(name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    picture_urls=picture_urls,
+                    cell_plan_name=cell_plan_name,
+                    cell_monthly_payment=cell_monthly_payment
+                ))
 
         return products

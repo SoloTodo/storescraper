@@ -24,6 +24,7 @@ class Vivelo(Store):
             'VacuumCleaner',
             'Monitor',
             'Headphones',
+            'Smartwatch',
         ]
 
     @classmethod
@@ -31,6 +32,7 @@ class Vivelo(Store):
         category_paths = [
             ['dispositivos-moviles/smartphones.html', 'Cell'],
             ['dispositivos-moviles/tablets.html', 'Tablet'],
+            ['dispositivos-moviles/weareables.html', 'Smartwatch'],
             ['tv-audio-video/led.html', 'Television'],
             ['tv-audio-video/home-theater.html', 'StereoSystem'],
             ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
