@@ -51,8 +51,9 @@ class Wei(Store):
             ['678', 'Tablet'],  # TABLETS
             ['1267', 'Notebook'],  # Notebooks
             ['731', 'Notebook'],  # NOTEBOOK GAMER
+            ['755', 'Notebook'],  # MACBOOK
             ['1252', 'Mouse'],  # Mouse
-            # ['732', 'Mouse'],  # ACCESORIOS GAMER
+            ['807', 'Mouse'],  # MOUSE GAMER
             ['1138', 'ExternalStorageDrive'],  # Discos externos
             ['515', 'SolidStateDrive'],  # SSD
             ['1142', 'UsbFlashDrive'],  # Pendrive
@@ -60,14 +61,19 @@ class Wei(Store):
             ['769', 'AllInOne'],  # ALL IN ONE - AIO
             ['770', 'Headphones'],  # AUDIFONOS CON MICROFONO
             ['1176', 'Headphones'],  # AUDíFONOS
+            ['805', 'Headphones'],  # AUDIFONOS GAMER
             ['1126', 'Motherboard'],  # PLACAS MADRES
+            ['730', 'Motherboard'],  # PLACAS GAMER
             ['1219', 'ComputerCase'],  # GABINETES
             ['729', 'ComputerCase'],  # GABINETES GAMER
             ['1222', 'PowerSupply'],  # FUENTES DE PODER (PSU)
             ['1305', 'VideoCard'],  # TARJETAS DE VIDEO
+            ['811', 'VideoCard'],  # TARJETAS GRAFICAS GAMER
             ['1117', 'Processor'],  # Procesadores
             ['1238', 'Ram'],  # MEMORIAS
+            ['1240', 'Ram'],  # MEMORIA PC GAMER
             ['1162', 'CpuCooler'],  # VENTILADORES / FAN
+            ['804', 'CpuCooler'],  # REFRIGERACION E ILUMINACION
             ['1267', 'Notebook'],  # NOTEBOOKS
             ['784', 'Printer'],  # IMPRESORA TINTA
             ['773', 'Printer'],  # IMPRESORAS LASER
@@ -75,13 +81,17 @@ class Wei(Store):
             ['1226', 'Printer'],  # IMPRESORAS TINTA
             ['1249', 'Projector'],  # PROYECTORES
             ['1245', 'Monitor'],  # MONITORES LED, LCD, TFT
+            ['810', 'Monitor'],  # MONITORES GAMER
             ['1248', 'Television'],  # TELEVISORES
             ['1295', 'Cell'],  # SMARTPHONES
             ['1141', 'MemoryCard'],  # Tarjetas de memoria
-            ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
-            ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
+            ['806', 'Keyboard'],  # TECLADOS GAMER
+            # ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
+            # ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
+            ['808', 'KeyboardMouseCombo'],  # KIT TECLADO Y MOUSE GAMER
             ['1175', 'StereoSystem'],  # PARLANTES
             # ['793', 'StereoSystem'],  # AMPLIFICADORES
+            ['1209', 'VideoGameConsole'],  # CONSOLAS JUEGOS Y CONTROLES
         ]
 
         session = session_with_proxy(extra_args)

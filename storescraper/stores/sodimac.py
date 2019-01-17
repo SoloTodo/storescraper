@@ -138,8 +138,10 @@ class Sodimac(Store):
                 normal_price = Decimal(pricing_json['EVENTO'])
             elif 'MASBAJO' in pricing_json:
                 normal_price = Decimal(pricing_json['MASBAJO'])
-            else:
+            elif 'INTERNET' in pricing_json:
                 normal_price = Decimal(pricing_json['INTERNET'])
+            else:
+                return []
 
             if 'CMR' in pricing_json:
                 offer_price = Decimal(pricing_json['CMR'])
