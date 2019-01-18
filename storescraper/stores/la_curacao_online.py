@@ -32,7 +32,6 @@ class LaCuracaoOnline(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
-
         product_urls = []
 
         for category_path, local_category in cls.category_filters:

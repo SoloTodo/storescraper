@@ -40,6 +40,7 @@ from .easy_argentina import EasyArgentina
 from .efe import Efe
 from .eglo import Eglo
 from .electronica_panamericana import ElectronicaPanamericana
+from .el_gallo_mas_gallo import ElGalloMasGallo
 from .enel import Enel
 from .entel import Entel
 from .exito import Exito
@@ -75,6 +76,7 @@ from .jumbo_colombia import JumboColombia
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kuhn import Kuhn
+from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
 from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_polar import LaPolar

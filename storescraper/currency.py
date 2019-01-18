@@ -21,7 +21,8 @@ class Currency:
             'USD': cls('$', ',', '.', 2),
             'GTQ': cls('$', ',', '.', 2),
             'HNL': cls('L.', ',', '.', 2),
-            'DOP': cls('$', ',', '.', 2)
+            'DOP': cls('$', ',', '.', 2),
+            'NIO': cls('C$', ',', '.', 2)
         }
 
         currency = known_codes[code]
