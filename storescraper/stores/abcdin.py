@@ -34,6 +34,7 @@ class AbcDin(Store):
             'VideoGameConsole',
             'AllInOne',
             'WaterHeater',
+            'Smartwatch',
             'Headphones',
         ]
 

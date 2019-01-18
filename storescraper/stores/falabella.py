@@ -45,6 +45,7 @@ class Falabella(Store):
             'SpaceHeater',
             'Keyboard',
             'KeyboardMouseCombo',
+            'Smartwatch',
             'Headphones',
         ]
 

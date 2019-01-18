@@ -40,6 +40,7 @@ class LaPolar(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+
         ]
 
     @classmethod
@@ -91,6 +92,9 @@ class LaPolar(Store):
             ['tecnologia/accesorios_computacion/otros', 'MemoryCard'],
             ['tecnologia3/accesorios_computacion/mouse_i_teclados', 'Mouse'],
             ['electronica/audio/audifonos', 'Headphones'],
+            ['moda_zapatos/relojes/relojes_mujer', 'Smartwatch'],
+            ['moda_zapatos/relojes/relojes_hombre', 'Smartwatch'],
+            ['electronica/celulares/accesorios_telefonos', 'Smartwatch']
         ]
 
         session = session_with_proxy(extra_args)

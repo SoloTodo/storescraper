@@ -40,6 +40,7 @@ class Lider(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'Smartwatch'
         ]
 
     @classmethod
@@ -108,6 +109,8 @@ class Lider(Store):
              'Headphones'],
             [u'Computación/Accesorios-de-Computación/Audífonos/_/N-1wf1kx5',
              'Headphones'],
+            [u'Telefonía-y-Fotografía/Celulares-y-Teléfonos/Smartwatch/_/'
+             u'N-jqnddk', 'Smartwatch']
         ]
 
         product_urls = []
