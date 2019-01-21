@@ -1,5 +1,3 @@
-import html
-import json
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -133,31 +131,31 @@ class Wei(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url, verify=False).text
+        page_source = session.get(url).text
+
+        sku = re.search(r"productoPrint\('(.+)'\);", page_source).groups()[0]
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        pricing_str = re.search('retailrocket.products.post\((.+)\);',
-                                page_source)
+        name_container = soup.find('div', 'titulo')
 
-        if not pricing_str:
+        if name_container.text == 'PRODUCTO NO DISPONIBLE':
             return []
 
-        pricing_json = json.loads(pricing_str.groups()[0])
-
-        name = html.unescape(pricing_json['name'])
-
-        if pricing_json['isAvailable']:
-            stock = -1
-        else:
+        if soup.find('a', {'data-tooltip': 'Sin Stock'}):
             stock = 0
+        else:
+            stock = -1
 
-        sku = pricing_json['url'].split('/')[-1]
-        offer_price = Decimal(pricing_json['price'])
+        name = name_container.contents[-1].replace('&sol;', '').strip()
+        pricing_container = soup.find('div', 'producto-precio')
+        offer_price = Decimal(remove_words(pricing_container.find(
+            'div', 'txt18').contents[0].split('$')[1]))
 
-        normal_price = soup.findAll(
-            'div', 'pb10')[2].contents[0].split('$')[1]
+        normal_price = pricing_container.find(
+            'div', 'txt14').contents[0].split('$')[1]
         normal_price = Decimal(remove_words(normal_price))
 
         description = html_to_markdown(str(soup.find(
