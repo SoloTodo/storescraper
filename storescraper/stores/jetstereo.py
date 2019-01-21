@@ -81,8 +81,14 @@ class Jetstereo(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
-        soup = BeautifulSoup(data, 'html.parser')
+        data = session.get(url, allow_redirects=False)
+
+        if data.status_code == 302:
+            return []
+
+        soup = BeautifulSoup(data.text, 'html.parser')
+
+        print(soup)
 
         sku = soup.find('div', 'star').find('h4').text.replace('SKU: ', '')\
             .strip()
