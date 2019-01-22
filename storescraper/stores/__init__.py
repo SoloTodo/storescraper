@@ -68,6 +68,7 @@ from .imp_dali import ImpDali
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
+from .iprotech import Iprotech
 from .jetstereo import Jetstereo
 from .johnson import Johnson
 from .jumbo import Jumbo
