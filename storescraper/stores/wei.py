@@ -136,7 +136,13 @@ class Wei(Store):
 
         page_source = session.get(url).text
 
-        sku = re.search(r"productoPrint\('(.+)'\);", page_source).groups()[0]
+        sku = re.search(r"productoPrint\('(.+)'\);", page_source)
+
+        if not sku:
+            return []
+
+        sku = sku.groups()[0]
+
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name_container = soup.find('div', 'titulo')
