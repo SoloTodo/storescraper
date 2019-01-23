@@ -34,7 +34,7 @@ class AbcDin(Store):
             'VideoGameConsole',
             'AllInOne',
             'WaterHeater',
-            'Smartwatch',
+            'Wearable',
             'Headphones',
         ]
 
@@ -80,7 +80,7 @@ class AbcDin(Store):
             ['10065', 'WaterHeater'],
             ['10061', 'SpaceHeater'],  # Estufas electricas
             ['10063', 'SpaceHeater'],  # Estufas a lena
-            ['24055', 'Smartwatch'],
+            ['24055', 'Wearable'],
             ['10013', 'Headphones'],
         ]
 

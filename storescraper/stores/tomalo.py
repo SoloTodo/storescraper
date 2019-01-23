@@ -18,7 +18,7 @@ class Tomalo(Store):
             'StereoSystem',
             'CellAccesory',
             'Headphones',
-            'Smartwatch',
+            'Wearable',
             'MemoryCard'
         ]
 
@@ -31,7 +31,7 @@ class Tomalo(Store):
             ('95-parlantes-jbl', 'StereoSystem'),
             ('82-carcasas', 'CellAccesory'),
             ('42-audifonos', 'Headphones'),
-            ('19-wearables', 'Smartwatch'),
+            ('19-wearables', 'Wearable'),
             ('96-tarjeta-memoria-micro-sd', 'MemoryCard')
         ]
 

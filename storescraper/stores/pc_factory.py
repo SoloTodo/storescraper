@@ -45,7 +45,7 @@ class PcFactory(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
-            'Smartwatch',
+            'Wearable',
         ]
 
     @classmethod
@@ -93,7 +93,7 @@ class PcFactory(Store):
             ['895', 'Headphones'],  # Audifonos
             ['860', 'Headphones'],  # Audífonos DJ
             ['861', 'Headphones'],  # Audífonos Monitoreo
-            ['685', 'Smartwatch']
+            ['685', 'Wearable']
         ]
 
         session = session_with_proxy(extra_args)

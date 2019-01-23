@@ -23,7 +23,7 @@ class SamsungChile(Store):
             'Monitor',
             'CellAccesory',
             'Headphones',
-            'Smartwatch',
+            'Wearable',
             'AirConditioner',
             'DishWasher'
 
@@ -140,7 +140,7 @@ class SamsungChile(Store):
             ('18030000', '&filter1=01z06', 'wearables/all-wearables/?earables',
              'Headphones'),
             ('18030000', '&filter1=01z02%2B01z03',
-             'wearables/all-wearables/?smartwatch+sport-band', 'Smartwatch'),
+             'wearables/all-wearables/?smartwatch+sport-band', 'Wearable'),
             ('07190000', '', 'air-conditioners/all-air-conditioners',
              'AirConditioner'),
             ('07180000', '&filter1=01z02', 'cooking-appliances/dishwashers',

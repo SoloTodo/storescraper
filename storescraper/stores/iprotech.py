@@ -13,7 +13,7 @@ class Iprotech(Store):
         return [
             'Cell',
             'VideoGameConsole',
-            'Smartwatch'
+            'Wearable'
         ]
 
     @classmethod
@@ -28,7 +28,7 @@ class Iprotech(Store):
             ('tienda/smartphones/lg/', 'Cell'),
             ('tienda/smartphones/huawei/', 'Cell'),
             ('tienda/consolas/', 'VideoGameConsole'),
-            ('tienda/smartwatch-y-chromecast/', 'Smartwatch')
+            ('tienda/smartwatch-y-chromecast/', 'Wearable')
         ]
 
         session = session_with_proxy(extra_args)

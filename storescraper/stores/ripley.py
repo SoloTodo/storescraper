@@ -35,7 +35,7 @@ class Ripley(Store):
             'WaterHeater',
             'SolidStateDrive',
             'SpaceHeater',
-            'Smartwatch',
+            'Wearable',
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
@@ -94,7 +94,7 @@ class Ripley(Store):
             ['electro/climatizacion/ventiladores-y-aire-acondicionado',
              'AirConditioner'],
             ['electro/climatizacion/estufas-y-calefactores', 'SpaceHeater'],
-            ['telefonia/smartwatches-and-wearables/smartwatch', 'Smartwatch'],
+            ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
             ['tecno/audio-y-musica/audifonos', 'Headphones'],
         ]
 

@@ -30,7 +30,7 @@ class Sodimac(Store):
             'Cell',
             'Headphones',
             'StereoSystem',
-            'Smartwatch'
+            'Wearable'
         ]
 
     @classmethod
@@ -74,7 +74,7 @@ class Sodimac(Store):
             ['cat8350012/Parlantes-bluetooth', 'StereoSystem'],
             # ['cat4850400/Parlantes-y-Karaokes', 'StereoSystem'],
             ['cat8350014/Tornamesas', 'StereoSystem'],
-            ['cat3870009/Wearables', 'Smartwatch']
+            ['cat3870009/Wearables', 'Wearable']
         ]
 
         product_urls = []

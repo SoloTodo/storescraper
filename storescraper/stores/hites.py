@@ -38,7 +38,7 @@ class Hites(Store):
             'AirConditioner',
             'WaterHeater',
             'UsbFlashDrive',
-            'Smartwatch'
+            'Wearable'
         ]
 
     @classmethod
@@ -86,7 +86,7 @@ class Hites(Store):
             ['celulares/smartphone/celulares-basicos', 'Cell'],
             ['electro-hogar/electrodomesticos/aspiradoras-y-enceradoras',
              'VacuumCleaner'],
-            ['celulares/smartphone/smartwatch', 'Smartwatch']
+            ['celulares/smartphone/smartwatch', 'Wearable']
         ]
 
         product_urls = []
