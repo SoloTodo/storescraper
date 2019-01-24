@@ -37,7 +37,7 @@ class Jumbo(Store):
             ['C:/316/320/444/', 'Oven'],
             ['C:/298/302/305/', 'Printer'],
             ['C:/298/302/308/', 'MemoryCard'],
-            ['C:/298/303/310/', 'Headphones'],
+            ['C:/298/302/310/', 'Headphones'],
             ['C:/298/303/312/', 'StereoSystem'],
             ['C:/298/303/311/', 'StereoSystem'],
             ['C:/298/303/431/', 'Television'],

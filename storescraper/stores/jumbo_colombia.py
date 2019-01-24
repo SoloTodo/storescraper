@@ -23,7 +23,7 @@ class JumboColombia(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['C:/47/48/54/', 'ExternalStorageDrive'],
+            ['C:/47/48/2000582/', 'ExternalStorageDrive'],
         ]
 
         product_urls = []
