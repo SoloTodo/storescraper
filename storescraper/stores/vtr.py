@@ -44,7 +44,7 @@ class Vtr(Store):
                 raise Exception('Empty cell category')
 
             for container in containers:
-                product_path = container.find('a')['href'].split('#')[0]
+                product_path = container.find('a')['href'].split('?')[0]
                 product_url = 'https://vtr.com' + product_path
                 product_urls.append(product_url)
 
