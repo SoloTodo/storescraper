@@ -147,10 +147,10 @@ class Vtr(Store):
         colors = [tag['color-name'] for tag in
                   soup.find('ul', 'devices-colors').findAll('li')]
 
-        plan_types = [
-            ('cont-no-portar', ''),
-            ('cont-si-portar', ' Portabilidad'),
-        ]
+        plan_types_dict = {
+            'No Portados': '',
+            'Portados': ' Portabilidad'
+        }
 
         plan_buttons = soup.findAll('button', 'c2cbtn')
 
@@ -160,29 +160,35 @@ class Vtr(Store):
             name_with_color = '{} - {}'.format(name, color)
             cell_url = '{}?selection={}'.format(url, color)
 
-            for panel_class, suffix in plan_types:
-                for plan_button in plan_buttons:
-                    price = Decimal(plan_button['deviceprice'])
-                    plan_name = 'VTR {}{}'.format(
-                        plan_button['planname'].strip(), suffix)
+            for plan_button in plan_buttons:
+                parent_row = plan_button.findParent('tr')
+                parent_row_style = parent_row.get('style', '')
 
-                    p = Product(
-                        name_with_color,
-                        cls.__name__,
-                        'Cell',
-                        cell_url,
-                        url,
-                        '{} {} {}'.format(sku, color, plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        sku=sku,
-                        cell_plan_name=plan_name,
-                        picture_urls=picture_urls,
-                        description=description,
-                        cell_monthly_payment=Decimal(0)
-                    )
-                    products.append(p)
+                if 'display' in parent_row_style:
+                    continue
+
+                price = Decimal(plan_button['deviceprice'])
+                suffix = plan_types_dict[plan_button['port']]
+                plan_name = 'VTR {}{}'.format(
+                    plan_button['planname'].strip(), suffix)
+
+                p = Product(
+                    name_with_color,
+                    cls.__name__,
+                    'Cell',
+                    cell_url,
+                    url,
+                    '{} {} {}'.format(sku, color, plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    cell_plan_name=plan_name,
+                    picture_urls=picture_urls,
+                    description=description,
+                    cell_monthly_payment=Decimal(0)
+                )
+                products.append(p)
 
         return products
