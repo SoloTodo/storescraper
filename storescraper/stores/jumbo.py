@@ -31,10 +31,10 @@ class Jumbo(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['C:/298/300/433/', 'Cell'],
-            ['C:/316/320/333/', 'Refrigerator'],
-            ['C:/316/320/334/', 'WashingMachine'],
-            ['C:/316/320/444/', 'Oven'],
+            ['C:/298/302/300/', 'Cell'],
+            ['C:/298/320/333/', 'Refrigerator'],
+            ['C:/298/320/334/', 'WashingMachine'],
+            ['C:/298/320/444/', 'Oven'],
             ['C:/298/302/305/', 'Printer'],
             ['C:/298/302/308/', 'MemoryCard'],
             ['C:/298/302/310/', 'Headphones'],
