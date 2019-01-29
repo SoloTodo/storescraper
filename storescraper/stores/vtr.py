@@ -1,5 +1,3 @@
-import json
-
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -167,7 +165,7 @@ class Vtr(Store):
                 if 'display' in parent_row_style:
                     continue
 
-                price = Decimal(plan_button['deviceprice'])
+                price = Decimal(plan_button['deviceprice']).quantize(0)
                 suffix = plan_types_dict[plan_button['port']]
                 plan_name = 'VTR {}{}'.format(
                     plan_button['planname'].strip(), suffix)
