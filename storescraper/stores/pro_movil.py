@@ -27,34 +27,23 @@ class ProMovil(Store):
             if local_category != category:
                 continue
 
-            page = 1
+            category_url = 'https://www.promovil.cl/{}?n=250'.format(
+                category_path)
 
-            while True:
-                category_url = 'https://www.promovil.cl/{}?n=250&p={}'.format(
-                    category_path, page)
+            print(category_url)
 
-                print(category_url)
+            response = session.get(category_url)
 
-                if page >= 10:
-                    raise Exception('Page overflow: ' + category_url)
+            if response.url != category_url:
+                raise Exception('Empty category: ' + category_url)
 
-                response = session.get(category_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-                if response.url != category_url:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_url)
-                    else:
-                        break
+            products_containers = soup.findAll('div', 'ajax_block_product')
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-
-                products_containers = soup.findAll('div', 'ajax_block_product')
-
-                for product_container in products_containers:
-                    product_url = product_container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            for product_container in products_containers:
+                product_url = product_container.find('a')['href']
+                product_urls.append(product_url)
 
         return product_urls
 
