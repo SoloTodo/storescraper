@@ -62,7 +62,7 @@ class MacOnline(Store):
         page_source = response.text
 
         soup = BeautifulSoup(page_source, 'html.parser')
-        default_picture_url = soup.find('img', {'itemprop': 'image'})['src']
+        default_picture_url = soup.find('img', {'itemprop': 'image'})['data-src']
         json_data = re.search(r'options: (.*)', page_source)
 
         if json_data:
