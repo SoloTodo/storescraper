@@ -54,6 +54,10 @@ class Paris(Store):
             ['tecnologia/computadores/ipad-tablet', 'Tablet'],
             ['tecnologia/computadores/desktop-all-in-one', 'AllInOne'],
             ['electro/television/todas', 'Television'],
+            ['electro/television/smart-tv', 'Television'],
+            ['electro/television/ultra-hd', 'Television'],
+            ['electro/television/curvo-oled-qled', 'Television'],
+            ['electro/television/monitores-tv', 'Television'],
             ['electro/accesorios-tv/soundbar-home-theater', 'StereoSystem'],
             ['electro/audio-hifi/home-theater', 'StereoSystem'],
             ['electro/accesorios-tv/bluray-dvd', 'OpticalDiskPlayer'],
@@ -133,7 +137,7 @@ class Paris(Store):
 
                 offset += 40
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
