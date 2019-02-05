@@ -1,5 +1,3 @@
-import json
-
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -13,7 +11,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
 class Vtr(Store):
     prepago_url = 'https://vtr.com/productos/moviles/prepago'
     planes_url = 'https://vtr.com/productos/moviles/product.clasificacion/' \
-                 'MovilesPlanes'
+                 'MovilesPlanes/'
 
     @classmethod
     def categories(cls):
@@ -38,13 +36,13 @@ class Vtr(Store):
                             'product.clasificacion/MovilesEquipos').text,
                 'html.parser')
 
-            containers = soup.findAll('div', 'select-device-box')
+            containers = soup.findAll('div', 'mep-device-module')
 
             if not containers:
                 raise Exception('Empty cell category')
 
             for container in containers:
-                product_path = container.find('a')['href'].split('#')[0]
+                product_path = container.find('a')['href'].split('?')[0]
                 product_url = 'https://vtr.com' + product_path
                 product_urls.append(product_url)
 
@@ -84,57 +82,48 @@ class Vtr(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
 
-        plan_containers = [
-            ('Libre', 'planes-multimedia'),
-            ('Cuenta Controlada', 'planes-multimedia-cuenta-controlada'),
-            ('Plus', 'planes-plus')
-        ]
+        rows = soup.findAll('div', 'box-vertical-fijo')
 
-        for plan_family, container_id in plan_containers:
-            container = soup.find('li', {'id': container_id})
-            rows = container.findAll('div', 'mobile-plan-box')[1:]
+        for row in rows:
+            name = ' '.join([x.replace('\n', '').strip()
+                             for x in row.find('li', 'gbs_text').text.split()])
+            price_container = row.find('div', 'price')
 
-            for row in rows:
-                name = '{} {}'.format(
-                    plan_family, row.find('span', 'colored').text.strip())
-                price_container = row.find(
-                    'div', 'not-device').find('span', 'price')
+            price = Decimal(remove_words(
+                price_container['data-not-ported']))
 
-                price = Decimal(remove_words(
-                    price_container['data-not-ported']))
+            p = Product(
+                name,
+                cls.__name__,
+                'CellPlan',
+                url,
+                url,
+                name,
+                -1,
+                price,
+                price,
+                'CLP',
+            )
 
-                p = Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    name,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                )
+            products.append(p)
 
-                products.append(p)
+            portablidad_name = '{} Portabilidad'.format(name)
+            price = Decimal(remove_words(price_container['data-ported']))
 
-                portablidad_name = '{} Portabilidad'.format(name)
-                price = Decimal(remove_words(price_container['data-ported']))
+            p = Product(
+                portablidad_name,
+                cls.__name__,
+                'CellPlan',
+                url,
+                url,
+                portablidad_name,
+                -1,
+                price,
+                price,
+                'CLP',
+            )
 
-                p = Product(
-                    portablidad_name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    portablidad_name,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                )
-
-                products.append(p)
+            products.append(p)
 
         return products
 
@@ -144,75 +133,60 @@ class Vtr(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h2').find('strong').text.strip()
+        name = soup.find('h3', 'mep-model').text.strip()
         sku = re.search(r'prod(\d+)', url).groups()[0]
 
         picture_urls = ['https://vtr.com' + tag['src'].strip().replace(
             ' ', '%20') for tag in soup.findAll('img', 'color-0')]
 
-        description = ''
+        description = html_to_markdown(
+            str(soup.find('div', 'vtr-cont-planes')), 'https://vtr.com')
 
-        for panel in soup.findAll('div', 'tab_content'):
-            description += html_to_markdown(
-                str(panel), 'https://vtr.com') + '\n\n'
+        colors = [tag['color-name'] for tag in
+                  soup.find('ul', 'devices-colors').findAll('li')]
 
-        plan_families = [
-            ('Libre', 'planes-multimedia'),
-            ('Cuenta Controlada', 'planes-multimedia-cuenta-controlada'),
-            ('Plus', 'planes-plus')
-        ]
+        plan_types_dict = {
+            'No Portados': '',
+            'Portados': ' Portabilidad'
+        }
 
-        plan_types = [
-            ('cont-no-portar', ''),
-            ('cont-si-portar', ' Portabilidad'),
-        ]
-
-        colors = [tag.parent.text.strip()
-                  for tag in soup.findAll('span', 'square')]
+        plan_buttons = soup.findAll('button', 'c2cbtn')
 
         products = []
 
         for color in colors:
             name_with_color = '{} - {}'.format(name, color)
+            cell_url = '{}?selection={}'.format(url, color)
 
-            for plan_type, panel_id in plan_families:
-                panel = soup.find('li', {'id': panel_id})
+            for plan_button in plan_buttons:
+                parent_row = plan_button.findParent('tr')
+                parent_row_style = parent_row.get('style', '')
 
-                for panel_class, suffix in plan_types:
-                    card = panel.find('div', panel_class)
+                if 'display' in parent_row_style:
+                    continue
 
-                    for row in card.findAll('div', 'mobile-plan-box'):
-                        price_container = row.find('span', 'price')
+                price = Decimal(plan_button['deviceprice']).quantize(0)
+                suffix = plan_types_dict[plan_button['port']]
+                plan_name = 'VTR {}{}'.format(
+                    plan_button['planname'].strip(), suffix)
 
-                        if len(price_container.contents) == 3:
-                            price_text = price_container.text
-                        else:
-                            price_text = price_container.contents[2]
-
-                        price = Decimal(remove_words(price_text))
-
-                        plan_name = 'VTR {} {}{}'.format(
-                            plan_type,
-                            row.findAll('span', 'units')[1].text.strip(),
-                            suffix)
-
-                        p = Product(
-                            name_with_color,
-                            cls.__name__,
-                            'Cell',
-                            url,
-                            url,
-                            '{} {}'.format(sku, plan_name),
-                            -1,
-                            price,
-                            price,
-                            'CLP',
-                            sku=sku,
-                            cell_plan_name=plan_name,
-                            picture_urls=picture_urls,
-                            description=description,
-                            cell_monthly_payment=Decimal(0)
-                        )
-                        products.append(p)
+                p = Product(
+                    name_with_color,
+                    cls.__name__,
+                    'Cell',
+                    cell_url,
+                    url,
+                    '{} {} {}'.format(sku, color, plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    cell_plan_name=plan_name,
+                    picture_urls=picture_urls,
+                    description=description,
+                    cell_monthly_payment=Decimal(0)
+                )
+                products.append(p)
 
         return products

@@ -287,11 +287,17 @@ class Falabella(Store):
 
             prices = {e['type']: e for e in model['price']}
 
+            if 3 in prices:
+                normal_price_key = 3
+            else:
+                normal_price_key = 2
+
             lookup_field = 'originalPrice'
-            if lookup_field not in prices[3]:
+            if lookup_field not in prices[normal_price_key]:
                 lookup_field = 'formattedLowestPrice'
 
-            normal_price = Decimal(remove_words(prices[3][lookup_field]))
+            normal_price = Decimal(remove_words(
+                prices[normal_price_key][lookup_field]))
 
             if 1 in prices:
                 lookup_field = 'originalPrice'
