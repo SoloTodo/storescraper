@@ -116,13 +116,13 @@ class Paris(Store):
                 if offset > 1000:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www2.paris.cl/{}/?sz=40&start={}' \
+                category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, offset)
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                containers = soup.findAll('li', 'box-product')
+                containers = soup.findAll('li', 'flex-item-products')
 
                 if not containers:
                     if offset == 0:
@@ -132,7 +132,7 @@ class Paris(Store):
                 for container in containers:
                     product_url = container.find('a')['href'].split('?')[0]
                     if 'https' not in product_url:
-                        product_url = 'https://www2.paris.cl' + product_url
+                        product_url = 'https://www.paris.cl' + product_url
                     product_urls.append(product_url)
 
                 offset += 40

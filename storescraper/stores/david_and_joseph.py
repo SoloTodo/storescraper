@@ -29,7 +29,7 @@ class DavidAndJoseph(Store):
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-            category_url = 'http://davidandjoseph.cl/djcl/' + category_path
+            category_url = 'http://davidandjoseph.cl/' + category_path
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             link_containers = soup.findAll('div', 'product-list-item')
@@ -44,6 +44,7 @@ class DavidAndJoseph(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
