@@ -23,6 +23,7 @@ from .cintegral import Cintegral
 from .claro import Claro
 from .claro_up import ClaroUp
 from .clie import Clie
+from .club_smart import ClubSmart
 from .compumundo import Compumundo
 from .conelectric import Conelectric
 from .coppel import Coppel
