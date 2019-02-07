@@ -68,8 +68,8 @@ class Easy(Store):
              'SpaceHeater'],
             ['electrohogar/climatizacion/aire-acondicionado-portatil',
              'AirConditioner'],
-            # ['electrohogar/climatizacion/aire-acondicionado-split',
-            # 'AirConditioner'],
+            ['electrohogar/climatizacion/aire-acondicionado-split',
+             'AirConditioner'],
             ['audio', 'StereoSystem'],
         ]
 
@@ -118,9 +118,6 @@ class Easy(Store):
             return []
 
         name = name.text.strip()
-
-        if soup.find('span', {'itemprop': 'price'}).text.strip():
-            return []
 
         sku = soup.find('meta', {'name': 'pageIdentifier'})['content'].strip()
         description = html_to_markdown(str(soup.find('div', 'box_2')))
