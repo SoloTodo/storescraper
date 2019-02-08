@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class TiendaEntel(Store):
@@ -55,6 +55,10 @@ class TiendaEntel(Store):
 
         json_data = json.loads(raw_json)
 
+        description = html_to_markdown(
+            str(soup.find('div', 'details-description'))
+        )
+
         for sku in json_data['renderSkusBean']['skus']:
             price_container = sku['skuPrice']
             if not price_container:
@@ -90,6 +94,7 @@ class TiendaEntel(Store):
                 sku=sku_id,
                 cell_plan_name='Entel Prepago',
                 picture_urls=picture_urls,
+                description=description,
             )
             products.append(product)
 
