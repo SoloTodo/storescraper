@@ -25,14 +25,18 @@ class Tomalo(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('12-smartphones', 'Cell'),
+            ('12-dispositivos-moviles', 'Cell'),
+            ('119-promo-s8-s9-s9', 'Cell'),
+            ('91-galaxy-note-9', 'Cell'),
+            ('116-promo-level-u', 'Cell'),
             ('17-tablet', 'Tablet'),
             ('18-books', 'Tablet'),
-            ('95-parlantes-jbl', 'StereoSystem'),
+            # ('95-parlantes-jbl', 'StereoSystem'),
             ('82-carcasas', 'CellAccesory'),
+            ('57-hogar-inteligente', 'CellAccesory'),
             ('42-audifonos', 'Headphones'),
             ('19-wearables', 'Wearable'),
-            ('96-tarjeta-memoria-micro-sd', 'MemoryCard')
+            # ('96-tarjeta-memoria-micro-sd', 'MemoryCard')
         ]
 
         session = session_with_proxy(extra_args)
@@ -51,7 +55,12 @@ class Tomalo(Store):
 
                 url = 'https://www.tomalo.cl/{}?p={}'\
                     .format(category_path, page)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                response = session.get(url)
+
+                if response.status_code == 404:
+                    raise Exception('Emtpy category: ' + url)
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 for container in soup.findAll('div', 'product_container'):
                     product_url = container\
