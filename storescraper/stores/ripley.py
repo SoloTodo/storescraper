@@ -79,7 +79,7 @@ class Ripley(Store):
             ['tecno/fotografia-y-video/semi-profesionales',
              'Camera'],
             ['entretenimiento/fotografia/camaras-compactas', 'Camera'],
-            ['tecno/audio-y-musica/hi-fi', 'StereoSystem'],
+            # ['tecno/audio-y-musica/hi-fi', 'StereoSystem'],
             ['tecno/audio-y-musica/parlantes-y-subwoofer', 'StereoSystem'],
             ['tecno/audio-y-musica/microcomponentes', 'StereoSystem'],
             ['tecno/audio-y-musica/home-cinema', 'StereoSystem'],
