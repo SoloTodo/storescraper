@@ -30,6 +30,7 @@ class MovistarOne(Store):
             'Plan Libre SD': 'Multimedia Libre SD Remoto A_Porta cuotas',
             'Plan XL': 'JLZ Multimedia XL_Porta cuotas',
             'Plan L': 'JLW Multimedia L_Porta cuotas',
+            'Plan M': 'JLP Multimedia M_Porta Portabilidad cuotas',
         }
 
         for entry in json_data:

@@ -143,6 +143,10 @@ class Hites(Store):
 
         page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
+
+        if soup.find('img', {'src': '/public/statics/images/404.svg'}):
+            return []
+
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
 
