@@ -28,7 +28,8 @@ class LgChile(Store):
             'OpticalDrive',
             'B2B',
             'Headphones',
-            'Stove'
+            'Stove',
+            'AirConditioner'
         ]
 
     @classmethod
