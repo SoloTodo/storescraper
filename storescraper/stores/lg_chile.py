@@ -99,8 +99,11 @@ class LgChile(Store):
         products = []
 
         for variant_url in variant_urls:
-            variant_soup = BeautifulSoup(session.get(
-                variant_url, timeout=20).text, 'html.parser')
+            response = session.get(variant_url, timeout=20)
+            # Because https://www.lg.com/pa/telefonos-celulares/lg-G2-D805
+            page_content = response.text.replace('5,2"', '5,2')
+
+            variant_soup = BeautifulSoup(page_content, 'html.parser')
             products.extend(cls._retrieve_single_product(
                 variant_url, category, variant_soup))
 
@@ -109,9 +112,14 @@ class LgChile(Store):
     @classmethod
     def _retrieve_single_product(cls, url, category, soup):
         model_name = soup.find('title').text.split('|')[0].strip()
-        commercial_name = soup.find('h2', {'itemprop': 'name'}).text.strip()
+        commercial_name_container = soup.find('h2', {'itemprop': 'name'})
 
-        base_name = '{} {}'.format(commercial_name, model_name)
+        if commercial_name_container:
+            commercial_name = commercial_name_container.text.strip()
+        else:
+            commercial_name = ''
+
+        base_name = '{} {}'.format(commercial_name, model_name).strip()
 
         picture_urls = [cls.base_url + soup.find(
             'img', {'itemprop': 'contentUrl'})['src'].replace(' ', '%20')]
