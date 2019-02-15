@@ -108,7 +108,9 @@ class Jetstereo(Store):
 
         for picture in pictures:
             picture_url = picture.find('img')['src'].replace(' ', '%20')
-            picture_urls.append('{}{}'.format(cls.base_url, picture_url))
+            if 'https:' not in picture_url:
+                picture_url = '{}{}'.format(cls.base_url, picture_url)
+            picture_urls.append(picture_url)
 
         description = html_to_markdown(str(soup.find('ul', 'read-more-wrap')))
 

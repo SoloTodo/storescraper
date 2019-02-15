@@ -87,7 +87,11 @@ class Panafoto(Store):
                     break
 
                 for product_json in products_json:
-                    product_urls.append(product_json['url'])
+                    product_url = product_json['url']
+                    if isinstance(product_url, list):
+                        product_url = ','.join(product_url)
+
+                    product_urls.append(product_url)
 
                 page += 1
 

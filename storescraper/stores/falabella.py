@@ -94,7 +94,7 @@ class Falabella(Store):
             ['cat40051/All-In-One', 'AllInOne'],
             ['cat7830015/Portatiles', 'AirConditioner'],
             ['cat7830014/Split', 'AirConditioner'],
-            ['cat2062/Monitores', 'Monitor'],
+            # ['cat2062/Monitores', 'Monitor'],
             ['cat2013/Calefont-y-Termos', 'WaterHeater'],
             ['cat3155/Mouse', 'Mouse'],
             ['cat9900007/Estufas-Parafina', 'SpaceHeater'],

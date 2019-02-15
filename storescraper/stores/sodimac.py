@@ -130,6 +130,7 @@ class Sodimac(Store):
             return []
 
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
+        key = soup.find('input', {'id': 'currentSkuId'})['value'].strip()
 
         pricing_container = soup.find('div', {'id': 'JsonArray'})
 
@@ -155,9 +156,10 @@ class Sodimac(Store):
             name = '{} {}'.format(pricing_json.get('brand', ''),
                                   pricing_json['name']).strip()
 
-            stock_regex = r'{}=(\d+)'.format(sku)
-            stock = int(re.search(stock_regex,
-                                  pricing_json['stockLevel']).groups()[0])
+            stock_regex = r'{}=(\d+)'.format(key)
+            stock_text = re.search(stock_regex,
+                                   pricing_json['stockLevel']).groups()[0]
+            stock = int(stock_text)
         else:
             stock = 0
             normal_price = Decimal(remove_words(
@@ -197,7 +199,7 @@ class Sodimac(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
