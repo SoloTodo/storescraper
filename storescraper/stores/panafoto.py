@@ -23,6 +23,7 @@ class Panafoto(Store):
             'Monitor',
             'Projector',
             'AirConditioner',
+            'VacuumCleaner',
         ]
 
     @classmethod
@@ -54,6 +55,8 @@ class Panafoto(Store):
              'Monitores y Proyectores /// Proyectores"]', 'Projector'),
             ('["categories.level3:Categorías /// Hogar /// Climatización /// '
              'Aires acondicionados split"]', 'AirConditioner'),
+            ('["categories.level3:Categorías /// Hogar /// Limpieza /// '
+             'Aspiradoras"]', 'VacuumCleaner'),
         ]
 
         session = session_with_proxy(extra_args)
