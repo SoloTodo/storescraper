@@ -62,4 +62,8 @@ class LgPanama(LgChile):
             # ('CT30014140', 'CT30014240', 'AirConditioner', True),
             # Descontinuado AIRE ACONDICIONADO RESIDENCIAL
             ('CT30014140', 'CT30014140', 'AirConditioner', False),
+            # Monitores
+            ('CT20188028', 'CT20188028', 'Monitor', True),
+            # Descontinuado MONITORES
+            ('CT20188028', 'CT20188028', 'Monitor', False),
         ]
