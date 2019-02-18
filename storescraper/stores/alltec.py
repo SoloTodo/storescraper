@@ -1,3 +1,4 @@
+import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -96,6 +97,7 @@ class AllTec(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -143,13 +145,7 @@ class AllTec(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        pictures_container = soup.find('ul', {'id': 'thumbs_list_frame'})
-
-        if pictures_container:
-            picture_urls = [link['href'] for link in
-                            pictures_container.findAll('a')]
-        else:
-            picture_urls = None
+        picture_urls = [soup.find('img', {'itemprop': 'image'})['src']]
 
         p = Product(
             name,
