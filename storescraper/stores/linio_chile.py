@@ -51,7 +51,7 @@ class LinioChile(Store):
             ['pequenos-electrodomesticos/microondas-y-hornos/', 'Oven'],
             ['pequenos-electrodomesticos/aspiradoras/', 'VacuumCleaner'],
             ['discos-duros/discos-duros-externos/', 'ExternalStorageDrive'],
-            ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
+            # ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
             ['mouse-kit/mouse/', 'Mouse'],
             ['pc-escritorio/all-in-one/', 'AllInOne'],
         ]
