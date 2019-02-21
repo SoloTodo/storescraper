@@ -75,7 +75,7 @@ class PcFactory(Store):
             ['789', 'Television'],
             ['286', 'OpticalDrive'],
             ['272', 'Processor'],  # Procesadores
-            ['250', 'Monitor'],  # Monitores LCD
+            ['995', 'Monitor'],  # Monitores
             ['292', 'Motherboard'],  # Placas madre
             ['112', 'Ram'],  # Memoria PC
             ['100', 'Ram'],  # Memoria Notebook

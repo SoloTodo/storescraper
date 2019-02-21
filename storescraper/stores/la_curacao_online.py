@@ -83,6 +83,10 @@ class LaCuracaoOnline(Store):
 
         for i in range(5):
             response = session.get(url)
+
+            if response.status_code == 404:
+                return []
+
             if response.status_code == 200:
                 break
         else:

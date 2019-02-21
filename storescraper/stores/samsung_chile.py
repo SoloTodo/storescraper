@@ -116,6 +116,7 @@ class SamsungChile(Store):
              'audio-video/soundbar', 'StereoSystem'),
             ('18010000', '', 'smartphones/all-smartphones', 'Cell'),
             ('18020000', '', 'tablets/all-tablets', 'Tablet'),
+            ('18070000', '', 'windows-tablets/all-windows-tablets', 'Tablet'),
             ('07010000', '', 'refrigerators/all-refrigerators',
              'Refrigerator'),
             ('07180000', '&filter1=01z01',

@@ -51,7 +51,7 @@ class Sodimac(Store):
             ['cat360045/Ampolletas-LED', 'Lamp'],  # Ampolletas LED
             ['cat3810002/Televisores', 'Television'],  # Televisores
             ['cat3390002/Notebook', 'Notebook'],  # Notebooks
-            ['cat2930160/Reflectores-LED', 'LightProjector'],  # Proyectores
+            # ['cat2930160/Reflectores-LED', 'LightProjector'],  # Proyectores
             ['cat4780002/Aires-Acondicionados-Split', 'AirConditioner'],  # AC
             ['scat663002/Calefont-tiro-natural', 'WaterHeater'],
             ['cat2080050/Calefont-tiro-forzado', 'WaterHeater'],

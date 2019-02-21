@@ -24,6 +24,8 @@ class Panafoto(Store):
             'Projector',
             'AirConditioner',
             'VacuumCleaner',
+            'WashingMachine',
+            'Stove',
         ]
 
     @classmethod
@@ -57,6 +59,12 @@ class Panafoto(Store):
              'Aires acondicionados split"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Hogar /// Limpieza /// '
              'Aspiradoras"]', 'VacuumCleaner'),
+            ('["categories.level2:Categorías /// Hogar /// Lavado y Secado"]',
+             'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Hornos y Estufas '
+             '/// Estufas a gas"]', 'Stove'),
+            ('["categories.level3:Categorías /// Hogar /// Hornos y Estufas '
+             '/// Estufas eléctricas"]', 'Stove'),
         ]
 
         session = session_with_proxy(extra_args)

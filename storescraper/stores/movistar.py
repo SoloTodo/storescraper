@@ -83,18 +83,18 @@ class Movistar(Store):
         soup = BeautifulSoup(session.get(url, timeout=30).text, 'html5lib')
         products = []
 
-        plan_containers = soup.find('section', 'listadoplanes-box').findAll(
-            'div', 'item')
+        plan_containers = soup.findAll('div', 'mb-parrilla_col')
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
             plan_url = plan_link['href']
 
-            base_plan_name = 'Plan ' + plan_link.text.strip()
+            base_plan_name = 'Plan ' + plan_link.find('h3').text.strip()
             base_plan_name = base_plan_name.replace('&nbsp;', '')
 
-            price_text = plan_container.find('span', 'monto').text
-            price = Decimal(remove_words(price_text.split('\xa0')[1]))
+            price_text = plan_container.find('div', 'mb-parrilla_price').find(
+                'h3').text
+            price = Decimal(remove_words(price_text.split('/')[0]))
 
             portability_suffixes = ['', ' Portabilidad']
             cuotas_suffixes = [
@@ -124,6 +124,7 @@ class Movistar(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
+        print(url)
         session = session_with_proxy(extra_args)
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
