@@ -329,3 +329,36 @@ class Falabella(Store):
             products.append(p)
 
         return products
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        url_paths = [
+            ['falabella-cl/', None],
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for url_path, category in url_paths:
+            url = 'https://www.falabella.com/{}'.format(url_path)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            images = soup.findAll('div', 'fb-hero-carousel-slide')
+
+            for index, image in enumerate(images):
+                picture_array = image.find('picture').findAll('source')
+                for picture in picture_array:
+                    picture_url = picture['srcset'].split(' ')[0]
+                    if 'webp' not in picture_url:
+                        banners.append({
+                            'picture_url': 'https://www.falabella.com{}'
+                            .format(picture_url),
+                            'key': 'https://www.falabella.com{}'
+                            .format(picture_url),
+                            'position': index+1,
+                            'category': category
+                        })
+                        break
+
+        return banners

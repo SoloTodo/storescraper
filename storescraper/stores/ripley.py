@@ -217,3 +217,32 @@ class Ripley(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        url_paths = [
+            ['', None]
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for url_path, category in url_paths:
+            url = 'https://simple.ripley.cl/{}'.format(url_path)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            images = soup.find('div', 'carousel js-home-carousel')\
+                .findAll('span', 'bg-item huincha-desktop')
+
+            for index, image in enumerate(images):
+                picture_url = re.search(r'url\((.*?)\)', image['style'])\
+                    .group(1)
+                banners.append({
+                    'picture_url': picture_url,
+                    'key': picture_url,
+                    'position': index+1,
+                    'category': category
+                })
+
+        return banners
