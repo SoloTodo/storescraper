@@ -19,6 +19,7 @@ class Raenco(Store):
             'Oven',
             'AirConditioner',
             'WashingMachine',
+            'Stove',
         ]
 
     @classmethod
@@ -32,6 +33,13 @@ class Raenco(Store):
             ('hogar/linea-blanca/secadoras', 'WashingMachine'),
             ('hogar/aires-acondicionados', 'AirConditioner'),
             ('hogar/electrodomesticos/microondas', 'Oven'),
+            ('hogar/linea-blanca/hornos-empotrable/horno-a-gas', 'Oven'),
+            ('hogar/linea-blanca/estufas', 'Stove'),
+            ('hogar/linea-blanca/estufas/a-gas-de-20-24-pulgadas', 'Stove'),
+            ('hogar/linea-blanca/estufas/a-gas-de-30-y-36-pulgadas', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-empotrables', 'Stove'),
+            ('hogar/linea-blanca/estufas/de-mesa-a-gas-electrica', 'Stove'),
         ]
 
         session = session_with_proxy(extra_args)
