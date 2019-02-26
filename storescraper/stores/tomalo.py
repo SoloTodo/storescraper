@@ -81,6 +81,8 @@ class Tomalo(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
         session = session_with_proxy(extra_args)
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
@@ -100,10 +102,11 @@ class Tomalo(Store):
             picture_urls.append(picture.find('img')['src']
                                 .replace('cart_default', 'thickbox_default'))
 
-        variant_container = soup.find('div', 'product-variants')
-        variants = variant_container.findAll('li')
+        variant_container = soup.find('ul', {'id': 'color_to_pick_list'})
 
-        if variants:
+        if variant_container:
+            variants = variant_container.findAll('li')
+
             for variant in variants:
                 js_data = re.search('var combinations = (.+?);', data).group(1)
                 json_data = json.loads(js_data)

@@ -69,7 +69,7 @@ class LaPolar(Store):
             ['electronica/audio/parlantes', 'StereoSystem'],
             ['electronica/audio/equipos_de_musica', 'StereoSystem'],
             ['electronica/audio/karaoke', 'StereoSystem'],
-            ['electronica/audio/tornamesas', 'StereoSystem'],
+            # ['electronica/audio/tornamesas', 'StereoSystem'],
             ['electronica/audio/home_theater', 'StereoSystem'],
             ['electronica/videojuegos/todo_consolas', 'VideoGameConsole'],
             ['tecnologia/accesorios_computacion/disco_duro_externo',
