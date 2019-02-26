@@ -19,19 +19,44 @@ class Raenco(Store):
             'Oven',
             'AirConditioner',
             'WashingMachine',
+            'Stove',
+            'Projector',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('tecnologia/tv', 'Television'),
+            ('tecnologia/tv/tv-led-hd-fhd', 'Television'),
+            ('tecnologia/tv/lcd', 'Television'),
+            ('tecnologia/tv/tv-4k', 'Television'),
             ('tecnologia/equipos-de-sonido', 'StereoSystem'),
-            ('tecnologia/telefonos-android-iphone', 'Cell'),
+            ('tecnologia/celulares', 'Cell'),
+            ('tecnologia/celulares/8-gb-rom', 'Cell'),
+            ('tecnologia/celulares/16-gb-rom', 'Cell'),
+            ('tecnologia/celulares/32-gb-rom', 'Cell'),
+            ('tecnologia/celulares/64-gb-rom', 'Cell'),
+            ('tecnologia/celulares/128-gb-rom', 'Cell'),
             ('hogar/linea-blanca/refrigeradoras', 'Refrigerator'),
+            ('hogar/linea-blanca/refrigeradoras/puerta-vertical',
+             'Refrigerator'),
             ('hogar/linea-blanca/lavadoras', 'WashingMachine'),
+            ('hogar/linea-blanca/lavadoras/semi-automaticas', 'WashingMachine'),
+            ('hogar/linea-blanca/lavadoras/centro-de-lavado-a-gas',
+             'WashingMachine'),
+            ('hogar/linea-blanca/lavadoras/lavadora-automatica',
+             'WashingMachine'),
             ('hogar/linea-blanca/secadoras', 'WashingMachine'),
             ('hogar/aires-acondicionados', 'AirConditioner'),
             ('hogar/electrodomesticos/microondas', 'Oven'),
+            ('hogar/linea-blanca/hornos-empotrable/horno-a-gas', 'Oven'),
+            ('hogar/linea-blanca/estufas', 'Stove'),
+            ('hogar/linea-blanca/estufas/a-gas-de-20-24-pulgadas', 'Stove'),
+            ('hogar/linea-blanca/estufas/a-gas-de-30-y-36-pulgadas', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-empotrables', 'Stove'),
+            ('hogar/linea-blanca/estufas/de-mesa-a-gas-electrica', 'Stove'),
+            ('oficina/132/137', 'Projector'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -46,13 +71,14 @@ class Raenco(Store):
             local_urls = []
             done = False
 
+            print(category_path)
+
             while True:
                 if offset >= 200:
                     raise Exception('Page overflow')
 
                 url = 'https://www.raenco.com/{}?start={}'.format(
                     category_path, offset)
-                print(url)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.findAll('div', 'product')
 
@@ -72,7 +98,7 @@ class Raenco(Store):
 
                 offset += 12
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
