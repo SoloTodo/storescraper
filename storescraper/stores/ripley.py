@@ -6,6 +6,7 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.banner_sections import *
 
 
 class Ripley(Store):
@@ -221,29 +222,106 @@ class Ripley(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        url_paths = [
-            ['', None]
+        base_url = 'https://simple.ripley.cl/{}'
+
+        sections_data = [
+            [HOME, 'Home', SUBSECTION_TYPE_HOME, ''],
+            [ELECTRO_RIPLEY, 'Electro Ripley',
+             SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+            [TECNO_RIPLEY, 'Tecno Ripley',
+             SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno/'],
+            [REFRIGERATION, 'Refrigeración',
+             SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/'],
+            [REFRIGERATION, 'Refrigeradores',
+             SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/refrigeradores/'],
+            [WASHING_MACHINES, 'Lavandería',
+             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia'],
+            [WASHING_MACHINES, 'Lavadoras',
+             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/lavadoras'],
+            [WASHING_MACHINES, 'Lavadora-secadora',
+             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/lavadora-secadora'],
+            [WASHING_MACHINES, 'Doble Carga',
+             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/doble-carga'],
+            [TELEVISIONS, 'Televisión',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
+            [TELEVISIONS, 'Smart TV',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
+            [TELEVISIONS, 'OLED, SUHD, y QLED',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled-suhd-y-qled'],
+            [TELEVISIONS, 'Ultra HD y 4K',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
+            [TELEVISIONS, 'Full HD',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/television/full-hd'],
+            [AUDIO, 'Audio y Música',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
+            [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/parlantes-y-subwoofer'],
+            [AUDIO, 'Microcomponentes',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/microcomponentes'],
+            [AUDIO, 'Home Cinema',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/home-cinema'],
+            [AUDIO, 'Audio Portable',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/audio-portable'],
+            [CELLS, 'Telefonía',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
+            [CELLS, 'Smartphones',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/smartphones']
         ]
 
         session = session_with_proxy(extra_args)
         banners = []
 
-        for url_path, category in url_paths:
-            url = 'https://simple.ripley.cl/{}'.format(url_path)
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            images = soup.find('div', 'carousel js-home-carousel')\
-                .findAll('span', 'bg-item huincha-desktop')
+            if subsection_type == SUBSECTION_TYPE_HOME:
+                images = soup.find('div', 'carousel js-home-carousel') \
+                    .findAll('span', 'bg-item huincha-desktop')
 
-            for index, image in enumerate(images):
-                picture_url = re.search(r'url\((.*?)\)', image['style'])\
-                    .group(1)
+                for index, image in enumerate(images):
+                    picture_url = re.search(r'url\((.*?)\)', image['style']) \
+                        .group(1)
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection
+                    })
+            elif subsection_type == SUBSECTION_TYPE_CATEGORY_PAGE:
+                images = soup.findAll('a', 'item')
+
+                for index, image in enumerate(images):
+                    picture = image.find('span', 'bg-item')
+                    picture_url = re.search(r'url\((.*?)\)', picture['style'])\
+                        .group(1)
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection
+                    })
+            elif subsection_type == SUBSECTION_TYPE_MOSAIC:
+                picture_url = soup.find('section', 'catalog-top-banner')\
+                    .find('img')
+
+                if not picture_url:
+                    continue
+
                 banners.append({
-                    'picture_url': picture_url,
-                    'key': picture_url,
-                    'position': index+1,
-                    'category': category
+                    'url': url,
+                    'picture_url': picture_url['src'],
+                    'key': picture_url['src'],
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection
                 })
+            else:
+                raise Exception('Invalid subsection type')
 
         return banners
