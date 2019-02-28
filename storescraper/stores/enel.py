@@ -22,8 +22,7 @@ class Enel(Store):
             ['299-tradicionales', 'Lamp'],
             ['300-smart', 'Lamp'],
             ['301-decorativas', 'Lamp'],
-            ['105-split-sin-instalacion', 'AirConditioner'],
-            ['216-aire-acondicionados-portatiles', 'AirConditioner'],
+            ['55-aire-acondicionado', 'AirConditioner'],
         ]
 
         product_urls = []
