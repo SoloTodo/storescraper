@@ -289,7 +289,8 @@ class Ripley(Store):
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
-                        'subsection': subsection
+                        'subsection': subsection,
+                        'type': subsection_type
                     })
             elif subsection_type == SUBSECTION_TYPE_CATEGORY_PAGE:
                 images = soup.findAll('a', 'item')
@@ -304,7 +305,8 @@ class Ripley(Store):
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
-                        'subsection': subsection
+                        'subsection': subsection,
+                        'type': subsection_type
                     })
             elif subsection_type == SUBSECTION_TYPE_MOSAIC:
                 picture_url = soup.find('section', 'catalog-top-banner')\
@@ -319,7 +321,8 @@ class Ripley(Store):
                     'key': picture_url['src'],
                     'position': 1,
                     'section': section,
-                    'subsection': subsection
+                    'subsection': subsection,
+                    'type': subsection_type
                 })
             else:
                 raise Exception('Invalid subsection type')

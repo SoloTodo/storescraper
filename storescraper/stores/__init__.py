@@ -81,6 +81,7 @@ from .kuhn import Kuhn
 from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
 from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
+from .la_curacao_online_honduras import LaCuracaoOnlineHonduras
 from .la_polar import LaPolar
 from .lady_lee import LadyLee
 from .led_light_chile import LedLightChile
@@ -113,6 +114,7 @@ from .meroli import Meroli
 from .microplay import Microplay
 from .movistar import Movistar
 from .movistar_one import MovistarOne
+from .multimax import Multimax
 from .musimundo import Musimundo
 from .my_box import MyBox
 from .net_now import NetNow
