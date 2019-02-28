@@ -49,6 +49,7 @@ class Max(Store):
             ('lineablanca/estufas/cooktops-a-gas', 'Stove'),
             ('lineablanca/estufas/cooktops-electricos', 'Stove'),
             ('computacion/proyectores', 'Projector'),
+            ('audio', 'StereoSystem'),
             ('audio/audio-para-casa/micro-componente', 'StereoSystem'),
             ('audio/audio-para-casa/mini-componente', 'StereoSystem'),
             ('audio/audio-para-casa/audio-vertical', 'StereoSystem'),
@@ -95,7 +96,7 @@ class Max(Store):
 
             product_urls.extend(local_urls)
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
