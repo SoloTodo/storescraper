@@ -7,8 +7,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy, check_ean13
+from storescraper.utils import session_with_proxy, check_ean13
 
 
 class Jumbo(Store):
@@ -26,21 +25,24 @@ class Jumbo(Store):
             'Headphones',
             'StereoSystem',
             'Television',
+            'Mouse'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['C:/298/302/300/', 'Cell'],
-            ['C:/298/320/333/', 'Refrigerator'],
-            ['C:/298/320/334/', 'WashingMachine'],
-            ['C:/298/320/444/', 'Oven'],
-            ['C:/298/302/305/', 'Printer'],
             ['C:/298/302/308/', 'MemoryCard'],
             ['C:/298/302/310/', 'Headphones'],
-            ['C:/298/303/312/', 'StereoSystem'],
+            ['C:/298/302/309/', 'Mouse'],
+            ['C:/298/302/304/', 'Mouse'],
+            ['C:/298/302/305/', 'Printer'],
             ['C:/298/303/311/', 'StereoSystem'],
+            ['C:/298/303/312/', 'StereoSystem'],
             ['C:/298/303/431/', 'Television'],
+            ['C:/298/320/444/', 'Oven'],
+            ['C:/298/320/334/', 'WashingMachine'],
+            ['C:/298/320/333/', 'Refrigerator'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -50,7 +52,7 @@ class Jumbo(Store):
             if local_category != category:
                 continue
 
-            page = 0
+            page = 1
 
             while True:
                 if page >= 10:
@@ -61,8 +63,6 @@ class Jumbo(Store):
                               '0&PageNumber={}&fq={}'.format(
                                 page,
                                 urllib.parse.quote(url_extension, safe=''))
-
-                print(url_webpage)
 
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html5lib')
