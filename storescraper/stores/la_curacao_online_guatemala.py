@@ -16,4 +16,5 @@ class LaCuracaoOnlineGuatemala(LaCuracaoOnline):
         ('refrigeracion/congeladores.html', 'Refrigerator'),
         ('lavadoras-y-secadoras/lavadoras.html', 'WashingMachine'),
         ('cocinas/microondas.html', 'Oven'),
+        ('cocinas/cocinas-de-gas.html', 'Stove'),
     ]
