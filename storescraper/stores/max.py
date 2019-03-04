@@ -21,6 +21,8 @@ class Max(Store):
             'WashingMachine',
             'OpticalDiskPlayer',
             'Stove',
+            'Monitor',
+            'Projector',
         ]
 
     @classmethod
@@ -39,19 +41,22 @@ class Max(Store):
             ('lineablanca/lavadoras', 'WashingMachine'),
             ('lineablanca/empotrables', 'Oven'),
             ('lineablanca/estufas/hornos-empotrables', 'Oven'),
+            ('electrodomesticos/microondas', 'Oven'),
             ('lineablanca/refrigeradoras/refrigeradoras', 'Refrigerator'),
             ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),
             ('lineablanca/estufas/estufas-a-gas', 'Stove'),
             ('lineablanca/estufas/estufas-electricas', 'Stove'),
             ('lineablanca/estufas/cooktops-a-gas', 'Stove'),
             ('lineablanca/estufas/cooktops-electricos', 'Stove'),
-            ('computacion/pc-gaming/monitores', 'Monitor'),
             ('computacion/proyectores', 'Projector'),
+            ('audio', 'StereoSystem'),
             ('audio/audio-para-casa/micro-componente', 'StereoSystem'),
             ('audio/audio-para-casa/mini-componente', 'StereoSystem'),
             ('audio/audio-para-casa/audio-vertical', 'StereoSystem'),
             ('audio/audio-portatil', 'StereoSystem'),
             ('audio/audio-multizona', 'StereoSystem'),
+            ('computacion/pc-gaming/monitores', 'Monitor'),
+            ('computacion/proyectores', 'Projector'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -91,7 +96,7 @@ class Max(Store):
 
             product_urls.extend(local_urls)
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
