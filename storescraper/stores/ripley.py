@@ -286,9 +286,21 @@ class Ripley(Store):
                 for index, image in enumerate(images):
                     picture_url = re.search(r'url\((.*?)\)', image['style']) \
                         .group(1)
+
+                    if image.parent.parent.name == 'a':
+                        destination_urls = [image.parent.parent['href']]
+                    else:
+                        destination_urls = \
+                            [d['href'] for d in image.parent.parent
+                                .findAll('div', 'hidden-xs-down')[1]
+                                .findAll('a')]
+
+                    destination_urls = list(set(destination_urls))
+
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
+                        'destination_urls': destination_urls,
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
@@ -302,9 +314,13 @@ class Ripley(Store):
                     picture = image.find('span', 'bg-item')
                     picture_url = re.search(r'url\((.*?)\)', picture['style'])\
                         .group(1)
+
+                    destination_urls = [image['href']]
+
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
+                        'destination_urls': destination_urls,
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
@@ -318,9 +334,13 @@ class Ripley(Store):
                 if not picture_url:
                     continue
 
+                destination_urls = [soup.find('section', 'catalog-top-banner')
+                                        .find('a')['href']]
+
                 banners.append({
                     'url': url,
                     'picture_url': picture_url['src'],
+                    'destination_urls': destination_urls,
                     'key': picture_url['src'],
                     'position': 1,
                     'section': section,
