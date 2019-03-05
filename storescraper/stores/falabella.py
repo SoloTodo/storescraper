@@ -12,6 +12,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
+from storescraper.banner_sections import *
+from storescraper.utils import HeadlessChrome
 
 
 class Falabella(Store):
@@ -332,33 +334,185 @@ class Falabella(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        url_paths = [
-            ['falabella-cl/', None],
+        base_url = 'https://www.falabella.com/falabella-cl/{}'
+
+        sections_data = [
+            [HOME, 'Home', SUBSECTION_TYPE_HOME, ''],
+            # [LINEA_BLANCA_FALABELLA,
+            # 'Electro y Tecnología-Línea Blanca',
+            #  SUBSECTION_TYPE_CATEGORY_PAGE,
+            #  'category/cat7090035/Linea-Blanca'],
+
+            # # CATEGORY PAGES # #
+            [REFRIGERATION, 'Refrigeradores', SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat3205/Refrigeradores'],
+            [WASHING_MACHINES, 'Lavadoras', SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat3136/Lavadoras '],
+            [TELEVISIONS, 'TV', SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat1012/TV '],
+            [AUDIO, 'Audio', SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat2005/Audio'],
+            [CELLS, 'Electro y Tecnología-Teléfonos',
+             SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+
+            # # MOSAICS ##
+            [LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
+             SUBSECTION_TYPE_MOSAIC,
+             'category/cat7090035/Linea-Blanca?isPLP=1'],
+            [REFRIGERATION, 'Refrigeradores-No Frost', SUBSECTION_TYPE_MOSAIC,
+             'category/cat4074/No-Frost'],
+            [REFRIGERATION, 'Refrigeradores-Side by Side',
+             SUBSECTION_TYPE_MOSAIC, 'category/cat4091/Side-by-Side'],
+            [WASHING_MACHINES, 'Lavadoras', SUBSECTION_TYPE_MOSAIC,
+             'category/cat3136/Lavadoras '],
+            [WASHING_MACHINES, 'Lavadoras-Lavadoras', SUBSECTION_TYPE_MOSAIC,
+             'category/cat4060/Lavadoras'],
+            [WASHING_MACHINES, 'Lavadoras-Lavadoras-Secadoras',
+             SUBSECTION_TYPE_MOSAIC,
+             'category/cat1700002/Lavadoras-Secadoras'],
+            [WASHING_MACHINES, 'Lavadoras-Secadoras', SUBSECTION_TYPE_MOSAIC,
+             'category/cat4088/Secadoras'],
+            [WASHING_MACHINES, ' Lavadoras-Lavadoras Doble Carga',
+             SUBSECTION_TYPE_MOSAIC,
+             'category/cat11400002/Lavadoras-Doble-Carga'],
+            [TELEVISIONS, 'TV-LED', SUBSECTION_TYPE_MOSAIC,
+             'category/cat2850014/LED'],
+            [TELEVISIONS, 'TV-Smart TV', SUBSECTION_TYPE_MOSAIC,
+             'category/cat3040054/Smart-TV'],
+            [TELEVISIONS, 'TV-4K UHD', SUBSECTION_TYPE_MOSAIC,
+             'category/cat3990038/4K-UHD'],
+            [TELEVISIONS, 'TV-Televisores OLED', SUBSECTION_TYPE_MOSAIC,
+             'category/cat2850016/Televisores-OLED'],
+            [TELEVISIONS, 'TV', SUBSECTION_TYPE_MOSAIC,
+             'category/cat1012/TV?isPLP=1'],
+            [TELEVISIONS, 'Especiales-Televisores Sobre 65"',
+             SUBSECTION_TYPE_MOSAIC,
+             'category/cat12910024/Televisores-Sobre-65'],
+            [AUDIO, 'Audio-Soundbar y Home Theater', SUBSECTION_TYPE_MOSAIC,
+             'category/cat2045/Home-Theater'],
+            [AUDIO, 'Home Theater', SUBSECTION_TYPE_MOSAIC,
+             'category/cat3050040/Home-Theater'],
+            [AUDIO, 'Soundbar', SUBSECTION_TYPE_MOSAIC,
+             'category/cat1700004/Soundbar'],
+            [AUDIO, 'Minicomponente', SUBSECTION_TYPE_MOSAIC,
+             'category/cat70018/Minicomponente'],
+            [AUDIO, 'Audio-Equipos de Música y Karaokes',
+             SUBSECTION_TYPE_MOSAIC,
+             'category/cat3091/?mkid=CA_P2_MIO1_024794'],
+            [AUDIO, 'Audio-Hi-Fi', SUBSECTION_TYPE_MOSAIC,
+             'category/cat3203/Hi-Fi'],
+            [AUDIO, 'Audio', SUBSECTION_TYPE_MOSAIC,
+             'category/cat2005/Audio?isPLP=1'],
+            [CELLS, 'Smartphones', SUBSECTION_TYPE_MOSAIC,
+             'category/cat720161/Smartphones'],
+            [CELLS, 'Electro y Tecnología-Teléfonos', SUBSECTION_TYPE_MOSAIC,
+             'category/cat2018/Telefonos?isPLP=1'],
         ]
 
         session = session_with_proxy(extra_args)
         banners = []
 
-        for url_path, category in url_paths:
-            url = 'https://www.falabella.com/{}'.format(url_path)
-            response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
 
-            images = soup.findAll('div', 'fb-hero-carousel-slide')
+            if subsection_type == SUBSECTION_TYPE_HOME:
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                images = soup.findAll('div', 'fb-hero-carousel-slide')
 
-            for index, image in enumerate(images):
-                picture_array = image.find('picture').findAll('source')
-                for picture in picture_array:
-                    picture_url = picture['srcset'].split(' ')[0]
-                    if 'webp' not in picture_url:
-                        banners.append({
-                            'picture_url': 'https://www.falabella.com{}'
-                            .format(picture_url),
-                            'key': 'https://www.falabella.com{}'
-                            .format(picture_url),
-                            'position': index+1,
-                            'category': category
-                        })
-                        break
+                for index, image in enumerate(images):
+                    picture_array = image.find('picture').findAll('source')
+                    destination_urls = [d['href'] for d in image.findAll('a')]
+                    destination_urls = list(set(destination_urls))
+                    for picture in picture_array:
+                        picture_url = picture['srcset'].split(' ')[0]
+
+                        if 'https://www.falabella.com' not in picture_url:
+                            picture_url = 'https://www.falabella.com' \
+                                          '{}'.format(picture_url)
+
+                        if 'webp' not in picture_url:
+                            banners.append({
+                                'url': url,
+                                'picture_url': picture_url,
+                                'destination_urls': destination_urls,
+                                'key': picture_url,
+                                'position': index+1,
+                                'section': section,
+                                'subsection': subsection,
+                                'type': subsection_type
+                            })
+                            break
+                    else:
+                        raise Exception(
+                            'No valid banners found for {} in position '
+                            '{}'.format(url, index + 1))
+            elif subsection_type == SUBSECTION_TYPE_CATEGORY_PAGE:
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
+
+                    pictures = []
+
+                    elements = driver \
+                        .find_element_by_class_name('fb-hero-carousel-slides')\
+                        .find_elements_by_class_name('fb-slide-image')
+
+                    for element in elements:
+                        pictures.append(element.screenshot_as_base64)
+
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    images = soup.findAll('div', 'fb-hero-carousel-slide')
+
+                    assert len(images) == len(pictures)
+
+                    for index, image in enumerate(images):
+                        picture_array = image.findAll('picture')[-1].findAll(
+                            'source')
+                        destination_urls = [d['href'] for d in
+                                            image.findAll('a')]
+                        destination_urls = list(set(destination_urls))
+
+                        for picture in picture_array:
+                            key = picture['srcset'].split(' ')[0]
+                            if 'webp' not in key:
+                                banners.append({
+                                    'url': url,
+                                    'picture': pictures[index],
+                                    'destination_urls': destination_urls,
+                                    'key': 'https:{}'.format(key),
+                                    'position': index + 1,
+                                    'section': section,
+                                    'subsection': subsection,
+                                    'type': subsection_type
+                                })
+                                break
+                        else:
+                            raise Exception(
+                                'No valid banners found for {} in position '
+                                '{}'.format(url, index + 1))
+
+            elif subsection_type == SUBSECTION_TYPE_MOSAIC:
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                image_container = soup.find('div',
+                                            {'data-module': 'editorial'})
+
+                if not image_container:
+                    continue
+
+                picture_url = 'https:{}' \
+                    .format(image_container.find('source')['srcset'])
+                destination_urls = [image_container.find('a')['href']]
+                banners.append({
+                    'url': url,
+                    'picture_url': picture_url,
+                    'destination_urls': destination_urls,
+                    'key': picture_url,
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type
+                })
 
         return banners
