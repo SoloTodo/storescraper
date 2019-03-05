@@ -58,7 +58,7 @@ class Falabella(Store):
             ['cat2028/Notebooks-Gamers', 'Notebook'],
             ['cat2450060/Notebooks-2-en-1', 'Notebook'],
             ['cat5860030/MacBooks', 'Notebook'],
-            ['cat11290006/Gamer', 'Notebook'],
+            ['cat4850013/Computacion-Gamer', 'Notebook'],
             # ['cat7190196/Ver-tod-Computadores', 'Notebook'],
             ['cat7190148/Televisores-LED', 'Television'],
             ['cat7230007/Tablet', 'Tablet'],
@@ -71,14 +71,14 @@ class Falabella(Store):
             ['cat1820006/Impresoras-Multifuncionales', 'Printer'],
             ['cat11970007/Impresoras-Laser', 'Printer'],
             ['cat6680042/Impresoras-Tradicionales', 'Printer'],
-            ['cat11970009/Impresoras-Fotograficas', 'Printer'],
+            # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
             ['cat3151/Microondas', 'Oven'],
             ['cat3114/Hornos-Electricos', 'Oven'],
             ['cat3025/Aspiradoras-y-Enceradoras', 'VacuumCleaner'],
             ['cat4060/Lavadoras', 'WashingMachine'],
             ['cat1700002/Lavadora-Secadora', 'WashingMachine'],
             ['cat4088/Secadoras', 'WashingMachine'],
-            # ['cat1280018/Celulares-Basicos', 'Cell'],
+            ['cat1280018/Celulares-Basicos', 'Cell'],
             ['cat720161/Smartphones', 'Cell'],
             ['cat70028/Camaras-Compactas', 'Camera'],
             ['cat70029/Camaras-Semiprofesionales', 'Camera'],
@@ -161,7 +161,7 @@ class Falabella(Store):
                 except Exception:
                     continue
 
-            if not category_product_urls and url_path != 'cat11290006/Gamer':
+            if not category_product_urls:
                 raise Exception('Category error: ' + url_path)
 
             discovered_urls.extend(category_product_urls)

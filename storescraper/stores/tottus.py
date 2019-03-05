@@ -17,7 +17,10 @@ class Tottus(Store):
             'Tablet',
             'StereoSystem',
             'Headphones',
-            'VideoGameConsole'
+            'VideoGameConsole',
+            'Printer',
+            'Refrigerator',
+            'WashingMachine',
         ]
 
     @classmethod
@@ -25,9 +28,12 @@ class Tottus(Store):
         url_base = 'http://www.tottus.cl'
 
         category_paths = [
-            ['Televisores/126.1.1', 'Television'],
-            # ['Celulares/cat700022', 'Cell'],
-            ['Audio-y-Video/cat770016', 'StereoSystem'],
+            ['Televisores-y-videojuegos/cat2280071', 'Television'],
+            ['Impresoras/cat2280072', 'Printer'],
+            ['Freezer-y-Refrigerador/cat2130070', 'Refrigerator'],
+            ['Lavadora/cat2130072', 'WashingMachine'],
+            ['Celulares/cat2280074', 'Cell'],
+            ['Audio/cat2280075', 'StereoSystem'],
             # ['Notebook-y-Tablet/cat700021', 'Tablet'],
         ]
 
