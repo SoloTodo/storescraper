@@ -133,6 +133,7 @@ from .pc_ofertas import PcOfertas
 from .pch_mayoreo import PchMayoreo
 from .peta import Peta
 from .pichau import Pichau
+from .plaza_lama import PlazaLama
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
 from .pro_movil import ProMovil
