@@ -49,7 +49,7 @@ class Ripley(Store):
 
         category_urls = [
             ['tecno/computacion/notebooks', 'Notebook'],
-            # ['tecno/computacion/2-en-1convertibles', 'Notebook'],
+            ['tecno/computacion/2-en-1convertibles', 'Notebook'],
             ['tecno/computacion/notebooks-gamer', 'Notebook'],
             ['computacion/computadores/notebooks-gamers', 'Notebook'],
             ['tecno/computacion/tablets-y-tabletas-de-disenos', 'Tablet'],
@@ -75,20 +75,16 @@ class Ripley(Store):
             ['electro/lavanderia/doble-carga', 'WashingMachine'],
             ['telefonia/celulares/smartphones', 'Cell'],
             ['tecno/telefonia/smartphones', 'Cell'],
-            # ['telefonia/celulares/iphone', 'Cell'],
-            # ['telefonia/celulares/basicos', 'Cell'],
-            # ['tecno/telefonia/basicos', 'Cell'],
-            ['tecno/fotografia-y-video/semi-profesionales',
-             'Camera'],
+            ['tecno/telefonia/basicos', 'Cell'],
+            ['tecno/fotografia-y-video/semi-profesionales', 'Camera'],
             ['entretenimiento/fotografia/camaras-compactas', 'Camera'],
             # ['tecno/audio-y-musica/hi-fi', 'StereoSystem'],
-            ['tecno/audio-y-musica/parlantes-y-subwoofer', 'StereoSystem'],
-            ['tecno/audio-y-musica/microcomponentes', 'StereoSystem'],
-            ['tecno/audio-y-musica/home-cinema', 'StereoSystem'],
-            ['tecno/audio-y-musica/audio-portable', 'StereoSystem'],
-            ['tv-audio/audio/hi-fi', 'StereoSystem'],
-            ['tv-audio/audio/tornamesas', 'StereoSystem'],
-            ['tv-audio/audio/radios-y-grabadoras', 'StereoSystem'],
+            # ['tecno/audio-y-musica/parlantes-y-subwoofer', 'StereoSystem'],
+            # ['tecno/audio-y-musica/microcomponentes', 'StereoSystem'],
+            # ['tecno/audio-y-musica/home-cinema', 'StereoSystem'],
+            ['tecno/audio-y-musica/soundbard-y-home-theater', 'StereoSystem'],
+            ['tecno/audio-y-musica/equipos-de-musica', 'StereoSystem'],
+            ['tecno/audio-y-musica/parlantes-portables', 'StereoSystem'],
             ['tecno/television/bluray', 'OpticalDiskPlayer'],
             ['tecno/television/dvd-y-tv-portatil', 'OpticalDiskPlayer'],
             ['telefonia/accesorios-telefonia/memorias', 'MemoryCard'],
@@ -257,14 +253,14 @@ class Ripley(Store):
              SUBSECTION_TYPE_MOSAIC, 'tecno/television/full-hd'],
             [AUDIO, 'Audio y Música',
              SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
-            [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
-             'tecno/audio-y-musica/parlantes-y-subwoofer'],
-            [AUDIO, 'Microcomponentes',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/microcomponentes'],
-            [AUDIO, 'Home Cinema',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/home-cinema'],
-            [AUDIO, 'Audio Portable',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/audio-portable'],
+            # [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
+            #  'tecno/audio-y-musica/parlantes-y-subwoofer'],
+            # [AUDIO, 'Microcomponentes',
+            #  SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/microcomponentes'],
+            [AUDIO, 'Soundbar y Home theater',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/soundbard-y-home-theater'],
+            [AUDIO, 'Parlantes Portables',
+             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/parlantes-portables'],
             [CELLS, 'Telefonía',
              SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
             [CELLS, 'Smartphones',
@@ -276,6 +272,7 @@ class Ripley(Store):
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
+            print(url)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
