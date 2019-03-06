@@ -12,7 +12,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
-from storescraper.banner_sections import *
+from storescraper import banner_sections as bs
 from storescraper.utils import HeadlessChrome
 
 
@@ -337,76 +337,77 @@ class Falabella(Store):
         base_url = 'https://www.falabella.com/falabella-cl/{}'
 
         sections_data = [
-            [HOME, 'Home', SUBSECTION_TYPE_HOME, ''],
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             # [LINEA_BLANCA_FALABELLA,
             # 'Electro y Tecnología-Línea Blanca',
             #  SUBSECTION_TYPE_CATEGORY_PAGE,
             #  'category/cat7090035/Linea-Blanca'],
 
             # # CATEGORY PAGES # #
-            [REFRIGERATION, 'Refrigeradores', SUBSECTION_TYPE_CATEGORY_PAGE,
+            [bs.REFRIGERATION, 'Refrigeradores',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'category/cat3205/Refrigeradores'],
-            [WASHING_MACHINES, 'Lavadoras', SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat3136/Lavadoras '],
-            [TELEVISIONS, 'TV', SUBSECTION_TYPE_CATEGORY_PAGE,
+            [bs.WASHING_MACHINES, 'Lavadoras',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras '],
+            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'category/cat1012/TV '],
-            [AUDIO, 'Audio', SUBSECTION_TYPE_CATEGORY_PAGE,
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'category/cat2005/Audio'],
-            [CELLS, 'Electro y Tecnología-Teléfonos',
-             SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+            [bs.CELLS, 'Electro y Tecnología-Teléfonos',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
 
             # # MOSAICS ##
-            [LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
-             SUBSECTION_TYPE_MOSAIC,
+            [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat7090035/Linea-Blanca?isPLP=1'],
-            [REFRIGERATION, 'Refrigeradores-No Frost', SUBSECTION_TYPE_MOSAIC,
-             'category/cat4074/No-Frost'],
-            [REFRIGERATION, 'Refrigeradores-Side by Side',
-             SUBSECTION_TYPE_MOSAIC, 'category/cat4091/Side-by-Side'],
-            [WASHING_MACHINES, 'Lavadoras', SUBSECTION_TYPE_MOSAIC,
+            [bs.REFRIGERATION, 'Refrigeradores-No Frost',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4074/No-Frost'],
+            [bs.REFRIGERATION, 'Refrigeradores-Side by Side',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4091/Side-by-Side'],
+            [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3136/Lavadoras '],
-            [WASHING_MACHINES, 'Lavadoras-Lavadoras', SUBSECTION_TYPE_MOSAIC,
-             'category/cat4060/Lavadoras'],
-            [WASHING_MACHINES, 'Lavadoras-Lavadoras-Secadoras',
-             SUBSECTION_TYPE_MOSAIC,
+            [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4060/Lavadoras'],
+            [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras-Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat1700002/Lavadoras-Secadoras'],
-            [WASHING_MACHINES, 'Lavadoras-Secadoras', SUBSECTION_TYPE_MOSAIC,
-             'category/cat4088/Secadoras'],
-            [WASHING_MACHINES, ' Lavadoras-Lavadoras Doble Carga',
-             SUBSECTION_TYPE_MOSAIC,
+            [bs.WASHING_MACHINES, 'Lavadoras-Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4088/Secadoras'],
+            [bs.WASHING_MACHINES, ' Lavadoras-Lavadoras Doble Carga',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat11400002/Lavadoras-Doble-Carga'],
-            [TELEVISIONS, 'TV-LED', SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'TV-LED', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat2850014/LED'],
-            [TELEVISIONS, 'TV-Smart TV', SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'TV-Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3040054/Smart-TV'],
-            [TELEVISIONS, 'TV-4K UHD', SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'TV-4K UHD', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3990038/4K-UHD'],
-            [TELEVISIONS, 'TV-Televisores OLED', SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'TV-Televisores OLED', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat2850016/Televisores-OLED'],
-            [TELEVISIONS, 'TV', SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat1012/TV?isPLP=1'],
-            [TELEVISIONS, 'Especiales-Televisores Sobre 65"',
-             SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'Especiales-Televisores Sobre 65"',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat12910024/Televisores-Sobre-65'],
-            [AUDIO, 'Audio-Soundbar y Home Theater', SUBSECTION_TYPE_MOSAIC,
-             'category/cat2045/Home-Theater'],
-            [AUDIO, 'Home Theater', SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Audio-Soundbar y Home Theater',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat2045/Home-Theater'],
+            [bs.AUDIO, 'Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3050040/Home-Theater'],
-            [AUDIO, 'Soundbar', SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Soundbar', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat1700004/Soundbar'],
-            [AUDIO, 'Minicomponente', SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Minicomponente', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat70018/Minicomponente'],
-            [AUDIO, 'Audio-Equipos de Música y Karaokes',
-             SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Audio-Equipos de Música y Karaokes',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3091/?mkid=CA_P2_MIO1_024794'],
-            [AUDIO, 'Audio-Hi-Fi', SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Audio-Hi-Fi', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3203/Hi-Fi'],
-            [AUDIO, 'Audio', SUBSECTION_TYPE_MOSAIC,
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat2005/Audio?isPLP=1'],
-            [CELLS, 'Smartphones', SUBSECTION_TYPE_MOSAIC,
+            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat720161/Smartphones'],
-            [CELLS, 'Electro y Tecnología-Teléfonos', SUBSECTION_TYPE_MOSAIC,
-             'category/cat2018/Telefonos?isPLP=1'],
+            [bs.CELLS, 'Electro y Tecnología-Teléfonos',
+             bs.SUBSECTION_TYPE_MOSAIC, 'category/cat2018/Telefonos?isPLP=1'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -415,7 +416,7 @@ class Falabella(Store):
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
 
-            if subsection_type == SUBSECTION_TYPE_HOME:
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 images = soup.findAll('div', 'fb-hero-carousel-slide')
@@ -447,7 +448,7 @@ class Falabella(Store):
                         raise Exception(
                             'No valid banners found for {} in position '
                             '{}'.format(url, index + 1))
-            elif subsection_type == SUBSECTION_TYPE_CATEGORY_PAGE:
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
@@ -492,7 +493,7 @@ class Falabella(Store):
                                 'No valid banners found for {} in position '
                                 '{}'.format(url, index + 1))
 
-            elif subsection_type == SUBSECTION_TYPE_MOSAIC:
+            elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 image_container = soup.find('div',

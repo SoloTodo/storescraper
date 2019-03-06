@@ -6,7 +6,7 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.banner_sections import *
+from storescraper import banner_sections as bs
 
 
 class Ripley(Store):
@@ -224,47 +224,51 @@ class Ripley(Store):
         base_url = 'https://simple.ripley.cl/{}'
 
         sections_data = [
-            [HOME, 'Home', SUBSECTION_TYPE_HOME, ''],
-            [ELECTRO_RIPLEY, 'Electro Ripley',
-             SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
-            [TECNO_RIPLEY, 'Tecno Ripley',
-             SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno/'],
-            [REFRIGERATION, 'Refrigeración',
-             SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/'],
-            [REFRIGERATION, 'Refrigeradores',
-             SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/refrigeradores/'],
-            [WASHING_MACHINES, 'Lavandería',
-             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia'],
-            [WASHING_MACHINES, 'Lavadoras',
-             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/lavadoras'],
-            [WASHING_MACHINES, 'Lavadora-secadora',
-             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/lavadora-secadora'],
-            [WASHING_MACHINES, 'Doble Carga',
-             SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/doble-carga'],
-            [TELEVISIONS, 'Televisión',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
-            [TELEVISIONS, 'Smart TV',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
-            [TELEVISIONS, 'OLED, SUHD, y QLED',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled-suhd-y-qled'],
-            [TELEVISIONS, 'Ultra HD y 4K',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
-            [TELEVISIONS, 'Full HD',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/television/full-hd'],
-            [AUDIO, 'Audio y Música',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.ELECTRO_RIPLEY, 'Electro Ripley',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+            [bs.TECNO_RIPLEY, 'Tecno Ripley',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno/'],
+            [bs.REFRIGERATION, 'Refrigeración',
+             bs.SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/'],
+            [bs.REFRIGERATION, 'Refrigeradores', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/refrigeradores/'],
+            [bs.WASHING_MACHINES, 'Lavandería',
+             bs.SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia'],
+            [bs.WASHING_MACHINES, 'Lavadoras',
+             bs.SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/lavadoras'],
+            [bs.WASHING_MACHINES, 'Lavadora-secadora',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/lavanderia/lavadora-secadora'],
+            [bs.WASHING_MACHINES, 'Doble Carga',
+             bs.SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/doble-carga'],
+            [bs.TELEVISIONS, 'Televisión',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
+            [bs.TELEVISIONS, 'Smart TV',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
+            [bs.TELEVISIONS, 'OLED, SUHD, y QLED',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled-suhd-y-qled'],
+            [bs.TELEVISIONS, 'Ultra HD y 4K',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
+            [bs.TELEVISIONS, 'Full HD',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/full-hd'],
+            [bs.AUDIO, 'Audio y Música',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
             # [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
             #  'tecno/audio-y-musica/parlantes-y-subwoofer'],
             # [AUDIO, 'Microcomponentes',
-            #  SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/microcomponentes'],
-            [AUDIO, 'Soundbar y Home theater',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/soundbard-y-home-theater'],
-            [AUDIO, 'Parlantes Portables',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica/parlantes-portables'],
-            [CELLS, 'Telefonía',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
-            [CELLS, 'Smartphones',
-             SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/smartphones']
+            #  SUBSECTION_TYPE_MOSAIC,
+            #  'tecno/audio-y-musica/microcomponentes'],
+            [bs.AUDIO, 'Soundbar y Home theater',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/soundbard-y-home-theater'],
+            [bs.AUDIO, 'Parlantes Portables',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/parlantes-portables'],
+            [bs.CELLS, 'Telefonía',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
+            [bs.CELLS, 'Smartphones',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/smartphones']
         ]
 
         session = session_with_proxy(extra_args)
@@ -276,7 +280,7 @@ class Ripley(Store):
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            if subsection_type == SUBSECTION_TYPE_HOME:
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 images = soup.find('div', 'carousel js-home-carousel') \
                     .findAll('span', 'bg-item huincha-desktop')
 
@@ -304,7 +308,7 @@ class Ripley(Store):
                         'subsection': subsection,
                         'type': subsection_type
                     })
-            elif subsection_type == SUBSECTION_TYPE_CATEGORY_PAGE:
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 images = soup.findAll('a', 'item')
 
                 for index, image in enumerate(images):
@@ -324,7 +328,7 @@ class Ripley(Store):
                         'subsection': subsection,
                         'type': subsection_type
                     })
-            elif subsection_type == SUBSECTION_TYPE_MOSAIC:
+            elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 picture_url = soup.find('section', 'catalog-top-banner')\
                     .find('img')
 

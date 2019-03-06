@@ -6,6 +6,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
     remove_words
+from storescraper import banner_sections as bs
 
 
 class Paris(Store):
@@ -194,3 +195,111 @@ class Paris(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        base_url = 'https://www.paris.cl/{}'
+
+        sections_data = [
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.LINEA_BLANCA_PARIS, 'Línea Blanca Paris',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'linea-blanca/'],
+            [bs.ELECTRO_PARIS, 'Electro Paris',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+            [bs.TECNO_PARIS, 'Tecno Paris',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecnologia/'],
+            [bs.REFRIGERATION, 'Refrigeración',
+             bs.SUBSECTION_TYPE_MOSAIC, 'linea-blanca/refrigeracion/'],
+            [bs.REFRIGERATION, 'No Frost', bs.SUBSECTION_TYPE_MOSAIC,
+             'linea-blanca/refrigeracion/no-frost/'],
+            [bs.REFRIGERATION, 'Side by Side', bs.SUBSECTION_TYPE_MOSAIC,
+             'linea-blanca/refrigeracion/side-by-side/'],
+            [bs.WASHING_MACHINES, 'Lavado y Secado',
+             bs.SUBSECTION_TYPE_MOSAIC, 'linea-blanca/lavado-secado/'],
+            [bs.WASHING_MACHINES, 'Todas las Lavadoras',
+             bs.SUBSECTION_TYPE_MOSAIC, 'linea-blanca/lavado-secado/todas/'],
+            [bs.WASHING_MACHINES, 'Lavadora-Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'linea-blanca/lavado-secado/lavadoras-secadoras/'],
+            [bs.WASHING_MACHINES, 'Secadoras y Centrifugas',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'linea-blanca/lavado-secado/secadoras-centrifugas/'],
+            [bs.TELEVISIONS, 'Televisión', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/'],
+            [bs.TELEVISIONS, 'Todas las TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/todas/'],
+            [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/smart-tv/'],
+            [bs.TELEVISIONS, 'Ultra HD', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/ultra-hd/'],
+            [bs.TELEVISIONS, 'Curvo, Oled y Qled', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/curvo-oled-qled/'],
+            [bs.TELEVISIONS, 'Monitor TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/monitores-tv/'],
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC, 'electro/audio/'],
+            [bs.AUDIO, 'Parlantes Bluetooth y Portables',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/audio/parlantes-bluetooth-portables/'],
+            [bs.AUDIO, ' Micro y Minicomponentes',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/audio/micro-minicomponentes/'],
+            [bs.CELLS, 'Celulares', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/celulares/'],
+            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/celulares/smartphones/']
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+                image = soup.find('div', 'desktop-plp-2')
+                picture = image.find('picture')
+
+                if not picture:
+                    continue
+
+                picture_url = picture.find('source')['srcset']
+                banners.append({
+                    'url': url,
+                    'picture_url': picture_url,
+                    'destination_urls': [],
+                    'key': picture_url,
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type
+                })
+
+            else:
+                if subsection_type == bs.SUBSECTION_TYPE_HOME:
+                    images = soup.find('div', 'home-slider').findAll('a')
+                elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
+                    images = soup.find('div', 'hero-slider').findAll('a')
+                else:
+                    raise Exception('Invalid subsection type '
+                                    '{}'.format(subsection_type))
+
+                assert len(images) > 0
+
+                for index, image in enumerate(images):
+                    picture_url = image.find('source')['srcset']
+                    destination_urls = [image['href']]
+
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+
+        return banners
