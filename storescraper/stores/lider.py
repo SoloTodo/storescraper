@@ -166,7 +166,10 @@ class Lider(Store):
             name = pricing_json['name']
 
         sku = pricing_json['sku']
-        part_number = pricing_json.get('model')[:50]
+        part_number = pricing_json.get('model')
+
+        if part_number:
+            part_number = part_number[:50]
 
         best_price_container = soup.find('p', 'js-price-product')
 
