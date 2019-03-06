@@ -134,10 +134,11 @@ class InvalidSessionCookieException(Exception):
 
 
 class HeadlessChrome:
-    def __init__(self, timeout=30):
+    def __init__(self, images_enabled=False, timeout=30):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        options.add_argument('--blink-settings=imagesEnabled=false')
+        if not images_enabled:
+            options.add_argument('--blink-settings=imagesEnabled=false')
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(chrome_options=options)
