@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper import banner_sections as bs
 
 
 class LaPolar(Store):
@@ -192,3 +193,63 @@ class LaPolar(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args = None):
+        sections_data = [
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME,
+             'https://tienda.lapolar.cl/'],
+            [bs.LINEA_BLANCA_LA_POLAR, 'Línea Blanca',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'https://tienda.lapolar.cl/catalogo/linea_blanca'],
+            [bs.ELECTRONICA_LA_POLAR, 'Electrónica',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'https://tienda.lapolar.cl/catalogo/electronica'],
+            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'https://www.lapolar.cl/especial/smartphones/']
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for section, subsection, subsection_type, url in sections_data:
+            print(url)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
+                images = soup.findAll('div', 'carousel-item')
+
+                for index, image in enumerate(images):
+                    picture_url = image.find('img')['src']
+                    destination_urls = [image.find('area')['href']]
+
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
+                images = soup.findAll('div', 'swiper-slide')
+                if images:
+                    for index, image, in enumerate(images):
+                        picture_url = url + image.find('img')['src']
+                        destination_urls = image.find('a')['href']
+
+                        banners.append({
+                            'url': url,
+                            'picture_url': picture_url,
+                            'destination_urls': destination_urls,
+                            'key': picture_url,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
+
+        return banners
