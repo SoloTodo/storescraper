@@ -195,7 +195,7 @@ class LaPolar(Store):
         return [p]
 
     @classmethod
-    def banners(cls, extra_args = None):
+    def banners(cls, extra_args=None):
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME,
              'https://tienda.lapolar.cl/'],
@@ -235,21 +235,38 @@ class LaPolar(Store):
                         'type': subsection_type
                     })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
+                iframe = soup.find('iframe', 'full')
+                if iframe:
+                    content = session.get(iframe['src'])
+                    soup = BeautifulSoup(content.text, 'html.parser')
+                    picture_base_url = 'https://www.lapolar.cl{}'
+                else:
+                    picture_base_url = url + '{}'
+
                 images = soup.findAll('div', 'swiper-slide')
-                if images:
-                    for index, image, in enumerate(images):
-                        picture_url = url + image.find('img')['src']
-                        destination_urls = image.find('a')['href']
 
-                        banners.append({
-                            'url': url,
-                            'picture_url': picture_url,
-                            'destination_urls': destination_urls,
-                            'key': picture_url,
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
+                if not images:
+                    images = soup.findAll('div', 'item')
 
+                for index, image, in enumerate(images):
+                    picture = image.find('picture')
+                    if not picture:
+                        picture_url = picture_base_url.format(
+                            image.find('img')['src'])
+                    else:
+                        picture_url = picture_base_url.format(
+                            image.findAll('source')[-1]['srcset']
+                        )
+                    destination_urls = image.find('a')['href']
+
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
         return banners
