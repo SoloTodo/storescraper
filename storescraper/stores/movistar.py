@@ -189,7 +189,7 @@ class Movistar(Store):
 
         # Sin cuota de arriendo
         price = Decimal(remove_words(
-            payment_options[0].contents[2]))
+            payment_options[1].contents[2]))
 
         products.append(Product(
             name,
@@ -209,31 +209,30 @@ class Movistar(Store):
         ))
 
         # Con cuota de arriendo
-        if len(payment_options) > 1:
-            price = Decimal(remove_words(
-                payment_options[1].contents[2]))
-            monthly_payment_text = \
-                soup.findAll('div', 'cuotes')[1].text
-            monthly_payment_match = re.search(
-                r'\$([\d|.]+)', monthly_payment_text)
-            monthly_payment = Decimal(
-                remove_words(monthly_payment_match.groups()[0]))
+        price = Decimal(remove_words(
+            payment_options[0].contents[2]))
+        monthly_payment_text = \
+            soup.find('div', 'cuotes').text
+        monthly_payment_match = re.search(
+            r'\$([\d|.]+)', monthly_payment_text)
+        monthly_payment = Decimal(
+            remove_words(monthly_payment_match.groups()[0]))
 
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - {} - {}{} cuotas'.format(sku, color_id, adjusted_plan_id,
-                                               portability_suffix),
-                -1,
-                price,
-                price,
-                'CLP',
-                cell_plan_name='{}{} cuotas'.format(
-                    adjusted_plan_id, portability_suffix),
-                cell_monthly_payment=monthly_payment
-            ))
+        products.append(Product(
+            name,
+            cls.__name__,
+            'Cell',
+            url,
+            url,
+            '{} - {} - {}{} cuotas'.format(sku, color_id, adjusted_plan_id,
+                                           portability_suffix),
+            -1,
+            price,
+            price,
+            'CLP',
+            cell_plan_name='{}{} cuotas'.format(
+                adjusted_plan_id, portability_suffix),
+            cell_monthly_payment=monthly_payment
+        ))
 
         return products
