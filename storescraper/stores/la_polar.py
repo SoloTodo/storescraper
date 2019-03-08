@@ -257,7 +257,7 @@ class LaPolar(Store):
                         picture_url = picture_base_url.format(
                             image.findAll('source')[-1]['srcset']
                         )
-                    destination_urls = image.find('a')['href']
+                    destination_urls = [image.find('a')['href']]
 
                     banners.append({
                         'url': url,
