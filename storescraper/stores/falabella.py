@@ -281,6 +281,10 @@ class Falabella(Store):
             picture_urls.append(picture_url)
 
         products = []
+
+        if 'skus' not in product_data['state']['product']:
+            return []
+
         for model in product_data['state']['product']['skus']:
             if 'stockAvailable' not in model:
                 continue

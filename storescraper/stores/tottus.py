@@ -29,7 +29,7 @@ class Tottus(Store):
 
         category_paths = [
             ['Televisores-y-videojuegos/cat2280071', 'Television'],
-            ['Impresoras/cat2280072', 'Printer'],
+            # ['Impresoras/cat2280072', 'Printer'],
             ['Freezer-y-Refrigerador/cat2130070', 'Refrigerator'],
             ['Lavadora/cat2130072', 'WashingMachine'],
             ['Celulares/cat2280074', 'Cell'],
