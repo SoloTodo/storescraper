@@ -18,6 +18,8 @@ TECNO_PARIS = 'Tecno Paris'
 LINEA_BLANCA_LA_POLAR = 'Línea Blanca La Polar'
 ELECTRONICA_LA_POLAR = 'Electrónica La Polar'
 
+LINEA_BLANCA_ABCDIN = 'Línea Blanca AbcDin'
+
 # Types #
 SUBSECTION_TYPE_HOME = 'Home'
 SUBSECTION_TYPE_CATEGORY_PAGE = 'Category page'
