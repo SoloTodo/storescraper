@@ -1,11 +1,14 @@
 import json
+import time
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy,\
+    HeadlessChrome
+from storescraper import banner_sections as bs
 
 
 class Hites(Store):
@@ -196,3 +199,159 @@ class Hites(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        base_url = 'https://www.hites.com/{}'
+
+        sections_data = [
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.TELEVISIONS, 'TV Video', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video'],
+            [bs.TELEVISIONS, 'Todos los Led', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/todos-los-led'],
+            [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv'],
+            [bs.TELEVISIONS, 'Led Extra Grandes', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/led-extra-grandes'],
+            [bs.CELLS, 'Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
+             'celulares/smartphone'],
+            [bs.CELLS, 'Smartphone-Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
+             'celulares/smartphone/smartphone'],
+            [bs.CELLS, 'Smartphone Liberados', bs.SUBSECTION_TYPE_MOSAIC,
+             'celulares/smartphone/smartphone-liberados'],
+            [bs.REFRIGERATION, 'Refrigeradores', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/refrigeradores'],
+            [bs.REFRIGERATION, 'No Frost', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/refrigeradores/no-frost'],
+            [bs.REFRIGERATION, 'Side by Side', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/refrigeradores/side-by-side'],
+            [bs.WASHING_MACHINES, 'Lavado y Secado', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/lavado-y-secado'],
+            [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/lavado-y-secado/lavadoras'],
+            [bs.WASHING_MACHINES, 'Lavadoras-Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/lavado-y-secado/lavadoras-secadoras'],
+            [bs.WASHING_MACHINES, 'Secadoras', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro-hogar/lavado-y-secado/secadoras'],
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC, 'tecnologia/audio'],
+            [bs.AUDIO, 'Minicomponentes', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/audio/minicomponentes'],
+            [bs.AUDIO, 'Soundbar y Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/audio/soundbar-y-home-theater']
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
+
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
+
+                    pictures = []
+
+                    banner_container = driver\
+                        .find_element_by_class_name('slick-list')
+
+                    controls = driver\
+                        .find_element_by_class_name('carousel__controls')\
+                        .find_elements_by_class_name('slider-controls__dots')
+
+                    for control in controls:
+                        control.click()
+                        time.sleep(0.5)
+                        pictures.append(
+                            banner_container.screenshot_as_base64)
+
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    images = soup.find('div', 'slick-track')\
+                        .findAll('li', 'slick-slide')
+
+                    images = [a for a in images if
+                              'slick-cloned' not in a['class']]
+
+                    assert len(images) == len(pictures)
+
+                    for index, image in enumerate(images):
+                        product_box = image.find('div', 'boxproductos')
+
+                        if not product_box:
+                            product_box = image.find('div', 'box-producto')
+
+                        key_container = product_box.find('source')
+
+                        if key_container:
+                            key = key_container['srcset']
+                        else:
+                            key = product_box.find('img')['src']
+
+                        destination_urls = [d['href'] for d in
+                                            image.findAll('a')]
+                        destination_urls = list(set(destination_urls))
+
+                        banners.append({
+                            'url': url,
+                            'picture': pictures[index],
+                            'destination_urls': destination_urls,
+                            'key': key,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
+            elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                banners_container = soup.find('section')\
+                    .findAll('div', 'espot', recursive=False)
+
+                for index, banner in enumerate(banners_container):
+                    destination_urls = [d['href'] for d in
+                                        banner.findAll('a')]
+
+                    destination_urls = list(set(destination_urls))
+
+                    picture_container = banner.find('picture')
+
+                    if picture_container:
+                        picture_url = picture_container\
+                            .find('source')['srcset']
+                        banners.append({
+                            'url': url,
+                            'picture_url': picture_url,
+                            'destination_urls': destination_urls,
+                            'key': picture_url,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
+                    else:
+                        with HeadlessChrome(images_enabled=True) as driver:
+                            driver.set_window_size(1920, 1080)
+                            driver.get(url)
+
+                            s_banner = driver.find_elements_by_css_selector(
+                                '#main>.espot')[index]
+
+                            key = banner.find('img')['src']
+
+                            picture = s_banner.screenshot_as_base64
+                            banners.append({
+                                'url': url,
+                                'picture': picture,
+                                'destination_urls': destination_urls,
+                                'key': 'https:{}'.format(key),
+                                'position': index + 1,
+                                'section': section,
+                                'subsection': subsection,
+                                'type': subsection_type
+                            })
+
+        return banners

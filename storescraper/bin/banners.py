@@ -30,6 +30,8 @@ def main():
 
     if banners:
         for banner in banners:
+            if "picture" in banner:
+                banner.pop('picture')
             print(json.dumps(banner, indent=4), '\n')
     else:
         print('No banners found')
