@@ -338,21 +338,20 @@ class AbcDin(Store):
 
                 # CAROUSEL
                 elements = soup.findAll('div', 'homeHero')
-                if elements:
-                    for index, element in enumerate(elements):
-                        picture_url = element.find('img')['src']
-                        destination_urls = ['https://www.abcdin.cl' +
-                                            element.find('a')['href']]
-                        banners.append({
-                            'url': url,
-                            'picture_url': picture_url,
-                            'destination_urls': destination_urls,
-                            'key': picture_url,
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
+                for index, element in enumerate(elements):
+                    picture_url = element.find('img')['src']
+                    destination_urls = ['https://www.abcdin.cl' +
+                                        element.find('a')['href']]
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
 
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 response = session.get(url)
