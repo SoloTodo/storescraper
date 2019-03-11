@@ -1,6 +1,7 @@
 import json
 import re
 import urllib
+import time
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -9,7 +10,8 @@ from urllib.parse import urlparse, parse_qs, urlencode
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, HeadlessChrome
+from storescraper import banner_sections as bs
 
 
 class AbcDin(Store):
@@ -221,3 +223,153 @@ class AbcDin(Store):
         )
 
         return [product]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        base_url = 'https://www.abcdin.cl/{}'
+
+        sections_data = [
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.LINEA_BLANCA_ABCDIN, 'Línea Blanca AbcDin',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'tienda/es/abcdin/linea-blanca'],
+            [bs.TELEVISIONS, 'Electro', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'tienda/es/abcdin/tv-audio'],
+            [bs.CELLS, 'Telefonía', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'tienda/es/abcdin/celulares'],
+            [bs.REFRIGERATION, 'Refrigeradores', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/refrigeradores'],
+            [bs.REFRIGERATION, 'Refrigeradores No Frost',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/refrigeradores/'
+             'refrigeradores-no-frost'],
+            [bs.REFRIGERATION, 'Refrigeradores Side by Side',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/refrigeradores/'
+             'refrigeradores-side-by-side'],
+            [bs.WASHING_MACHINES, 'Lavado y Secado', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/lavado-secado'],
+            [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/lavado-secado/lavadoras'],
+            [bs.WASHING_MACHINES, 'Lavadoras-Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/linea-blanca/lavado-secado/'
+             'lavadoras-secadoras'],
+            [bs.TELEVISIONS, 'Electro', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/tv-audio'],
+            [bs.TELEVISIONS, 'Televisores LED', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/tv-audio/televisores-video/televisores-led'],
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/tv-audio/audio'],
+            [bs.AUDIO, 'Minicomponentes', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/tv-audio/audio/minicomponentes'],
+            [bs.AUDIO, 'Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/tv-audio/audio/home-theater'],
+            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_MOSAIC,
+             'tienda/es/abcdin/celulares/smartphones']
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
+
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
+
+                    elements = driver.find_elements_by_class_name('homeHero')
+
+                    time.sleep(1)
+
+                    controls = driver\
+                        .find_element_by_class_name('pageControl')\
+                        .find_elements_by_tag_name('a')
+
+                    assert len(elements) == len(controls)
+
+                    for index, element in enumerate(elements):
+                        control = controls[index]
+                        control.click()
+                        time.sleep(2)
+                        picture = element.screenshot_as_base64
+                        key_container = element\
+                            .value_of_css_property('background-image')
+
+                        key = re.search(r'url\("(.*?)"\)', key_container)\
+                            .group(1)
+
+                        destination_urls = \
+                            [element.find_element_by_tag_name('a')
+                                .get_attribute('href')]
+
+                        banners.append({
+                            'url': url,
+                            'picture': picture,
+                            'destination_urls': destination_urls,
+                            'key': key,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
+
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
+                # STATIC BANNER
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                banner = soup.find('a', {'data-type': 'huincha'})
+                if banner:
+                    picture_url = banner.find('img')['src']
+                    destination_urls = ['https://www.abcdin.cl'+banner['href']]
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+
+                # CAROUSEL
+                elements = soup.findAll('div', 'homeHero')
+                for index, element in enumerate(elements):
+                    picture_url = element.find('img')['src']
+                    destination_urls = ['https://www.abcdin.cl' +
+                                        element.find('a')['href']]
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+
+            elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                banner = soup.find('a', {'data-type': 'huincha'})
+                if banner:
+                    picture_url = banner.find('img')['src']
+                    destination_urls = [
+                        'https://www.abcdin.cl' + banner['href']]
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+
+        return banners

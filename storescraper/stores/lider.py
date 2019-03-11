@@ -9,6 +9,7 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper import banner_sections as bs
 
 
 class Lider(Store):
@@ -246,3 +247,87 @@ class Lider(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        base_url = 'https://www.lider.cl/electrohogar/{}'
+
+        sections_data = [
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.AUDIO, 'Audio Portable', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrónica/Equipos-de-Audio/Audio-Portable/'
+             '_/N-qfhc1c'],
+            [bs.AUDIO, 'Equipos de Música', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrónica/Equipos-de-Audio/Equipos-de-Música/'
+             '_/N-ss8ejy'],
+            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Telefonía-y-Fotografía/'
+             'Celulares-y-Teléfonos/Smartphones/_/N-1orftrb'],
+            [bs.REFRIGERATION, 'Refrigeradores No Frost',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrohogar/Refrigeración/Refrigeradores-No-Frost/'
+             '_/N-7wqjz8'],
+            [bs.REFRIGERATION, 'Refrigeradores Side By Side',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrohogar/Refrigeración/Refrigeradores-Side-By-Side/'
+             '_/N-ihia7d'],
+            [bs.WASHING_MACHINES, 'Lavadoras Superiores',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrohogar/Lavado-y-Secado/Lavadoras-Superiores/'
+             '_/N-g2rcn0'],
+            [bs.WASHING_MACHINES, 'Lavadoras - Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrohogar/Lavado-y-Secado/Lavadoras-Secadoras/'
+             '_/N-1xvutty'],
+            [bs.TELEVISIONS, 'Televisores',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/Electrónica/Tv-y-Video/Televisores/_/N-j78dbl']
+        ]
+
+        session = session_with_proxy(extra_args)
+        banners = []
+
+        for section, subsection, subsection_type, url_suffix in sections_data:
+            url = base_url.format(url_suffix)
+            print(url)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            if subsection_type == bs.SUBSECTION_TYPE_HOME:
+                images = soup.find('div', 'owl-carousel')\
+                    .findAll('div', 'item', recursive=False)
+
+                for index, image in enumerate(images):
+                    picture_url = image.find('source')['srcset']
+                    destination_urls = [image.find('a')['href']]
+
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+
+            if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+                image = soup.find('div', 'template-listado').find('p')
+                picture = image.find('img')
+                if not picture:
+                    continue
+                picture_url = picture['src']
+                destination_urls = [a['href'] for a in image.findAll('a')]
+                banners.append({
+                    'url': url,
+                    'picture_url': picture_url,
+                    'destination_urls': destination_urls,
+                    'key': picture_url,
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type
+                })
+
+        return banners
