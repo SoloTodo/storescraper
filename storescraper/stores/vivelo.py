@@ -31,6 +31,7 @@ class Vivelo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['dispositivos-moviles/smartphones.html', 'Cell'],
+            ['preventa-galaxy-s10.html', 'Cell'],
             ['dispositivos-moviles/tablets.html', 'Tablet'],
             ['dispositivos-moviles/weareables.html', 'Wearable'],
             ['tv-audio-video/led.html', 'Television'],
