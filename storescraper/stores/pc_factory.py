@@ -58,7 +58,8 @@ class PcFactory(Store):
             ['432', 'Cell'],  # Celulares
             ['6', 'Camera'],  # Camaras compactas
             ['620', 'Camera'],  # Camaras semiprofesional
-            ['422', 'ExternalStorageDrive'],
+            ['422', 'ExternalStorageDrive'],  # Discos Externos
+            ['904', 'ExternalStorageDrive'],  # SSD Externos
             ['218', 'UsbFlashDrive'],
             ['48', 'MemoryCard'],
             ['46', 'Projector'],
