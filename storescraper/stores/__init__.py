@@ -184,4 +184,5 @@ from .wei import Wei
 from .winpy import Winpy
 from .wom import Wom
 from .xl_store import XlStore
+from .yoytec import Yoytec
 from .zmart import Zmart

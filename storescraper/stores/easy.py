@@ -137,8 +137,8 @@ class Easy(Store):
 
         soup = soup.find('div', 'section_price')
 
-        normal_price = soup.find('span', 'inetprice')
-        normal_price = Decimal(remove_words(normal_price.string))
+        normal_price = soup.find('span', 'inetprice').text.replace('caja', '')
+        normal_price = Decimal(remove_words(normal_price))
 
         cencosud_price_container = soup.find(
             'div', {'class': 'especial pricevisible'})
