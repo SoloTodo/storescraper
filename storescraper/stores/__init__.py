@@ -169,6 +169,7 @@ from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
 from .tienda_toyotomi import TiendaToyotomi
+from .travel_tienda import TravelTienda
 from .todo_juegos import TodoJuegos
 from .tomalo import Tomalo
 from .top_pc import TopPc

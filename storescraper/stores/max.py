@@ -50,7 +50,7 @@ class Max(Store):
             ('lineablanca/estufas/cooktops-electricos', 'Stove'),
             ('computacion/proyectores', 'Projector'),
             ('audio', 'StereoSystem'),
-            ('audio/audio-para-casa/micro-componente', 'StereoSystem'),
+            # ('audio/audio-para-casa/micro-componente', 'StereoSystem'),
             ('audio/audio-para-casa/mini-componente', 'StereoSystem'),
             ('audio/audio-para-casa/audio-vertical', 'StereoSystem'),
             ('audio/audio-portatil', 'StereoSystem'),
@@ -77,10 +77,14 @@ class Max(Store):
 
                 url = 'https://www.max.com.gt/{}?limit=30&p={}'.format(
                     category_path, page)
-                print(url)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-                for container in soup.findAll('div', 'item'):
+                items = soup.findAll('div', 'item')
+
+                if page == 1 and not items:
+                    raise Exception('No products for url {}'.format(url))
+
+                for container in items:
                     product_url = container.find('a')['href']
 
                     if product_url in local_urls:
