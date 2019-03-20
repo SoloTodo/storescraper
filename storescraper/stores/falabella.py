@@ -7,6 +7,7 @@ import re
 
 import time
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -349,9 +350,10 @@ class Falabella(Store):
             #  'category/cat7090035/Linea-Blanca'],
 
             # # CATEGORY PAGES # #
-            [bs.REFRIGERATION, 'Refrigeradores',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat3205/Refrigeradores'],
+            # Currently displaying a smart picker
+            # [bs.REFRIGERATION, 'Refrigeradores',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            #  'category/cat3205/Refrigeradores'],
             [bs.WASHING_MACHINES, 'Lavadoras',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras '],
             [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
