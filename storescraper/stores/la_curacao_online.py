@@ -50,16 +50,14 @@ class LaCuracaoOnline(Store):
                       '?product_list_limit=36&p={}'.format(
                         cls.country, category_path, page)
 
-                for i in range(5):
-                    response = session.get(url)
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    product_containers = soup.findAll('li', 'product')
-                    if product_containers:
-                        break
-                else:
-                    # Called if no "break" was executed
-                    raise Exception('Could not bypass Incapsulata')
 
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('li', 'product')
+
+                if not product_containers and page == 1:
+                    raise Exception('Empty section: {}'.format(url))
+                    
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     if product_url in local_urls:

@@ -11,7 +11,7 @@ class LaCuracaoOnlineNicaragua(LaCuracaoOnline):
         ('audio-y-video/equipos-de-sonido.html', 'StereoSystem'),
         ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),
         ('hogar/aires-acondicionados.html', 'AirConditioner'),
-        ('electrodomesticos/hornillas.html', 'Stove'),
+        # ('electrodomesticos/hornillas.html', 'Stove'),
         ('refrigeracion/refrigeradoras.html', 'Refrigerator'),
         ('refrigeracion/congeladores.html', 'Refrigerator'),
         ('lavadoras-y-secadoras/lavadoras.html', 'WashingMachine'),
