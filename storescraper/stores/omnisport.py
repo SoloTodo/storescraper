@@ -81,6 +81,7 @@ class Omnisport(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
@@ -105,6 +106,9 @@ class Omnisport(Store):
 
         price = cls.fix_price(price)
         offer_price = cls.fix_price(offer_price)
+
+        if offer_price > price:
+            offer_price = price
 
         picture_urls = []
         pictures = soup.find('div', 'gallery-carrousel').findAll('div')
@@ -133,6 +137,8 @@ class Omnisport(Store):
 
     @staticmethod
     def fix_price(price):
-        split_price = price.split('.')
-        fixed_price = split_price[0]+'.'+split_price[1]
+        fixed_price = price
+        if price.count('.') > 1:
+            split_price = price.split('.')
+            fixed_price = split_price[0]+'.'+split_price[1]
         return Decimal(fixed_price.replace('$', '').replace(',', ''))

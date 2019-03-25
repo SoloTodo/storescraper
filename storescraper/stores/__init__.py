@@ -75,6 +75,7 @@ from .johnson import Johnson
 from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
+from .jumbo_store import JumboStore
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kuhn import Kuhn

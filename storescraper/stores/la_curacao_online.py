@@ -57,7 +57,7 @@ class LaCuracaoOnline(Store):
 
                 if not product_containers and page == 1:
                     raise Exception('Empty section: {}'.format(url))
-                    
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     if product_url in local_urls:

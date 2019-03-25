@@ -53,13 +53,7 @@ class ClubSmart(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        c_url = 'https://www.clubsmart.cl/clubsmart/dataentities/CL/search?_' \
-                'where=email={}&_fields=id,email,bCluster,bReferralCode' \
-            .format(extra_args['mail'])
-        data = session.get(c_url)
-        cookie = 'CL-' + json.loads(data.text)[0]['id']
-
-        data = session.get(url, cookies={'loginProfile': cookie})
+        data = session.get(url)
         json_data = json.loads(data.text)
 
         products = []
