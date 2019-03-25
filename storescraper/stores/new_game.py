@@ -37,6 +37,7 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=77', 'Ram'],
             ['accion=hijo&plt=pc&cat=78', 'SolidStateDrive'],
             ['accion=hijo&plt=pc&cat=80', 'VideoCard'],
+            ['especial-Master-Race-2019', 'VideoCard'],
             ['accion=hijo&plt=pc&cat=81', 'ComputerCase'],
         ]
 
