@@ -87,6 +87,7 @@ class ClubSmart(Store):
                 price,
                 'CLP',
                 sku=sku,
+                part_number=product['productReference'],
                 description=description,
                 picture_urls=picture_urls
             )
