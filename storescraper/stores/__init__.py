@@ -142,6 +142,7 @@ from .reif_store import ReifStore
 from .rhona import Rhona
 from .ribeiro import Ribeiro
 from .ripley import Ripley
+from .mercado_ripley import MercadoRipley
 from .ripley_peru import RipleyPeru
 from .rodo import Rodo
 from .sams import Sams
