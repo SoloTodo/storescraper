@@ -53,28 +53,17 @@ class Jetstereo(Store):
             if local_category != category:
                 continue
 
-            page = 1
-            done = False
+            url = '{}/{}?pv=1000'.format(cls.base_url, category_path)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            containers = soup.findAll('div', 'product-slide-entry')
 
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
+            if not containers:
+                raise Exception('Empty category: ' + url)
 
-                url = '{}/{}?page={}&pv=50'\
-                    .format(cls.base_url, category_path, page)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-                for container in soup.findAll('div', 'product-slide-entry'):
-                    product_url = '{}{}'\
-                        .format(cls.base_url, container.find('a')['href'])
-
-                    if product_url in product_urls:
-                        done = True
-                        break
-
-                    product_urls.append(product_url)
-
-                page += 1
+            for container in containers:
+                product_url = '{}{}'\
+                    .format(cls.base_url, container.find('a')['href'])
+                product_urls.append(product_url)
 
         return product_urls
 
