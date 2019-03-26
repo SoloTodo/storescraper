@@ -95,7 +95,9 @@ class Jetstereo(Store):
         name = '{} ({})'\
             .format(soup.find('div', 'article-container').find('h1').text, sku)
 
-        if soup.find('span', 'text-available-stores').text.strip() != '':
+        if soup.find('div', 'share-box').find('a', 'add-to-cart-btn'):
+            stock = -1
+        elif soup.find('span', 'text-available-stores').text.strip() != '':
             stock = -1
         else:
             stock = 0
