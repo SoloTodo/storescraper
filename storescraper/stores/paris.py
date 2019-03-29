@@ -289,12 +289,16 @@ class Paris(Store):
 
                 for index, image in enumerate(images):
                     picture_url = image.find('source')['srcset']
-                    destination_urls = [image['href']]
+
+                    destination_url = image['href']
+
+                    if len(destination_url) > 255:
+                        continue
 
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
-                        'destination_urls': destination_urls,
+                        'destination_urls': [destination_url],
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
