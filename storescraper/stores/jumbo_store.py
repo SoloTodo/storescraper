@@ -73,4 +73,3 @@ class JumboStore(Store):
                 page += 1
 
         return product_urls
-

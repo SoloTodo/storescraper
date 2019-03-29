@@ -1,13 +1,11 @@
 import json
 
 import re
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Easy(Store):
@@ -33,146 +31,148 @@ class Easy(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['electrohogar/refrigeracion/frio-directo', 'Refrigerator'],
-            ['electrohogar/refrigeracion/no-frost', 'Refrigerator'],
-            ['electrohogar/refrigeracion/freezer', 'Refrigerator'],
-            ['electrohogar/refrigeracion/frigobar', 'Refrigerator'],
-            ['electrohogar/refrigeracion/side-by-side', 'Refrigerator'],
-            # ['electrohogar/tecnologia/televisores', 'Television'],
-            ['electrohogar/cocina-electrohogar/hornos-electricos', 'Oven'],
-            ['electrohogar/cocina-electrohogar/hornos-empotrables', 'Oven'],
-            ['electrohogar/cocina-electrohogar/microondas', 'Oven'],
-            ['electrohogar/electrodomesticos/aspiradoras', 'VacuumCleaner'],
-            ['electrohogar/lavado-y-secado/lavadoras', 'WashingMachine'],
-            ['electrohogar/lavado-y-secado/lavadora-secadora',
-             'WashingMachine'],
-            ['electrohogar/lavado-y-secado/secadoras', 'WashingMachine'],
-            ['electrohogar/tecnologia/reproductores', 'OpticalDiskPlayer'],
-            ['iluminacion/iluminación-led', 'Lamp'],
-            ['iluminacion-de-exterior/reflectores-exterior', 'LightProjector'],
-            ['electrohogar/calefones-y-termos/calefont-gas-licuado',
-             'WaterHeater'],
-            ['electrohogar/calefones-y-termos/calefont-gas-natural',
-             'WaterHeater'],
-            ['electrohogar/calefones-y-termos/termos', 'WaterHeater'],
-            # ['electrohogar/calefaccion/calefactores-a-leña', 'SpaceHeater'],
-            ['electrohogar/calefaccion/estufas-infrarrojas', 'SpaceHeater'],
-            ['electrohogar/calefaccion/estufas-a-gas', 'SpaceHeater'],
-            # ['electrohogar/calefaccion/estufas-a-parafina', 'SpaceHeater'],
-            # ['electrohogar/calefaccion/chimeneas-electricas', 'SpaceHeater'],
-            ['electrohogar/calefaccion/paneles-calefactores', 'SpaceHeater'],
-            # ['electrohogar/calefaccion/calefactores-a-pellet',
-            # 'SpaceHeater'],
-            ['electrohogar/calefaccion/termoventiladores', 'SpaceHeater'],
-            ['especial-hola-invierno/calefaccion/estufas-electrica',
-             'SpaceHeater'],
-            ['electrohogar/climatizacion/aire-acondicionado-portatil',
-             'AirConditioner'],
-            ['electrohogar/climatizacion/aire-acondicionado-split',
-             'AirConditioner'],
+            ['frio-directo', 'Refrigerator'],
+            ['no-frost', 'Refrigerator'],
+            ['freezer', 'Refrigerator'],
+            ['frigobar', 'Refrigerator'],
+            ['side-by-side', 'Refrigerator'],
+            ['hornos-electricos', 'Oven'],
+            ['hornos-empotrables', 'Oven'],
+            ['microondas', 'Oven'],
+            ['aspiradoras', 'VacuumCleaner'],
+            ['lavadoras', 'WashingMachine'],
+            ['lavadora-secadora', 'WashingMachine'],
+            ['secadoras', 'WashingMachine'],
+            ['reproductores', 'OpticalDiskPlayer'],
+            ['iluminación-led', 'Lamp'],
+            ['reflectores-exterior', 'LightProjector'],
+            ['calefont-gas-licuado', 'WaterHeater'],
+            ['calefont-gas-natural', 'WaterHeater'],
+            ['termos', 'WaterHeater'],
+            ['calefactores-a-leña', 'SpaceHeater'],
+            ['estufas-infrarrojas', 'SpaceHeater'],
+            ['estufas-a-gas', 'SpaceHeater'],
+            ['estufas-a-parafina', 'SpaceHeater'],
+            ['chimeneas-electricas', 'SpaceHeater'],
+            ['paneles-calefactores', 'SpaceHeater'],
+            ['calefactores-a-pellet', 'SpaceHeater'],
+            ['termoventiladores', 'SpaceHeater'],
+            ['estufas-electrica', 'SpaceHeater'],
+            ['aire-acondicionado-y-enfriadores-de-aire', 'AirConditioner'],
             ['audio', 'StereoSystem'],
         ]
 
-        session = session_with_proxy(extra_args)
+        base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
+        cat_url = 'https://www.easy.cl/api/cateasy/_search'
+        prods_url = 'https://www.easy.cl/api//prodeasy/_search'
         product_urls = []
+        session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
 
-        for category_path, local_category in category_paths:
+        for category_id, local_category in category_paths:
             if local_category != category:
                 continue
 
-            category_url = 'http://www.easy.cl/es/easy-chile/{}'.format(
-                category_path)
-            print(category_url)
+            cat_data = {
+                "query": {
+                    "term":
+                        {"seo_url.keyword": category_id}
+                }
+            }
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            page_id = soup.find('meta', {'name': 'pageId'})['content']
+            cat_response = session.post(cat_url, data=json.dumps(cat_data))
+            cat_json = json.loads(cat_response.text)
+            cat_hits = cat_json['hits']['hits']
 
-            category_url = 'http://www.easy.cl/ProductListingView?storeId=' \
-                           '10151&resultsPerPage=1000&categoryId=' + page_id
+            if not cat_hits:
+                raise Exception('Bad cat id {}'.format(category_id))
 
-            print(category_url)
+            cat_value = cat_hits[0]['_source']['value']
+            cat_field = cat_hits[0]['_source']['field'] + ".raw"
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            divs = soup.findAll('div', 'product')
+            prods_data = {
+                "query": {
+                    "function_score": {
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {"term": {cat_field: cat_value}},
+                                    {"match_all": {}}]}}}},
+                "size": 450,
+                "from": 0}
 
-            if not divs:
-                raise Exception('Empty category: ' + category_path)
+            prods_response = session.post(prods_url,
+                                          data=json.dumps(prods_data))
+            prods_json = json.loads(prods_response.text)
+            prods_hits = prods_json['hits']['hits']
 
-            for div in divs:
-                product_url = div.findAll('a')[1]['href']
-                product_path = product_url.split('/')[-1]
-                product_url = 'https://www.easy.cl/es/easy-chile/' + \
-                    product_path
-                product_urls.append(product_url)
+            if not prods_hits:
+                raise Exception('Empty section {}'.format(category_id))
+
+            for prods_hit in prods_hits:
+                product_urls.append(
+                    base_prod_url.format(prods_hit['_source']['url']))
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        prod_url = 'https://www.easy.cl/api/prodeasy*/_search'
+        prod_keyword = url.split('/')[-1]
+        prod_data = {
+            "query": {
+                "bool": {
+                    "minimum_should_match": 1,
+                    "should": [
+                        {"term": {"url.keyword": prod_keyword}},
+                        {"term": {"children.url.keyword": prod_keyword}}]}}}
+
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        session.headers['Content-Type'] = 'application/json'
 
-        name = soup.find('span', 'tit_current')
+        prod_response = session.post(prod_url, data=json.dumps(prod_data))
+        prod_json = json.loads(prod_response.text)
+        prod_hit = prod_json['hits']['hits'][0]
 
-        if not name:
-            return []
+        name = prod_hit['_source']['name'].strip()
+        sku = prod_hit['_source']['partNumber']
+        stock = prod_hit['_source']['stock']
+        normal_price = Decimal(prod_hit['_source']['price_internet'])
+        offer_price = prod_hit['_source']['price_tc']
 
-        name = name.text.strip()
-
-        sku = soup.find('meta', {'name': 'pageIdentifier'})['content'].strip()
-        description = html_to_markdown(str(soup.find('div', 'box_2')))
-
-        product_id = soup.find('meta', {'name': 'pageId'})['content']
-
-        stock_url = 'https://www.easy.cl/' \
-            'AjaxShoppingActionsRefreshView?productId={}&' \
-            'storeId=10151'.format(product_id)
-
-        stock_soup = BeautifulSoup(session.get(stock_url).text, 'html.parser')
-
-        if stock_soup.find('div', text='Sin stock para compra online'):
-            stock = 0
-        else:
-            stock = -1
-
-        soup = soup.find('div', 'section_price')
-
-        normal_price = soup.find('span', 'inetprice').text.replace('caja', '')
-        normal_price = Decimal(remove_words(normal_price))
-
-        cencosud_price_container = soup.find(
-            'div', {'class': 'especial pricevisible'})
-        if cencosud_price_container:
-            offer_price = cencosud_price_container.find('span').string
-            offer_price = Decimal(remove_words(offer_price))
-        else:
+        if not offer_price:
             offer_price = normal_price
+        else:
+            offer_price = Decimal(offer_price)
 
-        # Pictures
+        description = '| Caracteristica | Valor | \n' \
+                      '| -------------- | ----- | \n'
 
-        pictures_id = sku[:-1]
+        for spec in prod_hit['_source']['specs_open']:
+            description += '| {} | {} |\n'.format(spec['key'], spec['value'])
 
-        pictures_resource_url = 'https://s7d2.scene7.com/is/image/' \
-                                'EasySA/{}?req=set,json,UTF-8'.format(
-                                    pictures_id)
-        pictures_content = re.search(r's7jsonResponse\((.+),""\);',
-                                     session.get(pictures_resource_url).text)
+        images_base_url = 'https://s7d2.scene7.com/is/image/EasySA/{}?' \
+                          'req=set,json&callback=s7jsonResponse'
 
-        if pictures_content:
-            picture_urls = []
-            pictures_json = json.loads(pictures_content.groups()[0])
-            picture_entries = pictures_json['set']['item']
+        images_key = sku.replace('P', '')
+        images_response = session.get(images_base_url.format(images_key))
+
+        picture_urls = []
+
+        if 's7jsonResponse' in images_response.text:
+            images_json = json.loads(
+                re.search(r's7jsonResponse\((.+),""\);',
+                          images_response.text).groups()[0])
+            picture_entries = images_json['set']['item']
             if not isinstance(picture_entries, list):
                 picture_entries = [picture_entries]
 
             for picture_entry in picture_entries:
-                if 'i' not in picture_entry:
-                    continue
-                picture_url = 'https://s7d2.scene7.com/is/image/{}?' \
-                              'scl=1.0'.format(picture_entry['i']['n'])
-                picture_urls.append(picture_url)
-        else:
-            picture_urls = None
+                if 'i'in picture_entry:
+                    picture_url = 'https://s7d2.scene7.com/is/image/' \
+                                  '{}?scl=1.0'.format(picture_entry['i']['n'])
+                    picture_urls.append(picture_url)
 
         p = Product(
             name,

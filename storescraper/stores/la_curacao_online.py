@@ -50,7 +50,6 @@ class LaCuracaoOnline(Store):
                       '?product_list_limit=36&p={}'.format(
                         cls.country, category_path, page)
 
-
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
