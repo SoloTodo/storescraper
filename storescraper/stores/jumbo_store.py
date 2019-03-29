@@ -1,11 +1,12 @@
-import urllib
+import re
 
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    HeadlessChrome
 
 
 class JumboStore(Store):
@@ -25,51 +26,83 @@ class JumboStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('C:/298/302/300/', 'Cell'),
-            ('C:/298/303/431/', 'Television'),
-            ('C:/298/320/333/', 'Refrigerator'),
-            ('C:/298/320/334/', 'WashingMachine'),
-            ('C:/298/320/444/', 'Oven'),
-            ('C:/298/318/436/', 'Oven'),
-            ('C:/298/318/327/', 'VacuumCleaner'),
-            ('C:/298/303/312/', 'StereoSystem')
+            ('electro-y-tecnologia/tecnologia/celulares', 'Cell'),
+            ('electro-y-tecnologia/electronica/televisores', 'Television'),
+            ('electro-y-tecnologia/electrohogar/refrigeradores',
+             'Refrigerator'),
+            ('electro-y-tecnologia/electrohogar/lavadoras-y-secadoras',
+             'WashingMachine'),
+            ('electro-y-tecnologia/electrohogar/cocina-y-microondas', 'Oven'),
+            ('electro-y-tecnologia/electrodomesticos/electro-cocina', 'Oven'),
+            ('electro-y-tecnologia/electrodomesticos/aspiradoras',
+             'VacuumCleaner'),
+            ('electro-y-tecnologia/electronica/parlantes', 'StereoSystem')
         ]
 
-        session = session_with_proxy(extra_args)
         product_urls = []
 
-        for url_extension, local_category in category_filters:
-            if local_category != category:
-                continue
+        with HeadlessChrome() as driver:
+            for url_extension, local_category in category_filters:
+                if local_category != category:
+                    continue
 
-            page = 1
-
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow: ' + url_extension)
-
-                url = 'https://store.jumbo.cl/buscapagina?fq={}&'\
-                      'sl=40921d1c-0864-4f5c-a5d0-ccefd53a1a35&cc=12&'\
-                      'sm=0&PS=12&PageNumber={}'\
-                    .format(urllib.parse.quote(url_extension, safe=''), page)
-
-                data = session.get(url).text
-                soup = BeautifulSoup(data, 'html5lib')
+                url = 'https://store.jumbo.cl/{}?PS=100&sc=20'.format(
+                    url_extension)
+                print(url)
+                driver.get(url)
+                soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                 product_containers = soup.findAll('div', 'box-product')
 
-                import ipdb
-                ipdb.set_trace()
-
                 if not product_containers:
-                    if page == 0:
-                        raise Exception('Empty section: ' + url)
-                    break
+                    raise Exception('Empty section: ' + url)
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+                    product_urls.append(product_url + '?sc=20')
 
         return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
+        name = soup.find('div', 'productName').text.strip()
+        sku = soup.find('div', 'skuReference').text.strip()
+        stock_source = re.search(r'"skuStocks":{"\d+":(\d+)}', page_source)
+
+        if stock_source:
+            stock = int(stock_source.groups()[0])
+        else:
+            print('wat')
+            stock = 0
+
+        price_container = soup.find('strong', 'skuBestPrice')
+        if not price_container:
+            return []
+        price = Decimal(price_container.text.replace('$', '').replace(
+            '.', '').replace(',', '.'))
+
+        description = html_to_markdown(str(soup.find('div', 'bottom')))
+        picture_urls = [tag['zoom'] for tag in
+                        soup.findAll('a', {'id': 'botaoZoom'})]
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )
+
+        return [p]

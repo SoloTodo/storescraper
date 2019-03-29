@@ -133,7 +133,8 @@ class Ripley(Store):
 
                 for link_tag in product_link_containers:
                     product_url = 'https://simple.ripley.cl' + link_tag['href']
-                    product_urls.append(product_url)
+                    if cls.filter_url(product_url):
+                        product_urls.append(product_url)
 
                 page += 1
 
@@ -353,3 +354,7 @@ class Ripley(Store):
                 raise Exception('Invalid subsection type')
 
         return banners
+
+    @classmethod
+    def filter_url(cls, url):
+        return '-mpm' not in url

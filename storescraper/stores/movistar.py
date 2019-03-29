@@ -45,6 +45,9 @@ class Movistar(Store):
                 raise Exception('No cells found')
 
             for container in containers:
+                product_url = container['data-producturl']
+                if product_url.endswith('?codigo='):
+                    continue
                 product_urls.append(container['data-producturl'])
 
         return product_urls
