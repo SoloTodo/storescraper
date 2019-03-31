@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--categories', type=str, nargs='*',
                         help='Specific categories to be parsed')
 
-    parser.add_argument('--async', type=bool, nargs='?', default=False,
+    parser.add_argument('--with_async', type=bool, nargs='?', default=False,
                         const=True,
                         help='Use asynchronous tasks (celery)')
 
@@ -36,7 +36,7 @@ def main():
 
     result = store.discover_urls_for_categories(
         categories=args.categories,
-        use_async=args.async,
+        use_async=args.with_async,
         extra_args=args.extra_args)
 
     for entry in result:
