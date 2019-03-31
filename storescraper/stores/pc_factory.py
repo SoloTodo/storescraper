@@ -83,6 +83,7 @@ class PcFactory(Store):
             ['340', 'StorageDrive'],  # HDD PC
             ['585', 'SolidStateDrive'],  # SSD
             ['421', 'StorageDrive'],  # HDD Notebook
+            ['932', 'StorageDrive'],  # Discos de Video Vigilancia
             ['54', 'PowerSupply'],  # Fuentes de poder
             ['16', 'ComputerCase'],  # Gabinetes con PSU
             ['328', 'ComputerCase'],  # Gabinetes sin PSU
