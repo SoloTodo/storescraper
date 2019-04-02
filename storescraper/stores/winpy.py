@@ -137,6 +137,7 @@ class Winpy(Store):
             'REACONDICIONADO': 'https://schema.org/RefurbishedCondition',
             'SEMI-NUEVO': 'https://schema.org/RefurbishedCondition',
             'USADO': 'https://schema.org/UsedCondition',
+            'DE SHOW ROOM': 'https://schema.org/RefurbishedCondition',
         }
 
         condition = condition_dict[condition_str]

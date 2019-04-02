@@ -52,7 +52,7 @@ class Hites(Store):
             ['electro-hogar/lavado-y-secado/lavadoras-secadoras',
              'WashingMachine'],
             ['electro-hogar/lavado-y-secado/secadoras', 'WashingMachine'],
-            ['electro-hogar/lavado-y-secado/centrifugas', 'WashingMachine'],
+            # ['electro-hogar/lavado-y-secado/centrifugas', 'WashingMachine'],
             ['electro-hogar/cocina/hornos-empotrados', 'Oven'],
             ['electro-hogar/cocina/hornos-electricos', 'Oven'],
             ['electro-hogar/cocina/microondas', 'Oven'],

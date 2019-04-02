@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--categories', type=str, nargs='*',
                         help='Specific categories to be parsed')
 
-    parser.add_argument('--async', type=bool, nargs='?', default=False,
+    parser.add_argument('--with_async', type=bool, nargs='?', default=False,
                         const=True,
                         help='Use async tasks (celery)')
 
@@ -38,7 +38,7 @@ def main():
 
     products_data = store.products(
         categories=args.categories,
-        use_async=args.async,
+        use_async=args.with_async,
         extra_args=args.extra_args)
 
     for product in products_data['products']:
