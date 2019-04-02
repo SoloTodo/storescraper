@@ -106,7 +106,14 @@ class LenovoChile(Store):
             if not price_tag:
                 price_tag = soup.find('meta', {'name': 'productprice'})
 
-            price = Decimal(remove_words(price_tag['content'].split(',')[0]))
+            if not price_tag:
+                price = Decimal(remove_words(
+                    soup.find('dd',
+                              'saleprice pricingSummary-details-final-price')
+                        .text.split(',')[0]))
+            else:
+                price = Decimal(remove_words(price_tag['content']
+                                             .split(',')[0]))
 
             description = html_to_markdown(str(soup.find(
                 'div', 'configuratorItem-accordion-content')))
