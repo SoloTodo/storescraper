@@ -92,7 +92,10 @@ class Peta(Store):
             local_product_urls = []
 
             while True:
-                category_url = '{}?product_list_limit=24&p={}&_={}'.format(
+                if p > 30:
+                    raise Exception('Page overflow: ' + url)
+
+                category_url = '{}?product_list_limit=40&p={}&_={}'.format(
                     url, p, random.randint(1, 1000))
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
