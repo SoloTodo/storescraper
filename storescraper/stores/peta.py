@@ -152,7 +152,7 @@ class Peta(Store):
             if panel:
                 description += html_to_markdown(str(panel)) + '\n\n'
 
-        picture_urls = [tag['data-image'] for tag in soup.findAll('a', 'mt-thumb-switcher')]
+        picture_urls = [tag['data-image'] for tag in soup.findAll('a', 'mt-thumb-switcher') if tag.get('data-image')]
 
         p = Product(
             name,
