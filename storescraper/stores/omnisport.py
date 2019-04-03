@@ -20,6 +20,7 @@ class Omnisport(Store):
             'WashingMachine',
             'OpticalDiskPlayer',
             'Stove',
+            'VacuumCleaner',
         ]
 
     @classmethod
@@ -43,7 +44,8 @@ class Omnisport(Store):
             ('electrodomesticos/secadoras', 'WashingMachine'),
             ('video/dvd', 'OpticalDiskPlayer'),
             ('video/blu-ray', 'OpticalDiskPlayer'),
-            ('electrodomesticos/cocinas', 'Stove')
+            ('electrodomesticos/cocinas', 'Stove'),
+            ('electrodomesticos/aspiradoras', 'VacuumCleaner'),
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
