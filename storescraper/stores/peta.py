@@ -152,12 +152,7 @@ class Peta(Store):
             if panel:
                 description += html_to_markdown(str(panel)) + '\n\n'
 
-        picture_containers = soup.findAll('a', 'MagicZoom')
-
-        if picture_containers:
-            picture_urls = [tag['href'] for tag in picture_containers]
-        else:
-            picture_urls = None
+        picture_urls = [tag['data-image'] for tag in soup.findAll('a', 'mt-thumb-switcher')]
 
         p = Product(
             name,

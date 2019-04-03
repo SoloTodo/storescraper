@@ -144,8 +144,7 @@ class PcOfertas(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'product.info.description'})))
 
-        picture_encoded_urls = re.findall(r'"full":(".+?")', page_source)
-        picture_urls = [json.loads(tag) for tag in picture_encoded_urls]
+        picture_urls = [tag['data-image'] for tag in soup.findAll('a', 'mt-thumb-switcher')]
 
         p = Product(
             name,
