@@ -104,7 +104,7 @@ class PcOfertas(Store):
                         cell.find('a', 'towishlist')['data-post'])
                     product_id = product_id_container['data']['product']
 
-                    product_url = 'http://www.pcofertas.cl/catalog/product/' \
+                    product_url = 'https://www.pcofertas.cl/catalog/product/' \
                                   'view/id/' + product_id
                     local_product_urls.append(product_url)
 
