@@ -31,6 +31,7 @@ class PlazaLama(Store):
             ('televisores-hd', 'Television'),
             ('sound-bar', 'StereoSystem'),
             ('bocina-portatil', 'StereoSystem'),
+            ('audio', 'StereoSystem'),
             ('blu-ray', 'OpticalDiskPlayer'),
             ('tecnologia/celular', 'Cell'),
             ('nevera', 'Refrigerator'),
