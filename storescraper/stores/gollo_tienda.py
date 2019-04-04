@@ -37,7 +37,7 @@ class GolloTienda(Store):
             ('productos/hogar/peque-os-enseres/hornos-y-tostadores',
              'Oven'),
             ('productos/linea-blanca/cocina/microondas', 'Oven'),
-            ('productos/linea-blanca/lavanderia.html',
+            ('productos/linea-blanca/lavanderia',
              'WashingMachine'),
             ('productos/linea-blanca/refrigeracion/refrigeradoras',
              'Refrigerator'),
