@@ -55,8 +55,8 @@ class Sodimac(Store):
             ['cat4780002/Aires-Acondicionados-Split', 'AirConditioner'],  # AC
             ['scat663002/Calefont-tiro-natural', 'WaterHeater'],
             ['cat2080050/Calefont-tiro-forzado', 'WaterHeater'],
-            ['scat923316/Termos-electricos-hogar', 'WaterHeater'],
-            ['scat918650/Calderas', 'WaterHeater'],
+            ['scat923316/Termos-y-Calderas', 'WaterHeater'],
+            # ['scat918650/Calderas', 'WaterHeater'],
             # ['cat3620002/Tablet', 'Tablet'],
             ['scat583461/Estufas-Toyotomi', 'SpaceHeater'],
             # ['scat299492/Estufas-a-Gas', 'SpaceHeater'],
