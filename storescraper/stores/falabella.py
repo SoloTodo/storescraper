@@ -72,7 +72,7 @@ class Falabella(Store):
             ['cat1840004/Cavas-de-Vino', 'Refrigerator'],
             ['cat1820006/Impresoras-Multifuncionales', 'Printer'],
             ['cat11970007/Impresoras-Laser', 'Printer'],
-            ['cat6680042/Impresoras-Tradicionales', 'Printer'],
+            # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
             # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
             ['cat3151/Microondas', 'Oven'],
             ['cat3114/Hornos-Electricos', 'Oven'],

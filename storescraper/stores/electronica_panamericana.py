@@ -88,7 +88,11 @@ class ElectronicaPanamericana(Store):
         sku = soup.find('span', 'sku').text.strip()
         name = '{} ({})'.format(
             soup.find('h1', 'product_title').text.strip(), sku)
-        stock = -1
+
+        if soup.find('p', 'out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
 
         price_container = soup.find('span', 'woocommerce-Price-amount')
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
