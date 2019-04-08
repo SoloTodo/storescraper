@@ -282,7 +282,7 @@ class AbcDin(Store):
 
                     elements = driver.find_elements_by_class_name('homeHero')
 
-                    time.sleep(2)
+                    time.sleep(5)
 
                     controls = driver\
                         .find_element_by_class_name('pageControl')\
@@ -290,13 +290,14 @@ class AbcDin(Store):
 
                     assert len(elements) == len(controls)
 
-                    modal_button = driver\
-                        .find_elements_by_class_name('close-modal')
-
-                    if modal_button:
-                        modal_button[0].click()
-
                     for index, element in enumerate(elements):
+                        modal_button = driver \
+                            .find_elements_by_class_name('close-modal')
+
+                        if modal_button:
+                            modal_button[0].click()
+                            time.sleep(2)
+
                         control = controls[index]
                         control.click()
                         time.sleep(2)
