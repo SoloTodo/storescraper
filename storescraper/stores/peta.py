@@ -92,7 +92,10 @@ class Peta(Store):
             local_product_urls = []
 
             while True:
-                category_url = '{}?product_list_limit=24&p={}&_={}'.format(
+                if p > 30:
+                    raise Exception('Page overflow: ' + url)
+
+                category_url = '{}?product_list_limit=40&p={}&_={}'.format(
                     url, p, random.randint(1, 1000))
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
@@ -149,12 +152,8 @@ class Peta(Store):
             if panel:
                 description += html_to_markdown(str(panel)) + '\n\n'
 
-        picture_containers = soup.findAll('a', 'MagicZoom')
-
-        if picture_containers:
-            picture_urls = [tag['href'] for tag in picture_containers]
-        else:
-            picture_urls = None
+        picture_urls = [tag['data-image'] for tag in soup.findAll(
+            'a', 'mt-thumb-switcher') if tag.get('data-image')]
 
         p = Product(
             name,

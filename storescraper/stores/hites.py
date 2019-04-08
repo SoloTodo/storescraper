@@ -245,6 +245,7 @@ class Hites(Store):
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
+            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 with HeadlessChrome(images_enabled=True) as driver:

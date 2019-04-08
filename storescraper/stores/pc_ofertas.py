@@ -83,13 +83,16 @@ class PcOfertas(Store):
             if local_category != category:
                 continue
 
-            url = 'http://www.pcofertas.cl/' + url_extension
+            url = 'https://www.pcofertas.cl/' + url_extension
             p = 1
 
             local_product_urls = []
 
             while True:
-                category_url = '{}?product_list_limit=24&p={}&_={}'.format(
+                if p > 30:
+                    raise Exception('Page overflow: ' + url)
+
+                category_url = '{}?product_list_limit=40&p={}&_={}'.format(
                     url, p, random.randint(1, 1000))
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
@@ -101,7 +104,7 @@ class PcOfertas(Store):
                         cell.find('a', 'towishlist')['data-post'])
                     product_id = product_id_container['data']['product']
 
-                    product_url = 'http://www.pcofertas.cl/catalog/product/' \
+                    product_url = 'https://www.pcofertas.cl/catalog/product/' \
                                   'view/id/' + product_id
                     local_product_urls.append(product_url)
 
@@ -141,8 +144,8 @@ class PcOfertas(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'product.info.description'})))
 
-        picture_encoded_urls = re.findall(r'"full":(".+?")', page_source)
-        picture_urls = [json.loads(tag) for tag in picture_encoded_urls]
+        picture_urls = [tag['data-image'] for tag in soup.findAll(
+            'a', 'mt-thumb-switcher') if tag.get('data-image')]
 
         p = Product(
             name,

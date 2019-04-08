@@ -29,26 +29,18 @@ class ElectronicaPanamericana(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('hogar/electrodomesticos/hornos-microondas', 'Oven'),
-            ('hogar/estufas/cooktop', 'Stove'),
-            ('hogar/estufas/estufas-a-gas', 'Stove'),
-            ('hogar/estufas/estufas-electricas', 'Stove'),
-            ('hogar/hornos-empotrables', 'Oven'),
-            ('hogar/lavanderia/centros-de-lavanderia', 'WashingMachine'),
-            ('hogar/lavanderia/lavadoras', 'WashingMachine'),
-            ('hogar/refrigeracion/congeladores', 'Refrigerator'),
-            ('hogar/refrigeracion/refrigeradoras', 'Refrigerator'),
-            ('tecnologia/audio-tecnologia', 'StereoSystem'),
-            ('tecnologia/barras', 'StereoSystem'),
-            ('tecnologia/celulares', 'Cell'),
-            ('tecnologia/monitores', 'Monitor'),
-            ('tecnologia/proyectores', 'Projector'),
-            ('tv-y-video/4k', 'Television'),
-            ('tv-y-video/oled-tv', 'Television'),
-            ('tv-y-video/super-uhd', 'Television'),
-            ('tv-y-video/televisores', 'Television'),
-            ('tv-y-video/video', 'OpticalDiskPlayer'),
-
+            ('audio-y-video/televisor/lg/', 'Television'),
+            ('audio-y-video/televisor/rca/', 'Television'),
+            ('audio-y-video/televisor/samsung/', 'Television'),
+            ('audio-y-video/reproductores/', 'OpticalDiskPlayer'),
+            ('audio-y-video/tv-audio/', 'StereoSystem'),
+            ('hogar/ambiente/', 'AirConditioner'),
+            ('hogar/coccion/', 'Stove'),
+            ('hogar/refrigeracion/', 'Refrigerator'),
+            ('hogar/lavanderia/', 'WashingMachine'),
+            ('tecnologia/proyeccion/', 'Projector'),
+            ('tecnologia/monitores/', 'Monitor'),
+            ('celulares/', 'Cell'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -60,14 +52,14 @@ class ElectronicaPanamericana(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://electronicapanamericana.com/tienda/' \
-                      'categoria-producto/{}/page/{}/' \
-                      ''.format(category_path, page)
+                url = 'https://electronicapanamericana.com/product-category/' \
+                      '{}page/{}/'.format(category_path, page)
                 print(url)
                 response = session.get(url)
 
@@ -95,16 +87,20 @@ class ElectronicaPanamericana(Store):
 
         sku = soup.find('span', 'sku').text.strip()
         name = '{} ({})'.format(
-            soup.find('h1', 'entry-title-main').text.strip(), sku)
-        stock = -1
+            soup.find('h1', 'product_title').text.strip(), sku)
+
+        if soup.find('p', 'out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
 
         price_container = soup.find('span', 'woocommerce-Price-amount')
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
 
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', {'itemprop': 'image'})]
+        picture_urls = [tag.find('a')['href'] for tag in soup.findAll(
+            'div', 'woocommerce-product-gallery__image')]
         description = html_to_markdown(
-            str(soup.find('div', 'woocommerce-tabs')))
+            str(soup.find('div', 'woocommerce-Tabs-panel--description')))
 
         p = Product(
             name,

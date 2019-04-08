@@ -71,8 +71,8 @@ class Falabella(Store):
             ['cat4049/Frigobar', 'Refrigerator'],
             ['cat1840004/Cavas-de-Vino', 'Refrigerator'],
             ['cat1820006/Impresoras-Multifuncionales', 'Printer'],
-            # ['cat11970007/Impresoras-Laser', 'Printer'],
-            ['cat6680042/Impresoras-Tradicionales', 'Printer'],
+            ['cat11970007/Impresoras-Laser', 'Printer'],
+            # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
             # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
             ['cat3151/Microondas', 'Oven'],
             ['cat3114/Hornos-Electricos', 'Oven'],
@@ -257,9 +257,9 @@ class Falabella(Store):
 
         product_data = json.loads(raw_json_data.groups()[0])
 
-        brand = product_data['state']['product']['brand']
-        model = product_data['state']['product']['displayName']
-        full_name = '{} {}'.format(brand, model)
+        slug = product_data['state']['product']['displayName'].replace(
+            ' ', '-')
+        publication_id = product_data['state']['product']['id']
 
         global_id = product_data['state']['product']['id']
         media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
@@ -292,6 +292,8 @@ class Falabella(Store):
                 continue
 
             sku = model['skuId']
+            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
+                      '{}'.format(publication_id, slug, sku)
 
             prices = {e['type']: e for e in model['price']}
 
@@ -319,10 +321,10 @@ class Falabella(Store):
             stock = model['stockAvailable']
 
             p = Product(
-                full_name,
+                model['name'],
                 cls.__name__,
                 category,
-                url,
+                sku_url,
                 url,
                 sku,
                 stock,

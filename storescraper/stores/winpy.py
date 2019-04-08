@@ -92,7 +92,7 @@ class Winpy(Store):
                 url_with_page = url + 'paged/' + str(page) + '/'
                 print(url_with_page)
                 soup = BeautifulSoup(session.get(url_with_page).text,
-                                     'html.parser')
+                                     'html5lib')
                 product_containers = soup.find('section', {'id': 'productos'})
                 product_containers = product_containers.findAll('article')
 
@@ -122,7 +122,8 @@ class Winpy(Store):
             return []
 
         page_source = response.text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html5lib')
+        print(str(soup))
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         part_number = soup.find('span', 'sku').text.strip()
