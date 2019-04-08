@@ -108,8 +108,6 @@ class Hites(Store):
                 if page >= 20:
                     raise Exception('Page overflow: ' + category_url)
 
-                print(category_url)
-
                 response = session.get(category_url, timeout=30)
 
                 if response.status_code in [404, 500]:
@@ -256,29 +254,29 @@ class Hites(Store):
                     pictures = []
 
                     banner_container = driver\
-                        .find_element_by_class_name('slick-list')
+                        .find_element_by_class_name('slider')
 
                     controls = driver\
-                        .find_element_by_class_name('carousel__controls')\
-                        .find_elements_by_class_name('slider-controls__dots')
+                        .find_element_by_class_name('owl-dots')\
+                        .find_elements_by_class_name('owl-dot')
 
                     for control in controls:
                         control.click()
-                        time.sleep(0.5)
+                        time.sleep(2)
                         pictures.append(
                             banner_container.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images = soup.find('div', 'slick-track')\
-                        .findAll('li', 'slick-slide')
+                    images = soup.find('div', 'owl-stage')\
+                        .findAll('div', 'owl-item')
 
                     images = [a for a in images if
-                              'slick-cloned' not in a['class']]
+                              'cloned' not in a['class']]
 
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):
-                        product_box = image.find('div', 'boxproductos')
+                        product_box = image.find('div', 'contentslide')
 
                         if not product_box:
                             product_box = image.find('div', 'box-producto')
@@ -340,14 +338,19 @@ class Hites(Store):
                             s_banner = driver.find_elements_by_css_selector(
                                 '#main>.espot')[index]
 
-                            key = banner.find('img')['src']
+                            key_container = banner.find('img')
+
+                            if not key_container:
+                                continue
+
+                            key = key_container['src']
 
                             picture = s_banner.screenshot_as_base64
                             banners.append({
                                 'url': url,
                                 'picture': picture,
                                 'destination_urls': destination_urls,
-                                'key': 'https:{}'.format(key),
+                                'key': key,
                                 'position': index + 1,
                                 'section': section,
                                 'subsection': subsection,

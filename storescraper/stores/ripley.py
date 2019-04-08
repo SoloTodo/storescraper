@@ -248,8 +248,10 @@ class Ripley(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
             [bs.TELEVISIONS, 'Smart TV',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
-            [bs.TELEVISIONS, 'OLED, SUHD, y QLED',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled-suhd-y-qled'],
+            [bs.TELEVISIONS, 'OLED',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled'],
+            [bs.TELEVISIONS, 'NANOCELL-QLED',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/nanoceel-qled'],
             [bs.TELEVISIONS, 'Ultra HD y 4K',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
             [bs.TELEVISIONS, 'Full HD',
@@ -331,8 +333,12 @@ class Ripley(Store):
                         'type': subsection_type
                     })
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                picture_url = soup.find('section', 'catalog-top-banner')\
-                    .find('img')
+                picture_container = soup.find('section', 'catalog-top-banner')
+
+                if not picture_container:
+                    continue
+
+                picture_url = picture_container.find('img')
 
                 if not picture_url:
                     continue
@@ -342,9 +348,11 @@ class Ripley(Store):
 
                 banners.append({
                     'url': url,
-                    'picture_url': picture_url['src'],
+                    'picture_url': picture_url.get('src')
+                    or picture_url.get('data-src'),
                     'destination_urls': destination_urls,
-                    'key': picture_url['src'],
+                    'key': picture_url.get('src')
+                    or picture_url.get('data-src'),
                     'position': 1,
                     'section': section,
                     'subsection': subsection,

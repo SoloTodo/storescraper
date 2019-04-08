@@ -282,13 +282,19 @@ class AbcDin(Store):
 
                     elements = driver.find_elements_by_class_name('homeHero')
 
-                    time.sleep(1)
+                    time.sleep(2)
 
                     controls = driver\
                         .find_element_by_class_name('pageControl')\
                         .find_elements_by_tag_name('a')
 
                     assert len(elements) == len(controls)
+
+                    modal_button = driver\
+                        .find_elements_by_class_name('close-modal')
+
+                    if modal_button:
+                        modal_button[0].click()
 
                     for index, element in enumerate(elements):
                         control = controls[index]
@@ -340,8 +346,13 @@ class AbcDin(Store):
                 elements = soup.findAll('div', 'homeHero')
                 for index, element in enumerate(elements):
                     picture_url = element.find('img')['src']
-                    destination_urls = ['https://www.abcdin.cl' +
-                                        element.find('a')['href']]
+                    url_suffix = element.find('a')
+
+                    if not url_suffix:
+                        destination_urls = []
+                    else:
+                        destination_urls = ['https://www.abcdin.cl' +
+                                            url_suffix['href']]
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
