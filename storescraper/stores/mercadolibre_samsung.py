@@ -30,7 +30,8 @@ class MercadolibreSamsung(MercadolibreChile):
             if local_category != category:
                 continue
 
-            category_url = 'https://listado.mercadolibre.cl/{}/_Tienda_samsung'.format(category_path)
+            category_url = 'https://listado.mercadolibre.cl/{}/' \
+                           '_Tienda_samsung'.format(category_path)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             containers = soup.findAll('li', 'results-item')
 

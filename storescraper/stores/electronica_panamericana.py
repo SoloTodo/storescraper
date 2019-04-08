@@ -58,8 +58,8 @@ class ElectronicaPanamericana(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://electronicapanamericana.com/product-category/{}page/{}/' \
-                      ''.format(category_path, page)
+                url = 'https://electronicapanamericana.com/product-category/' \
+                      '{}page/{}/'.format(category_path, page)
                 print(url)
                 response = session.get(url)
 
@@ -97,8 +97,8 @@ class ElectronicaPanamericana(Store):
         price_container = soup.find('span', 'woocommerce-Price-amount')
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
 
-        picture_urls = [tag.find('a')['href'] for tag in
-                        soup.findAll('div', 'woocommerce-product-gallery__image')]
+        picture_urls = [tag.find('a')['href'] for tag in soup.findAll(
+            'div', 'woocommerce-product-gallery__image')]
         description = html_to_markdown(
             str(soup.find('div', 'woocommerce-Tabs-panel--description')))
 

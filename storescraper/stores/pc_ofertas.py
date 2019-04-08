@@ -144,7 +144,8 @@ class PcOfertas(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'product.info.description'})))
 
-        picture_urls = [tag['data-image'] for tag in soup.findAll('a', 'mt-thumb-switcher') if tag.get('data-image')]
+        picture_urls = [tag['data-image'] for tag in soup.findAll(
+            'a', 'mt-thumb-switcher') if tag.get('data-image')]
 
         p = Product(
             name,

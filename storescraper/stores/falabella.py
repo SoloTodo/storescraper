@@ -257,7 +257,8 @@ class Falabella(Store):
 
         product_data = json.loads(raw_json_data.groups()[0])
 
-        slug = product_data['state']['product']['displayName'].replace(' ', '-')
+        slug = product_data['state']['product']['displayName'].replace(
+            ' ', '-')
         publication_id = product_data['state']['product']['id']
 
         global_id = product_data['state']['product']['id']
@@ -291,7 +292,8 @@ class Falabella(Store):
                 continue
 
             sku = model['skuId']
-            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/{}'.format(publication_id, slug, sku)
+            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
+                      '{}'.format(publication_id, slug, sku)
 
             prices = {e['type']: e for e in model['price']}
 
