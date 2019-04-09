@@ -55,7 +55,7 @@ class Easy(Store):
             ['estufas-a-parafina', 'SpaceHeater'],
             # ['chimeneas-electricas', 'SpaceHeater'],
             # ['paneles-calefactores', 'SpaceHeater'],
-            ['calefactores-a-pellet', 'SpaceHeater'],
+            # ['calefactores-a-pellet', 'SpaceHeater'],
             # ['termoventiladores', 'SpaceHeater'],
             ['estufas-electrica', 'SpaceHeater'],
             ['aire-acondicionado-y-enfriadores-de-aire', 'AirConditioner'],

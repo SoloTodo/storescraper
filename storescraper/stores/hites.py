@@ -136,6 +136,7 @@ class Hites(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=10)
 
@@ -144,6 +145,9 @@ class Hites(Store):
 
         page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
+
+        if soup.find('section', 'error-page'):
+            return []
 
         if soup.find('img', {'src': '/public/statics/images/404.svg'}):
             return []

@@ -43,8 +43,8 @@ class Multimax(Store):
             ('secadoras', 'WashingMachine'),
             ('centro-de-lavado', 'WashingMachine'),
             ('refrigeradoras', 'Refrigerator'),
-            ('congeladores', 'Refrigerator'),
-            ('microondas', 'Oven'),
+            # ('congeladores', 'Refrigerator'),
+            # ('microondas', 'Oven'),
             ('hornos', 'Oven')
         ]
 
@@ -64,6 +64,8 @@ class Multimax(Store):
 
                 url = 'https://shopmultimax.com/collections/{}?page={}'\
                     .format(category_path, page)
+
+                print(url)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
