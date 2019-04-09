@@ -1,7 +1,7 @@
-from .ripley import Ripley
+from .ripley_chile_base import RipleyChileBase
 
 
-class MercadoRipley(Ripley):
+class MercadoRipley(RipleyChileBase):
     @classmethod
     def filter_url(cls, url):
         return '-mpm' in url
