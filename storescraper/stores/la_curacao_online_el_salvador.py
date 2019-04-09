@@ -14,5 +14,7 @@ class LaCuracaoOnlineElSalvador(LaCuracaoOnline):
         ('refrigeracion/refrigeradoras.html', 'Refrigerator'),
         ('refrigeracion/congeladores.html', 'Refrigerator'),
         ('lavadoras-y-secadoras/lavadoras.html', 'WashingMachine'),
+        ('lavadoras-y-secadoras/secadoras.html', 'WashingMachine'),
         ('cocina/microondas.html', 'Oven'),
+        ('cocina/cocinas-de-gas.html', 'Stove'),
     ]
