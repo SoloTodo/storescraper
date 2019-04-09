@@ -105,7 +105,13 @@ class Raenco(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        response = session.get(url, allow_redirects=False)
+
+        if response.status_code == 303:
+            return []
+
+        data = response.text
+
         soup = BeautifulSoup(data, 'html.parser')
 
         if not soup.find('span', 'addtocart-button'):

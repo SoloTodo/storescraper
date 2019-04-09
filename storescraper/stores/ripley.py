@@ -37,7 +37,7 @@ class Ripley(RipleyChileBase):
             [bs.TELEVISIONS, 'OLED',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled'],
             [bs.TELEVISIONS, 'NANOCELL-QLED',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/nanoceel-qled'],
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/nanocell-qled'],
             [bs.TELEVISIONS, 'Ultra HD y 4K',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
             [bs.TELEVISIONS, 'Full HD',
