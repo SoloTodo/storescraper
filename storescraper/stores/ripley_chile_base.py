@@ -61,7 +61,7 @@ class RipleyChileBase(Store):
             ['tecno/television/basicos', 'Television'],
             # ['tecno/television/oled-suhd-y-qled', 'Television'],
             ['tecno/television/oled', 'Television'],
-            ['tecno/television/nanoceel-qled', 'Television'],
+            ['tecno/television/nanocell-qled', 'Television'],
             ['tecno/television/ultra-hd-y-4k', 'Television'],
             ['tecno/television/full-hd', 'Television'],
             ['tecno/television/hd', 'Television'],
