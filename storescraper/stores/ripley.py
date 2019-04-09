@@ -134,11 +134,11 @@ class Ripley(RipleyChileBase):
 
                 banners.append({
                     'url': url,
-                    'picture_url': picture_url.get('src')
-                    or picture_url.get('data-src'),
+                    'picture_url': picture_url.get('src') or
+                    picture_url.get('data-src'),
                     'destination_urls': destination_urls,
-                    'key': picture_url.get('src')
-                    or picture_url.get('data-src'),
+                    'key': picture_url.get('src') or
+                    picture_url.get('data-src'),
                     'position': 1,
                     'section': section,
                     'subsection': subsection,
