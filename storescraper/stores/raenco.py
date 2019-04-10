@@ -54,7 +54,7 @@ class Raenco(Store):
             ('hogar/linea-blanca/estufas', 'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-20-24-pulgadas', 'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-30-y-36-pulgadas', 'Stove'),
-            ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
+            # ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
             ('hogar/linea-blanca/estufas/estufas-empotrables', 'Stove'),
             ('hogar/linea-blanca/estufas/de-mesa-a-gas-electrica', 'Stove'),
             ('oficina/132/137', 'Projector'),
@@ -72,16 +72,18 @@ class Raenco(Store):
             local_urls = []
             done = False
 
-            print(category_path)
-
             while True:
                 if offset >= 200:
                     raise Exception('Page overflow')
 
                 url = 'https://www.raenco.com/{}?start={}'.format(
                     category_path, offset)
+
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.findAll('div', 'product')
+
+                if not product_containers and offset == 0:
+                    raise Exception('Empty section {}'.format(category_path))
 
                 for container in product_containers:
                     product_url = 'https://www.raenco.com' + \

@@ -26,6 +26,7 @@ class Easy(Store):
             'WaterHeater',
             'SpaceHeater',
             'AirConditioner',
+            'Headphones'
         ]
 
     @classmethod
@@ -59,7 +60,8 @@ class Easy(Store):
             # ['termoventiladores', 'SpaceHeater'],
             ['estufas-electrica', 'SpaceHeater'],
             ['aire-acondicionado-y-enfriadores-de-aire', 'AirConditioner'],
-            ['audio', 'StereoSystem'],
+            ['parlantes', 'StereoSystem'],
+            ['audifonos', 'Headphones']
         ]
 
         base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
