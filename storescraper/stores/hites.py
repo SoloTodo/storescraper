@@ -271,29 +271,29 @@ class Hites(Store):
                     pictures = []
 
                     banner_container = driver\
-                        .find_element_by_class_name('slider')
+                        .find_element_by_class_name('slick-list')
 
                     controls = driver\
-                        .find_element_by_class_name('owl-dots')\
-                        .find_elements_by_class_name('owl-dot')
+                        .find_element_by_class_name('carousel__controls')\
+                        .find_elements_by_class_name('slider-controls__dots')
 
                     for control in controls:
                         control.click()
-                        time.sleep(2)
+                        time.sleep(1)
                         pictures.append(
                             banner_container.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images = soup.find('div', 'owl-stage')\
-                        .findAll('div', 'owl-item')
+                    images = soup.find('div', 'slick-track')\
+                        .findAll('li', 'slick-slide')
 
                     images = [a for a in images if
-                              'cloned' not in a['class']]
+                              'slick-cloned' not in a['class']]
 
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):
-                        product_box = image.find('div', 'contentslide')
+                        product_box = image.find('div', 'boxproductos')
 
                         if not product_box:
                             product_box = image.find('div', 'box-producto')
