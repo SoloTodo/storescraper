@@ -169,8 +169,20 @@ class Hites(Store):
                     if attribute['value'] == '1':
                         stock = -1
 
-        normal_price = Decimal(json_data['prices']['offerPrice'])
-        offer_price = Decimal(json_data['prices']['cardPrice'])
+        reference_price = Decimal(json_data['prices']['listPrice'])
+        normal_price = json_data['prices']['offerPrice']
+
+        if normal_price:
+            normal_price = Decimal(normal_price)
+        else:
+            normal_price = reference_price
+
+        offer_price = json_data['prices']['cardPrice']
+
+        if offer_price:
+            offer_price = Decimal(offer_price)
+        else:
+            offer_price = normal_price
 
         if offer_price > normal_price:
             offer_price = normal_price
