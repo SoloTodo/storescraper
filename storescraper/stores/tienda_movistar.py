@@ -22,8 +22,8 @@ class TiendaMovistar(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('catalogsearch/result/index/?q=a', 'Cell'),
-            ('tablets.html?foo=bar', 'Tablet'),
+            ('smartphones-liberados.html', 'Cell'),
+            ('tablets.html', 'Tablet'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -34,23 +34,23 @@ class TiendaMovistar(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
-                category_url = 'https://tienda.movistar.cl/{}&p={}'.format(
-                    category_path, page)
+            while not done:
+                category_url = 'https://catalogo.movistar.cl/fullprice/' \
+                               'catalogo/{}?p={}'.format(category_path, page)
+                print(category_url)
 
-                if page >= 15:
+                if page >= 20:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                items = soup.findAll('li', 'item')
+                items = soup.findAll('div', 'item-producto')
 
                 if not items:
-                    raise Exception('No items found for Tienda Movistar')
-
-                done = False
+                    raise Exception('Emtpy category: ' + category_url)
 
                 for cell_item in items:
                     product_url = cell_item.find('a')['href']
@@ -60,101 +60,46 @@ class TiendaMovistar(Store):
 
                     product_urls.append(product_url)
 
-                if done:
-                    break
-
                 page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        price_container = soup.find('div', 'price-box').find('span', 'price')
-        price = Decimal(remove_words(price_container.text.split('\xa0')[-1]))
+        name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        stock_button = soup.find('button', 'btn-sin-stock')
 
-        base_name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-
-        description = ''
-        for panel in soup.findAll('div', 'panel'):
-            description += html_to_markdown(str(panel)) + '\n\n'
-
-        if 'seminuevo' in description.lower():
-            condition = 'https://schema.org/RefurbishedCondition'
+        if 'style' in stock_button.attrs:
+            stock = -1
         else:
-            condition = 'https://schema.org/NewCondition'
+            stock = 0
 
-        color_data = re.search(r'Product.Config\((.+?)\)',
-                               page_source)
-        products = []
+        price_container = soup.find('span', 'special-price').find('p')
+        price = Decimal(remove_words(price_container.text))
 
-        if color_data:
-            color_data = color_data.groups()[0]
-            color_data = json.loads(color_data)
+        description = html_to_markdown(str(
+            soup.find('div', 'detailed-desktop')))
+        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
 
-            session.headers['x-requested-with'] = 'XMLHttpRequest'
-
-            for option in color_data['attributes']['92']['options']:
-                color_name = option['label'].strip()
-                name = u'{} {}'.format(base_name, color_name)
-
-                product_url = '{}?color={}'.format(url, urllib.parse.quote(
-                    color_name))
-
-                sku = option['products'][0]
-
-                pictures_ajax_url = 'https://tienda.movistar.cl/amconf/ajax/' \
-                                    'index/id/{}/'.format(sku)
-                color_soup = BeautifulSoup(
-                    session.post(pictures_ajax_url).text, 'html.parser')
-
-                picture_urls = [tag['href'] for tag in color_soup.findAll('a')]
-
-                p = Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    product_url,
-                    url,
-                    sku,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    description=description,
-                    picture_urls=picture_urls,
-                    condition=condition
-                )
-
-                products.append(p)
-        else:
-            sku = soup.find('meta', {'itemprop': 'productID'})[
-                'content'].split(':')[1]
-
-            picture_urls = [tag['href'] for tag in
-                            soup.findAll('a', 'cloud-zoom-gallery')]
-
-            p = Product(
-                base_name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                -1,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls
-            )
-
-            products.append(p)
-
-        return products
+        return [Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )]
