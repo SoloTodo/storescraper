@@ -1,3 +1,6 @@
+import json
+import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -51,7 +54,8 @@ class ProMovil(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
@@ -81,20 +85,57 @@ class ProMovil(Store):
 
         picture_urls = [tag['href'] for tag in soup.findAll('a', 'fancybox')]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls,
-        )
+        variants = re.search(r'attributesCombinations=(\[.*?\])', page_source)
+        variants = json.loads(variants.groups()[0])
 
-        return [p]
+        if not variants:
+            return [Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls,
+            )]
+
+        products = []
+
+        for variant in variants:
+            variant_id = variant['id_attribute']
+            variant_label = variant['attribute']
+            variant_field = variant['group']
+
+            if variant_field != 'color':
+                raise Exception('invalid variant')
+
+            variant_url = '{}#/{}-{}-{}'.format(url, variant_id,
+                                                variant_field, variant_label)
+            variant_name = '{} - {} {}'.format(name, variant_field,
+                                               variant_label)
+
+            variant_key = '{} {}'.format(sku, variant_id)
+
+            products.append(Product(
+                variant_name,
+                cls.__name__,
+                category,
+                variant_url,
+                url,
+                variant_key,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls,
+            ))
+
+        return products
