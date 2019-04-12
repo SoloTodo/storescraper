@@ -107,7 +107,11 @@ class Omnisport(Store):
             offer_price = price_containers[2].find('span').text
 
         price = cls.fix_price(price)
-        offer_price = cls.fix_price(offer_price)
+
+        if offer_price == '$':
+            offer_price = price
+        else:
+            offer_price = cls.fix_price(offer_price)
 
         if offer_price > price:
             offer_price = price
