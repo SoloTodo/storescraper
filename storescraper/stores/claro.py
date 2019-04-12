@@ -88,14 +88,11 @@ class Claro(Store):
 
     @classmethod
     def _planes(cls, url, extra_args):
-        print(url)
-
         session = session_with_proxy(extra_args)
         data = session.get(cls.planes_url).text
         raw_data = re.findall(
             r'var jsonPlanes\s*= jQuery.parseJSON\(\'([\s\S]*?)\'\);', data)[0]
         json_data = json.loads(raw_data)
-        print(json.dumps(json_data, indent=4))
 
         products = []
 
@@ -110,7 +107,6 @@ class Claro(Store):
 
             for suffix in portabilidad_modes:
                 name = '{}{}'.format(sku_entry['fc_nombre'].strip(), suffix)
-                print(name)
                 price = Decimal(sku_entry['fi_precio_television_espn'])
                 key = '{}{}'.format(sku_entry['fi_plan'], suffix)
 
@@ -147,98 +143,98 @@ class Claro(Store):
 
         products = []
 
-        color_index = 1
-        while True:
-            field_name = 'sku_prepago_color_{}'.format(color_index)
-            pictures_field = 'sku_prepago_img_{}'.format(color_index)
-
-            color = product_json.get(field_name, None)
-
-            if not color:
-                field_name = 'sku_pospago_color_{}'.format(color_index)
-                pictures_field = 'sku_pospago_img_{}'.format(color_index)
+        for variant in ['prepago', 'pospago']:
+            color_index = 0
+            while color_index < 10:
+                color_index += 1
+                field_name = 'sku_{}_color_{}'.format(variant, color_index)
 
                 color = product_json.get(field_name, None)
 
                 if not color:
-                    break
+                    continue
 
-            cell_name = '{} {}'.format(base_cell_name, color)
+                sku_field = 'sku_{}_{}'.format(variant, color_index)
+                sku = product_json[sku_field]
 
-            prepago_price = Decimal(remove_words(
-                product_json['precio_prepago']))
+                if sku == '70004672':
+                    color = 'ceramic white'
 
-            picture_paths = [path for path in product_json[pictures_field]
-                             if path]
+                cell_name = '{} {}'.format(base_cell_name, color)
 
-            picture_urls = ['https://equipos.clarochile.cl/adminequipos/'
-                            'uploads/equipo/' + path.replace(' ', '%20')
-                            for path in picture_paths]
+                prepago_price = Decimal(remove_words(
+                    product_json['precio_prepago']))
 
-            base_key = '{} {}'.format(cell_id, color)
+                pictures_field = 'sku_{}_img_{}'.format(variant, color_index)
+                picture_paths = [path for path in product_json[pictures_field]
+                                 if path]
 
-            if prepago_price:
-                product = Product(
-                    cell_name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    base_key + ' Claro Prepago',
-                    -1,
-                    prepago_price,
-                    prepago_price,
-                    'CLP',
-                    cell_plan_name='Claro Prepago',
-                    picture_urls=picture_urls
-                )
-                products.append(product)
+                picture_urls = ['https://equipos.clarochile.cl/adminequipos/'
+                                'uploads/equipo/' + path.replace(' ', '%20')
+                                for path in picture_paths]
 
-            for plan_entry in product_json.get('planes', []):
-                base_plan_name = plan_entry['nombre']
+                base_key = '{} {}'.format(cell_id, color)
 
-                for suffix in ['', ' Portabilidad']:
-                    if suffix:
-                        # Portabilidad
-
-                        if int(product_json['postpago_cuotas_view']):
-                            # Con cuota mensual de arriendo
-                            cell_monthly_payment = Decimal(remove_words(
-                                plan_entry[
-                                    'valor_cuota_mensual_portabilidad']))
-                            price = Decimal(remove_words(
-                                plan_entry['valor_pie']))
-                        else:
-                            # Sin cuota mensual de arriendo
-                            cell_monthly_payment = Decimal(0)
-                            price = Decimal(remove_words(
-                                plan_entry['cuota_inicial_portado']))
-                    else:
-                        cell_monthly_payment = Decimal(0)
-                        price = Decimal(remove_words(
-                            plan_entry['cuota_inicial']))
-
-                    price = Decimal(price)
-
-                    plan_name = base_plan_name + suffix
-
+                if prepago_price:
                     product = Product(
                         cell_name,
                         cls.__name__,
                         'Cell',
                         url,
                         url,
-                        '{} - {}'.format(base_key, plan_name),
+                        base_key + ' Claro Prepago',
                         -1,
-                        price,
-                        price,
+                        prepago_price,
+                        prepago_price,
                         'CLP',
-                        cell_plan_name=plan_name,
-                        picture_urls=picture_urls,
-                        cell_monthly_payment=cell_monthly_payment
+                        cell_plan_name='Claro Prepago',
+                        picture_urls=picture_urls
                     )
                     products.append(product)
 
-            color_index += 1
+                for plan_entry in product_json.get('planes', []):
+                    base_plan_name = plan_entry['nombre']
+
+                    for suffix in ['', ' Portabilidad']:
+                        if suffix:
+                            # Portabilidad
+
+                            if int(product_json['postpago_cuotas_view']):
+                                # Con cuota mensual de arriendo
+                                cell_monthly_payment = Decimal(remove_words(
+                                    plan_entry[
+                                        'valor_cuota_mensual_portabilidad']))
+                                price = Decimal(remove_words(
+                                    plan_entry['valor_pie']))
+                            else:
+                                # Sin cuota mensual de arriendo
+                                cell_monthly_payment = Decimal(0)
+                                price = Decimal(remove_words(
+                                    plan_entry['cuota_inicial_portado']))
+                        else:
+                            cell_monthly_payment = Decimal(0)
+                            price = Decimal(remove_words(
+                                plan_entry['cuota_inicial']))
+
+                        price = Decimal(price)
+
+                        plan_name = base_plan_name + suffix
+
+                        product = Product(
+                            cell_name,
+                            cls.__name__,
+                            'Cell',
+                            url,
+                            url,
+                            '{} - {}'.format(base_key, plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name=plan_name,
+                            picture_urls=picture_urls,
+                            cell_monthly_payment=cell_monthly_payment
+                        )
+                        products.append(product)
 
         return products

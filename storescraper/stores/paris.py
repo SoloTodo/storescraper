@@ -153,7 +153,10 @@ class Paris(Store):
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
         offer_price_container = soup.find('div', 'cencosud-price')
 
-        if soup.find('div', 'out-of-stock'):
+        if soup.find('div', 'out-of-stock') or \
+                soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
+                                         'dw8802c553/marketing/home/promotext/'
+                                         'promotext-plp-event3-SF.png'}):
             stock = 0
         else:
             stock = -1
