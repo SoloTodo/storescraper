@@ -58,7 +58,7 @@ class RipleyChileBase(Store):
             ['tecno/computacion/proyectores-y-monitores', 'Monitor'],
             ['mercado-ripley/gamer', 'Mouse'],
             ['tecno/television/smart-tv', 'Television'],
-            ['tecno/television/basicos', 'Television'],
+            ['tecno/television/hd-full-hd', 'Television'],
             # ['tecno/television/oled-suhd-y-qled', 'Television'],
             ['tecno/television/oled', 'Television'],
             ['tecno/television/nanocell-qled', 'Television'],
