@@ -34,14 +34,12 @@ class Ripley(RipleyChileBase):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
             [bs.TELEVISIONS, 'Smart TV',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
-            [bs.TELEVISIONS, 'OLED',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled'],
-            [bs.TELEVISIONS, 'NANOCELL-QLED',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/nanocell-qled'],
-            [bs.TELEVISIONS, 'Ultra HD y 4K',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-y-4k'],
-            [bs.TELEVISIONS, 'Full HD',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/full-hd'],
+            [bs.TELEVISIONS, '4K – UHD - NanoCell',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/4k-uhd-nanocell'],
+            [bs.TELEVISIONS, 'OLED - QLED',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/oled-qled'],
+            [bs.TELEVISIONS, 'HD - Full HD',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/hd-full-hd'],
             [bs.AUDIO, 'Audio y Música',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
             # [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
@@ -101,6 +99,9 @@ class Ripley(RipleyChileBase):
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 images = soup.findAll('a', 'item')
 
+                if not images:
+                    print('No banners')
+
                 for index, image in enumerate(images):
                     picture = image.find('span', 'bg-item')
                     picture_url = re.search(r'url\((.*?)\)', picture['style'])\
@@ -122,6 +123,7 @@ class Ripley(RipleyChileBase):
                 picture_container = soup.find('section', 'catalog-top-banner')
 
                 if not picture_container:
+                    print('No banners')
                     continue
 
                 picture_url = picture_container.find('img')
