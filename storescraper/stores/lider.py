@@ -299,7 +299,12 @@ class Lider(Store):
 
                 for index, image in enumerate(images):
                     picture_url = image.find('source')['srcset']
-                    destination_urls = [image.find('a')['href']]
+                    destination_link = image.find('a')
+
+                    if destination_link:
+                        destination_urls = [destination_link['href']]
+                    else:
+                        destination_urls = []
 
                     banners.append({
                         'url': url,
