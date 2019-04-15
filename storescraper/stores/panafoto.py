@@ -126,7 +126,11 @@ class Panafoto(Store):
 
         part_number_match = re.search(
             r"ccs_cc_args.push\(\['pn', '(.+)'\]\);", data)
-        part_number = part_number_match.groups()[0]
+
+        if part_number_match:
+            part_number = part_number_match.groups()[0]
+        else:
+            part_number = None
 
         if soup.find('div', 'unavailable'):
             stock = 0

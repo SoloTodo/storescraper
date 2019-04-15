@@ -92,7 +92,7 @@ class DoItCenter(Store):
 
         stock_response = session.get(store_stock_endpoint)
 
-        if stock_response.status_code == 404:
+        if stock_response.status_code in [404, 500]:
             stock = -1
         else:
             inventories = json.loads(stock_response.text)

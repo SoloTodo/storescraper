@@ -29,7 +29,7 @@ class Multimax(Store):
             ('led-tv', 'Television'),
             ('smart-tv', 'Television'),
             ('4k-tv', 'Television'),
-            ('android', 'Cell'),
+            # ('android', 'Cell'),
             ('equipos-de-sonido', 'StereoSystem'),
             ('barras-de-sonido', 'StereoSystem'),
             ('bocinas-portatiles', 'StereoSystem'),
@@ -45,7 +45,7 @@ class Multimax(Store):
             ('refrigeradoras', 'Refrigerator'),
             # ('congeladores', 'Refrigerator'),
             # ('microondas', 'Oven'),
-            ('hornos', 'Oven')
+            # ('hornos', 'Oven')
         ]
 
         session = session_with_proxy(extra_args)
