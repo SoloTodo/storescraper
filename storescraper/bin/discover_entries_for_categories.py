@@ -34,13 +34,24 @@ def main():
     args = parser.parse_args()
     store = get_store_class_by_name(args.store)
 
-    result = store.discover_urls_for_categories(
+    result = store.discover_entries_for_categories(
         categories=args.categories,
         use_async=args.with_async,
         extra_args=args.extra_args)
 
     for entry in result:
-        print('{} ({})'.format(entry['url'], entry['category']))
+        print('\n{} ({})'.format(entry['url'], entry['category']))
+        positions = entry['positions']
+
+        if positions:
+            print('Positions:')
+            for position in positions:
+                print('* {} in {} ({})'.format(position['value'],
+                                               position['section_name'],
+                                               position['section_url']))
+        else:
+            print('No positions given')
+
     print('Total: {} URLs'.format(len(result)))
 
 

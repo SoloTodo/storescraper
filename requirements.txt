@@ -2,7 +2,7 @@ amqp==2.4.2
 appnope==0.1.0
 beautifulsoup4==4.6.0
 billiard==3.5.0.2
-celery==4.0.2
+celery==4.1.1
 certifi==2017.4.17
 chardet==3.0.4
 decorator==4.0.11
@@ -14,7 +14,7 @@ ipdb==0.10.3
 ipython==6.1.0
 ipython-genutils==0.2.0
 jedi==0.10.2
-kombu==4.4.0
+kombu==4.5.0
 lxml==4.3.3
 pep8==1.7.0
 pexpect==4.6.0

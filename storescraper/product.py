@@ -22,7 +22,7 @@ class Product:
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 condition='https://schema.org/NewCondition'):
+                 condition='https://schema.org/NewCondition', positions=()):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -69,6 +69,7 @@ class Product:
         if not timestamp.tzinfo:
             timestamp = pytz.utc.localize(timestamp)
         self.condition = condition
+        self.positions = positions
         self.timestamp = timestamp
 
     def __str__(self):
@@ -93,6 +94,7 @@ class Product:
         lines.append(u'Offer price: {}'.format(Currency.format(
             self.offer_price, self.currency)))
         lines.append('Condition: {}'.format(self.condition))
+        lines.append('Positions: {}'.format(self.positions))
         lines.append('Cell plan name: {}'.format(
             self.optional_field_as_string('cell_plan_name')))
 
@@ -140,6 +142,7 @@ class Product:
             'picture_urls': self.picture_urls,
             'timestamp': self.timestamp.isoformat(),
             'condition': self.condition,
+            'positions': self.positions,
         }
 
     @classmethod
