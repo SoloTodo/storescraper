@@ -145,7 +145,7 @@ class LiderGet(Store):
         if offer_price_container:
             offer_price = Decimal(offer_price_container)
             if not offer_price:
-                offer_price = normal_price  
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
