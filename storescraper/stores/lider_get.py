@@ -148,7 +148,7 @@ class LiderGet(Store):
             offer_price = normal_price
 
         specs = OrderedDict()
-        for spec in entry['filters']:
+        for spec in entry.get('filters', []):
             specs.update(spec)
 
         part_number = specs.get('Modelo')
