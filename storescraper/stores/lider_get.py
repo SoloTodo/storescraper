@@ -152,6 +152,9 @@ class LiderGet(Store):
             specs.update(spec)
 
         part_number = specs.get('Modelo')
+        if part_number:
+            part_number = part_number[:49]
+
         description = html_to_markdown(entry['longDescription'])
 
         picture_urls = ['https://images.lider.cl/wmtcl?source=url'
