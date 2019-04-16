@@ -93,6 +93,7 @@ from .lg_chile import LgChile
 from .lg_panama import LgPanama
 from .lider import Lider
 from .lider_black_friday import LiderBlackFriday
+from .lider_get import LiderGet
 from .linio_chile import LinioChile
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
