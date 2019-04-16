@@ -78,10 +78,13 @@ class MyBox(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url, timeout=30).text
 
-        stock = int(re.search(r"quantityAvailable=(\d+)",
+        stock = int(re.search(r"quantityAvailable=(-?\d+)",
                               page_source).groups()[0])
-        if stock:
+
+        if stock > 0:
             stock = -1
+        else:
+            stock = 0
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
