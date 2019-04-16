@@ -145,7 +145,7 @@ class LiderGet(Store):
         if offer_price_container:
             offer_price = Decimal(offer_price_container)
             if not offer_price:
-                offer_price = normal_price
+                offer_price = normal_price  
         else:
             offer_price = normal_price
 
@@ -160,7 +160,7 @@ class LiderGet(Store):
         description = html_to_markdown(entry['longDescription'])
 
         picture_urls = ['https://images.lider.cl/wmtcl?source=url'
-                        '[file:/productos/901210{}]&sink'.format(img)
+                        '[file:/productos/{}{}]&sink'.format(sku, img)
                         for img in entry['imagesAvailables']]
 
         return [Product(
