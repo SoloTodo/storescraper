@@ -137,7 +137,7 @@ class LiderGet(Store):
         if not check_ean13(ean):
             ean = None
 
-        sku = entry['ID']
+        sku = str(entry['sku'])
         stock = -1 if entry['available'] else 0
         normal_price = Decimal(entry['price']['BasePriceSales'])
         offer_price_container = entry['price']['BasePriceTLMC']
