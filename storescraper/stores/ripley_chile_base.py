@@ -152,6 +152,13 @@ class RipleyChileBase(Store):
         product_json = json.loads(product_data.groups()[0])
         specs_json = product_json['product']['product']
 
+        name = specs_json['name']
+
+        if category in ['Cell', 'Unknown']:
+            name += ' ({})'.format(specs_json['shortDescription'])
+
+        print(name)
+
         sku = specs_json['partNumber']
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0
@@ -201,7 +208,7 @@ class RipleyChileBase(Store):
             picture_urls = None
 
         p = Product(
-            specs_json['name'],
+            name,
             cls.__name__,
             category,
             url,
