@@ -104,9 +104,12 @@ class CasaRoyal(Store):
         if len(sku_tags) < 2:
             return []
 
-        base_name = soup.find('h1', 'title-producto').text.strip()
-        model = sku_tags[0].text.split(':')[1].strip()
-        name = '{} ({})'.format(base_name, model)
+        name = soup.find('h1', 'title-producto').text.strip()
+
+        model_text = sku_tags[0].text.strip()
+        if model_text:
+            model = model_text.split(':')[1].strip()
+            name += ' ({})'.format(model)
         sku = sku_tags[1].text.split(':')[1].strip()
 
         if soup.find('span', 'label-agotado'):
