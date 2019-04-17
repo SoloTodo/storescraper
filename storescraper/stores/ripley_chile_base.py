@@ -152,14 +152,14 @@ class RipleyChileBase(Store):
         product_json = json.loads(product_data.groups()[0])
         specs_json = product_json['product']['product']
 
+        sku = specs_json['partNumber']
         name = specs_json['name']
 
-        if category in ['Cell', 'Unknown']:
+        # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
+        # "Prepago" information in its description
+        if category in ['Cell', 'Unknown'] and 'MPM' not in sku:
             name += ' ({})'.format(specs_json['shortDescription'])
 
-        print(name)
-
-        sku = specs_json['partNumber']
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0
         else:

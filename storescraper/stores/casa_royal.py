@@ -108,10 +108,17 @@ class CasaRoyal(Store):
         model = sku_tags[0].text.split(':')[1].strip()
         name = '{} ({})'.format(base_name, model)
         sku = sku_tags[1].text.split(':')[1].strip()
-        stock = -1
 
-        price_text = soup.find('span', 'lightBlue-b').text
-        price = Decimal(remove_words(price_text))
+        if soup.find('span', 'label-agotado'):
+            stock = 0
+        else:
+            stock = -1
+
+        price_text = soup.find('span', 'lightBlue-b')
+        if not price_text:
+            price_text = soup.find('span', 'lightRed-b')
+
+        price = Decimal(remove_words(price_text.text))
         description = html_to_markdown(str(soup.find('div', 'bgLightGrey')))
         picture_urls = []
 
