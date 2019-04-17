@@ -23,6 +23,7 @@ class TiendaMovistar(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('smartphones-liberados.html', 'Cell'),
+            ('outlet.html', 'Cell'),
             ('tablets.html', 'Tablet'),
         ]
 
@@ -86,6 +87,12 @@ class TiendaMovistar(Store):
 
         description = html_to_markdown(str(
             soup.find('div', 'detailed-desktop')))
+
+        if 'seminuevo' in description:
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
 
         return [Product(
@@ -99,6 +106,7 @@ class TiendaMovistar(Store):
             price,
             price,
             'CLP',
+            condition=condition,
             sku=sku,
             description=description,
             picture_urls=picture_urls
