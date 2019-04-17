@@ -99,7 +99,7 @@ class CasaRoyal(Store):
         print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        sku_tags = soup.findAll('span', 'sku')
+        sku_tags = soup.findAll('span', 'tags')
 
         if len(sku_tags) < 2:
             return []
@@ -110,8 +110,7 @@ class CasaRoyal(Store):
         sku = sku_tags[1].text.split(':')[1].strip()
         stock = -1
 
-        price_text = soup.find('div', 'prod-info').find(
-            'span', 'precio-right').text
+        price_text = soup.find('span', 'lightBlue-b').text
         price = Decimal(remove_words(price_text))
         description = html_to_markdown(str(soup.find('div', 'bgLightGrey')))
         picture_urls = []
