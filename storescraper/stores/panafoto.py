@@ -30,45 +30,78 @@ class Panafoto(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        endpoint = 'https://s7a9hbqh8k-dsn.algolia.net/1/indexes/*/' \
-                   'queries?x-algolia-application-id=S7A9HBQH8K&x-algolia-' \
-                   'api-key=MTVmNjcxMDZjYjRhZDkyZjJkMGNjZTY5YTA2YzQwYzI4Y2Rj' \
-                   'ZDdlMmUyNmI3NzMzNDM5MTdkMzgyYmZmMGUwMXRhZ0ZpbHRlcnM9'
+        endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
+                   'x-algolia-application-id=WLT832EA3J&x-algolia-' \
+                   'api-key=MzEzMTU1NTU4M2YzMjM3NDM5MWY0YWYzNzMwYmZjOWY5Njg' \
+                   '5NjM1NDc3ZmIxNzYyYWJlNjcxZDQ4MTI4OGY2MHRhZ0ZpbHRlcnM9'
 
         category_filters = [
-            ('["categories.level2:Categorías /// TV y Video /// Televisores"]',
+            ('["categories.level2:Categorías /// TV y Video /// TV"]',
              'Television'),
-            ('["categories.level2:Categorías /// TV y Video /// '
-             'Audio para TV"]',
+            ('["categories.level3:Categorías /// TV y Video /// '
+             'Reproductores de Audio y Video /// Barras de Sonido"]',
              'StereoSystem'),
-            ('["categories.level2:Categorías /// TV y Video /// '
-             'DVD y Blu-Ray"]', 'OpticalDiskPlayer'),
-            ('["categories.level2:Categorías /// Audio /// '
-             'Micro y Minicomponentes"]', 'StereoSystem'),
-            ('["categories.level2:Categorías /// Celulares y Tablets /// '
-             'Smartphones y Celulares"]', 'Cell'),
-            ('["categories.level2:Categorías /// Hogar /// Refrigeración"]',
-             'Refrigerator'),
-            ('["categories.level2:Categorías /// Electrodomésticos /// '
-             'Microondas"]', 'Oven'),
-            ('["categories.level3:Categorías /// Cómputo /// '
-             'Monitores y Proyectores /// Monitores"]', 'Monitor'),
-            ('["categories.level3:Categorías /// Cómputo /// '
-             'Monitores y Proyectores /// Proyectores"]', 'Projector'),
-            ('["categories.level3:Categorías /// Hogar /// Climatización /// '
-             'Aires acondicionados split"]', 'AirConditioner'),
-            ('["categories.level3:Categorías /// Hogar /// Limpieza /// '
-             'Aspiradoras"]', 'VacuumCleaner'),
-            ('["categories.level2:Categorías /// Hogar /// Lavado y Secado"]',
-             'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Hornos y Estufas '
-             '/// Estufas a gas"]', 'Stove'),
-            ('["categories.level3:Categorías /// Hogar /// Hornos y Estufas '
+            ('["categories.level3:Categorías /// TV y Video /// '
+             'Reproductores de Audio y Video /// Teatro en Casa"]',
+             'StereoSystem'),
+            ('["categories.level3:Categorías /// TV y Video /// '
+             'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
+             'OpticalDiskPlayer'),
+            ('["categories.level3:Categorías /// Audio /// Bocinas /// '
+             'Bocinas Bluetooth"]', 'StereoSystem'),
+            ('["categories.level3:Categorías /// Audio /// Sistemas de Audio '
+             '/// Equipos de Sonido"]', 'StereoSystem'),
+            ('["categories.level3:Categorías /// Celulares y Tablets '
+             '/// Celulares /// Smartphones"]', 'Cell'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Lavadora Carga Frontal"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Lavadora Carga Superior"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Secadora Eléctrica"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Secadora Gas"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Centros de Lavado"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Refrigeradora Una y Dos Puertas"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Refrigeradora Side by Side"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Refrigeradora French-Door"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Congeladores"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Minibares y Vineras"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Aires portátiles"]', 'AirConditioner'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Aires acondicionados Split"]', 'AirConditioner'),
+            ('["categories.level3:Categorías /// Cómputo /// Monitores '
+             '/// Monitores"]', 'Monitor'),
+            ('["categories.level3:Categorías /// Cómputo /// Proyectores '
+             '/// Proyectores"]', 'Projector'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Hornos a gas"]', 'Oven'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Hornos eléctricos"]', 'Oven'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Estufas eléctricas"]', 'Stove'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Estufas a Gas"]', 'Stove'),
+            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
+             '/// Aspiradoras"]', 'VacuumCleaner'),
+            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
+             '/// Aspiradoras"]', 'VacuumCleaner'),
+            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
+             '/// Microondas"]', 'Oven'),
         ]
 
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        session.headers['Referer'] = 'https://www.panafoto.com/'
 
         product_urls = []
 
@@ -82,12 +115,12 @@ class Panafoto(Store):
                 payload_params = "page={}&facetFilters={}&numericFilters=%5B" \
                                  "%22visibility_catalog%3D1%22%5D" \
                                  "".format(page, urllib.parse.quote(
-                                    category_filter))
+                                    category_filter).replace('/', '%2F'))
 
-                payload = {
-                    "requests": [{
-                        "indexName": "magento2_panafoto_spanish_products",
-                        "params": payload_params}]}
+                payload = {"requests": [
+                    {"indexName": "panafotocommerceomnipro_default_products",
+                     "params": payload_params}]}
+                print(payload_params)
 
                 response = session.post(endpoint, data=json.dumps(payload))
                 products_json = json.loads(response.text)['results'][0]['hits']
