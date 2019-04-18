@@ -24,6 +24,10 @@ class NewGame(Store):
             'MemoryCard',
             'VideoCard',
             'ComputerCase',
+            'Notebook',
+            'CpuCooler',
+            'PowerSupply',
+            'Processor',
         ]
 
     @classmethod
@@ -39,6 +43,10 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=80', 'VideoCard'],
             ['especial-Master-Race-2019', 'VideoCard'],
             ['accion=hijo&plt=pc&cat=81', 'ComputerCase'],
+            ['accion=hijo&plt=pc&cat=82', 'Notebook'],
+            ['accion=hijo&plt=pc&cat=84', 'CpuCooler'],
+            ['accion=hijo&plt=pc&cat=85', 'PowerSupply'],
+            ['accion=hijo&plt=pc&cat=86', 'Processor'],
         ]
 
         product_urls = []
@@ -49,6 +57,7 @@ class NewGame(Store):
                 continue
 
             category_url = 'https://www.newgame.cl/index.php?' + category_path
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             product_cells = soup.findAll('a', 'juego')
 
