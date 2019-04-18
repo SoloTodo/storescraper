@@ -83,7 +83,7 @@ class Paris(Store):
             ['tecnologia/accesorios-computacion/mouse-teclados', 'Mouse'],
             ['tecnologia/gamer/monitores', 'Monitor'],
             ['tecnologia/accesorios-computacion/monitor-gamer', 'Monitor'],
-            ['tecnologia/gamer/gabinetes', 'ComputerCase'],
+            # ['tecnologia/gamer/gabinetes', 'ComputerCase'],
             ['tecnologia/impresion/multifuncionales', 'Printer'],
             ['tecnologia/impresion/laser', 'Printer'],
             ['tecnologia/accesorios-fotografia/tarjetas-memoria',
@@ -119,6 +119,7 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, offset)
+                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
