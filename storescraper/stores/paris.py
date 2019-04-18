@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -45,80 +46,101 @@ class Paris(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['tecnologia/computadores/notebooks', 'Notebook'],
-            ['tecnologia/computadores/pc-gamer', 'Notebook'],
-            ['tecnologia/gamer/notebooks', 'Notebook'],
-            ['tecnologia/computadores/convertibles-2-en-1', 'Notebook'],
-            ['tecnologia/computadores/apple', 'Notebook'],
-            ['tecnologia/computadores/ipad-tablet', 'Tablet'],
-            ['tecnologia/computadores/desktop-all-in-one', 'AllInOne'],
-            ['electro/television/todas', 'Television'],
-            ['electro/television/smart-tv', 'Television'],
-            ['electro/television/ultra-hd', 'Television'],
-            ['electro/television/curvo-oled-qled', 'Television'],
-            ['electro/television/monitores-tv', 'Television'],
-            ['electro/accesorios-tv/soundbar-home-theater', 'StereoSystem'],
-            ['electro/audio-hifi/home-theater', 'StereoSystem'],
-            ['electro/accesorios-tv/bluray-dvd', 'OpticalDiskPlayer'],
-            ['electro/accesorios-tv/proyectores', 'Projector'],
-            ['tecnologia/accesorios-computacion/proyectores', 'Projector'],
-            ['electro/audio/parlantes-bluetooth-portables', 'StereoSystem'],
-            ['electro/audio/micro-minicomponentes', 'StereoSystem'],
-            ['electro/audo-hifi/audio', 'StereoSystem'],
-            ['electro/audio-hifi/parlantes', 'StereoSystem'],
-            ['electro/audio-hifi/combos', 'StereoSystem'],
-            ['electro/audio/audifonos', 'Headphones'],
-            ['electro/audio-hifi/audifonos', 'Headphones'],
-            ['tecnologia/gamer/headset', 'Headphones'],
-            ['tecnologia/celulares/smartphones', 'Cell'],
-            ['tecnologia/celulares/basicos', 'Cell'],
-            ['tecnologia/gamer/consolas', 'VideoGameConsole'],
-            ['tecnologia/consolas-videojuegos/ps4', 'VideoGameConsole'],
-            ['tecnologia/consolas-videojuegos/xbox-one', 'VideoGameConsole'],
-            ['tecnologia/consolas-videojuegos/nintendo', 'VideoGameConsole'],
-            ['tecnologia/consolas-videojuegos/nintendo', 'VideoGameConsole'],
-            ['tecnologia/gamer/teclados', 'Keyboard'],
-            ['tecnologia/accesorios-computacion/mouse-teclados', 'Mouse'],
-            ['tecnologia/gamer/monitores', 'Monitor'],
-            ['tecnologia/accesorios-computacion/monitor-gamer', 'Monitor'],
-            # ['tecnologia/gamer/gabinetes', 'ComputerCase'],
-            ['tecnologia/impresion/multifuncionales', 'Printer'],
-            ['tecnologia/impresion/laser', 'Printer'],
+            ['tecnologia/computadores/notebooks', 'Notebook', 'Notebooks'],
+            ['tecnologia/computadores/pc-gamer', 'Notebook', 'PC Gamers'],
+            ['tecnologia/gamer/notebooks', 'Notebook', 'Notebooks Gamers'],
+            ['tecnologia/computadores/convertibles-2-en-1', 'Notebook',
+             'Convertibles 2 en 1'],
+            ['tecnologia/computadores/apple', 'Notebook', 'Apple'],
+            ['tecnologia/computadores/ipad-tablet', 'Tablet', 'iPad y Tablet'],
+            ['tecnologia/computadores/desktop-all-in-one', 'AllInOne',
+             'Desktop y All InOne'],
+            ['electro/television/todas', 'Television', 'Todas las TV'],
+            ['electro/television/smart-tv', 'Television', 'Smart TV'],
+            ['electro/television/ultra-hd', 'Television', 'Ultra HD'],
+            ['electro/television/curvo-oled-qled', 'Television',
+             'Curvo, Oled y Qled'],
+            ['electro/television/monitores-tv', 'Television', 'Monitor TV'],
+            ['electro/accesorios-tv/soundbar-home-theater', 'StereoSystem',
+             'Soundbar y Home Theater'],
+            ['electro/audio-hifi/home-theater', 'StereoSystem', 'Home Cinema'],
+            ['electro/accesorios-tv/bluray-dvd', 'OpticalDiskPlayer',
+             'Bluray y DVD'],
+            ['electro/accesorios-tv/proyectores', 'Projector',
+             'Proyectores Electro'],
+            ['tecnologia/accesorios-computacion/proyectores', 'Projector',
+             'Proyectores Tecno'],
+            ['electro/audio/parlantes-bluetooth-portables', 'StereoSystem',
+             'Parlantes Bluetooth y Portables'],
+            ['electro/audio/micro-minicomponentes', 'StereoSystem',
+             'Micro y Minicomponentes'],
+            ['electro/audo-hifi/audio', 'StereoSystem', 'Audio HIFI'],
+            ['electro/audio-hifi/parlantes', 'StereoSystem', 'Parlantes HIFI'],
+            ['electro/audio-hifi/combos', 'StereoSystem', 'Combos HIFI'],
+            ['electro/audio/audifonos', 'Headphones', 'Audífonos'],
+            ['electro/audio-hifi/audifonos', 'Headphones', 'Audifonos HiFi'],
+            ['tecnologia/gamer/headset', 'Headphones', 'Headset'],
+            ['tecnologia/celulares/smartphones', 'Cell', 'Smartphones'],
+            ['tecnologia/celulares/basicos', 'Cell', 'Básicos'],
+            ['tecnologia/gamer/consolas', 'VideoGameConsole', 'Consolas'],
+            ['tecnologia/consolas-videojuegos/ps4', 'VideoGameConsole',
+             'Consolas PS4'],
+            ['tecnologia/consolas-videojuegos/xbox-one', 'VideoGameConsole',
+             'Consolas Xbox One'],
+            ['tecnologia/consolas-videojuegos/nintendo', 'VideoGameConsole',
+             'Consolas Nintendo'],
+            ['tecnologia/gamer/teclados', 'Keyboard', 'Teclados y Mouse'],
+            ['tecnologia/accesorios-computacion/mouse-teclados', 'Mouse',
+             'Mouse y Teclados'],
+            ['tecnologia/gamer/monitores', 'Monitor', 'Monitores'],
+            ['tecnologia/accesorios-computacion/monitor-gamer', 'Monitor',
+             'Monitores Gamer'],
+            # ['tecnologia/gamer/gabinetes', 'ComputerCase', 'Gabinetes'],
+            ['tecnologia/impresion/multifuncionales', 'Printer',
+             'Multifuncionales'],
+            ['tecnologia/impresion/laser', 'Printer', 'Impresoras Láser'],
             ['tecnologia/accesorios-fotografia/tarjetas-memoria',
-             'MemoryCard'],
+             'MemoryCard', 'Tarjetas de Memoria'],
             ['tecnologia/accesorios-computacion/discos-duros',
-             'ExternalStorageDrive'],
-            ['tecnologia/celulares/smartwatch-wearables', 'Wearable'],
-            ['linea-blanca/refrigeracion', 'Refrigerator'],
-            ['linea-blanca/lavado-secado', 'WashingMachine'],
-            ['linea-blanca/estufas', 'SpaceHeater'],
-            ['linea-blanca/cocina/microondas', 'Oven'],
-            ['linea-blanca/cocina/hornos-empotrables', 'Oven'],
-            ['linea-blanca/electrodomesticos/microondas', 'Oven'],
-            ['linea-blanca/electrodomesticos/hornos-electricos', 'Oven'],
+             'ExternalStorageDrive', 'Discos Duros'],
+            ['tecnologia/celulares/smartwatch-wearables', 'Wearable',
+             'Smartwatch y Wearables'],
+            ['linea-blanca/refrigeracion', 'Refrigerator', 'Refrigeración'],
+            ['linea-blanca/lavado-secado', 'WashingMachine',
+             'Lavado y Secado'],
+            ['linea-blanca/estufas', 'SpaceHeater', 'Estufas'],
+            ['linea-blanca/cocina/microondas', 'Oven', 'Microondas Cocina'],
+            ['linea-blanca/cocina/hornos-empotrables', 'Oven',
+             'Hornos empotrables'],
+            ['linea-blanca/electrodomesticos/microondas', 'Oven',
+             'Microondas Electro'],
+            ['linea-blanca/electrodomesticos/hornos-electricos', 'Oven',
+             'Hornos Eléctricos'],
             ['linea-blanca/climatizacion/aires-acondicionado',
-             'AirConditioner'],
-            ['linea-blanca/climatizacion/calefont', 'WaterHeater'],
-            ['tecnologia/accesorios-computacion/pendrives', 'UsbFlashDrive'],
+             'AirConditioner', 'Aire Acondicionado'],
+            ['linea-blanca/climatizacion/calefont', 'WaterHeater', 'Calefont'],
+            ['tecnologia/accesorios-computacion/pendrives', 'UsbFlashDrive',
+             'Pendrives'],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
-        for category_path, local_category in category_paths:
+        for category_path, local_category, section_name in category_paths:
             if category != local_category:
                 continue
 
-            offset = 0
+            section_url = 'https://www.paris.cl/{}/'.format(category_path)
+            page = 0
 
             while True:
-                if offset > 1000:
+                if page > 1000:
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
-                               ''.format(category_path, offset)
+                               ''.format(category_path, page * 40)
                 print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
@@ -126,19 +148,24 @@ class Paris(Store):
                 containers = soup.findAll('li', 'flex-item-products')
 
                 if not containers:
-                    if offset == 0:
+                    if page == 0:
                         raise Exception('Empty category: ' + category_path)
                     break
 
-                for container in containers:
+                for idx, container in enumerate(containers):
                     product_url = container.find('a')['href'].split('?')[0]
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
-                    product_urls.append(product_url)
+                    product_entries[product_url].append({
+                        'value': 40 * page + idx + 1,
+                        'section_url': section_url,
+                        'section_name': section_name
+                    })
 
-                offset += 40
+                page += 1
 
-        return list(set(product_urls))
+        return [{'url': key, 'positions': value}
+                for key, value in product_entries.items()]
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

@@ -45,7 +45,7 @@ class Store:
         logger.info('Obtaining products from: {}'.format(cls.__name__))
         logger.info('Categories: {}'.format(', '.join(categories)))
 
-        discovered_urls_with_categories = cls.discover_urls_for_categories(
+        discovered_entries = cls.discover_entries_for_categories(
             categories=categories,
             extra_args=extra_args,
             discover_urls_concurrency=discover_urls_concurrency,
@@ -53,17 +53,17 @@ class Store:
         )
 
         return cls.products_for_urls(
-            discovered_urls_with_categories,
+            discovered_entries,
             extra_args=extra_args,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async
         )
 
     @classmethod
-    def discover_urls_for_categories(cls, categories=None,
-                                     extra_args=None,
-                                     discover_urls_concurrency=None,
-                                     use_async=True):
+    def discover_entries_for_categories(cls, categories=None,
+                                        extra_args=None,
+                                        discover_urls_concurrency=None,
+                                        use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
             categories=categories,
             discover_urls_concurrency=discover_urls_concurrency,
@@ -76,11 +76,10 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        discovered_urls_with_categories = []
+        discovered_entries = []
 
         if use_async:
-            category_chunks = chunks(
-                categories, discover_urls_concurrency)
+            category_chunks = chunks(categories, discover_urls_concurrency)
 
             for category_chunk in category_chunks:
                 chunk_tasks = []
@@ -89,7 +88,7 @@ class Store:
                     category_chunk))
 
                 for category in category_chunk:
-                    task = cls.discover_urls_for_category_task.s(
+                    task = cls.discover_entries_for_category_task.s(
                         cls.__name__, category, extra_args)
                     task.set(
                         queue='storescraper',
@@ -105,28 +104,30 @@ class Store:
                 for idx, task_result in enumerate(task_results):
                     category = category_chunk[idx]
                     logger.info('Discovered URLs for {}:'.format(category))
-                    for discovered_url in task_result:
-                        logger.info(discovered_url)
-                        discovered_urls_with_categories.append({
-                            'url': discovered_url,
+                    for entry in task_result:
+                        logger.info(entry)
+                        discovered_entries.append({
+                            'url': entry['url'],
+                            'positions': entry['positions'],
                             'category': category
                         })
         else:
             logger.info('Using sync method')
             for category in categories:
-                for url in cls.discover_urls_for_category(
+                for entry in cls.discover_entries_for_category(
                         category, extra_args):
                     logger.info('Discovered URL: {} ({})'.format(
-                        url, category))
-                    discovered_urls_with_categories.append({
-                        'url': url,
+                        entry['url'], category))
+                    discovered_entries.append({
+                        'url': entry['url'],
+                        'positions': entry['positions'],
                         'category': category
                     })
 
-        return discovered_urls_with_categories
+        return discovered_entries
 
     @classmethod
-    def products_for_urls(cls, discovery_urls_with_categories, extra_args=None,
+    def products_for_urls(cls, discovered_entries, extra_args=None,
                           products_for_url_concurrency=None,
                           use_async=True):
         sanitized_parameters = cls.sanitize_parameters(
@@ -139,29 +140,27 @@ class Store:
 
         logger.info('Retrieving products for: {}'.format(cls.__name__))
 
-        for entry in discovery_urls_with_categories:
+        for entry in discovered_entries:
             logger.info('{} ({})'.format(entry['url'], entry['category']))
 
         products = []
         discovery_urls_without_products = []
 
         if use_async:
-            discovery_urls_with_categories_chunks = chunks(
-                discovery_urls_with_categories, products_for_url_concurrency)
+            discovery_entries_chunks = chunks(
+                discovered_entries, products_for_url_concurrency)
 
             task_counter = 1
-            for discovery_urls_with_categories_chunk in \
-                    discovery_urls_with_categories_chunks:
+            for discovery_entries_chunk in discovery_entries_chunks:
                 chunk_tasks = []
 
-                for discovered_url_entry in \
-                        discovery_urls_with_categories_chunk:
+                for discovered_entry in discovery_entries_chunk:
                     logger.info('Retrieving URL ({} / {}): {}'.format(
-                        task_counter, len(discovery_urls_with_categories),
-                        discovered_url_entry['url']))
+                        task_counter, len(discovered_entries),
+                        discovered_entry['url']))
                     task = cls.products_for_url_task.s(
-                        cls.__name__, discovered_url_entry['url'],
-                        discovered_url_entry['category'], extra_args)
+                        cls.__name__, discovered_entry['url'],
+                        discovered_entry['category'], extra_args)
                     task.set(
                         queue='storescraper',
                         max_retries=5
@@ -178,27 +177,31 @@ class Store:
                 for idx, task_result in enumerate(task_results):
                     for serialized_product in task_result:
                         product = Product.deserialize(serialized_product)
+                        product.positions = discovery_entries_chunk[idx][
+                            'positions']
+
                         logger.info('{}\n'.format(product))
                         products.append(product)
 
                     if not task_result:
                         discovery_urls_without_products.append(
-                            discovery_urls_with_categories_chunk[idx]['url'])
+                            discovery_entries_chunk[idx]['url'])
         else:
             logger.info('Using sync method')
-            for discovered_url_entry in discovery_urls_with_categories:
+            for discovered_entry in discovered_entries:
                 retrieved_products = cls.products_for_url(
-                    discovered_url_entry['url'],
-                    discovered_url_entry['category'],
+                    discovered_entry['url'],
+                    discovered_entry['category'],
                     extra_args)
 
                 for product in retrieved_products:
+                    product.positions = discovered_entry['positions']
                     logger.info('{}\n'.format(product))
                     products.append(product)
 
                 if not retrieved_products:
                     discovery_urls_without_products.append(
-                        discovered_url_entry['url'])
+                        discovered_entry['url'])
 
         return {
             'products': products,
@@ -212,14 +215,14 @@ class Store:
     @staticmethod
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
                  default_retry_delay=5)
-    def discover_urls_for_category_task(store_class_name, category,
-                                        extra_args=None):
+    def discover_entries_for_category_task(store_class_name, category,
+                                           extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info('Discovering URLs')
         logger.info('Store: ' + store.__name__)
         logger.info('Category: ' + category)
         try:
-            discovered_urls = store.discover_urls_for_category(
+            discovered_entries = store.discover_entries_for_category(
                 category, extra_args)
         except Exception:
             error_message = 'Error discovering URLs from {}: {} - {}'.format(
@@ -229,9 +232,9 @@ class Store:
             logger.error(error_message)
             raise StoreScrapError(error_message)
 
-        for idx, url in enumerate(discovered_urls):
-            logger.info('{} - {}'.format(idx, url))
-        return discovered_urls
+        for idx, entry in enumerate(discovered_entries):
+            logger.info('{} - {}'.format(idx, entry['url']))
+        return discovered_entries
 
     @staticmethod
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
@@ -265,13 +268,13 @@ class Store:
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
                  default_retry_delay=5)
     def products_for_urls_task(store_class_name,
-                               discovery_urls_with_categories,
+                               discovery_entries,
                                extra_args=None,
                                products_for_url_concurrency=None,
                                use_async=True):
         store = get_store_class_by_name(store_class_name)
         result = store.products_for_urls(
-            discovery_urls_with_categories, extra_args=extra_args,
+            discovery_entries, extra_args=extra_args,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async)
 
@@ -301,6 +304,13 @@ class Store:
     def products_for_url(cls, url, category=None, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
+
+    @classmethod
+    def discover_entries_for_category(cls, category, extra_args=None):
+        # If the concrete class does not implement it yet, call the old
+        # discover_urls_for_category method and patch it
+        urls = cls.discover_urls_for_category(category, extra_args)
+        return [{'url': url, 'positions': []} for url in urls]
 
     ##########################################################################
     # Utility methods
