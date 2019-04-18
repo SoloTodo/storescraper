@@ -12,12 +12,12 @@ class MercadolibreLg(MercadolibreChile):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         if category != 'Cell':
             return []
 
         session = requests.Session()
-        product_urls = []
+        product_entries = []
 
         category_url = 'https://tienda.mercadolibre.cl/lg'
         soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
@@ -26,8 +26,15 @@ class MercadolibreLg(MercadolibreChile):
         if not containers:
             raise Exception('Empty category: ' + category_url)
 
-        for container in containers:
+        for idx, container in enumerate(containers):
             product_url = container.find('a')['href']
-            product_urls.append(product_url)
+            product_entries.append({
+                'url': product_url,
+                'positions': [{
+                    'value': idx + 1,
+                    'section_url': category_url,
+                    'section_name': 'Todos'
+                }]
+            })
 
-        return product_urls
+        return product_entries
