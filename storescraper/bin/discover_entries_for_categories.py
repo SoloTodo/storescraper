@@ -40,15 +40,12 @@ def main():
         extra_args=args.extra_args)
 
     for url, entry_metadata in result.items():
-        print('\n{} ({})'.format(url, entry_metadata['category']))
+        print('\n{} ({} - {})'.format(url, entry_metadata['category'],
+                                      entry_metadata['category_weight']))
         positions = entry_metadata['positions']
-        print(positions)
-
         if positions:
-            print('Positions:')
-            for position in positions:
-                print('* {} in {}'.format(position['value'],
-                                          position['section_name']))
+            for section_name, value in positions.items():
+                print('* {} in {}'.format(value, section_name))
         else:
             print('No positions given')
 

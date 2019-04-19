@@ -45,14 +45,18 @@ class AbcDin(Store):
             'Monitor',
             'Projector',
             'Mouse',
+            'Foo',
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         ajax_resources = [
-            ['10002', ['Television', 'OpticalDiskPlayer'], 'TV y Video', 1],
+            ['10001', ['Foo'], 'Electro', 0],
+            # Contains irrelevante TV accesories
+            ['10002', ['Television', 'OpticalDiskPlayer'], 'TV y Video', 0],
             ['10003', ['Television'], 'Televisores LED', 1],
-            ['10004', ['OpticalDiskPlayer'], 'Reproductores DVD-Blu Ray-TV portátil', 1],
+            ['10004', ['OpticalDiskPlayer'],
+             'Reproductores DVD-Blu Ray-TV portátil', 1],
             # Contains car audio and other irrelevant sections
             ['10006', ['StereoSystem'], 'Audio', 0],
             ['37051', ['StereoSystem'], 'Parlantes Portátiles', 1],
@@ -70,14 +74,15 @@ class AbcDin(Store):
             ['10027', ['Refrigerator'], 'Refrigeradores Side by Side', 1],
             ['10028', ['Refrigerator'], 'Frigobar', 1],
             ['10029', ['Refrigerator'], 'Freezers', 1],
-            ['10030', ['WashingMachine', 'DishWasher'], 'Lavado y Secado', 1],
+            ['10030', ['WashingMachine', 'DishWasher'],
+             'Lavado y Secado', 0.5],
             ['10031', ['WashingMachine'], 'Lavadoras', 1],
             ['10032', ['WashingMachine'], 'Lavadoras-Secadoras', 1],
             ['10033', ['WashingMachine'], 'Secadoras', 1],
             ['10033', ['WashingMachine'], 'Secadoras', 1],
             ['10034', ['WashingMachine'], 'Centrífugas', 1],
             ['10035', ['DishWasher'], 'Lavavajillas', 1],
-            ['10036', ['Stove', 'Oven'], 'Cocinas y Campanas', 1],
+            ['10036', ['Stove', 'Oven'], 'Cocinas y Campanas', 0.5],
             ['10037', ['Stove'], 'Cocinas', 1],
             ['23552', ['Oven'], 'Hornos Empotrables', 1],
             # Contains irrelevant ventiladores, calientacamas
@@ -116,7 +121,8 @@ class AbcDin(Store):
             ['25551', ['Cell'], 'Celulares Sony', 1],
             ['24556', ['Cell'], 'Celulares Azumi', 1],
             # Also contains irrelevant accesories
-            ['10073', ['MemoryCard', 'StereoSystem'], 'Accesorios telefonía', 0],
+            ['10073', ['MemoryCard', 'StereoSystem'],
+             'Accesorios telefonía', 0],
             ['24052', ['MemoryCard'], 'Micro SD', 1],
             ['28551', ['StereoSystem'], 'Parlantes', 1],
             ['24055', ['Wearable'], 'Smartwatch', 1],
@@ -148,11 +154,12 @@ class AbcDin(Store):
             ['30051', ['AllInOne'], 'All In One HP', 1],
             ['30052', ['AllInOne'], 'All In One Lenovo', 1],
             ['30053', ['AllInOne'], 'All In One Apple', 1],
-            ['31051', ['Projector', 'Monitor'], 'Proyectores', 1],
+            ['31051', ['Projector', 'Monitor'], 'Proyectores', 0.5],
             ['31551', ['Projector'], 'Proyectores Epson', 1],
             ['57551', ['Projector'], 'Proyectores LG', 1],
             ['58053', ['Monitor'], 'Monitores', 1],
-            ['10082', ['ExternalStorageDrive', 'UsbFlashDrive', 'MemoryCard'], 'Almacenamiento', 1],
+            ['10082', ['ExternalStorageDrive', 'UsbFlashDrive', 'MemoryCard'],
+             'Almacenamiento', 0.5],
             ['30061', ['ExternalStorageDrive'], 'Discos Duros', 1],
             ['30060', ['UsbFlashDrive'], 'Pendrives', 1],
             ['30062', ['MemoryCard'], 'Tarjeta Memoria', 1],
@@ -171,24 +178,23 @@ class AbcDin(Store):
 
         session = session_with_proxy(extra_args)
 
-        for category_id, local_categories, section_name, category_weight in ajax_resources:
+        for category_id, local_categories, section_name, category_weight in \
+                ajax_resources:
             if category not in local_categories:
                 continue
 
             url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
-                  'searchTermScope=&searchType=10&filterTerm=' \
-                  '&langId=-1000&advancedSearch=' \
-                  '&sType=SimpleSearch&gridPosition=' \
-                  '&metaData=&manufacturer=' \
-                  '&ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F' \
-                  '&resultCatEntryType=&catalogId=10001&searchTerm=' \
-                  '&resultsPerPage=12' \
+                  'searchType=10&langId=-1000&sType=SimpleSearch&' \
+                  'ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F' \
+                  '&catalogId=10001&resultsPerPage=12' \
                   '&emsName=Widget_CatalogEntryList_701_1974' \
-                  '&facet=&categoryId={}' \
+                  '&categoryId={}' \
                   '&storeId=10001&enableSKUListView=false' \
                   '&disableProductCompare=false' \
                   '&ddkey=ProductListingView_8_-2011_1974&filterFacet=' \
                   '&pageSize=1000'.format(category_id)
+
+            print(url)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products_grid = soup.find('ul', 'grid_mode')
@@ -227,6 +233,7 @@ class AbcDin(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')

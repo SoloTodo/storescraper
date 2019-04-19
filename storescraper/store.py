@@ -1,5 +1,5 @@
 import traceback
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 from celery import shared_task, group
 from celery.result import allow_join_result
@@ -77,7 +77,7 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        entry_positions = defaultdict(lambda: [])
+        entry_positions = {}
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
 
         if use_async:
@@ -106,11 +106,21 @@ class Store:
                 for idx, task_result in enumerate(task_results):
                     category = category_chunk[idx]
                     logger.info('Discovered URLs for {}:'.format(category))
-                    for entry in task_result:
-                        logger.info(entry)
-                        entry_positions[entry['url']].append(entry['positions'])
-                        url_category_weights[entry['url']][category] += \
-                            entry['category_weight']
+                    for url, positions in task_result.items():
+                        logger.info(url)
+                        logger.info(positions)
+                        entry_positions[url] = {}
+
+                        for position in positions:
+                            if position['section_name'] not in \
+                                    entry_positions[url]:
+                                entry_positions[url][position['section_name']]\
+                                    = position['value']
+                            url_category_weights[url][category] += \
+                                position['category_weight']
+                        else:
+                            # Legacy for implementations without position data
+                            url_category_weights[url][category] = 1
         else:
             logger.info('Using sync method')
             for category in categories:
@@ -118,27 +128,37 @@ class Store:
                         category, extra_args).items():
                     logger.info('Discovered URL: {} ({})'.format(
                         url, category))
-                    entry_positions[url].extend(positions)
+
+                    entry_positions[url] = {}
                     for position in positions:
+                        if position['section_name'] not in \
+                                entry_positions[url]:
+                            entry_positions[url][
+                                position['section_name']] = position['value']
+
                         url_category_weights[url][category] += \
                             position['category_weight']
+                    else:
+                        # Legacy for implementations without position data
+                        url_category_weights[url][category] = 1
 
         discovered_entries = {}
         for url, positions in entry_positions.items():
             category, max_weight = max(url_category_weights[url].items(),
-                                       key=lambda x: x[1])
+                                       key=lambda x: x[1],)
 
             # Only include the url in the discovery set if it appears in a
             # weighted section, for example generic "Electrodomésticos"
             # section have 0 weight, but specific sections
             # (e.g. "Refrigeradores") have positive values. This allows us to
-            # map generic section positioning without considering their
+            # map generic sections positioning without considering their
             # products if they don't appear in a specifically mapped
             # relevant section
-            if max_weight:
+            if max_weight or not positions:
                 discovered_entries[url] = {
                     'positions': positions,
-                    'category': category
+                    'category': category,
+                    'category_weight': max_weight
                 }
 
         return discovered_entries
@@ -156,28 +176,29 @@ class Store:
         use_async = sanitized_parameters['use_async']
 
         logger.info('Retrieving products for: {}'.format(cls.__name__))
+        logger.info(discovered_entries)
 
-        for entry in discovered_entries:
-            logger.info('{} ({})'.format(entry['url'], entry['category']))
+        for url, entry_metadata in discovered_entries.items():
+            logger.info('{} ({})'.format(url, entry_metadata['category']))
 
         products = []
         discovery_urls_without_products = []
 
         if use_async:
             discovery_entries_chunks = chunks(
-                discovered_entries, products_for_url_concurrency)
+                list(discovered_entries.items()), products_for_url_concurrency)
 
             task_counter = 1
             for discovery_entries_chunk in discovery_entries_chunks:
                 chunk_tasks = []
 
-                for discovered_entry in discovery_entries_chunk:
+                for entry_url, entry_metadata in discovery_entries_chunk:
                     logger.info('Retrieving URL ({} / {}): {}'.format(
                         task_counter, len(discovered_entries),
-                        discovered_entry['url']))
+                        entry_url))
                     task = cls.products_for_url_task.s(
-                        cls.__name__, discovered_entry['url'],
-                        discovered_entry['category'], extra_args)
+                        cls.__name__, entry_url,
+                        entry_metadata['category'], extra_args)
                     task.set(
                         queue='storescraper',
                         max_retries=5
@@ -194,31 +215,30 @@ class Store:
                 for idx, task_result in enumerate(task_results):
                     for serialized_product in task_result:
                         product = Product.deserialize(serialized_product)
-                        product.positions = discovery_entries_chunk[idx][
-                            'positions']
+                        product.positions = \
+                            discovery_entries_chunk[idx][1]['positions']
 
                         logger.info('{}\n'.format(product))
                         products.append(product)
 
                     if not task_result:
                         discovery_urls_without_products.append(
-                            discovery_entries_chunk[idx]['url'])
+                            discovery_entries_chunk[idx][0])
         else:
             logger.info('Using sync method')
-            for discovered_entry in discovered_entries:
+            for entry_url, entry_metadata in discovered_entries.items():
                 retrieved_products = cls.products_for_url(
-                    discovered_entry['url'],
-                    discovered_entry['category'],
+                    entry_url,
+                    entry_metadata['category'],
                     extra_args)
 
                 for product in retrieved_products:
-                    product.positions = discovered_entry['positions']
+                    product.positions = entry_metadata['positions']
                     logger.info('{}\n'.format(product))
                     products.append(product)
 
                 if not retrieved_products:
-                    discovery_urls_without_products.append(
-                        discovered_entry['url'])
+                    discovery_urls_without_products.append(entry_url)
 
         return {
             'products': products,
@@ -249,8 +269,9 @@ class Store:
             logger.error(error_message)
             raise StoreScrapError(error_message)
 
-        for idx, entry in enumerate(discovered_entries):
-            logger.info('{} - {}'.format(idx, entry['url']))
+        for url in discovered_entries.keys():
+            logger.info(url)
+
         return discovered_entries
 
     @staticmethod

@@ -22,7 +22,7 @@ class Product:
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 condition='https://schema.org/NewCondition', positions=()):
+                 condition='https://schema.org/NewCondition', positions={}):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
