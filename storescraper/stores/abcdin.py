@@ -1,6 +1,8 @@
 import json
 import re
 import urllib
+from collections import OrderedDict, defaultdict
+
 import time
 
 from bs4 import BeautifulSoup
@@ -38,82 +40,167 @@ class AbcDin(Store):
             'WaterHeater',
             'Wearable',
             'Headphones',
+            'AirConditioner',
+            'Stove',
+            'Monitor',
+            'Projector',
+            'Mouse',
+            'Foo',
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         ajax_resources = [
-            ['10076', 'Notebook'],
-            ['10003', 'Television'],
-            ['10075', 'Tablet'],
-            ['10025', 'Refrigerator'],
-            ['10026', 'Refrigerator'],
-            ['10027', 'Refrigerator'],
-            ['10028', 'Refrigerator'],
-            ['10029', 'Refrigerator'],
-            ['10078', 'Printer'],
-            ['29587', 'Printer'],
-            ['10041', 'Oven'],
-            ['10042', 'Oven'],
-            ['10043', 'VacuumCleaner'],
-            ['10031', 'WashingMachine'],
-            ['10032', 'WashingMachine'],
-            ['10033', 'WashingMachine'],
-            ['24553', 'Cell'],  # Smartphones
-            ['10018', 'Camera'],
-            ['37051', 'StereoSystem'],  # Parlantes portátiles
-            ['44051', 'StereoSystem'],  # Accesorios audio
-            ['10007', 'StereoSystem'],  # Minicomponentes
-            ['10008', 'StereoSystem'],  # Microcomponentes
-            ['10009', 'StereoSystem'],  # Home Theater
-            ['10010', 'StereoSystem'],  # Radios
-            ['10012', 'StereoSystem'],  # Reproductores de Música
-            ['10501', 'StereoSystem'],  # Tornamesas
-            ['10004', 'OpticalDiskPlayer'],
-            ['10082', 'UsbFlashDrive'],
-            # ['14008', 'VideoGameConsole'],  # PS3
-            ['14001', 'VideoGameConsole'],  # PS4
-            # ['14009', 'VideoGameConsole'],  # Xbox 360
-            ['14005', 'VideoGameConsole'],  # Xbox One
-            ['14011', 'VideoGameConsole'],  # Switch
-            ['14012', 'VideoGameConsole'],  # 3DS
-            ['14011', 'VideoGameConsole'],  # Wii U
-            ['10077', 'AllInOne'],
-            ['10065', 'WaterHeater'],
-            ['10061', 'SpaceHeater'],  # Estufas electricas
-            ['10063', 'SpaceHeater'],  # Estufas a lena
-            ['24055', 'Wearable'],
-            ['10013', 'Headphones'],
+            ['10001', ['Foo'], 'Electro', 0],
+            # Contains irrelevante TV accesories
+            ['10002', ['Television', 'OpticalDiskPlayer'], 'TV y Video', 0],
+            ['10003', ['Television'], 'Televisores LED', 1],
+            ['10004', ['OpticalDiskPlayer'],
+             'Reproductores DVD-Blu Ray-TV portátil', 1],
+            # Contains car audio and other irrelevant sections
+            ['10006', ['StereoSystem'], 'Audio', 0],
+            ['37051', ['StereoSystem'], 'Parlantes Portátiles', 1],
+            ['10007', ['StereoSystem'], 'Minicomponentes', 1],
+            ['10008', ['StereoSystem'], 'Microcomponentes', 1],
+            ['10009', ['StereoSystem'], 'Home Theater', 1],
+            ['10012', ['StereoSystem'], 'Reproductores de Música', 1],
+            ['10013', ['Headphones'], 'Audífonos', 1],
+            ['10014', ['Headphones'], 'In Ear', 1],
+            ['10015', ['Headphones'], 'Over Ear', 1],
+            ['10016', ['Headphones'], 'Deportivos', 1],
+            ['10024', ['Refrigerator'], 'Refrigeradores', 1],
+            ['10025', ['Refrigerator'], 'Refrigeradores Frio Directo', 1],
+            ['10026', ['Refrigerator'], 'Refrigeradores No Frost', 1],
+            ['10027', ['Refrigerator'], 'Refrigeradores Side by Side', 1],
+            ['10028', ['Refrigerator'], 'Frigobar', 1],
+            ['10029', ['Refrigerator'], 'Freezers', 1],
+            ['10030', ['WashingMachine', 'DishWasher'],
+             'Lavado y Secado', 0.5],
+            ['10031', ['WashingMachine'], 'Lavadoras', 1],
+            ['10032', ['WashingMachine'], 'Lavadoras-Secadoras', 1],
+            ['10033', ['WashingMachine'], 'Secadoras', 1],
+            ['10033', ['WashingMachine'], 'Secadoras', 1],
+            ['10034', ['WashingMachine'], 'Centrífugas', 1],
+            ['10035', ['DishWasher'], 'Lavavajillas', 1],
+            ['10036', ['Stove', 'Oven'], 'Cocinas y Campanas', 0.5],
+            ['10037', ['Stove'], 'Cocinas', 1],
+            ['23552', ['Oven'], 'Hornos Empotrables', 1],
+            # Contains irrelevant ventiladores, calientacamas
+            ['10056', ['AirConditioner', 'SpaceHeater'], 'Climatización', 0],
+            ['10058', ['AirConditioner'], 'Aire Acondicionado', 1],
+            ['42056', ['AirConditioner'], 'Purificador de Aire', 1],
+            ['10059', ['AirConditioner'], 'Enfriadores', 1],
+            ['10060', ['SpaceHeater'], 'Estufas a Gas', 1],
+            ['10061', ['SpaceHeater'], 'Estufas Electricas', 1],
+            ['10062', ['SpaceHeater'], 'Estufas a Parafina', 1],
+            ['10063', ['SpaceHeater'], 'Estufas a Leña', 1],
+            ['10065', ['WaterHeater'], 'Calefont', 1],
+            ['33051', ['WaterHeater'], 'Junkers', 1],
+            ['33052', ['WaterHeater'], 'Mademsa', 1],
+            ['33053', ['WaterHeater'], 'Splendid', 1],
+            ['47051', ['WaterHeater'], 'Neckar', 1],
+            ['56052', ['WaterHeater'], 'Rheem', 1],
+            # Contains all electrodomesticos
+            ['10039', ['VacuumCleaner', 'Oven'], 'Electrodomésticos', 0],
+            ['10043', ['VacuumCleaner'], 'Aspiradoras y Enceradoras', 1],
+            ['10041', ['Oven'], 'Hornos Eléctricos', 1],
+            ['10042', ['Oven'], 'Microondas', 1],
+            ['24553', ['Cell'], 'Smartphones', 1],
+            ['24554', ['Cell'], 'Celulares Samsung', 1],
+            ['24555', ['Cell'], 'Celulares Huawei', 1],
+            ['24561', ['Cell'], 'Celulares Motorola', 1],
+            ['24558', ['Cell'], 'Celulares LG', 1],
+            ['26051', ['Cell'], 'Celulares Nokia', 1],
+            ['26052', ['Cell'], 'Iphone', 1],
+            ['53051', ['Cell'], 'Celulares Xiaomi', 1],
+            ['25051', ['Cell'], 'Celulares OWN', 1],
+            ['24557', ['Cell'], 'Celulares Alcatel', 1],
+            ['26056', ['Cell'], 'Celulares ZTE', 1],
+            ['51552', ['Cell'], 'Celulares Básicos', 1],
+            ['27051', ['Cell'], 'Celulares Bmobile', 1],
+            ['25551', ['Cell'], 'Celulares Sony', 1],
+            ['24556', ['Cell'], 'Celulares Azumi', 1],
+            # Also contains irrelevant accesories
+            ['10073', ['MemoryCard', 'StereoSystem'],
+             'Accesorios telefonía', 0],
+            ['24052', ['MemoryCard'], 'Micro SD', 1],
+            ['28551', ['StereoSystem'], 'Parlantes', 1],
+            ['24055', ['Wearable'], 'Smartwatch', 1],
+            ['29552', ['Wearable'], 'Smartwatch Samsung', 1],
+            ['58052', ['Wearable'], 'Smartwatch Xiaomi', 1],
+            ['29551', ['Wearable'], 'Smartwatch Huawei', 1],
+            ['29553', ['Wearable'], 'Smartwatch Alcatel', 1],
+            ['29554', ['Wearable'], 'Smartwatch Kioto', 1],
+            ['49052', ['Wearable'], 'Smartwatch Microlab', 1],
+            ['10076', ['Notebook'], 'Notebooks', 1],
+            ['29561', ['Notebook'], 'Notebooks HP', 1],
+            ['29565', ['Notebook'], 'Notebooks Lenovo', 1],
+            ['50551', ['Notebook'], 'Notebooks Gamers', 1],
+            ['29563', ['Notebook'], 'Macbooks', 1],
+            ['29562', ['Notebook'], 'Notebooks Acer', 1],
+            ['29564', ['Notebook'], 'Notebooks ASUS', 1],
+            ['10075', ['Tablet'], 'Tablets', 1],
+            ['29578', ['Tablet'], 'Tablets Samsung', 1],
+            ['46551', ['Tablet'], 'Tablets Apple', 1],
+            ['29574', ['Tablet'], 'Tablets Kioto', 1],
+            ['29575', ['Tablet'], 'Tablets Lenovo', 1],
+            ['29576', ['Tablet'], 'Tablets Microlab', 1],
+            ['29580', ['Tablet'], 'Tablets Huawei', 1],
+            # Also contains inks
+            ['29586', ['Printer'], 'Impresoras y Multifuncionales', 0],
+            ['10078', ['Printer'], 'Impresoras', 1],
+            ['29587', ['Printer'], 'Multifuncionales', 1],
+            ['10077', ['AllInOne'], 'All In One', 1],
+            ['30051', ['AllInOne'], 'All In One HP', 1],
+            ['30052', ['AllInOne'], 'All In One Lenovo', 1],
+            ['30053', ['AllInOne'], 'All In One Apple', 1],
+            ['31051', ['Projector', 'Monitor'], 'Proyectores', 0.5],
+            ['31551', ['Projector'], 'Proyectores Epson', 1],
+            ['57551', ['Projector'], 'Proyectores LG', 1],
+            ['58053', ['Monitor'], 'Monitores', 1],
+            ['10082', ['ExternalStorageDrive', 'UsbFlashDrive', 'MemoryCard'],
+             'Almacenamiento', 0.5],
+            ['30061', ['ExternalStorageDrive'], 'Discos Duros', 1],
+            ['30060', ['UsbFlashDrive'], 'Pendrives', 1],
+            ['30062', ['MemoryCard'], 'Tarjeta Memoria', 1],
+            # Also contains other accesories
+            ['10079', ['Mouse', 'StereoSystem'], 'Accesorios Computación', 0],
+            ['10080', ['Mouse'], 'Mouse y Teclados', 1],
+            ['10081', ['StereoSystem'], 'Parlantes y Subwoofer', 1],
+            ['10086', ['VideoGameConsole'], 'Videojuegos', 1],
+            ['14001', ['VideoGameConsole'], 'PS4', 1],
+            ['14005', ['VideoGameConsole'], 'Xbox One', 1],
+            ['14011', ['VideoGameConsole'], 'Nintendo Switch', 1],
+            ['14012', ['VideoGameConsole'], 'Nintendo', 1],
         ]
 
-        discovered_urls = []
+        discovered_entries = defaultdict(lambda: [])
 
         session = session_with_proxy(extra_args)
 
-        for category_id, local_category in ajax_resources:
-            if local_category != category:
+        for category_id, local_categories, section_name, category_weight in \
+                ajax_resources:
+            if category not in local_categories:
                 continue
 
             url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
-                  'searchTermScope=&searchType=10&filterTerm=' \
-                  '&langId=-1000&advancedSearch=' \
-                  '&sType=SimpleSearch&gridPosition=' \
-                  '&metaData=&manufacturer=' \
-                  '&ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F' \
-                  '&resultCatEntryType=&catalogId=10001&searchTerm=' \
-                  '&resultsPerPage=12' \
+                  'searchType=10&langId=-1000&sType=SimpleSearch&' \
+                  'ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F' \
+                  '&catalogId=10001&resultsPerPage=12' \
                   '&emsName=Widget_CatalogEntryList_701_1974' \
-                  '&facet=&categoryId={0}' \
+                  '&categoryId={}' \
                   '&storeId=10001&enableSKUListView=false' \
                   '&disableProductCompare=false' \
                   '&ddkey=ProductListingView_8_-2011_1974&filterFacet=' \
                   '&pageSize=1000'.format(category_id)
 
+            print(url)
+
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products_grid = soup.find('ul', 'grid_mode')
 
             if not products_grid:
-                raise Exception('Empty category path: {} - {}'.format(
+                raise Exception('Empty section: {} - {}'.format(
                     category, category_id))
 
             product_cells = products_grid.findAll('li')
@@ -136,12 +223,17 @@ class AbcDin(Store):
                     slug_with_sku = product_listed_url.split('/')[-1]
                     product_url = 'https://www.abcdin.cl/tienda/es/abcdin/'\
                                   + slug_with_sku
-                discovered_urls.append(product_url)
+                discovered_entries[product_url].append({
+                    'category_weight': category_weight,
+                    'section_name': section_name,
+                    'value': idx + 1
+                })
 
-        return discovered_urls
+        return discovered_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')

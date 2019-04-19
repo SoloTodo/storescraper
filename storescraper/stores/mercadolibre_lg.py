@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -17,7 +19,7 @@ class MercadolibreLg(MercadolibreChile):
             return []
 
         session = requests.Session()
-        product_entries = []
+        product_entries = defaultdict(lambda: [])
 
         category_url = 'https://tienda.mercadolibre.cl/lg'
         soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
@@ -28,13 +30,10 @@ class MercadolibreLg(MercadolibreChile):
 
         for idx, container in enumerate(containers):
             product_url = container.find('a')['href']
-            product_entries.append({
-                'url': product_url,
-                'positions': [{
-                    'value': idx + 1,
-                    'section_url': category_url,
-                    'section_name': 'Todos'
-                }]
+            product_entries[product_url].append({
+                'value': idx + 1,
+                'section_name': 'Todos',
+                'category_weight': 1
             })
 
         return product_entries

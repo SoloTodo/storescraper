@@ -164,8 +164,7 @@ class Paris(Store):
 
                 page += 1
 
-        return [{'url': key, 'positions': value}
-                for key, value in product_entries.items()]
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
