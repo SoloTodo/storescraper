@@ -25,17 +25,18 @@ class Tomalo(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('12-dispositivos-moviles', 'Cell'),
+            ('dispositivos-moviles', 'Cell'),
+            ('galaxy-s10', 'Cell'),
             # ('119-promo-s8-s9-s9', 'Cell'),
-            ('91-galaxy-note-9', 'Cell'),
+            # ('91-galaxy-note-9', 'Cell'),
             # ('116-promo-level-u', 'Cell'),
-            ('17-tablet', 'Tablet'),
-            ('18-books', 'Tablet'),
+            ('tablet', 'Tablet'),
+            ('books', 'Tablet'),
             # ('95-parlantes-jbl', 'StereoSystem'),
-            ('82-carcasas', 'CellAccesory'),
-            ('57-hogar-inteligente', 'CellAccesory'),
-            ('42-audifonos', 'Headphones'),
-            ('19-wearables', 'Wearable'),
+            ('carcasas', 'CellAccesory'),
+            ('hogar-inteligente', 'CellAccesory'),
+            ('audifonos', 'Headphones'),
+            ('wearables', 'Wearable'),
             # ('96-tarjeta-memoria-micro-sd', 'MemoryCard')
         ]
 
@@ -55,6 +56,7 @@ class Tomalo(Store):
 
                 url = 'https://www.tomalo.cl/{}?p={}'\
                     .format(category_path, page)
+                print(url)
                 response = session.get(url)
 
                 if response.status_code == 404:

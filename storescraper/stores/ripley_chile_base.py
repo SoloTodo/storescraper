@@ -59,7 +59,7 @@ class RipleyChileBase(Store):
             ['mercado-ripley/gamer', 'Mouse'],
             ['tecno/television/smart-tv', 'Television'],
             ['tecno/television/4k-uhd-nanocell', 'Television'],
-            ['tecno/television/oled-qled', 'Television'],
+            ['tecno/television/premium-oled-qled-8k', 'Television'],
             ['tecno/television/hd-full-hd', 'Television'],
             ['electro/refrigeracion/refrigeradores', 'Refrigerator'],
             ['electro/refrigeracion/freezers-y-congeladores', 'Refrigerator'],
@@ -110,7 +110,12 @@ class RipleyChileBase(Store):
 
                 page_url = url_base.format(category_path, page)
                 print(page_url)
-                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
+                response = session.get(page_url, allow_redirects=False)
+
+                if response.status_code != 200:
+                    raise Exception('Invalid section: ' + page_url)
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 product_link_containers = soup.find(
                     'div', 'catalog-container')
