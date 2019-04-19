@@ -1,4 +1,5 @@
 import traceback
+from collections import defaultdict
 
 from celery import shared_task, group
 from celery.result import allow_join_result
@@ -76,7 +77,8 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        discovered_entries = []
+        entry_positions = defaultdict(lambda: [])
+        url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
 
         if use_async:
             category_chunks = chunks(categories, discover_urls_concurrency)
@@ -106,23 +108,38 @@ class Store:
                     logger.info('Discovered URLs for {}:'.format(category))
                     for entry in task_result:
                         logger.info(entry)
-                        discovered_entries.append({
-                            'url': entry['url'],
-                            'positions': entry['positions'],
-                            'category': category
-                        })
+                        entry_positions[entry['url']].append(entry['positions'])
+                        url_category_weights[entry['url']][category] += \
+                            entry['category_weight']
         else:
             logger.info('Using sync method')
             for category in categories:
-                for entry in cls.discover_entries_for_category(
-                        category, extra_args):
+                for url, positions in cls.discover_entries_for_category(
+                        category, extra_args).items():
                     logger.info('Discovered URL: {} ({})'.format(
-                        entry['url'], category))
-                    discovered_entries.append({
-                        'url': entry['url'],
-                        'positions': entry['positions'],
-                        'category': category
-                    })
+                        url, category))
+                    entry_positions[url].extend(positions)
+                    for position in positions:
+                        url_category_weights[url][category] += \
+                            position['category_weight']
+
+        discovered_entries = {}
+        for url, positions in entry_positions.items():
+            category, max_weight = max(url_category_weights[url].items(),
+                                       key=lambda x: x[1])
+
+            # Only include the url in the discovery set if it appears in a
+            # weighted section, for example generic "Electrodomésticos"
+            # section have 0 weight, but specific sections
+            # (e.g. "Refrigeradores") have positive values. This allows us to
+            # map generic section positioning without considering their
+            # products if they don't appear in a specifically mapped
+            # relevant section
+            if max_weight:
+                discovered_entries[url] = {
+                    'positions': positions,
+                    'category': category
+                }
 
         return discovered_entries
 
@@ -310,7 +327,7 @@ class Store:
         # If the concrete class does not implement it yet, call the old
         # discover_urls_for_category method and patch it
         urls = cls.discover_urls_for_category(category, extra_args)
-        return [{'url': url, 'positions': []} for url in urls]
+        return {url: [] for url in urls}
 
     ##########################################################################
     # Utility methods

@@ -39,16 +39,16 @@ def main():
         use_async=args.with_async,
         extra_args=args.extra_args)
 
-    for entry in result:
-        print('\n{} ({})'.format(entry['url'], entry['category']))
-        positions = entry['positions']
+    for url, entry_metadata in result.items():
+        print('\n{} ({})'.format(url, entry_metadata['category']))
+        positions = entry_metadata['positions']
+        print(positions)
 
         if positions:
             print('Positions:')
             for position in positions:
-                print('* {} in {} ({})'.format(position['value'],
-                                               position['section_name'],
-                                               position['section_url']))
+                print('* {} in {}'.format(position['value'],
+                                          position['section_name']))
         else:
             print('No positions given')
 
