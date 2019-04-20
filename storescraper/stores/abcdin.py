@@ -20,8 +20,8 @@ class AbcDin(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
             'Television',
+            'Notebook',
             'Tablet',
             'Refrigerator',
             'Printer',
@@ -45,13 +45,11 @@ class AbcDin(Store):
             'Monitor',
             'Projector',
             'Mouse',
-            'Foo',
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         ajax_resources = [
-            ['10001', ['Foo'], 'Electro', 0],
             # Contains irrelevante TV accesories
             ['10002', ['Television', 'OpticalDiskPlayer'], 'TV y Video', 0],
             ['10003', ['Television'], 'Televisores LED', 1],
@@ -193,8 +191,6 @@ class AbcDin(Store):
                   '&disableProductCompare=false' \
                   '&ddkey=ProductListingView_8_-2011_1974&filterFacet=' \
                   '&pageSize=1000'.format(category_id)
-
-            print(url)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products_grid = soup.find('ul', 'grid_mode')

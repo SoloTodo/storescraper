@@ -77,7 +77,7 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        entry_positions = {}
+        entry_positions = defaultdict(lambda: {})
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
 
         if use_async:
@@ -109,15 +109,15 @@ class Store:
                     for url, positions in task_result.items():
                         logger.info(url)
                         logger.info(positions)
-                        entry_positions[url] = {}
 
-                        for position in positions:
-                            if position['section_name'] not in \
-                                    entry_positions[url]:
-                                entry_positions[url][position['section_name']]\
-                                    = position['value']
-                            url_category_weights[url][category] += \
-                                position['category_weight']
+                        if positions:
+                            for position in positions:
+                                if position['section_name'] not in \
+                                        entry_positions[url]:
+                                    entry_positions[url][position['section_name']]\
+                                        = position['value']
+                                url_category_weights[url][category] += \
+                                    position['category_weight']
                         else:
                             # Legacy for implementations without position data
                             url_category_weights[url][category] = 1
@@ -129,15 +129,15 @@ class Store:
                     logger.info('Discovered URL: {} ({})'.format(
                         url, category))
 
-                    entry_positions[url] = {}
-                    for position in positions:
-                        if position['section_name'] not in \
-                                entry_positions[url]:
-                            entry_positions[url][
-                                position['section_name']] = position['value']
+                    if positions:
+                        for position in positions:
+                            if position['section_name'] not in \
+                                    entry_positions[url]:
+                                entry_positions[url][
+                                    position['section_name']] = position['value']
 
-                        url_category_weights[url][category] += \
-                            position['category_weight']
+                            url_category_weights[url][category] += \
+                                position['category_weight']
                     else:
                         # Legacy for implementations without position data
                         url_category_weights[url][category] = 1
