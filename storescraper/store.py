@@ -111,16 +111,17 @@ class Store:
                         logger.info(positions)
 
                         if positions:
-                            for position in positions:
-                                if position['section_name'] not in \
+                            for pos in positions:
+                                if pos['section_name'] not in \
                                         entry_positions[url]:
-                                    entry_positions[url][position['section_name']]\
-                                        = position['value']
+                                    entry_positions[url][pos['section_name']]\
+                                        = pos['value']
                                 url_category_weights[url][category] += \
-                                    position['category_weight']
+                                    pos['category_weight']
                         else:
                             # Legacy for implementations without position data
                             url_category_weights[url][category] = 1
+                            entry_positions[url] = {}
         else:
             logger.info('Using sync method')
             for category in categories:
@@ -130,17 +131,18 @@ class Store:
                         url, category))
 
                     if positions:
-                        for position in positions:
-                            if position['section_name'] not in \
+                        for pos in positions:
+                            if pos['section_name'] not in \
                                     entry_positions[url]:
                                 entry_positions[url][
-                                    position['section_name']] = position['value']
+                                    pos['section_name']] = pos['value']
 
                             url_category_weights[url][category] += \
-                                position['category_weight']
+                                pos['category_weight']
                     else:
                         # Legacy for implementations without position data
                         url_category_weights[url][category] = 1
+                        entry_positions[url] = {}
 
         discovered_entries = {}
         for url, positions in entry_positions.items():
@@ -154,7 +156,7 @@ class Store:
             # map generic sections positioning without considering their
             # products if they don't appear in a specifically mapped
             # relevant section
-            if max_weight or not positions:
+            if max_weight:
                 discovered_entries[url] = {
                     'positions': positions,
                     'category': category,
