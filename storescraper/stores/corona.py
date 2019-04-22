@@ -2,6 +2,8 @@ import json
 import urllib
 
 import re
+from collections import defaultdict
+
 from bs4 import BeautifulSoup
 from decimal import Decimal, InvalidOperation
 
@@ -35,46 +37,132 @@ class Corona(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         category_urls = [
-            ['C:/9/39/40/', None, 'Notebook'],
-            ['C:/9/35/36/', None, 'Television'],
-            ['C:/9/39/42/', None, 'Tablet'],
-            ['C:/8/11/13/', None, 'Refrigerator'],
-            ['C:/8/11/14/', '&fq=specificationFilter_32%3a'
-                            'Hornos+El%c3%a9ctricos', 'Oven'],
-            ['C:/8/11/14/', '&fq=specificationFilter_32'
-                            '%3aMicroondas', 'Oven'],
-            ['C:/8/11/12/', None, 'WashingMachine'],
-            ['C:/44/45/', None, 'Cell'],
-            ['C:/9/48/90/', None, 'StereoSystem'],  # Hi-Fi
-            ['C:/9/48/49/', None, 'StereoSystem'],  # Equipos de música
-            ['C:/9/35/37/', None, 'OpticalDiskPlayer'],
-            ['C:/8/11/14/', '&fq=specificationFilter_32'
-                            '%3aAspiradoras', 'VacuumCleaner'],
-            # ['C:/9/56/57/', None, 'VideoGameConsole'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
-             'WaterHeater'],
-            # ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
-            #                 'Calefactores+y+Termoventiladores',
-            # 'SpaceHeater'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
-             'SpaceHeater'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Le%c3%b1a',
-             'SpaceHeater'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Parafina',
-             'SpaceHeater'],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3a'
-                            'Estufas+El%c3%a9ctricas', 'SpaceHeater'],
+            ['C:/44/45/', '&fq=specificationFilter_19%3aSmartphone', ['Cell'],
+             'Telefonía > Celulares > Smartphones', 1],
+            ['C:/44/45/', '&fq=specificationFilter_19%3aB%c3%a1sico', ['Cell'],
+             'Telefonía > Celulares > Básicos', 1],
+            ['C:/44/45/', None, ['Cell'], 'Telefonía > Celulares > Todos', 1],
+            ['C:/44/45/', '&fq=specificationFilter_115%3aEntel', ['Cell'],
+             'Telefonía > Compañía > Entel', 1],
+            ['C:/44/45/', '&fq=specificationFilter_115%3aMovistar', ['Cell'],
+             'Telefonía > Compañía > Movistar', 1],
+            ['C:/44/45/', '&fq=specificationFilter_115%3aClaro', ['Cell'],
+             'Telefonía > Compañía > Claro', 1],
+            ['C:/44/45/', '&fq=specificationFilter_115%3aLiberado', ['Cell'],
+             'Telefonía > Compañía > Wom', 1],
+            ['C:/44/45/', '&fq=B%3a2000016', ['Cell'],
+             'Telefonía > Marcas > Apple', 1],
+            ['C:/44/45/', '&fq=B%3a2000085', ['Cell'],
+             'Telefonía > Marcas > Samsung', 1],
+            ['C:/44/45/', '&fq=B%3a2000049', ['Cell'],
+             'Telefonía > Marcas > Huawei', 1],
+            ['C:/44/45/', '&fq=B%3a2000128', ['Cell'],
+             'Telefonía > Marcas > Motorola', 1],
+            ['C:/44/45/', '&fq=B%3a2000055', ['Cell'],
+             'Telefonía > Marcas > LG', 1],
+            ['C:/44/45/', '&fq=B%3a2000011', ['Cell'],
+             'Telefonía > Marcas > Alcatel', 1],
+            # Also contains other kitchen accesories
+            ['C:/8/11/', None,
+             ['WashingMachine', 'Refrigerator', 'SpaceHeater',
+              'AirConditioner'], 'Hogar > Línea Blanca', 0],
+            ['C:/8/11/13', None, ['Refrigerator'],
+             'Hogar > Línea Blanca > Refrigeración', 1],
+            ['C:/8/11/12/', None, ['WashingMachine'],
+             'Hogar > Línea Blanca > Lavado y Secado', 1],
+            # Also contains campanas and other subcateories
+            ['C:/8/11/16/', None, ['Stove', 'Oven', 'DishWasher'],
+             'Hogar > Línea Blanca > Cocina', 0],
+            # Also contains calientacamas and other categories
+            ['C:/8/11/15/', None,
+             ['AirConditioner', 'SpaceHeater', 'WaterHeater'],
+             'Hogar > Línea Blanca > Climatización', 0],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aAire+Acondicionado',
-             'AirConditioner'],
+             ['AirConditioner'],
+             'Hogar > Línea Blanca > Climatización > Aire Acondicionado', 1],
+            ['C:/8/11/15/',
+             '&fq=specificationFilter_26%3aCalefactores+y+Termoventiladores',
+             ['SpaceHeater'], 'Hogar > Línea Blanca > Climatización > '
+                              'Calefactores y Termoventiladores', 1],
+            ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
+             ['WaterHeater'],
+             'Hogar > Línea Blanca > Climatización > Calefont', 1],
+            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
+             ['SpaceHeater'],
+             'Hogar > Línea Blanca > Climatización > Estufas a Gas', 1],
+            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Le%c3%b1a',
+             ['SpaceHeater'], 'Hogar > Línea Blanca > Climatización > '
+                              'Estufas a Leña', 1],
+            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Parafina',
+             ['SpaceHeater'],
+             'Hogar > Línea Blanca > Climatización > Estufas a Parafina', 1],
+            ['C:/8/11/15/',
+             '&fq=specificationFilter_26%3aEstufas+El%c3%a9ctricas',
+             ['SpaceHeater'],
+             'Hogar > Línea Blanca > Climatización > Estufas Eléctricas', 1],
+            # Also contains other electrodomesticos
+            ['C:/8/11/14/', None, ['VacuumCleaner', 'Oven'],
+             'Hogar > Línea Blanca > Electrodomésticos', 0],
+            ['C:/8/11/14/', '&fq=specificationFilter_32%3aAspiradoras',
+             ['VacuumCleaner'],
+             'Hogar > Línea Blanca > Electrodomésticos > Aspiradoras', 1],
+            ['C:/8/11/14/',
+             '&fq=specificationFilter_32%3aHornos+El%c3%a9ctricos', ['Oven'],
+             'Hogar > Línea Blanca > Electrodomésticos > Hornos Eléctricos',
+             1],
+            ['C:/8/11/14/', '&fq=specificationFilter_32%3aMicroondas',
+             ['Oven'], 'Hogar > Línea Blanca > Electrodomésticos > Microondas',
+             1],
+            # Also contains TV accesories
+            ['C:/9/35/', None, ['Television', 'OpticalDiskPlayer'],
+             'Tecnología > Televisión', 0],
+            ['C:/9/35/36', None, ['Television'],
+             'Tecnología > Televisión > Televisores', 1],
+            ['C:/9/35/36', '&ft=smart', ['Television'],
+             'Tecnología > Televisión > Televisores > Smart TV', 1],
+            ['C:/9/35/36', '&fq=specificationFilter_41%3aHD', ['Television'],
+             'Tecnología > Televisión > Televisores > HD', 1],
+            ['C:/9/35/36', '&fq=specificationFilter_41%3aFull+HD',
+             ['Television'],
+             'Tecnología > Televisión > Televisores > Full HD', 1],
+            ['C:/9/35/36', '&fq=specificationFilter_41%3aUltra+HD+-+4K',
+             ['Television'],
+             'Tecnología > Televisión > Televisores > Ultra HD', 1],
+            ['C:/9/35/37', None, ['OpticalDiskPlayer'],
+             'Tecnología > Televisión > Blu-ray y DVD', 1],
+            # Also includes other audio products
+            ['C:/9/48', None, ['StereoSystem', 'Headphones'],
+             'Tecnología > Audio', 0],
+            ['C:/9/48/90', None, ['StereoSystem'],
+             'Tecnología > Audio > Hi-Fi', 1],
+            ['C:/9/48/49', None, ['StereoSystem'],
+             'Tecnología > Audio > Equipos de Música', 1],
+            ['C:/9/48/51', None, ['Headphones'],
+             'Tecnología > Audio > Audífonos', 1],
+            # Also includes other accesories
+            ['C:/9/39', None, ['Notebook', 'Tablet', 'AllInOne', 'Printer'],
+             'Tecnología > Computación', 0],
+            ['C:/9/39/40', None, ['Notebook'],
+             'Tecnología > Computación > Notebook', 1],
+            ['C:/9/39/42', None, ['Tablet'],
+             'Tecnología > Computación > Tablet', 1],
+            ['C:/9/39/41', None, ['AllInOne'],
+             'Tecnología > Computación > All-in-One', 1],
+            ['C:/9/39/43', None, ['Printer'],
+             'Tecnología > Computación > Impresoras y Multifuncionales', 1],
+            # Don't include specific router for VideoGameConsole for now
+            ['C:/9/56/57/', None, ['VideoGameConsole'],
+             'Tecnología > Consolas > Consolas', 1],
         ]
 
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
         session = session_with_proxy(extra_args)
 
-        for category_path, extra_url_args, local_category in category_urls:
-            if local_category != category:
+        for category_path, extra_url_args, local_categories, section_name, \
+                category_weight in category_urls:
+            if category not in local_categories:
                 continue
 
             page = 1
@@ -82,14 +170,16 @@ class Corona(Store):
             if extra_url_args is None:
                 extra_url_args = ''
 
+            idx = 0
+
             while True:
-                url = 'http://www.corona.cl/buscapagina?fq={}{}&PS=50&' \
+                url = 'http://www.corona.cl/buscapagina?fq={}{}&PS=60&' \
                       'sl=e5ea4f52-95a2-43cf-874e-70d89cd91dce&cc=3&' \
                       'sm=0&PageNumber={}'.format(
                           urllib.parse.quote_plus(category_path),
                           extra_url_args,
                           page)
-                if page >= 20:
+                if page >= 40:
                     raise Exception('Page overflow: ' + category_path)
                 print(url)
 
@@ -105,14 +195,19 @@ class Corona(Store):
                         break
 
                 for block in product_blocks:
+                    idx += 1
                     if block.find('div', 'outOfStock'):
                         continue
                     url = block.find('a')['href']
-                    product_urls.append(url)
+                    product_entries[url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': idx
+                    })
 
                 page += 1
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

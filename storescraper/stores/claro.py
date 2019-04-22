@@ -2,6 +2,7 @@ import json
 
 import re
 import urllib
+from collections import defaultdict
 
 from decimal import Decimal
 
@@ -32,19 +33,28 @@ class Claro(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
-        product_urls = []
+        discovered_entries = defaultdict(lambda: [])
 
         if category == 'CellPlan':
-            product_urls.append(cls.prepago_url)
-            product_urls.append(cls.planes_url)
+            discovered_entries[cls.prepago_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 1
+            })
 
+            discovered_entries[cls.planes_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 2
+            })
         if category == 'Cell':
             # Con plan
 
-            soup = BeautifulSoup(session.get(
-                'https://equipos.clarochile.cl/servicio/catalogo'
+            soup = BeautifulSoup(session.post(
+                'https://equipos.clarochile.cl/servicio/catalogo',
+                'destacados=destacado'
             ).text, 'html.parser')
 
             products_json = json.loads(soup.contents[-1])
@@ -53,9 +63,13 @@ class Claro(Store):
                 product_id = product_entry['id']
                 product_url = 'https://equipos.clarochile.cl/' \
                               'detalle.html?id=' + product_id
-                product_urls.append(product_url)
+                discovered_entries[product_url].append({
+                    'category_weight': 1,
+                    'section_name': 'Equipos',
+                    'value': idx + 1
+                })
 
-        return product_urls
+        return discovered_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
