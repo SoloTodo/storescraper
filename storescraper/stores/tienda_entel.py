@@ -20,11 +20,13 @@ class TiendaEntel(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        json_prepago = json.loads(session.get(
+        response = session.get(
             'https://miportal.entel.cl/lista-productos?Nrpp=1000&'
-            'format=json-rest').text)
+            'format=json-rest')
 
-        for record in json_prepago['response']['main'][1]['records']:
+        json_prepago = json.loads(response.text)
+
+        for record in json_prepago['response']['main'][2]['records']:
             cell_id = record['attributes']['productId'][0]
             cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
                        cell_id
