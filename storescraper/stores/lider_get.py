@@ -61,7 +61,7 @@ class LiderGet(Store):
             ['Tarjetas_de_memoria', 'MemoryCard'],
             ['Notebooks', 'Notebook'],
             ['Convertibles', 'Notebook'],
-            ['Gamers', 'Notebook'],
+            # ['Gamers', 'Notebook'],
             ['All_in_One', 'AllInOne'],
             ['Tablets', 'Tablet'],
             ['Discos_duros', 'ExternalStorageDrive'],

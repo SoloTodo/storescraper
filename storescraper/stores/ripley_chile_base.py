@@ -163,7 +163,7 @@ class RipleyChileBase(Store):
         # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
         # "Prepago" information in its description
         if category in ['Cell', 'Unknown'] and 'MPM' not in sku:
-            name += ' ({})'.format(specs_json['shortDescription'])
+            name += ' ({})'.format(specs_json.get('shortDescription', ''))
 
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0
