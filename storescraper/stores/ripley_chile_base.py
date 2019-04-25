@@ -91,7 +91,7 @@ class RipleyChileBase(Store):
              'AirConditioner'],
             ['electro/climatizacion/estufas-y-calefactores', 'SpaceHeater'],
             ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
-            ['tecno/audio-y-musica/audifonos', 'Headphones'],
+            # ['tecno/audio-y-musica/audifonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
