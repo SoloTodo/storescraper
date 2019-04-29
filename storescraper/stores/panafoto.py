@@ -31,9 +31,12 @@ class Panafoto(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
-                   'x-algolia-application-id=WLT832EA3J&x-algolia-' \
-                   'api-key=MzEzMTU1NTU4M2YzMjM3NDM5MWY0YWYzNzMwYmZjOWY5Njg' \
-                   '5NjM1NDc3ZmIxNzYyYWJlNjcxZDQ4MTI4OGY2MHRhZ0ZpbHRlcnM9'
+                   'x-algolia-agent=Algolia%20for%20vanilla%20' \
+                   'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
+                   '2.10.2%3BMagento2%20integration%20(1.10.0)%3BJS%20' \
+                   'Helper%202.26.0&x-algolia-application-id=WLT832EA3J&x-alg'\
+                   'olia-api-key=NzQyZDYyYTYwZGRiZDBjNjg0YjJmZDEyNWMyMTAyNTNh'\
+                   'MjBjMDJiNzBhY2YyZWVjYWNjNzVjNjU5M2M5ZmVhY3RhZ0ZpbHRlcnM9'
 
         category_filters = [
             ('["categories.level2:Categorías /// TV y Video /// TV"]',
@@ -118,9 +121,8 @@ class Panafoto(Store):
                                     category_filter).replace('/', '%2F'))
 
                 payload = {"requests": [
-                    {"indexName": "panafotocommerceomnipro_default_products",
+                    {"indexName": "wwwpanafotocom_default_products",
                      "params": payload_params}]}
-                print(payload_params)
 
                 response = session.post(endpoint, data=json.dumps(payload))
                 products_json = json.loads(response.text)['results'][0]['hits']

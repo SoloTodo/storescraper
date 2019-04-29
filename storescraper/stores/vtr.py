@@ -160,6 +160,8 @@ class Vtr(Store):
 
             for plan_button in plan_buttons:
                 parent_row = plan_button.findParent('tr')
+                if not parent_row:
+                    parent_row = plan_button.findParent()
                 parent_row_style = parent_row.get('style', '')
 
                 if 'display' in parent_row_style:

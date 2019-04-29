@@ -140,8 +140,14 @@ class Easy(Store):
         name = prod_hit['_source']['name'].strip()
         sku = prod_hit['_source']['partNumber']
         stock = prod_hit['_source']['stock']
-        normal_price = Decimal(prod_hit['_source']['price_internet'])
+
+        normal_price = prod_hit['_source']['price_internet']
         offer_price = prod_hit['_source']['price_tc']
+
+        if not normal_price:
+            return []
+        else:
+            normal_price = Decimal(normal_price)
 
         if not offer_price:
             offer_price = normal_price
