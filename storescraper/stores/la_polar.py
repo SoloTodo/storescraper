@@ -1,5 +1,3 @@
-import json
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -15,87 +13,71 @@ class LaPolar(Store):
     def categories(cls):
         return [
             'Notebook',
-            'Television',
             'Tablet',
-            'Refrigerator',
+            'Television',
+            'OpticalDiskPlayer',
+            'Cell',
             'Printer',
-            'Monitor',
+            'ExternalStorageDrive',
+            'Mouse',
+            'UsbFlashDrive',
+            'StereoSystem',
+            'Headphones',
+            'VideoGameConsole',
+            'WashingMachine',
+            'Refrigerator',
+            'Stove',
             'Oven',
             'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'Camera',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'AllInOne',
-            'AirConditioner',
             'WaterHeater',
-            'VideoGameConsole',
-            'Projector',
             'SpaceHeater',
+            'AirConditioner',
             'Wearable',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         extensions = [
-            ['tecnologia/computadores/todo_notebooks', 'Notebook'],
-            ['electronica/televisores/led2', 'Television'],
-            ['electronica/televisores/smart_tv', 'Television'],
-            # ['electronica/televisores/oled_i_qled_i_curvo', 'Television'],
-            ['electronica/tv_por_pulgadas/hasta_40_pulgadas', 'Television'],
-            ['electronica/tv_por_pulgadas/42_pulgadas_a_50_pulgadas',
-             'Television'],
-            ['electronica/tv_por_pulgadas/55_pulgadas_mas', 'Television'],
-            ['electronica/televisores/dvd_i_blu_ray', 'OpticalDiskPlayer'],
-            ['tecnologia/computadores/tablet', 'Tablet'],
-            ['linea_blanca/refrigeradores/side_by_side', 'Refrigerator'],
-            ['linea_blanca/refrigeradores/no_frost', 'Refrigerator'],
-            ['linea_blanca/refrigeradores/frio_directo', 'Refrigerator'],
-            ['linea_blanca/refrigeradores/frigobar', 'Refrigerator'],
-            ['linea_blanca/refrigeradores/freezer', 'Refrigerator'],
-            # ['tecnologia/impresoras/impresoras_laser', 'Printer'],
-            ['tecnologia/impresoras/impresoras_a_tinta', 'Printer'],
-            ['tecnologia/impresoras/multifuncionales', 'Printer'],
-            # ['electronica/celulares/smartphones', 'Cell'],
-            ['electronica/celulares/telefonos_basicos', 'Cell'],
-            ['electronica/audio/parlantes', 'StereoSystem'],
-            ['electronica/audio/equipos_de_musica', 'StereoSystem'],
-            ['electronica/audio/karaoke', 'StereoSystem'],
-            # ['electronica/audio/tornamesas', 'StereoSystem'],
-            ['electronica/audio/home_theater', 'StereoSystem'],
-            ['electronica/videojuegos/todo_consolas', 'VideoGameConsole'],
-            ['tecnologia/accesorios_computacion/disco_duro_externo',
-             'ExternalStorageDrive'],
-            # ['tecnologia/accesorios_computacion/proyectores', 'Projector'],
-            ['tecnologia/accesorios_computacion/pendrives',
-             'UsbFlashDrive'],
-            ['linea_blanca/lavado_secado/lavadoras', 'WashingMachine'],
-            ['linea_blanca/lavado_secado/lavadoras___secadoras',
-             'WashingMachine'],
-            ['linea_blanca/lavado_secado/secadoras', 'WashingMachine'],
-            # ['linea_blanca/lavado_secado/centrifugas', 'WashingMachine'],
-            ['linea_blanca/climatizacion/calefont', 'WaterHeater'],
-            # ['linea_blanca/climatizacion/enfriadores', 'AirConditioner'],
-            # ['linea_blanca/climatizacion/estufas_a_parafina', 'SpaceHeater'],
-            ['linea_blanca/climatizacion/estufas_electricas', 'SpaceHeater'],
-            ['linea_blanca/cocina/microondas', 'Oven'],
-            ['linea_blanca/cocina/hornos_electricos', 'Oven'],
-            ['linea_blanca/electrodomesticos/aspiradoras', 'VacuumCleaner'],
-            ['tecnologia/accesorios_computacion/otros', 'MemoryCard'],
-            ['tecnologia3/accesorios_computacion/mouse_i_teclados', 'Mouse'],
-            ['electronica/audio/audifonos', 'Headphones'],
-            ['moda_zapatos/relojes/relojes_mujer', 'Wearable'],
-            ['moda_zapatos/relojes/relojes_hombre', 'Wearable'],
-            ['electronica/celulares/accesorios_telefonos', 'Wearable']
+            ['notebooks', 'Notebook'],
+            ['tablet', 'Tablet'],
+            ['led', 'Television'],
+            ['smart-tv', 'Television'],
+            ['oled-i-qled-i-curvo', 'Television'],
+            ['dvd-i-blu-ray', 'OpticalDiskPlayer'],
+            ['smartphones', 'Cell'],
+            ['teléfonos-básicos', 'Cell'],
+            ['impresoras-laser', 'Printer'],
+            # ['impresoras-a-tinta', 'Printer'],
+            ['multifuncionales', 'Printer'],
+            ['disco-duro-externo', 'ExternalStorageDrive'],
+            ['mouse-i-teclados', 'Mouse'],
+            ['pendrives', 'UsbFlashDrive'],
+            ['parlantes', 'StereoSystem'],
+            ['equipos-de-música', 'StereoSystem'],
+            ['karaoke', 'StereoSystem'],
+            ['home-theater', 'StereoSystem'],
+            ['audífonos', 'Headphones'],
+            ['todo-consolas', 'VideoGameConsole'],
+            ['lavadoras', 'WashingMachine'],
+            ['lavadoras---secadoras', 'WashingMachine'],
+            ['secadoras', 'WashingMachine'],
+            ['centrífugas', 'WashingMachine'],
+            ['side-by-side', 'Refrigerator'],
+            ['no-frost', 'Refrigerator'],
+            ['frío-directo', 'Refrigerator'],
+            ['frigobar', 'Refrigerator'],
+            ['freezer', 'Refrigerator'],
+            ['cocinas-a-gas', 'Stove'],
+            ['encimeras', 'Stove'],
+            ['microondas', 'Oven'],
+            ['hornos-eléctricos', 'Oven'],
+            ['aspiradoras', 'VacuumCleaner'],
+            ['calefont', 'WaterHeater'],
+            ['estufas-a-parafina', 'SpaceHeater'],
+            ['estufas-a-gas', 'SpaceHeater'],
+            ['estufas-eléctricas', 'SpaceHeater'],
+            ['enfriadores', 'AirConditioner'],
+            ['accesorios-teléfonos', 'Wearable']
         ]
 
         session = session_with_proxy(extra_args)
@@ -106,31 +88,32 @@ class LaPolar(Store):
             if local_category != category:
                 continue
 
-            url = 'https://tienda.lapolar.cl/catalogo/{}?response=' \
-                  'json&pageSize=1000'.format(extension)
+            url = 'https://www.lapolar.cl/on/demandware.store/' \
+                  'Sites-LaPolar-Site/es_CL/Search-UpdateGrid?' \
+                  'cgid={}&srule=most-popular&start=0&sz=150'.format(extension)
+
             print(url)
-            products_json = json.loads(session.get(url).text)
+            response = session.get(url).text
+            soup = BeautifulSoup(response, 'html.parser')
 
-            entry_products = products_json['dataset']['products']
+            products = soup.findAll('div', 'lp-product-tile')
+            product_urls = []
 
-            if not entry_products:
-                raise Exception('Empty category: ' + url)
-
-            for entry in entry_products:
-                product_url = 'https://tienda.lapolar.cl/producto/sku/{}' \
-                              ''.format(entry['plu'])
+            for product in products:
+                product_url = 'https://www.lapolar.cl{}'\
+                    .format(product.find('a')['href'])
                 product_urls.append(product_url)
 
-        if category == 'Cell':
-            url = 'https://www.lapolar.cl/internet/catalogo/fbind/postplu/' \
-                  'destacados-smartphones'
-            cells_data = json.loads(session.get(url).text)['lista_completa']
-
-            for row in cells_data:
-                for cell in row['sub_lista']:
-                    product_url = 'https://tienda.lapolar.cl/producto/sku/{}' \
-                                  ''.format(cell['prid'])
-                    product_urls.append(product_url)
+        # if category == 'Cell':
+        #     url = 'https://www.lapolar.cl/internet/catalogo/fbind/postplu/' \
+        #           'destacados-smartphones'
+        #     cells_data = json.loads(session.get(url).text)['lista_completa']
+        #
+        #     for row in cells_data:
+        #         for cell in row['sub_lista']:
+        #             product_url = 'https://tienda.lapolar.cl/producto/sku/{}'
+        #                           ''.format(cell['prid'])
+        #             product_urls.append(product_url)
 
         return list(set(product_urls))
 
@@ -147,34 +130,35 @@ class LaPolar(Store):
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('h1', 'title').text.strip()
-        sku = soup.find('span', {'id': 'spanProductPlu'}).text.strip()
+        name = soup.find('div', 'product-name').text.strip()
+        sku = soup.find('span', 'sku-code-value').text.strip()
 
-        normal_price = Decimal(
-            re.search(r'internet: Number\((\d+)\)', page_source).groups()[0])
-        offer_price = Decimal(
-            re.search(r'laPolarCard: Number\((\d+)\)',
-                      page_source).groups()[0])
+        prices = soup.find('div', 'prices')
+        normal_price = prices.find('p', 'internet')
+
+        offer_price = prices.find('p', 'la-polar') \
+            .find('span', 'price-value').text.strip() \
+            .replace('$', '').replace('.', '')
+        offer_price = Decimal(offer_price)
+
+        if not normal_price:
+            normal_price = offer_price
+        else:
+            normal_price = normal_price \
+                .find('span', 'price-value').text.strip() \
+                .replace('$', '').replace('.', '')
+            normal_price = Decimal(normal_price)
 
         if offer_price > normal_price:
             offer_price = normal_price
 
-        available_online = int(
-            re.search(r'isAvailableOnline: (\d+),', page_source).groups()[0])
-
-        if available_online:
-            stock = -1
-        else:
-            stock = 0
-
-        if not offer_price:
-            offer_price = normal_price
+        stock = -1
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'description'})))
+            str(soup.find('div', 'description-wrapper')))
 
-        picture_tags = soup.findAll('img', {'temprop': 'thumbnailUrl'})
-        picture_urls = [tag['data-img-large'] for tag in picture_tags]
+        picture_containers = soup.findAll('div', 'primary-image')
+        picture_urls = [picture.find('img')['src'] for picture in picture_containers]
 
         p = Product(
             name,
