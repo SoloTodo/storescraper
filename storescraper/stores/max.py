@@ -47,7 +47,7 @@ class Max(Store):
             ('lineablanca/estufas/estufas-a-gas', 'Stove'),
             ('lineablanca/estufas/estufas-electricas', 'Stove'),
             ('lineablanca/estufas/cooktops-a-gas', 'Stove'),
-            ('lineablanca/estufas/cooktops-electricos', 'Stove'),
+            # ('lineablanca/estufas/cooktops-electricos', 'Stove'),
             ('computacion/proyectores', 'Projector'),
             ('audio', 'StereoSystem'),
             # ('audio/audio-para-casa/micro-componente', 'StereoSystem'),

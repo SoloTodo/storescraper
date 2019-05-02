@@ -26,7 +26,7 @@ class Tomalo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('dispositivos-moviles', 'Cell'),
-            ('galaxy-s10', 'Cell'),
+            # ('galaxy-s10', 'Cell'),
             # ('119-promo-s8-s9-s9', 'Cell'),
             # ('91-galaxy-note-9', 'Cell'),
             # ('116-promo-level-u', 'Cell'),

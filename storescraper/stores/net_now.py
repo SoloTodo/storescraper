@@ -33,7 +33,7 @@ class NetNow(Store):
             ['34', 'Notebook'],  # 2 en 1
             ['38', 'AllInOne'],  # All in One
             ['36', 'Monitor'],   # Monitors
-            ['47', 'Tablet'],    # Tablets
+            # ['47', 'Tablet'],    # Tablets
         ]
 
         product_urls = []

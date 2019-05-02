@@ -79,8 +79,13 @@ class Jetstereo(Store):
 
         print(soup)
 
-        sku = soup.find('div', 'star').find('h4').text.replace('SKU: ', '')\
-            .strip()
+        sku_container = soup.find('div', 'star')
+
+        if not sku_container:
+            return []
+
+        sku = sku_container.find('h4').text.replace('SKU: ', '').strip()
+
         name = '{} ({})'\
             .format(soup.find('div', 'article-container').find('h1').text, sku)
 
