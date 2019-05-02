@@ -182,7 +182,7 @@ class LaPolar(Store):
     def banners(cls, extra_args=None):
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME,
-             'https://tienda.lapolar.cl/'],
+             'https://www.lapolar.cl/'],
             [bs.LINEA_BLANCA_LA_POLAR, 'Línea Blanca',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'https://tienda.lapolar.cl/catalogo/linea_blanca'],
@@ -202,11 +202,12 @@ class LaPolar(Store):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                images = soup.findAll('div', 'carousel-item')
+                images = soup.findAll('div', 'hero-banner-wrapper')
 
                 for index, image in enumerate(images):
-                    picture_url = image.find('img')['src']
-                    destination_urls = [image.find('area')['href']]
+                    picture_url = 'www.lapolar.cl{}'\
+                        .format(image.find('img')['data-src'])
+                    destination_urls = [image.find('a')['href']]
 
                     banners.append({
                         'url': url,
