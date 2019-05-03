@@ -40,6 +40,7 @@ class RipleyChileBase(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'DishWasher',
         ]
 
     @classmethod
@@ -92,6 +93,7 @@ class RipleyChileBase(Store):
             ['electro/climatizacion/estufas-y-calefactores', 'SpaceHeater'],
             ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
             # ['tecno/audio-y-musica/audifonos', 'Headphones'],
+            ['electro/cocina/lavavajillas', 'DishWasher'],
         ]
 
         session = session_with_proxy(extra_args)
