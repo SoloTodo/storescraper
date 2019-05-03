@@ -205,7 +205,7 @@ class LaPolar(Store):
                 images = soup.findAll('div', 'hero-banner-wrapper')
 
                 for index, image in enumerate(images):
-                    picture_url = 'www.lapolar.cl{}'\
+                    picture_url = 'https://www.lapolar.cl{}'\
                         .format(image.find('img')['data-src'])
                     destination_urls = [image.find('a')['href']]
 
