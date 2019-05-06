@@ -50,6 +50,7 @@ class Falabella(Store):
             'KeyboardMouseCombo',
             'Wearable',
             'Headphones',
+            'DishWasher'
         ]
 
     @classmethod
@@ -110,6 +111,7 @@ class Falabella(Store):
             ['cat2370002/Teclados', 'Keyboard'],
             ['cat2930003/Teclados-Smart', 'Keyboard'],
             ['cat1640002/Audifonos', 'Headphones'],
+            ['cat4061/Lavavajillas', 'DishWasher'],
         ]
 
         session = session_with_proxy(extra_args)

@@ -244,7 +244,6 @@ class Paris(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            print(e)
             category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
@@ -258,7 +257,6 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
-                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 

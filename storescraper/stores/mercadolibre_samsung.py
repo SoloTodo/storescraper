@@ -12,6 +12,7 @@ class MercadolibreSamsung(MercadolibreChile):
             'VacuumCleaner',
             'WashingMachine',
             'AirConditioner',
+            'DishWasher',
         ]
 
     @classmethod
@@ -21,6 +22,7 @@ class MercadolibreSamsung(MercadolibreChile):
             ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/lavado-secado-ropa', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
+            ('electrodomesticos/lavavajillas', 'DishWasher'),
         ]
 
         session = requests.Session()
