@@ -55,7 +55,7 @@ class RipleyChileBase(Store):
             ['tecno/computacion/2-en-1convertibles', ['Notebook'],
              'Tecno > Cmoputación > 2 en 1/Convertibles', 1],
             ['tecno/computacion/notebooks-gamer', ['Notebook'],
-             'Tecno > Computación > Notebooks gamer', 0],
+             'Tecno > Computación > Notebooks gamer', 1],
 
             ['tecno/computacion/tablets-y-tabletas-de-disenos', ['Tablet'],
              'Tecno > Computación > Tablets y tabletas de diseños', 1],
@@ -100,7 +100,7 @@ class RipleyChileBase(Store):
              'Electro > Cocina > Lavavajillas', 1],
 
             ['electro/aseo/aspiradoras-y-enceradoras', ['VacuumCleaner'],
-             'Electro > Aseo > Aspiradoras y enceradoras', 0],
+             'Electro > Aseo > Aspiradoras y enceradoras', 1],
 
             ['electro/lavanderia/lavadoras', ['WashingMachine'],
              'Electro > Lavandería > Lavadoras', 1],
@@ -136,18 +136,21 @@ class RipleyChileBase(Store):
 
             ['tecno/television/bluray-dvd-y-tv-portatil',
              ['OpticalDiskPlayer'],
-             'Tecno > Televisión > Bluray -DVD y TV Portátil', 0],
+             'Tecno > Televisión > Bluray -DVD y TV Portátil', 1],
 
             # ['telefonia/accesorios-telefonia/memorias', 'MemoryCard'],
             ['tecno/mundo-gamer/consolas', ['VideoGameConsole'],
-             'Tecno > Mundo Gamer > Consolas', 0],
+             'Tecno > Mundo Gamer > Consolas', 1],
 
             ['electro/climatizacion/ventiladores-y-aire-acondicionado',
              ['AirConditioner'],
-             'Electro > Climatización > Ventiladores y aire acondicionado', 0],
+             'Electro > Climatización > Ventiladores y aire acondicionado', 1],
+            ['electro/climatizacion/purificadores-y-humificadores',
+             ['AirConditioner'],
+             'Electro > Climatización > Purificadores y humidificadores', 1],
             ['electro/climatizacion/estufas-y-calefactores',
-             ['SpaceHeater', 'AirConditioner'],
-             'Electro > Climatización > Estufas y calefactores', 0],
+             ['SpaceHeater'],
+             'Electro > Climatización > Estufas y calefactores', 1],
             ['tecno/telefonia/smartwatches-y-wearables', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables', 1],
             ['tecno/audio-y-musica/audifonos', ['Headphones'],
@@ -159,7 +162,6 @@ class RipleyChileBase(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            print(e)
             category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:

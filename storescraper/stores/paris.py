@@ -252,11 +252,12 @@ class Paris(Store):
             page = 0
 
             while True:
-                if page > 1000:
+                if page > 50:
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
+                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
