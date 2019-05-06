@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -20,6 +21,7 @@ class LaPolar(Store):
             'Printer',
             'ExternalStorageDrive',
             'Mouse',
+            'Keyboard',
             'UsbFlashDrive',
             'StereoSystem',
             'Headphones',
@@ -28,6 +30,7 @@ class LaPolar(Store):
             'Refrigerator',
             'Stove',
             'Oven',
+            'DishWasher',
             'VacuumCleaner',
             'WaterHeater',
             'SpaceHeater',
@@ -36,73 +39,126 @@ class LaPolar(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        extensions = [
-            ['notebooks', 'Notebook'],
-            ['tablet', 'Tablet'],
-            ['led', 'Television'],
-            ['smart-tv', 'Television'],
-            ['oled-i-qled-i-curvo', 'Television'],
-            ['dvd-i-blu-ray', 'OpticalDiskPlayer'],
-            ['smartphones', 'Cell'],
-            ['teléfonos-básicos', 'Cell'],
-            ['impresoras-laser', 'Printer'],
+    def discover_entries_for_category(cls, category, extra_args=None):
+        category_paths = [
+            ['notebooks', ['Notebook'],
+             'Inicio > Tecnología > Computadores > Notebooks', 1],
+            ['tablet', ['Tablet'],
+             'Inicio > Tecnología > Computadores > Tablet', 1],
+            ['led', ['Television'],
+             'Inicio > Tecnología > Televisores > LED', 1],
+            ['smart-tv', ['Television'],
+             'Inicio > Tecnología > Televisores > Smart TV', 1],
+            ['oled-i-qled-i-curvo', ['Television'],
+             'Inicio > Tecnología > Televisores > OLED | QLED | Curvo', 1],
+            ['dvd-i-blu-ray', ['OpticalDiskPlayer'],
+             'Inicio > Teconología > Televisores > DVD | Blu-Ray', 1],
+            ['smartphones', ['Cell'],
+             'Inicio > Tecnología > Celulares > Smartphones', 1],
+            ['teléfonos-básicos', ['Cell'],
+             'Inicio > Tecnología > Celulares > Teléfonos Básicos', 1],
+            ['impresoras-laser', ['Printer'],
+             'Inicio > Tecnología > Impresoras > Impresoras Laser', 1],
             # ['impresoras-a-tinta', 'Printer'],
-            ['multifuncionales', 'Printer'],
-            ['disco-duro-externo', 'ExternalStorageDrive'],
-            ['mouse-i-teclados', 'Mouse'],
-            ['pendrives', 'UsbFlashDrive'],
-            ['parlantes', 'StereoSystem'],
-            ['equipos-de-música', 'StereoSystem'],
-            ['karaoke', 'StereoSystem'],
-            ['home-theater', 'StereoSystem'],
-            ['audífonos', 'Headphones'],
-            ['todo-consolas', 'VideoGameConsole'],
-            ['lavadoras', 'WashingMachine'],
-            ['lavadoras---secadoras', 'WashingMachine'],
-            ['secadoras', 'WashingMachine'],
-            ['centrífugas', 'WashingMachine'],
-            ['side-by-side', 'Refrigerator'],
-            ['no-frost', 'Refrigerator'],
-            ['frío-directo', 'Refrigerator'],
-            ['frigobar', 'Refrigerator'],
-            ['freezer', 'Refrigerator'],
-            ['cocinas-a-gas', 'Stove'],
-            ['encimeras', 'Stove'],
-            ['microondas', 'Oven'],
-            ['hornos-eléctricos', 'Oven'],
-            ['aspiradoras', 'VacuumCleaner'],
-            ['calefont', 'WaterHeater'],
-            ['estufas-a-parafina', 'SpaceHeater'],
-            ['estufas-a-gas', 'SpaceHeater'],
-            ['estufas-eléctricas', 'SpaceHeater'],
-            ['enfriadores', 'AirConditioner'],
-            ['accesorios-teléfonos', 'Wearable']
+            ['multifuncionales', ['Printer'],
+             'Inicio > Tecnología > Impresoras > Multifuncionales', 1],
+            # ['disco-duro-externo', ['ExternalStorageDrive'], 'Inicio > '
+            #   'Tecnología > Accesorios Computación > Disco Duro Externo', 1],
+            ['mouse-i-teclados', ['Mouse', 'Keyboard'], 'Inicio > '
+                'Tecnología > Accesorios Computación > Mouse | Teclados', 0.5],
+            ['pendrives', ['UsbFlashDrive'],
+             'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
+            ['parlantes', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Parlantes', 1],
+            ['equipos-de-música', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Equipos de música', 1],
+            ['karaoke', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Karaoke', 1],
+            ['home-theater', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Home Theater', 1],
+            ['audífonos', ['Headphones'],
+             'Inicio > Tecnología > Audio > Audífonos', 1],
+            ['todo-consolas', ['VideoGameConsole'],
+             'Inicio > Tecnología > Videojuegos > Todo Consolas', 1],
+            ['lavadoras', ['WashingMachine'],
+             'Inicio > Línea Blanca > Lavado y Secado > Lavadoras', 1],
+            ['lavadoras---secadoras', ['WashingMachine'],
+             'Inicio > Línea Blanca > Lavado y Secado > Lavadoras-Secadoras',
+             1],
+            ['secadoras', ['WashingMachine'],
+             'Inicio > Línea Blanca > Lavado y Secado > Secadoras', 1],
+            ['centrífugas', ['WashingMachine'],
+             'Inicio > Línea Blanca > Lavado y Secado > Centrífugas', 1],
+            ['side-by-side', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > Side by Side', 1],
+            ['no-frost', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > No Frost', 1],
+            ['frío-directo', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > Frío Directo', 1],
+            ['frigobar', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > Frigobar', 1],
+            ['freezer', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > Freezer', 1],
+            ['cocinas-a-gas', ['Stove'],
+             'Inicio > Línea Blanca > Cocina > Cocinas a Gas', 1],
+            ['encimeras', ['Stove'],
+             'Inicio > Línea Blanca > Cocina > Encimeras', 1],
+            ['microondas', ['Oven'],
+             'Inicio > Línea Blanca > Cocina > Microondas', 1],
+            ['hornos-eléctricos', ['Oven'],
+             'Inicio > Línea Blanca > Cocina > Hornos Eléctricos', 1],
+            ['lavavajillas', ['DishWasher'],
+             'Inicio > Línea Blanca > Cocina > Lavavajillas', 1],
+            ['aspiradoras', ['VacuumCleaner'],
+             'Inicio > Línea Blanca > Electrodomésticos > Aspiradoras', 1],
+            ['calefont', ['WaterHeater'],
+             'Inicio > Línea Blanca > Climatización > Calefont', 1],
+            ['estufas-a-parafina', ['SpaceHeater'],
+             'Inicio > Línea Blanca > Climatización > Estufas a Parafina', 1],
+            ['estufas-a-gas', ['SpaceHeater'],
+             'Inicio > Línea Blanca > Climatización > Estufas a Gas', 1],
+            ['estufas-eléctricas', ['SpaceHeater'],
+             'Inicio > Línea Blanca > Climatización > Estufas Eléctricas', 1],
+            ['enfriadores', ['AirConditioner'],
+             'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
+            ['accesorios-teléfonos', ['Wearable'],
+             'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 0]
         ]
 
         session = session_with_proxy(extra_args)
 
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
-        for extension, local_category in extensions:
-            if local_category != category:
+        for e in category_paths:
+            print(e)
+            category_path, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
 
             url = 'https://www.lapolar.cl/on/demandware.store/' \
                   'Sites-LaPolar-Site/es_CL/Search-UpdateGrid?' \
-                  'cgid={}&srule=most-popular&start=0&sz=150'.format(extension)
+                  'cgid={}&srule=most-popular&start=0&sz=150' \
+                .format(category_path)
 
             print(url)
             response = session.get(url).text
             soup = BeautifulSoup(response, 'html.parser')
 
             products = soup.findAll('div', 'lp-product-tile')
-            product_urls = []
 
-            for product in products:
+            if not products:
+                raise Exception('Empty category path: {} - {}'.format(
+                    category, category_path))
+
+            for idx, container in enumerate(products):
                 product_url = 'https://www.lapolar.cl{}'\
-                    .format(product.find('a')['href'])
-                product_urls.append(product_url)
+                    .format(container.find('a')['href'])
+                product_entries[product_url].append({
+                  'category_weight': category_weight,
+                  'section_name': section_name,
+                  'value': idx
+                })
 
         # if category == 'Cell':
         #     url = 'https://www.lapolar.cl/internet/catalogo/fbind/postplu/' \
@@ -115,7 +171,7 @@ class LaPolar(Store):
         #                           ''.format(cell['prid'])
         #             product_urls.append(product_url)
 
-        return list(set(product_urls))
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
