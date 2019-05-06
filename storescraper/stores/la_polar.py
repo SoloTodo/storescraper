@@ -157,7 +157,7 @@ class LaPolar(Store):
                 product_entries[product_url].append({
                   'category_weight': category_weight,
                   'section_name': section_name,
-                  'value': idx
+                  'value': idx + 1
                 })
 
         # if category == 'Cell':
