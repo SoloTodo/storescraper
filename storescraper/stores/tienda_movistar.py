@@ -73,6 +73,9 @@ class TiendaMovistar(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        if not soup.find('body'):
+            return []
+
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock_button = soup.find('button', 'btn-sin-stock')

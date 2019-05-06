@@ -31,7 +31,7 @@ class NetNow(Store):
             ['35', 'Notebook'],  # Ultradelgados
             ['31', 'Notebook'],  # Convertibles
             ['34', 'Notebook'],  # 2 en 1
-            ['38', 'AllInOne'],  # All in One
+            # ['38', 'AllInOne'],  # All in One
             ['36', 'Monitor'],   # Monitors
             # ['47', 'Tablet'],    # Tablets
         ]
