@@ -23,6 +23,7 @@ class Enel(Store):
             ['300-smart', 'Lamp'],
             ['301-decorativas', 'Lamp'],
             ['55-aire-acondicionado', 'AirConditioner'],
+            ['292-purificadores-de-aire', 'AirConditioner'],
         ]
 
         product_urls = []
