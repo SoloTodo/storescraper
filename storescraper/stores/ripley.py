@@ -70,7 +70,7 @@ class Ripley(RipleyChileBase):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                images = soup.find('div', 'carousel js-home-carousel') \
+                images = soup.find('div', {'id': 'main-slider'}) \
                     .findAll('span', 'bg-item huincha-desktop')
 
                 for index, image in enumerate(images):
