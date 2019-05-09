@@ -307,7 +307,7 @@ class Hites(Store):
         for attribute in json_data['attributes']:
             if attribute['displayable']:
                 description += '\n{} {}'.format(attribute['name'],
-                                                attribute['value'])
+                                                attribute.get('value', ''))
 
         p = Product(
             name,

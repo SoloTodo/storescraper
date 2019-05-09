@@ -101,7 +101,7 @@ class Falabella(Store):
             ['cat7830014/Split', 'AirConditioner'],
             ['cat3197/Purificadores', 'AirConditioner'],
             ['cat2062/Monitores', 'Monitor'],
-            ['cat2013/Calefont-y-Termos', 'WaterHeater'],
+            # ['cat2013/Calefont-y-Termos', 'WaterHeater'],
             ['cat3155/Mouse', 'Mouse'],
             ['cat9900007/Estufas-Parafina', 'SpaceHeater'],
             ['cat9910024/Estufas-Gas', 'SpaceHeater'],
