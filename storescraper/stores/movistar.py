@@ -1,6 +1,7 @@
 import json
-
 import re
+
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -26,14 +27,21 @@ class Movistar(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        product_urls = []
+    def discover_entries_for_category(cls, category, extra_args=None):
+        product_entries = defaultdict(lambda: [])
 
         if category == 'CellPlan':
-            product_urls.extend([
-                cls.prepago_url,
-                cls.planes_url
-            ])
+            product_entries[cls.prepago_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 1
+            })
+
+            product_entries[cls.planes_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 2
+            })
         elif category == 'Cell':
             catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
                            'catalogo.html?limit=1000'
@@ -44,13 +52,17 @@ class Movistar(Store):
             if not containers:
                 raise Exception('No cells found')
 
-            for container in containers:
+            for idx, container in enumerate(containers):
                 product_url = container['data-producturl']
                 if product_url.endswith('?codigo='):
                     continue
-                product_urls.append(container['data-producturl'])
+                product_entries[product_url].append({
+                    'category_weight': 1,
+                    'section_name': 'Smartphones',
+                    'value': idx + 1
+                })
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

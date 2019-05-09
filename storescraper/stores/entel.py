@@ -1,5 +1,6 @@
 import json
 
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -19,9 +20,9 @@ class Entel(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
         if category == 'Cell':
             # Contrato
@@ -30,16 +31,28 @@ class Entel(Store):
                 'http://equipos.entel.cl/devices/personas/tm/'
                 'contratacion.json?search=1').text)
 
-            for device in json_product_list['devices']:
+            for idx, device in enumerate(json_product_list['devices']):
                 product_url = 'http://equipos.entel.cl/segmentos/' \
                               'personas/products/' + device['slug']
-                product_urls.append(product_url)
+                product_entries[product_url].append({
+                    'category_weight': 1,
+                    'section_name': 'Equipos',
+                    'value': idx + 1
+                })
 
         if category == 'CellPlan':
-            product_urls.append(cls.prepago_url)
-            product_urls.append('http://www.entel.cl/planes/')
+            product_entries[cls.prepago_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 1
+            })
+            product_entries['http://www.entel.cl/planes/'].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 2
+            })
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
