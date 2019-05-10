@@ -1,5 +1,7 @@
 import json
 import re
+
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -16,24 +18,31 @@ class MacOnline(Store):
             'Notebook',
             'Monitor',
             'Tablet',
+            'Cell',
             'Headphones'
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl'
-        discovered_urls = []
+        discovered_entries = defaultdict(lambda: [])
 
         category_paths = [
-            ['mac', 'Notebook'],
-            ['ipad', 'Tablet'],
-            ['iphone', 'Cell'],
+            ['mac', ['Notebook'],
+             'Mac', 1],
+            ['ipad', ['Tablet'],
+             'iPad', 1],
+            ['iphone', ['Cell'],
+             'iPhone', 1],
         ]
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
+        for e in category_paths:
+            category_path, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
+
             category_url = 'https://maconline.com/t/{}'.format(category_path)
             print(category_url)
 
@@ -41,13 +50,17 @@ class MacOnline(Store):
 
             subcategories = soup.find('ul', 'list-unstyled').findAll('li')
 
-            for subcategory in subcategories:
+            for idx, subcategory in enumerate(subcategories):
                 subcategory_url = 'https://maconline.com{}'.format(
                     subcategory.find('a')['href'].split('?')[0]
                 )
-                discovered_urls.append(subcategory_url)
+                discovered_entries[subcategory_url].append({
+                    'category_weight': category_weight,
+                    'section_name': section_name,
+                    'value': idx + 1
+                })
 
-        return discovered_urls
+        return discovered_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
