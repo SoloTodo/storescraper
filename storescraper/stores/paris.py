@@ -426,13 +426,15 @@ class Paris(Store):
                 })
 
             else:
-                if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                    images = soup.find('div', 'home-slider').findAll('a')
-                elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                    images = soup.find('div', 'hero-slider').findAll('a')
-                else:
+                if subsection_type not in [bs.SUBSECTION_TYPE_HOME, bs.SUBSECTION_TYPE_CATEGORY_PAGE]:
                     raise Exception('Invalid subsection type '
                                     '{}'.format(subsection_type))
+
+                image_container = soup.find('div', 'home-slider')
+                if not image_container:
+                    image_container = soup.find('div', 'hero-slider')
+
+                images = image_container.findAll('a')
 
                 assert len(images) > 0
 
