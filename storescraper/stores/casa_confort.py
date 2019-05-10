@@ -53,7 +53,7 @@ class CasaConfort(Store):
                 print(category_url)
                 response = session.get(category_url)
 
-                if response.status_code == 404:
+                if response.status_code in [404, 406]:
                     if page == 1:
                         raise Exception('Empty category: ' + category_path)
                     break
