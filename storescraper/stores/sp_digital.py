@@ -1,4 +1,6 @@
 import re
+
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -42,55 +44,94 @@ class SpDigital(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
 
-        url_extensions = [
-            ['351', 'ExternalStorageDrive'],
-            ['348', 'ExternalStorageDrive'],
-            ['352', 'StorageDrive'],
-            ['350', 'SolidStateDrive'],
-            ['475', 'Tablet'],
-            ['369', 'Tablet'],
-            ['365', 'Notebook'],
-            ['474', 'Notebook'],
-            ['556', 'Notebook'],
-            ['344', 'StereoSystem'],    # Parlantes
-            # ['360', 'StereoSystem'],    # Equipos de Música
+        category_paths = [
+            ['351', ['ExternalStorageDrive'],
+             'Home > Almacenamiento > Disco Duro Externo', 1],
+            ['348', ['ExternalStorageDrive'],
+             'Home > Almacenamiento > Almacenamiento en Red', 1],
+            ['352', ['StorageDrive'],
+             'Home > Almacenamiento > Disco Duro Interno', 1],
+            ['350', ['SolidStateDrive'],
+             'Home > Almacenamiento > Unidad Estado Solido SSD', 1],
+            ['475', ['Tablet'],
+             'Home > Apple > IPad', 1],
+            ['369', ['Tablet'],
+             'Home > Tablets y Accesorios > Tablets', 1],
+            ['365', ['Notebook'],
+             'Home > Computadores y Notebooks > '
+             'Notebook Corporativo y Comercial', 1],
+            ['474', ['Notebook'],
+             'Home > Apple > Mac', 1],
+            ['556', ['Notebook'],
+             'Home > Computadores y Notebooks > Notebook Gamer', 1],
+            ['344', ['StereoSystem'],
+             'Home > Accesorios > Parlantes', 1],
+            # ['360', ['StereoSystem'],
+            #  'Home > Audio y Video > Equipos de Música', 1],
             # ['362', 'StereoSystem'],    # Home Theater
-            ['512', 'StereoSystem'],    # 512
+            # ['512', 'StereoSystem'],    # 512
             # ['359', 'OpticalDiskPlayer'],
-            ['376', 'PowerSupply'],
-            ['375', 'ComputerCase'],
-            ['377', 'Motherboard'],
-            ['378', 'Processor'],
-            ['379', 'VideoCard'],
-            ['484', 'CpuCooler'],
-            ['396', 'Printer'],
-            ['398', 'Printer'],
-            ['394', 'Printer'],
-            ['409', 'Ram'],
-            ['410', 'Ram'],
-            ['415', 'Monitor'],
-            ['411', 'MemoryCard'],
-            ['341', 'Mouse'],
-            ['459', 'Cell'],
-            ['412', 'UsbFlashDrive'],
-            ['417', 'Television'],
-            ['387', 'Camera'],
-            ['416', 'Projector'],
-            ['370', 'AllInOne'],
-            ['342', 'Keyboard'],
-            ['339', 'KeyboardMouseCombo'],
-            ['337', 'Headphones'],
+            ['376', ['PowerSupply'],
+             'Home > Componentes para PC > Fuentes de Poder', 1],
+            ['375', ['ComputerCase'],
+             'Home > Componentes para PC > Gabinetes', 1],
+            ['377', ['Motherboard'],
+             'Home > Componentes para PC > Placas Madres', 1],
+            ['378', ['Processor'],
+             'Home > Componentes para PC > Procesadores', 1],
+            ['379', ['VideoCard'],
+             'Home > Componentes para PC > Tarjetas de Video', 1],
+            ['484', ['CpuCooler'],
+             'Home > Componentes para PC > Refrigeración y Ventiladores', 1],
+            ['396', ['Printer'],
+             'Home > Impresoras y Escáneres > Impresora a Tinta', 1],
+            ['398', ['Printer'],
+             'Home > Impresoras y Escáneres > Multifuncional', 1],
+            ['394', ['Printer'],
+             'Home > Impresoras y Escáneres > Impresora Láser', 1],
+            ['409', ['Ram'],
+             'Home > Memorias > Memoria RAM PC', 1],
+            ['410', ['Ram'],
+             'Home > Memorias > Memoria RAM Notebook', 1],
+            ['415', ['Monitor'],
+             'Home > Monitores y Proyectores > Monitor', 1],
+            ['411', ['MemoryCard'],
+             'Home > Memorias > Memoria Flash', 1],
+            ['341', ['Mouse'],
+             'Home > Accesorios > Mouse', 1],
+            ['459', ['Cell'],
+             'Home > Celulares y Accesorios > Teléfonos Móviles', 1],
+            ['412', ['UsbFlashDrive'],
+             'Home > Memorias > Pendrive', 1],
+            ['417', ['Television'],
+             'Home > Monitores y Proyectores > Televisor', 1],
+            ['387', ['Camera'],
+             'Home > Imagen Digital > Cámaras Digitales', 1],
+            ['416', ['Projector'],
+             'Home > Monitores y Proyectores > Proyectores', 1],
+            ['370', ['AllInOne'],
+             'Home > Computadores y Notebooks > All In One', 1],
+            ['342', ['Keyboard'],
+             'Home > Accesorios > Teclados', 1],
+            ['339', ['KeyboardMouseCombo'],
+             'Home > Accesorios > Kit Teclados Mouse', 1],
+            ['337', ['Headphones'],
+             'Home > Accesorios > Audífonos', 1],
         ]
 
-        product_urls = []
-        for category_id, local_category in url_extensions:
-            if local_category != category:
+        product_entries = defaultdict(lambda: [])
+
+        for e in category_paths:
+            category_id, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
 
             p = 1
+            current_position = 1
 
             local_product_urls = []
 
@@ -123,15 +164,20 @@ class SpDigital(Store):
                         done = True
                         break
 
-                    product_urls.append(product_url)
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': current_position
+                    })
+
                     local_product_urls.append(product_url)
+                    current_position += 1
 
                 if done:
                     break
-
                 p += 1
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

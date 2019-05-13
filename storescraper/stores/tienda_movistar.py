@@ -2,6 +2,7 @@ import json
 import re
 import urllib
 
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -20,21 +21,27 @@ class TiendaMovistar(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('smartphones-liberados.html', 'Cell'),
-            ('outlet.html', 'Cell'),
-            ('tablets.html', 'Tablet'),
+            ['smartphones-liberados.html', ['Cell'],
+             'Smartphones liberados', 1],
+            ['outlet.html', ['Cell'],
+             'Outlet', 1],
+            ['tablets.html', ['Tablet'],
+             'Tablets', 1],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
+        for e in category_paths:
+            category_path, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
 
             page = 1
+            current_position = 1
             done = False
 
             while not done:
@@ -55,15 +62,21 @@ class TiendaMovistar(Store):
 
                 for cell_item in items:
                     product_url = cell_item.find('a')['href']
-                    if product_url in product_urls:
+                    if product_url in product_entries:
                         done = True
                         break
 
-                    product_urls.append(product_url)
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': current_position
+                    })
+
+                    current_position += 1
 
                 page += 1
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

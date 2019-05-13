@@ -1,4 +1,6 @@
 import re
+
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -24,24 +26,40 @@ class Tottus(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         url_base = 'http://www.tottus.cl'
 
         category_paths = [
-            ['Televisores-y-videojuegos/cat2280071', 'Television'],
-            # ['Impresoras/cat2280072', 'Printer'],
-            ['Freezer-y-Refrigerador/cat2130070', 'Refrigerator'],
-            ['Lavadora/cat2130072', 'WashingMachine'],
-            ['Celulares/cat2280074', 'Cell'],
-            ['Audio/cat2280075', 'StereoSystem'],
+            ['Televisores/cat2290025', ['Television'],
+             'Televisores', 1],
+            ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
+             'Consolas y Videojuegos', 1],
+            ['Televisores-y-videojuegos/cat2280071',
+             ['Television', 'VideoGameConsole'],
+             'Televisores y videojuegos', 0],
+            ['Tablet/cat2360034', ['Tablet'],
+             'Tablet', 1],
+            ['Smartphones/cat2290023', ['Cell'],
+             'Smartphones', 1],
+            ['Celulares/cat2280074', ['Cell', 'Tablet'],
+             'Celulares', 0],
+            ['Freezer-y-Refrigerador/cat2130070', ['Refrigerator'],
+             'Freezer y Refrigerador', 1],
+            ['Lavadora/cat2130072', ['WashingMachine'],
+             'Lavadora', 1],
+            ['Audio/cat2280075', ['StereoSystem'],
+             'Audio', 1],
             # ['Notebook-y-Tablet/cat700021', 'Tablet'],
+            # ['Impresoras/cat2280072', 'Printer'],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
+        for e in category_paths:
+            category_path, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
 
             category_url = '{}/tottus/browse/{}'.format(url_base,
@@ -54,12 +72,17 @@ class Tottus(Store):
             if not product_containers:
                 raise Exception('Empty category: ' + category_url)
 
-            for container in product_containers:
+            for idx, container in enumerate(product_containers):
                 product_url = container.findAll('a')[3]['href'].split('?')[0]
                 product_url = '{}{}'.format(url_base, product_url)
-                product_urls.append(product_url)
 
-        return product_urls
+                product_entries[product_url].append({
+                    'category_weight': category_weight,
+                    'section_name': section_name,
+                    'value': idx + 1
+                })
+
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

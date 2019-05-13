@@ -1,5 +1,7 @@
 import json
 import urllib
+
+from collections import defaultdict
 from collections import OrderedDict
 
 from bs4 import BeautifulSoup
@@ -23,14 +25,22 @@ class Wom(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        product_urls = []
+    def discover_entries_for_category(cls, category, extra_args=None):
+        discovered_entries = defaultdict(lambda: [])
 
         if category == 'CellPlan':
-            product_urls.extend([
-                cls.prepago_url,
-                cls.planes_url
-            ])
+            discovered_entries[cls.prepago_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 1
+            })
+
+            discovered_entries[cls.planes_url].append({
+                'category_weight': 1,
+                'section_name': 'Planes',
+                'value': 2
+            })
+
         elif category == 'Cell':
             session = session_with_proxy(extra_args)
             session.headers[
@@ -38,12 +48,14 @@ class Wom(Store):
             equipos_url = 'http://www.wom.cl/equipos/inc/func.savedata.php'
 
             page = 1
+            current_position = 1
 
             while True:
                 params = {
                     'action': '1',
                     'page_number': page
                 }
+
                 data = urllib.parse.urlencode(params)
                 response = session.post(equipos_url, data=data)
 
@@ -60,10 +72,15 @@ class Wom(Store):
                 for cell_container in cell_containers:
                     cell_url = 'http://www.wom.cl/equipos/' + \
                                cell_container.find('a')['href']
-                    product_urls.append(cell_url)
+                    discovered_entries[cell_url].append({
+                        'category_weight': 1,
+                        'section_name': 'Equipos',
+                        'value': current_position
+                    })
+                    current_position += 1
 
                 page += 1
-        return product_urls
+        return discovered_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
