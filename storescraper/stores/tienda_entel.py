@@ -26,7 +26,12 @@ class TiendaEntel(Store):
 
         json_prepago = json.loads(response.text)
 
-        for record in json_prepago['response']['main'][2]['records']:
+        records = json_prepago['response']['main'][2].get('records', None)
+
+        if not records:
+            records = json_prepago['response']['main'][1].get('records', None)
+
+        for record in records:
             cell_id = record['attributes']['productId'][0]
             cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
                        cell_id
