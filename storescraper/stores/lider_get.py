@@ -1,7 +1,8 @@
 import json
 import urllib
-from collections import OrderedDict
 
+from collections import defaultdict
+from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
@@ -47,50 +48,86 @@ class LiderGet(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['Televisores', 'Television'],
-            ['DVDs_y_Blu-Ray', 'OpticalDiskPlayer'],
-            ['Audífonos', 'Headphones'],
-            ['Audio_portable', 'StereoSystem'],
-            ['Equipos_de_música', 'StereoSystem'],
-            ['Consolas', 'VideoGameConsole'],
-            ['Smartphones', 'Cell'],
-            ['Celulares_básicos', 'Cell'],
-            ['Smartwatch', 'Wearable'],
-            ['Tarjetas_de_memoria', 'MemoryCard'],
-            ['Notebooks', 'Notebook'],
-            ['Convertibles', 'Notebook'],
+    def discover_entries_for_category(cls, category, extra_args=None):
+        category_paths = [
+            ['Televisores', ['Television'],
+             'TV y Video > Televisores', 1],
+            ['DVDs_y_Blu-Ray', ['OpticalDiskPlayer'],
+             'TV y Video > DVDs y Blu-Ray', 1],
+            ['Audífonos', ['Headphones'],
+             'Equipos de Audio > Audífonos', 1],
+            ['Audio_portable', ['StereoSystem'],
+             'Equipos de Audio > Audio portable', 1],
+            ['Equipos_de_música', ['StereoSystem'],
+             'Equipos de Audio > Equipos de música', 1],
+            ['Consolas', ['VideoGameConsole'],
+             'Videojuegos > Consolas', 1],
+            ['Smartphones', ['Cell'],
+             'Celulares y Teléfonos > Smartphones', 1],
+            ['Celulares_básicos', ['Cell'],
+             'Celulares y Teléfonos > Celulares básicos', 1],
+            ['Smartwatch', ['Wearable'],
+             'Celulares y Teléfonos > Smartwatch', 1],
+            ['Tarjetas_de_memoria', ['MemoryCard'],
+             'Almacenamiento > Tarjetas de memoria', 1],
+            ['Notebooks', ['Notebook'],
+             'Computación > Notebooks', 1],
+            ['Convertibles', ['Notebook'],
+             'Computación > Convertibles', 1],
             # ['Gamers', 'Notebook'],
-            ['All_in_One', 'AllInOne'],
-            ['Tablets', 'Tablet'],
-            ['Discos_duros', 'ExternalStorageDrive'],
-            ['Pendrives', 'UsbFlashDrive'],
-            ['Impresoras_y_Multifuncionales', 'Printer'],
-            ['Teclados_y_Mouse', 'Mouse'],
-            ['Accesorios_Gamers', 'Mouse'],
-            ['Lavadoras_superiores', 'WashingMachine'],
-            ['Lavadoras_frontales', 'WashingMachine'],
-            ['Lavadoras_-_secadoras', 'WashingMachine'],
-            ['Secadoras', 'WashingMachine'],
-            ['Refrigeración', 'Refrigerator'],
-            ['Enfriadores', 'AirConditioner'],
-            ['Aire_acondicionado', 'AirConditioner'],
-            ['Encimeras', 'Stove'],
-            ['Cocina', 'Stove'],
-            ['Horno_Empotrable', 'Oven'],
-            ['Hornos_eléctricos', 'Oven'],
-            ['Microondas', 'Oven'],
-            ['Calefont', 'WaterHeater'],
-            ['Estufas_eléctricas', 'SpaceHeater'],
-            ['Aspiradoras__y_Limpieza', 'VacuumCleaner'],
+            ['All_in_One', ['AllInOne'],
+             'Computación > All in One', 1],
+            ['Tablets', ['Tablet'],
+             'Computación > Tablets', 1],
+            ['Discos_duros', ['ExternalStorageDrive'],
+             'Almacenamiento > Discos duros', 1],
+            ['Pendrives', ['UsbFlashDrive'],
+             'Almacenamiento > Pendrives', 1],
+            ['Impresoras_y_Multifuncionales', ['Printer'],
+             'Impresión > Impresoras y Multifuncionales', 1],
+            ['Teclados_y_Mouse', ['Mouse', 'Keyboard'],
+             'Accesorios de Computación > Teclados y Mouse', 0.5],
+            ['Accesorios_Gamers', ['Mouse', 'Keyboard'],
+             'Accesorios de Computación > Accesorios Gamers', 0.5],
+            ['Lavadoras_superiores', ['WashingMachine'],
+             'Lavado y Secado > Lavadoras superiores', 1],
+            ['Lavadoras_frontales', ['WashingMachine'],
+             'Lavado y Secado > Lavadoras frontales', 1],
+            ['Lavadoras_-_secadoras', ['WashingMachine'],
+             'Lavado y Secado > Lavadoras - secadoras', 1],
+            ['Secadoras', ['WashingMachine'],
+             'Lavado y Secado > Secadoras', 1],
+            ['Refrigeración', ['Refrigerator'],
+             'Refrigeración', 1],
+            ['Enfriadores', ['AirConditioner'],
+             'Ventilación > Enfriadores', 1],
+            ['Aire_acondicionado', ['AirConditioner'],
+             'Ventilación > Aire acondicionado', 1],
+            ['Encimeras', ['Stove'],
+             'Cocina > Encimeras', 1],
+            ['Cocina', ['Stove'],
+             'Cocina > Cocina', 1],
+            ['Horno_Empotrable', ['Oven'],
+             'Cocina > Horno Empotrable', 1],
+            ['Hornos_eléctricos', ['Oven'],
+             '-NO-TITLE- > Hornos eléctricos', 1],
+            ['Microondas', ['Oven'],
+             '-NO-TITLE- > Microondas', 1],
+            ['Calefont', ['WaterHeater'],
+             'Calefacción > Calefont', 1],
+            ['Estufas_eléctricas', ['SpaceHeater'],
+             'Calefacción > Estufas Eléctricas', 1],
+            ['Aspiradoras__y_Limpieza', ['VacuumCleaner'],
+             'Electrodomésticos > Aspiradoras y Limpieza', 1],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        product_entries = defaultdict(lambda: [])
 
-        for category_id, local_category in url_extensions:
-            if local_category != category:
+        for e in category_paths:
+            category_id, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
                 continue
 
             query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
@@ -115,11 +152,16 @@ class LiderGet(Store):
             if not data['results'][0]['hits']:
                 raise Exception('Empty category: ' + category_id)
 
-            for entry in data['results'][0]['hits']:
-                product_urls.append('https://get.lider.cl/product/sku/'
-                                    '{}'.format(entry['sku']))
+            for idx, entry in enumerate(data['results'][0]['hits']):
+                product_url = 'https://get.lider.cl/product/sku/{}'\
+                    .format(entry['sku'])
+                product_entries[product_url].append({
+                    'category_weight': category_weight,
+                    'section_name': section_name,
+                    'value': idx + 1
+                })
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
