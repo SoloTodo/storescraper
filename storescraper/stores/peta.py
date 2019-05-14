@@ -66,7 +66,7 @@ class Peta(Store):
             ['partes-y-piezas/componentes/fuentes-de-poder/'
              'fuentes-de-poder.html', 'PowerSupply'],
             ['partes-y-piezas/componentes/gabinetes.html', 'ComputerCase'],
-            ['partes-y-piezas/display/televisores.html', 'Television'],
+            # ['partes-y-piezas/display/televisores.html', 'Television'],
             ['equipos-computadores-tablets-aio-ebooks/moviles/tablets.html',
              'Tablet'],
             # ['apple/ipad.html', 'Tablet'],
