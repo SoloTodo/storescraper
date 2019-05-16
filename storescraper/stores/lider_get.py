@@ -137,7 +137,7 @@ class LiderGet(Store):
             query_params = {
                 "requests": [
                     {
-                        "indexName": "campaigns_production_price_desc",
+                        "indexName": "campaigns_production",
                         "params": "hitsPerPage=1000&facetFilters=%5B%22"
                                   "categorias%3A{}%22%5D".format(
                                     urllib.parse.quote(
@@ -153,7 +153,7 @@ class LiderGet(Store):
                 raise Exception('Empty category: ' + category_id)
 
             for idx, entry in enumerate(data['results'][0]['hits']):
-                product_url = 'https://get.lider.cl/product/sku/{}'\
+                product_url = 'https://www.lider.cl/product/sku/{}'\
                     .format(entry['sku'])
                 product_entries[product_url].append({
                     'category_weight': category_weight,
@@ -227,7 +227,7 @@ class LiderGet(Store):
         base_url = 'https://productionbuysmart.blob.core.windows.net/' \
                    'landing/json/banners.json?ts={}'
 
-        destination_url_base = 'https://get.lider.cl{}'
+        destination_url_base = 'https://www.lider.cl{}'
         image_url_base = 'https://productionbuysmart.blob.core.windows.net/' \
             'landing/banners/{}'
 
