@@ -48,6 +48,7 @@ class MyBox(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -76,6 +77,7 @@ class MyBox(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
         page_source = session.get(url, timeout=30).text
 
         stock = int(re.search(r"quantityAvailable=(-?\d+)",
