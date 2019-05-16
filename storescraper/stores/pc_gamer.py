@@ -57,6 +57,7 @@ class PcGamer(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
 
         for category_path, local_category in url_extensions:
             if local_category != category:
@@ -101,6 +102,7 @@ class PcGamer(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         pricing_container = soup.find('div', {'id': 'product'}).parent
