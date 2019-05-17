@@ -37,7 +37,7 @@ class CasaConfort(Store):
         ]
 
         session = session_with_proxy(extra_args)
-
+        session.headers['User-Agent'] = 'curl/7.54.0'
         product_urls = []
 
         for category_path, local_category in category_filters:
@@ -47,13 +47,16 @@ class CasaConfort(Store):
             page = 1
 
             while True:
+                if page >= 20:
+                    raise Exception('Page overflow: ' + category_path)
+
                 category_url = 'https://www.casaconfort.net/' \
                                'categoria-producto/{}/page/{}/' \
                                ''.format(category_path, page)
-                print(category_url)
+
                 response = session.get(category_url)
 
-                if response.status_code in [404, 406]:
+                if response.status_code in [404]:
                     if page == 1:
                         raise Exception('Empty category: ' + category_path)
                     break
@@ -71,6 +74,7 @@ class CasaConfort(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()

@@ -288,7 +288,7 @@ class Paris(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.status_code == 410:
+        if response.status_code in [410, 404]:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
