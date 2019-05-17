@@ -254,10 +254,10 @@ class Falabella(Store):
 
             for i in range(4 * len(sorters)):
                 try:
-                    category_product_urls = cls._get_category_product_urls(
+                    category_product_urls = cls._get_product_urls(
                         session,
-                        url_path,
-                        sorters[i % len(sorters)]
+                        'category/'+url_path,
+                        sorter=sorters[i % len(sorters)]
                     )
                     break
                 except Exception:
@@ -276,47 +276,85 @@ class Falabella(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        product_urls = []
+        session = session_with_proxy(extra_args)
+        session.headers.update({
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'en,en-US;q=0.8,es;q=0.6',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
+            'DNT': '1',
+            'Host': 'www.falabella.com',
+            'Referer': 'https://www.falabella.com/falabella-cl/',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
+                          '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
+                          'Safari/537.36'
+        })
+
+        for i in range(4):
+            try:
+                product_urls = cls._get_product_urls(
+                    session,
+                    'search',
+                    keyword=keyword,
+                    threshold=threshold)
+                break
+            except Exception:
+                continue
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         return cls._products_for_url(url, category=category,
                                      extra_args=extra_args)
 
     @classmethod
-    def _get_category_product_urls(cls, session, url_path, sorter):
+    def _get_product_urls(cls, session, url_path, sorter=None,
+                          keyword=None, threshold=None):
         discovered_urls = []
+        nav_state = '/{}/?'.format(url_path)
+
+        if keyword:
+            nav_state += 'Ntt={}&'.format(keyword)
+
+        if sorter:
+            nav_state += 'sortBy={}'.format(sorter)
+
+        print(nav_state)
+
         query_args = OrderedDict([
             ('currentPage', 1),
-            # ('sortBy', sorter),
-            ('navState', "/category/{}?sortBy={}".format(url_path, sorter))])
-
-        if not sorter:
-            query_args['navState'] = "/category/{}".format(url_path)
+            ('navState', nav_state)
+        ])
 
         page = 1
 
         while True:
             print(page)
             if page > 60:
-                raise Exception('Page overflow: ' + url_path)
+                raise Exception('Page overflow: ' + keyword)
 
             res = None
-
             error_count = 0
             while res is None or 'errors' in res:
                 error_count += 1
                 if error_count > 10:
                     raise Exception('Error threshold exceeded: ' + url_path)
+
                 query_args['currentPage'] = page
-                pag_url = 'https://www.falabella.com/rest/model/' \
-                          'falabella/rest/browse/BrowseActor/' \
-                          'get-product-record-list?{}'.format(
-                            urllib.parse.quote(json.dumps(
-                                query_args, separators=(',', ':')), safe=''))
+                pag_url = 'https://www.falabella.com/rest/model/falabella/' \
+                          'rest/browse/BrowseActor/get-product-record-list?{}'\
+                    .format(urllib.parse.quote(json.dumps(
+                        query_args, separators=(',', ':')), safe=''))
 
                 res = json.loads(
                     session.get(pag_url, timeout=30).content.decode('utf-8'))
 
             if not res['state']['resultList'] and page == 1:
-                raise Exception('Empty category path: ' + url_path)
+                raise Exception('Empty keyword path: ' + keyword)
 
             for product_entry in res['state']['resultList']:
                 product_id = product_entry['productId'].strip()
@@ -324,6 +362,9 @@ class Falabella(Store):
                     'https://www.falabella.com/falabella-cl/product/{}/' \
                     ''.format(product_id)
                 discovered_urls.append(product_url)
+
+                if len(discovered_urls) == threshold:
+                    return discovered_urls
 
             if res['state']['pagesTotal'] == page:
                 break

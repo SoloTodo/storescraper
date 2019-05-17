@@ -8,6 +8,44 @@ from .ripley_chile_base import RipleyChileBase
 
 class Ripley(RipleyChileBase):
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        page = 1
+
+        while True:
+            if page > 40:
+                raise Exception('Page overflow')
+
+            search_url = 'https://simple.ripley.cl/search/{}?page={}'\
+                .format(keyword, page)
+            print(search_url)
+            response = session.get(search_url, allow_redirects=False)
+
+            if response.status_code != 200:
+                raise Exception('Invalid search: ' + keyword)
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            products_container = soup.find('div', 'catalog-container')
+
+            if not products_container:
+                break
+
+            products = products_container.findAll('a', 'catalog-product-item')
+
+            for product in products:
+                product_url = 'https://simple.ripley.cl' + product['href']
+                product_urls.append(product_url)
+                if len(product_urls) == threshold:
+                    return product_urls
+
+            page += 1
+
+        return product_urls
+
+    @classmethod
     def banners(cls, extra_args=None):
         base_url = 'https://simple.ripley.cl/{}'
 

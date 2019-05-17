@@ -283,6 +283,41 @@ class Paris(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        page = 0
+
+        while True:
+            if page > 40:
+                raise Exception('Page overflow')
+
+            search_url = 'https://www.paris.cl/search?q={}&sz=40&start={}'\
+                .format(keyword, page*40)
+            print(search_url)
+
+            soup = BeautifulSoup(session.get(search_url).text, 'html.parser')
+            containers = soup.findAll('li', 'flex-item-products')
+
+            if not containers:
+                break
+
+            for container in containers:
+                product_url = container.find('a')['href'].split('?')[0]
+                if 'https' not in product_url:
+                    product_url = 'https://www.paris.cl' + product_url
+
+                product_urls.append(product_url)
+
+                if len(product_urls) == threshold:
+                    return product_urls
+
+            page += 1
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
@@ -426,7 +461,8 @@ class Paris(Store):
                 })
 
             else:
-                if subsection_type not in [bs.SUBSECTION_TYPE_HOME, bs.SUBSECTION_TYPE_CATEGORY_PAGE]:
+                if subsection_type not in [bs.SUBSECTION_TYPE_HOME,
+                                           bs.SUBSECTION_TYPE_CATEGORY_PAGE]:
                     raise Exception('Invalid subsection type '
                                     '{}'.format(subsection_type))
 
