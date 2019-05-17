@@ -94,9 +94,10 @@ class LaCuracaoOnline(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'].strip())
         stock = -1
-        price = Decimal(soup.find('span', 'price').text.replace(
-            cls.currency, '').replace(',', ''))
+        # price = Decimal(soup.find('span', 'price').text.replace(
+        #     cls.currency, '').replace(',', ''))
 
         pictures_data = re.search(r'"mage/gallery/gallery": ([\s\S]*?)\}\n',
                                   response.text).groups()[0]
