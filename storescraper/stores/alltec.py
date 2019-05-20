@@ -110,7 +110,12 @@ class AllTec(Store):
             part_number = part_number_container['content'].strip()
 
         condition = soup.find('link',
-                              {'itemprop': 'itemCondition'})['href'].strip()
+                              {'itemprop': 'itemCondition'})
+
+        if condition:
+            condition = condition['href'].strip()
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         description = '{}\n\n{}'.format(
             html_to_markdown(str(soup.find(
