@@ -174,6 +174,36 @@ class LaPolar(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        url = 'https://www.lapolar.cl/on/demandware.store/' \
+              'Sites-LaPolar-Site/es_CL/Search-UpdateGrid?' \
+              'q={}&srule=product-outstanding' \
+              '&start=0&sz=1000'.format(keyword)
+
+        print(url)
+
+        response = session.get(url).text
+        soup = BeautifulSoup(response, 'html.parser')
+
+        products = soup.findAll('div', 'lp-product-tile')
+
+        if not products:
+            return []
+
+        for container in products:
+            product_url = 'https://www.lapolar.cl{}' \
+                .format(container.find('a')['href'])
+            product_urls.append(product_url)
+
+            if len(product_urls) == threshold:
+                return product_urls
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)

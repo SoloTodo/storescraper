@@ -132,6 +132,10 @@ class Easy(Store):
 
             cat_value = cat_hits[0]['_source']['value']
             cat_field = cat_hits[0]['_source']['field'] + ".raw"
+            cat_list = [str(i) for i in cat_hits[0]['_source']['SEQ_PROD']]
+            prod_source = "if(params.ids.contains(doc['_id'].value) ) " \
+                          "{ return params.ids.length - params.ids.indexOf" \
+                          "(doc['_id'].value)} else {return(0)}"
 
             prods_data = {
                 "query": {
@@ -140,9 +144,22 @@ class Easy(Store):
                             "bool": {
                                 "must": [
                                     {"term": {cat_field: cat_value}},
-                                    {"match_all": {}}]}}}},
+                                    {"match_all": {}}]}},
+                        "boost_mode": "sum",
+                        "score_mode": "max",
+                        "functions": [
+                            {"field_value_factor": {
+                                "field": "boost",
+                                "factor": 10}},
+                            {"script_score": {
+                                "script": {
+                                    "params": {"ids": cat_list},
+                                    "source": prod_source}},
+                                "weight": 100000}]}},
                 "size": 450,
-                "from": 0}
+                "from": 0,
+                "sort": [
+                    {"_score": {"order": "desc"}}]}
 
             prods_response = session.post(prods_url,
                                           data=json.dumps(prods_data))
@@ -161,6 +178,75 @@ class Easy(Store):
                 })
 
         return product_entries
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
+        product_urls = []
+
+        base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
+        prods_url = 'https://www.easy.cl/api//prodeasy/_search'
+
+        prods_data = {
+            "query": {
+                "function_score": {
+                    "query": {
+                        "bool": {
+                            "must": [{
+                                "bool": {
+                                    "should": [{
+                                        "function_score": {
+                                            "query": {
+                                                "multi_match": {
+                                                    "query": keyword,
+                                                    "fields": [
+                                                        "name^1000",
+                                                        "brand",
+                                                        "cat_3.stop",
+                                                        "partNumber"],
+                                                    "type":"best_fields",
+                                                    "operator":"and"}},
+                                            "field_value_factor": {
+                                                "field": "boost",
+                                                "factor": 6}}}, {
+                                        "multi_match": {
+                                            "query": keyword,
+                                            "fields": [
+                                                "name^8",
+                                                "cat_3.stop"],
+                                            "type": "best_fields",
+                                            "operator": "or"}}, {
+                                        "span_first": {
+                                            "match": {
+                                                "span_term": {
+                                                    "name.dym": keyword}},
+                                            "end": 1,
+                                            "boost": 2000}}],
+                                    "minimum_should_match": "1"}}]}},
+                    "boost_mode": "sum",
+                    "score_mode": "max"}},
+            "size": 450,
+            "from": 0}
+
+        prods_response = session.post(
+            prods_url, data=json.dumps(prods_data))
+
+        prods_json = json.loads(prods_response.text)
+        prods_hits = prods_json['hits']['hits']
+
+        if not prods_hits:
+            return []
+
+        for prods_hit in prods_hits:
+            product_url = base_prod_url.format(prods_hit['_source']['url'])
+            product_urls.append(product_url)
+
+            if len(product_urls) == threshold:
+                return product_urls
+
+        return product_urls
+
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

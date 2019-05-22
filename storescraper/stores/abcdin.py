@@ -328,6 +328,57 @@ class AbcDin(Store):
         return discovered_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        keyword = keyword.replace(' ', '+')
+
+        url = 'https://www.abcdin.cl/tienda/ProductListingView?' \
+              'ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F&searchType=10' \
+              '&resultCatEntryType=2&searchTerm={}&resultsPerPage=24' \
+              '&sType=SimpleSearch&disableProductCompare=false' \
+              '&catalogId=10001&langId=-1000&enableSKUListView=false' \
+              '&ddkey=ProductListingView_6_-2011_1410&storeId=10001' \
+              '&pageSize=1000'.format(keyword)
+
+        print(url)
+
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        products_grid = soup.find('ul', 'grid_mode')
+
+        if not products_grid:
+            return []
+
+        product_cells = products_grid.findAll('li')
+
+        for product_cell in product_cells:
+            product_listed_url = product_cell.find('a')['href']
+            if 'ProductDisplay' in product_listed_url:
+                parsed_product = urlparse(product_listed_url)
+                parameters = parse_qs(parsed_product.query)
+
+                parameters = {
+                    k: v for k, v in parameters.items()
+                    if k in ['productId', 'storeId']}
+
+                newqs = urlencode(parameters, doseq=True)
+
+                product_url = 'https://www.abcdin.cl/tienda/es/abcdin/' \
+                              'ProductDisplay?' + newqs
+            else:
+                slug_with_sku = product_listed_url.split('/')[-1]
+                product_url = 'https://www.abcdin.cl/tienda/es/abcdin/' \
+                              + slug_with_sku
+
+            product_urls.append(product_url)
+
+            if len(product_urls) == threshold:
+                return product_urls
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)

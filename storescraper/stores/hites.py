@@ -247,6 +247,45 @@ class Hites(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        page = 1
+
+        while True:
+            if page > 40:
+                raise Exception('Page overflow')
+
+            search_url = 'https://www.hites.com/search/{}?page={}'\
+                .format(keyword, page)
+            print(search_url)
+
+            response = session.get(search_url, timeout=30)
+
+            if response.status_code in [404, 500]:
+                return []
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            json_data = json.loads(soup.find(
+                'script', {'id': 'hy-data'}).text)
+            product_data = json_data['result']['products']
+
+            if not product_data:
+                break
+
+            for product_entry in product_data:
+                slug = product_entry['productString']
+                product_url = 'https://www.hites.com/' + slug
+                product_urls.append(product_url)
+                if len(product_urls) == threshold:
+                    return product_urls
+
+            page += 1
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
