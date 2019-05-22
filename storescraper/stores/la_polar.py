@@ -66,8 +66,8 @@ class LaPolar(Store):
             #   'Tecnología > Accesorios Computación > Disco Duro Externo', 1],
             ['mouse-i-teclados', ['Mouse', 'Keyboard'], 'Inicio > '
                 'Tecnología > Accesorios Computación > Mouse | Teclados', 0.5],
-            ['pendrives', ['UsbFlashDrive'],
-             'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
+            # ['pendrives', ['UsbFlashDrive'],
+            #  'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
             ['parlantes', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Parlantes', 1],
             ['equipos-de-música', ['StereoSystem'],

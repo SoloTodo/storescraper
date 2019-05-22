@@ -23,12 +23,12 @@ class TiendaToyotomi(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['6', 'AirConditioner'],
-            ['24_27', 'Oven'],
+            # ['24_27', 'Oven'],
             ['24_30', 'Oven'],
             ['24_31', 'VacuumCleaner'],
             ['20_2', 'SpaceHeater'],
             ['20_1', 'SpaceHeater'],
-            # ['20_23', 'SpaceHeater'],
+            ['20_23', 'SpaceHeater'],
             ['20_21', 'SpaceHeater'],
             ['20_46', 'SpaceHeater'],
             ['20_3', 'SpaceHeater'],
