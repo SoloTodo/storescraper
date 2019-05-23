@@ -210,8 +210,6 @@ class Sodimac(Store):
 
         return product_urls
 
-
-
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)

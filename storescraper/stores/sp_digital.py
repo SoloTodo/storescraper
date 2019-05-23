@@ -203,13 +203,17 @@ class SpDigital(Store):
         else:
             stock_text = soup.find('div', 'product-view-stock').find(
                 'span').text
-            stock_overflow, stock_value = re.match(r'(.*?)(\d+) UNIDADES',
-                                                   stock_text).groups()
 
-            if stock_overflow:
+            if 'preventa' in stock_text.lower():
                 stock = -1
             else:
-                stock = int(stock_value)
+                stock_overflow, stock_value = re.match(r'(.*?)(\d+) UNIDADES',
+                                                       stock_text).groups()
+
+                if stock_overflow:
+                    stock = -1
+                else:
+                    stock = int(stock_value)
 
         containers = soup.findAll('span', 'product-view-cash-price-value')
 

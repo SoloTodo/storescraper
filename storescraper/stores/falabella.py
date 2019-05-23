@@ -243,7 +243,7 @@ class Falabella(Store):
                 # 2,  # Precio mayor a menor
                 # 3,  # Marca
                 # 4,  # Destacados
-                # 5,  # Recomendados
+                5,  # Recomendados
                 # 6,  # Mejor evaluados
                 # 7,  # Nuevos productos
             ]
@@ -321,9 +321,7 @@ class Falabella(Store):
             nav_state += 'Ntt={}&'.format(keyword)
 
         if sorter:
-            nav_state += 'sortBy={}'.format(sorter)
-
-        print(nav_state)
+            nav_state += 'sortBy={}&'.format(sorter)
 
         query_args = OrderedDict([
             ('currentPage', 1),
@@ -333,7 +331,6 @@ class Falabella(Store):
         page = 1
 
         while True:
-            print(page)
             if page > 60:
                 raise Exception('Page overflow: ' + keyword)
 
@@ -350,8 +347,8 @@ class Falabella(Store):
                     .format(urllib.parse.quote(json.dumps(
                         query_args, separators=(',', ':')), safe=''))
 
-                res = json.loads(
-                    session.get(pag_url, timeout=30).content.decode('utf-8'))
+                res = session.get(pag_url, timeout=None)
+                res = json.loads(res.content.decode('utf-8'))
 
             if not res['state']['resultList'] and page == 1:
                 raise Exception('Empty keyword path: ' + keyword)
