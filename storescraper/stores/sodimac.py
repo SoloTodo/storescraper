@@ -31,7 +31,9 @@ class Sodimac(Store):
             'Cell',
             'Headphones',
             'StereoSystem',
-            'Wearable'
+            'Wearable',
+            'VideoGameConsole',
+            'Monitor',
         ]
 
     @classmethod
@@ -43,7 +45,6 @@ class Sodimac(Store):
              'Sodimac.com > Lavadoras y Secadoras > Lavadoras secadoras', 1],
             ['scat114994/Secadoras', ['WashingMachine'],
              'Sodimac.com > Lavadoras y Secadoras > Secadoras', 1],
-
             ['scat112543/Freezer', ['Refrigerator'],
              'Sodimac.com > Refrigeradores > Freezer', 1],
             ['scat114992/No-Frost', ['Refrigerator'],
@@ -54,41 +55,33 @@ class Sodimac(Store):
              'Sodimac.com > Refrigeradores > Refrigeradores Frío Directo', 1],
             ['scat112545/Frigobar', ['Refrigerator'],
              'Sodimac.com > Refrigeradores > Frigobar', 1],
-
             ['cat4850051/Aspiradoras-portatiles', ['VacuumCleaner'],
              'Sodimac.com > Aspiradoras > Aspiradoras portátiles', 1],
-
             ['cat1580015/Hornos-Electricos', ['Oven'],
              'Sodimac.com > Microondas y Hornos Eléctricos > '
              'Hornos Eléctricos', 1],
             ['scat112547/Microondas', ['Oven'],
              'Sodimac.com > Microondas y Hornos Eléctricos > Microondas', 1],
-
             ['cat360045/Ampolletas-LED', ['Lamp'],
              'Sodimac.com > Ampolletas y Tubos > Ampolletas y Tubos LED', 1],
-
             ['cat3810002/Televisores', ['Television'],
              'Sodimac.com > Tv y Video > Televisores', 1],
-
+            ['cat3810003/Monitores-LED', ['Monitor'],
+             'Sodimac.com > Tv y Video > Monitores LED', 1],
             ['cat3390002/Notebook', ['Notebook'],
              'Sodimac.com > Computación > Notebooks', 1],
-
             ['cat2930160/Reflectores-LED', ['LightProjector'],
              'Sodimac.com > Iluminación Comercial LED > Reflectores LED', 1],
-
             ['cat4780002/Aires-Acondicionados-Split', ['AirConditioner'],
              'Sodimac.com > Calefacción > Aires Acondicionados Split', 1],
-
             ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
              'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
             ['cat2080050/Calefont-tiro-forzado', ['WaterHeater'],
              'Sodimac.com > Calefont y Termos > Calefont tiro forzado', 1],
             ['scat923316/Termos-y-Calderas', ['WaterHeater'],
              'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
-
             ['cat3620002/Tablets', ['Tablet'],
              'Sodimac.com > Computación > Tablets', 1],
-
             ['scat583461/Estufas-Toyotomi', ['SpaceHeater'],
              'Sodimac.com > Estufas > Estufas Toyotomi', 1],
             ['scat299492/Estufas-a-Gas', ['SpaceHeater'],
@@ -117,9 +110,10 @@ class Sodimac(Store):
             # ['cat4850400/Parlantes-y-Karaokes', ['StereoSystem']],
             ['cat8350014/Tornamesas', ['StereoSystem'],
              'Sodimac.com > Audio > Tornamesas', 1],
-
             ['cat3870009/Wearables', ['Wearable'],
-             'Sodimac.com > Tecnología Deportiva > SmartWatch', 1]
+             'Sodimac.com > Tecnología Deportiva > SmartWatch', 1],
+            ['cat3890001/Consolas-de-videojuegos', ['VideoGameConsole'],
+             'Sodimac.com > Gamer > Consolas de videojuegos', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
