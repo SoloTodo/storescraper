@@ -426,11 +426,10 @@ class Hites(Store):
                     pictures = []
 
                     banner_container = driver\
-                        .find_element_by_class_name('slick-list')
+                        .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver\
-                        .find_element_by_class_name('carousel__controls')\
-                        .find_elements_by_class_name('slider-controls__dots')
+                        .find_elements_by_class_name('owl-dot')
 
                     for control in controls:
                         control.click()
@@ -439,11 +438,11 @@ class Hites(Store):
                             banner_container.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images = soup.find('div', 'slick-track')\
-                        .findAll('li', 'slick-slide')
+                    images = soup.find('div', 'owl-stage')\
+                        .findAll('div', 'owl-item')
 
                     images = [a for a in images if
-                              'slick-cloned' not in a['class']]
+                              'cloned' not in a['class']]
 
                     assert len(images) == len(pictures)
 
@@ -515,7 +514,8 @@ class Hites(Store):
 
                             key_container = banner.find('img')
 
-                            if not key_container:
+                            if not key_container or \
+                                    s_banner.size['height'] == 0:
                                 continue
 
                             key = key_container['src']
