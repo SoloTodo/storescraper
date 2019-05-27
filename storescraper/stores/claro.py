@@ -73,6 +73,7 @@ class Claro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         products = []
         if url == cls.prepago_url:
             # Plan Prepago
@@ -142,8 +143,7 @@ class Claro(Store):
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         print(url)
-        query_string = urllib.parse.urlparse(url).query
-        cell_id = urllib.parse.parse_qs(query_string)['id'][0]
+        cell_id = url.split('/')[-1]
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         data = 'id={}'.format(cell_id)
@@ -177,7 +177,7 @@ class Claro(Store):
                 cell_name = '{} {}'.format(base_cell_name, color)
 
                 prepago_price = Decimal(remove_words(
-                    product_json['precio_prepago']))
+                    product_json['precio_prepago_normal']))
 
                 pictures_field = 'sku_{}_img_{}'.format(variant, color_index)
                 picture_paths = [path for path in product_json[pictures_field]
