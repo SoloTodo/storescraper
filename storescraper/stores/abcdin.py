@@ -174,8 +174,8 @@ class AbcDin(Store):
             # Also contains irrelevant accesories
             ['10073', ['MemoryCard', 'StereoSystem'],
              'Telefonía > Accesorios telefonía', 0],
-            ['24052', ['MemoryCard'],
-             'Telefonía > Accesorios telefonía > Micro SD', 1],
+            # ['24052', ['MemoryCard'],
+            #  'Telefonía > Accesorios telefonía > Micro SD', 1],
             ['28551', ['StereoSystem'],
              'Telefonía > Accesorios telefonía > Parlantes', 1],
             ['24055', ['Wearable'],
@@ -186,12 +186,12 @@ class AbcDin(Store):
              'Telefonía > Smartwatch > Smartwatch Xiaomi', 1],
             ['29551', ['Wearable'],
              'Telefonía > Smartwatch > Smartwatch Huawei', 1],
-            ['29553', ['Wearable'],
-             'Telefonía > Smartwatch > Smartwatch Alcatel', 1],
-            ['29554', ['Wearable'],
-             'Telefonía > Smartwatch > Smartwatch Kioto', 1],
-            ['49052', ['Wearable'],
-             'Telefonía > Smartwatch > Smartwatch Microlab', 1],
+            # ['29553', ['Wearable'],
+            #  'Telefonía > Smartwatch > Smartwatch Alcatel', 1],
+            # ['29554', ['Wearable'],
+            #  'Telefonía > Smartwatch > Smartwatch Kioto', 1],
+            # ['49052', ['Wearable'],
+            #  'Telefonía > Smartwatch > Smartwatch Microlab', 1],
             ['10076', ['Notebook'],
              'Computación > Notebooks', 1],
             ['29561', ['Notebook'],
@@ -278,6 +278,7 @@ class AbcDin(Store):
 
         for category_id, local_categories, section_name, category_weight in \
                 ajax_resources:
+            print(category_id)
             if category not in local_categories:
                 continue
 

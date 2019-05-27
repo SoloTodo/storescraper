@@ -214,7 +214,9 @@ class LaPolar(Store):
             str(soup.find('div', 'description-wrapper')))
 
         picture_containers = soup.findAll('div', 'primary-image')
-        picture_urls = [picture.find('img')['src'] for picture in picture_containers]
+        picture_urls = [
+            picture.find('img')['src'].replace(' ', '%20')
+            for picture in picture_containers]
 
         p = Product(
             name,

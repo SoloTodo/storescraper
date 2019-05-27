@@ -145,13 +145,10 @@ class Winpy(Store):
 
         if soup.find('div', 'sinstock'):
             stock = 0
-            pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
-                                    page_source).groups()[0]
-            pricing_json = demjson.decode(pricing_str.replace('Â', '').replace(
-                '\xa0', ''))
             normal_price = Decimal(remove_words(
-                pricing_json[0]['ecommerce']['detail']['products'][0]['price'])
-            )
+                soup.find('meta',
+                          {'property': 'product:price:amount'})['content']
+            ))
             offer_price = normal_price
         else:
             stock = int(soup.find('p', {'itemprop': 'offerCount'}).text)
