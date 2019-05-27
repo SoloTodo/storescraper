@@ -222,9 +222,18 @@ class LaPolar(Store):
         prices = soup.find('div', 'prices')
         normal_price = prices.find('p', 'internet')
 
-        offer_price = prices.find('p', 'la-polar') \
-            .find('span', 'price-value').text.strip() \
-            .replace('$', '').replace('.', '')
+        offer_price = prices.find('p', 'la-polar')
+
+        if not offer_price and not normal_price:
+            raise Exception('No price in url:' + url)
+
+        if offer_price:
+            offer_price = offer_price.find('span', 'price-value')\
+                .text.strip().replace('$', '').replace('.', '')
+        else:
+            offer_price = normal_price.find('span', 'price-value')\
+                .text.strip().replace('$', '').replace('.', '')
+
         offer_price = Decimal(offer_price)
 
         if not normal_price:

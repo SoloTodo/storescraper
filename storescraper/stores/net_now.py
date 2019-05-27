@@ -26,13 +26,15 @@ class NetNow(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['25', 'Notebook'],  # Notebooks gamer
-            ['28', 'Notebook'],  # Notebooks
-            ['35', 'Notebook'],  # Ultradelgados
-            ['31', 'Notebook'],  # Convertibles
-            ['34', 'Notebook'],  # 2 en 1
+            ['66/notebookad', 'Notebook'],
+            ['64/monitores-ad', 'Monitor']
+            # ['25', 'Notebook'],  # Notebooks gamer
+            # ['28', 'Notebook'],  # Notebooks
+            # ['35', 'Notebook'],  # Ultradelgados
+            # ['31', 'Notebook'],  # Convertibles
+            # ['34', 'Notebook'],  # 2 en 1
             # ['38', 'AllInOne'],  # All in One
-            ['36', 'Monitor'],   # Monitors
+            # ['36', 'Monitor'],   # Monitors
             # ['47', 'Tablet'],    # Tablets
         ]
 
@@ -46,7 +48,7 @@ class NetNow(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.netnow.cl/site/c/{}/category/' \
+                category_url = 'https://www.netnow.cl/site/c/{}/' \
                                'productos?page={}'.format(category_id, page)
                 json_data = json.loads(session.get(category_url).text)
 

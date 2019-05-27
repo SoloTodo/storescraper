@@ -60,9 +60,9 @@ class Claro(Store):
             products_json = json.loads(soup.contents[-1])
 
             for idx, product_entry in enumerate(products_json):
-                product_id = product_entry['id']
+                product_slug = product_entry['slug']
                 product_url = 'https://equipos.clarochile.cl/' \
-                              'detalle.html?id=' + product_id
+                              'catalogo/' + product_slug
                 discovered_entries[product_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',

@@ -37,7 +37,7 @@ class HpStore(Store):
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
             ['pc-y-portatiles/escritorio.html', 'AllInOne'],
             ['audio/teclados-y-mouse.html', 'Mouse'],
-            ['audio/parlantes.html', 'StereoSystem'],
+            # ['audio/parlantes.html', 'StereoSystem'],
             ['monitores.html', 'Monitor'],
         ]
 
