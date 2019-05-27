@@ -61,6 +61,39 @@ class Store:
         )
 
     @classmethod
+    def products_for_keyword(cls, keyword, threshold, extra_args=None,
+                             products_for_url_concurrency=None,
+                             use_async=None):
+
+        sanitized_parameters = cls.sanitize_parameters(
+            products_for_url_concurrency=products_for_url_concurrency,
+            use_async=use_async)
+
+        products_for_url_concurrency = \
+            sanitized_parameters['products_for_url_concurrency']
+        use_async = sanitized_parameters['use_async']
+
+        product_urls = cls.discover_urls_for_keyword(
+            keyword,
+            threshold,
+            extra_args)
+
+        product_entries = OrderedDict()
+
+        for url in product_urls:
+            product_entries[url] = {
+                'positions': [],
+                'category': None,
+            }
+
+        return cls.products_for_urls(
+            product_entries,
+            extra_args=extra_args,
+            products_for_url_concurrency=products_for_url_concurrency,
+            use_async=use_async
+        )
+
+    @classmethod
     def discover_entries_for_categories(cls, categories=None,
                                         extra_args=None,
                                         discover_urls_concurrency=None,
@@ -342,6 +375,11 @@ class Store:
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        raise NotImplementedError('This method must be implemented by '
+                                  'subclasses of Store')
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         raise NotImplementedError('This method must be implemented by '
                                   'subclasses of Store')
 

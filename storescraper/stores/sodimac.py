@@ -173,6 +173,44 @@ class Sodimac(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        page = 0
+
+        while True:
+            url = 'https://www.sodimac.cl/sodimac-cl/search/?No={}&Ntt={}'\
+                .format(page, keyword)
+
+            print(url)
+
+            response = session.get(url, timeout=30)
+
+            if '/product/' in response.url:
+                product_urls.append(response.url)
+                break
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            mosaic_divs = soup.findAll('section', 'jq-item')
+
+            if not mosaic_divs:
+                break
+
+            for div in mosaic_divs:
+                product_url = 'https://www.sodimac.cl/sodimac-cl/' \
+                              'product/' + div['data']
+                product_urls.append(product_url)
+
+                if len(product_urls) == threshold:
+                    return product_urls
+
+            page += 16
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
 

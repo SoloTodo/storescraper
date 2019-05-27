@@ -164,6 +164,37 @@ class LiderGet(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
+                    'queries?x-algolia-application-id=529CV9H7MW&x-' \
+                    'algolia-api-key=c6ab9bc3e19c260e6bad42abe143d5f4'
+
+        query_params = {
+            "requests": [{
+                "indexName": "campaigns_production",
+                "params": "query={}&hitsPerPage=1000"
+                .format(keyword)}]}
+
+        response = session.post(query_url, json.dumps(query_params))
+        data = json.loads(response.text)
+
+        if not data['results'][0]['hits']:
+            return []
+
+        for entry in data['results'][0]['hits']:
+            product_url = 'https://www.lider.cl/product/sku/{}' \
+                .format(entry['sku'])
+            product_urls.append(product_url)
+
+            if len(product_urls) == threshold:
+                return product_urls
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         sku_id = url.split('/')[-1]

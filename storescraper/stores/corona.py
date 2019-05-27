@@ -210,6 +210,42 @@ class Corona(Store):
         return product_entries
 
     @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        product_urls = []
+
+        page = 1
+
+        while True:
+            if page >= 40:
+                raise Exception('Page overflow: ' + keyword)
+
+            url = 'https://www.corona.cl/buscapagina?ft={}&PS=15&' \
+                  'sl=4e4d7aaa-6b5b-4390-8d3a-e6ce5e306488&cc=3&sm=0' \
+                  '&PageNumber={}'.format(keyword, page)
+
+            print(url)
+
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            product_blocks = soup.findAll('div', 'product')
+
+            if not product_blocks:
+                break
+
+            for block in product_blocks:
+                if block.find('div', 'outOfStock'):
+                    continue
+                product_url = block.find('a')['href']
+                product_urls.append(product_url)
+
+                if len(product_urls) == threshold:
+                    return product_urls
+
+            page += 1
+
+        return product_urls
+
+    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
