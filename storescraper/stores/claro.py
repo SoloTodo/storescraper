@@ -176,8 +176,19 @@ class Claro(Store):
 
                 cell_name = '{} {}'.format(base_cell_name, color)
 
-                prepago_price = Decimal(remove_words(
-                    product_json['precio_prepago_normal']))
+                prepago_price = None
+
+                prepago_fields = [
+                    'precio_tienda_web',
+                    'precio_oferta_prepago',
+                    'precio_prepago_normal'
+                ]
+
+                for prepago_field in prepago_fields:
+                    prepago_price = Decimal(remove_words(
+                        product_json[prepago_field]))
+                    if prepago_price:
+                        break
 
                 pictures_field = 'sku_{}_img_{}'.format(variant, color_index)
                 picture_paths = [path for path in product_json[pictures_field]
