@@ -621,12 +621,7 @@ class Falabella(Store):
 
                     images = images_div + images_article
 
-                    print(url)
-                    try:
-                        assert len(images) == len(pictures)
-                    except AssertionError:
-                        import ipdb
-                        ipdb.set_trace()
+                    assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):
                         picture_array = image.findAll('picture')[-1].findAll(
