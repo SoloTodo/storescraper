@@ -615,9 +615,18 @@ class Falabella(Store):
                         pictures.append(element.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images = soup.findAll('div', 'fb-hero-carousel-slide')
+                    images_div = soup.findAll('div', 'fb-hero-carousel-slide')
+                    images_article = soup.findAll('article',
+                                                  'fb-hero-carousel-slide')
 
-                    assert len(images) == len(pictures)
+                    images = images_div + images_article
+
+                    print(url)
+                    try:
+                        assert len(images) == len(pictures)
+                    except AssertionError:
+                        import ipdb
+                        ipdb.set_trace()
 
                     for index, image in enumerate(images):
                         picture_array = image.findAll('picture')[-1].findAll(
