@@ -67,6 +67,10 @@ class Yoytec(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html5lib')
 
         name = soup.find('h1', 'name').text.strip()
