@@ -74,8 +74,8 @@ class LaPolar(Store):
              'Inicio > Tecnología > Audio > Equipos de música', 1],
             ['karaoke', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Karaoke', 1],
-            ['home-theater', ['StereoSystem'],
-             'Inicio > Tecnología > Audio > Home Theater', 1],
+            # ['home-theater', ['StereoSystem'],
+            #  'Inicio > Tecnología > Audio > Home Theater', 1],
             ['audífonos', ['Headphones'],
              'Inicio > Tecnología > Audio > Audífonos', 1],
             ['todo-consolas', ['VideoGameConsole'],
@@ -130,7 +130,6 @@ class LaPolar(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            print(e)
             category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
@@ -141,7 +140,6 @@ class LaPolar(Store):
                   'cgid={}&srule=most-popular&start=0&sz=150' \
                 .format(category_path)
 
-            print(url)
             response = session.get(url).text
             soup = BeautifulSoup(response, 'html.parser')
 
@@ -182,8 +180,6 @@ class LaPolar(Store):
               'Sites-LaPolar-Site/es_CL/Search-UpdateGrid?' \
               'q={}&srule=product-outstanding' \
               '&start=0&sz=1000'.format(keyword)
-
-        print(url)
 
         response = session.get(url).text
         soup = BeautifulSoup(response, 'html.parser')

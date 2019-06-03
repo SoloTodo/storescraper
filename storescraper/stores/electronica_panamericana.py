@@ -1,4 +1,4 @@
-import re
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -61,7 +61,7 @@ class ElectronicaPanamericana(Store):
                 url = 'https://electronicapanamericana.com/product-category/' \
                       '{}page/{}/'.format(category_path, page)
                 print(url)
-                response = session.get(url, verify=False)
+                response = session.get(url)
 
                 if response.status_code == 404:
                     if page == 1:
@@ -82,10 +82,20 @@ class ElectronicaPanamericana(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url, verify=False).text
+        data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
 
-        sku = soup.find('span', 'sku').text.strip()
+        sku = soup.find('span', 'sku')
+
+        if not sku:
+            sku_container = soup.find(
+                'script', {'type': 'application/ld+json'}).text
+            sku_json = json.loads(sku_container)
+            sku = str(sku_json['@graph'][1]['sku'])
+
+        else:
+            sku = sku.text.strip()
+
         name = '{} ({})'.format(
             soup.find('h1', 'product_title').text.strip(), sku)
 
