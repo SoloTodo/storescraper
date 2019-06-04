@@ -455,6 +455,10 @@ class Hites(Store):
                         if not product_box:
                             product_box = image.find('div', 'box-foto')
 
+                        if not product_box.find('source') \
+                                and not product_box.find('img'):
+                            product_box = image.find('div', 'img_boxproducto')
+
                         key_container = product_box.find('source')
 
                         if key_container:
