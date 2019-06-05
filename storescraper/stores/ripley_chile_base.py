@@ -127,7 +127,7 @@ class RipleyChileBase(Store):
              'Tecno > Audio y Música > Equipos de música', 1],
             ['tecno/audio-y-musica/parlantes-portables', ['StereoSystem'],
              'Tecno > Audio y Música > Parlantes Portables', 1],
-            ['tecno/audio-y-musica/soundbard-y-home-theater', ['StereoSystem'],
+            ['tecno/audio-y-musica/soundbar-y-home-theater', ['StereoSystem'],
              'Tecno > Audio y Música > Soundbar y Home theater', 1],
             # ['tecno/audio-y-musica/hi-fi', 'StereoSystem'],
             # ['tecno/audio-y-musica/parlantes-y-subwoofer', 'StereoSystem'],
