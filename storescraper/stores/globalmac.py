@@ -59,6 +59,7 @@ class GlobalMac(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text,
                              'html.parser')
@@ -69,7 +70,7 @@ class GlobalMac(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
         picture_urls = [tag['href'] for tag in soup.find(
-            'ul', 'thumbnails').findAll('a', 'thumbnail')]
+            'ul', 'thumbnails').findAll('a', 'thumbnail') if tag['href']]
 
         if soup.find('link', {'itemprop': 'availability'})['href'] == \
                 'http://schema.org/InStock':
