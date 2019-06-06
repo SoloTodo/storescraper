@@ -615,7 +615,11 @@ class Falabella(Store):
                         pictures.append(element.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images = soup.findAll('div', 'fb-hero-carousel-slide')
+                    images_div = soup.findAll('div', 'fb-hero-carousel-slide')
+                    images_article = soup.findAll('article',
+                                                  'fb-hero-carousel-slide')
+
+                    images = images_div + images_article
 
                     assert len(images) == len(pictures)
 

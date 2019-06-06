@@ -6,7 +6,7 @@ class LaCuracaoOnlineGuatemala(LaCuracaoOnline):
     currency = 'Q'
     currency_iso = 'GTQ'
     category_filters = [
-        ('electronica/celulares.html', 'Cell'),
+        # ('electronica/celulares.html', 'Cell'),
         ('audio-y-video/televisores.html', 'Television'),
         ('audio-y-video/equipos-de-sonido.html', 'StereoSystem'),
         ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),

@@ -49,7 +49,7 @@ class CasaRoyal(Store):
             ['computacion/accesorios-computacion/teclado-gamer/', 'Keyboard'],
             # ['computacion/accesorios-computacion/teclado-gaming/',
             # 'Keyboard'],
-            ['computacion/equipos-impresion/impresoras/', 'Printer'],
+            # ['computacion/equipos-impresion/impresoras/', 'Printer'],
             # ['computacion/equipos-impresion/impresora-multifuncional/',
             #  'Printer'],
             # ['computacion/componentes-pc/fuente-poder-atx/', 'PowerSupply'],
