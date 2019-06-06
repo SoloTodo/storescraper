@@ -13,17 +13,29 @@ class GlobalMac(Store):
         return [
             'Notebook',
             'StorageDrive',
+            'ExternalStorageDrive',
             'SolidStateDrive',
+            'UsbFlashDrive',
+            'MemoryCard',
+            'Ram',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['apple-chile/macbook-air', 'Notebook'],
-            # ['apple-chile/macbook-pro', 'Notebook'],
-            ['hardware-mac-pc/discos-duros-notebook-sata-2.5', 'StorageDrive'],
-            # ['hardware-mac-pc/discos-duros-sata-3.5', 'StorageDrive'],
+            ['lacie-chile/discos-externos', 'ExternalStorageDrive'],
+            ['lacie-chile/discos-portatiles', 'ExternalStorageDrive'],
+            ['lacie-chile/discos-thunderbolt', 'ExternalStorageDrive'],
+            ['accesorios-mac-pc/discos-duros-externos',
+             'ExternalStorageDrive'],
+            ['accesorios-mac-pc/discos-duros-portatiles',
+             'ExternalStorageDrive'],
+            ['hardware-mac-pc/discos-duros-notebook-sata-2.5',
+             'SolidStateDrive'],
             ['hardware-mac-pc/discos-duros-ssd-sata-2.5', 'SolidStateDrive'],
+            ['hardware-mac-pc/memorias-ram', 'Ram'],
+            ['hardware-mac-pc/Tarjetas-Expansion-Flashdrive-SDCard-y-SSD-'
+             'para-Apple-Mac', 'MemoryCard'],
         ]
 
         product_urls = []
@@ -35,7 +47,7 @@ class GlobalMac(Store):
 
             category_url = 'https://www.globalmac.cl/' + category_path
             print(category_url)
-            soup = BeautifulSoup(session.get(category_url, verify=False).text,
+            soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
             items = soup.findAll('div', 'product-layout')
@@ -48,7 +60,7 @@ class GlobalMac(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url,  verify=False).text,
+        soup = BeautifulSoup(session.get(url).text,
                              'html.parser')
 
         name = soup.find('title').text.strip()
