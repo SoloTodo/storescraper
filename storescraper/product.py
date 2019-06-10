@@ -208,11 +208,11 @@ class Product:
             return 'N/A'
 
     def picture_urls_as_json(self):
-        if not self.picture_urls:
+        if self.picture_urls is None:
             return None
         return json.dumps(self.picture_urls)
 
     def video_urls_as_json(self):
-        if not self.video_urls:
+        if self.video_urls is None:
             return None
         return json.dumps(self.video_urls)
