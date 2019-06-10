@@ -22,7 +22,8 @@ class Product:
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 condition='https://schema.org/NewCondition', positions={}):
+                 condition='https://schema.org/NewCondition', positions={},
+                 video_urls=None, review_count=None, flixmedia_id=None):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -36,6 +37,10 @@ class Product:
             for picture_url in picture_urls:
                 assert validators.url(picture_url), picture_url
 
+        if video_urls:
+            for video_url in video_urls:
+                assert validators.url(video_url), video_url
+
         if ean:
             assert check_ean13(ean), ean
 
@@ -44,6 +49,12 @@ class Product:
 
         if sku and len(sku) > 50:
             raise Exception('Invalid SKU: {}'.format(sku))
+
+        if review_count:
+            assert isinstance(review_count, int)
+
+        if flixmedia_id:
+            assert isinstance(flixmedia_id, str)
 
         assert condition in Product.VALID_CONDITIONS
 
@@ -70,6 +81,9 @@ class Product:
             timestamp = pytz.utc.localize(timestamp)
         self.condition = condition
         self.positions = positions
+        self.video_urls = video_urls
+        self.review_count = review_count
+        self.flixmedia_id = flixmedia_id
         self.timestamp = timestamp
 
     def __str__(self):
@@ -86,6 +100,8 @@ class Product:
             self.optional_field_as_string('part_number')))
         lines.append('Picture URLs: {}'.format(
             self.optional_field_as_string('picture_urls')))
+        lines.append('Video URLs: {}'.format(
+            self.optional_field_as_string('video_urls')))
         lines.append(u'Key: {}'.format(self.key))
         lines.append(u'Stock: {}'.format(self.stock_as_string()))
         lines.append(u'Currency: {}'.format(self.currency))
@@ -94,6 +110,10 @@ class Product:
         lines.append(u'Offer price: {}'.format(Currency.format(
             self.offer_price, self.currency)))
         lines.append('Condition: {}'.format(self.condition))
+        lines.append('Review count: {}'.format(self.optional_field_as_string(
+            'review_count')))
+        lines.append('Flixmedia ID: {}'.format(self.optional_field_as_string(
+            'flixmedia_id')))
         lines.append('Positions: {}'.format(self.positions))
         lines.append('Cell plan name: {}'.format(
             self.optional_field_as_string('cell_plan_name')))
@@ -140,9 +160,12 @@ class Product:
             'cell_plan_name': self.cell_plan_name,
             'cell_monthly_payment': serialized_cell_monthly_payment,
             'picture_urls': self.picture_urls,
+            'video_urls': self.video_urls,
             'timestamp': self.timestamp.isoformat(),
             'condition': self.condition,
             'positions': self.positions,
+            'review_count': self.review_count,
+            'flixmedia_id': self.flixmedia_id,
         }
 
     @classmethod
@@ -188,3 +211,8 @@ class Product:
         if not self.picture_urls:
             return None
         return json.dumps(self.picture_urls)
+
+    def video_urls_as_json(self):
+        if not self.video_urls:
+            return None
+        return json.dumps(self.video_urls)

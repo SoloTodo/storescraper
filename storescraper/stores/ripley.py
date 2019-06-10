@@ -21,7 +21,6 @@ class Ripley(RipleyChileBase):
 
             search_url = 'https://simple.ripley.cl/search/{}?page={}'\
                 .format(keyword, page)
-            print(search_url)
             response = session.get(search_url, allow_redirects=False)
 
             if response.status_code != 200:

@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from decimal import Decimal
 
@@ -355,6 +356,15 @@ class Paris(Store):
             picture_url = tag['href'].split('?')[0]
             picture_urls.append(picture_url)
 
+        video_urls = []
+        for iframe in soup.findAll('iframe'):
+            print(iframe['src'])
+            match = re.match('https://www.youtube.com/embed/(.+)', iframe['src'])
+            import ipdb
+            ipdb.set_trace()
+            if match:
+                video_urls.append('https://www.youtube.com/watch?v={}'.format(match.groups()[0]))
+
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
@@ -371,7 +381,8 @@ class Paris(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            video_urls=video_urls
         )
 
         return [p]

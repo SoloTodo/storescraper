@@ -175,7 +175,6 @@ class RipleyChileBase(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
-                print(category_url)
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200:
@@ -283,6 +282,13 @@ class RipleyChileBase(Store):
         if not picture_urls:
             picture_urls = None
 
+        flixmedia_id = None
+        flixmedia_tag = soup.find('script', {'src': '//media.flixfacts.com/js/loader.js'})
+        if flixmedia_tag:
+            flixmedia_id = flixmedia_tag['data-flix-mpn']
+
+        review_count = int(specs_json['powerReview']['fullReviews'])
+
         p = Product(
             name,
             cls.__name__,
@@ -296,7 +302,9 @@ class RipleyChileBase(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            flixmedia_id=flixmedia_id,
+            review_count=review_count
         )
 
         return [p]
