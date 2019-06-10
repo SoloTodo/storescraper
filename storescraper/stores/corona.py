@@ -148,8 +148,8 @@ class Corona(Store):
              'Tecnología > Computación > Notebook', 1],
             ['C:/9/39/42', None, ['Tablet'],
              'Tecnología > Computación > Tablet', 1],
-            ['C:/9/39/41', None, ['AllInOne'],
-             'Tecnología > Computación > All-in-One', 1],
+            # ['C:/9/39/41', None, ['AllInOne'],
+            # 'Tecnología > Computación > All-in-One', 1],
             ['C:/9/39/43', None, ['Printer'],
              'Tecnología > Computación > Impresoras y Multifuncionales', 1],
             # Don't include specific router for VideoGameConsole for now

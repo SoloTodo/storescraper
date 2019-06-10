@@ -266,8 +266,8 @@ class AbcDin(Store):
              'Entretenimiento > Videojuegos > PS4', 1],
             ['14005', ['VideoGameConsole'],
              'Entretenimiento > Videojuegos > Xbox One', 1],
-            ['14011', ['VideoGameConsole'],
-             'Entretenimiento > Videojuegos > Nintendo Switch', 1],
+            # ['14011', ['VideoGameConsole'],
+            #  'Entretenimiento > Videojuegos > Nintendo Switch', 1],
             ['14012', ['VideoGameConsole'],
              'Entretenimiento > Videojuegos > Nintendo', 1],
         ]
