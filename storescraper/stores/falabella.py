@@ -2,11 +2,15 @@ import json
 import urllib
 import re
 import time
+import base64
 
 from collections import defaultdict
 from collections import OrderedDict
 from decimal import Decimal
 from bs4 import BeautifulSoup
+from PIL import Image
+from io import BytesIO
+
 from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.product import Product
@@ -607,12 +611,29 @@ class Falabella(Store):
 
                     pictures = []
 
-                    elements = driver \
-                        .find_element_by_class_name('fb-hero-carousel-slides')\
-                        .find_elements_by_class_name('fb-slide-image')
+                    try:
+                        elements = driver.find_element_by_class_name(
+                            'fb-hero-carousel__pips')\
+                            .find_elements_by_class_name(
+                            'fb-hero-carousel__pips__pip')
 
-                    for element in elements:
-                        pictures.append(element.screenshot_as_base64)
+                        for element in elements:
+                            element.click()
+                            time.sleep(2)
+                            image = Image.open(
+                                BytesIO(driver.get_screenshot_as_png()))
+                            image = image.crop((0, 187, 1920, 769))
+                            buffered = BytesIO()
+                            image.save(buffered, format='PNG')
+                            pictures.append(
+                                base64.b64encode(buffered.getvalue()))
+                    except NoSuchElementException:
+                        image = Image.open(
+                            BytesIO(driver.get_screenshot_as_png()))
+                        image = image.crop((0, 187, 1920, 769))
+                        buffered = BytesIO()
+                        image.save(buffered, format='PNG')
+                        pictures.append(base64.b64encode(buffered.getvalue()))
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     images_div = soup.findAll('div', 'fb-hero-carousel-slide')
