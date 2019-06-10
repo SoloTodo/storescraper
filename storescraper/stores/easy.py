@@ -247,7 +247,6 @@ class Easy(Store):
 
         return product_urls
 
-
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
