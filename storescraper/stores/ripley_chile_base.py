@@ -4,6 +4,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -283,9 +284,12 @@ class RipleyChileBase(Store):
             picture_urls = None
 
         flixmedia_id = None
-        flixmedia_tag = soup.find('script', {'src': '//media.flixfacts.com/js/loader.js'})
+        video_urls = None
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
         if flixmedia_tag:
             flixmedia_id = flixmedia_tag['data-flix-mpn']
+            video_urls = flixmedia_video_urls(flixmedia_id)
 
         review_count = int(specs_json['powerReview']['fullReviews'])
 
@@ -304,7 +308,8 @@ class RipleyChileBase(Store):
             description=description,
             picture_urls=picture_urls,
             flixmedia_id=flixmedia_id,
-            review_count=review_count
+            review_count=review_count,
+            video_urls=video_urls
         )
 
         return [p]

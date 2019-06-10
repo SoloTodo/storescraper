@@ -359,11 +359,11 @@ class Paris(Store):
         video_urls = []
         for iframe in soup.findAll('iframe'):
             print(iframe['src'])
-            match = re.match('https://www.youtube.com/embed/(.+)', iframe['src'])
-            import ipdb
-            ipdb.set_trace()
+            match = re.match('https://www.youtube.com/embed/(.+)',
+                             iframe['src'])
             if match:
-                video_urls.append('https://www.youtube.com/watch?v={}'.format(match.groups()[0]))
+                video_urls.append('https://www.youtube.com/watch?v={}'.format(
+                    match.groups()[0]))
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
