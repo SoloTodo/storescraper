@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -446,6 +447,14 @@ class AbcDin(Store):
                 soup.find('img', {'id': 'productMainImage'})['src']
             ]
 
+        flixmedia_id = None
+        video_urls = None
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        if flixmedia_tag:
+            flixmedia_id = flixmedia_tag['data-flix-mpn']
+            video_urls = flixmedia_video_urls(flixmedia_id)
+
         product = Product(
             name,
             cls.__name__,
@@ -459,7 +468,9 @@ class AbcDin(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            video_urls=video_urls,
+            flixmedia_id=flixmedia_id
         )
 
         return [product]
