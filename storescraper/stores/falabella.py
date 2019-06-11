@@ -22,6 +22,9 @@ from storescraper.utils import HeadlessChrome
 
 
 class Falabella(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
