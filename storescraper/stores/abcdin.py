@@ -279,7 +279,6 @@ class AbcDin(Store):
 
         for category_id, local_categories, section_name, category_weight in \
                 ajax_resources:
-            print(category_id)
             if category not in local_categories:
                 continue
 
@@ -344,8 +343,6 @@ class AbcDin(Store):
               '&ddkey=ProductListingView_6_-2011_1410&storeId=10001' \
               '&pageSize=1000'.format(keyword)
 
-        print(url)
-
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products_grid = soup.find('ul', 'grid_mode')
 
@@ -382,7 +379,6 @@ class AbcDin(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')

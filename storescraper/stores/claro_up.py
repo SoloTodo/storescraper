@@ -40,7 +40,6 @@ class ClaroUp(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         query_string = urllib.parse.urlparse(url).query
         cell_id = urllib.parse.parse_qs(query_string)['id'][0]
         session = session_with_proxy(extra_args)

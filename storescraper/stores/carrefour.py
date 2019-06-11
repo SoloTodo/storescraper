@@ -52,8 +52,6 @@ class Carrefour(Store):
             category_url = 'https://www.carrefour.com.ar/{}{}limit=all'.format(
                     category_path, separator)
 
-            print(category_url)
-
             soup = BeautifulSoup(
                 session.get(category_url, verify=False).text, 'html.parser')
             containers = soup.find('ul', 'products-grid').findAll(

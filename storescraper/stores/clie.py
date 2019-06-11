@@ -53,7 +53,6 @@ class Clie(Store):
                 continue
 
             category_url = 'http://www.clie.cl/?categoria=' + category_code
-            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
             brands_table = soup.find('table', {'width': '150'})
@@ -76,7 +75,6 @@ class Clie(Store):
 
             while True:
                 subcategory_page_url = subcategory_url + '&pagina=' + str(page)
-                print(subcategory_page_url)
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + subcategory_page_url)

@@ -49,7 +49,6 @@ class Cetrogar(Store):
 
             category_url = 'http://www.cetrogar.com.ar/{}'.format(
                 category_path)
-            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             containers = soup.findAll('li', 'item')
 

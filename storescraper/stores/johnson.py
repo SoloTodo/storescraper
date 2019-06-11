@@ -56,7 +56,6 @@ class Johnson(Store):
                 product_link = cell.find('a', {'id': 'myBtn'})
 
                 product_js = product_link['onclick']
-                # print(product_js)
                 product_id = re.search(
                     r"showPopup\('(\d+)'", product_js)
                 if not product_id:

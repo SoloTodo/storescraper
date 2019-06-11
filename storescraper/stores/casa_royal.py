@@ -75,7 +75,6 @@ class CasaRoyal(Store):
 
                 url_webpage = 'https://www.casaroyal.cl/categoria-producto/' \
                               '{}?pag={}'.format(category_path, page)
-                print(url_webpage)
                 soup = BeautifulSoup(session.get(url_webpage).text,
                                      'html.parser')
 
@@ -96,7 +95,6 @@ class CasaRoyal(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         sku_tags = soup.findAll('span', 'tags')

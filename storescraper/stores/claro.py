@@ -73,7 +73,6 @@ class Claro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         products = []
         if url == cls.prepago_url:
             # Plan Prepago
@@ -142,7 +141,6 @@ class Claro(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        print(url)
         cell_id = url.split('/')[-1]
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
