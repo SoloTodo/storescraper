@@ -609,6 +609,10 @@ class AbcDin(Store):
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 banner = soup.find('a', {'data-type': 'huincha'})
+                if not banner:
+                    banner = soup.find('div', 'homeHero')
+                    if banner:
+                        banner = banner.find('a')
                 if banner:
                     picture_url = banner.find('img')['src']
                     destination_urls = [
