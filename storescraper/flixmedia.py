@@ -15,8 +15,6 @@ def flixmedia_video_urls(mpn):
     match = re.search('product: \'(.+)\'', response)
     product_id = int(match.groups()[0])
 
-    print(product_id)
-
     if not product_id:
         return None
 

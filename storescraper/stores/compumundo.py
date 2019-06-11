@@ -43,9 +43,6 @@ class Compumundo(Store):
                 continue
 
             category_url = '{}/productos/{}'.format(base_url, category_path)
-
-            print(category_url)
-
             page_source = session.get(category_url).text
 
             soup = BeautifulSoup(page_source, 'html5lib')
@@ -63,7 +60,6 @@ class Compumundo(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
 
         response = session.get(url)

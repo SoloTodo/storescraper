@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -278,7 +279,6 @@ class AbcDin(Store):
 
         for category_id, local_categories, section_name, category_weight in \
                 ajax_resources:
-            print(category_id)
             if category not in local_categories:
                 continue
 
@@ -343,8 +343,6 @@ class AbcDin(Store):
               '&ddkey=ProductListingView_6_-2011_1410&storeId=10001' \
               '&pageSize=1000'.format(keyword)
 
-        print(url)
-
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products_grid = soup.find('ul', 'grid_mode')
 
@@ -381,7 +379,6 @@ class AbcDin(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')
@@ -446,6 +443,14 @@ class AbcDin(Store):
                 soup.find('img', {'id': 'productMainImage'})['src']
             ]
 
+        flixmedia_id = None
+        video_urls = None
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        if flixmedia_tag:
+            flixmedia_id = flixmedia_tag['data-flix-mpn']
+            video_urls = flixmedia_video_urls(flixmedia_id)
+
         product = Product(
             name,
             cls.__name__,
@@ -459,7 +464,9 @@ class AbcDin(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            video_urls=video_urls,
+            flixmedia_id=flixmedia_id
         )
 
         return [product]

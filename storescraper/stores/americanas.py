@@ -69,8 +69,6 @@ class Americanas(Store):
                         '%22%3A%22{}%22%2C%22fixed%22%3Atrue%7D' \
                         ''.format(offset, sorting, category_id)
 
-                    print(category_url)
-
                     category_page = json.loads(session.get(
                         category_url, timeout=30).text)
 

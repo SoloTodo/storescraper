@@ -114,8 +114,6 @@ class Bip(Store):
                     url_extension, offset
                 )
 
-                print(url_webpage)
-
                 data = session.get(url_webpage).text
 
                 soup = BeautifulSoup(data, 'html5lib')

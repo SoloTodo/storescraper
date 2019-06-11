@@ -41,7 +41,6 @@ class AmaHogar(Store):
 
             category_url = 'http://www.amahogar.com.ar/{}'.format(
                 category_path)
-            print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             containers = soup.find('div', 'product_list').findAll(
@@ -58,7 +57,6 @@ class AmaHogar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 

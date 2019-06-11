@@ -57,7 +57,6 @@ class NewGame(Store):
                 continue
 
             category_url = 'https://www.newgame.cl/index.php?' + category_path
-            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             product_cells = soup.findAll('a', 'juego')
 

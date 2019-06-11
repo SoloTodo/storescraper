@@ -42,8 +42,6 @@ class BestBuyMexico(Store):
                                'query=categoryId%24{}&page={}' \
                                ''.format(category_path, page)
 
-                print(category_url)
-
                 response = session.get(category_url)
 
                 if response.status_code == 404:
@@ -71,7 +69,6 @@ class BestBuyMexico(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 

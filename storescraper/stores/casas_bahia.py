@@ -59,8 +59,6 @@ class CasasBahia(Store):
                     'https://www.casasbahia.com.br/{}&paginaAtual={}' \
                     ''.format(category_path, page)
 
-                print(category_url)
-
                 soup = BeautifulSoup(session.get(
                     category_url, timeout=30).text, 'html.parser')
 

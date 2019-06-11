@@ -72,7 +72,6 @@ class CasaConfort(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.54.0'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')

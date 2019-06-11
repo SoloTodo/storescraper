@@ -95,7 +95,6 @@ class Cintegral(Store):
                     raise Exception('Page overflow: ' + category_url)
 
                 url = category_url + '?p=' + str(page)
-                print(url)
                 json_data = json.loads(session.get(url, verify=False).text)
                 soup = BeautifulSoup(json_data['listing'], 'html.parser')
 
@@ -123,7 +122,6 @@ class Cintegral(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url, verify=False).text
