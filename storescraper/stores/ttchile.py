@@ -71,8 +71,9 @@ class TtChile(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 category_url = base_url + category_path + '&pagina=' + \
                                str(page)
 
@@ -92,6 +93,9 @@ class TtChile(Store):
 
                 for table in product_description:
                     product_url = base_url + table.find('a')['href']
+                    if product_url in product_urls:
+                        done = True
+                        break
                     product_urls.append(product_url)
 
                 page += 1
