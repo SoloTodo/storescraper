@@ -588,7 +588,7 @@ class Falabella(Store):
                             picture_url = 'https://www.falabella.com' \
                                           '{}'.format(picture_url)
 
-                        if 'webp' not in picture_url:
+                        if picture_url:
                             banners.append({
                                 'url': url,
                                 'picture_url': picture_url,
