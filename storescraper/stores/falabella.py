@@ -22,6 +22,9 @@ from storescraper.utils import HeadlessChrome
 
 
 class Falabella(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -225,11 +228,12 @@ class Falabella(Store):
             'Referer': 'https://www.falabella.com/falabella-cl/',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
                           '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
-                          'Safari/537.36'
+                          'Safari/537.36',
+            'Authorization': 'foo'
         })
-        session.get('https://www.falabella.com/falabella-cl/', timeout=30)
-        session.get('https://www.falabella.com/falabella-cl/'
-                    'includes/ajaxFirstNameAndCartQuantity.jsp', timeout=30)
+        # session.get('https://www.falabella.com/falabella-cl/', timeout=30)
+        # session.get('https://www.falabella.com/falabella-cl/'
+        #             'includes/ajaxFirstNameAndCartQuantity.jsp', timeout=30)
 
         product_entries = defaultdict(lambda: [])
 
@@ -288,7 +292,6 @@ class Falabella(Store):
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en,en-US;q=0.8,es;q=0.6',
             'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
             'DNT': '1',
             'Host': 'www.falabella.com',
             'Referer': 'https://www.falabella.com/falabella-cl/',
@@ -335,6 +338,7 @@ class Falabella(Store):
         page = 1
 
         while True:
+            print(page)
             if page > 60:
                 raise Exception('Page overflow: ' + keyword)
 
@@ -351,6 +355,7 @@ class Falabella(Store):
                     .format(urllib.parse.quote(json.dumps(
                         query_args, separators=(',', ':')), safe=''))
 
+                time.sleep(1)
                 res = session.get(pag_url, timeout=None)
                 res = json.loads(res.content.decode('utf-8'))
 
@@ -376,6 +381,7 @@ class Falabella(Store):
 
     @classmethod
     def _products_for_url(cls, url, retries=5, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         content = session.get(url, timeout=30).text.replace('&#10;', '')
 
