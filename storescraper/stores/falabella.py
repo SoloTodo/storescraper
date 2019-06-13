@@ -23,7 +23,7 @@ from storescraper.utils import HeadlessChrome
 
 class Falabella(Store):
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 1
+    preferred_products_for_url_concurrency = 10
 
     @classmethod
     def categories(cls):
@@ -391,10 +391,20 @@ class Falabella(Store):
                   'fb-product-information__specification']
 
         description = ''
+        video_urls = []
 
-        for panel in panels:
-            description += html_to_markdown(str(soup.find('div', panel))) + \
-                           '\n\n'
+        for panel_class in panels:
+            panel = soup.find('div', panel_class)
+            if not panel:
+                continue
+
+            description += html_to_markdown(str(panel)) + '\n\n'
+            for iframe in panel.findAll('iframe'):
+                match = re.search(r'//www.youtube.com/embed/(.+)\?',
+                                  iframe['src'])
+                if match:
+                    video_urls.append('https://www.youtube.com/watch?v={}'
+                                      ''.format(match.groups()[0]))
 
         raw_json_data = re.search('var fbra_browseMainProductConfig = (.+);\r',
                                   content)
@@ -409,14 +419,11 @@ class Falabella(Store):
                 return []
 
         product_data = json.loads(raw_json_data.groups()[0])
-
         slug = product_data['state']['product']['displayName'].replace(
             ' ', '-')
         publication_id = product_data['state']['product']['id']
-
         global_id = product_data['state']['product']['id']
         media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
-
         pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
                                 'Falabella/{}?req=set,json'.format(global_id)
         pictures_response = session.get(pictures_resource_url, timeout=30).text
@@ -473,6 +480,12 @@ class Falabella(Store):
 
             stock = model['stockAvailable']
 
+            reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
+                          'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
+                          'Filter=ProductId:{}'.format(sku)
+            review_data = json.loads(session.get(reviews_url).text)
+            review_count = review_data['TotalResults']
+
             p = Product(
                 model['name'],
                 cls.__name__,
@@ -486,7 +499,9 @@ class Falabella(Store):
                 'CLP',
                 sku=sku,
                 description=description,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                video_urls=video_urls,
+                review_count=review_count
             )
 
             products.append(p)
