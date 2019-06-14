@@ -284,7 +284,7 @@ class RipleyChileBase(Store):
             picture_urls = None
 
         flixmedia_id = None
-        video_urls = None
+        video_urls = []
         flixmedia_tag = soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
         if flixmedia_tag:
