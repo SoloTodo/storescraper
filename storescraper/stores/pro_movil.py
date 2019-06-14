@@ -30,23 +30,36 @@ class ProMovil(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.promovil.cl/{}?n=250'.format(
-                category_path)
+            page = 1
 
-            print(category_url)
+            while True:
+                category_url = 'https://www.promovil.cl/{}?page={}'.format(
+                    category_path, page)
 
-            response = session.get(category_url)
+                if page >= 20:
+                    raise Exception('Page overflow: ' + category_url)
 
-            if response.url != category_url:
-                raise Exception('Empty category: ' + category_url)
+                print(category_url)
 
-            soup = BeautifulSoup(response.text, 'html.parser')
+                response = session.get(category_url)
 
-            products_containers = soup.findAll('div', 'ajax_block_product')
+                if response.url != category_url:
+                    raise Exception('Empty category: ' + category_url)
 
-            for product_container in products_containers:
-                product_url = product_container.find('a')['href']
-                product_urls.append(product_url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                products_containers = soup.findAll('div', 'item-product')
+
+                if not products_containers:
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
+
+                for product_container in products_containers:
+                    product_url = product_container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
@@ -57,23 +70,75 @@ class ProMovil(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        attribute_ids_container = soup.find('div', 'product-variants-item')
+
+        if not attribute_ids_container:
+            sku = soup.find('input', {'name': 'id_product'})['value']
+            return [cls.get_single_product(url, sku, category, extra_args)]
+
+        product_json = json.loads(soup.find(
+            'div', {'id': 'product-details'})["data-product"])
+        product_id = product_json["id"]
+        link_rewrite = product_json["link_rewrite"]
+        base_url = 'https://www.promovil.cl/inicio/{}-{}-{}.html'
+
+        # Get ids, the hard and only way
+        attribute_group = attribute_ids_container.find(
+            'input')['data-product-attribute']
+        attribute_ids = [i['value'] for i in
+                         attribute_ids_container.findAll('input')]
+
+        id_url_base = 'https://www.promovil.cl/index.php?' \
+                      'controller=product&' \
+                      'id_product={}&' \
+                      'group%5B{}%5D={}'
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded;'\
+                                          ' charset=UTF-8'
+        session.headers['Accept'] = 'application/json, text/javascript,' \
+                                    ' */*; q=0.01'
+
+        variants_ids = []
+
+        for attribute_id in attribute_ids:
+            id_url = id_url_base.format(
+                product_id, attribute_group, attribute_id)
+            variants_ids.append(json.loads(session.post(
+                id_url, 'action=refresh').text)["id_product_attribute"])
+
+        # Generate single product urls
+
+        products = []
+        for variant_id in variants_ids:
+            variant_url = base_url.format(product_id, variant_id, link_rewrite)
+            sku = '{}-{}'.format(product_id, variant_id)
+            products.append(cls.get_single_product(
+                variant_url, sku, category, extra_args))
+
+        return products
+
+    @classmethod
+    def get_single_product(cls, url, sku, category, extra_args):
+        session = session_with_proxy(extra_args)
+        page_source = session.get(url).text
+        soup = BeautifulSoup(page_source, 'html.parser')
+
+        product_json = json.loads(soup.find(
+            'div', {'id': 'product-details'})["data-product"])
+        name_ext = ''
+
+        if "attributes" in product_json:
+            for key, value in product_json["attributes"].items():
+                name_ext = value["name"]
+                break
+
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('input', {'name': 'id_product'})['value']
+        if name_ext:
+            name += ' ({})'.format(name_ext)
 
-        offer_price = Decimal(remove_words(
-            soup.find('span', {'id': 'our_price_display'}).text))
+        price = Decimal(remove_words(
+            soup.find('div', 'current-price').find('span').text))
 
-        normal_price_container = soup.find(
-            'span', {'id': 'unit_price_display'})
-
-        if normal_price_container:
-            normal_price = Decimal(remove_words(normal_price_container.text))
-            if normal_price < offer_price:
-                normal_price = offer_price
-        else:
-            normal_price = offer_price
-
-        stock_container = soup.find('span', {'id': 'availability_value'})
+        stock_container = soup.find('span', {'id': 'product-availability'})
 
         if 'disponible' in stock_container.text.lower():
             stock = -1
@@ -81,61 +146,27 @@ class ProMovil(Store):
             stock = 0
 
         description = html_to_markdown(
-            str(soup.find('div', 'pb-center-column')))
+            str(soup.find('div', 'product-desc')))
 
-        picture_urls = [tag['href'] for tag in soup.findAll('a', 'fancybox')]
+        images_containers = soup.find('ul', 'product-images').findAll('li')
+        picture_urls = []
 
-        variants = re.search(r'attributesCombinations=(\[.*?\])', page_source)
-        variants = json.loads(variants.groups()[0])
+        for image in images_containers:
+            picture_url = image.find('img')['data-image-large-src']
+            picture_urls.append(picture_url)
 
-        if not variants:
-            return [Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls,
-            )]
-
-        products = []
-
-        for variant in variants:
-            variant_id = variant['id_attribute']
-            variant_label = variant['attribute']
-            variant_field = variant['group']
-
-            if variant_field != 'color':
-                raise Exception('invalid variant')
-
-            variant_url = '{}#/{}-{}-{}'.format(url, variant_id,
-                                                variant_field, variant_label)
-            variant_name = '{} - {} {}'.format(name, variant_field,
-                                               variant_label)
-
-            variant_key = '{} {}'.format(sku, variant_id)
-
-            products.append(Product(
-                variant_name,
-                cls.__name__,
-                category,
-                variant_url,
-                url,
-                variant_key,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls,
-            ))
-
-        return products
+        return Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls,
+        )

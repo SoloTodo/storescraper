@@ -10,8 +10,8 @@ import requests
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
-CLP_BLACKLIST = ['CLP$', 'precio', 'internet', 'normal',
-                 '$', '.', ',', '&nbsp;', '\r', '\n', '\t']
+CLP_BLACKLIST = ['CLP$', 'CLP', 'precio', 'internet', 'normal',
+                 '$', '.', ',', '&nbsp;', '\r', '\n', '\t', '\xa0']
 
 
 def remove_words(text, blacklist=CLP_BLACKLIST):
