@@ -464,6 +464,10 @@ class Hites(Store):
                             product_box = image.find(
                                 'div', 'images_llamados')
 
+                        if not product_box:
+                            product_box = image.find(
+                                'div', 'products-item__img')
+
                         if not product_box.find('source') \
                                 and not product_box.find('img'):
                             product_box = image.find('div', 'img_boxproducto')
