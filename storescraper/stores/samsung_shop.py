@@ -7,7 +7,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class ClubSmart(Store):
+class SamsungShop(Store):
     @classmethod
     def categories(cls):
         return [
@@ -42,7 +42,7 @@ class ClubSmart(Store):
             if local_category != category:
                 continue
 
-            url = 'https://www.clubsmart.cl/api/catalog_system/pub/products/' \
+            url = 'https://shop.samsung.cl/api/catalog_system/pub/products/' \
                   'search/{}?map=c,specificationFilter_40&_from=0&_to=49&' \
                   'O=OrderByPriceDESC&sc=1'.format(category_path)
 

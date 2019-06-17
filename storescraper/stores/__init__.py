@@ -23,7 +23,6 @@ from .cintegral import Cintegral
 from .claro import Claro
 from .claro_up import ClaroUp
 from .clie import Clie
-from .club_smart import ClubSmart
 from .compumundo import Compumundo
 from .conelectric import Conelectric
 from .coppel import Coppel
@@ -150,6 +149,7 @@ from .ripley_peru import RipleyPeru
 from .rodo import Rodo
 from .sams import Sams
 from .samsung_chile import SamsungChile
+from .samsung_shop import SamsungShop
 from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sears_mexico import SearsMexico
