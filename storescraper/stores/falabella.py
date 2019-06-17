@@ -702,6 +702,11 @@ class Falabella(Store):
 
                 picture_url = 'https:{}' \
                     .format(image_container.find('source')['srcset'])
+
+                if '//' not in picture_url:
+                    picture_url = 'https://www.falabella.com{}' \
+                        .format(image_container.find('source')['srcset'])
+
                 destination_urls = [image_container.find('a')['href']]
                 banners.append({
                     'url': url,
