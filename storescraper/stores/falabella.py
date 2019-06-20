@@ -292,12 +292,14 @@ class Falabella(Store):
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en,en-US;q=0.8,es;q=0.6',
             'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
             'DNT': '1',
             'Host': 'www.falabella.com',
             'Referer': 'https://www.falabella.com/falabella-cl/',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
                           '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
-                          'Safari/537.36'
+                          'Safari/537.36',
+            'Authorization': 'foo'
         })
 
         for i in range(4):
