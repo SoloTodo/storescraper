@@ -161,8 +161,8 @@ class AbcDin(Store):
              'Telefonía > Smartphones > Celulares Xiaomi', 1],
             ['25051', ['Cell'],
              'Telefonía > Smartphones > Celulares OWN', 1],
-            ['24557', ['Cell'],
-             'Telefonía > Smartphones > Celulares Alcatel', 1],
+            # ['24557', ['Cell'],
+            #  'Telefonía > Smartphones > Celulares Alcatel', 1],
             ['26056', ['Cell'], 'Telefonía > Smartphones > Celulares ZTE', 1],
             ['51552', ['Cell'],
              'Telefonía > Smartphones > Celulares Básicos', 1],
@@ -527,7 +527,7 @@ class AbcDin(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    elements = driver.find_elements_by_class_name('homeHero')
+                    elements = driver.find_elements_by_class_name('slide-static')
 
                     time.sleep(5)
 
