@@ -140,7 +140,7 @@ class ProMovil(Store):
 
         stock_container = soup.find('span', {'id': 'product-availability'})
 
-        if 'disponible' in stock_container.text.lower():
+        if any(w in stock_container.text.lower() for w in ["disponible", "últimas"]):
             stock = -1
         else:
             stock = 0
