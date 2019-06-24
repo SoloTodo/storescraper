@@ -78,8 +78,8 @@ class Panafoto(Store):
              '/// Congeladores"]', 'Refrigerator'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Minibares y Vineras"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Aires portátiles"]', 'AirConditioner'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Aires portátiles"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Aires acondicionados Split"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Cómputo /// Monitores '

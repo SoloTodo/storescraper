@@ -85,9 +85,10 @@ class PcExpress(Store):
             page = 1
 
             while True:
-                if page > 10:
+                if page > 15:
                     raise Exception('Page overflow: ' + category_id)
                 category_page_url = category_url + str(page)
+                print(category_page_url)
                 soup = BeautifulSoup(session.get(category_page_url).text,
                                      'html.parser')
                 td_products = soup.findAll('div', 'product-list__image')
