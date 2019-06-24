@@ -193,6 +193,7 @@ class LgChile(Store):
             ('CT30011860', 'CT30011860', 'Cell', True),
             ('CT20106034', 'CT20106034', 'Refrigerator', True),
             ('CT20106034', 'CT20106034', 'Refrigerator', False),
+            ('CT20106039', 'CT20106039', 'Oven', True),
             ('CT20106039', 'CT20106039', 'Oven', False),
             ('CT20106044', 'CT20106044', 'WashingMachine', True),
             ('CT20106044', 'CT20106044', 'WashingMachine', False),
