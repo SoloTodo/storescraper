@@ -23,7 +23,8 @@ class Product:
                  sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
                  condition='https://schema.org/NewCondition', positions={},
-                 video_urls=None, review_count=None, flixmedia_id=None):
+                 video_urls=None, review_count=None, review_avg_score=None,
+                 flixmedia_id=None):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -52,6 +53,9 @@ class Product:
 
         if review_count:
             assert isinstance(review_count, int)
+
+        if review_avg_score:
+            assert isinstance(review_avg_score, float)
 
         if flixmedia_id:
             assert isinstance(flixmedia_id, str)
@@ -83,6 +87,7 @@ class Product:
         self.positions = positions
         self.video_urls = video_urls
         self.review_count = review_count
+        self.review_avg_score = review_avg_score
         self.flixmedia_id = flixmedia_id
         self.timestamp = timestamp
 
@@ -112,6 +117,8 @@ class Product:
         lines.append('Condition: {}'.format(self.condition))
         lines.append('Review count: {}'.format(self.optional_field_as_string(
             'review_count')))
+        lines.append('Review avg score: {}'.format(
+            self.optional_field_as_string('review_avg_score')))
         lines.append('Flixmedia ID: {}'.format(self.optional_field_as_string(
             'flixmedia_id')))
         lines.append('Positions: {}'.format(self.positions))
@@ -165,6 +172,7 @@ class Product:
             'condition': self.condition,
             'positions': self.positions,
             'review_count': self.review_count,
+            'review_avg_score': self.review_avg_score,
             'flixmedia_id': self.flixmedia_id,
         }
 

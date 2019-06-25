@@ -292,6 +292,8 @@ class RipleyChileBase(Store):
             video_urls = flixmedia_video_urls(flixmedia_id)
 
         review_count = int(specs_json['powerReview']['fullReviews'])
+        review_avg_score = float(
+            specs_json['powerReview']['averageRatingDecimal'])
 
         p = Product(
             name,
@@ -309,6 +311,7 @@ class RipleyChileBase(Store):
             picture_urls=picture_urls,
             flixmedia_id=flixmedia_id,
             review_count=review_count,
+            review_avg_score=review_avg_score,
             video_urls=video_urls
         )
 

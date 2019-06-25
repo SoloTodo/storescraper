@@ -484,9 +484,19 @@ class Falabella(Store):
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}'.format(sku)
+                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
+                .format(sku)
+            print(reviews_url)
             review_data = json.loads(session.get(reviews_url).text)
             review_count = review_data['TotalResults']
+
+            review_stats = review_data['Includes']
+
+            if 'Products' in review_stats:
+                review_avg_score = review_stats['Products'][str(sku)][
+                    'ReviewStatistics']['AverageOverallRating']
+            else:
+                review_avg_score = None
 
             p = Product(
                 model['name'],
@@ -503,7 +513,8 @@ class Falabella(Store):
                 description=description,
                 picture_urls=picture_urls,
                 video_urls=video_urls,
-                review_count=review_count
+                review_count=review_count,
+                review_avg_score=review_avg_score
             )
 
             products.append(p)
