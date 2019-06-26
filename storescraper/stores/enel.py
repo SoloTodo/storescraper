@@ -19,9 +19,6 @@ class Enel(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['299-tradicionales', 'Lamp'],
-            ['300-smart', 'Lamp'],
-            ['301-decorativas', 'Lamp'],
             ['55-aire-acondicionado', 'AirConditioner'],
             ['292-purificadores-de-aire', 'AirConditioner'],
         ]
