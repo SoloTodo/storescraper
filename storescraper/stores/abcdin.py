@@ -527,7 +527,8 @@ class AbcDin(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    elements = driver.find_elements_by_class_name('slide-static')
+                    elements = driver.find_elements_by_class_name(
+                        'slide-static')
 
                     time.sleep(5)
 

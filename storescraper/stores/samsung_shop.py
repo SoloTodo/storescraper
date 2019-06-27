@@ -47,7 +47,7 @@ class SamsungShop(Store):
                 continue
 
             url = 'https://shop.samsung.cl/api/catalog_system/pub/products/' \
-                  'search/{}?map=c,c,specificationFilter_40'\
+                  'search/{}?map=c,c,specificationFilter_226'\
                 .format(category_path)
 
             product_urls.append(url)

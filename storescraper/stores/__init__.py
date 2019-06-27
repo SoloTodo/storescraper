@@ -35,6 +35,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .do_it_center import DoItCenter
+from .e_vision import EVision
 from .easy import Easy
 from .easy_argentina import EasyArgentina
 from .efe import Efe
