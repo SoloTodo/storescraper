@@ -299,6 +299,18 @@ class RipleyChileBase(Store):
         else:
             review_avg_score = None
 
+        has_virtual_assistant = False
+
+        assistant_urls = [
+            '//media.flixfacts.com/js/loader.js',
+            'https://media.flixfacts.com/js/loader.js',
+        ]
+
+        for assistant_url in assistant_urls:
+            if soup.find('script', {'src': assistant_url}):
+                has_virtual_assistant = True
+                break
+
         p = Product(
             name,
             cls.__name__,
@@ -316,7 +328,8 @@ class RipleyChileBase(Store):
             flixmedia_id=flixmedia_id,
             review_count=review_count,
             review_avg_score=review_avg_score,
-            video_urls=video_urls
+            video_urls=video_urls,
+            has_virtual_assistant=has_virtual_assistant
         )
 
         return [p]
