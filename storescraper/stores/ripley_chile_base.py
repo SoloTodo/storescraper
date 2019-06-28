@@ -287,11 +287,19 @@ class RipleyChileBase(Store):
 
         flixmedia_id = None
         video_urls = []
-        flixmedia_tag = soup.find(
-            'script', {'src': '//media.flixfacts.com/js/loader.js'})
-        if flixmedia_tag:
-            flixmedia_id = flixmedia_tag['data-flix-mpn']
-            video_urls = flixmedia_video_urls(flixmedia_id)
+
+        flixmedia_urls = [
+            '//media.flixfacts.com/js/loader.js',
+            'https://media.flixfacts.com/js/loader.js'
+        ]
+
+        for flixmedia_url in flixmedia_urls:
+            flixmedia_tag = soup.find(
+                'script', {'src': flixmedia_url})
+            if flixmedia_tag:
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+                break
 
         review_count = int(specs_json['powerReview']['fullReviews'])
 
