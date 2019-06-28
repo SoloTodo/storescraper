@@ -9,6 +9,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
+from .ripley_chile_base_lg_assistant_keywords import keywords
+
 
 class RipleyChileBase(Store):
     @classmethod
@@ -301,13 +303,8 @@ class RipleyChileBase(Store):
 
         has_virtual_assistant = False
 
-        assistant_urls = [
-            '//media.flixfacts.com/js/loader.js',
-            'https://media.flixfacts.com/js/loader.js',
-        ]
-
-        for assistant_url in assistant_urls:
-            if soup.find('script', {'src': assistant_url}):
+        for keyword in keywords:
+            if keyword in url:
                 has_virtual_assistant = True
                 break
 
