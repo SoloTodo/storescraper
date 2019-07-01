@@ -640,6 +640,7 @@ class Falabella(Store):
                             '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
+                    print(url)
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -673,8 +674,10 @@ class Falabella(Store):
                     images_div = soup.findAll('div', 'fb-hero-carousel-slide')
                     images_article = soup.findAll('article',
                                                   'fb-hero-carousel-slide')
+                    images_module = soup.findAll('div',
+                                                 'hero fb-module-wrapper')
 
-                    images = images_div + images_article
+                    images = images_div + images_article + images_module
 
                     assert len(images) == len(pictures)
 
