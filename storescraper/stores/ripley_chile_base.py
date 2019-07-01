@@ -9,6 +9,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
+from .ripley_chile_base_lg_assistant_keywords import keywords
+
 
 class RipleyChileBase(Store):
     @classmethod
@@ -285,11 +287,19 @@ class RipleyChileBase(Store):
 
         flixmedia_id = None
         video_urls = []
-        flixmedia_tag = soup.find(
-            'script', {'src': '//media.flixfacts.com/js/loader.js'})
-        if flixmedia_tag:
-            flixmedia_id = flixmedia_tag['data-flix-mpn']
-            video_urls = flixmedia_video_urls(flixmedia_id)
+
+        flixmedia_urls = [
+            '//media.flixfacts.com/js/loader.js',
+            'https://media.flixfacts.com/js/loader.js'
+        ]
+
+        for flixmedia_url in flixmedia_urls:
+            flixmedia_tag = soup.find(
+                'script', {'src': flixmedia_url})
+            if flixmedia_tag:
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+                break
 
         review_count = int(specs_json['powerReview']['fullReviews'])
 
@@ -298,6 +308,13 @@ class RipleyChileBase(Store):
                 specs_json['powerReview']['averageRatingDecimal'])
         else:
             review_avg_score = None
+
+        has_virtual_assistant = False
+
+        for keyword in keywords:
+            if keyword in url:
+                has_virtual_assistant = True
+                break
 
         p = Product(
             name,
@@ -316,7 +333,8 @@ class RipleyChileBase(Store):
             flixmedia_id=flixmedia_id,
             review_count=review_count,
             review_avg_score=review_avg_score,
-            video_urls=video_urls
+            video_urls=video_urls,
+            has_virtual_assistant=has_virtual_assistant
         )
 
         return [p]
