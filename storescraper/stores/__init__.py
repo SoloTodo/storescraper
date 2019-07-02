@@ -167,6 +167,7 @@ from .stylus import Stylus
 from .syd import Syd
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
+from .tekstore import Tekstore
 from .terabyte import Terabyte
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
