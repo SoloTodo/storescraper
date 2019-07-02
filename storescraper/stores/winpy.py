@@ -57,7 +57,7 @@ class Winpy(Store):
             ['partes-y-piezas/tarjetas-de-video/',
              'VideoCard'],
             ['memorias/', 'Ram'],
-            ['portatiles/celulares/', 'Cell'],
+            # ['portatiles/celulares/', 'Cell'],
             ['almacenamiento/disco-estado-solido/', 'SolidStateDrive'],
             ['almacenamiento/disco-duro-notebook/', 'StorageDrive'],
             ['almacenamiento/disco-duro-pc-s/', 'StorageDrive'],
