@@ -108,54 +108,52 @@ class Ripley(RipleyChileBase):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                continue
-                # with HeadlessChrome(images_enabled=True, timeout=60)
-                # as driver:
-                #     driver.set_window_size(1920, 1080)
-                #     driver.get(url)
-                #
-                #     pictures = []
-                #
-                #     banner_container = driver\
-                #         .find_element_by_class_name('owl-carousel')
-                #
-                #     controls = driver\
-                #         .find_elements_by_class_name('owl-page')
-                #
-                #     for control in controls:
-                #         control.click()
-                #         time.sleep(1)
-                #         pictures.append(
-                #             banner_container.screenshot_as_base64)
-                #
-                #     images = driver.find_elements_by_class_name('owl-item')
-                #
-                #     assert len(images) == len(pictures)
-                #
-                #     for index, image in enumerate(images):
-                #         image_style = image.find_element_by_tag_name(
-                #             'span').get_attribute('style')
-                #
-                #         key = re.search(r'url\((.*?)\)', image_style) \
-                #             .group(1)
-                #
-                #         destinations = image.find_elements_by_tag_name('a')
-                #         destination_urls = [a.get_attribute('href')
-                #                             for a in destinations]
-                #         destination_urls = list(set(destination_urls))
-                #
-                #         destination_urls = list(set(destination_urls))
-                #
-                #         banners.append({
-                #             'url': url,
-                #             'picture': pictures[index],
-                #             'destination_urls': destination_urls,
-                #             'key': key,
-                #             'position': index + 1,
-                #             'section': section,
-                #             'subsection': subsection,
-                #             'type': subsection_type
-                #         })
+                with HeadlessChrome(images_enabled=True, timeout=60) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
+
+                    pictures = []
+
+                    banner_container = driver\
+                        .find_element_by_class_name('owl-carousel')
+
+                    controls = driver\
+                        .find_elements_by_class_name('owl-page')
+
+                    for control in controls:
+                        control.click()
+                        time.sleep(1)
+                        pictures.append(
+                            banner_container.screenshot_as_base64)
+
+                    images = driver.find_elements_by_class_name('owl-item')
+
+                    assert len(images) == len(pictures)
+
+                    for index, image in enumerate(images):
+                        image_style = image.find_element_by_tag_name(
+                            'span').get_attribute('style')
+
+                        key = re.search(r'url\((.*?)\)', image_style) \
+                            .group(1)
+
+                        destinations = image.find_elements_by_tag_name('a')
+                        destination_urls = [a.get_attribute('href')
+                                            for a in destinations]
+                        destination_urls = list(set(destination_urls))
+
+                        destination_urls = list(set(destination_urls))
+
+                        banners.append({
+                            'url': url,
+                            'picture': pictures[index],
+                            'destination_urls': destination_urls,
+                            'key': key,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 images = soup.findAll('a', 'item')
 

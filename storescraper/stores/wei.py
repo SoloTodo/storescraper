@@ -162,10 +162,14 @@ class Wei(Store):
 
         normal_price = pricing_container.find(
             'div', 'txt14').contents[0].split('$')[1]
+
         normal_price = Decimal(remove_words(normal_price))
 
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-producto'})))
+
+        if normal_price < offer_price:
+            offer_price = normal_price
 
         picture_urls = []
         for picture_container in soup.findAll('div', 'slider-item'):
