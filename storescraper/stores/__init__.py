@@ -62,7 +62,6 @@ from .gtd import Gtd
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hp_online import HpOnline
-from .hp_store import HpStore
 from .ibyte import Ibyte
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
@@ -153,6 +152,7 @@ from .samsung_chile import SamsungChile
 from .samsung_shop import SamsungShop
 from .sanborns import Sanborns
 from .saraiva import Saraiva
+from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
 from .sindelen import Sindelen
 from .sion_computer import SionComputer

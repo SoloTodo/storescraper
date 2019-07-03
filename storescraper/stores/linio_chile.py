@@ -27,6 +27,7 @@ class LinioChile(Store):
             'Keyboard',
             'Mouse',
             'AllInOne',
+            'Monitor',
         ]
 
     @classmethod
@@ -54,6 +55,7 @@ class LinioChile(Store):
             # ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
             ['mouse-kit/mouse/', 'Mouse'],
             ['pc-escritorio/all-in-one/', 'AllInOne'],
+            ['pc-escritorio/monitores/', 'Monitor'],
         ]
 
         product_urls = []
