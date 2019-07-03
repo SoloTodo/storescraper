@@ -270,6 +270,11 @@ class RipleyChileBase(Store):
 
         description += '\n\n'
 
+        if 'reacondicionado' in description.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         picture_urls = []
         for path in specs_json['images']:
             picture_url = path
@@ -330,6 +335,7 @@ class RipleyChileBase(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
+            condition=condition,
             flixmedia_id=flixmedia_id,
             review_count=review_count,
             review_avg_score=review_avg_score,
