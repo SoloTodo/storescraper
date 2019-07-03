@@ -44,7 +44,6 @@ class Tekstore(Store):
                     raise Exception('Page overflow')
 
                 url = 'https://tekstore.cl/{}?p={}'.format(category_path, page)
-                print(url)
                 response = session.get(url)
 
                 if response.status_code == 500:
@@ -83,6 +82,9 @@ class Tekstore(Store):
         json_containers = soup.findAll(
             "script", {"type": "text/x-magento-init"})
 
+        reference_part_number = soup.find('div', 'product-add-form').find(
+            'form')['data-product-sku']
+
         for json_container in json_containers:
             if "spConfig" in json_container.text:
                 products = []
@@ -99,6 +101,11 @@ class Tekstore(Store):
                     for image_container in variant_images:
                         picture_urls.append(image_container['full'])
 
+                    description = \
+                        'SOLO COMO REFERENCIA, PROBABLEMENTE CORRESPONDE A ' \
+                        'LA VARIANTE DE OTRO COLOR: {}'.format(
+                            reference_part_number)
+
                     products.append(
                         Product(
                             '{} - {}'.format(name, variant_label),
@@ -112,7 +119,8 @@ class Tekstore(Store):
                             price,
                             'CLP',
                             sku=variant_id,
-                            picture_urls=picture_urls
+                            picture_urls=picture_urls,
+                            description=description
                         )
                     )
 
@@ -131,7 +139,7 @@ class Tekstore(Store):
 
                 products.append(
                     Product(
-                        name,
+                        '{} ({})'.format(name, reference_part_number),
                         cls.__name__,
                         category,
                         url,
@@ -142,6 +150,7 @@ class Tekstore(Store):
                         price,
                         'CLP',
                         sku=product_id,
+                        part_number=reference_part_number,
                         picture_urls=picture_urls
                     )
                 )
