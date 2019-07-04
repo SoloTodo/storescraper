@@ -10,7 +10,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
 
 
-class HpStore(Store):
+class ScGlobal(Store):
     @classmethod
     def categories(cls):
         return [
@@ -31,14 +31,14 @@ class HpStore(Store):
             ['empresa/notebook-comercial.html', 'Notebook'],
             ['pc-y-portatiles/portatiles.html', 'Notebook'],
             ['empresa/plotters.html', 'Printer'],
-            # ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
+            ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
             ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
             ['pc-y-portatiles/escritorio.html', 'AllInOne'],
             ['audio/teclados-y-mouse.html', 'Mouse'],
             # ['audio/parlantes.html', 'StereoSystem'],
-            ['monitores.html', 'Monitor'],
+            ['monitores/monitores.html', 'Monitor'],
         ]
 
         session = session_with_proxy(extra_args)
