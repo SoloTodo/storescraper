@@ -181,7 +181,7 @@ class Movistar(Store):
                         'emp_detalle/offer',
                         data=payload)
 
-                    if response.status_code == 500:
+                    if response.status_code in [500, 503]:
                         continue
 
                     json_response = json.loads(response.text)
