@@ -103,7 +103,8 @@ class Microplay(Store):
         price_container = soup.find('span', 'text_web')
 
         if price_container:
-            price = remove_words(price_container.nextSibling.nextSibling.find('p').next_sibling)
+            price = remove_words(price_container.nextSibling.nextSibling.find(
+                'p').next_sibling)
         else:
             price_container = soup.find('span', 'oferta')
             if not price_container:

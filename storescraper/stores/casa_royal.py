@@ -131,6 +131,11 @@ class CasaRoyal(Store):
             except KeyError:
                 pass
 
+        if 'reacond' in name.lower() or 'reacond' in description.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -144,7 +149,8 @@ class CasaRoyal(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
