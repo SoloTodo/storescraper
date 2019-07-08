@@ -20,7 +20,8 @@ class Multimax(Store):
             'Oven',
             'WashingMachine',
             'Stove',
-            'AirConditioner'
+            'AirConditioner',
+            'Monitor'
         ]
 
     @classmethod
@@ -29,23 +30,24 @@ class Multimax(Store):
             ('led-tv', 'Television'),
             ('smart-tv', 'Television'),
             ('4k-tv', 'Television'),
-            # ('android', 'Cell'),
+            ('android', 'Cell'),
             ('equipos-de-sonido', 'StereoSystem'),
             ('barras-de-sonido', 'StereoSystem'),
-            ('bocinas-portatiles', 'StereoSystem'),
+            # ('bocinas-portatiles', 'StereoSystem'),
             ('9-000-btu', 'AirConditioner'),
-            ('12-000-btu', 'AirConditioner'),
+            # ('12-000-btu', 'AirConditioner'),
             ('18-000-btu', 'AirConditioner'),
             ('24-000-btu', 'AirConditioner'),
             ('inverter', 'AirConditioner'),
             ('estufas', 'Stove'),
             ('lavadoras', 'WashingMachine'),
             ('secadoras', 'WashingMachine'),
-            ('centro-de-lavado', 'WashingMachine'),
+            # ('centro-de-lavado', 'WashingMachine'),
             ('refrigeradoras', 'Refrigerator'),
             # ('congeladores', 'Refrigerator'),
-            # ('microondas', 'Oven'),
-            # ('hornos', 'Oven')
+            ('microondas', 'Oven'),
+            ('hornos', 'Oven'),
+            ('monitores', 'Monitor'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -70,7 +72,13 @@ class Multimax(Store):
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
-                container = soup.find('div', 'productgrid--items')
+                container = soup.find('ul', 'productgrid--items')
+
+                if not container:
+                    if page == 1:
+                        raise Exception('No products for category {}'
+                                        .format(category))
+                    break
 
                 items = container.findAll('div', 'productitem')
                 if items:
@@ -78,11 +86,6 @@ class Multimax(Store):
                         product_url = 'https://shopmultimax.com{}'\
                             .format(item.find('a')['href'])
                         product_urls.append(product_url)
-                else:
-                    if page == 1:
-                        raise Exception('No products for category {}'
-                                        .format(category))
-                    break
 
                 page += 1
 
