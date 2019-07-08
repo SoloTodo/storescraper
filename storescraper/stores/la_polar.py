@@ -119,8 +119,8 @@ class LaPolar(Store):
              'Inicio > Línea Blanca > Climatización > Estufas a Gas', 1],
             ['estufas-electricas', ['SpaceHeater'],
              'Inicio > Línea Blanca > Climatización > Estufas Eléctricas', 1],
-            ['enfriadores', ['AirConditioner'],
-             'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
+            # ['enfriadores', ['AirConditioner'],
+            #  'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
             ['accesorios-telefonos', ['Wearable'],
              'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 0]
         ]
@@ -139,6 +139,8 @@ class LaPolar(Store):
                   'Sites-LaPolar-Site/es_CL/Search-UpdateGrid?' \
                   'cgid={}&srule=most-popular&start=0&sz=150' \
                 .format(category_path)
+
+            print(url)
 
             response = session.get(url).text
             soup = BeautifulSoup(response, 'html.parser')

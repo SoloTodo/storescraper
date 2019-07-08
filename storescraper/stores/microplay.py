@@ -94,18 +94,22 @@ class Microplay(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        if 'Producto no disponible' in page_source:
+            return []
+
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = re.search('ecomm_prodid: (\d+)', page_source).groups()[0]
 
-        with_stock_web = soup.find('a', 'btn-agregar2')
+        price_container = soup.find('span', 'text_web')
 
-        if with_stock_web:
-            stock = -1
+        if price_container:
+            price = remove_words(price_container.nextSibling.nextSibling.find('p').next_sibling)
         else:
-            stock = 0
+            price_container = soup.find('span', 'oferta')
+            if not price_container:
+                return []
+            price = remove_words(price_container.find('b').text)
 
-        price = re.search('ecomm_totalvalue: (\d+).00',
-                          page_source).groups()[0]
         price = Decimal(price)
 
         description = html_to_markdown(
@@ -121,7 +125,7 @@ class Microplay(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             price,
             price,
             'CLP',
