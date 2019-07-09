@@ -690,7 +690,8 @@ class Falabella(Store):
                 picture_url = image_container.find('source')['srcset']
 
                 if '//' not in picture_url:
-                    picture_url = 'https://www.falabella.com{}'.format(picture_url)
+                    picture_url = 'https://www.falabella.com{}'.format(
+                        picture_url)
                 elif 'https:' not in picture_url:
                     picture_url = 'https:{}'.format(picture_url)
 

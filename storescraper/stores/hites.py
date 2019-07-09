@@ -351,6 +351,17 @@ class Hites(Store):
                 description += '\n{} {}'.format(attribute['name'],
                                                 attribute.get('value', ''))
 
+        has_virtual_assistant = \
+            'cdn.livechatinc.com/tracking.js' in response.text
+
+        flixmedia_container = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+
+        if flixmedia_container:
+            flixmedia_id = flixmedia_container['data-flix-mpn']
+        else:
+            flixmedia_id = None
+
         p = Product(
             name,
             cls.__name__,
@@ -364,7 +375,9 @@ class Hites(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            flixmedia_id=flixmedia_id,
+            has_virtual_assistant=has_virtual_assistant
         )
 
         return [p]
