@@ -64,22 +64,19 @@ class Falabella(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
             ['cat70057/Notebooks', ['Notebook'],
-             'Home > Escolares-Tecnología > Notebooks', 1],
+             'Home > Computación-Notebooks', 1],
             ['cat5860031/Notebooks-Convencionales', ['Notebook'],
-             'Home > Escolares-Tecnología > Notebooks > '
-             'Notebooks Tradicionales', 1],
+             'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
             ['cat2028/Notebooks-Gamers', ['Notebook'],
              'Home > Computación-Notebooks Gamers', 1],
             ['cat2450060/Notebooks-2-en-1', ['Notebook'],
-             'Home > Escolares-Tecnología > Notebooks > '
-             'Notebooks Convertibles 2en1', 1],
+             'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
             ['cat15880017/Notebooks-gamer', ['Notebook'],
              'Home > Especiales-Gamer', 1],
             ['cat5860030/MacBooks', ['Notebook'],
-             'Home > Escolares-Tecnología > Notebooks > MacBooks', 1],
+             'Home > Computación-Notebooks > MacBooks', 1],
             ['cat4850013/Computacion-Gamer', ['Notebook'],
              'Home > Computación-Computación Gamer', 1],
-
             ['cat7190148/Televisores-LED', ['Television'],
              'Home > TV-Televisores LED', 1],
             ['cat2850016/Televisores-OLED', ['Television'],
@@ -88,10 +85,8 @@ class Falabella(Store):
              'Home > TV-Televisores QLED', 1],
             ['cat12910024/Televisores-LED-Desde-65"', ['Television'],
              'Home > TV-Pulgadas Altas', 1],
-
             ['cat7230007/Tablet', ['Tablet'],
              'Home > Computación-Tablets', 1],
-
             ['cat4074/No-Frost', ['Refrigerator'],
              'Home > Refrigeración-No Frost', 1],
             ['cat4091/Side-by-Side', ['Refrigerator'],
@@ -104,39 +99,32 @@ class Falabella(Store):
              'Home > Refrigeración-Frigobar', 1],
             ['cat1840004/Cavas-de-Vino', ['Refrigerator'],
              'Home > Refrigeración-Cavas', 1],
-
             ['cat1820006/Impresoras-Multifuncionales', ['Printer'],
              'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
             # ['cat6680042/Impresoras-Tradicionales', 'Printer'], TODO: revisar
             # ['cat11970007/Impresoras-Laser', 'Printer'],
             # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
-
             ['cat3151/Microondas', ['Oven'],
              'Home > Microondas', 1],
             ['cat3114/Hornos-Electricos', ['Oven'],
              'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
              'Hornos Eléctricos', 1],
-
             ['cat3025/Aspiradoras-y-Enceradoras', ['VacuumCleaner'],
              'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
-
             ['cat4060/Lavadoras', ['WashingMachine'],
              'Home > Lavado-Lavadoras', 1],
             ['cat1700002/Lavadora-Secadora', ['WashingMachine'],
              'Home > Lavado-Lavadoras-Secadoras', 1],
             ['cat4088/Secadoras', ['WashingMachine'],
              'Home > Lavado-Secadoras', 1],
-
             ['cat1280018/Celulares-Basicos', ['Cell'],
              'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
             ['cat720161/Smartphones', ['Cell'],
              'Home > Telefonía- Celulares y Teléfonos > Smartphones', 1],
-
             ['cat70028/Camaras-Compactas', ['Camera'],
              'Home > Fotografía-Cámaras Compactas', 1],
             ['cat70029/Camaras-Semiprofesionales', ['Camera'],
              'Home > Fotografía-Cámaras Semiprofesionales', 1],
-
             ['cat3091/Equipos-de-Musica', ['StereoSystem'],
              'Home > Audio-Equipos de Música y Karaokes', 1],
             ['cat3171/Parlantes-Bluetooth', ['StereoSystem'],
@@ -148,46 +136,34 @@ class Falabella(Store):
              'Home > Audio- Hi-Fi > Tornamesas', 1],
             ['cat6260041/Karaoke', ['StereoSystem'],
              'Home > Día del Niño Chile- Tecnología > Audio > Karaoke', 1],
-
             ['cat2032/DVD-y-Blu-Ray', ['OpticalDiskPlayer'],
              'Home > TV-Blu Ray y DVD', 1],
-
             ['cat3087/Discos-duros', ['ExternalStorageDrive'],
              'Home > Computación- Almacenamiento > Discos duros', 1],
-
             ['cat3177/Pendrives', ['UsbFlashDrive'],
              'Home > Computación- Almacenamiento > Pendrives', 1],
-
             ['cat70037/Tarjetas-de-Memoria', ['MemoryCard'],
              'Home > Computación- Accesorios Tecnología > '
              'Accesorios Fotografía > Tarjetas de Memoria', 1],
-
             ['cat2070/Proyectores', ['Projector'],
              'Home > TV-Proyectores', 1],
-
             ['cat3770004/Consolas', ['VideoGameConsole'],
              'Home > Tecnología- Videojuegos > Consolas', 1],
-
             ['cat40051/All-In-One', ['AllInOne'],
              'Home > Computación-All In One', 1],
-
             ['cat7830015/Portatiles', ['AirConditioner'],
              'Home > Electrohogar- Aire Acondicionado > Portátiles', 1],
             ['cat7830014/Split', ['AirConditioner'],
              'Home > Electrohogar- Aire Acondicionado >Split', 1],
             ['cat3197/Purificadores', ['AirConditioner'],
              'Home > Electrohogar- Aire Acondicionado > Purificadores', 1],
-
             ['cat2062/Monitores', ['Monitor'],
              'Home > Computación-Monitores', 1],
-
             ['cat2013/Calefont-y-Termos', ['WaterHeater'],
              'Home > Electrohogar- Aire Acondicionado > Calefont y Termos', 1],
-
             ['cat3155/Mouse', ['Mouse'],
              'Home > Computación- Accesorios Tecnología > '
              'Accesorios Computación > Mouse', 1],
-
             ['cat9900007/Estufas-Parafina', ['SpaceHeater'],
              'Home > Electrohogar- Calefacción > Estufas Parafina Láser', 1],
             ['cat9910024/Estufas-Gas', ['SpaceHeater'],
@@ -196,10 +172,8 @@ class Falabella(Store):
              'Home > Electrohogar- Calefacción > Estufas Eléctricas', 1],
             ['cat9910027/Estufas-Pellet-y-Lena', ['SpaceHeater'],
              'Home > Electrohogar- Calefacción > Estufas Pellet y Leña', 1],
-
             ['cat4290063/SmartWatch', ['Wearable'],
              'Home > Telefonía- Wearables > SmartWatch', 1],
-
             ['cat4730023/Teclados-Gamers', ['Keyboard'],
              'Home > Computación- Accesorios Tecnología > '
              'Accesorios Computación > Teclados > Teclados Gamers', 1],
@@ -209,11 +183,9 @@ class Falabella(Store):
             ['cat2930003/Teclados-Smart', ['Keyboard'],
              'Home > Computación- Accesorios Tecnología > Accesorios TV > '
              'Teclados Smart', 1],
-
             ['cat1640002/Audifonos', ['Headphones'],
              'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
              'Audífonos', 1],
-
             ['cat4061/Lavavajillas', ['DishWasher'],
              'Home > Lavado-Lavavajillas', 1],
         ]
@@ -233,9 +205,6 @@ class Falabella(Store):
                           'Safari/537.36',
             'Authorization': 'foo'
         })
-        # session.get('https://www.falabella.com/falabella-cl/', timeout=30)
-        # session.get('https://www.falabella.com/falabella-cl/'
-        #             'includes/ajaxFirstNameAndCartQuantity.jsp', timeout=30)
 
         product_entries = defaultdict(lambda: [])
 
