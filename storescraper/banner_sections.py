@@ -15,9 +15,6 @@ LINEA_BLANCA_PARIS = 'Línea Blanca Paris'
 ELECTRO_PARIS = 'Electro Paris'
 TECNO_PARIS = 'Tecno Paris'
 
-LINEA_BLANCA_LA_POLAR = 'Línea Blanca La Polar'
-ELECTRONICA_LA_POLAR = 'Electrónica La Polar'
-
 LINEA_BLANCA_ABCDIN = 'Línea Blanca AbcDin'
 
 # Types #

@@ -1,11 +1,13 @@
+import time
+
 from collections import defaultdict
 from decimal import Decimal
-
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    HeadlessChrome
 from storescraper import banner_sections as bs
 
 
@@ -277,15 +279,7 @@ class LaPolar(Store):
     def banners(cls, extra_args=None):
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME,
-             'https://www.lapolar.cl/'],
-            [bs.LINEA_BLANCA_LA_POLAR, 'Línea Blanca',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'https://tienda.lapolar.cl/catalogo/linea_blanca'],
-            [bs.ELECTRONICA_LA_POLAR, 'Electrónica',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'https://tienda.lapolar.cl/catalogo/electronica'],
-            [bs.CELLS, 'Smartphones', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'https://www.lapolar.cl/especial/smartphones/']
+             'https://www.lapolar.cl/']
         ]
 
         session = session_with_proxy(extra_args)
@@ -297,23 +291,60 @@ class LaPolar(Store):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                images = soup.findAll('div', 'hero-banner-wrapper')
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
 
-                for index, image in enumerate(images):
-                    picture_url = 'https://www.lapolar.cl{}'\
-                        .format(image.find('img')['data-src'])
-                    destination_urls = [image.find('a')['href']]
+                    pictures = []
+                    banner_container = driver.find_element_by_class_name(
+                        'slick-list')
 
-                    banners.append({
-                        'url': url,
-                        'picture_url': picture_url,
-                        'destination_urls': destination_urls,
-                        'key': picture_url,
-                        'position': index + 1,
-                        'section': section,
-                        'subsection': subsection,
-                        'type': subsection_type
-                    })
+                    controls = driver\
+                        .find_element_by_class_name('slick-dots')\
+                        .find_elements_by_tag_name('li')
+
+                    for control in controls:
+                        control.click()
+                        time.sleep(2)
+                        pictures.append(banner_container.screenshot_as_base64)
+
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+                    images = soup.find('div', 'slick-track')\
+                        .findAll('div', 'slick-slide')
+
+                    images = [a for a in images if
+                              'slick-cloned' not in a['class']]
+
+                    assert len(images) == len(pictures)
+
+                    for index, image in enumerate(images):
+                        key = None
+                        key_options = image.findAll('img', 'responsive_prod')
+
+                        destination_urls = [d['href'] for d in
+                                            image.findAll('a')]
+                        destination_urls = list(set(destination_urls))
+
+                        for key_option in key_options:
+                            if 'llamado_logo_img' in key_option['class']:
+                                continue
+                            key = key_option['src']
+                            break
+
+                        if not key:
+                            key = destination_urls[0]
+
+                        banners.append({
+                            'url': url,
+                            'picture': pictures[index],
+                            'destination_urls': destination_urls,
+                            'key': key,
+                            'position': index + 1,
+                            'section': section,
+                            'subsection': subsection,
+                            'type': subsection_type
+                        })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 iframe = soup.find('iframe', 'full')
                 if iframe:
