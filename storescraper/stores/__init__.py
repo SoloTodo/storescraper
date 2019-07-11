@@ -154,6 +154,7 @@ from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
+from .sincex import Sincex
 from .sindelen import Sindelen
 from .sion_computer import SionComputer
 from .sistemax import Sistemax
