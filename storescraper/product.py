@@ -227,7 +227,17 @@ class Product:
             return None
         return json.dumps(self.picture_urls)
 
+    def picture_urls_count(self):
+        if self.picture_urls is None:
+            return None
+        return len(self.picture_urls)
+
     def video_urls_as_json(self):
         if self.video_urls is None:
             return None
         return json.dumps(self.video_urls)
+
+    def video_urls_count(self):
+        if self.video_urls is None:
+            return None
+        return len(self.video_urls)
