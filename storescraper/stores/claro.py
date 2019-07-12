@@ -1,4 +1,5 @@
 import json
+import demjson
 
 import re
 import urllib
@@ -103,26 +104,27 @@ class Claro(Store):
     @classmethod
     def _planes(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        data = session.get(cls.planes_url).text
-        raw_data = re.findall(
-            r'var jsonPlanes\s*= jQuery.parseJSON\(\'([\s\S]*?)\'\);', data)[0]
-        json_data = json.loads(raw_data)
+        data_url = 'https://digital.clarochile.cl/wcm-inyect/'\
+                   'landing-postpago/assets/js/planes.js'
+        data = session.get(data_url).text
+        data = data.replace("\'", "\"")
+
+        raw_data = re.findall(r'planes_moviles = \[([\s\S]*?)]', data)[0]
+        raw_data = '[{}]'.format(raw_data)
+        json_data = demjson.decode(raw_data)
 
         products = []
-
         portabilidad_modes = [
             '',
             ' Portabilidad',
         ]
 
-        for sku_entry in json_data:
-            if sku_entry['lstFiltros'][0]['fi_opcion_filtro'] != 142:
-                continue
-
+        for data in json_data:
             for suffix in portabilidad_modes:
-                name = '{}{}'.format(sku_entry['fc_nombre'].strip(), suffix)
-                price = Decimal(sku_entry['fi_precio_television_espn'])
-                key = '{}{}'.format(sku_entry['fi_plan'], suffix)
+                name = '{}{}'.format(data['nombre'], suffix)
+                price = Decimal(
+                    data['valor_fijo_portabilidad_propio'].replace('.', ''))
+                key = '{}{}'.format(data['id'], suffix)
 
                 products.append(Product(
                     name,
@@ -134,8 +136,7 @@ class Claro(Store):
                     -1,
                     price,
                     price,
-                    'CLP'
-                ))
+                    'CLP'))
 
         return products
 
