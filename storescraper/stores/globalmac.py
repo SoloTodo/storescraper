@@ -33,6 +33,9 @@ class GlobalMac(Store):
             ['hardware-mac-pc/discos-duros-notebook-sata-2.5',
              'SolidStateDrive'],
             ['hardware-mac-pc/discos-duros-ssd-sata-2.5', 'SolidStateDrive'],
+            ['hardware-mac-pc/SSD-M2-PCIe-NVMe', 'SolidStateDrive'],
+            ['hardware-mac-pc/SSD-M2-SATA', 'SolidStateDrive'],
+            ['hardware-mac-pc/SSD-mSATA', 'SolidStateDrive'],
             ['hardware-mac-pc/memorias-ram', 'Ram'],
             ['hardware-mac-pc/Tarjetas-Expansion-Flashdrive-SDCard-y-SSD-'
              'para-Apple-Mac', 'MemoryCard'],
