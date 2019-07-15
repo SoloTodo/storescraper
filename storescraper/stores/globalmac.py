@@ -72,8 +72,13 @@ class GlobalMac(Store):
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
-        picture_urls = [tag['href'] for tag in soup.find(
-            'ul', 'thumbnails').findAll('a', 'thumbnail') if tag['href']]
+        pictures_container = soup.find('ul', 'thumbnails')
+
+        if pictures_container:
+            picture_urls = [tag['href'] for tag in pictures_container.findAll(
+                'a', 'thumbnail') if tag['href']]
+        else:
+            picture_urls = None
 
         if soup.find('link', {'itemprop': 'availability'})['href'] == \
                 'http://schema.org/InStock':

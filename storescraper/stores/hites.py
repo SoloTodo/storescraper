@@ -308,16 +308,17 @@ class Hites(Store):
         name = json_data['name']
         sku = json_data['partNumber']
 
+        shipping = json_data['shipping']
+
+        if shipping['dDomicilio'] or shipping['rTienda']:
+            stock = -1
+        else:
+            stock = 0
+
         if json_data['isOutOfStock']:
             picture_urls = [json_data['fullImage']]
-            stock = 0
         else:
             picture_urls = json_data['children'][0]['images']
-            stock = 0
-            for attribute in json_data['children'][0]['attributes']:
-                if attribute['identifier'] == 'SHIPMODE_HOMEDEL':
-                    if attribute['value'] == '1':
-                        stock = -1
 
         reference_price = json_data['prices']['listPrice']
 
