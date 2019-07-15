@@ -308,9 +308,7 @@ class Hites(Store):
         name = json_data['name']
         sku = json_data['partNumber']
 
-        shipping = json_data['shipping']
-
-        if shipping['dDomicilio'] or shipping['rTienda']:
+        if soup.find('div', 'buy-action-button').find('button'):
             stock = -1
         else:
             stock = 0
