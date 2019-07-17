@@ -108,12 +108,8 @@ class SamsungChile(Store):
     def _category_info(cls):
         return [
             ('19010000', '', 'tvs/all-tvs', 'Television'),
-            ('19020000', '&filter1=02z05',
-             'audio-video/blu-ray-dvd-player', 'OpticalDiskPlayer'),
-            ('19020000', '&filter1=02z03',
-             'audio-video/home-entertainment-system', 'SteroSystem'),
-            ('19020000', '&filter1=02z02',
-             'audio-video/soundbar', 'StereoSystem'),
+            ('19020000', '',
+             'audio-video/all-audio-video', 'StereoSystem'),
             ('18010000', '', 'smartphones/all-smartphones', 'Cell'),
             ('18020000', '', 'tablets/all-tablets', 'Tablet'),
             ('18070000', '', 'windows-tablets/all-windows-tablets', 'Tablet'),

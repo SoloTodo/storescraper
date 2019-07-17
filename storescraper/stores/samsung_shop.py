@@ -21,6 +21,7 @@ class SamsungShop(Store):
             'DishWasher',
             'Tablet',
             'Oven',
+            'CellAccesory',
         ]
 
     @classmethod
@@ -29,7 +30,7 @@ class SamsungShop(Store):
             ('mobile/smartphones', 'Cell'),
             ('mobile/tablets', 'Tablet'),
             ('mobile/wearables', 'Wearable'),
-            ('mobile/accesorios/Aud%C3%ADfonos', 'Headphones'),
+            ('mobile/accesorios', 'Headphones'),
             ('tv-y-audio/tv', 'Television'),
             ('linea-blanca/refrigeradores', 'Refrigerator'),
             ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
