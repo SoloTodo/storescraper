@@ -165,6 +165,11 @@ class Wei(Store):
 
         normal_price = Decimal(remove_words(normal_price))
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-producto'})))
 
@@ -189,6 +194,7 @@ class Wei(Store):
             offer_price,
             'CLP',
             sku=sku,
+            condition=condition,
             description=description,
             picture_urls=picture_urls
         )
