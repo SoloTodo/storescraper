@@ -22,6 +22,7 @@ class SamsungShop(Store):
             'Tablet',
             'Oven',
             'CellAccesory',
+            'StereoSystem',
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class SamsungShop(Store):
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             ('linea-blanca/lavavajillas', 'DishWasher'),
             ('linea-blanca/accesorios', 'AirConditioner'),
+            ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
 
         product_urls = []
