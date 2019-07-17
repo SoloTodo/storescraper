@@ -32,8 +32,8 @@ class Tottus(Store):
         category_paths = [
             ['Televisores/cat2290025', ['Television'],
              'Televisores', 1],
-            ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
-             'Consolas y Videojuegos', 1],
+            # ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
+            #  'Consolas y Videojuegos', 1],
             ['Televisores-y-videojuegos/cat2280071',
              ['Television', 'VideoGameConsole'],
              'Televisores y videojuegos', 0],
