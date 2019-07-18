@@ -72,7 +72,8 @@ class EVision(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
+
         name = soup.find('meta', {'itemprop': 'name'})['content']
         sku = soup.find('meta', {'itemprop': 'productID'})['content']
         stock = -1
