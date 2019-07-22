@@ -41,6 +41,7 @@ class SpDigital(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'VideoGameConsole',
         ]
 
     @classmethod
@@ -120,6 +121,8 @@ class SpDigital(Store):
              'Home > Accesorios > Kit Teclados Mouse', 1],
             ['337', ['Headphones'],
              'Home > Accesorios > Audífonos', 1],
+            ['357', ['VideoGameConsole'],
+             'Home > Audio y Video > Consolas', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
