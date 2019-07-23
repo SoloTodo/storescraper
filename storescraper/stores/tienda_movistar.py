@@ -47,7 +47,6 @@ class TiendaMovistar(Store):
             while not done:
                 category_url = 'https://catalogo.movistar.cl/fullprice/' \
                                'catalogo/{}?p={}'.format(category_path, page)
-                print(category_url)
 
                 if page >= 30:
                     raise Exception('Page overflow: ' + category_url)
@@ -80,7 +79,6 @@ class TiendaMovistar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
@@ -91,12 +89,8 @@ class TiendaMovistar(Store):
 
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-        stock_button = soup.find('button', 'btn-sin-stock')
 
-        if 'style' in stock_button.attrs:
-            stock = -1
-        else:
-            stock = 0
+        stock = int(re.search(r'stockMagento: (.*?),', page_source).group(1))
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
