@@ -18,12 +18,8 @@ class LenovoChile(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        nb_path = "products/json?categoryCodes=thinkpadx%2Cthinkpadt%2" \
-                  "Cthinkpade%2Cthinkpadp%2Cthinkpadyoga%2Clegion-y-series%2" \
-                  "Cyoga-c-series%2Cyoga-s-series%2Cyoga-500-series%2" \
-                  "Cyoga-300-series%2CIdeaPad-100%2CIdeaPad-300%2" \
-                  "CIdeaPad-500%2Cww-ideapad-s-series-redesign%2Cv-series%2" \
-                  "Clenovo-g-series%2Clenovo-serie-y"
+        nb_path = "https://www.lenovo.com/cl/es/laptops/c/LAPTOPS/" \
+                  "asyncProductListPage?q=%3Aprice-asc&page={}"
 
         session = session_with_proxy(extra_args)
         products_urls = []
@@ -31,21 +27,33 @@ class LenovoChile(Store):
         if category != 'Notebook':
             return []
 
-        url = 'https://www.lenovo.com/cl/es/c/{}'.format(nb_path)
-        products_json = json.loads(session.get(url).text)
+        page = 0
 
-        for key in products_json:
-            series = products_json[key]
-            for product in series:
-                products_urls.append('https://www.lenovo.com/cl/es{}'
-                                     .format(product['url']))
+        while True:
+            url = nb_path.format(page)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'facetedResults-item')
+
+            if not product_containers:
+                break
+
+            for container in product_containers:
+                product_url = 'https://www.lenovo.com{}'\
+                    .format(container.find('a')['href'])
+                products_urls.append(product_url)
+
+            page += 1
 
         return products_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = session.get(url,  allow_redirects=False)
+        if response.status_code == 301:
+            return []
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         models_containers = soup.findAll('div', 'tabbedBrowse-productListing')
         products = []

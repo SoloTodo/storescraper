@@ -156,7 +156,7 @@ class RipleyChileBase(Store):
              'Electro > Climatización > Estufas y calefactores', 1],
             ['tecno/telefonia/smartwatches-y-wearables', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables', 1],
-            ['tecno/audio-y-musica/audifonos', ['Headphones'],
+            ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
             # ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
         ]
@@ -179,6 +179,8 @@ class RipleyChileBase(Store):
 
                 category_url = url_base.format(category_path, page)
                 response = session.get(category_url, allow_redirects=False)
+
+                print(category_url)
 
                 if response.status_code != 200:
                     raise Exception('Invalid section: ' + category_url)
