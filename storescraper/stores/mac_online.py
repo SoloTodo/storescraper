@@ -76,7 +76,7 @@ class MacOnline(Store):
 
         soup = BeautifulSoup(page_source, 'html.parser')
         default_picture_url = soup.find('img',
-                                        {'itemprop': 'image'})['data-src']
+                                        {'itemprop': 'image'})
         json_data = re.search(r'options: (.*)', page_source)
 
         if json_data:
@@ -100,8 +100,10 @@ class MacOnline(Store):
                 picture_tag = soup.find('li', 'tmb-' + sku)
                 if picture_tag:
                     picture_urls = [picture_tag.find('a')['href']]
+                elif default_picture_url:
+                    picture_urls = [default_picture_url['data-src']]
                 else:
-                    picture_urls = [default_picture_url]
+                    picture_urls = None
 
                 products.append(Product(
                     name,
