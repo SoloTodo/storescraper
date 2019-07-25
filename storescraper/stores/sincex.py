@@ -26,7 +26,7 @@ class Sincex(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('electronica/televisores', 'Cell'),
+            ('electronica/televisores', 'Television'),
             ('electronica/audio/audio-hi-fi', 'StereoSystem'),
             ('electronica/audio/minicomponentes', 'StereoSystem'),
             ('electronica/video', 'OpticalDiskPlayer'),
