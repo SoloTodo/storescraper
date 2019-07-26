@@ -444,8 +444,8 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver\
-                        .find_element_by_class_name('slick-dots')\
-                        .find_elements_by_tag_name('button')
+                        .find_element_by_class_name('carousel__controls__center')\
+                        .find_elements_by_class_name('slider-controls__dots')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
@@ -458,7 +458,7 @@ class Hites(Store):
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                     images = soup.find('div', 'slick-track')\
-                        .findAll('div', 'slick-slide')
+                        .findAll('li', 'slick-slide')
 
                     # images = soup.find('div', 'owl-stage') \
                     #     .findAll('div', 'owl-item')
@@ -495,6 +495,8 @@ class Hites(Store):
                         if not product_box:
                             product_box = image.find(
                                 'a', 'boxproducto')
+                        if not product_box:
+                            product_box = image
 
                         if not (product_box.find('source') or
                                 product_box.find('img')):
