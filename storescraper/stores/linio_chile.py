@@ -132,9 +132,11 @@ class LinioChile(Store):
 
         normal_price = Decimal(pricing_data['special_price'])
 
-        offfer_price_container = soup.find('div', 'price-promotional')
-        if offfer_price_container:
-            offer_price = Decimal(remove_words(offfer_price_container.text))
+        offer_price_container = soup.find(
+            'div', 'buy-information').find('div', 'price-promotional')
+
+        if offer_price_container:
+            offer_price = Decimal(remove_words(offer_price_container.text))
             if offer_price > normal_price:
                 offer_price = normal_price
         else:
