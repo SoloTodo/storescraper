@@ -97,8 +97,10 @@ class RipleyChileBase(Store):
              'Electro > Cocina > Cocinas', 1],
             ['electro/cocina/microondas', ['Oven'],
              'Electro > Cocina > Microondas', 1],
-            ['electro/cocina/hornos', ['Oven'],
-             'Electro > Cocina > Hornos', 1],
+            ['electro/cocina/hornos-y-microondas', ['Oven'],
+             'Electro > Cocina > Hornos y Microondas', 1],
+            # ['electro/cocina/hornos', ['Oven'],
+            #  'Electro > Cocina > Hornos', 1],
             ['electro/cocina/lavavajillas', ['DishWasher'],
              'Electro > Cocina > Lavavajillas', 1],
 
