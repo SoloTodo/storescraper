@@ -3,6 +3,7 @@ import urllib
 import re
 import time
 import base64
+import math
 
 from collections import defaultdict
 from collections import OrderedDict
@@ -214,8 +215,6 @@ class Falabella(Store):
             if category not in local_categories:
                 continue
 
-            print(url_path)
-
             sorters = [
                 None,  # No sorting
                 # 1,  # Precio menor a mayor
@@ -256,7 +255,7 @@ class Falabella(Store):
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        product_urls = []
+        discovered_urls = []
         session = session_with_proxy(extra_args)
         session.headers.update({
             'Accept': '*/*',
@@ -273,18 +272,54 @@ class Falabella(Store):
             'Authorization': 'foo'
         })
 
+        base_url = "https://www.falabella.com/s/search/v1/products/cl?" \
+                     "Ntt={}&page={}&zone=13"
+
         for i in range(4):
             try:
-                product_urls = cls._get_product_urls(
-                    session,
-                    'search',
-                    keyword=keyword,
-                    threshold=threshold)
+                discovered_urls = []
+                page = 1
+                while True:
+                    if page > 60:
+                        raise Exception('Page overflow ' + keyword)
+
+                    res = None
+                    error_count = 0
+                    while res is None or 'errors' in res:
+                        error_count += 1
+                        if error_count > 10:
+                            raise Exception(
+                                'Error threshold exceeded: ' + 'search')
+
+                        search_url = base_url.format(keyword, page)
+
+                        res = session.get(search_url, timeout=None)
+                        res = json.loads(res.content.decode('utf-8'))
+
+                        if not res['data']['results'] and page == 1:
+                            raise Exception('Empty keyword path: ' + keyword)
+
+                        for product_entry in res['data']['results']:
+                            product_id = product_entry['productId'].strip()
+                            product_url = \
+                                'https://www.falabella.com/falabella-cl/' \
+                                'product/{}/'.format(product_id)
+                            discovered_urls.append(product_url)
+
+                            if len(discovered_urls) == threshold:
+                                return discovered_urls
+
+                    if math.ceil(
+                            res['data']['pagination']['count'] /
+                            res['data']['pagination']['perPage']) == page:
+                        break
+
+                    page += 1
                 break
-            except Exception:
+            except Exception as e:
                 continue
 
-        return product_urls
+        return discovered_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -311,7 +346,6 @@ class Falabella(Store):
         page = 1
 
         while True:
-            print(page)
             if page > 60:
                 raise Exception('Page overflow: ' + keyword)
 
@@ -354,7 +388,6 @@ class Falabella(Store):
 
     @classmethod
     def _products_for_url(cls, url, retries=5, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         content = session.get(url, timeout=30).text.replace('&#10;', '')
 
@@ -457,7 +490,6 @@ class Falabella(Store):
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
                           'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
                 .format(sku)
-            print(reviews_url)
             review_data = json.loads(session.get(reviews_url).text)
             review_count = review_data['TotalResults']
 
@@ -611,7 +643,7 @@ class Falabella(Store):
                             '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
-                    print(url)
+
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
