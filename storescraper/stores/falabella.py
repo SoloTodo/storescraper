@@ -610,37 +610,41 @@ class Falabella(Store):
             url = base_url.format(url_suffix)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                images = soup.findAll('div', 'fb-hero-carousel-slide')
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
 
-                for index, image in enumerate(images):
-                    picture_array = image.find('picture').findAll('source')
-                    destination_urls = [d['href'] for d in image.findAll('a')]
-                    destination_urls = list(set(destination_urls))
-                    for picture in picture_array:
-                        picture_url = picture['srcset'].split(' ')[0]
+                    images = driver.find_elements_by_class_name('dy_unit')[1:-1]
+                    index = 1
 
-                        if 'https://www.falabella.com' not in picture_url:
-                            picture_url = 'https://www.falabella.com' \
-                                          '{}'.format(picture_url)
+                    for image in images:
+                        picture_array = image.find_element_by_tag_name('picture').find_elements_by_tag_name('source')
+                        destination_urls = [d.get_property('href') for d in image.find_elements_by_tag_name('a')]
+                        destination_urls = list(set(destination_urls))
+                        for picture in picture_array:
+                            picture_url = picture.get_property('srcset').split(' ')[0]
 
-                        if picture_url:
-                            banners.append({
-                                'url': url,
-                                'picture_url': picture_url,
-                                'destination_urls': destination_urls,
-                                'key': picture_url,
-                                'position': index+1,
-                                'section': section,
-                                'subsection': subsection,
-                                'type': subsection_type
-                            })
-                            break
-                    else:
-                        raise Exception(
-                            'No valid banners found for {} in position '
-                            '{}'.format(url, index + 1))
+                            if 'https://www.falabella.com' not in picture_url:
+                                picture_url = 'https://www.falabella.com' \
+                                              '{}'.format(picture_url)
+
+                            if picture_url:
+                                banners.append({
+                                    'url': url,
+                                    'picture_url': picture_url,
+                                    'destination_urls': destination_urls,
+                                    'key': picture_url,
+                                    'position': index,
+                                    'section': section,
+                                    'subsection': subsection,
+                                    'type': subsection_type
+                                })
+                                break
+                        else:
+                            raise Exception(
+                                'No valid banners found for {} in position '
+                                '{}'.format(url, index + 1))
+                        index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
 
