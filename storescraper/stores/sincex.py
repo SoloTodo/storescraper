@@ -85,7 +85,7 @@ class Sincex(Store):
 
         stock = -1
 
-        price_container = soup.find('ins').find('span', 'amount')
+        price_container = soup.find('div', 'summary').find('span', 'amount')
         price = Decimal(price_container.text.replace('$', '').replace('.', ''))
 
         pictures_containers = soup.findAll(
