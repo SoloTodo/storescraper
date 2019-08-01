@@ -28,7 +28,7 @@ class Raenco(Store):
         category_filters = [
             ('tecnologia/tv', 'Television'),
             ('tecnologia/tv/tv-led-hd-fhd', 'Television'),
-            ('tecnologia/tv/lcd', 'Television'),
+            # ('tecnologia/tv/lcd', 'Television'),
             ('tecnologia/tv/tv-4k', 'Television'),
             ('tecnologia/equipos-de-sonido', 'StereoSystem'),
             ('tecnologia/celulares', 'Cell'),
@@ -54,9 +54,9 @@ class Raenco(Store):
             ('hogar/linea-blanca/estufas', 'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-20-24-pulgadas', 'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-30-y-36-pulgadas', 'Stove'),
-            # ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-electricas', 'Stove'),
             ('hogar/linea-blanca/estufas/estufas-empotrables', 'Stove'),
-            ('hogar/linea-blanca/estufas/de-mesa-a-gas-electrica', 'Stove'),
+            # ('hogar/linea-blanca/estufas/de-mesa-a-gas-electrica', 'Stove'),
             ('oficina/132/137', 'Projector'),
         ]
 
