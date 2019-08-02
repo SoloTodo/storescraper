@@ -11,8 +11,8 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class Gtd(Store):
     prepago_url = 'https://nuevo.gtdmanquehue.com/telefonia-movil'
-    equipos_url = 'https://nuevo.gtdmanquehue.com/telefonia-movil/equipos/' \
-                  'catalogo-de-equipos'
+    equipos_url = 'https://nuevo.gtdmanquehue.com/negocios/' \
+                  'telefonia-movil/equipos'
 
     @classmethod
     def categories(cls):
