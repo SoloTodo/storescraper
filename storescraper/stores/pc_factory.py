@@ -54,12 +54,9 @@ class PcFactory(Store):
             ['735', ['Notebook'],
              'Inicio > Computadores y Tablets > Notebooks', 1],
 
-            ['454', ['VideoCard'],
+            ['334', ['VideoCard'],
              'Inicio > Componentes/Partes y Piezas > Tarjetas Gráficas > '
              'Tarjetas Gráficas AMD', 1],
-            ['378', ['VideoCard'],
-             'Inicio > Componentes/Partes y Piezas > Tarjetas Gráficas > '
-             'Tarjetas Gráficas NVIDIA', 1],
 
             ['994', ['Tablet'],
              'Inicio > Computadores y Tablets > Tablets', 1],

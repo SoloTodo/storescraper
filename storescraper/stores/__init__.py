@@ -51,7 +51,6 @@ from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
 from .fnac import Fnac
 from .fravega import Fravega
-from .gamer_house import GamerHouse
 from .garbarino import Garbarino
 from .gearbest import GearBest
 from .globalmac import GlobalMac
@@ -99,7 +98,6 @@ from .livrarias_curitiba import LivrariasCuritiba
 from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
-from .magens import Magens
 from .max import Max
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
@@ -156,7 +154,6 @@ from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
 from .sincex import Sincex
 from .sindelen import Sindelen
-from .sion_computer import SionComputer
 from .sistemax import Sistemax
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina

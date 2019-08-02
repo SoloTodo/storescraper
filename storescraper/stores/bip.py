@@ -47,7 +47,7 @@ class Bip(Store):
             # All in One
             ['218', 'AllInOne'],
             # Tarjetas de video
-            ['118', 'VideoCard'],
+            ['792', 'VideoCard'],
             # Proces
             ['784', 'Processor'],
             # Monitores
