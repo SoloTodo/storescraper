@@ -90,8 +90,10 @@ class Tekstore(Store):
                 products = []
                 product_info = json.loads(json_container.text)[
                     '#product_addtocart_form']['configurable']['spConfig']
+
+                key = list(product_info['attributes'])[0]
                 variant_ids_containers = product_info[
-                    'attributes']['93']['options']
+                    'attributes'][key]['options']
 
                 for variant_id_container in variant_ids_containers:
                     variant_id = variant_id_container['products'][0]
