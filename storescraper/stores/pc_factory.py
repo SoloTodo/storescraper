@@ -46,6 +46,7 @@ class PcFactory(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'Wearable',
+            'Ups',
         ]
 
     @classmethod
@@ -53,23 +54,18 @@ class PcFactory(Store):
         category_paths = [
             ['735', ['Notebook'],
              'Inicio > Computadores y Tablets > Notebooks', 1],
-
             ['334', ['VideoCard'],
              'Inicio > Componentes/Partes y Piezas > Tarjetas Gráficas > '
              'Tarjetas Gráficas AMD', 1],
-
             ['994', ['Tablet'],
              'Inicio > Computadores y Tablets > Tablets', 1],
-
             ['432', ['Cell'],
              'Inicio > Celulares > Smartphones', 1],
-
             ['6', ['Camera'],
              'Inicio > Fotografía, Video y Drones > Cámaras Compactas', 1],
             ['620', ['Camera'],
              'Inicio > Fotografía, Video y Drones > '
              'Cámaras Semiprofesionales', 1],
-
             ['422', ['ExternalStorageDrive'],
              'Inicio > Discos Duros y Almacenamiento > Discos Externos', 1],
             ['904', ['ExternalStorageDrive'],
@@ -79,13 +75,10 @@ class PcFactory(Store):
             ['48', ['MemoryCard'],
              'Inicio > Discos Duros y Almacenamiento > Memoris Flash', 1],
             ['46', ['Projector'],
-
              'Inicio > Monitores y Proyectores > Proyectores', 1],
             ['438', ['VideoGameConsole'],
-
              'Inicio > Juegos y Consola > Consolas', 1],
             ['889', ['StereoSystem'],
-
              'Inicio > Audio > Equipos de Música', 1],
             ['890', ['StereoSystem'],
              'Inicio > Audio > Equipos de Música > Audio All in One', 1],
@@ -99,36 +92,27 @@ class PcFactory(Store):
              'Inicio > Audio > Parlantes > Parlantes Portátiles', 1],
             ['797', ['StereoSystem'],
              'Inicio > TV y Smart TV > Video/Audio TV > Barras de Sonido', 1],
-
             ['475', ['AllInOne'],
              'Inicio > Computadores y Tablets > Escritorio > All-in-One', 1],
-
             ['22', ['Mouse'],
              'Inicio > Computadores y Tablets > Mouses y Teclados > '
              'Mouses', 1],
-
             ['789', ['Television'],
              'Inicio > TV y Smart TV > TV y Smart TV', 1],
-
             ['286', ['OpticalDrive'],
              'Inicio > Componentes/Partes y Piezas > Ópticos', 1],
-
             ['272', ['Processor'],
              'Inicio > Componentes/Partes y Piezas > Procesadores', 1],
-
             ['995', ['Monitor'],
              'Inicio > Monitores y Proyectores > Monitores', 1],
-
             ['292', ['Motherboard'],
              'Inicio > Componentes/Partes y Piezas > Placas Madres', 1],
-
             ['112', ['Ram'],
              'Inicio > Componentes/Partes y Piezas > Memorias > '
              'Memorias PC', 1],
             ['100', ['Ram'],
              'Inicio > Componentes/Partes y Piezas > Memorias > '
              'Memorias Notebook', 1],
-
             ['340', ['StorageDrive'],
              'Inicio > Discos Duros y Almacenamiento > Discos Duros PC', 1],
             ['585', ['SolidStateDrive'],
@@ -138,41 +122,37 @@ class PcFactory(Store):
             ['932', ['StorageDrive'],
              'Inicio > Discos Duros y Almacenamiento > '
              'Discos de Video Vigilancia', 1],
-
             ['54', ['PowerSupply'],
              'Inicio > Componentes/Partes y Piezas > '
              'Fuentes de Poder (PSU)', 1],
-
             ['16', ['ComputerCase'],
              'Inicio > Componentes/Partes y Piezas > Gabinetes > '
              'Gabinetes con Fuente', 1],
             ['328', ['ComputerCase'],
              'Inicio > Componentes/Partes y Piezas > Gabinetes > '
              'Gabinetes sin Fuente', 1],
-
             ['42', ['CpuCooler'],
              'Inicio > Componentes/Partes y Piezas > Refrigeración', 1],
-
             ['262', ['Printer'],
              'Inicio > Impresoras y Suministros > '
              'Impresoras Hogar y Oficina', 1],
-
             ['36', ['Keyboard'],
              'Inicio > Computadores y Tablets > Mouse y Teclados > '
              'Teclados', 1],
             ['418', ['KeyboardMouseCombo'],
              'Inicio > Computadores y Tablets > Mouses y Teclados > '
              'Combos Teclado/Mouse', 1],
-
             ['850', ['Headphones'],
              'Inicio > Audio > Audifonos', 1],
             ['860', ['Headphones'],
              'Inicio > Audio > Audifonos > Audifonos DJ', 1],
             ['861', ['Headphones'],
              'Inicio > Audio > Audifonos > Audifonos Monitoreo', 1],
-
             ['685', ['Wearable'],
-             'Inicio > Celulares > Wearables > Smartwatches', 1]
+             'Inicio > Celulares > Wearables > Smartwatches', 1],
+            ['38', ['Ups'],
+             'Inicio > Accesorios y Periféricos > UPS y Energía > '
+             'UPS y Reguladores', 1]
         ]
 
         session = session_with_proxy(extra_args)
