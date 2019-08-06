@@ -26,6 +26,7 @@ class MyBox(Store):
             'Keyboard',
             'Mouse',
             'KeyboardMouseCombo',
+            'Ups',
         ]
 
     @classmethod
@@ -44,6 +45,7 @@ class MyBox(Store):
             ['53-refrigeracion', 'CpuCooler'],
             ['77-teclado-keyboard', 'Keyboard'],
             ['55-teclado-y-mouse', 'Mouse'],
+            ['57-ups', 'Ups'],
         ]
 
         product_urls = []

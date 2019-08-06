@@ -35,6 +35,7 @@ class Bip(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'StereoSystem',
+            'Ups',
         ]
 
     @classmethod
@@ -94,6 +95,8 @@ class Bip(Store):
             ['70', 'Headphones'],
             # Parlantes
             ['13', 'StereoSystem'],
+            # UPS
+            ['31', 'Ups'],
         ]
 
         session = session_with_proxy(extra_args)

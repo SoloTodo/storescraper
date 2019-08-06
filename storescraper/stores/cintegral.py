@@ -35,6 +35,7 @@ class Cintegral(Store):
             'SolidStateDrive',
             'MemoryCard',
             'UsbFlashDrive',
+            'Ups',
         ]
 
     @classmethod
@@ -76,6 +77,7 @@ class Cintegral(Store):
             ['audio/audifonos.html', 'Headphones'],
             ['pc-y-portatiles/escritorio/todo-en-uno-aio.html', 'AllInOne'],
             ['audio/parlantes.html', 'StereoSystem'],
+            ['redes-y-servidores/ups.html', 'Ups'],
         ]
 
         product_urls = []

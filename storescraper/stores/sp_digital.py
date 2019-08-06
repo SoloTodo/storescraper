@@ -42,6 +42,7 @@ class SpDigital(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'VideoGameConsole',
+            'Ups',
         ]
 
     @classmethod
@@ -123,6 +124,9 @@ class SpDigital(Store):
              'Home > Accesorios > Audífonos', 1],
             ['357', ['VideoGameConsole'],
              'Home > Audio y Video > Consolas', 1],
+            ['463', ['Ups'],
+             'Home > UPS y protección de poder > UPS y respaldo de energía',
+             1],
         ]
 
         product_entries = defaultdict(lambda: [])

@@ -37,6 +37,7 @@ class Winpy(Store):
             'Television',
             'StereoSystem',
             'Headphones',
+            'Ups',
         ]
 
     @classmethod
@@ -73,6 +74,7 @@ class Winpy(Store):
             ['computadores/todo-en-uno/', 'AllInOne'],
             ['electronica/parlantes/', 'StereoSystem'],
             ['electronica/audifonos/', 'Headphones'],
+            ['ups/ups/', 'Ups'],
         ]
 
         product_urls = []

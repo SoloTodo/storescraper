@@ -32,6 +32,7 @@ class Peta(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'Ups',
         ]
 
     @classmethod
@@ -77,6 +78,8 @@ class Peta(Store):
             ['accesorios/perifericos/mouse.html', 'Mouse'],
             ['accesorios/perifericos/teclados.html', 'Keyboard'],
             ['foto-video/audio/audifonos.html', 'Headphones'],
+            ['equipos-computadores-tablets-aio-ebooks/'
+             'ups-reguladores/ups.html', 'Ups'],
         ]
 
         session = session_with_proxy(extra_args)
