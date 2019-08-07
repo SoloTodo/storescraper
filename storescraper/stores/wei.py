@@ -40,6 +40,7 @@ class Wei(Store):
             'Headphones',
             'Projector',
             'StereoSystem',
+            'Ups',
         ]
 
     @classmethod
@@ -90,6 +91,7 @@ class Wei(Store):
             ['1175', 'StereoSystem'],  # PARLANTES
             # ['793', 'StereoSystem'],  # AMPLIFICADORES
             ['1209', 'VideoGameConsole'],  # CONSOLAS JUEGOS Y CONTROLES
+            ['782', 'Ups'],  # UPS
         ]
 
         session = session_with_proxy(extra_args)

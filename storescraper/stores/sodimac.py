@@ -34,6 +34,7 @@ class Sodimac(Store):
             'Wearable',
             'VideoGameConsole',
             'Monitor',
+            'Ups',
         ]
 
     @classmethod
@@ -114,6 +115,9 @@ class Sodimac(Store):
              'Sodimac.com > Tecnología Deportiva > SmartWatch', 1],
             ['cat3890001/Consolas-de-videojuegos', ['VideoGameConsole'],
              'Sodimac.com > Gamer > Consolas de videojuegos', 1],
+            ['cat2940090/Baterias-de-respaldo', ['Ups'],
+             'Sodimac.com > Transformadores Eléctricos y UPS > '
+             'Baterías de respaldo', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
