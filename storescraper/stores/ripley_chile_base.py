@@ -55,8 +55,8 @@ class RipleyChileBase(Store):
         category_paths = [
             ['tecno/computacion/notebooks', ['Notebook'],
              'Tecno > Computación > Notebooks', 1],
-            ['tecno/computacion/2-en-1convertibles', ['Notebook'],
-             'Tecno > Cmoputación > 2 en 1/Convertibles', 1],
+            # ['tecno/computacion/2-en-1convertibles', ['Notebook'],
+            #  'Tecno > Cmoputación > 2 en 1/Convertibles', 1],
             ['tecno/computacion/notebooks-gamer', ['Notebook'],
              'Tecno > Computación > Notebooks gamer', 1],
 
