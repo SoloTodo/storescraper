@@ -67,11 +67,11 @@ class PcExpress(Store):
             ['135', 'Keyboard'],
             ['313_318', 'Keyboard'],
             ['131', 'KeyboardMouseCombo'],
-            ['64_146', 'Headphones'],   # Audifonos
+            # ['64_146', 'Headphones'],   # Audifonos
             ['321', 'Headphones'],   # Audifonos Gamers
             ['353', 'Headphones'],   # Audífonos Micrófono Bluetooth
             ['64_282', 'Headphones'],   # Audifonos Microfono
-            ['147', 'StereoSystem'],   # Parlantes
+            # ['147', 'StereoSystem'],   # Parlantes
             ['154', 'Ups'],   # UPS
         ]
 

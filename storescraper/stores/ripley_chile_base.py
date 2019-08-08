@@ -60,8 +60,8 @@ class RipleyChileBase(Store):
             ['tecno/computacion/notebooks-gamer', ['Notebook'],
              'Tecno > Computación > Notebooks gamer', 1],
 
-            ['tecno/computacion/tablets-y-tabletas-de-disenos', ['Tablet'],
-             'Tecno > Computación > Tablets y tabletas de diseños', 1],
+            ['tecno/computacion/tablets-y-e-readers', ['Tablet'],
+             'Tecno > Computación > Tablets y E-readers', 1],
             ['tecno/computacion/impresoras-y-tintas', ['Printer'],
              'Tecno > Computación > Impresoras y Tintas', 1],
             ['tecno/computacion/almacenamiento',

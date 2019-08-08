@@ -486,8 +486,7 @@ class Paris(Store):
                 assert len(images) > 0
 
                 for index, image in enumerate(images):
-                    picture_url = image.find('source')['srcset']
-
+                    picture_url = image.find('picture').find('source')['srcset']
                     destination_url = image['href']
 
                     if len(destination_url) > 255:
