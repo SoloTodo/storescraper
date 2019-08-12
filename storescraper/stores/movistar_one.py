@@ -40,6 +40,10 @@ class MovistarOne(Store):
 
             for plan_entry in entry['planes']:
                 cell_plan_name = plans_dict[plan_entry['tipoPlan']]
+
+                if cell_plan_name == 'JLZ Multimedia XL_Porta cuotas':
+                    continue
+
                 price = Decimal(remove_words(plan_entry['pieEquipo']))
                 cell_monthly_payment = Decimal(
                     remove_words(plan_entry['cuotaMensualEquipo']))
