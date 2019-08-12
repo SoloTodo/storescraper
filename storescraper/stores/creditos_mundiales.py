@@ -36,6 +36,9 @@ class CreditosMundiales(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
         product_urls = []
 
@@ -44,8 +47,8 @@ class CreditosMundiales(Store):
                 continue
 
             url = 'http://creditosmundiales.com/{}/'.format(category_path)
-            print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
             product_containers = soup.findAll('li', 'product')
 
             if not product_containers:

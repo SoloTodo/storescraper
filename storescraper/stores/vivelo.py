@@ -31,20 +31,19 @@ class Vivelo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['dispositivos-moviles/smartphones.html', 'Cell'],
-            ['preventa-galaxy-s10.html', 'Cell'],
             ['dispositivos-moviles/tablets.html', 'Tablet'],
             ['dispositivos-moviles/weareables.html', 'Wearable'],
             ['tv-audio-video/led.html', 'Television'],
-            ['tv-audio-video/home-theater.html', 'StereoSystem'],
-            ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
+            # ['tv-audio-video/home-theater.html', 'StereoSystem'],
+            # ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
             ['tv-audio-video/audio/parlantes-bluetooth.html', 'StereoSystem'],
             ['tv-audio-video/audio/audifonos.html', 'Headphones'],
-            ['tv-audio-video/blu-ray.html', 'OpticalDiskPlayer'],
-            ['linea-blanca/refrigeradores.html', 'Refrigerator'],
-            ['linea-blanca/lavadoras-secadoras.html', 'WashingMachine'],
-            ['linea-blanca/microondas.html', 'Oven'],
-            ['linea-blanca/aspiradoras.html', 'VacuumCleaner'],
-            ['tv-audio-video/monitores.html', 'Monitor'],
+            # ['tv-audio-video/blu-ray.html', 'OpticalDiskPlayer'],
+            # ['linea-blanca/refrigeradores.html', 'Refrigerator'],
+            # ['linea-blanca/lavadoras-secadoras.html', 'WashingMachine'],
+            # ['linea-blanca/microondas.html', 'Oven'],
+            # ['linea-blanca/aspiradoras.html', 'VacuumCleaner'],
+            # ['tv-audio-video/monitores.html', 'Monitor'],
         ]
 
         product_urls = []
@@ -57,8 +56,9 @@ class Vivelo(Store):
             category_url = 'https://www.vivelo.cl/{}?limit=all'.format(
                 category_path)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            print(category_url)
 
+            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
             containers = soup.findAll('ul', 'products-grid')[-1].findAll(
                 'li', 'item')
 

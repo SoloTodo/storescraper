@@ -409,6 +409,10 @@ class AbcDin(Store):
             return []
 
         normal_price = prices_containers[1].text
+
+        if not remove_words(normal_price).strip():
+            return []
+
         normal_price = Decimal(remove_words(normal_price))
 
         if len(prices_containers) >= 3:
