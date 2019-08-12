@@ -273,7 +273,7 @@ class Falabella(Store):
         })
 
         base_url = "https://www.falabella.com/s/search/v1/products/cl?" \
-                     "Ntt={}&page={}&zone=13"
+                   "Ntt={}&page={}&zone=13"
 
         for i in range(4):
             try:
@@ -448,6 +448,10 @@ class Falabella(Store):
                                                       picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
+        brand = product_data['state']['product']['brand'] or 'Genérico'
+        base_name = '{} {}'.format(
+            brand, product_data['state']['product']['displayName'])
+
         products = []
 
         if 'skus' not in product_data['state']['product']:
@@ -502,7 +506,7 @@ class Falabella(Store):
                 review_avg_score = None
 
             p = Product(
-                model['name'],
+                '{} ({})'.format(base_name, model['name']),
                 cls.__name__,
                 category,
                 sku_url,
@@ -614,15 +618,20 @@ class Falabella(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    images = driver.find_elements_by_class_name('dy_unit')[1:-1]
+                    images = driver.find_elements_by_class_name(
+                        'dy_unit')[1:-1]
                     index = 1
 
                     for image in images:
-                        picture_array = image.find_element_by_tag_name('picture').find_elements_by_tag_name('source')
-                        destination_urls = [d.get_property('href') for d in image.find_elements_by_tag_name('a')]
+                        picture_array = image.find_element_by_tag_name(
+                            'picture').find_elements_by_tag_name('source')
+                        destination_urls = [
+                            d.get_property('href') for d in
+                            image.find_elements_by_tag_name('a')]
                         destination_urls = list(set(destination_urls))
                         for picture in picture_array:
-                            picture_url = picture.get_property('srcset').split(' ')[0]
+                            picture_url = picture.get_property(
+                                'srcset').split(' ')[0]
 
                             if 'https://www.falabella.com' not in picture_url:
                                 picture_url = 'https://www.falabella.com' \
