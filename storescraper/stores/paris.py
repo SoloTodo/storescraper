@@ -452,7 +452,16 @@ class Paris(Store):
                 image = soup.find('div', 'desktop-plp-2')
 
                 if not image:
+                    image = soup.find('div', {'id': 'primary'})\
+                        .find('div', 'slot-grid-header')
+
+                if not image:
                     continue
+
+                if image.find('a'):
+                    destination_urls = [image.find('a')['href']]
+                else:
+                    destination_urls = []
 
                 picture = image.find('picture')
 
@@ -463,7 +472,7 @@ class Paris(Store):
                 banners.append({
                     'url': url,
                     'picture_url': picture_url,
-                    'destination_urls': [],
+                    'destination_urls': destination_urls,
                     'key': picture_url,
                     'position': 1,
                     'section': section,
@@ -486,8 +495,7 @@ class Paris(Store):
                 assert len(images) > 0
 
                 for index, image in enumerate(images):
-                    picture_url = image.find('source')['srcset']
-
+                    picture_url = image.find('picture').find('source')['srcset']
                     destination_url = image['href']
 
                     if len(destination_url) > 255:

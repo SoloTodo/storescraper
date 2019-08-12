@@ -55,13 +55,13 @@ class RipleyChileBase(Store):
         category_paths = [
             ['tecno/computacion/notebooks', ['Notebook'],
              'Tecno > Computación > Notebooks', 1],
-            ['tecno/computacion/2-en-1convertibles', ['Notebook'],
-             'Tecno > Cmoputación > 2 en 1/Convertibles', 1],
+            # ['tecno/computacion/2-en-1convertibles', ['Notebook'],
+            #  'Tecno > Cmoputación > 2 en 1/Convertibles', 1],
             ['tecno/computacion/notebooks-gamer', ['Notebook'],
              'Tecno > Computación > Notebooks gamer', 1],
 
-            ['tecno/computacion/tablets-y-tabletas-de-disenos', ['Tablet'],
-             'Tecno > Computación > Tablets y tabletas de diseños', 1],
+            ['tecno/computacion/tablets-y-e-readers', ['Tablet'],
+             'Tecno > Computación > Tablets y E-readers', 1],
             ['tecno/computacion/impresoras-y-tintas', ['Printer'],
              'Tecno > Computación > Impresoras y Tintas', 1],
             ['tecno/computacion/almacenamiento',

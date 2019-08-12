@@ -92,11 +92,16 @@ class DoItCenter(Store):
 
         stock_response = session.get(store_stock_endpoint)
 
-        if stock_response.status_code in [404, 500]:
-            stock = -1
+        if stock_response.status_code in [404, 500, 504]:
+            stock_options = soup.find('form', {'id': 'product_form'})\
+                .findAll('option')
+
+            stock = 0
+            for option in stock_options:
+                if int(option['data-quantity']) > 0:
+                    stock += int(option['data-quantity'])
         else:
             inventories = json.loads(stock_response.text)
-            print(inventories)
             stock = 0
 
             for entry in inventories:
