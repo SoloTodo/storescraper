@@ -20,13 +20,13 @@ class PcExpress(Store):
             'Ram',
             'StorageDrive',
             'SolidStateDrive',
+            'ExternalStorageDrive',
             'PowerSupply',
             'ComputerCase',
             'CpuCooler',
             'Tablet',
             'MemoryCard',
             'UsbFlashDrive',
-            'ExternalStorageDrive',
             'Printer',
             'Television',
             'Mouse',
@@ -40,39 +40,35 @@ class PcExpress(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_info = [
-            ['61', 'Processor'],
-            ['61_169', 'CpuCooler'],  # Ventilacion para CPU
-            ['60', 'Motherboard'],
-            ['62_101', 'StorageDrive'],  # HDD Desktop
-            ['62_103', 'StorageDrive'],  # HDD Notebook
-            ['62_102', 'ExternalStorageDrive'],  # HDD Externo
-            ['62_331', 'SolidStateDrive'],
-            ['62_106', 'MemoryCard'],
-            ['62_107', 'UsbFlashDrive'],
-            ['70_118', 'PowerSupply'],  # Fuentes de poder basicas
-            ['70_279', 'PowerSupply'],  # Fuentes de poder reales
-            ['70_119', 'ComputerCase'],  # Gabinetes basicos
-            ['70_120', 'ComputerCase'],  # Gabinetes gamer
-            ['70_278', 'ComputerCase'],  # Gabinetes slim
-            ['71', 'Printer'],
-            ['72', 'Ram'],
-            ['73_171', 'Monitor'],
-            # ['73_129', 'Television'],
-            ['74_133', 'Mouse'],
-            ['313_319', 'Mouse'],
-            ['75_136', 'Notebook'],
-            ['75_223', 'Tablet'],
-            # ['241_269', 'Tablet'],
-            ['83', 'VideoCard'],
-            ['135', 'Keyboard'],
-            ['313_318', 'Keyboard'],
-            ['131', 'KeyboardMouseCombo'],
-            # ['64_146', 'Headphones'],   # Audifonos
-            ['321', 'Headphones'],   # Audifonos Gamers
-            ['353', 'Headphones'],   # Audífonos Micrófono Bluetooth
-            ['64_282', 'Headphones'],   # Audifonos Microfono
-            # ['147', 'StereoSystem'],   # Parlantes
-            ['154', 'Ups'],   # UPS
+            ['136', 'Notebook'],              # Comercial y corporativos
+            ['475', 'VideoCard'],             # Tarjetas de Video
+            ['473', 'Processor'],             # Procesadores
+            ['171', 'Monitor'],               # Monitores
+            ['472', 'Motherboard'],           # Placas Madres
+            ['72', 'Ram'],                    # Memorias
+            ['101', 'StorageDrive'],          # Discos Duros para PC
+            ['103', 'StorageDrive'],          # Discos Duros para Notebook
+            ['331', 'SolidStateDrive'],       # Unidades de estado Solido
+            ['102', 'ExternalStorageDrive'],  # Discod Duros Externos
+            ['118', 'PowerSupply'],           # Fuentes Estandar
+            ['279', 'PowerSupply'],           # Fuentes Certificadas
+            ['119', 'ComputerCase'],          # Gabinetes Basicos
+            ['120', 'ComputerCase'],          # Gabinetes Gamer
+            ['278', 'ComputerCase'],          # Gabinetes SLIM
+            ['169', 'CpuCooler'],             # Ventilacion para CPU
+            ['223', 'Tablet'],                # Tablets
+            ['106', 'MemoryCard'],            # Memorias Flash
+            ['107', 'UsbFlashDrive'],         # Pendrive
+            ['493', 'Printer'],               # Impresoras Hogar y Oficina
+            # ['129', 'Television'],          # Monitores Profesionales
+            ['319', 'Mouse'],                 # Mouse Gamers
+            ['318', 'Keyboard'],              # Teclados Gamers
+            # ['131', 'KeyboardMouseCombo'],  # ????
+            ['321', 'Headphones'],            # Audifonos Gamers
+            ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
+            ['282', 'Headphones'],            # Microfonos y Manos Libres
+            ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
+            ['154', 'Ups']                    # Ups
         ]
 
         product_urls = []
@@ -89,10 +85,10 @@ class PcExpress(Store):
             while True:
                 if page > 15:
                     raise Exception('Page overflow: ' + category_id)
+
                 category_page_url = category_url + str(page)
-                print(category_page_url)
-                soup = BeautifulSoup(session.get(category_page_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(
+                    session.get(category_page_url).text, 'html.parser')
                 td_products = soup.findAll('div', 'product-list__image')
 
                 if len(td_products) == 0:
@@ -102,15 +98,16 @@ class PcExpress(Store):
 
                 else:
                     for td_product in td_products:
-                        original_product_url = td_product.find(
-                            'a')['href']
+                        original_product_url = td_product.find('a')['href']
 
-                        product_id = re.search(r'product_id=(\d+)',
-                                               original_product_url
-                                               ).groups()[0]
+                        product_id = re.search(
+                            r'product_id=(\d+)',
+                            original_product_url).groups()[0]
+
                         product_url = 'https://tienda.pc-express.cl/' \
                                       'index.php?route=product/product&' \
                                       'product_id=' + product_id
+
                         product_urls.append(product_url)
 
                 page += 1
