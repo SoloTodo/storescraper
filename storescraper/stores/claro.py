@@ -127,8 +127,8 @@ class Claro(Store):
         for data in json_data:
             for portability_mode in portabilidad_modes:
                 for leasing_mode in leasing_modes:
-                    name = '{}{}'.format(data['nombre'], portability_mode,
-                                         leasing_mode)
+                    name = '{}{}{}'.format(data['nombre'], portability_mode,
+                                           leasing_mode)
                     price = Decimal(
                         data['valor_fijo_portabilidad_propio'].replace('.', ''))
                     key = '{}{}{}'.format(data['id'], portability_mode,
