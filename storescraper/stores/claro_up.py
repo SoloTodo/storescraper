@@ -31,17 +31,16 @@ class ClaroUp(Store):
         products_json = json.loads(soup.contents[-1])
 
         for idx, product_entry in enumerate(products_json):
-            product_id = product_entry['id']
+            product_slug = product_entry['slug']
             product_url = 'https://equipos.clarochile.cl/' \
-                          'detalle.html?id=' + product_id
+                          'catalogo/' + product_slug
             product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        query_string = urllib.parse.urlparse(url).query
-        cell_id = urllib.parse.parse_qs(query_string)['id'][0]
+        cell_id = url.split('/')[-1]
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         data = 'id={}'.format(cell_id)
@@ -89,7 +88,7 @@ class ClaroUp(Store):
             base_key = '{} {}'.format(cell_id, color)
 
             for plan_entry in product_json.get('planes', []):
-                plan_name = plan_entry['nombre']
+                plan_name = plan_entry['nombre'] + ' Cuotas'
                 price = Decimal(remove_words(plan_entry['claro_up_pie']))
                 cell_monthly_payment = Decimal(remove_words(
                     plan_entry['claro_up_cuota']))
