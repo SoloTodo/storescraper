@@ -119,24 +119,32 @@ class Claro(Store):
             ' Portabilidad',
         ]
 
-        for data in json_data:
-            for suffix in portabilidad_modes:
-                name = '{}{}'.format(data['nombre'], suffix)
-                price = Decimal(
-                    data['valor_fijo_portabilidad_propio'].replace('.', ''))
-                key = '{}{}'.format(data['id'], suffix)
+        leasing_modes = [
+            ' (con cuota de arriendo)',
+            ' (sin cuota de arriendo)'
+        ]
 
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    'CellPlan',
-                    url,
-                    url,
-                    key,
-                    -1,
-                    price,
-                    price,
-                    'CLP'))
+        for data in json_data:
+            for portability_mode in portabilidad_modes:
+                for leasing_mode in leasing_modes:
+                    name = '{}{}{}'.format(data['nombre'], portability_mode,
+                                           leasing_mode)
+                    price = Decimal(
+                        data['valor_fijo_portabilidad_propio'].replace('.', ''))
+                    key = '{}{}{}'.format(data['id'], portability_mode,
+                                          leasing_mode)
+
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        key,
+                        -1,
+                        price,
+                        price,
+                        'CLP'))
 
         return products
 
@@ -220,6 +228,8 @@ class Claro(Store):
                     base_plan_name = plan_entry['nombre']
 
                     for suffix in ['', ' Portabilidad']:
+                        plan_name = base_plan_name + suffix
+
                         if suffix:
                             # Portabilidad
 
@@ -230,6 +240,7 @@ class Claro(Store):
                                         'valor_cuota_mensual_portabilidad']))
                                 price = Decimal(remove_words(
                                     plan_entry['valor_pie']))
+                                plan_name += ' Cuotas'
                             else:
                                 # Sin cuota mensual de arriendo
                                 cell_monthly_payment = Decimal(0)
@@ -241,8 +252,6 @@ class Claro(Store):
                                 plan_entry['cuota_inicial']))
 
                         price = Decimal(price)
-
-                        plan_name = base_plan_name + suffix
 
                         product = Product(
                             cell_name,
