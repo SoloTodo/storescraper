@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 import json
+import demjson
+import re
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -27,26 +29,21 @@ class Multimax(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('led-tv', 'Television'),
-            ('smart-tv', 'Television'),
-            ('4k-tv', 'Television'),
-            ('android', 'Cell'),
+            ('tv', 'Television'),
+            ('celulares', 'Cell'),
             ('equipos-de-sonido', 'StereoSystem'),
             ('barras-de-sonido', 'StereoSystem'),
-            # ('bocinas-portatiles', 'StereoSystem'),
-            ('9-000-btu', 'AirConditioner'),
-            # ('12-000-btu', 'AirConditioner'),
-            ('18-000-btu', 'AirConditioner'),
-            ('24-000-btu', 'AirConditioner'),
-            ('inverter', 'AirConditioner'),
-            ('estufas', 'Stove'),
-            ('lavadoras', 'WashingMachine'),
-            ('secadoras', 'WashingMachine'),
+            ('bocinas', 'StereoSystem'),
+            ('split-inverter', 'AirConditioner'),
+            ('split-basico', 'AirConditioner'),
+            # ('estufas', 'Stove'),
+            # ('lavadoras', 'WashingMachine'),
+            # ('secadoras', 'WashingMachine'),
             # ('centro-de-lavado', 'WashingMachine'),
-            ('refrigeradoras', 'Refrigerator'),
+            # ('refrigeradoras', 'Refrigerator'),
             # ('congeladores', 'Refrigerator'),
-            ('microondas', 'Oven'),
-            ('hornos', 'Oven'),
+            # ('microondas', 'Oven'),
+            # ('hornos', 'Oven'),
             ('monitores', 'Monitor'),
         ]
 
@@ -56,7 +53,6 @@ class Multimax(Store):
         for category_path, local_category in category_filters:
             if local_category != category:
                 continue
-
             page = 1
             done = False
 
@@ -67,25 +63,22 @@ class Multimax(Store):
                 url = 'https://shopmultimax.com/collections/{}?page={}'\
                     .format(category_path, page)
 
-                print(url)
-
                 response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.text, 'html5lib')
 
-                container = soup.find('ul', 'productgrid--items')
+                container = soup.find('div', 'collection-products')
+                items = container.findAll('article', 'item')
 
-                if not container:
+                if not items:
                     if page == 1:
                         raise Exception('No products for category {}'
                                         .format(category))
                     break
 
-                items = container.findAll('div', 'productitem')
-                if items:
-                    for item in items:
-                        product_url = 'https://shopmultimax.com{}'\
-                            .format(item.find('a')['href'])
-                        product_urls.append(product_url)
+                for item in items:
+                    product_url = 'https://shopmultimax.com{}'\
+                        .format(item.find('a')['href'])
+                    product_urls.append(product_url)
 
                 page += 1
 
@@ -93,17 +86,12 @@ class Multimax(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         products = []
-
-        products_data = soup.find('script',
-                                  {'data-section-type': 'static-product'})
-
-        json_data = json.loads(products_data.text)['product']
+        json_data = demjson.decode(re.search(r'current: ([\s\S]*?),\n[ \t]+customerLoggedIn', response.text).groups()[0])['product']
 
         description = html_to_markdown(json_data['description'])
 
