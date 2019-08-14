@@ -119,7 +119,10 @@ class PcGamer(Store):
         else:
             stock = 0
 
-        price = Decimal(remove_words(pricing_container.find('h2').text))
+        price_containers = pricing_container.findAll('h2')
+
+        normal_price = Decimal(remove_words(price_containers[0].text))
+        offer_price = Decimal(remove_words(price_containers[1].text))
 
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
@@ -136,8 +139,8 @@ class PcGamer(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,
