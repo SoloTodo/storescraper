@@ -65,7 +65,7 @@ class PcExpress(Store):
             ['318', 'Keyboard'],              # Teclados Gamers
             # ['131', 'KeyboardMouseCombo'],  # ????
             ['321', 'Headphones'],            # Audifonos Gamers
-            ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
+            # ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
             ['282', 'Headphones'],            # Microfonos y Manos Libres
             ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
             ['154', 'Ups']                    # Ups

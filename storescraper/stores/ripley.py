@@ -189,8 +189,12 @@ class Ripley(RipleyChileBase):
                 if not picture_url:
                     continue
 
-                destination_urls = [soup.find('section', 'catalog-top-banner')
-                                        .find('a')['href']]
+                destination = soup.find(
+                    'section', 'catalog-top-banner').find('a')
+                destination_urls = []
+
+                if destination:
+                    destination_urls = [destination['href']]
 
                 banners.append({
                     'url': url,
