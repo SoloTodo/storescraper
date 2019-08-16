@@ -38,8 +38,9 @@ class Tekstore(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 if page > 10:
                     raise Exception('Page overflow')
 
@@ -54,6 +55,10 @@ class Tekstore(Store):
                 for container in soup.findAll('div', 'product-item-info'):
                     product_url = container.find(
                         'a', 'product-item-photo')['href']
+
+                    if product_url in product_urls:
+                        done = True
+                        break
 
                     product_urls.append(product_url)
                 page += 1
