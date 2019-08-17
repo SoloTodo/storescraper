@@ -286,6 +286,11 @@ class Sodimac(Store):
                           ''.format(picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -299,7 +304,8 @@ class Sodimac(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
