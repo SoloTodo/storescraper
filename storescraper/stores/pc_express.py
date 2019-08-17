@@ -56,7 +56,7 @@ class PcExpress(Store):
             ['120', 'ComputerCase'],          # Gabinetes Gamer
             ['278', 'ComputerCase'],          # Gabinetes SLIM
             ['169', 'CpuCooler'],             # Ventilacion para CPU
-            ['223', 'Tablet'],                # Tablets
+            ['269', 'Tablet'],                # Tablets
             ['106', 'MemoryCard'],            # Memorias Flash
             ['107', 'UsbFlashDrive'],         # Pendrive
             ['493', 'Printer'],               # Impresoras Hogar y Oficina
@@ -65,7 +65,7 @@ class PcExpress(Store):
             ['318', 'Keyboard'],              # Teclados Gamers
             # ['131', 'KeyboardMouseCombo'],  # ????
             ['321', 'Headphones'],            # Audifonos Gamers
-            ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
+            # ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
             ['282', 'Headphones'],            # Microfonos y Manos Libres
             ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
             ['154', 'Ups']                    # Ups

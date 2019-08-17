@@ -28,7 +28,8 @@ class EVision(Store):
             ('340', 'StereoSystem'),
             ('810', 'Cell'),
             ('911', 'AirConditioner'),
-            ('913', 'AirConditioner'),
+            ('912', 'AirConditioner'),
+            # ('913', 'AirConditioner'),
             ('921', 'Refrigerator'),
             ('922', 'Refrigerator'),
             ('923', 'Refrigerator'),
@@ -38,7 +39,7 @@ class EVision(Store):
             ('934', 'WashingMachine'),
             ('935', 'WashingMachine'),
             ('970', 'Oven'),
-            ('980', 'Oven'),
+            # ('980', 'Oven'),
             ('990', 'Oven'),
             ('950', 'Stove')
         ]
