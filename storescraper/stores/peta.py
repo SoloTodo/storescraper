@@ -131,7 +131,12 @@ class Peta(Store):
         session = session_with_proxy(extra_args)
         request_url = '{}?_={}'.format(url, random.randint(1, 1000))
         print(request_url)
-        page_source = session.get(request_url).text
+        response = session.get(request_url)
+
+        if not response.text:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html5lib')
 
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
