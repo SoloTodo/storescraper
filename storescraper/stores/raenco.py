@@ -129,26 +129,19 @@ class Raenco(Store):
             .text.replace('Código del producto', '').strip()
         stock = -1
 
-        offer_price_container = soup.find('div', 'price-box')\
+        price_container = soup.find('div', 'price-box')\
             .find('span', 'regular-price')
 
-        if not offer_price_container:
-            offer_price_container = soup.find('div', 'price-box')\
-                .findAll('p', 'special-price')[-1]
+        if not price_container:
+            price_container = soup.find('div', 'price-box')
 
-        offer_price = Decimal(
-            offer_price_container.find('span', 'price')
-            .text.replace('$', '').replace(',', ''))
-
-        normal_price_container = soup.find('div', 'price-box')\
-            .find('p', 'old-price')
-
-        if not normal_price_container:
-            normal_price = offer_price
+        if price_container.find('del'):
+            price = price_container.find(
+                'span', 'price').text.strip().split(' ')[-1]
         else:
-            normal_price = Decimal(
-                normal_price_container.find('span', 'price')
-                .text.replace('$', '').replace(',', ''))
+            price = price_container.find('span', 'price').text
+
+        price = Decimal(price.replace('$', '').replace(',', ''))
 
         images = soup.find('div', 'product-image-gallery').findAll('img')
 
@@ -162,8 +155,8 @@ class Raenco(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'USD',
             sku=sku,
             picture_urls=picture_urls
