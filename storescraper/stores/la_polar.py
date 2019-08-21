@@ -217,32 +217,21 @@ class LaPolar(Store):
         sku = soup.find('span', 'sku-code-value').text.strip()
 
         prices = soup.find('div', 'prices')
-        normal_price = prices.find('p', 'internet')
+        la_polar_card = prices.find('img', {'src': 'https://www.lapolar.cl/on/demandware.static/-/Library-Sites-lapolar-shared-library/default/dw3c951280/images/icons/tarjeta_icon.jpg'})
 
-        offer_price = prices.find('p', 'la-polar')
+        highlighted_price = prices.find('p', 'la-polar').find('span', 'price-value') \
+            .text.strip().replace('$', '').replace('.', '')
 
-        if not offer_price and not normal_price:
-            raise Exception('No price in url:' + url)
+        highlighted_price = Decimal(highlighted_price)
 
-        if offer_price:
-            offer_price = offer_price.find('span', 'price-value')\
-                .text.strip().replace('$', '').replace('.', '')
-        else:
-            offer_price = normal_price.find('span', 'price-value')\
-                .text.strip().replace('$', '').replace('.', '')
+        if la_polar_card:
+            offer_price = highlighted_price
 
-        offer_price = Decimal(offer_price)
-
-        if not normal_price:
-            normal_price = offer_price
-        else:
-            normal_price = normal_price \
-                .find('span', 'price-value').text.strip() \
+            normal_price = prices.find('p', 'internet').find('span', 'price-value').text.strip() \
                 .replace('$', '').replace('.', '')
             normal_price = Decimal(normal_price)
-
-        if offer_price > normal_price:
-            offer_price = normal_price
+        else:
+            offer_price = normal_price = highlighted_price
 
         stock = -1
 
