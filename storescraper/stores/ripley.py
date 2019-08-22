@@ -108,75 +108,36 @@ class Ripley(RipleyChileBase):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True, timeout=60) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
+                banners = banners + cls.get_owl_banners(
+                    url, section, subsection, subsection_type)
 
-                    pictures = []
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
+                if soup.find('div', 'owl-carousel'):
+                    banners = banners + cls.get_owl_banners(
+                        url, section, subsection, subsection_type)
+                else:
+                    images = soup.findAll('a', 'item')
 
-                    banner_container = driver\
-                        .find_element_by_class_name('owl-carousel')
-
-                    controls = driver\
-                        .find_elements_by_class_name('owl-page')
-
-                    for control in controls:
-                        control.click()
-                        time.sleep(1)
-                        pictures.append(
-                            banner_container.screenshot_as_base64)
-
-                    images = driver.find_elements_by_class_name('owl-item')
-
-                    assert len(images) == len(pictures)
+                    if not images:
+                        print('No banners')
 
                     for index, image in enumerate(images):
-                        image_style = image.find_element_by_tag_name(
-                            'span').get_attribute('style')
-
-                        key = re.search(r'url\((.*?)\)', image_style) \
+                        picture = image.find('span', 'bg-item')
+                        picture_url = re.search(r'url\((.*?)\)', picture['style'])\
                             .group(1)
 
-                        destinations = image.find_elements_by_tag_name('a')
-                        destination_urls = [a.get_attribute('href')
-                                            for a in destinations]
-                        destination_urls = list(set(destination_urls))
-
-                        destination_urls = list(set(destination_urls))
+                        destination_urls = [image['href']]
 
                         banners.append({
                             'url': url,
-                            'picture': pictures[index],
+                            'picture_url': picture_url,
                             'destination_urls': destination_urls,
-                            'key': key,
+                            'key': picture_url,
                             'position': index + 1,
                             'section': section,
                             'subsection': subsection,
                             'type': subsection_type
                         })
-            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                images = soup.findAll('a', 'item')
-
-                if not images:
-                    print('No banners')
-
-                for index, image in enumerate(images):
-                    picture = image.find('span', 'bg-item')
-                    picture_url = re.search(r'url\((.*?)\)', picture['style'])\
-                        .group(1)
-
-                    destination_urls = [image['href']]
-
-                    banners.append({
-                        'url': url,
-                        'picture_url': picture_url,
-                        'destination_urls': destination_urls,
-                        'key': picture_url,
-                        'position': index + 1,
-                        'section': section,
-                        'subsection': subsection,
-                        'type': subsection_type
-                    })
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 picture_container = soup.find('section', 'catalog-top-banner')
 
@@ -212,6 +173,58 @@ class Ripley(RipleyChileBase):
                 raise Exception('Invalid subsection type')
 
         return banners
+
+    @classmethod
+    def get_owl_banners(cls, url, section, subsection, type):
+        with HeadlessChrome(images_enabled=True, timeout=60) as driver:
+            banners = []
+            driver.set_window_size(1920, 1080)
+            driver.get(url)
+
+            pictures = []
+
+            banner_container = driver \
+                .find_element_by_class_name('owl-carousel')
+
+            controls = driver \
+                .find_elements_by_class_name('owl-page')
+
+            for control in controls:
+                control.click()
+                time.sleep(1)
+                pictures.append(
+                    banner_container.screenshot_as_base64)
+
+            images = driver.find_elements_by_class_name('owl-item')
+
+            assert len(images) == len(pictures)
+
+            for index, image in enumerate(images):
+                image_style = image.find_element_by_tag_name(
+                    'span').get_attribute('style')
+
+                key = re.search(r'url\((.*?)\)', image_style) \
+                    .group(1)
+
+                destinations = image.find_elements_by_tag_name('a')
+                destination_urls = [a.get_attribute('href')
+                                    for a in destinations]
+                destination_urls = list(set(destination_urls))
+
+                destination_urls = list(set(destination_urls))
+
+                banners.append({
+                    'url': url,
+                    'picture': pictures[index],
+                    'destination_urls': destination_urls,
+                    'key': key,
+                    'position': index + 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': type
+                })
+
+            return banners
 
     @classmethod
     def filter_url(cls, url):
