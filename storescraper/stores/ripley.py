@@ -103,7 +103,6 @@ class Ripley(RipleyChileBase):
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
-            print(url)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -180,6 +179,7 @@ class Ripley(RipleyChileBase):
             banners = []
             driver.set_window_size(1920, 1080)
             driver.get(url)
+            driver.execute_script("scrollTo(0, 0);")
 
             pictures = []
 
