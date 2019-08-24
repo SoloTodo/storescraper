@@ -175,7 +175,7 @@ class PcFactory(Store):
 
                 category_url = 'https://www.pcfactory.cl/foo?categoria={}' \
                                '&pagina={}'.format(category_path, page)
-                print(category_url)
+
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
@@ -240,7 +240,10 @@ class PcFactory(Store):
         stock = int(product_data['stock_tienda']) + \
             int(product_data['stock_web'])
         sku = product_data['id_producto']
-        description = html_to_markdown(product_data['descripcion'])
+        description = product_data['descripcion']
+
+        if description:
+            description = html_to_markdown(description)
 
         picture_urls = ['https://www.pcfactory.cl/public/foto/{}/{}'.format(
             sku, path) for path in product_data['imagen']]
