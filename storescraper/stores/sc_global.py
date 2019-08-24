@@ -94,14 +94,16 @@ class ScGlobal(Store):
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         sku = soup.find('p', 'titulo-atributo-ficha').find('span').text.strip()
-        price_container = soup.find('span', 'regular-price')
+
+        pricing_container = soup.find('div', 'product-shop')
+        price_container = pricing_container.find('span', 'regular-price')
 
         pn_match = re.search(r'ccs_cc_args.push\(\[\'pn\', \'(.+)\'\]\);',
                              data)
         part_number = pn_match.groups()[0].strip() if pn_match else None
 
         if not price_container:
-            price_container = soup.find('p', 'special-price')
+            price_container = pricing_container.find('p', 'special-price')
 
         price = Decimal(remove_words(price_container.find(
             'span', 'price').text))
