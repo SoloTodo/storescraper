@@ -217,9 +217,13 @@ class LaPolar(Store):
         sku = soup.find('span', 'sku-code-value').text.strip()
 
         prices = soup.find('div', 'prices')
-        la_polar_card = prices.find('img', {'src': 'https://www.lapolar.cl/on/demandware.static/-/Library-Sites-lapolar-shared-library/default/dw3c951280/images/icons/tarjeta_icon.jpg'})
+        la_polar_card = prices.find(
+            'img', {'src': 'https://www.lapolar.cl/on/demandware.static/-/'
+                           'Library-Sites-lapolar-shared-library/default/'
+                           'dw3c951280/images/icons/tarjeta_icon.jpg'})
 
-        highlighted_price = prices.find('p', 'la-polar').find('span', 'price-value') \
+        highlighted_price = prices.find('p', 'la-polar').find(
+            'span', 'price-value') \
             .text.strip().replace('$', '').replace('.', '')
 
         highlighted_price = Decimal(highlighted_price)
@@ -227,7 +231,8 @@ class LaPolar(Store):
         if la_polar_card:
             offer_price = highlighted_price
 
-            normal_price = prices.find('p', 'internet').find('span', 'price-value').text.strip() \
+            normal_price = prices.find('p', 'internet').find(
+                'span', 'price-value').text.strip() \
                 .replace('$', '').replace('.', '')
             normal_price = Decimal(normal_price)
         else:

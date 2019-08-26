@@ -84,46 +84,44 @@ class Vtr(Store):
 
         rows = soup.findAll('div', 'box-vertical-fijo')
 
+        portability_suffixes = [
+            ('', 'data-not-ported'),
+            (' Portabilidad', 'data-ported')
+        ]
+        cuotas_suffixes = [
+            ' (sin cuota de arriendo)',
+            ' (con cuota de arriendo)'
+        ]
+
         for row in rows:
-            name = ' '.join([x.replace('\n', '').strip()
-                             for x in row.find('li', 'gbs_text').text.split()])
+            base_plan_name = ' '.join(
+                [x.replace('\n', '').strip()
+                 for x in row.find('li', 'gbs_text').text.split()]
+            )
             price_container = row.find('div', 'price')
 
-            price = Decimal(remove_words(
-                price_container['data-not-ported']))
+            for portability_suffix, price_field in portability_suffixes:
+                price = Decimal(remove_words(
+                    price_container[price_field]))
 
-            p = Product(
-                name,
-                cls.__name__,
-                'CellPlan',
-                url,
-                url,
-                name,
-                -1,
-                price,
-                price,
-                'CLP',
-            )
+                for cuota_suffix in cuotas_suffixes:
+                    plan_name = '{}{}{}'.format(
+                        base_plan_name, portability_suffix, cuota_suffix)
 
-            products.append(p)
+                    p = Product(
+                        plan_name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        plan_name,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                    )
 
-            portablidad_name = '{} Portabilidad'.format(name)
-            price = Decimal(remove_words(price_container['data-ported']))
-
-            p = Product(
-                portablidad_name,
-                cls.__name__,
-                'CellPlan',
-                url,
-                url,
-                portablidad_name,
-                -1,
-                price,
-                price,
-                'CLP',
-            )
-
-            products.append(p)
+                    products.append(p)
 
         return products
 
@@ -142,13 +140,13 @@ class Vtr(Store):
         description = html_to_markdown(
             str(soup.find('div', 'vtr-cont-planes')), 'https://vtr.com')
 
-        colors = [tag['color-name'] for tag in
-                  soup.find('ul', 'devices-colors').findAll('li')]
+        colors = []
 
-        plan_types_dict = {
-            'No Portados': '',
-            'Portados': ' Portabilidad'
-        }
+        for tag in soup.find('ul', 'devices-colors').findAll('li'):
+            if tag.find('div', 'saleOut'):
+                continue
+
+            colors.append(tag['color-name'])
 
         plan_buttons = soup.findAll('button', 'c2cbtn')
 
@@ -159,6 +157,15 @@ class Vtr(Store):
             cell_url = '{}?selection={}'.format(url, color)
 
             for plan_button in plan_buttons:
+                # Sanity checks
+                assert plan_button['planpriceport'] == \
+                       plan_button['planpricenoport'] == \
+                       plan_button['planoriginprice']
+                assert plan_button['deviceprice'] == \
+                    plan_button['pixel-price'] == \
+                    plan_button['om-price'] == \
+                    plan_button['pieinicialprice']
+
                 parent_row = plan_button.findParent('tr')
                 if not parent_row:
                     parent_row = plan_button.findParent()
@@ -167,10 +174,23 @@ class Vtr(Store):
                 if 'display' in parent_row_style:
                     continue
 
-                price = Decimal(plan_button['deviceprice']).quantize(0)
-                suffix = plan_types_dict[plan_button['port']]
+                portability_name = plan_button['port']
+
+                if portability_name == 'Portados':
+                    name_suffix = ' Portabilidad'
+                    cell_monthly_payment_factor = Decimal('0.3')
+                elif portability_name == 'No Portados':
+                    name_suffix = ''
+                    cell_monthly_payment_factor = Decimal('0.1')
+                else:
+                    raise Exception('Invalid portability choice')
+
                 plan_name = 'VTR {}{}'.format(
-                    plan_button['planname'].strip(), suffix)
+                    plan_button['planname'].strip(), name_suffix)
+
+                # Sin cuota de arriendo
+
+                price = Decimal(plan_button['devicefullprice']).quantize(0)
 
                 p = Product(
                     name_with_color,
@@ -188,6 +208,32 @@ class Vtr(Store):
                     picture_urls=picture_urls,
                     description=description,
                     cell_monthly_payment=Decimal(0)
+                )
+                products.append(p)
+
+                # Con cuota de arriendo
+
+                price = Decimal(plan_button['deviceprice']).quantize(0)
+                plan_base_price = Decimal(plan_button['planpriceport'])
+                cell_monthly_payment = \
+                    plan_base_price * cell_monthly_payment_factor
+
+                p = Product(
+                    name_with_color,
+                    cls.__name__,
+                    'Cell',
+                    cell_url,
+                    url,
+                    '{} {} {} Cuotas'.format(sku, color, plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    cell_plan_name=plan_name + ' Cuotas',
+                    picture_urls=picture_urls,
+                    description=description,
+                    cell_monthly_payment=cell_monthly_payment
                 )
                 products.append(p)
 

@@ -130,7 +130,8 @@ class Claro(Store):
                     name = '{}{}{}'.format(data['nombre'], portability_mode,
                                            leasing_mode)
                     price = Decimal(
-                        data['valor_fijo_portabilidad_propio'].replace('.', ''))
+                        data['valor_fijo_portabilidad_propio'].replace(
+                            '.', ''))
                     key = '{}{}{}'.format(data['id'], portability_mode,
                                           leasing_mode)
 

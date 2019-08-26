@@ -91,7 +91,9 @@ class Multimax(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         products = []
-        json_data = demjson.decode(re.search(r'current: ([\s\S]*?),\n[ \t]+customerLoggedIn', response.text).groups()[0])['product']
+        json_data = demjson.decode(
+            re.search(r'current: ([\s\S]*?),\n[ \t]+customerLoggedIn',
+                      response.text).groups()[0])['product']
 
         description = html_to_markdown(json_data['description'])
 

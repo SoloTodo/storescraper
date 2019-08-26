@@ -87,7 +87,9 @@ class HpOnline(Store):
         picture_urls = []
 
         if images_json:
-            images_data = images_json['[data-gallery-role=gallery-placeholder]']['mage/gallery/gallery']['data']
+            images_data = images_json[
+                '[data-gallery-role=gallery-placeholder]'][
+                'mage/gallery/gallery']['data']
             for image_data in images_data:
                 picture_urls.append(image_data['img'])
 
