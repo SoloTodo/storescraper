@@ -113,7 +113,6 @@ class Raenco(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, allow_redirects=False)
 
@@ -121,6 +120,9 @@ class Raenco(Store):
             return []
 
         data = response.text
+
+        if 'fatal error' in data.lower():
+            return []
 
         soup = BeautifulSoup(data, 'html.parser')
 
