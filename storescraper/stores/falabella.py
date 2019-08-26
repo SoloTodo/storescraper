@@ -626,8 +626,10 @@ class Falabella(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    images = driver.find_elements_by_class_name(
-                        'dy_unit')[1:-1]
+                    images = driver\
+                        .find_element_by_class_name('swiper-container')\
+                        .find_elements_by_class_name('dy_unit')[1:-1]
+
                     index = 1
 
                     for image in images:
@@ -732,7 +734,6 @@ class Falabella(Store):
                                 '{}'.format(url, index + 1))
 
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                print(url)
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 image_container = soup.find('div',

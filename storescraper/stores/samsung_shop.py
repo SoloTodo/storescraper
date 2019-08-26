@@ -39,7 +39,6 @@ class SamsungShop(Store):
             ('linea-blanca/aspiradoras', 'VacuumCleaner'),
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             ('linea-blanca/lavavajillas', 'DishWasher'),
-            ('linea-blanca/accesorios', 'AirConditioner'),
             ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
 
