@@ -123,8 +123,8 @@ class Ripley(RipleyChileBase):
 
                     for index, image in enumerate(images):
                         picture = image.find('span', 'bg-item')
-                        picture_url = re.search(r'url\((.*?)\)', picture['style'])\
-                            .group(1)
+                        picture_url = re.search(
+                            r'url\((.*?)\)', picture['style']).group(1)
 
                         destination_urls = [image['href']]
 
