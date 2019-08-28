@@ -126,13 +126,20 @@ class LgChile(Store):
 
         colors_container = soup.find('div', 'list-colors')
 
+        model_id = soup.find('html')['data-product-id']
+
         if colors_container:
             products = []
 
-            for color_link in colors_container.findAll('a'):
+            for idx, color_link in enumerate(colors_container.findAll('a')):
                 color_name = color_link['adobe-value']
-                key = color_link['data-sub-model-id']
+                sub_model_id = color_link['data-sub-model-id']
                 variant_path = color_link['href']
+
+                if idx == 0:
+                    key = '{}_{}'.format(model_id, sub_model_id)
+                else:
+                    key = sub_model_id
 
                 if variant_path == '#':
                     variant_url = url
@@ -157,15 +164,13 @@ class LgChile(Store):
 
             return products
         else:
-            key = soup.find('html')['data-product-id']
-
             return [Product(
                 base_name[:250],
                 cls.__name__,
                 category,
                 url,
                 url,
-                key,
+                model_id,
                 -1,
                 Decimal(0),
                 Decimal(0),

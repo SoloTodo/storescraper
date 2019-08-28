@@ -203,7 +203,6 @@ class LiderGet(Store):
                     'buysmart-checkout-bff/products/?sku={}&appId=BuySmart' \
                     ''.format(sku_id)
         entry = json.loads(session.get(query_url).text)[0]
-        print(json.dumps(entry, indent=2))
 
         name = '{} {}'.format(entry['brand'], entry['displayName'])
         ean = entry['gtin13']
