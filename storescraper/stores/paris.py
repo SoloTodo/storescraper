@@ -258,7 +258,6 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
-                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
@@ -270,7 +269,10 @@ class Paris(Store):
                     break
 
                 for idx, container in enumerate(containers):
-                    product_url = container.find('a')['href'].split('?')[0]
+                    product_a = container.find('a')
+                    if not product_a:
+                        continue
+                    product_url = product_a['href'].split('?')[0]
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
                     product_entries[product_url].append({
@@ -320,7 +322,6 @@ class Paris(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -358,7 +359,6 @@ class Paris(Store):
 
         video_urls = []
         for iframe in soup.findAll('iframe'):
-            print(iframe['src'])
             match = re.match('https://www.youtube.com/embed/(.+)',
                              iframe['src'])
             if match:

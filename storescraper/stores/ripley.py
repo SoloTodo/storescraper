@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.utils import session_with_proxy, HeadlessChrome
 from storescraper import banner_sections as bs
 from .ripley_chile_base import RipleyChileBase
+from selenium.common.exceptions import NoSuchElementException
 
 
 class Ripley(RipleyChileBase):
@@ -179,6 +180,7 @@ class Ripley(RipleyChileBase):
             banners = []
             driver.set_window_size(1920, 1080)
             driver.get(url)
+
             driver.execute_script("scrollTo(0, 0);")
 
             pictures = []
@@ -186,7 +188,7 @@ class Ripley(RipleyChileBase):
             banner_container = driver \
                 .find_element_by_class_name('owl-carousel')
 
-            controls = driver \
+            controls = banner_container \
                 .find_elements_by_class_name('owl-page')
 
             for control in controls:
@@ -195,16 +197,19 @@ class Ripley(RipleyChileBase):
                 pictures.append(
                     banner_container.screenshot_as_base64)
 
-            images = driver.find_elements_by_class_name('owl-item')
+            images = banner_container.find_elements_by_class_name('owl-item')
 
             assert len(images) == len(pictures)
 
             for index, image in enumerate(images):
-                image_style = image.find_element_by_tag_name(
+                try:
+                    image_style = image.find_element_by_tag_name(
                     'span').get_attribute('style')
-
-                key = re.search(r'url\((.*?)\)', image_style) \
-                    .group(1)
+                    key = re.search(r'url\((.*?)\)', image_style) \
+                        .group(1)
+                except NoSuchElementException:
+                    key = image.find_element_by_tag_name(
+                        'source').get_attribute('srcset')
 
                 destinations = image.find_elements_by_tag_name('a')
                 destination_urls = [a.get_attribute('href')
