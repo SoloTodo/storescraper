@@ -199,8 +199,9 @@ class LiderGet(Store):
         session = session_with_proxy(extra_args)
         sku_id = url.split('/')[-1]
 
-        query_url = 'https://api.lider.cl/black-cyber/products/?sku={}' \
-                    '&appId=BuySmart&ts=15554157446068'.format(sku_id)
+        query_url = 'https://buysmart-checkout-bff-production.lider.cl/' \
+                    'buysmart-checkout-bff/products/?sku={}&appId=BuySmart' \
+                    ''.format(sku_id)
         entry = json.loads(session.get(query_url).text)[0]
 
         name = '{} {}'.format(entry['brand'], entry['displayName'])
