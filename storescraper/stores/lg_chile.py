@@ -159,6 +159,7 @@ class LgChile(Store):
                     Decimal(0),
                     Decimal(0),
                     'CLP',
+                    sku=commercial_name,
                     picture_urls=picture_urls
                 ))
 
@@ -175,6 +176,7 @@ class LgChile(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                sku=commercial_name,
                 picture_urls=picture_urls
             )]
 
