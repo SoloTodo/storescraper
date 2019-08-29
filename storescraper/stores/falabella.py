@@ -736,19 +736,23 @@ class Falabella(Store):
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                image_container = soup.find('div',
-                                            {'data-module': 'editorial'})
+                image_container = soup.find(
+                    'div', {'data-module': 'editorial'})
 
                 if not image_container or not image_container.find('source'):
                     continue
 
+                picture_url = image_container.find('source')['srcset']
+
                 if '//' not in picture_url:
                     picture_url = 'https://www.falabella.com{}'.format(
                         picture_url)
+
                 elif 'https:' not in picture_url:
                     picture_url = 'https:{}'.format(picture_url)
 
                 destination_urls = [image_container.find('a')['href']]
+
                 banners.append({
                     'url': url,
                     'picture_url': picture_url,
@@ -757,7 +761,6 @@ class Falabella(Store):
                     'position': 1,
                     'section': section,
                     'subsection': subsection,
-                    'type': subsection_type
-                })
+                    'type': subsection_type})
 
         return banners
