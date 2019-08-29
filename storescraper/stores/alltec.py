@@ -82,14 +82,28 @@ class AllTec(Store):
             if local_category != category:
                 continue
 
-            subcategory_url = '{}{}?n=1000'.format(base_url, subcategory_path)
-            soup = BeautifulSoup(session.get(subcategory_url).text,
-                                 'html.parser')
-            link_containers = soup.findAll('div', 'product-container')
+            page = 1
 
-            for link_container in link_containers:
-                product_url = link_container.find('a')['href']
-                product_urls.append(product_url)
+            while True:
+                subcategory_url = '{}{}?p={}'.format(
+                    base_url, subcategory_path, page)
+                print(subcategory_url)
+                response = session.get(subcategory_url)
+
+                if response.url != subcategory_url:
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+                link_containers = soup.findAll('div', 'product-container')
+
+                if not link_containers and page == 1:
+                    break
+
+                for link_container in link_containers:
+                    product_url = link_container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
