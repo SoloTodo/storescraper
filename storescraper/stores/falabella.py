@@ -78,6 +78,8 @@ class Falabella(Store):
              'Home > Computación-Notebooks > MacBooks', 1],
             ['cat4850013/Computacion-Gamer', ['Notebook'],
              'Home > Computación-Computación Gamer', 1],
+            ['cat1012/TV', ['Television'],
+             'Home > Tecnología-TV', 1],
             ['cat7190148/Televisores-LED', ['Television'],
              'Home > TV-Televisores LED', 1],
             ['cat2850016/Televisores-OLED', ['Television'],

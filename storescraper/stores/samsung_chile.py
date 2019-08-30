@@ -99,6 +99,7 @@ class SamsungChile(Store):
                     Decimal(0),
                     Decimal(0),
                     'CLP',
+                    sku=key,
                     picture_urls=picture_urls
                 ))
 
