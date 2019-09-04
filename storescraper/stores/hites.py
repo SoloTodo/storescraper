@@ -132,8 +132,8 @@ class Hites(Store):
              'Inicio > Tecnología > Computación > Notebook', 1],
             ['tecnologia/computacion/tablets', ['Tablet'],
              'Inicio > Tecnología > Computación > Tablets', 1],
-            # ['tecnologia/computacion/all-in-one', ['AllInOne'],
-            #  'Inicio > Tecnología > Computacioń > All in One', 1],
+            ['tecnologia/computacion/all-in-one', ['AllInOne'],
+             'Inicio > Tecnología > Computacioń > All in One', 1],
             ['tecnologia/computacion/monitores-y-proyectores',
              ['Monitor', 'Projector'],
              'Inicio > Tecnología > Computación > Monitores y Proyectores',
@@ -224,6 +224,12 @@ class Hites(Store):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 json_data = json.loads(soup.find(
                     'script', {'id': 'hy-data'}).text)
+
+                if not json_data.get('result'):
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
+
                 product_data = json_data['result']['products']
 
                 if not product_data:

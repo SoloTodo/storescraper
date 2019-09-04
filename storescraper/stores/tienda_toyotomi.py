@@ -1,12 +1,11 @@
-import urllib
+import json
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class TiendaToyotomi(Store):
@@ -22,17 +21,11 @@ class TiendaToyotomi(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['6', 'AirConditioner'],
-            # ['24_27', 'Oven'],
-            ['24_30', 'Oven'],
-            ['24_31', 'VacuumCleaner'],
-            ['20_2', 'SpaceHeater'],
-            ['20_1', 'SpaceHeater'],
-            ['20_23', 'SpaceHeater'],
-            ['20_21', 'SpaceHeater'],
-            ['20_46', 'SpaceHeater'],
-            ['20_3', 'SpaceHeater'],
-            ['20_44', 'SpaceHeater'],
+            ['calefaccion', 'SpaceHeater'],
+            ['ventilacion/aire-acondicionado', 'AirConditioner'],
+            ['electro-hogar/electrodomesticos/aspiradoras', 'VacuumCleaner'],
+            ['electro-hogar/electrodomesticos/hornos-electricos', 'Oven'],
+            ['electro-hogar/electrodomesticos/microondas', 'Oven'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -42,46 +35,57 @@ class TiendaToyotomi(Store):
             if local_category != category:
                 continue
 
-            category_url = 'http://tienda.toyotomi.cl/index.php?cPath=' + \
-                           category_path
-            print(category_url)
+            page = 1
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            raw_links = soup.findAll('li', 'wrapper_prods')
+            while True:
+                if page >= 15:
+                    raise Exception('Page overflow')
 
-            if not raw_links:
-                raise Exception('Empty category: ' + category_url)
+                category_url = 'https://toyotomi.cl/' \
+                               'product-category/{}/page/{}'\
+                    .format(category_path, page)
 
-            for raw_link in raw_links:
-                original_product_url = raw_link.find('a')['href'].split(
-                    '&osCsid')[0]
-                query_string = urllib.parse.urlparse(
-                    original_product_url).query
-                product_id = urllib.parse.parse_qs(query_string)[
-                    'products_id'][0]
-                product_url = 'http://tienda.toyotomi.cl/product_info.php?' \
-                              'products_id=' + product_id
-                product_urls.append(product_url)
+                soup = BeautifulSoup(
+                    session.get(category_url, verify=False).text, 'html.parser')
+
+                product_containers = soup.findAll('li', 'product')
+
+                if not product_containers:
+                    if page == 1:
+                        raise Exception('Empty path: {}'.format(category_url))
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(
+            session.get(url, verify=False).text, 'html.parser')
 
-        name = soup.find('h2').contents[0].strip()
+        data = soup.findAll('script', {'type': 'application/ld+json'})[-1]
+        json_data = json.loads(data.text)['@graph'][1]
 
-        query_string = urllib.parse.urlparse(url).query
-        sku = urllib.parse.parse_qs(query_string)['products_id'][0]
+        name = json_data['name']
+        sku = json_data['sku']
 
-        price = Decimal(remove_words(soup.find('h2', 'price').find(
-            'span').text))
+        price = Decimal(json_data['offers'][0]['price'])
 
-        description = html_to_markdown(str(soup.find('div', 'desc_padd')))
+        if json_data['offers'][0]['availability'] == \
+                'https://schema.org/InStock':
+            stock = -1
+        else:
+            stock = 0
 
-        picture_urls = [tag['href'].split('?')[0].replace(' ', '%20') for
-                        tag in soup.findAll('a', {'rel': 'fancybox'})]
+        description = json_data['description']
+
+        picture_urls = [json_data['image']]
 
         p = Product(
             name,
@@ -90,7 +94,7 @@ class TiendaToyotomi(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             price,
             price,
             'CLP',

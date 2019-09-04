@@ -77,8 +77,6 @@ class Jetstereo(Store):
 
         soup = BeautifulSoup(data.text, 'html.parser')
 
-        print(soup)
-
         sku_container = soup.find('div', 'star')
 
         if not sku_container:

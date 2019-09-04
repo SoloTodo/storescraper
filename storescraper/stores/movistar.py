@@ -143,8 +143,12 @@ class Movistar(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
+        page = session.get(url)
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        if page.status_code == 404:
+            return []
+
+        soup = BeautifulSoup(page.text, 'html.parser')
         base_name = soup.find('h1').text.strip()
 
         sku_color_choices = []
