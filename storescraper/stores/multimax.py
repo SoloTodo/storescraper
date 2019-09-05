@@ -34,13 +34,13 @@ class Multimax(Store):
             ('equipos-de-sonido', 'StereoSystem'),
             ('barras-de-sonido', 'StereoSystem'),
             ('bocinas', 'StereoSystem'),
-            ('split-inverter', 'AirConditioner'),
+            # ('split-inverter', 'AirConditioner'),
             ('split-basico', 'AirConditioner'),
-            # ('estufas', 'Stove'),
-            # ('lavadoras', 'WashingMachine'),
+            ('estufas', 'Stove'),
+            ('lavadoras', 'WashingMachine'),
             # ('secadoras', 'WashingMachine'),
             # ('centro-de-lavado', 'WashingMachine'),
-            # ('refrigeradoras', 'Refrigerator'),
+            ('refrigeradoras', 'Refrigerator'),
             # ('congeladores', 'Refrigerator'),
             # ('microondas', 'Oven'),
             # ('hornos', 'Oven'),
@@ -62,6 +62,8 @@ class Multimax(Store):
 
                 url = 'https://shopmultimax.com/collections/{}?page={}'\
                     .format(category_path, page)
+
+                print(url)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html5lib')
