@@ -83,6 +83,8 @@ class RipleyChileBase(Store):
              'Tecno > Televisión > PREMIUM - OLED - QLED - 8K', 1],
             ['tecno/television/hd-full-hd', ['Television'],
              'Tecno > Televisión > HD - FULL HD', 1],
+            ['tecno/television', ['Television'],
+             'Tecno > Televisión', 1],
 
             ['electro/refrigeracion/side-by-side', ['Refrigerator'],
              'Electro > Refrigeración > Side by Side', 1],
