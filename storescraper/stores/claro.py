@@ -1,8 +1,4 @@
 import json
-import demjson
-
-import re
-import urllib
 from collections import defaultdict
 
 from decimal import Decimal
@@ -104,14 +100,11 @@ class Claro(Store):
     @classmethod
     def _planes(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        data_url = 'https://digital.clarochile.cl/wcm-inyect/'\
-                   'landing-postpago/assets/js/planes.js'
-        data = session.get(data_url).text
-        data = data.replace("\'", "\"")
+        data_url = 'https://digital.clarochile.cl/wcm-inyect/' \
+                   'landing-postpago/content.html'
 
-        raw_data = re.findall(r'planes_moviles = \[([\s\S]*?)]', data)[0]
-        raw_data = '[{}]'.format(raw_data)
-        json_data = demjson.decode(raw_data)
+        soup = BeautifulSoup(session.get(data_url).text, 'html.parser')
+        containers = soup.findAll('article', 'plan-destacado-Landing')
 
         products = []
         portabilidad_modes = [
@@ -124,15 +117,16 @@ class Claro(Store):
             ' (sin cuota de arriendo)'
         ]
 
-        for data in json_data:
+        for container in containers:
+            plan_name = container.find('h1').text.strip()
+            plan_price_text = container.find('p').findNext('h2').contents[1]
+            plan_price = Decimal(plan_price_text.replace('.', ''))
+
             for portability_mode in portabilidad_modes:
                 for leasing_mode in leasing_modes:
-                    name = '{}{}{}'.format(data['nombre'], portability_mode,
+                    name = '{}{}{}'.format(plan_name, portability_mode,
                                            leasing_mode)
-                    price = Decimal(
-                        data['valor_fijo_portabilidad_propio'].replace(
-                            '.', ''))
-                    key = '{}{}{}'.format(data['id'], portability_mode,
+                    key = '{}{}{}'.format(plan_name, portability_mode,
                                           leasing_mode)
 
                     products.append(Product(
@@ -143,8 +137,8 @@ class Claro(Store):
                         url,
                         key,
                         -1,
-                        price,
-                        price,
+                        plan_price,
+                        plan_price,
                         'CLP'))
 
         return products
