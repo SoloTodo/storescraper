@@ -205,7 +205,8 @@ class SpDigital(Store):
         name = soup.find('h1').text.strip()
         sku = [x for x in url.split('/') if x][-1]
 
-        if soup.find('a', 'stock-amount-cero'):
+        if soup.find('a', 'stock-amount-cero') or \
+                not soup.find('div', 'product-view-stock'):
             stock = 0
         else:
             stock_text = soup.find('div', 'product-view-stock').find(

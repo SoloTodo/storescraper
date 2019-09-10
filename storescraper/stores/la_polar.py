@@ -69,10 +69,10 @@ class LaPolar(Store):
             #  'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
             ['parlantes', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Parlantes', 1],
-            ['equipos-de-musica', ['StereoSystem'],
-             'Inicio > Tecnología > Audio > Equipos de música', 1],
-            ['karaoke', ['StereoSystem'],
-             'Inicio > Tecnología > Audio > Karaoke', 1],
+            # ['equipos-de-musica', ['StereoSystem'],
+            #  'Inicio > Tecnología > Audio > Equipos de música', 1],
+            # ['karaoke', ['StereoSystem'],
+            #  'Inicio > Tecnología > Audio > Karaoke', 1],
             # ['home-theater', ['StereoSystem'],
             #  'Inicio > Tecnología > Audio > Home Theater', 1],
             ['audifonos', ['Headphones'],
@@ -139,8 +139,6 @@ class LaPolar(Store):
                   'cgid={}&srule=most-popular&start=0&sz=150' \
                 .format(category_path)
 
-            print(url)
-
             response = session.get(url).text
             soup = BeautifulSoup(response, 'html.parser')
 
@@ -202,7 +200,6 @@ class LaPolar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -277,7 +274,6 @@ class LaPolar(Store):
         banners = []
 
         for section, subsection, subsection_type, url in sections_data:
-            print(url)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
