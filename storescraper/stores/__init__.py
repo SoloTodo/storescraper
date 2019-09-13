@@ -40,6 +40,7 @@ from .easy import Easy
 from .easy_argentina import EasyArgentina
 from .efe import Efe
 from .eglo import Eglo
+from .eight_bits import EightBits
 from .electronica_panamericana import ElectronicaPanamericana
 from .el_gallo_mas_gallo import ElGalloMasGallo
 from .enel import Enel
