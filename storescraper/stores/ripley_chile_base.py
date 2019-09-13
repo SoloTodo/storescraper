@@ -238,11 +238,12 @@ class RipleyChileBase(Store):
 
         sku = specs_json['partNumber']
         name = specs_json['name']
+        short_description = specs_json.get('shortDescription', '')
 
         # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
         # "Prepago" information in its description
         if category in ['Cell', 'Unknown'] and 'MPM' not in sku:
-            name += ' ({})'.format(specs_json.get('shortDescription', ''))
+            name += ' ({})'.format(short_description)
 
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
             stock = 0
@@ -277,7 +278,8 @@ class RipleyChileBase(Store):
         description += '\n\n'
 
         if 'reacondicionado' in description.lower() or \
-                'reacondicionado' in name.lower():
+                'reacondicionado' in name.lower() or \
+                'reacondicionado' in short_description.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
