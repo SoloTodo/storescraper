@@ -204,7 +204,7 @@ class Ripley(RipleyChileBase):
             for index, image in enumerate(images):
                 try:
                     image_style = image.find_element_by_tag_name(
-                    'span').get_attribute('style')
+                        'span').get_attribute('style')
                     key = re.search(r'url\((.*?)\)', image_style) \
                         .group(1)
                 except NoSuchElementException:

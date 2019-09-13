@@ -276,7 +276,8 @@ class RipleyChileBase(Store):
 
         description += '\n\n'
 
-        if 'reacondicionado' in description.lower():
+        if 'reacondicionado' in description.lower() or \
+                'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'

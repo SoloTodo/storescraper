@@ -248,6 +248,11 @@ class LaPolar(Store):
             picture.find('img')['src'].replace(' ', '%20')
             for picture in picture_containers]
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -261,7 +266,8 @@ class LaPolar(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]

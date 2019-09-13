@@ -46,7 +46,8 @@ class TiendaToyotomi(Store):
                     .format(category_path, page)
 
                 soup = BeautifulSoup(
-                    session.get(category_url, verify=False).text, 'html.parser')
+                    session.get(category_url, verify=False).text,
+                    'html.parser')
 
                 product_containers = soup.findAll('li', 'product')
 

@@ -515,6 +515,11 @@ class Falabella(Store):
             else:
                 review_avg_score = None
 
+            if 'reacondicionado' in base_name.lower():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
+
             p = Product(
                 '{} ({})'.format(base_name, model['name']),
                 cls.__name__,
@@ -531,7 +536,8 @@ class Falabella(Store):
                 picture_urls=picture_urls,
                 video_urls=video_urls,
                 review_count=review_count,
-                review_avg_score=review_avg_score
+                review_avg_score=review_avg_score,
+                condition=condition
             )
 
             products.append(p)

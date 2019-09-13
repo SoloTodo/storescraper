@@ -455,6 +455,11 @@ class AbcDin(Store):
             flixmedia_id = flixmedia_tag['data-flix-mpn']
             video_urls = flixmedia_video_urls(flixmedia_id)
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         product = Product(
             name,
             cls.__name__,
@@ -470,7 +475,8 @@ class AbcDin(Store):
             description=description,
             picture_urls=picture_urls,
             video_urls=video_urls,
-            flixmedia_id=flixmedia_id
+            flixmedia_id=flixmedia_id,
+            condition=condition
         )
 
         return [product]
