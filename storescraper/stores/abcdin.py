@@ -537,10 +537,10 @@ class AbcDin(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
+                    time.sleep(5)
+
                     elements = driver.find_elements_by_class_name(
                         'slide-static')
-
-                    time.sleep(5)
 
                     controls = driver\
                         .find_element_by_class_name('pageControl')\

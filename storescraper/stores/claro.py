@@ -119,7 +119,8 @@ class Claro(Store):
 
         for container in containers:
             plan_name = container.find('h1').text.strip()
-            plan_price_text = container.find('p').findNext('h2').contents[1]
+            plan_price_text = container.find('p').findNext('h2')\
+                .text.replace('$', '')
             plan_price = Decimal(plan_price_text.replace('.', ''))
 
             for portability_mode in portabilidad_modes:

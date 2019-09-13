@@ -267,67 +267,35 @@ class Falabella(Store):
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         discovered_urls = []
         session = session_with_proxy(extra_args)
-        session.headers.update({
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'en,en-US;q=0.8,es;q=0.6',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'DNT': '1',
-            'Host': 'www.falabella.com',
-            'Referer': 'https://www.falabella.com/falabella-cl/',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
-                          '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
-                          'Safari/537.36',
-            'Authorization': 'foo'
-        })
 
-        base_url = "https://www.falabella.com/s/search/v1/products/cl?" \
-                   "Ntt={}&page={}&zone=13"
+        base_url = "https://www.falabella.com/falabella-cl/search?" \
+                   "Ntt={}&page={}"
 
-        for i in range(4):
-            try:
-                discovered_urls = []
-                page = 1
-                while True:
-                    if page > 60:
-                        raise Exception('Page overflow ' + keyword)
+        discovered_urls = []
+        page = 1
+        while True:
+            if page > 60:
+                raise Exception('Page overflow ' + keyword)
 
-                    res = None
-                    error_count = 0
-                    while res is None or 'errors' in res:
-                        error_count += 1
-                        if error_count > 10:
-                            raise Exception(
-                                'Error threshold exceeded: ' + 'search')
+            search_url = base_url.format(keyword, page)
 
-                        search_url = base_url.format(keyword, page)
+            res = session.get(search_url, timeout=None)
 
-                        res = session.get(search_url, timeout=None)
-                        res = json.loads(res.content.decode('utf-8'))
-
-                        if not res['data']['results'] and page == 1:
-                            raise Exception('Empty keyword path: ' + keyword)
-
-                        for product_entry in res['data']['results']:
-                            product_id = product_entry['productId'].strip()
-                            product_url = \
-                                'https://www.falabella.com/falabella-cl/' \
-                                'product/{}/'.format(product_id)
-                            discovered_urls.append(product_url)
-
-                            if len(discovered_urls) == threshold:
-                                return discovered_urls
-
-                    if math.ceil(
-                            res['data']['pagination']['count'] /
-                            res['data']['pagination']['perPage']) == page:
-                        break
-
-                    page += 1
+            if res.status_code == 500:
                 break
-            except Exception as e:
-                continue
+
+            soup = BeautifulSoup(res.text, 'html.parser')
+
+            products_containers = soup.find_all('div', 'pod-4_GRID')
+
+            for product_container in products_containers:
+                product_url = 'https://www.falabella.com{}'.format(
+                    product_container.find('a')['href'])
+                discovered_urls.append(product_url)
+
+                if len(discovered_urls) == threshold:
+                    return discovered_urls
+            page += 1
 
         return discovered_urls
 
