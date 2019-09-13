@@ -39,7 +39,7 @@ class Panafoto(Store):
                    'MjBjMDJiNzBhY2YyZWVjYWNjNzVjNjU5M2M5ZmVhY3RhZ0ZpbHRlcnM9'
 
         category_filters = [
-            ('["categories.level2:Categorías /// TV y Video /// TV"]',
+            ('["categories.level2:Categorías /// TV y Video /// Televisores"]',
              'Television'),
             ('["categories.level3:Categorías /// TV y Video /// '
              'Reproductores de Audio y Video /// Barras de Sonido"]',
