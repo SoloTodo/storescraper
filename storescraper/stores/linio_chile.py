@@ -73,8 +73,6 @@ class LinioChile(Store):
                 while True:
                     category_url = 'https://www.linio.cl/c/{}?sortBy={}&page' \
                                    '={}'.format(category_path, sorting, page)
-                    print(category_url)
-
                     if page >= 40:
                         raise Exception('Page overflow: ' + category_url)
 
@@ -96,6 +94,8 @@ class LinioChile(Store):
 
                         product_url = 'https://www.linio.cl' + \
                                       product_container.find('a')['href']
+
+                        product_url = product_url.split('?')[0]
                         product_urls.append(product_url)
 
                     page += 1
@@ -104,7 +104,6 @@ class LinioChile(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -112,7 +111,6 @@ class LinioChile(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
         key = re.search(r'-([a-zA-Z0-9]+)$', url).groups()[0]
         page_source = response.text
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
