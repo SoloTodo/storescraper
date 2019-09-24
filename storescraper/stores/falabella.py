@@ -340,7 +340,9 @@ class Falabella(Store):
                     .format(urllib.parse.quote(json.dumps(
                         query_args, separators=(',', ':')), safe=''))
 
-                time.sleep(1)
+                if res:
+                    time.sleep(1)
+
                 res = session.get(pag_url, timeout=None)
                 res = json.loads(res.content.decode('utf-8'))
 
