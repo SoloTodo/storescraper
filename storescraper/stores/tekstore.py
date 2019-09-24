@@ -5,7 +5,6 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
-import re
 import json
 
 

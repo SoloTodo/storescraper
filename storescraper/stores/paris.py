@@ -59,8 +59,8 @@ class Paris(Store):
              'Electro > Televisión > Ultra HD', 1],
             ['electro/television/curvo-oled-qled', ['Television'],
              'Electro > Televisión > Curvo, Oled y Qled', 1],
-            ['electro/television/monitores-tv', ['Television'],
-             'Electro > Televisión > Monitor TV', 1],
+            # ['electro/television/monitores-tv', ['Television'],
+            #  'Electro > Televisión > Monitor TV', 1],
             # Also contains other accesories
             ['electro/accesorios-tv',
              ['StereoSystem', 'OpticalDiskPlayer', 'Projector'],
@@ -109,8 +109,8 @@ class Paris(Store):
              'Electro > Ofertas', 0.5],
             ['electro/ofertas/television', ['Television'],
              'Electro > Ofertas > Ofertas TV', 1],
-            ['electro/ofertas/audio', ['StereoSystem'],
-             'Electro > Ofertas > Ofertas Audio', 1],
+            # ['electro/ofertas/audio', ['StereoSystem'],
+            #  'Electro > Ofertas > Ofertas Audio', 1],
             ['tecnologia/computadores', ['Notebook', 'Tablet', 'AllInOne'],
              'Tecno > Computadores', 0.5],
             ['tecnologia/computadores/notebooks', ['Notebook'],
@@ -298,7 +298,6 @@ class Paris(Store):
 
             search_url = 'https://www.paris.cl/search?q={}&sz=40&start={}'\
                 .format(keyword, page*40)
-            print(search_url)
 
             soup = BeautifulSoup(session.get(search_url).text, 'html.parser')
             containers = soup.findAll('li', 'flex-item-products')
@@ -425,8 +424,8 @@ class Paris(Store):
              'electro/television/ultra-hd/'],
             [bs.TELEVISIONS, 'Curvo, Oled y Qled', bs.SUBSECTION_TYPE_MOSAIC,
              'electro/television/curvo-oled-qled/'],
-            [bs.TELEVISIONS, 'Monitor TV', bs.SUBSECTION_TYPE_MOSAIC,
-             'electro/television/monitores-tv/'],
+            # [bs.TELEVISIONS, 'Monitor TV', bs.SUBSECTION_TYPE_MOSAIC,
+            #  'electro/television/monitores-tv/'],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC, 'electro/audio/'],
             [bs.AUDIO, 'Parlantes Bluetooth y Portables',
              bs.SUBSECTION_TYPE_MOSAIC,
