@@ -179,6 +179,7 @@ class Ripley(RipleyChileBase):
         with HeadlessChrome(images_enabled=True, timeout=60) as driver:
             banners = []
             driver.set_window_size(1920, 1080)
+            driver.set_page_load_timeout(240)
             driver.get(url)
 
             driver.execute_script("scrollTo(0, 0);")
