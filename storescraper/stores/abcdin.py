@@ -486,7 +486,7 @@ class AbcDin(Store):
         base_url = 'https://www.abcdin.cl/{}'
 
         sections_data = [
-            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            # [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.LINEA_BLANCA_ABCDIN, 'Línea Blanca AbcDin',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'tienda/es/abcdin/linea-blanca'],
@@ -531,6 +531,7 @@ class AbcDin(Store):
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
+            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 with HeadlessChrome(images_enabled=True) as driver:
