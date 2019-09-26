@@ -25,8 +25,8 @@ class SamsungChile(Store):
             'Headphones',
             'Wearable',
             'AirConditioner',
-            'DishWasher'
-
+            'DishWasher',
+            'Stove'
         ]
 
     @classmethod
@@ -57,51 +57,52 @@ class SamsungChile(Store):
                   'stage=live&' \
                   'onlyFilterInfoYN=N'
 
+        products = []
+
         for category_id, category_filters, category_path, category_name \
                 in category_info:
-            if category_path in url:
-                api_url += '&type={}{}'.format(category_id, category_filters)
-                break
+            if category_name != category:
+                continue
 
-        if not api_url:
-            return []
+            category_endpoint = api_url + '&type={}{}'.format(
+                category_id, category_filters)
 
-        products = []
-        json_data = json.loads(session.get(api_url).text)['response']
-        product_list = json_data['resultData']['productList']
+            json_data = json.loads(
+                session.get(category_endpoint).text)['response']
+            product_list = json_data['resultData']['productList']
 
-        for product in product_list:
-            for model in product['modelList']:
-                name = model['displayName']
-                if 'www.samsung.com' in model['pdpUrl']:
-                    model_url = 'https:{}'.format(model['pdpUrl'])
-                else:
-                    model_url = 'https://www.samsung.com{}'\
-                        .format(model['pdpUrl'])
-                key = model['modelCode']
-                picture_urls = ['https://images.samsung.com/'
-                                'is/image/samsung/{}'
-                                .format(model['thumbUrl'])]
+            for product in product_list:
+                for model in product['modelList']:
+                    name = model['displayName']
+                    if 'www.samsung.com' in model['pdpUrl']:
+                        model_url = 'https:{}'.format(model['pdpUrl'])
+                    else:
+                        model_url = 'https://www.samsung.com{}'\
+                            .format(model['pdpUrl'])
+                    key = model['modelCode']
+                    picture_urls = ['https://images.samsung.com/'
+                                    'is/image/samsung/{}'
+                                    .format(model['thumbUrl'])]
 
-                for picture in model['galleryImage']:
-                    picture_urls.append(
-                        'https://images.samsung.com/is/image/samsung/{}'
-                        .format(picture))
+                    for picture in model['galleryImage']:
+                        picture_urls.append(
+                            'https://images.samsung.com/is/image/samsung/{}'
+                            .format(picture))
 
-                products.append(Product(
-                    '{} ({})'.format(name, key),
-                    cls.__name__,
-                    category,
-                    model_url,
-                    url,
-                    key,
-                    -1,
-                    Decimal(0),
-                    Decimal(0),
-                    'CLP',
-                    sku=key,
-                    picture_urls=picture_urls
-                ))
+                    products.append(Product(
+                        '{} ({})'.format(name, key),
+                        cls.__name__,
+                        category,
+                        model_url,
+                        url,
+                        key,
+                        -1,
+                        Decimal(0),
+                        Decimal(0),
+                        'CLP',
+                        sku=key,
+                        picture_urls=picture_urls
+                    ))
 
         return products
 
@@ -143,4 +144,10 @@ class SamsungChile(Store):
              'AirConditioner'),
             ('07180000', '&filter1=01z02', 'cooking-appliances/dishwashers',
              'DishWasher'),
+            ('07180000', '&filter1=01z03', 'cooking-appliances',
+             'Stove'),
+            ('07180000', '&filter1=01z04', 'cooking-appliances',
+             'Stove'),
+            ('07180000', '&filter1=01z05', 'cooking-appliances',
+             'Stove'),
         ]
