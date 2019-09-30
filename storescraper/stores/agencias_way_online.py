@@ -25,11 +25,13 @@ class AgenciasWayOnline(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('productos/televisores', 'Television'),
-            ('productos/audio', 'StereoSystem'),
-            ('productos/tecnologia', 'Cell'),
-            ('productos/linea-blanca', 'Refrigerator'),
-            ('productos/electrodomesticos', 'Oven'),
+            ('categoria/televisores', 'Television'),
+            ('categoria/audio', 'StereoSystem'),
+            ('categoria/tecnologia/celulares', 'Cell'),
+            ('categoria/linea-blanca/refrigeradoras', 'Refrigerator'),
+            ('categoria/linea-blanca/congeladores', 'Refrigerator'),
+            ('categoria/linea-blanca/horno-microondas', 'Oven'),
+            ('categoria/linea-blanca/lavadoras', 'WashingMachine')
         ]
 
         session = session_with_proxy(extra_args)
@@ -39,37 +41,31 @@ class AgenciasWayOnline(Store):
             if local_category != category:
                 continue
 
-            start = 0
             page = 1
-            done = False
 
             while True:
-                if page >= 10:
+                if page >= 15:
                     raise Exception('Page overflow')
 
-                url = 'https://www.agenciaswayonline.com/guatemala/{}'\
-                    .format(category_path)
-
-                if start:
-                    url += '?start={}'.format(start)
+                url = 'https://www.agenciaswayonline.com/{}/page/{}/'\
+                    .format(category_path, page)
 
                 soup = BeautifulSoup(session.get(url, timeout=20).text,
                                      'html.parser')
 
-                for container in soup.findAll(
-                        'div', 'vm-product-media-container'):
-                    product_url = 'https://www.agenciaswayonline.com' \
-                                  + container.find('a')['href']
+                products_container = soup.find('div', 'wrap-products')
 
-                    if product_url in product_urls:
-                        done = True
-                        break
+                if not products_container:
+                    if page == 1:
+                        raise Exception('Empty path: {}'.format(url))
+                    break
+
+                products = products_container.findAll('div', 'block-item')
+
+                for product in products:
+                    product_url = product.find('a')['href']
 
                     product_urls.append(product_url)
-                    start += 1
-
-                if done:
-                    break
 
                 page += 1
 
@@ -80,25 +76,28 @@ class AgenciasWayOnline(Store):
         session = session_with_proxy(extra_args)
         data = session.get(url, timeout=20).text
         soup = BeautifulSoup(data, 'html.parser')
-        sku_container = soup.find('h4', 'codigo')
 
-        if not sku_container:
-            return []
+        product_container = soup.find('div', 'detail-product')
 
-        sku = sku_container.text.replace('Código: ', '')
-        model = soup.find('h4').text.replace('Modelo: ', '').strip()
-        name = '{} ({})'.format(soup.find('h1', 'title-product-item').text,
-                                model)
+        sku = product_container['id'].split('-')[1]
+
+        model = product_container.find(
+            'p', 'alter').text.split(
+            'Alterno')[0].split(':')[1].strip()
+
+        name = '{} - {} ({})'.format(
+            product_container.find('h3').text.strip(),
+            product_container.find('h1').text.strip(),
+            model)
+
         stock = -1
 
-        price = Decimal(soup.find('span', 'PricesalesPrice').text
-                        .replace('Q', '').replace(',', ''))
+        price = Decimal(product_container.find(
+            'h6').text.replace('Q', '').replace(',', ''))
 
-        picture_urls = [tag['href'].replace(' ', '%20') for tag in soup.find
-                        ('div', 'vm-product-media-container').findAll('a')]
+        picture_urls = [product_container.find('img')['data-large_image']]
 
-        description = html_to_markdown(str(soup.find
-                                           ('div', 'product-description')))
+        description = html_to_markdown(str(product_container.find('ul')))
 
         p = Product(
             name,
