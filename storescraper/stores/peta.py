@@ -52,7 +52,7 @@ class Peta(Store):
             # ['apple/mac/macbook-air.html', 'Notebook'],
             # ['apple/mac/macbook-pro.html', 'Notebook'],
             # ['apple/mac/macbook-pro-retina.html', 'Notebook'],
-            ['partes-y-piezas/display/tarjetas-de-video.html', 'VideoCard'],
+            # ['partes-y-piezas/display/tarjetas-de-video.html', 'VideoCard'],
             ['partes-y-piezas/componentes/cpu-procesadores.html',
              'Processor'],
             ['partes-y-piezas/display/monitores.html', 'Monitor'],
@@ -101,7 +101,7 @@ class Peta(Store):
                 category_url = '{}?product_list_limit=40&p={}&_={}'.format(
                     url, p, random.randint(1, 1000))
                 print(category_url)
-                soup = BeautifulSoup(session.get(category_url).text,
+                soup = BeautifulSoup(session.get(category_url, verify=False).text,
                                      'html.parser')
 
                 for cell in soup.find(
@@ -131,7 +131,7 @@ class Peta(Store):
         session = session_with_proxy(extra_args)
         request_url = '{}?_={}'.format(url, random.randint(1, 1000))
         print(request_url)
-        response = session.get(request_url)
+        response = session.get(request_url, verify=False)
 
         if not response.text:
             return []

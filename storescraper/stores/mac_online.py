@@ -43,7 +43,7 @@ class MacOnline(Store):
             if category not in local_categories:
                 continue
 
-            category_url = 'https://maconline.com/t/{}'.format(category_path)
+            category_url = 'https://www.maconline.com/t/{}'.format(category_path)
             print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
@@ -51,7 +51,7 @@ class MacOnline(Store):
             subcategories = soup.find('ul', 'list-unstyled').findAll('li')
 
             for idx, subcategory in enumerate(subcategories):
-                subcategory_url = 'https://maconline.com{}'.format(
+                subcategory_url = 'https://www.maconline.com{}'.format(
                     subcategory.find('a')['href'].split('?')[0]
                 )
                 discovered_entries[subcategory_url].append({

@@ -33,7 +33,7 @@ class CasaRoyal(Store):
             ['computacion/perifericos-y-adaptadores/mouse', 'Mouse'],
             ['audio/audifonos', 'Headphones'],
             ['audio/audio-hogar', 'StereoSystem'],
-            ['audio/audio-profesional/bafles', 'StereoSystem'],
+            # ['audio/audio-profesional/bafles', 'StereoSystem'],
             ['computacion/perifericos-y-adaptadores/teclados', 'Keyboard'],
             ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
             ['computacion/almacenamiento/discos-duros', 'SolidStateDrive'],
