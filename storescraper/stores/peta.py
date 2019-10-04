@@ -101,8 +101,9 @@ class Peta(Store):
                 category_url = '{}?product_list_limit=40&p={}&_={}'.format(
                     url, p, random.randint(1, 1000))
                 print(category_url)
-                soup = BeautifulSoup(session.get(category_url, verify=False).text,
-                                     'html.parser')
+                soup = BeautifulSoup(
+                    session.get(category_url, verify=False).text,
+                    'html.parser')
 
                 for cell in soup.find(
                         'ol', 'product-items').findAll('li', 'product-item'):

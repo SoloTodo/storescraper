@@ -62,7 +62,47 @@ class Falabella(Store):
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
+        return [category]
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        discovered_urls = []
+        session = session_with_proxy(extra_args)
+
+        base_url = "https://www.falabella.com/falabella-cl/search?" \
+                   "Ntt={}&page={}"
+
+        discovered_urls = []
+        page = 1
+        while True:
+            if page > 60:
+                raise Exception('Page overflow ' + keyword)
+
+            search_url = base_url.format(keyword, page)
+
+            res = session.get(search_url, timeout=None)
+
+            if res.status_code == 500:
+                break
+
+            soup = BeautifulSoup(res.text, 'html.parser')
+
+            products_containers = soup.find_all('div', 'pod-4_GRID')
+
+            for product_container in products_containers:
+                product_url = 'https://www.falabella.com{}'.format(
+                    product_container.find('a')['href'])
+                discovered_urls.append(product_url)
+
+                if len(discovered_urls) == threshold:
+                    return discovered_urls
+            page += 1
+
+        return discovered_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
@@ -198,11 +238,10 @@ class Falabella(Store):
              'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
              'Audífonos', 1],
             ['cat4061', ['DishWasher'],
-             'Home > Lavado-Lavavajillas', 1],
-        ]
+             'Home > Lavado-Lavavajillas', 1]]
 
+        product_dict = {}
         session = session_with_proxy(extra_args)
-        product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
@@ -210,58 +249,86 @@ class Falabella(Store):
             if category not in local_categories:
                 continue
 
-            category_product_urls = cls._get_product_urls(
-                session, category_id)
+            base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
+                       'zone=13&categoryId={}&page={}'
+            page = 1
+            position = 1
 
-            for idx, url in enumerate(category_product_urls):
-                product_entries[url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+            while True:
+                if page > 60:
+                    raise Exception('Page overflow: ' + category_id)
 
-        return product_entries
+                pag_url = base_url.format(category_id, page)
+                res = session.get(pag_url, timeout=None)
+                res = json.loads(res.content.decode('utf-8'))['data']
 
-    @classmethod
-    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        discovered_urls = []
-        session = session_with_proxy(extra_args)
+                if 'results' not in res:
+                    if page == 1:
+                        raise Exception(
+                            'Empty category: {}'.format(category_id))
+                    break
 
-        base_url = "https://www.falabella.com/falabella-cl/search?" \
-                   "Ntt={}&page={}"
+                for result in res['results']:
+                    url = 'https://www.falabella.com{}'.format(result['url'])
+                    name = result['displayName']
+                    sku = result['skuId']
+                    stock = -1
+                    offer_price = None
+                    normal_price = None
+                    backup_price = None
 
-        discovered_urls = []
-        page = 1
-        while True:
-            if page > 60:
-                raise Exception('Page overflow ' + keyword)
+                    for price in result['prices']:
+                        if price['icons']:
+                            offer_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        elif price['label']:
+                            normal_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        else:
+                            backup_price = Decimal(
+                                price['price'][0].replace('.', ''))
 
-            search_url = base_url.format(keyword, page)
+                    if not normal_price:
+                        normal_price = backup_price
 
-            res = session.get(search_url, timeout=None)
+                    if not offer_price:
+                        offer_price = normal_price
 
-            if res.status_code == 500:
-                break
+                    variants = result['variants'][0]['options']
 
-            soup = BeautifulSoup(res.text, 'html.parser')
+                    if variants:
+                        for variant in variants:
+                            name += ' ({})'.format(variant['label'])
+                            sku = variant['mediaId']
 
-            products_containers = soup.find_all('div', 'pod-4_GRID')
+                            product = product_dict.get(sku, None)
 
-            for product_container in products_containers:
-                product_url = 'https://www.falabella.com{}'.format(
-                    product_container.find('a')['href'])
-                discovered_urls.append(product_url)
+                            if not product:
+                                product = Product(
+                                    name, cls.__name__, category, url, url,
+                                    sku, stock, normal_price, offer_price,
+                                    'CLP', sku=sku)
+                                product_dict[sku] = product
 
-                if len(discovered_urls) == threshold:
-                    return discovered_urls
-            page += 1
+                            product.positions[section_name] = position
+                    else:
+                        product = product_dict.get(sku, None)
 
-        return discovered_urls
+                        if not product:
+                            product = Product(
+                                name, cls.__name__, category, url, url,
+                                sku, stock, normal_price, offer_price,
+                                'CLP', sku=sku)
+                            product_dict[sku] = product
 
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        return cls._products_for_url(url, category=category,
-                                     extra_args=extra_args)
+                        product.positions[section_name] = position
+
+                    position += 1
+                page += 1
+
+        products_list = [p for p in product_dict.values()]
+
+        return products_list
 
     @classmethod
     def _get_product_urls(cls, session, category_id):

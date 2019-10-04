@@ -250,8 +250,9 @@ class Store:
                 for idx, task_result in enumerate(task_results):
                     for serialized_product in task_result:
                         product = Product.deserialize(serialized_product)
-                        product.positions = \
-                            discovery_entries_chunk[idx][1]['positions']
+                        if not product.positions:
+                            product.positions = \
+                                discovery_entries_chunk[idx][1]['positions']
 
                         logger.info('{}\n'.format(product))
                         products.append(product)
@@ -268,7 +269,8 @@ class Store:
                     extra_args)
 
                 for product in retrieved_products:
-                    product.positions = entry_metadata['positions']
+                    if not product.positions:
+                        product.positions = entry_metadata['positions']
                     logger.info('{}\n'.format(product))
                     products.append(product)
 

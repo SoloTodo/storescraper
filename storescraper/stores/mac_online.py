@@ -43,7 +43,8 @@ class MacOnline(Store):
             if category not in local_categories:
                 continue
 
-            category_url = 'https://www.maconline.com/t/{}'.format(category_path)
+            category_url = 'https://www.maconline.com/t/{}'\
+                .format(category_path)
             print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
