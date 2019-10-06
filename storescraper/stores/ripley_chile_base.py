@@ -178,7 +178,7 @@ class RipleyChileBase(Store):
             current_position = 1
 
             while True:
-                if page > 40:
+                if page > 50:
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
@@ -264,6 +264,13 @@ class RipleyChileBase(Store):
             offer_price = normal_price
 
         description = ''
+
+        refurbished_notice = soup.find('div', 'emblemaReaccondicionados19')
+
+        print(refurbished_notice)
+
+        if refurbished_notice:
+            description += html_to_markdown(str(refurbished_notice))
 
         if 'longDescription' in specs_json:
             description += html_to_markdown(specs_json['longDescription'])
