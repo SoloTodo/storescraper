@@ -22,7 +22,7 @@ class Product:
                  stock, normal_price, offer_price, currency, part_number=None,
                  sku=None, ean=None, description=None, cell_plan_name=None,
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 condition='https://schema.org/NewCondition', positions={},
+                 condition='https://schema.org/NewCondition', positions=None,
                  video_urls=None, review_count=None, review_avg_score=None,
                  flixmedia_id=None, has_virtual_assistant=None):
         assert isinstance(key, str)
@@ -87,7 +87,7 @@ class Product:
         if not timestamp.tzinfo:
             timestamp = pytz.utc.localize(timestamp)
         self.condition = condition
-        self.positions = positions
+        self.positions = positions or {}
         self.video_urls = video_urls
         self.review_count = review_count
         self.review_avg_score = review_avg_score

@@ -1,12 +1,7 @@
 import json
-import urllib
-import re
 import time
 import base64
-import math
 
-from collections import defaultdict
-from collections import OrderedDict
 from decimal import Decimal
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -62,210 +57,11 @@ class Falabella(Store):
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['cat70057/Notebooks', ['Notebook'],
-             'Home > Computación-Notebooks', 1],
-            ['cat5860031/Notebooks-Convencionales', ['Notebook'],
-             'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
-            ['cat2028/Notebooks-Gamers', ['Notebook'],
-             'Home > Computación-Notebooks Gamers', 1],
-            ['cat2450060/Notebooks-2-en-1', ['Notebook'],
-             'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
-            ['cat15880017/Notebooks-gamer', ['Notebook'],
-             'Home > Especiales-Gamer', 1],
-            ['cat5860030/MacBooks', ['Notebook'],
-             'Home > Computación-Notebooks > MacBooks', 1],
-            ['cat4850013/Computacion-Gamer', ['Notebook'],
-             'Home > Computación-Computación Gamer', 1],
-            ['cat1012/TV', ['Television'],
-             'Home > Tecnología-TV', 1],
-            ['cat7190148/Televisores-LED', ['Television'],
-             'Home > TV-Televisores LED', 1],
-            # ['cat2850016/Televisores-OLED', ['Television'],
-            #  'Home > TV-Televisores OLED', 1],
-            ['cat10020021/Televisores-QLED', ['Television'],
-             'Home > TV-Televisores QLED', 1],
-            ['cat16430001/TELEVISORES-LED-HASTA-50', ['Television'],
-             'Home > Tecnología-TELEVISORES LED HASTA 50"', 1],
-            ['cat16440001/TELEVISORES-LED-ENTRE-55-Y-58', ['Television'],
-             'Home > Tecnología-TELEVISORES LED ENTRE 55 Y 58"', 1],
-            ['cat12910024/Televisores-LED-Desde-65', ['Television'],
-             'Home > TV-Televisores LED Desde 65"', 1],
-            ['cat18110002/Nueva-Linea-2019', ['Television'],
-             'Home > Tecnología-Nueva Línea 2019', 1],
-            ['cat18110001/Premium', ['Television'],
-             'Home > Tecnología-Premium', 1],
-            ['cat7230007/Tablet', ['Tablet'],
-             'Home > Computación-Tablets', 1],
-            ['cat4074/No-Frost', ['Refrigerator'],
-             'Home > Refrigeración-No Frost', 1],
-            ['cat4091/Side-by-Side', ['Refrigerator'],
-             'Home > Refrigeración-Side by Side', 1],
-            ['cat4036/Frio-Directo', ['Refrigerator'],
-             'Home > Refrigeración-Frío Directo', 1],
-            ['cat4048/Freezer', ['Refrigerator'],
-             'Home > Refrigeración-Freezers', 1],
-            ['cat4049/Frigobar', ['Refrigerator'],
-             'Home > Refrigeración-Frigobar', 1],
-            ['cat1840004/Cavas-de-Vino', ['Refrigerator'],
-             'Home > Refrigeración-Cavas', 1],
-            ['cat1820006/Impresoras-Multifuncionales', ['Printer'],
-             'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
-            # ['cat6680042/Impresoras-Tradicionales', 'Printer'], TODO: revisar
-            # ['cat11970007/Impresoras-Laser', 'Printer'],
-            # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
-            ['cat3151/Microondas', ['Oven'],
-             'Home > Microondas', 1],
-            ['cat3114/Hornos-Electricos', ['Oven'],
-             'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
-             'Hornos Eléctricos', 1],
-            ['cat3025/Aspiradoras-y-Enceradoras', ['VacuumCleaner'],
-             'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
-            ['cat4060/Lavadoras', ['WashingMachine'],
-             'Home > Lavado-Lavadoras', 1],
-            ['cat1700002/Lavadora-Secadora', ['WashingMachine'],
-             'Home > Lavado-Lavadoras-Secadoras', 1],
-            ['cat4088/Secadoras', ['WashingMachine'],
-             'Home > Lavado-Secadoras', 1],
-            ['cat1280018/Celulares-Basicos', ['Cell'],
-             'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
-            ['cat720161/Smartphones', ['Cell'],
-             'Home > Telefonía- Celulares y Teléfonos > Smartphones', 1],
-            ['cat70028/Camaras-Compactas', ['Camera'],
-             'Home > Fotografía-Cámaras Compactas', 1],
-            ['cat70029/Camaras-Semiprofesionales', ['Camera'],
-             'Home > Fotografía-Cámaras Semiprofesionales', 1],
-            ['cat3091/Equipos-de-Musica', ['StereoSystem'],
-             'Home > Audio-Equipos de Música y Karaokes', 1],
-            ['cat3171/Parlantes-Bluetooth', ['StereoSystem'],
-             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-             'Parlantes Bluetooth', 1],
-            ['cat2045/Soundbar y Home Theater', ['StereoSystem'],
-             'Home > Audio-Soundbar y Home Theater', 1],
-            ['cat1130010/Tornamesas', ['StereoSystem'],
-             'Home > Audio- Hi-Fi > Tornamesas', 1],
-            ['cat6260041/Karaoke', ['StereoSystem'],
-             'Home > Día del Niño Chile- Tecnología > Audio > Karaoke', 1],
-            ['cat2032/DVD-y-Blu-Ray', ['OpticalDiskPlayer'],
-             'Home > TV-Blu Ray y DVD', 1],
-            ['cat3087/Discos-duros', ['ExternalStorageDrive'],
-             'Home > Computación- Almacenamiento > Discos duros', 1],
-            ['cat3177/Pendrives', ['UsbFlashDrive'],
-             'Home > Computación- Almacenamiento > Pendrives', 1],
-            ['cat70037/Tarjetas-de-Memoria', ['MemoryCard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Fotografía > Tarjetas de Memoria', 1],
-            ['cat2070/Proyectores', ['Projector'],
-             'Home > TV-Proyectores', 1],
-            ['cat3770004/Consolas', ['VideoGameConsole'],
-             'Home > Tecnología- Videojuegos > Consolas', 1],
-            ['cat40051/All-In-One', ['AllInOne'],
-             'Home > Computación-All In One', 1],
-            ['cat7830015/Portatiles', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado > Portátiles', 1],
-            ['cat7830014/Split', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado >Split', 1],
-            ['cat3197/Purificadores', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado > Purificadores', 1],
-            ['cat2062/Monitores', ['Monitor'],
-             'Home > Computación-Monitores', 1],
-            ['cat2013/Calefont-y-Termos', ['WaterHeater'],
-             'Home > Electrohogar- Aire Acondicionado > Calefont y Termos', 1],
-            ['cat3155/Mouse', ['Mouse'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Mouse', 1],
-            ['cat9900007/Estufas-Parafina', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Parafina Láser', 1],
-            ['cat9910024/Estufas-Gas', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Gas', 1],
-            ['cat9910006/Estufas-Electricas', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Eléctricas', 1],
-            ['cat9910027/Estufas-Pellet-y-Lena', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Pellet y Leña', 1],
-            ['cat4290063/SmartWatch', ['Wearable'],
-             'Home > Telefonía- Wearables > SmartWatch', 1],
-            ['cat4730023/Teclados-Gamers', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Teclados > Teclados Gamers', 1],
-            ['cat2370002/Teclados', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Teclados', 1],
-            ['cat2930003/Teclados-Smart', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > Accesorios TV > '
-             'Teclados Smart', 1],
-            ['cat1640002/Audifonos', ['Headphones'],
-             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-             'Audífonos', 1],
-            ['cat4061/Lavavajillas', ['DishWasher'],
-             'Home > Lavado-Lavavajillas', 1],
-        ]
-
-        session = session_with_proxy(extra_args)
-        session.headers.update({
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'en,en-US;q=0.8,es;q=0.6',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'DNT': '1',
-            'Host': 'www.falabella.com',
-            'Referer': 'https://www.falabella.com/falabella-cl/',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
-                          '537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 '
-                          'Safari/537.36',
-            'Authorization': 'foo'
-        })
-
-        product_entries = defaultdict(lambda: [])
-
-        for e in category_paths:
-            url_path, local_categories, section_name, category_weight = e
-
-            if category not in local_categories:
-                continue
-
-            sorters = [
-                None,  # No sorting
-                # 1,  # Precio menor a mayor
-                # 2,  # Precio mayor a menor
-                # 3,  # Marca
-                # 4,  # Destacados
-                5,  # Recomendados
-                # 6,  # Mejor evaluados
-                # 7,  # Nuevos productos
-            ]
-
-            # Falabella tends to... fail... so try different requests using
-            # the different available sorters... twice... just in case.
-            category_product_urls = []
-
-            for i in range(4 * len(sorters)):
-                try:
-                    category_product_urls = cls._get_product_urls(
-                        session,
-                        'category/'+url_path,
-                        sorter=sorters[i % len(sorters)]
-                    )
-                    break
-                except Exception:
-                    continue
-
-            if not category_product_urls:
-                raise Exception('Category error: ' + url_path)
-
-            for idx, url in enumerate(category_product_urls):
-                product_entries[url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
-
-        return product_entries
+    def discover_urls_for_category(cls, category, extra_args=None):
+        return [category]
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        discovered_urls = []
         session = session_with_proxy(extra_args)
 
         base_url = "https://www.falabella.com/falabella-cl/search?" \
@@ -301,218 +97,238 @@ class Falabella(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        return cls._products_for_url(url, category=category,
-                                     extra_args=extra_args)
+        category_paths = [
+            ['cat70057', ['Notebook'],
+             'Home > Computación-Notebooks', 1],
+            ['cat5860031', ['Notebook'],
+             'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
+            ['cat2028', ['Notebook'],
+             'Home > Computación-Notebooks Gamers', 1],
+            ['cat2450060', ['Notebook'],
+             'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
+            ['cat15880017', ['Notebook'],
+             'Home > Especiales-Gamer', 1],
+            ['cat5860030', ['Notebook'],
+             'Home > Computación-Notebooks > MacBooks', 1],
+            ['cat4850013', ['Notebook'],
+             'Home > Computación-Computación Gamer', 1],
+            ['cat1012', ['Television'],
+             'Home > Tecnología-TV', 1],
+            ['cat7190148', ['Television'],
+             'Home > TV-Televisores LED', 1],
+            # ['cat2850016', ['Television'],
+            #  'Home > TV-Televisores OLED', 1],
+            ['cat10020021', ['Television'],
+             'Home > TV-Televisores QLED', 1],
+            ['cat16430001', ['Television'],
+             'Home > Tecnología-TELEVISORES LED HASTA 50"', 1],
+            ['cat16440001', ['Television'],
+             'Home > Tecnología-TELEVISORES LED ENTRE 55 Y 58"', 1],
+            ['cat12910024', ['Television'],
+             'Home > TV-Televisores LED Desde 65"', 1],
+            ['cat18110002', ['Television'],
+             'Home > Tecnología-Nueva Línea 2019', 1],
+            ['cat18110001', ['Television'],
+             'Home > Tecnología-Premium', 1],
+            ['cat7230007', ['Tablet'],
+             'Home > Computación-Tablets', 1],
+            ['cat4074', ['Refrigerator'],
+             'Home > Refrigeración-No Frost', 1],
+            ['cat4091', ['Refrigerator'],
+             'Home > Refrigeración-Side by Side', 1],
+            ['cat4036', ['Refrigerator'],
+             'Home > Refrigeración-Frío Directo', 1],
+            ['cat4048', ['Refrigerator'],
+             'Home > Refrigeración-Freezers', 1],
+            ['cat4049', ['Refrigerator'],
+             'Home > Refrigeración-Frigobar', 1],
+            ['cat1840004', ['Refrigerator'],
+             'Home > Refrigeración-Cavas', 1],
+            ['cat1820006', ['Printer'],
+             'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
+            # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
+            # ['cat11970007/Impresoras-Laser', 'Printer'],
+            # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
+            ['cat3151', ['Oven'],
+             'Home > Microondas', 1],
+            ['cat3114', ['Oven'],
+             'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
+             'Hornos Eléctricos', 1],
+            ['cat3025', ['VacuumCleaner'],
+             'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
+            ['cat4060', ['WashingMachine'],
+             'Home > Lavado-Lavadoras', 1],
+            ['cat1700002', ['WashingMachine'],
+             'Home > Lavado-Lavadoras-Secadoras', 1],
+            ['cat4088', ['WashingMachine'],
+             'Home > Lavado-Secadoras', 1],
+            ['cat1280018', ['Cell'],
+             'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
+            ['cat720161', ['Cell'],
+             'Home > Telefonía- Celulares y Teléfonos > Smartphones', 1],
+            ['cat70028', ['Camera'],
+             'Home > Fotografía-Cámaras Compactas', 1],
+            ['cat70029', ['Camera'],
+             'Home > Fotografía-Cámaras Semiprofesionales', 1],
+            ['cat3091', ['StereoSystem'],
+             'Home > Audio-Equipos de Música y Karaokes', 1],
+            ['cat3171', ['StereoSystem'],
+             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
+             'Parlantes Bluetooth', 1],
+            ['cat2045', ['StereoSystem'],
+             'Home > Audio-Soundbar y Home Theater', 1],
+            ['cat1130010', ['StereoSystem'],
+             'Home > Audio- Hi-Fi > Tornamesas', 1],
+            ['cat6260041', ['StereoSystem'],
+             'Home > Día del Niño Chile- Tecnología > Audio > Karaoke', 1],
+            ['cat2032', ['OpticalDiskPlayer'],
+             'Home > TV-Blu Ray y DVD', 1],
+            ['cat3087', ['ExternalStorageDrive'],
+             'Home > Computación- Almacenamiento > Discos duros', 1],
+            ['cat3177', ['UsbFlashDrive'],
+             'Home > Computación- Almacenamiento > Pendrives', 1],
+            ['cat70037', ['MemoryCard'],
+             'Home > Computación- Accesorios Tecnología > '
+             'Accesorios Fotografía > Tarjetas de Memoria', 1],
+            ['cat2070', ['Projector'],
+             'Home > TV-Proyectores', 1],
+            ['cat3770004', ['VideoGameConsole'],
+             'Home > Tecnología- Videojuegos > Consolas', 1],
+            ['cat40051', ['AllInOne'],
+             'Home > Computación-All In One', 1],
+            ['cat7830015', ['AirConditioner'],
+             'Home > Electrohogar- Aire Acondicionado > Portátiles', 1],
+            ['cat7830014', ['AirConditioner'],
+             'Home > Electrohogar- Aire Acondicionado >Split', 1],
+            ['cat3197', ['AirConditioner'],
+             'Home > Electrohogar- Aire Acondicionado > Purificadores', 1],
+            ['cat2062', ['Monitor'],
+             'Home > Computación-Monitores', 1],
+            ['cat2013', ['WaterHeater'],
+             'Home > Electrohogar- Aire Acondicionado > Calefont y Termos', 1],
+            ['cat3155', ['Mouse'],
+             'Home > Computación- Accesorios Tecnología > '
+             'Accesorios Computación > Mouse', 1],
+            ['cat9900007', ['SpaceHeater'],
+             'Home > Electrohogar- Calefacción > Estufas Parafina Láser', 1],
+            ['cat9910024', ['SpaceHeater'],
+             'Home > Electrohogar- Calefacción > Estufas Gas', 1],
+            ['cat9910006', ['SpaceHeater'],
+             'Home > Electrohogar- Calefacción > Estufas Eléctricas', 1],
+            ['cat9910027', ['SpaceHeater'],
+             'Home > Electrohogar- Calefacción > Estufas Pellet y Leña', 1],
+            ['cat4290063', ['Wearable'],
+             'Home > Telefonía- Wearables > SmartWatch', 1],
+            ['cat4730023', ['Keyboard'],
+             'Home > Computación- Accesorios Tecnología > '
+             'Accesorios Computación > Teclados > Teclados Gamers', 1],
+            ['cat2370002', ['Keyboard'],
+             'Home > Computación- Accesorios Tecnología > '
+             'Accesorios Computación > Teclados', 1],
+            ['cat2930003', ['Keyboard'],
+             'Home > Computación- Accesorios Tecnología > Accesorios TV > '
+             'Teclados Smart', 1],
+            ['cat1640002', ['Headphones'],
+             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
+             'Audífonos', 1],
+            ['cat4061', ['DishWasher'],
+             'Home > Lavado-Lavavajillas', 1]]
 
-    @classmethod
-    def _get_product_urls(cls, session, url_path, sorter=None,
-                          keyword=None, threshold=None):
-        discovered_urls = []
-        nav_state = '/{}/?'.format(url_path)
-
-        if keyword:
-            nav_state += 'Ntt={}&'.format(keyword)
-
-        if sorter:
-            nav_state += 'sortBy={}&'.format(sorter)
-
-        query_args = OrderedDict([
-            ('currentPage', 1),
-            ('navState', nav_state)
-        ])
-
-        page = 1
-
-        while True:
-            if page > 60:
-                raise Exception('Page overflow: ' + keyword)
-
-            res = None
-            error_count = 0
-            while res is None or 'errors' in res:
-                error_count += 1
-                if error_count > 10:
-                    raise Exception('Error threshold exceeded: ' + url_path)
-
-                query_args['currentPage'] = page
-                pag_url = 'https://www.falabella.com/rest/model/falabella/' \
-                          'rest/browse/BrowseActor/get-product-record-list?{}'\
-                    .format(urllib.parse.quote(json.dumps(
-                        query_args, separators=(',', ':')), safe=''))
-
-                if res:
-                    time.sleep(1)
-
-                res = session.get(pag_url, timeout=None)
-                res = json.loads(res.content.decode('utf-8'))
-
-            if not res['state']['resultList'] and page == 1:
-                raise Exception('Empty keyword path: ' + keyword)
-
-            for product_entry in res['state']['resultList']:
-                product_id = product_entry['productId'].strip()
-                product_url = \
-                    'https://www.falabella.com/falabella-cl/product/{}/' \
-                    ''.format(product_id)
-                discovered_urls.append(product_url)
-
-                if len(discovered_urls) == threshold:
-                    return discovered_urls
-
-            if res['state']['pagesTotal'] == page:
-                break
-
-            page += 1
-
-        return discovered_urls
-
-    @classmethod
-    def _products_for_url(cls, url, retries=5, category=None, extra_args=None):
+        product_dict = {}
         session = session_with_proxy(extra_args)
-        content = session.get(url, timeout=30).text.replace('&#10;', '')
 
-        soup = BeautifulSoup(content, 'html.parser')
+        for e in category_paths:
+            category_id, local_categories, section_name, category_weight = e
 
-        panels = ['fb-product-information__product-information-tab',
-                  'fb-product-information__specification']
-
-        description = ''
-        video_urls = []
-
-        for panel_class in panels:
-            panel = soup.find('div', panel_class)
-            if not panel:
+            if category not in local_categories:
                 continue
 
-            description += html_to_markdown(str(panel)) + '\n\n'
-            for iframe in panel.findAll('iframe'):
-                match = re.search(r'//www.youtube.com/embed/(.+)\?',
-                                  iframe['src'])
-                if match:
-                    video_urls.append('https://www.youtube.com/watch?v={}'
-                                      ''.format(match.groups()[0]))
+            base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
+                       'zone=13&categoryId={}&page={}'
+            page = 1
+            position = 1
 
-        raw_json_data = re.search('var fbra_browseMainProductConfig = (.+);\r',
-                                  content)
+            while True:
+                if page > 60:
+                    raise Exception('Page overflow: ' + category_id)
 
-        if not raw_json_data:
-            if retries:
-                time.sleep(5)
-                return cls._products_for_url(
-                    url, retries=retries-1, category=category,
-                    extra_args=extra_args)
-            else:
-                return []
+                pag_url = base_url.format(category_id, page)
+                res = session.get(pag_url, timeout=None)
+                res = json.loads(res.content.decode('utf-8'))['data']
 
-        product_data = json.loads(raw_json_data.groups()[0])
-        slug = product_data['state']['product']['displayName'].replace(
-            ' ', '-')
-        publication_id = product_data['state']['product']['id']
-        global_id = product_data['state']['product']['id']
-        media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
-        pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
-                                'Falabella/{}?req=set,json'.format(global_id)
-        pictures_response = session.get(pictures_resource_url, timeout=30).text
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      pictures_response).groups()[0])
+                if 'results' not in res:
+                    if page == 1:
+                        raise Exception(
+                            'Empty category: {}'.format(category_id))
+                    break
 
-        picture_urls = []
+                for result in res['results']:
+                    url = 'https://www.falabella.com{}'.format(result['url'])
+                    name = result['displayName']
+                    sku = result['skuId']
+                    picture_urls = [
+                        'https://falabella.scene7.com/is/image/'
+                        'Falabella/{}?scl=1.0'.format(sku)]
+                    stock = -1
+                    offer_price = None
+                    normal_price = None
+                    backup_price = None
 
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
+                    for price in result['prices']:
+                        if price['icons']:
+                            offer_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        elif price['label']:
+                            normal_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        else:
+                            backup_price = Decimal(
+                                price['price'][0].replace('.', ''))
 
-        for picture_entry in picture_entries:
-            picture_url = 'https:{}{}?scl=1.0'.format(media_asset_url,
-                                                      picture_entry['i']['n'])
-            picture_urls.append(picture_url)
+                    if not normal_price:
+                        normal_price = backup_price
 
-        brand = product_data['state']['product']['brand'] or 'Genérico'
-        base_name = '{} {}'.format(
-            brand, product_data['state']['product']['displayName'])
+                    if not offer_price:
+                        offer_price = normal_price
 
-        products = []
+                    variants = result['variants'][0]['options']
 
-        if 'skus' not in product_data['state']['product']:
-            return []
+                    if variants:
+                        for variant in variants:
+                            name += ' ({})'.format(variant['label'])
+                            sku = variant['mediaId']
+                            picture_urls = [
+                                'https://falabella.scene7.com/is/image/'
+                                'Falabella/{}?scl=1.0'.format(sku)]
 
-        for model in product_data['state']['product']['skus']:
-            if 'stockAvailable' not in model:
-                continue
+                            product = product_dict.get(sku, None)
 
-            sku = model['skuId']
-            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
-                      '{}'.format(publication_id, slug, sku)
+                            if not product:
+                                product = Product(
+                                    name, cls.__name__, category, url, url,
+                                    sku, stock, normal_price, offer_price,
+                                    'CLP', sku=sku, picture_urls=picture_urls)
+                                product_dict[sku] = product
 
-            prices = {e['type']: e for e in model['price']}
+                            product.positions[section_name] = position
+                    else:
+                        product = product_dict.get(sku, None)
 
-            if 3 in prices:
-                normal_price_key = 3
-            else:
-                normal_price_key = 2
+                        if not product:
+                            product = Product(
+                                name, cls.__name__, category, url, url,
+                                sku, stock, normal_price, offer_price,
+                                'CLP', sku=sku, picture_urls=picture_urls)
+                            product_dict[sku] = product
 
-            lookup_field = 'originalPrice'
-            if lookup_field not in prices[normal_price_key]:
-                lookup_field = 'formattedLowestPrice'
+                        product.positions[section_name] = position
 
-            normal_price = Decimal(remove_words(
-                prices[normal_price_key][lookup_field]))
+                    position += 1
+                page += 1
 
-            if 1 in prices:
-                lookup_field = 'originalPrice'
-                if lookup_field not in prices[1]:
-                    lookup_field = 'formattedLowestPrice'
-                offer_price = Decimal(
-                    remove_words(prices[1][lookup_field]))
-            else:
-                offer_price = normal_price
+        products_list = [p for p in product_dict.values()]
 
-            stock = model['stockAvailable']
-
-            reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
-                          'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
-                .format(sku)
-            review_data = json.loads(session.get(reviews_url).text)
-            review_count = review_data['TotalResults']
-
-            review_stats = review_data['Includes']
-
-            if 'Products' in review_stats:
-                review_avg_score = review_stats['Products'][str(sku)][
-                    'ReviewStatistics']['AverageOverallRating']
-            else:
-                review_avg_score = None
-
-            if 'reacondicionado' in base_name.lower():
-                condition = 'https://schema.org/RefurbishedCondition'
-            else:
-                condition = 'https://schema.org/NewCondition'
-
-            p = Product(
-                '{} ({})'.format(base_name, model['name']),
-                cls.__name__,
-                category,
-                sku_url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls,
-                video_urls=video_urls,
-                review_count=review_count,
-                review_avg_score=review_avg_score,
-                condition=condition
-            )
-
-            products.append(p)
-
-        return products
+        return products_list
 
     @classmethod
     def banners(cls, extra_args=None):

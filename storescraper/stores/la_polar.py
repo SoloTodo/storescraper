@@ -77,7 +77,7 @@ class LaPolar(Store):
             #  'Inicio > Tecnología > Audio > Home Theater', 1],
             ['audifonos', ['Headphones'],
              'Inicio > Tecnología > Audio > Audífonos', 1],
-            ['todo-consolas', ['VideoGameConsole'],
+            ['consolas', ['VideoGameConsole'],
              'Inicio > Tecnología > Videojuegos > Todo Consolas', 1],
             ['lavadoras', ['WashingMachine'],
              'Inicio > Línea Blanca > Lavado y Secado > Lavadoras', 1],

@@ -84,7 +84,7 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         script_data = soup.findAll(
             'script', {'type': 'application/ld+json'})
