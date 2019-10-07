@@ -423,10 +423,10 @@ class Hites(Store):
             [bs.WASHING_MACHINES, 'Secadoras', bs.SUBSECTION_TYPE_MOSAIC,
              'electro-hogar/lavado-y-secado/secadoras'],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC, 'tecnologia/audio'],
-            [bs.AUDIO, 'Minicomponentes', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/audio/minicomponentes'],
-            [bs.AUDIO, 'Soundbar y Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/audio/soundbar-y-home-theater']
+            # [bs.AUDIO, 'Minicomponentes', bs.SUBSECTION_TYPE_MOSAIC,
+            #  'tecnologia/audio/minicomponentes'],
+            # [bs.AUDIO, 'Soundbar y Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
+            #  'tecnologia/audio/soundbar-y-home-theater']
         ]
 
         session = session_with_proxy(extra_args)
@@ -450,9 +450,8 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver\
-                        .find_element_by_class_name(
-                            'carousel__controls__center')\
-                        .find_elements_by_class_name('slider-controls__dots')
+                        .find_element_by_class_name('slick-dots')\
+                        .find_elements_by_tag_name('li')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
@@ -465,7 +464,7 @@ class Hites(Store):
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                     images = soup.find('div', 'slick-track')\
-                        .findAll('li', 'slick-slide')
+                        .findAll('div', 'slick-slide')
 
                     # images = soup.find('div', 'owl-stage') \
                     #     .findAll('div', 'owl-item')
