@@ -118,8 +118,9 @@ class Claro(Store):
         ]
 
         for container in containers:
-            plan_name = container.find('h1').text.strip()
-            plan_price_text = container.find('p').findNext('h2')\
+            c = container.find('div', 'tab-content').find('div')
+            plan_name = c.find('h1').text.strip()
+            plan_price_text = c.findAll('h2')[-1]\
                 .text.replace('$', '')
             plan_price = Decimal(plan_price_text.replace('.', ''))
 

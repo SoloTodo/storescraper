@@ -352,8 +352,8 @@ class Falabella(Store):
              'category/cat1012/TV '],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'category/cat2005/Audio'],
-            [bs.CELLS, 'Electro y Tecnología-Teléfonos',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+            # [bs.CELLS, 'Electro y Tecnología-Teléfonos',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
 
             # # MOSAICS ##
             [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
@@ -414,50 +414,72 @@ class Falabella(Store):
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
+            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                slides = soup.findAll('div', 'fb-hero-carousel-slide')
 
-                    images = driver\
-                        .find_element_by_class_name('swiper-container')\
-                        .find_elements_by_class_name('dy_unit')[1:-1]
+                for index, slide in enumerate(slides):
+                    picture_url = list(filter(None, slide.find(
+                        'picture', 'fb-responsive-background').find(
+                        'source')['srcset'].split(' ')))[2]
+                    destination_urls = [a['href'] for a in slide.findAll('a')]
+                    destination_urls = list(set(destination_urls))
 
-                    index = 1
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index+1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type})
 
-                    for image in images:
-                        picture_array = image.find_element_by_tag_name(
-                            'picture').find_elements_by_tag_name('source')
-                        destination_urls = [
-                            d.get_property('href') for d in
-                            image.find_elements_by_tag_name('a')]
-                        destination_urls = list(set(destination_urls))
-                        for picture in picture_array:
-                            picture_url = picture.get_property(
-                                'srcset').split(' ')[0]
-
-                            if 'https://www.falabella.com' not in picture_url:
-                                picture_url = 'https://www.falabella.com' \
-                                              '{}'.format(picture_url)
-
-                            if picture_url:
-                                banners.append({
-                                    'url': url,
-                                    'picture_url': picture_url,
-                                    'destination_urls': destination_urls,
-                                    'key': picture_url,
-                                    'position': index,
-                                    'section': section,
-                                    'subsection': subsection,
-                                    'type': subsection_type
-                                })
-                                break
-                        else:
-                            raise Exception(
-                                'No valid banners found for {} in position '
-                                '{}'.format(url, index + 1))
-                        index += 1
+                # with HeadlessChrome(images_enabled=True) as driver:
+                #     driver.set_window_size(1920, 1080)
+                #     driver.get(url)
+                #
+                #     images = driver\
+                #         .find_element_by_class_name('swiper-container')\
+                #         .find_elements_by_class_name('dy_unit')[1:-1]
+                #
+                #     index = 1
+                #
+                #     for image in images:
+                #         picture_array = image.find_element_by_tag_name(
+                #             'picture').find_elements_by_tag_name('source')
+                #         destination_urls = [
+                #             d.get_property('href') for d in
+                #             image.find_elements_by_tag_name('a')]
+                #         destination_urls = list(set(destination_urls))
+                #         for picture in picture_array:
+                #             picture_url = picture.get_property(
+                #                 'srcset').split(' ')[0]
+                #
+                #             if 'https://www.falabella.com' not in picture_url
+                #                 picture_url = 'https://www.falabella.com' \
+                #                               '{}'.format(picture_url)
+                #
+                #             if picture_url:
+                #                 banners.append({
+                #                     'url': url,
+                #                     'picture_url': picture_url,
+                #                     'destination_urls': destination_urls,
+                #                     'key': picture_url,
+                #                     'position': index,
+                #                     'section': section,
+                #                     'subsection': subsection,
+                #                     'type': subsection_type
+                #                 })
+                #                 break
+                #         else:
+                #             raise Exception(
+                #                 'No valid banners found for {} in position '
+                #                 '{}'.format(url, index + 1))
+                #         index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
 
