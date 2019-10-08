@@ -437,7 +437,7 @@ class Hites(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
+                with HeadlessChrome(images_enabled=True, timeout=120) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -562,7 +562,8 @@ class Hites(Store):
                             'type': subsection_type
                         })
                     else:
-                        with HeadlessChrome(images_enabled=True) as driver:
+                        with HeadlessChrome(images_enabled=True, timeout=120) \
+                                as driver:
                             driver.set_window_size(1920, 1080)
                             driver.get(url)
 
