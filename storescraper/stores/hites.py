@@ -545,8 +545,12 @@ class Hites(Store):
                     picture_container = banner.find('picture')
 
                     if picture_container:
-                        picture_url = picture_container\
-                            .find('source')['srcset']
+                        picture_source = picture_container.find('source')
+
+                        if not picture_source:
+                            continue
+
+                        picture_url = picture_source['srcset']
                         banners.append({
                             'url': url,
                             'picture_url': picture_url,

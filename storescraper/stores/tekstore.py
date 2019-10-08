@@ -79,7 +79,7 @@ class Tekstore(Store):
         stock = -1 if available else 0
         price = Decimal(soup.find(
             'span', 'price-final_price').find('span', 'price')
-                        .text.replace('$', '').replace('.', ''))
+                        .text.replace('$', '').replace('.', '').split(',')[0])
 
         products = []
 

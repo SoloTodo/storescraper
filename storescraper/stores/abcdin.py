@@ -8,6 +8,7 @@ import time
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
+from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -567,9 +568,12 @@ class AbcDin(Store):
                         key = re.search(r'url\("(.*?)"\)', key_container)\
                             .group(1)
 
-                        destination_urls = \
-                            [element.find_element_by_tag_name('a')
-                                .get_attribute('href')]
+                        try:
+                            destination_urls = [
+                                element.find_element_by_tag_name('a')
+                                    .get_attribute('href')]
+                        except NoSuchElementException:
+                            destination_urls = []
 
                         banners.append({
                             'url': url,
