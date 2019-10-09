@@ -14,7 +14,7 @@ class EVision(Store):
             'StereoSystem',
             'Cell',
             'AirConditioner',
-            'Refrigeratore',
+            'Refrigerator',
             'WashingMachine',
             'Oven',
             'Stove'

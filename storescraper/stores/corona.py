@@ -130,8 +130,8 @@ class Corona(Store):
             ['C:/9/35/36', '&fq=specificationFilter_41%3aUltra+HD+-+4K',
              ['Television'],
              'Tecnología > Televisión > Televisores > Ultra HD', 1],
-            ['C:/9/35/37', None, ['OpticalDiskPlayer'],
-             'Tecnología > Televisión > Blu-ray y DVD', 1],
+            # ['C:/9/35/37', None, ['OpticalDiskPlayer'],
+            #  'Tecnología > Televisión > Blu-ray y DVD', 1],
             # Also includes other audio products
             ['C:/9/48', None, ['StereoSystem', 'Headphones'],
              'Tecnología > Audio', 0],
