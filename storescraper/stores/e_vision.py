@@ -54,7 +54,8 @@ class EVision(Store):
             url = 'https://www.evisionstore.com/index.php?ipp=All' \
                   '&categoria=onlinesale&codfamilia={}'.format(section_id)
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(url, timeout=30).text,
+                                 'html.parser')
             product_containers = soup.findAll('div', 'product-items')
 
             if not product_containers:
@@ -71,7 +72,7 @@ class EVision(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
 
         soup = BeautifulSoup(response.text, 'html5lib')
 

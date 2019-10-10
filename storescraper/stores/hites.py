@@ -367,6 +367,11 @@ class Hites(Store):
         else:
             flixmedia_id = None
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -379,6 +384,7 @@ class Hites(Store):
             offer_price,
             'CLP',
             sku=sku,
+            condition=condition,
             description=description,
             picture_urls=picture_urls,
             flixmedia_id=flixmedia_id,
