@@ -288,13 +288,6 @@ class LaPolar(Store):
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    to_remove = driver.find_element_by_class_name(
-                        'container_bombazo')
-                    driver.execute_script("""
-                    var element = arguments[0];
-                    element.parentNode.removeChild(element);
-                    """, to_remove)
-
                     pictures = []
                     banner_container = driver.find_element_by_class_name(
                         'slick-list')
