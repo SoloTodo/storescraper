@@ -25,7 +25,7 @@ class MercadolibreSamsung(MercadolibreChile):
             ('electrodomesticos/lavado-secado-ropa', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
             ('electrodomesticos/hornos-cocinas', 'Oven'),
-            ('electrodomesticos/lavavajillas', 'DishWasher'),
+            # ('electrodomesticos/lavavajillas', 'DishWasher'),
             ('electronica', 'Television'),
         ]
 
@@ -38,7 +38,12 @@ class MercadolibreSamsung(MercadolibreChile):
 
             category_url = 'https://listado.mercadolibre.cl/{}/' \
                            '_Tienda_samsung'.format(category_path)
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+
+            if soup.find('div', 'zrp-offical-message'):
+                raise Exception('Invalid category: ' + category_url)
+
             containers = soup.findAll('li', 'results-item')
 
             if not containers:
