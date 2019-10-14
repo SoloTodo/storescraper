@@ -26,15 +26,15 @@ class NetNow(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['66', 'Notebook'],
-            ['64', 'Monitor'],
-            # ['25', 'Notebook'],  # Notebooks gamer
-            # ['28', 'Notebook'],  # Notebooks
-            # ['35', 'Notebook'],  # Ultradelgados
-            # ['31', 'Notebook'],  # Convertibles
+            # ['66', 'Notebook'],
+            # ['64', 'Monitor'],
+            ['25', 'Notebook'],  # Notebooks gamer
+            ['28', 'Notebook'],  # Notebooks
+            ['35', 'Notebook'],  # Ultradelgados
+            ['31', 'Notebook'],  # Convertibles
             # ['34', 'Notebook'],  # 2 en 1
-            # ['38', 'AllInOne'],  # All in One
-            # ['36', 'Monitor'],   # Monitors
+            ['38', 'AllInOne'],  # All in One
+            ['36', 'Monitor'],   # Monitors
             # ['47', 'Tablet'],    # Tablets
         ]
 

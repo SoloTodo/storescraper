@@ -33,7 +33,7 @@ class Vivelo(Store):
             ['dispositivos-moviles/smartphones.html', 'Cell'],
             ['dispositivos-moviles/tablets.html', 'Tablet'],
             ['dispositivos-moviles/weareables.html', 'Wearable'],
-            ['tv-audio-video/led.html', 'Television'],
+            # ['tv-audio-video/led.html', 'Television'],
             # ['tv-audio-video/home-theater.html', 'StereoSystem'],
             # ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
             ['tv-audio-video/audio/parlantes-bluetooth.html', 'StereoSystem'],
