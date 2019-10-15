@@ -571,7 +571,7 @@ class AbcDin(Store):
                         try:
                             destination_urls = [
                                 element.find_element_by_tag_name('a')
-                                    .get_attribute('href')]
+                                .get_attribute('href')]
                         except NoSuchElementException:
                             destination_urls = []
 
