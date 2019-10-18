@@ -443,24 +443,19 @@ class Falabella(Store):
 
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
-            # [LINEA_BLANCA_FALABELLA,
-            # 'Electro y Tecnología-Línea Blanca',
-            #  SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat7090035/Linea-Blanca'],
-
             # # CATEGORY PAGES # #
             # Currently displaying a smart picker
             # [bs.REFRIGERATION, 'Refrigeradores',
             #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
             #  'category/cat3205/Refrigeradores'],
-            # [bs.WASHING_MACHINES, 'Lavadoras',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,'category/cat3136/Lavadoras '],
-            # [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat1012/TV '],
-            # [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat2005/Audio'],
-            # [bs.CELLS, 'Electro y Tecnología-Teléfonos',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+            [bs.WASHING_MACHINES, 'Lavadoras',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras'],
+            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat1012/TV'],
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat2005/Audio'],
+            [bs.CELLS, 'Electro y Tecnología-Teléfonos',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
 
             # # MOSAICS ##
             [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
@@ -470,8 +465,8 @@ class Falabella(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4074/No-Frost'],
             [bs.REFRIGERATION, 'Refrigeradores-Side by Side',
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4091/Side-by-Side'],
-            [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
-             'category/cat3136/Lavadoras '],
+            # [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
+            #  'category/cat3136/Lavadoras '],
             [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras',
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4060/Lavadoras'],
             [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras-Secadoras',
@@ -488,8 +483,9 @@ class Falabella(Store):
              'category/cat3040054/Smart-TV'],
             [bs.TELEVISIONS, 'TV-4K UHD', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat3990038/4K-UHD'],
-            [bs.TELEVISIONS, 'TV-Televisores OLED', bs.SUBSECTION_TYPE_MOSAIC,
-             'category/cat2850016/Televisores-OLED'],
+            # [bs.TELEVISIONS, 'TV-Televisores OLED',
+            # bs.SUBSECTION_TYPE_MOSAIC,
+            #  'category/cat2850016/Televisores-OLED'],
             [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat1012/TV?isPLP=1'],
             [bs.TELEVISIONS, 'TV-Pulgadas Altas',
@@ -516,7 +512,6 @@ class Falabella(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat2018/Telefonos?isPLP=1'],
         ]
 
-        session = session_with_proxy(extra_args)
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:
@@ -524,72 +519,50 @@ class Falabella(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                slides = soup.findAll('div', 'fb-hero-carousel-slide')
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
 
-                for index, slide in enumerate(slides):
-                    picture_url = list(filter(None, slide.find(
-                        'picture', 'fb-responsive-background').find(
-                        'source')['srcset'].split(' ')))[2]
-                    destination_urls = [a['href'] for a in slide.findAll('a')]
-                    destination_urls = list(set(destination_urls))
+                    images = driver\
+                        .find_element_by_class_name('swiper-container')\
+                        .find_elements_by_class_name('dy_unit')[1:-1]
 
-                    banners.append({
-                        'url': url,
-                        'picture_url': picture_url,
-                        'destination_urls': destination_urls,
-                        'key': picture_url,
-                        'position': index+1,
-                        'section': section,
-                        'subsection': subsection,
-                        'type': subsection_type})
+                    index = 1
 
-                # with HeadlessChrome(images_enabled=True) as driver:
-                #     driver.set_window_size(1920, 1080)
-                #     driver.get(url)
-                #
-                #     images = driver\
-                #         .find_element_by_class_name('swiper-container')\
-                #         .find_elements_by_class_name('dy_unit')[1:-1]
-                #
-                #     index = 1
-                #
-                #     for image in images:
-                #         picture_array = image.find_element_by_tag_name(
-                #             'picture').find_elements_by_tag_name('source')
-                #         destination_urls = [
-                #             d.get_property('href') for d in
-                #             image.find_elements_by_tag_name('a')]
-                #         destination_urls = list(set(destination_urls))
-                #         for picture in picture_array:
-                #             picture_url = picture.get_property(
-                #                 'srcset').split(' ')[0]
-                #
-                #             if 'https://www.falabella.com' not in picture_url
-                #                 picture_url = 'https://www.falabella.com' \
-                #                               '{}'.format(picture_url)
-                #
-                #             if picture_url:
-                #                 banners.append({
-                #                     'url': url,
-                #                     'picture_url': picture_url,
-                #                     'destination_urls': destination_urls,
-                #                     'key': picture_url,
-                #                     'position': index,
-                #                     'section': section,
-                #                     'subsection': subsection,
-                #                     'type': subsection_type
-                #                 })
-                #                 break
-                #         else:
-                #             raise Exception(
-                #                 'No valid banners found for {} in position '
-                #                 '{}'.format(url, index + 1))
-                #         index += 1
+                    for image_url in images:
+                        picture_array = image_url.find_element_by_tag_name(
+                            'picture').find_elements_by_tag_name('source')
+                        destination_urls = [
+                            d.get_property('href') for d in
+                            image_url.find_elements_by_tag_name('a')]
+                        destination_urls = list(set(destination_urls))
+                        for picture in picture_array:
+                            picture_url = picture.get_property(
+                                'srcset').split(' ')[0]
+
+                            if 'https://www.falabella.com' not in picture_url:
+                                picture_url = 'https://www.falabella.com' \
+                                              '{}'.format(picture_url)
+
+                            if picture_url:
+                                banners.append({
+                                    'url': url,
+                                    'picture_url': picture_url,
+                                    'destination_urls': destination_urls,
+                                    'key': picture_url,
+                                    'position': index,
+                                    'section': section,
+                                    'subsection': subsection,
+                                    'type': subsection_type
+                                })
+                                break
+                        else:
+                            raise Exception(
+                                'No valid banners found for {} in position '
+                                '{}'.format(url, index + 1))
+                        index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
-
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -604,19 +577,19 @@ class Falabella(Store):
                         for element in elements:
                             element.click()
                             time.sleep(2)
-                            image = Image.open(
+                            image_url = Image.open(
                                 BytesIO(driver.get_screenshot_as_png()))
-                            image = image.crop((0, 187, 1920, 769))
+                            image_url = image_url.crop((0, 187, 1920, 769))
                             buffered = BytesIO()
-                            image.save(buffered, format='PNG')
+                            image_url.save(buffered, format='PNG')
                             pictures.append(
                                 base64.b64encode(buffered.getvalue()))
                     except NoSuchElementException:
-                        image = Image.open(
+                        image_url = Image.open(
                             BytesIO(driver.get_screenshot_as_png()))
-                        image = image.crop((0, 187, 1920, 769))
+                        image_url = image_url.crop((0, 187, 1920, 769))
                         buffered = BytesIO()
-                        image.save(buffered, format='PNG')
+                        image_url.save(buffered, format='PNG')
                         pictures.append(base64.b64encode(buffered.getvalue()))
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -630,21 +603,25 @@ class Falabella(Store):
 
                     assert len(images) == len(pictures)
 
-                    for index, image in enumerate(images):
-                        picture_array = image.findAll('picture')[-1].findAll(
-                            'source')
+                    for index, image_url in enumerate(images):
+                        picture_array = image_url.findAll(
+                            'picture')[-1].findAll('source')
                         destination_urls = [d['href'] for d in
-                                            image.findAll('a')]
+                                            image_url.findAll('a')]
                         destination_urls = list(set(destination_urls))
 
                         for picture in picture_array:
                             key = picture['srcset'].split(' ')[0]
+
+                            if 'https' not in key:
+                                key = 'https://www.falabella.com' + key
+
                             if 'webp' not in key:
                                 banners.append({
                                     'url': url,
                                     'picture': pictures[index],
                                     'destination_urls': destination_urls,
-                                    'key': 'https:{}'.format(key),
+                                    'key': key,
                                     'position': index + 1,
                                     'section': section,
                                     'subsection': subsection,
@@ -655,35 +632,33 @@ class Falabella(Store):
                             raise Exception(
                                 'No valid banners found for {} in position '
                                 '{}'.format(url, index + 1))
-
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                image_container = soup.find(
-                    'div', {'data-module': 'editorial'})
+                with HeadlessChrome(images_enabled=True) as driver:
+                    driver.set_window_size(1920, 1080)
+                    driver.get(url)
 
-                if not image_container or not image_container.find('source'):
-                    continue
+                    time.sleep(5)
 
-                picture_url = image_container.find('source')['srcset']
+                    try:
+                        banner = driver.find_element_by_class_name('PLP_XL')
+                    except NoSuchElementException:
+                        print('* ', url)
+                        continue
+                    frame = banner.find_element_by_tag_name('iframe')
+                    driver.switch_to.frame(frame)
+                    image_url = driver.find_element_by_tag_name(
+                        'img').get_attribute('src')
+                    dest_url = driver.find_element_by_tag_name(
+                        'a').get_attribute('href')
 
-                if '//' not in picture_url:
-                    picture_url = 'https://www.falabella.com{}'.format(
-                        picture_url)
-
-                elif 'https:' not in picture_url:
-                    picture_url = 'https:{}'.format(picture_url)
-
-                destination_urls = [image_container.find('a')['href']]
-
-                banners.append({
-                    'url': url,
-                    'picture_url': picture_url,
-                    'destination_urls': destination_urls,
-                    'key': picture_url,
-                    'position': 1,
-                    'section': section,
-                    'subsection': subsection,
-                    'type': subsection_type})
+                    banners.append({
+                        'url': url,
+                        'picture_url': image_url,
+                        'destination_urls': [dest_url],
+                        'key': image_url,
+                        'position': 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type})
 
         return banners
