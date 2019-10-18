@@ -644,7 +644,13 @@ class Falabella(Store):
                     except NoSuchElementException:
                         print('* ', url)
                         continue
-                    frame = banner.find_element_by_tag_name('iframe')
+
+                    try:
+                        frame = banner.find_element_by_tag_name('iframe')
+                    except NoSuchElementException:
+                        print('* ', url)
+                        continue
+
                     driver.switch_to.frame(frame)
                     image_url = driver.find_element_by_tag_name(
                         'img').get_attribute('src')
