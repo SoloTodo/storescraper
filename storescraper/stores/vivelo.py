@@ -25,25 +25,22 @@ class Vivelo(Store):
             'Monitor',
             'Headphones',
             'Wearable',
+            'CellAccesory',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['dispositivos-moviles/smartphones.html', 'Cell'],
-            ['dispositivos-moviles/tablets.html', 'Tablet'],
-            ['dispositivos-moviles/weareables.html', 'Wearable'],
-            # ['tv-audio-video/led.html', 'Television'],
-            # ['tv-audio-video/home-theater.html', 'StereoSystem'],
-            # ['tv-audio-video/audio/sound-bar.html', 'StereoSystem'],
-            ['tv-audio-video/audio/parlantes-bluetooth.html', 'StereoSystem'],
-            ['tv-audio-video/audio/audifonos.html', 'Headphones'],
-            # ['tv-audio-video/blu-ray.html', 'OpticalDiskPlayer'],
-            # ['linea-blanca/refrigeradores.html', 'Refrigerator'],
-            # ['linea-blanca/lavadoras-secadoras.html', 'WashingMachine'],
-            # ['linea-blanca/microondas.html', 'Oven'],
-            # ['linea-blanca/aspiradoras.html', 'VacuumCleaner'],
-            # ['tv-audio-video/monitores.html', 'Monitor'],
+            ['smartphones/por-modelo/ver-todos.html', 'Cell'],
+            ['tablets/por-modelo/ver-todos.html', 'Tablet'],
+            ['tablets/por-tecnologia/ver-todos.html', 'Tablet'],
+            ['smartwatches/por-modelo/ver-todos.html', 'Wearable'],
+            ['smartwatches/por-tipo/ver-todos.html', 'Wearable'],
+            ['audio/por-tipo/parlantes.html', 'StereoSystem'],
+            ['audio/por-tipo/audifonos.html', 'Headphones'],
+            ['audio/por-tipo/audifonos-bluetooth.html', 'Headphones'],
+            ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
+             'CellAccesory'],
         ]
 
         product_urls = []
