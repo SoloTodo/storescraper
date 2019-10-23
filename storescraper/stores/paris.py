@@ -105,10 +105,10 @@ class Paris(Store):
              'Electro > Elige tu pulgada > 50" a 59"', 1],
             ['electro/elige-tu-pulgada/60-o-mas-pulgadas', ['Television'],
              'Electro > Elige tu pulgada > 60" o más', 1],
-            ['electro/ofertas', ['Television', 'StereoSystem'],
-             'Electro > Ofertas', 0.5],
-            ['electro/ofertas/television', ['Television'],
-             'Electro > Ofertas > Ofertas TV', 1],
+            # ['electro/ofertas', ['Television', 'StereoSystem'],
+            #  'Electro > Ofertas', 0.5],
+            # ['electro/ofertas/television', ['Television'],
+            #  'Electro > Ofertas > Ofertas TV', 1],
             # ['electro/ofertas/audio', ['StereoSystem'],
             #  'Electro > Ofertas > Ofertas Audio', 1],
             ['tecnologia/computadores', ['Notebook', 'Tablet', 'AllInOne'],
@@ -258,6 +258,7 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
+                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
