@@ -51,7 +51,7 @@ class Ripley(RipleyChileBase):
         base_url = 'https://simple.ripley.cl/{}'
 
         sections_data = [
-            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            # [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.ELECTRO_RIPLEY, 'Electro Ripley',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
             [bs.TECNO_RIPLEY, 'Tecno Ripley',
