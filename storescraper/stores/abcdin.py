@@ -186,12 +186,12 @@ class AbcDin(Store):
              'Telefonía > Smartwatch > Smartwatch Samsung', 1],
             ['58052', ['Wearable'],
              'Telefonía > Smartwatch > Smartwatch Xiaomi', 1],
-            ['29551', ['Wearable'],
-             'Telefonía > Smartwatch > Smartwatch Huawei', 1],
+            # ['29551', ['Wearable'],
+            #  'Telefonía > Smartwatch > Smartwatch Huawei', 1],
             # ['29553', ['Wearable'],
             #  'Telefonía > Smartwatch > Smartwatch Alcatel', 1],
-            # ['29554', ['Wearable'],
-            #  'Telefonía > Smartwatch > Smartwatch Kioto', 1],
+            ['29554', ['Wearable'],
+             'Telefonía > Smartwatch > Smartwatch Kioto', 1],
             # ['49052', ['Wearable'],
             #  'Telefonía > Smartwatch > Smartwatch Microlab', 1],
             ['10076', ['Notebook'],
@@ -571,7 +571,7 @@ class AbcDin(Store):
                         try:
                             destination_urls = [
                                 element.find_element_by_tag_name('a')
-                                    .get_attribute('href')]
+                                .get_attribute('href')]
                         except NoSuchElementException:
                             destination_urls = []
 

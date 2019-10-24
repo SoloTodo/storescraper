@@ -114,6 +114,9 @@ class Tottus(Store):
 
             normal_price = Decimal(remove_words(normal_price_text))
             offer_price = Decimal(remove_words(offer_price_text))
+
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             prices_container = soup.find('div', 'price-selector')
 

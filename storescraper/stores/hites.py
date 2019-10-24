@@ -311,6 +311,8 @@ class Hites(Store):
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
 
+        print(json.dumps(json_data, indent=2))
+
         name = json_data['name']
         sku = json_data['partNumber']
 
@@ -319,7 +321,8 @@ class Hites(Store):
         else:
             stock = 0
 
-        if json_data['isOutOfStock']:
+        if json_data['isOutOfStock'] or \
+                'images' not in json_data['children'][0]:
             picture_urls = [json_data['fullImage']]
         else:
             picture_urls = json_data['children'][0]['images']
@@ -443,7 +446,8 @@ class Hites(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True, timeout=120) as driver:
+                with HeadlessChrome(images_enabled=True,
+                                    timeout=120) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
