@@ -89,9 +89,9 @@ class Corona(Store):
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
              ['WaterHeater'],
              'Hogar > Línea Blanca > Climatización > Calefont', 1],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
-             ['SpaceHeater'],
-             'Hogar > Línea Blanca > Climatización > Estufas a Gas', 1],
+            # ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
+            # ['SpaceHeater'],
+            #  'Hogar > Línea Blanca > Climatización > Estufas a Gas', 1],
             ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Le%c3%b1a',
              ['SpaceHeater'], 'Hogar > Línea Blanca > Climatización > '
                               'Estufas a Leña', 1],
