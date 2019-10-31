@@ -93,7 +93,12 @@ class TiendaMovistar(Store):
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        stock = int(re.search(r'stockMagento: (.*?),', page_source).group(1))
+        stock = re.search(r'stockMagento: (.*?),', page_source).group(1)
+
+        if not stock:
+            stock = 0
+        else:
+            stock = int(stock)
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
