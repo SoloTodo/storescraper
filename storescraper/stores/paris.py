@@ -258,7 +258,6 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
-                print(category_url)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
@@ -274,6 +273,8 @@ class Paris(Store):
                     if not product_a:
                         continue
                     product_url = product_a['href'].split('?')[0]
+                    if product_url == "null":
+                        continue
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
                     product_entries[product_url].append({
@@ -322,6 +323,7 @@ class Paris(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 

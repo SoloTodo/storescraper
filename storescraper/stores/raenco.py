@@ -33,7 +33,7 @@ class Raenco(Store):
             ('tecnologia/audio-hogar/equipos-de-sonido.html', 'StereoSystem'),
             ('tecnologia/celulares.html', 'Cell'),
             ('tecnologia/celulares/8-gb.html', 'Cell'),
-            ('tecnologia/celulares/16-gb.html', 'Cell'),
+            # ('tecnologia/celulares/16-gb.html', 'Cell'),
             ('tecnologia/celulares/32-gb.html', 'Cell'),
             ('tecnologia/celulares/64-gb.html', 'Cell'),
             ('tecnologia/celulares/128-gb.html', 'Cell'),
