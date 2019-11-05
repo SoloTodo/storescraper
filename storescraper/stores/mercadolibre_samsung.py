@@ -15,6 +15,12 @@ class MercadolibreSamsung(MercadolibreChile):
             'DishWasher',
             'Television',
             'Oven',
+            'CellAccesory',
+            'Headphones',
+            'StereoSystem',
+            'Tablet',
+            'Cell',
+            'Wearable'
         ]
 
     @classmethod
@@ -22,11 +28,20 @@ class MercadolibreSamsung(MercadolibreChile):
         category_sections = [
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
             ('electrodomesticos/pequenos', 'VacuumCleaner'),
-            ('electrodomesticos/lavado-secado-ropa', 'WashingMachine'),
+            ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
+            ('salud-equipamiento-medico', 'AirConditioner'),
             ('electrodomesticos/hornos-cocinas', 'Oven'),
-            # ('electrodomesticos/lavavajillas', 'DishWasher'),
-            ('electronica', 'Television'),
+            ('repuestos-accesorios', 'CellAccesory'),
+            ('electronica/accesorios-audio-video', 'CellAccesory'),
+            ('electronica/soportes', 'CellAccesory'),
+            ('audio', 'StereoSystem'),
+            ('electronica/televisores', 'Television'),
+            ('tablets-accesorio', 'Tablet'),
+            ('computacion', 'Tablet'),
+            ('celulares-telefonia/celulares', 'Cell'),
+            ('smartwatches-accesorios', 'Wearable'),
+            ('relojes-joyas', 'Wearable'),
         ]
 
         session = requests.Session()
