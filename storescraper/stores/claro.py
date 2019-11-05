@@ -70,6 +70,7 @@ class Claro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         products = []
         if url == cls.prepago_url:
             # Plan Prepago
@@ -155,7 +156,11 @@ class Claro(Store):
         response = session.post(
             'https://equipos.clarochile.cl/servicio/detalle', data=data)
 
-        product_json = json.loads(response.text)[0]
+        try:
+            product_json = json.loads(response.text)[0]
+        except json.decoder.JSONDecodeError:
+            return []
+
         base_cell_name = '{} {}'.format(product_json['marca'],
                                         product_json['modelo_comercial'])
 

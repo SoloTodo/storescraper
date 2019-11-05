@@ -35,7 +35,7 @@ class CasaRoyal(Store):
             ['audio/audio-hogar', 'StereoSystem'],
             # ['audio/audio-profesional/bafles', 'StereoSystem'],
             ['computacion/perifericos-y-adaptadores/teclados', 'Keyboard'],
-            ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
+            # ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
             ['computacion/almacenamiento/discos-duros', 'SolidStateDrive'],
             ['computacion/almacenamiento/pendrives', 'UsbFlashDrive'],
             ['computacion/almacenamiento/tarjetas-de-memoria', 'MemoryCard'],

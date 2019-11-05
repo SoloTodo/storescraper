@@ -48,7 +48,10 @@ class ClaroUp(Store):
         response = session.post(
             'https://equipos.clarochile.cl/servicio/detalle', data=data)
 
-        product_json = json.loads(response.text)[0]
+        try:
+            product_json = json.loads(response.text)[0]
+        except json.decoder.JSONDecodeError:
+            return []
 
         has_claro_up = int(product_json['claro_up'])
 
