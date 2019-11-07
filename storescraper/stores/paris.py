@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -367,6 +368,14 @@ class Paris(Store):
                 video_urls.append('https://www.youtube.com/watch?v={}'.format(
                     match.groups()[0]))
 
+        flixmedia_id = None
+
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        if flixmedia_tag:
+            flixmedia_id = flixmedia_tag['data-flix-mpn'].strip()
+            video_urls.extend(flixmedia_video_urls(flixmedia_id))
+
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
@@ -384,7 +393,8 @@ class Paris(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
-            video_urls=video_urls
+            video_urls=video_urls,
+            flixmedia_id=flixmedia_id
         )
 
         return [p]

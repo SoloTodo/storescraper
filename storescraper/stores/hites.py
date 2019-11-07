@@ -311,8 +311,6 @@ class Hites(Store):
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
 
-        print(json.dumps(json_data, indent=2))
-
         name = json_data['name']
         sku = json_data['partNumber']
 
@@ -350,9 +348,8 @@ class Hites(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        description = html_to_markdown(
-            json_data.get('longDescription', '') or ''
-        )
+        long_description = json_data.get('longDescription', '') or ''
+        description = html_to_markdown(long_description)
 
         for attribute in json_data['attributes']:
             if attribute['displayable']:
@@ -362,7 +359,9 @@ class Hites(Store):
         has_virtual_assistant = \
             'cdn.livechatinc.com/tracking.js' in response.text
 
-        flixmedia_container = soup.find(
+        ld_soup = BeautifulSoup(long_description, 'html.parser')
+
+        flixmedia_container = ld_soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
 
         if flixmedia_container:
