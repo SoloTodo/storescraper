@@ -160,7 +160,7 @@ class LinioChile(Store):
         picture_urls = ['https:' + tag.find('img')['data-lazy'] for tag in
                         soup.findAll('div', {'id': 'image-product'})]
 
-        availability_container = soup.find('meta',
+        availability_container = soup.find('link',
                                            {'itemprop': 'availability'})
 
         if not availability_container:
@@ -169,8 +169,7 @@ class LinioChile(Store):
                 'div', 'badge-international-shipping'):
             stock = 0
             description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
-        elif soup.find('meta', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        elif availability_container['href'] == 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
