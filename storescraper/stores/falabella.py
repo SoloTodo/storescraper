@@ -442,7 +442,7 @@ class Falabella(Store):
         base_url = 'https://www.falabella.com/falabella-cl/{}'
 
         sections_data = [
-            # [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             # # CATEGORY PAGES # #
             # Currently displaying a smart picker
             # [bs.REFRIGERATION, 'Refrigeradores',
