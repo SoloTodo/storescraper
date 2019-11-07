@@ -1,3 +1,5 @@
+import time
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -25,24 +27,26 @@ class Clie(Store):
             ['845', 'Notebook'],        # Notebooks i5
             ['849', 'Notebook'],        # Notebooks i7
             ['872', 'Notebook'],        # Notebooks Celeron
+            # ['870', 'Notebook'],      # Notebooks Pentium
             ['877', 'Notebook'],        # Notebooks AMD
             ['615', 'Monitor'],         # LED Monitor
             ['613', 'Television'],      # LED Television
             ['441', 'Printer'],         # Plotters
-            # ['921', 'Printer'],         # Plotters + Scanner
-            # ['908', 'Printer'],         # Plotters sublimacion
+            # ['921', 'Printer'],       # Plotters + Scanner
+            # ['908', 'Printer'],       # Plotters sublimacion
             ['896', 'Printer'],         # Plotters pedestal
             ['884', 'Printer'],         # Plotters de corte
-            ['863', 'Printer'],         # Impresoras Multi. Tinta Solida
-            ['456', 'Printer'],         # Impresoras Multi. Laser color
             ['114', 'Printer'],         # Impresoras Multi. Laser negro
+            ['456', 'Printer'],         # Impresoras Multi. Laser color
+            ['1050', 'Printer'],        # Impresoras Multi. Laser Color A3
+            ['863', 'Printer'],         # Impresoras Multi. Tinta Solida
             ['80', 'Printer'],          # Impresoras Laser negro
             ['205', 'Printer'],         # Impresoras Laser color
-            ['31', 'Printer'],          # Impresoras tinta
-            ['208', 'Printer'],         # Matriz de punto
-            ['363', 'Printer'],         # Multifuncional tinta wifi
+            ['363', 'Printer'],         # Multifuncional tinta
             ['917', 'Printer'],         # Multifuncional tinta a3
             ['174', 'Printer'],         # Impresoras tinta A3
+            ['31', 'Printer'],          # Impresoras tinta
+            ['208', 'Printer'],         # Matriz de punto
             ['292', 'Printer'],         # Impresoras moviles
         ]
 
@@ -52,7 +56,10 @@ class Clie(Store):
             if local_category != category:
                 continue
 
+            time.sleep(1)
+
             category_url = 'http://www.clie.cl/?categoria=' + category_code
+            print(category_url)
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
             brands_table = soup.find('table', {'width': '150'})
@@ -78,6 +85,8 @@ class Clie(Store):
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + subcategory_page_url)
+
+                time.sleep(1)
 
                 soup = BeautifulSoup(session.get(subcategory_page_url).text,
                                      'html.parser')
