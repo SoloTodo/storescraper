@@ -1,4 +1,5 @@
 import time
+import json
 
 from collections import defaultdict
 from decimal import Decimal
@@ -249,6 +250,62 @@ class LaPolar(Store):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
+
+        variation_container = soup.find('div', 'swatch-wrapper')
+        variations = []
+
+        if variation_container:
+            variations = variation_container.findAll('a')
+
+        products = []
+
+        if variations:
+            for variation in variations:
+                variation_url = variation['href']
+                variation_data = json.loads(session.get(variation_url).text)
+                attributes = variation_data["product"]["variationAttributes"]
+
+                for attribute in attributes:
+                    if attribute["displayName"] != "Compañía":
+                        continue
+                    values = attribute["values"]
+                    for value in values:
+                        if value["selectable"]:
+                            sv_data = json.loads(
+                                session.get(value["url"]).text)
+                            svas = sv_data[
+                                "product"]["variationAttributes"]
+                            for sva in svas:
+                                if sva["displayName"] != "Color":
+                                    continue
+                                for v in sva["values"]:
+                                    if v["selected"]:
+                                        v_name = "{} {} ({})".format(
+                                            name, value["displayValue"],
+                                            v["displayValue"])
+                                        v_sku = "{}-{}".format(
+                                            sku, sv_data["product"][
+                                                "selectedVariantID"])
+                                        vis = sv_data[
+                                            "product"]["images"]["large"]
+                                        vpu = [i["url"] for i in vis]
+                                        products.append(Product(
+                                            v_name,
+                                            cls.__name__,
+                                            category,
+                                            url,
+                                            url,
+                                            v_sku,
+                                            stock,
+                                            normal_price,
+                                            offer_price,
+                                            'CLP',
+                                            sku=v_sku,
+                                            description=description,
+                                            picture_urls=vpu,
+                                            condition=condition))
+
+            return products
 
         p = Product(
             name,
