@@ -7,6 +7,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal, InvalidOperation
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -289,6 +290,17 @@ class Corona(Store):
             except InvalidOperation:
                 pass
 
+        flixmedia_id = None
+        video_urls = None
+
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        if flixmedia_tag:
+            mpn = flixmedia_tag['data-flix-mpn'].strip()
+            video_urls = flixmedia_video_urls(mpn)
+            if video_urls is not None:
+                flixmedia_id = mpn
+
         # SKUS pricing
 
         skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
@@ -325,7 +337,9 @@ class Corona(Store):
                 'CLP',
                 sku=sku,
                 description=description,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                video_urls=video_urls,
+                flixmedia_id=flixmedia_id
             ))
 
         return products
