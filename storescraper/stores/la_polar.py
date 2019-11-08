@@ -255,14 +255,15 @@ class LaPolar(Store):
         flixmedia_id = None
         video_urls = None
 
-        details_tab = soup.find('div', 'details-tab')
-        for label in details_tab.findAll('div', 'attr-label'):
-            if label.text.strip() == 'Modelo:':
-                model = label.parent.find('div', 'attr-value').text.strip()
-                video_urls = flixmedia_video_urls(model)
-                if video_urls is not None:
-                    flixmedia_id = model
-                break
+        if 'LG' in name:
+            details_tab = soup.find('div', 'details-tab')
+            for label in details_tab.findAll('div', 'attr-label'):
+                if label.text.strip() == 'Modelo:':
+                    model = label.parent.find('div', 'attr-value').text.strip()
+                    video_urls = flixmedia_video_urls(model)
+                    if video_urls is not None:
+                        flixmedia_id = model
+                    break
 
         variation_container = soup.find('div', 'swatch-wrapper')
         variations = []
