@@ -5,6 +5,7 @@ from collections import defaultdict
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -251,6 +252,18 @@ class LaPolar(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
+        flixmedia_id = None
+        video_urls = None
+
+        details_tab = soup.find('div', 'details-tab')
+        for label in details_tab.findAll('div', 'attr-label'):
+            if label.text.strip() == 'Modelo:':
+                model = label.parent.find('div', 'attr-value').text.strip()
+                video_urls = flixmedia_video_urls(model)
+                if video_urls is not None:
+                    flixmedia_id = model
+                break
+
         variation_container = soup.find('div', 'swatch-wrapper')
         variations = []
 
@@ -321,7 +334,9 @@ class LaPolar(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
-            condition=condition
+            condition=condition,
+            flixmedia_id=flixmedia_id,
+            video_urls=video_urls
         )
 
         return [p]

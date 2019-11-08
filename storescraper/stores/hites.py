@@ -5,6 +5,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy,\
@@ -363,11 +364,14 @@ class Hites(Store):
 
         flixmedia_container = ld_soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        flixmedia_id = None
+        video_urls = None
 
         if flixmedia_container:
-            flixmedia_id = flixmedia_container['data-flix-mpn']
-        else:
-            flixmedia_id = None
+            mpn = flixmedia_container['data-flix-mpn']
+            video_urls = flixmedia_video_urls(mpn)
+            if video_urls is not None:
+                flixmedia_id = mpn
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'

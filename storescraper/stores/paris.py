@@ -373,8 +373,11 @@ class Paris(Store):
         flixmedia_tag = soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
         if flixmedia_tag:
-            flixmedia_id = flixmedia_tag['data-flix-mpn'].strip()
-            video_urls.extend(flixmedia_video_urls(flixmedia_id))
+            mpn = flixmedia_tag['data-flix-mpn'].strip()
+            flix_videos = flixmedia_video_urls(mpn)
+            if flix_videos is not None:
+                video_urls.extend(flix_videos)
+                flixmedia_id = mpn
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))

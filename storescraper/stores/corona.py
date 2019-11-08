@@ -291,13 +291,15 @@ class Corona(Store):
                 pass
 
         flixmedia_id = None
-        video_urls = []
+        video_urls = None
 
         flixmedia_tag = soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
         if flixmedia_tag:
-            flixmedia_id = flixmedia_tag['data-flix-mpn'].strip()
-            video_urls.extend(flixmedia_video_urls(flixmedia_id))
+            mpn = flixmedia_tag['data-flix-mpn'].strip()
+            video_urls = flixmedia_video_urls(mpn)
+            if video_urls is not None:
+                flixmedia_id = mpn
 
         # SKUS pricing
 
