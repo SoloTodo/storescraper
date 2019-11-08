@@ -86,13 +86,12 @@ class HpOnline(Store):
         picture_urls = ['https:' + tag.find('img')['data-lazy'] for tag in
                         soup.findAll('div', {'id': 'image-product'})]
 
-        availability_container = soup.find('meta',
+        availability_container = soup.find('link',
                                            {'itemprop': 'availability'})
 
         if not availability_container:
             stock = 0
-        elif soup.find('meta', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        elif availability_container['href'] == 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
