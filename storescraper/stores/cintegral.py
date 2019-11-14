@@ -44,7 +44,7 @@ class Cintegral(Store):
 
         url_extensions = [
             ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
-            ['pc-y-portatiles/portatiles/tablet.html', 'Tablet'],
+            # ['pc-y-portatiles/portatiles/tablet.html', 'Tablet'],
             ['pc-y-portatiles/partes-y-piezas/cpu.html', 'Processor'],
             ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
              'discos-duros-pc.html', 'StorageDrive'],
