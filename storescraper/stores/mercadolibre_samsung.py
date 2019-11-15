@@ -34,7 +34,7 @@ class MercadolibreSamsung(MercadolibreChile):
             ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('repuestos-accesorios', 'CellAccesory'),
             ('electronica/accesorios-audio-video', 'CellAccesory'),
-            ('electronica/soportes', 'CellAccesory'),
+            # ('electronica/soportes', 'CellAccesory'),
             ('audio', 'StereoSystem'),
             ('electronica/televisores', 'Television'),
             ('tablets-accesorio', 'Tablet'),
