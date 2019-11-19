@@ -149,7 +149,7 @@ class RipleyChileBase(Store):
             ['tecno/mundo-gamer/consolas', ['VideoGameConsole'],
              'Tecno > Mundo Gamer > Consolas', 1],
 
-            ['electro/climatizacion/ventiladores-y-aire-acondicionado',
+            ['electro/climatizacion/aire-acondicionado',
              ['AirConditioner'],
              'Electro > Climatización > Ventiladores y aire acondicionado', 1],
             ['electro/climatizacion/purificadores-y-humificadores',
