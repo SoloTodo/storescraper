@@ -228,6 +228,9 @@ class SpDigital(Store):
         offer_price = Decimal(remove_words(containers[0].text))
         normal_price = Decimal(remove_words(containers[1].text))
 
+        if normal_price < offer_price:
+            offer_price = normal_price
+
         tabs = [
             soup.find('div', 'product-description-tab'),
             soup.find('div', {'data-tab': 'specifications'})
