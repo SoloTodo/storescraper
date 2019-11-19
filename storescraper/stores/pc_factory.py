@@ -113,6 +113,9 @@ class PcFactory(Store):
             ['100', ['Ram'],
              'Inicio > Componentes/Partes y Piezas > Memorias > '
              'Memorias Notebook', 1],
+            ['266', ['Ram'],
+             'Inicio > Computadores y Tablets > Servidores > '
+             'Memorias Servers', 1],
             ['340', ['StorageDrive'],
              'Inicio > Discos Duros y Almacenamiento > Discos Duros PC', 1],
             ['585', ['SolidStateDrive'],
