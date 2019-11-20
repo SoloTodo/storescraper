@@ -1,5 +1,6 @@
 import json
 
+import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -55,15 +56,14 @@ class TiendaClaro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url, verify=False).text,
                              'html.parser')
 
         base_name = soup.find('h1', 'main_header').text.strip()
         page_id = soup.find('meta', {'name': 'pageId'})['content']
-        price_container = soup.find('span', {'id': 'offerPrice_{}'.format(
-            page_id)})
-        price = Decimal(remove_words(price_container.text))
+
         json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
             page_id)})
         json_data = json.loads(json_container.text)
@@ -80,6 +80,12 @@ class TiendaClaro(Store):
             for attribute_key in product_entry['Attributes'].keys():
                 attribute, value = attribute_key.split('_|_')
                 name += ' {} {}'.format(attribute, value)
+
+            res = json.loads(session.get(
+                'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView?'
+                'storeId=10151&catalogEntryId=' + sku, verify=False).text)
+
+            price = Decimal(remove_words(res['catalogEntry']['offerPrice']))
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
                 product_entry['ItemImage467'])]

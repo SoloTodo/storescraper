@@ -33,7 +33,7 @@ class Proglobal(Store):
         category_paths = [
             ['celulares/smartphone', 'Cell'],
             ['celulares/pulseras-inteligentes', 'Wearable'],
-            ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
+            # ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
             ['computacion-y-gamer/almacenamiento/microsd-alta-velocidad',
              'MemoryCard'],
             ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
@@ -54,7 +54,7 @@ class Proglobal(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        base_url = "https://www.proglobal.cl/{}"
+        base_url = 'https://www.proglobal.cl/{}'
         product_urls = []
 
         for category_path, local_category in category_paths:
@@ -69,6 +69,7 @@ class Proglobal(Store):
 
                 url = 'https://proglobal.cl/c/{}/pagina-{}'\
                     .format(category_path, page)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.findAll(
@@ -108,7 +109,7 @@ class Proglobal(Store):
                         .replace('.', '').strip())
 
         pictures_containers = soup.findAll('a', 'miniatura_galeria')
-        base_url = "https://www.proglobal.cl/{}"
+        base_url = 'https://www.proglobal.cl/{}'
         picture_urls = []
 
         for picture in pictures_containers:
