@@ -448,14 +448,14 @@ class Falabella(Store):
             # [bs.REFRIGERATION, 'Refrigeradores',
             #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
             #  'category/cat3205/Refrigeradores'],
-            [bs.WASHING_MACHINES, 'Lavadoras',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras'],
-            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat1012/TV'],
-            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat2005/Audio'],
-            [bs.CELLS, 'Electro y Tecnología-Teléfonos',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+            # [bs.WASHING_MACHINES, 'Lavadoras',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras'],
+            # [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            #  'category/cat1012/TV'],
+            # [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            #  'category/cat2005/Audio'],
+            # [bs.CELLS, 'Electro y Tecnología-Teléfonos',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
 
             # # MOSAICS ##
             [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
@@ -633,38 +633,25 @@ class Falabella(Store):
                                 'No valid banners found for {} in position '
                                 '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                with HeadlessChrome(images_enabled=True) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
+                session = session_with_proxy(extra_args)
+                soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-                    time.sleep(5)
+                banner = soup.find('div', 'fb-huincha-main-wrap')
 
-                    try:
-                        banner = driver.find_element_by_class_name('PLP_XL')
-                    except NoSuchElementException:
-                        print('* ', url)
-                        continue
+                if not banner:
+                    continue
 
-                    try:
-                        frame = banner.find_element_by_tag_name('iframe')
-                    except NoSuchElementException:
-                        print('* ', url)
-                        continue
+                image_url = banner.find('source')['srcset']
+                dest_url = banner.find('a')['href']
 
-                    driver.switch_to.frame(frame)
-                    image_url = driver.find_element_by_tag_name(
-                        'img').get_attribute('src')
-                    dest_url = driver.find_element_by_tag_name(
-                        'a').get_attribute('href')
-
-                    banners.append({
-                        'url': url,
-                        'picture_url': image_url,
-                        'destination_urls': [dest_url],
-                        'key': image_url,
-                        'position': 1,
-                        'section': section,
-                        'subsection': subsection,
-                        'type': subsection_type})
+                banners.append({
+                    'url': url,
+                    'picture_url': image_url,
+                    'destination_urls': [dest_url],
+                    'key': image_url,
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type})
 
         return banners
