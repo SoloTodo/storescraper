@@ -73,13 +73,14 @@ class TravelTienda(Store):
                 continue
 
             url = base_url.format(category_path)
+            print(url)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
             items = soup.findAll('div', 'contenedor-productos')
 
             for item in items:
-                product_urls.append(base_url.format(item.find('a')['href']))
+                product_urls.append(base_url.format(item.parent['href']))
 
         return product_urls
 
@@ -91,6 +92,12 @@ class TravelTienda(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         name = soup.find('p', 'txt-nombre-producto').text
+
+        if 'samsung' in name.lower():
+            stock = -1
+        else:
+            stock = 0
+
         sku = soup.find('p', 'txt-sku').text.replace('SKU', '').strip()
         price = Decimal(soup.find('p', 'txt-precio').text
                         .replace('$', '').replace('.', '').strip())
@@ -109,7 +116,7 @@ class TravelTienda(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             price,
             price,
             'CLP',
