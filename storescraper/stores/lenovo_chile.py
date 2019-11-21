@@ -22,6 +22,10 @@ class LenovoChile(Store):
                   "asyncProductListPage?q=%3Aprice-asc&page={}"
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+
         products_urls = []
 
         if category != 'Notebook':
@@ -50,6 +54,9 @@ class LenovoChile(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url,  allow_redirects=False)
         if response.status_code == 301:
             return []
