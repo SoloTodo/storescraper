@@ -23,7 +23,8 @@ class Currency:
             'HNL': cls('L.', ',', '.', 2),
             'DOP': cls('$', ',', '.', 2),
             'NIO': cls('C$', ',', '.', 2),
-            'CRC': cls('₡', ',', '.', 0)
+            'CRC': cls('₡', ',', '.', 0),
+            'PYG': cls('₲', '.', ',', 0),
         }
 
         currency = known_codes[code]
