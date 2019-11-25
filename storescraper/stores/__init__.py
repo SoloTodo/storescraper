@@ -60,6 +60,7 @@ from .gollo_tienda import GolloTienda
 from .gonzalez_gimenez import GonzalezGimenez
 from .grupo_cva import GrupoCva
 from .gtd import Gtd
+from .hbt import Hbt
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hp_online import HpOnline
