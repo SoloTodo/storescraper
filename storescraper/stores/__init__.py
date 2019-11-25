@@ -182,6 +182,7 @@ from .tomalo import Tomalo
 from .top_pc import TopPc
 from .tottus import Tottus
 from .ttchile import TtChile
+from .tupi import Tupi
 from .vitel import Vitel
 from .vivelo import Vivelo
 from .vtr import Vtr
