@@ -35,7 +35,7 @@ class TopPc(Store):
             ['24', 'VideoCard'],  # Tarjetas de video
             ['21', 'Processor'],  # Procesadores
             ['78', 'Monitor'],  # Monitores
-            ['96', 'Notebook'],  # Notebooks
+            # ['96', 'Notebook'],  # Notebooks
             ['22', 'Motherboard'],  # MB
             ['23', 'Ram'],  # RAM
             ['44', 'StorageDrive'],  # HDD PC
