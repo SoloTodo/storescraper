@@ -10,6 +10,7 @@ from .americanas import Americanas
 from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
 from .bip import Bip
+from .bristol import Bristol
 from .byp import Byp
 from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
