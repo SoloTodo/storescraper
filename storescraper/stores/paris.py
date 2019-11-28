@@ -52,26 +52,19 @@ class Paris(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
             ['electro/television', ['Television'], 'Electro > Televisión', 1],
-            ['electro/television/todas', ['Television'],
-             'Electro > Televisión > Todas las TV', 1],
             ['electro/television/smart-tv', ['Television'],
              'Electro > Televisión > Smart TV', 1],
-            ['electro/television/ultra-hd', ['Television'],
-             'Electro > Televisión > Ultra HD', 1],
-            ['electro/television/curvo-oled-qled', ['Television'],
-             'Electro > Televisión > Curvo, Oled y Qled', 1],
-            # ['electro/television/monitores-tv', ['Television'],
-            #  'Electro > Televisión > Monitor TV', 1],
+            ['television/televisores-oled-qled', ['Television'],
+             'Electro > Televisión > Oled y Qled', 1],
+            ['electro/television/televisores-led', ['Television'],
+             'Electro > Televisión > Televisores LED', 1],
+
             # Also contains other accesories
-            ['electro/accesorios-tv',
-             ['StereoSystem', 'OpticalDiskPlayer', 'Projector'],
-             'Electro > Accesorios para TV', 0],
-            ['electro/accesorios-tv/soundbar-home-theater', ['StereoSystem'],
-             'Electro > Accesorios para TV > Soundbar y Home Theater', 1],
             ['electro/accesorios-tv/bluray-dvd', ['OpticalDiskPlayer'],
-             'Electro > Accesorios para TV > Bluray y DVD', 1],
+             'Otras categorias > Bluray y DVD', 1],
             ['electro/accesorios-tv/proyectores', ['Projector'],
-             'Electro > Accesorios para TV > Proyectores', 1],
+             'Otras categorias > Proyectores', 1],
+
             # Also contains other audio products
             ['electro/audio', ['StereoSystem', 'Headphones'],
              'Electro > Audio', 0],
@@ -436,10 +429,8 @@ class Paris(Store):
              'electro/television/todas/'],
             [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
              'electro/television/smart-tv/'],
-            [bs.TELEVISIONS, 'Ultra HD', bs.SUBSECTION_TYPE_MOSAIC,
-             'electro/television/ultra-hd/'],
-            [bs.TELEVISIONS, 'Curvo, Oled y Qled', bs.SUBSECTION_TYPE_MOSAIC,
-             'electro/television/curvo-oled-qled/'],
+            [bs.TELEVISIONS, 'Oled y Qled', bs.SUBSECTION_TYPE_MOSAIC,
+             'television/televisores-oled-qled/'],
             # [bs.TELEVISIONS, 'Monitor TV', bs.SUBSECTION_TYPE_MOSAIC,
             #  'electro/television/monitores-tv/'],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_MOSAIC, 'electro/audio/'],
@@ -462,6 +453,8 @@ class Paris(Store):
             url = base_url.format(url_suffix)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
+
+            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 image = soup.find('div', 'desktop-plp-2')

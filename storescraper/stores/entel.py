@@ -102,7 +102,7 @@ class Entel(Store):
                     name = '{}{} ({})'.format(base_plan_name, suffix, variant)
 
                     price_container = plan_box.find(
-                        'span', 'green-txt')
+                        'span', 'black-orange-txt')
 
                     price = Decimal(remove_words(price_container.text))
 
