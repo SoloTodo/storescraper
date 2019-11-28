@@ -42,3 +42,67 @@ class Olier(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        product_urls = []
+        base_url = 'https://www.olier.com.py/catalogo/{}.{}'
+
+        for c in category_paths:
+            category_path, local_category = c
+
+            if category != local_category:
+                continue
+
+            page = 1
+
+            while True:
+                url = base_url.format(category_path, page)
+
+                if page >= 15:
+                    raise Exception('Page overflow: ' + url)
+
+                print(url)
+
+                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                product_containers = soup.findAll('div', 'product')
+
+                if not product_containers:
+                    break
+
+                for product in product_containers:
+                    product_url = 'https://olier.com.py/{}'.format(
+                        product.find('a')['href'])
+                    product_urls.append(product_url)
+
+                page += 1
+
+        return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
+        name = soup.find('h1', 'product_title').text.strip()
+        sku = soup.find('span', 'sku').text.strip()
+        stock = -1
+
+        price = Decimal(
+            soup.find('p', 'price').find('span', 'amount')
+                .text.replace('₲.', '').replace('.', ''))
+
+        picture_urls = [soup.find('meta', {'name': 'og:image'})['content']]
+
+        return [Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'PYG',
+            sku=sku,
+            picture_urls=picture_urls
+        )]

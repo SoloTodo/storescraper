@@ -37,7 +37,7 @@ class MercadolibreSamsung(MercadolibreChile):
             # ('electronica/soportes', 'CellAccesory'),
             ('audio', 'StereoSystem'),
             ('electronica/televisores', 'Television'),
-            ('tablets-accesorio', 'Tablet'),
+            # ('tablets-accesorio', 'Tablet'),
             ('computacion', 'Tablet'),
             ('celulares-telefonia/celulares', 'Cell'),
             ('smartwatches-accesorios', 'Wearable'),
