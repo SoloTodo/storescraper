@@ -3,42 +3,50 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
-class GonzalezGimenez(Store):
+class Inverfin(Store):
+    base_url = 'https://www.lg.com'
+    country_code = 'cl'
 
     @classmethod
     def categories(cls):
         return [
             'Television',
+            'OpticalDiskPlayer',
             'StereoSystem',
             'Cell',
             'Refrigerator',
             'Oven',
             'Stove',
             'WashingMachine',
+            'Headphones',
             'AirConditioner'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['televisores-c11', 'Television'],
-            ['audio-c12', 'StereoSystem'],
-            ['celulares-c20', 'Cell'],
-            ['refrigeracion-c4', 'Refrigerator'],
-            ['hornos-c16', 'Oven'],
-            ['cocinas-c15', 'Stove'],
-            ['anafes-c17', 'Stove'],
-            ['lavarropas-c36', 'WashingMachine'],
-            ['secarropas-c37', 'WashingMachine'],
-            ['acondicionadores-de-aire-c29', 'AirConditioner']
+            ['tv-y-audio/televisores', 'Television'],
+            ['tv-y-audio/reproductores', 'OpticalDiskPlayer'],
+            ['tv-y-audio/equipos-de-sonido', 'StereoSystem'],
+            ['tv-y-audio/parlante-portatil', 'StereoSystem'],
+            ['tecnologia/celulares', 'Cell'],
+            ['hogar/hornos', 'Oven'],
+            ['hogar/microondas', 'Oven'],
+            ['hogar/cocinas', 'Stove'],
+            ['hogar/anafes', 'Stove'],
+            ['hogar/lavarropas', 'WashingMachine'],
+            ['hogar/secarropas', 'WashingMacihne'],
+            ['hogar/lavasecarropas', 'WashingMachine'],
+            ['tv-y-audio/auriculares', 'Headphones'],
+            ['hogar/aire-acondicionado', 'AirConditioner']
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.gonzalezgimenez.com.py/{}'
+        base_url = 'https://www.inverfin.com.py/{}?pagina={}'
 
         for c in category_paths:
             category_path, local_category = c
@@ -49,23 +57,20 @@ class GonzalezGimenez(Store):
             page = 1
 
             while True:
-                url = 'https://www.gonzalezgimenez.com.py/{}.{}'.format(
-                    category_path, page)
+                url = base_url.format(category_path, page)
 
                 if page >= 15:
-                    raise Exception('Page overflow: ' + url)
-
-                print(url)
+                    raise Exception('Page overflow' + url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.find(
-                    'div', 'products').findAll('div', 'product')
+                product_containers = soup.findAll('div', 'item')
 
                 if not product_containers:
                     break
 
                 for product in product_containers:
-                    product_url = base_url.format(product.find('a')['href'])
+                    product_url = 'https://inverfin.com.py{}'.format(
+                        product.find('a')['href'])
                     product_urls.append(product_url)
 
                 page += 1
@@ -78,24 +83,24 @@ class GonzalezGimenez(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find('span', 'sku').text.strip()
+        name = soup.find('h2', 'product-name').text.strip()
+        sku = soup.find('h2', 'product-name').find('small').text.strip()
+        name = name.replace(sku, '').strip()
         stock = -1
 
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
         price = Decimal(
-            soup.find('p', 'price').find('ins').find('span', 'amount').text
-                .replace('₲.', '').replace('*', '').replace('.', '').strip())
+            soup.find('span', 'main-price').find('span', 'deadline-price')
+                .text.replace('Gs.', '').replace('.', '').strip())*6
 
-        description = html_to_markdown(str(soup.find('div', 'tab-pane')))
-
-        pictures = soup.findAll('div', 'woocommerce-product-gallery__image')
+        pictures = soup.findAll('img', 'zoomable-img')
         picture_urls = []
 
         for picture in pictures:
-            picture_url = picture.find('a')['data-src']
+            picture_url = 'https://inverfin.com.py{}'\
+                .format(picture['data-zoom-image'])
             picture_urls.append(picture_url)
 
         return [Product(
@@ -110,6 +115,5 @@ class GonzalezGimenez(Store):
             price,
             'PYG',
             sku=sku,
-            description=description,
             picture_urls=picture_urls
         )]
