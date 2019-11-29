@@ -86,6 +86,9 @@ class Olier(Store):
         sku = soup.find('span', 'sku').text.strip()
         stock = -1
 
+        if 'LG' not in name.upper().split(' '):
+            stock = 0
+
         price = Decimal(
             soup.find('p', 'price').find('span', 'amount')
                 .text.replace('₲.', '').replace('.', ''))

@@ -86,6 +86,9 @@ class Bristol(Store):
         sku = soup.find('div', 'product-desc').text.split('/')[0].replace('Cod:', '').strip()
         stock = -1
 
+        if 'LG' not in name.upper().split(' '):
+            stock = 0
+
         price = Decimal(
             soup.find('div', 'product-price').find('span')
                 .text.replace('Gs.', '').replace('.', '').strip())

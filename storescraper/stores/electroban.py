@@ -3,10 +3,12 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
+
+import json
 
 
-class Tupi(Store):
+class Electroban(Store):
     base_url = 'https://www.lg.com'
     country_code = 'cl'
 
@@ -15,7 +17,6 @@ class Tupi(Store):
         return [
             'Television',
             'StereoSystem',
-            'Projector',
             'Cell',
             'Refrigerator',
             'Oven',
@@ -27,27 +28,22 @@ class Tupi(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['19', 'Television'],
-            ['5', 'Television'],
-            ['98', 'Television'],
-            ['16', 'StereoSystem'],
-            ['36', 'StereoSystem'],
-            ['37', 'StereoSystem'],
-            ['44', 'Cell'],
-            ['24', 'Refrigerator'],
-            ['87', 'Refrigerator'],
+            ['15', 'Television'],
+            ['14', 'StereoSystem'],
+            ['88', 'Cell'],
+            ['32', 'Refrigerator'],
             ['6', 'Oven'],
-            ['31', 'Oven'],
-            ['29', 'Stove'],
-            ['73', 'Stove'],
-            ['52', 'WashingMachine'],
-            ['35', 'WashingMachine'],
-            ['22', 'AirConditioner']
+            ['80', 'Oven'],
+            ['3', 'Stove'],
+            ['9', 'WashingMachine'],
+            ['12', 'WashingMachine'],
+            ['1', 'AirConditioner']
+
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.tupi.com.py/familias_paginacion/{}/{}/'
+        base_url = 'https://www.eban.com.py/familias_paginacion/{}/{}/'
 
         for c in category_paths:
             category_path, local_category = c
@@ -59,11 +55,10 @@ class Tupi(Store):
 
             while True:
                 url = base_url.format(category_path, page)
+                print(url)
 
                 if page >= 15:
                     raise Exception('Page overflow: ' + url)
-
-                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
@@ -72,7 +67,8 @@ class Tupi(Store):
                     break
 
                 for product in product_containers:
-                    product_urls.append(product.find('a')['href'])
+                    product_url = product.find('a')['href']
+                    product_urls.append(product_url)
 
                 page += 1
 
@@ -85,30 +81,45 @@ class Tupi(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find(
-            'meta', {'property': 'product:retailer_item_id'})['content']
-        stock = int(soup.find('input', {'id': 'the-cantidad-selector'})['max'])
+
+        sku_container = soup.find('a', 'single_add_to_cart_button')
+
+        if not sku_container:
+            sku = soup.find('input', {'id': 'aux_cod_articulo'})['value']
+        else:
+            sku = sku_container['href']
+
+        stock_container = soup.find('div', 'availability')
+
+        if not stock_container:
+            stock = 0
+        else:
+            stock = stock_container.find('span').text.split(' ')[0]
+            if stock == 'Sin':
+                stock = 0
+            else:
+                stock = int(stock)
 
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
-        normal_price = Decimal(
-            soup.find('p', 'price').find('span', 'amount').text
-                .replace('Gs.', '').replace('.', '').strip())
-        offer_price = Decimal(
-            soup.find('p', 'price')
-                .find('span', {'id': 'elpreciocentralPorta'}).text
-                .split('Gs.')[-1].replace('.', '').replace('!', '').strip())
+        post_data = 'plazo=CONTADO&cod_articulo={}'.format(sku)
 
-        description = html_to_markdown(
-            str(soup.find('div', {'itemprop': 'description'})))
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded;'\
+                                          ' charset=UTF-8'
 
-        pictures = soup.findAll('div', 'thumbnails-single owl-carousel')
-        picture_urls = []
+        price = soup.find('span', {'id': 'elpreciocentral'})\
+            .text.replace('Gs.', '').replace('.', '').strip()
 
-        for picture in pictures:
-            picture_url = picture.find('a')['href']
-            picture_urls.append(picture_url)
+        if not price:
+            price = Decimal(session.post(
+                'https://www.eban.com.py/ajax/calculo_plazo.php',
+                data=post_data).text)
+        else:
+            price = Decimal(price)
+
+        picture_urls = [soup.find(
+            'div', 'thumbnails-single owl-carousel').find('a')['href']]
 
         return [Product(
             name,
@@ -118,10 +129,9 @@ class Tupi(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'PYG',
             sku=sku,
-            description=description,
             picture_urls=picture_urls
         )]
