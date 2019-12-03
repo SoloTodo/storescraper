@@ -445,17 +445,18 @@ class Falabella(Store):
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             # # CATEGORY PAGES # #
             # Currently displaying a smart picker
-            # [bs.REFRIGERATION, 'Refrigeradores',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat3205/Refrigeradores'],
-            # [bs.WASHING_MACHINES, 'Lavadoras',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavadoras'],
-            # [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat1012/TV'],
-            # [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat2005/Audio'],
-            # [bs.CELLS, 'Electro y Tecnología-Teléfonos',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat2018/Telefonos'],
+            [bs.REFRIGERATION, 'Electrohogar-Refrigeradores',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat3205/Refrigeradores'],
+            [bs.WASHING_MACHINES, 'Electrohogar-Lavado',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavado'],
+            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat1012/TV'],
+            [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat2005/Audio'],
+            [bs.CELLS, 'Telefonía-Celulares y Teléfonos',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'category/cat2018/Celulares-y-Telefonos'],
 
             # # MOSAICS ##
             [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
@@ -518,39 +519,110 @@ class Falabella(Store):
             url = base_url.format(url_suffix)
             print(url)
 
+            # if subsection_type == bs.SUBSECTION_TYPE_HOME:
+            #     with HeadlessChrome(images_enabled=True) as driver:
+            #         driver.set_window_size(1920, 1080)
+            #         driver.get(url)
+            #
+            #         images = driver\
+            #             .find_element_by_class_name('swiper-container')\
+            #             .find_elements_by_class_name('dy_unit')[1:-1]
+            #
+            #         index = 1
+            #
+            #         for image_url in images:
+            #             picture_array = image_url.find_element_by_tag_name(
+            #                 'picture').find_elements_by_tag_name('source')
+            #             destination_urls = [
+            #                 d.get_property('href') for d in
+            #                 image_url.find_elements_by_tag_name('a')]
+            #             destination_urls = list(set(destination_urls))
+            #             for picture in picture_array:
+            #                 picture_url = picture.get_property(
+            #                     'srcset').split(' ')[0]
+            #
+            #                 if 'https://www.falabella.com' not in picture_url:
+            #                     picture_url = 'https://www.falabella.com' \
+            #                                   '{}'.format(picture_url)
+            #
+            #                 if picture_url:
+            #                     banners.append({
+            #                         'url': url,
+            #                         'picture_url': picture_url,
+            #                         'destination_urls': destination_urls,
+            #                         'key': picture_url,
+            #                         'position': index,
+            #                         'section': section,
+            #                         'subsection': subsection,
+            #                         'type': subsection_type
+            #                     })
+            #                     break
+            #             else:
+            #                 raise Exception(
+            #                     'No valid banners found for {} in position '
+            #                     '{}'.format(url, index + 1))
+            #             index += 1
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 with HeadlessChrome(images_enabled=True) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
-                    images = driver\
-                        .find_element_by_class_name('swiper-container')\
-                        .find_elements_by_class_name('dy_unit')[1:-1]
+                    pictures = []
 
-                    index = 1
+                    element = driver.find_element_by_class_name(
+                        'fb-hero-carousel-nav')
+                    driver.execute_script("""
+                    var element = arguments[0];
+                    element.parentNode.removeChild(element);
+                    """, element)
 
-                    for image_url in images:
-                        picture_array = image_url.find_element_by_tag_name(
-                            'picture').find_elements_by_tag_name('source')
-                        destination_urls = [
-                            d.get_property('href') for d in
-                            image_url.find_elements_by_tag_name('a')]
+                    elements = driver.find_element_by_class_name(
+                        'fb-hero-carousel__pips')\
+                        .find_elements_by_class_name(
+                        'fb-hero-carousel__pips__pip')
+
+                    for element in elements:
+                        element.click()
+                        time.sleep(2)
+                        image_url = Image.open(
+                            BytesIO(driver.get_screenshot_as_png()))
+                        image_url = image_url.crop((0, 187, 1920, 700))
+                        buffered = BytesIO()
+                        image_url.save(buffered, format='PNG')
+                        pictures.append(
+                            base64.b64encode(buffered.getvalue()))
+
+                    soup = BeautifulSoup(driver.page_source, 'html.parser')
+                    images_div = soup.findAll('div', 'fb-hero-carousel-slide')
+                    images_article = soup.findAll('article',
+                                                  'fb-hero-carousel-slide')
+                    images_module = soup.findAll('div',
+                                                 'hero fb-module-wrapper')
+
+                    images = images_div + images_article + images_module
+
+                    assert len(images) == len(pictures)
+
+                    for index, image_url in enumerate(images):
+                        picture_array = image_url.findAll(
+                            'picture')[-1].findAll('source')
+                        destination_urls = [d['href'] for d in
+                                            image_url.findAll('a')]
                         destination_urls = list(set(destination_urls))
+
                         for picture in picture_array:
-                            picture_url = picture.get_property(
-                                'srcset').split(' ')[0]
+                            key = picture['srcset'].split(' ')[0]
 
-                            if 'https://www.falabella.com' not in picture_url:
-                                picture_url = 'https://www.falabella.com' \
-                                              '{}'.format(picture_url)
+                            if 'https' not in key:
+                                key = 'https://www.falabella.com' + key
 
-                            if picture_url:
+                            if 'webp' not in key:
                                 banners.append({
                                     'url': url,
-                                    'picture_url': picture_url,
+                                    'picture': pictures[index],
                                     'destination_urls': destination_urls,
-                                    'key': picture_url,
-                                    'position': index,
+                                    'key': key,
+                                    'position': index + 1,
                                     'section': section,
                                     'subsection': subsection,
                                     'type': subsection_type
@@ -560,7 +632,6 @@ class Falabella(Store):
                             raise Exception(
                                 'No valid banners found for {} in position '
                                 '{}'.format(url, index + 1))
-                        index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True) as driver:
                     driver.set_window_size(1920, 1080)
