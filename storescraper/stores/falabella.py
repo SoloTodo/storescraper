@@ -563,7 +563,7 @@ class Falabella(Store):
             #                     '{}'.format(url, index + 1))
             #             index += 1
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
+                with HeadlessChrome(images_enabled=True, timeout=99) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -633,7 +633,7 @@ class Falabella(Store):
                                 'No valid banners found for {} in position '
                                 '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                with HeadlessChrome(images_enabled=True) as driver:
+                with HeadlessChrome(images_enabled=True, timeout=99) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
