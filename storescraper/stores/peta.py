@@ -42,8 +42,8 @@ class Peta(Store):
              'notebooks-basicos.html', 'Notebook'],
             ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
              'notebooks-para-el-trabajo.html', 'Notebook'],
-            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
-             'notebooks-para-edicion-grafica.html', 'Notebook'],
+            # ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+            #  'notebooks-para-edicion-grafica.html', 'Notebook'],
             ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
              'notebooks-gamers.html', 'Notebook'],
             # ['equipos-computadores-tablets-aio-ebooks/moviles/'
@@ -102,7 +102,7 @@ class Peta(Store):
                     url, p, random.randint(1, 1000))
                 print(category_url)
                 soup = BeautifulSoup(
-                    session.get(category_url, verify=False).text,
+                    session.get(category_url).text,
                     'html.parser')
 
                 for cell in soup.find(
@@ -132,7 +132,7 @@ class Peta(Store):
         session = session_with_proxy(extra_args)
         request_url = '{}?_={}'.format(url, random.randint(1, 1000))
         print(request_url)
-        response = session.get(request_url, verify=False)
+        response = session.get(request_url)
 
         if not response.text:
             return []
