@@ -66,10 +66,9 @@ class Zmart(Store):
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                link_containers = soup.findAll('div', 'ProdBox240Media')
-
-                if not link_containers:
-                    link_containers = soup.findAll('div', 'ProdBox380_520')
+                link_containers = soup.findAll('div', 'BoxProductoS2')
+                link_containers += soup.findAll('div', 'ProdBox240Media')
+                link_containers += soup.findAll('div', 'ProdBox380_520')
 
                 if not link_containers:
                     raise Exception('Empty category: ' + category_url)
