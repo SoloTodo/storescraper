@@ -22,7 +22,7 @@ class HpOnline(Store):
         category_paths = [
             ['notebooks', 'Notebook'],
             ['impresoras', 'Printer'],
-            ['desktops/desktops-all-in-one', 'AllInOne'],
+            # ['desktops/desktops-all-in-one', 'AllInOne'],
         ]
 
         session = session_with_proxy(extra_args)

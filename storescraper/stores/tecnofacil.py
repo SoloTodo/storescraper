@@ -43,12 +43,13 @@ class Tecnofacil(Store):
             done = False
 
             while True:
-                if page >= 15:
+                if page >= 20:
                     raise Exception('Page overflow')
 
                 url = 'https://www.tecnofacil.com.gt/{}?p={}'\
                     .format(category_path, page)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                print(url)
 
                 for container in soup.findAll('div', 'products'):
                     product_url = container.find('a')['href']
