@@ -26,11 +26,10 @@ class MovistarOne(Store):
         products = []
 
         plans_dict = {
-            'Plan Libre HD': 'JLT Multimedia Libre_Porta cuotas',
-            'Plan Libre SD': 'Multimedia Libre SD Remoto A_Porta cuotas',
-            'Plan XL': 'JLZ Multimedia XL_Porta cuotas',
-            'Plan L': 'JLW Multimedia L_Porta cuotas',
-            'Plan M': 'JLP Multimedia M_Porta Portabilidad cuotas',
+            'Plan Libre': 'Plus Libre Cod_OAM_Porta cuotas',
+            'Plan XL': 'Plus XL Cod_OAN_Porta cuotas',
+            'Plan L': 'Plus L Cod_OAO_Porta cuotas',
+            'Plan M': 'Plus M Cod_OAP_Porta cuotas',
         }
 
         for entry in json_data:
@@ -40,9 +39,6 @@ class MovistarOne(Store):
 
             for plan_entry in entry['planes']:
                 cell_plan_name = plans_dict[plan_entry['tipoPlan']]
-
-                if cell_plan_name == 'JLZ Multimedia XL_Porta cuotas':
-                    continue
 
                 price = Decimal(remove_words(plan_entry['pieEquipo']))
                 cell_monthly_payment = Decimal(
