@@ -59,7 +59,7 @@ class Raenco(Store):
             ('hogar/linea-blanca/electrodomesticos/microondas.html', 'Oven'),
             ('hogar/linea-blanca/hornos-empotrables.html', 'Oven'),
             ('hogar/linea-blanca/estufas.html', 'Stove'),
-            ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
+            # ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
             ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
             ('hogar/linea-blanca/estufas/de-mesa-a-gas-y-electricas.html',
              'Stove'),
