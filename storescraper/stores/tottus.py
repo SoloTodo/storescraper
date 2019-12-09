@@ -23,6 +23,7 @@ class Tottus(Store):
             'Printer',
             'Refrigerator',
             'WashingMachine',
+            'Notebook',
         ]
 
     @classmethod
@@ -32,13 +33,9 @@ class Tottus(Store):
         category_paths = [
             ['Televisores/cat2290025', ['Television'],
              'Televisores', 1],
-            # ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
-            #  'Consolas y Videojuegos', 1],
-            ['Televisores-y-videojuegos/cat2280071',
-             ['Television', 'VideoGameConsole'],
-             'Televisores y videojuegos', 0],
-            # ['Tablet/cat2360034', ['Tablet'],
-            #  'Tablet', 1],
+            ['Televisores/cat2290025',
+             ['Television'],
+             'Televisores', 1],
             ['Smartphones/cat2290023', ['Cell'],
              'Smartphones', 1],
             ['Celulares/cat2280074', ['Cell', 'Tablet'],
@@ -49,8 +46,9 @@ class Tottus(Store):
              'Lavadora', 1],
             ['Audio/cat2280075', ['StereoSystem'],
              'Audio', 1],
-            # ['Notebook-y-Tablet/cat700021', 'Tablet'],
-            # ['Impresoras/cat2280072', 'Printer'],
+            ['NoteBook-y-PC/cat660015', ['Notebook'], 'NoteBook y PC', 1],
+            ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
+             'Consolas y Videojuegos', 1],
         ]
 
         session = session_with_proxy(extra_args)
