@@ -34,7 +34,7 @@ class Max(Store):
             ('celulares/prepago', 'Cell'),
             ('celulares/prepago/tigo', 'Cell'),
             ('celulares/prepago/claro', 'Cell'),
-            ('celulares/prepago/movistar', 'Cell'),
+            # ('celulares/prepago/movistar', 'Cell'),
             ('celulares/liberados', 'Cell'),
             ('lineablanca/combos-lavadora-y-secadora', 'WashingMachine'),
             ('lineablanca/secadoras', 'WashingMachine'),
