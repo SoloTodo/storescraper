@@ -29,6 +29,7 @@ class Sistemax(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'StereoSystem',
+            'VideoGameConsole',
         ]
 
     @classmethod
@@ -51,6 +52,7 @@ class Sistemax(Store):
             ['92', 'Keyboard'],  # Teclados
             ['99_102', 'Headphones'],  # AUDIFONOS
             ['99_100', 'StereoSystem'],  # PARLANTES
+            ['144', 'VideoGameConsole'],  # CONSOLAS
         ]
 
         for category_path, local_category in category_paths:
