@@ -92,7 +92,7 @@ class DoItCenter(Store):
 
         stock_response = session.get(store_stock_endpoint)
 
-        if stock_response.status_code in [404, 500, 504]:
+        if stock_response.status_code in [404, 500, 502, 504]:
             stock_options = soup.find('form', {'id': 'product_form'})\
                 .findAll('option')
 

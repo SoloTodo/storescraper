@@ -25,7 +25,7 @@ class Syd(Store):
 
         category_paths = [
             ['/collection/macbook-pro-13', 'Notebook'],
-            ['/collection/macbook-pro-15', 'Notebook'],
+            # ['/collection/macbook-pro-15', 'Notebook'],
             ['/collection/macbook-air', 'Notebook'],
             # ['/computadoras/monitores', 'Monitor'],
             ['/collection/memorias', 'Ram'],

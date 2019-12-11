@@ -83,8 +83,12 @@ class TiendaMovistar(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        response = session.get(url)
 
-        page_source = session.get(url).text
+        if response.status_code == 404:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if not soup.find('body'):
