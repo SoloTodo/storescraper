@@ -145,8 +145,8 @@ class Corona(Store):
             # Also includes other accesories
             ['C:/9/39', None, ['Notebook', 'Tablet', 'AllInOne', 'Printer'],
              'Tecnología > Computación', 0],
-            ['C:/9/39/40', None, ['Notebook'],
-             'Tecnología > Computación > Notebook', 1],
+            # ['C:/9/39/40', None, ['Notebook'],
+            #  'Tecnología > Computación > Notebook', 1],
             ['C:/9/39/42', None, ['Tablet'],
              'Tecnología > Computación > Tablet', 1],
             # ['C:/9/39/41', None, ['AllInOne'],
