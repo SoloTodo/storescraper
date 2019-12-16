@@ -79,9 +79,10 @@ class EVision(Store):
         name = soup.find('meta', {'itemprop': 'name'})['content']
         sku = soup.find('meta', {'itemprop': 'productID'})['content']
         stock = -1
-
-        price = Decimal(soup.find('h2', {'itemprop': 'price'}).text
-                        .replace('$', '').replace(',', '').strip())
+        
+        price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})['content']
+                .replace('$', '').replace(',', '').strip())
 
         picture_urls = [soup.find('meta', {'itemprop': 'image'})['content']]
 
