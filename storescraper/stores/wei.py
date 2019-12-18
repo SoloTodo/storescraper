@@ -159,6 +159,10 @@ class Wei(Store):
 
         name = name_container.contents[-1].replace('&sol;', '').strip()
         pricing_container = soup.find('div', 'producto-precio')
+
+        if not pricing_container.find('div', 'txt18'):
+            return []
+
         offer_price = Decimal(remove_words(pricing_container.find(
             'div', 'txt18').contents[0].split('$')[1]))
 

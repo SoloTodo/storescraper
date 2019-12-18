@@ -154,8 +154,8 @@ class Corona(Store):
             ['C:/9/39/43', None, ['Printer'],
              'Tecnología > Computación > Impresoras y Multifuncionales', 1],
             # Don't include specific router for VideoGameConsole for now
-            ['C:/9/56/57/', None, ['VideoGameConsole'],
-             'Tecnología > Consolas > Consolas', 1],
+            # ['C:/9/56/57/', None, ['VideoGameConsole'],
+            #  'Tecnología > Consolas > Consolas', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
