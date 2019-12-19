@@ -16,13 +16,13 @@ class Weplay(Store):
     def categories(cls):
         return [
             'VideoGameConsole',
-            'Headphones',
-            'Mouse',
-            'Keyboard',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'StereoSystem',
+            # 'Headphones',
+            # 'Mouse',
+            # 'Keyboard',
+            # 'ExternalStorageDrive',
+            # 'UsbFlashDrive',
+            # 'MemoryCard',
+            # 'StereoSystem',
         ]
 
     @classmethod
