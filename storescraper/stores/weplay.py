@@ -89,11 +89,37 @@ class Weplay(Store):
         name = soup.find('div', 'product-name').find('h1').text.strip()
         sku = soup.find('p', 'sku').find('span').text.strip()
 
-        price = Decimal(
-            soup.find('span', 'regular-price').find('span', 'price')
-                .text.replace('$', '').replace('.', ''))
+        web_stock = True
 
-        stock = -1
+        if soup.find('p', 'out-of-stock'):
+            web_stock = False
+
+        store_stock = False
+        stock_table = soup.find('table', 'stock-sucursal')
+
+        for sucursal in stock_table.findAll('tr'):
+            if sucursal.find('span', 'disponibleLimitado') or \
+                    sucursal.find('span', 'disponibleCritico') or \
+                    sucursal.find('span', 'disponible'):
+                store_stock = True
+
+        if store_stock or web_stock:
+            stock = -1
+        else:
+            stock = 0
+
+        price_container = soup.find('span', 'regular-price')
+
+        if not price_container:
+            if not web_stock:
+                price_container = soup.find('p', 'old-price')
+            else:
+                price_container = soup.find('p', 'special-price')
+
+        price = Decimal(
+            price_container.find('span', 'price')
+            .text.replace('$', '').replace('.', ''))
+
         picture_urls = [soup.find('p', 'product-image').find('img')['src']]
         description = html_to_markdown(
             str(soup.find('div', 'short-description')))

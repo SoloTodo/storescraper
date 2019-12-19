@@ -92,7 +92,7 @@ class Vivelo(Store):
         if sku_stocks_matches:
             color_id_to_part_number_and_stock = {}
             for match in sku_stocks_matches:
-                json_match = json.loads(match)
+                json_match = json.loads(match.replace('\t', ''))
                 stock = int(json_match['stock'])
                 if stock == 1:
                     stock = -1
