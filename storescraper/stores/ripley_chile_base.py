@@ -86,6 +86,8 @@ class RipleyChileBase(Store):
             ['tecno/television', ['Television'],
              'Tecno > Televisión', 1],
 
+            ['electro/refrigeracion', ['Refrigerator'],
+             'Electro > Refrigeración', 1],
             ['electro/refrigeracion/side-by-side', ['Refrigerator'],
              'Electro > Refrigeración > Side by Side', 1],
             ['electro/refrigeracion/refrigeradores', ['Refrigerator'],
