@@ -20,23 +20,27 @@ class JumboStore(Store):
             'Oven',
             'VacuumCleaner',
             'StereoSystem',
-            'Headphones'
+            'Headphones',
+            'Wearable',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('electro-y-tecnologia/tecnologia/celulares', 'Cell'),
             ('electro-y-tecnologia/electronica/televisores', 'Television'),
-            ('electro-y-tecnologia/electrohogar/refrigeradores',
-             'Refrigerator'),
             ('electro-y-tecnologia/electrohogar/lavadoras-y-secadoras',
              'WashingMachine'),
-            ('electro-y-tecnologia/electrohogar/cocina-y-microondas', 'Oven'),
-            ('electro-y-tecnologia/electrodomesticos/electro-cocina', 'Oven'),
-            ('electro-y-tecnologia/electrodomesticos/aspiradoras',
-             'VacuumCleaner'),
-            ('electro-y-tecnologia/electronica/parlantes', 'StereoSystem')
+            ('electro-y-tecnologia/tecnologia/smartwatch', 'Wearable'),
+            # ('electro-y-tecnologia/tecnologia/celulares', 'Cell'),
+            # ('electro-y-tecnologia/electrohogar/refrigeradores',
+            #  'Refrigerator'),
+            # ('electro-y-tecnologia/electrohogar/cocina-y-microondas',
+            # 'Oven'),
+            # ('electro-y-tecnologia/electrodomesticos/electro-cocina',
+            # 'Oven'),
+            # ('electro-y-tecnologia/electrodomesticos/aspiradoras',
+            #  'VacuumCleaner'),
+            # ('electro-y-tecnologia/electronica/parlantes', 'StereoSystem')
         ]
 
         product_urls = []

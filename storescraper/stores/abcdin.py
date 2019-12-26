@@ -131,8 +131,8 @@ class AbcDin(Store):
              'Línea Blanca > Climatización > Mademsa', 1],
             ['33053', ['WaterHeater'],
              'Línea Blanca > Climatización > Splendid', 1],
-            ['47051', ['WaterHeater'],
-             'Línea Blanca > Climatización > Neckar', 1],
+            # ['47051', ['WaterHeater'],
+            #  'Línea Blanca > Climatización > Neckar', 1],
             ['56052', ['WaterHeater'],
              'Línea Blanca > Climatización > Rheem', 1],
             # Contains all electrodomesticos
