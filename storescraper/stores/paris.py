@@ -325,7 +325,13 @@ class Paris(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h4', {'itemprop': 'name'}).text.strip()
+        name = soup.find('h4', {'itemprop': 'name'})
+
+        if not name:
+            return []
+
+        name = name.text.strip()
+
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
         offer_price_container = soup.find('div', 'cencosud-price')
 

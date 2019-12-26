@@ -120,11 +120,11 @@ class Falabella(Store):
             ['cat3025', ['VacuumCleaner'],
              'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
             ['cat4060', ['WashingMachine'],
-             'Home > Lavado-Lavadoras', 1],
+             'Home > Electrohogar-Lavado > Lavadoras', 1],
             ['cat1700002', ['WashingMachine'],
-             'Home > Lavado-Lavadoras-Secadoras', 1],
+             'Home > Electrohogar-Lavado > Lavadoras-Secadoras', 1],
             ['cat4088', ['WashingMachine'],
-             'Home > Lavado-Secadoras', 1],
+             'Home > Electrohogar-Lavado > Secadoras', 1],
             ['cat1280018', ['Cell'],
              'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
             ['cat720161', ['Cell'],
@@ -250,7 +250,7 @@ class Falabella(Store):
 
                 if len(discovered_urls) == threshold:
                     return discovered_urls
-                
+
             page += 1
 
         return discovered_urls
