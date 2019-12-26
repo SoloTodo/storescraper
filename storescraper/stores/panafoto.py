@@ -86,8 +86,8 @@ class Panafoto(Store):
              '/// Monitores"]', 'Monitor'),
             ('["categories.level3:Categorías /// Cómputo /// Proyectores '
              '/// Proyectores"]', 'Projector'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Hornos a gas"]', 'Oven'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Hornos a gas"]', 'Oven'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
             #  '/// Hornos eléctricos"]', 'Oven'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
