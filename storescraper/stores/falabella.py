@@ -233,7 +233,6 @@ class Falabella(Store):
                 raise Exception('Page overflow ' + keyword)
 
             search_url = base_url.format(keyword, page)
-
             res = session.get(search_url, timeout=None)
 
             if res.status_code == 500:
@@ -241,15 +240,17 @@ class Falabella(Store):
 
             soup = BeautifulSoup(res.text, 'html.parser')
 
-            products_containers = soup.find_all('div', 'pod-4_GRID')
+            script = soup.find('script', {'id': '__NEXT_DATA__'})
+            json_data = json.loads(script.text)
 
-            for product_container in products_containers:
+            for product_data in json_data['props']['pageProps']['results']:
                 product_url = 'https://www.falabella.com{}'.format(
-                    product_container.find('a')['href'])
+                    product_data['url'])
                 discovered_urls.append(product_url)
 
                 if len(discovered_urls) == threshold:
                     return discovered_urls
+                
             page += 1
 
         return discovered_urls
