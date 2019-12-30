@@ -93,9 +93,9 @@ class Hites(Store):
             ['electro-hogar/climatizacion',
              ['AirConditioner', 'SpaceHeater', 'WaterHeater'],
              'Inicio > Electro Hogar > Climatización', 0],
-            ['electro-hogar/climatizacion/aire-acondicionado',
-             ['AirConditioner'],
-             'Inicio > Electro Hogar > Climatizacioń > Aire Acondicionado', 1],
+            ['electro-hogar/climatizacion/enfriadores-y-aire-acondicionado',
+             ['AirConditioner'], 'Inicio > Electro Hogar > Climatizacioń >  '
+                                 'Enfriadores y Aire Acondicionado', 1],
             # ['electro-hogar/climatizacion/estufas-a-parafinas',
             #  ['SpaceHeater'],
             #  'Inicio > Electro Hogar > Climatizacioń > Estufas a Parafinas',
