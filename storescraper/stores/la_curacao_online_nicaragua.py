@@ -9,7 +9,7 @@ class LaCuracaoOnlineNicaragua(LaCuracaoOnline):
         ('electronica/celulares.html', 'Cell'),
         ('audio-y-video/televisores.html', 'Television'),
         ('audio-y-video/equipos-de-sonido.html', 'StereoSystem'),
-        ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),
+        # ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),
         ('hogar/aires-acondicionados.html', 'AirConditioner'),
         # ('electrodomesticos/hornillas.html', 'Stove'),
         ('refrigeracion/refrigeradoras.html', 'Refrigerator'),
