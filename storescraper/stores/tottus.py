@@ -47,8 +47,8 @@ class Tottus(Store):
             ['Audio/cat2280075', ['StereoSystem'],
              'Audio', 1],
             ['NoteBook-y-PC/cat660015', ['Notebook'], 'NoteBook y PC', 1],
-            ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
-             'Consolas y Videojuegos', 1],
+            # ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
+            #  'Consolas y Videojuegos', 1],
         ]
 
         session = session_with_proxy(extra_args)
