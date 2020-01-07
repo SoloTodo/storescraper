@@ -244,8 +244,7 @@ class Falabella(Store):
             json_data = json.loads(script.text)
 
             for product_data in json_data['props']['pageProps']['results']:
-                product_url = 'https://www.falabella.com{}'.format(
-                    product_data['url'])
+                product_url = product_data['url']
                 discovered_urls.append(product_url)
 
                 if len(discovered_urls) == threshold:
@@ -281,8 +280,7 @@ class Falabella(Store):
                 break
 
             for result in res['results']:
-                product_url = 'https://www.falabella.com{}'\
-                    .format(result['url'])
+                product_url = result['url']
 
                 discovered_urls.append(product_url)
 

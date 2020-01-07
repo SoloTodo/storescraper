@@ -41,7 +41,7 @@ class SamsungShop(Store):
             ('linea-blanca/microondas', 'Oven'),
             ('linea-blanca/aspiradoras', 'VacuumCleaner'),
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
-            ('linea-blanca/lavavajillas', 'DishWasher'),
+            # ('linea-blanca/lavavajillas', 'DishWasher'),
             ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
 

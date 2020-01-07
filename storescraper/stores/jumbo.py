@@ -1,5 +1,6 @@
 import json
 import re
+from collections import defaultdict
 import urllib
 
 from bs4 import BeautifulSoup
@@ -29,27 +30,35 @@ class Jumbo(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['C:/298/302/300/', 'Cell'],
-            ['C:/298/302/308/', 'MemoryCard'],
-            ['C:/298/302/310/', 'Headphones'],
-            ['C:/298/302/309/', 'Mouse'],
-            ['C:/298/302/304/', 'Mouse'],
-            ['C:/298/302/305/', 'Printer'],
-            ['C:/298/303/311/', 'StereoSystem'],
-            ['C:/298/303/312/', 'StereoSystem'],
-            ['C:/298/303/431/', 'Television'],
-            ['C:/298/320/444/', 'Oven'],
-            ['C:/298/320/334/', 'WashingMachine'],
-            ['C:/298/320/333/', 'Refrigerator'],
+            ['electro-y-tecnologia/tecnologia/celulares', ['Cell'],
+             'Electro y Tecnología > Teconología > Celulares', 1],
+            ['electro-y-tecnologia/tecnologia/almacenamiento', ['MemoryCard'],
+             'Electro y Tecnología > Tecnología > Almacenamiento', 1],
+            ['electro-y-tecnologia/tecnologia/audifonos', ['Headphones'],
+             'Electro y Tecnología > Tecnología > Audífonos', 1],
+            ['electro-y-tecnologia/tecnologia/impresoras', ['Printer'],
+             'Electro y Tecnología > Tecnología > Impresoras', 1],
+            ['electro-y-tecnologia/electronica/equipos-de-musica',
+             ['StereoSystem'],
+             'Electro y Tecnología > Electrónica > Equipos de Música', 1],
+            ['electro-y-tecnologia/electronica/parlantes', ['StereoSystem'],
+             'Electro y Tecnología > Electrónica > Parlantes', 1],
+            ['electro-y-tecnologia/electronica/televisores', ['Television'],
+             'Electro y Tecnología > Electrónica > Televisores', 1],
+            ['electro-y-tecnologia/electrohogar/cocina-y-microondas', ['Oven'],
+             'Electro y Tecnología > Electrohogar > Cocina y Microondas', 1],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
+        product_entries = defaultdict(lambda: [])
 
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
+        for url_extension, local_categories, section_name, category_weight in \
+                url_extensions:
+
+            if category not in local_categories:
                 continue
 
             page = 1
@@ -58,29 +67,28 @@ class Jumbo(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + url_extension)
 
-                url_webpage = 'https://nuevo.jumbo.cl/buscapagina?sl=3a356ef' \
-                              '2-a2d4-4f1b-865f-c79b6fcf0f2a&PS=18&cc=18&sm=' \
-                              '0&PageNumber={}&fq={}'.format(
-                                page,
-                                urllib.parse.quote(url_extension, safe=''))
+                api_url = 'https://api.smdigital.cl:8443/v0/cl/jumbo/vtex/' \
+                          'front/prod/proxy/api/v2/products/search/{}?page={}'\
+                    .format(url_extension, page)
 
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html5lib')
+                json_data = json.loads(session.get(api_url).text)
 
-                product_containers = soup.findAll('div', 'product-item')
-
-                if not product_containers:
-                    if page == 0:
-                        raise Exception('Empty category: ' + url_webpage)
+                if not json_data:
                     break
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+                for idx, product in enumerate(json_data):
+                    product_url = 'https://www.jumbo.cl/{}/p'\
+                        .format(product['linkText'])
+
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': 40 * (page-1) + idx + 1
+                    })
 
                 page += 1
 
-        return product_urls
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -89,57 +97,41 @@ class Jumbo(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
+        raw_data = re.search(r'renderData = ([\S\s]+?);',
                                  page_source).groups()[0]
-        pricing_data = json.loads(pricing_data)
 
-        skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
-                              page_source).groups()[0]
-        skus_data = json.loads(skus_data)
-        name = '{} {}'.format(pricing_data['productBrandName'],
-                              pricing_data['productName'])
-        price = Decimal(pricing_data['productPriceTo'])
-        sku = pricing_data['productReferenceId']
+        data = json.loads(json.loads(raw_data))
+        product_data = data['pdp']['product'][0]['items'][0]
 
-        soup = BeautifulSoup(page_source, 'html.parser')
+        sku = product_data['referenceId'][0]['Value']
+        name = product_data['name']
+        price = Decimal(product_data['sellers'][0]['commertialOffer']['Price'])
 
+        images = product_data['images']
         picture_urls = []
 
-        for tag in soup.findAll('a', {'id': 'botaoZoom'}):
-            picture_url = tag['zoom'] or tag['rel'][0]
-            picture_urls.append(picture_url)
+        for image in images:
+            picture_urls.append(image['imageUrl'])
 
-        products = []
+        description = data['pdp']['product'][0]['description']
 
-        if 'productEans' in pricing_data:
-            ean = pricing_data['productEans'][0]
-            if len(ean) == 12:
-                ean = '0' + ean
-            if not check_ean13(ean):
-                ean = None
-        else:
-            ean = None
+        stock = -1
 
-        for sku_data in skus_data['skus']:
-            key = str(sku_data['sku'])
-            stock = pricing_data['skuStocks'][key]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                ean=ean,
-                description=None,
-                picture_urls=picture_urls
-            )
-            products.append(p)
+        )
 
-        return products
+        return [p]

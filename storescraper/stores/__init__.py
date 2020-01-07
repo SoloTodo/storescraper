@@ -127,6 +127,7 @@ from .net_now import NetNow
 from .new_game import NewGame
 from .olier import Olier
 from .omnisport import Omnisport
+from .orbital_store import OrbitalStore
 from .office_depot import OfficeDepot
 from .office_max_mexico import OfficeMaxMexico
 from .ortiz_y_ortega import OrtizYOrtega
