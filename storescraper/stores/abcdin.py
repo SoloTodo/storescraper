@@ -461,6 +461,9 @@ class AbcDin(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
+        has_virtual_assistant = \
+            'cdn.livechatinc.com/tracking.js' in page_content
+
         product = Product(
             name,
             cls.__name__,
@@ -477,7 +480,8 @@ class AbcDin(Store):
             picture_urls=picture_urls,
             video_urls=video_urls,
             flixmedia_id=flixmedia_id,
-            condition=condition
+            condition=condition,
+            has_virtual_assistant=has_virtual_assistant
         )
 
         return [product]
