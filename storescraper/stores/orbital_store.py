@@ -14,6 +14,7 @@ class OrbitalStore(Store):
     @classmethod
     def categories(cls):
         return [
+            'ExternalStorageDrive',
             'StorageDrive',
             'SolidStateDrive',
             'PowerSupply',
@@ -23,10 +24,12 @@ class OrbitalStore(Store):
             'Processor',
             'VideoCard',
             'Motherboard',
+            'CpuCooler'
             'Mouse',
             'Keyboard',
-            'KeyboardMouseCombo',
             'Headphones',
+            'Notebook',
+            'Printer'
         ]
 
     @classmethod
@@ -34,9 +37,26 @@ class OrbitalStore(Store):
         url_base = 'https://www.orbitalstore.mx/{}'
 
         url_extensions = [
+            ['accesorios/disco-duro-externo.html', 'ExternalStorageDrive'],
             ['almacenamiento/hdd-pc.html', 'StorageDrive'],
             ['almacenamiento/ssd.html', 'SolidStateDrive'],
-            ['desktop-pc/componentes/fuente-de-poder.html', 'PowerSupply']
+            ['desktop-pc/componentes/fuente-de-poder.html', 'PowerSupply'],
+            ['desktop-pc/componentes/gabinetes-pc.html', 'ComputerCase'],
+            ['desktop-pc/componentes/memoria-ram.html', 'Ram'],
+            ['monitores.html', 'Monitor'],
+            ['desktop-pc/componentes/procesadores.html', 'Processor'],
+            ['desktop-pc/componentes/tarjetas-de-video.html', 'VideoCard'],
+            ['desktop-pc/componentes/motherboards.html', 'Mogherboard'],
+            ['desktop-pc/componentes/efriamiento-y-ventilacion.html',
+             'CpuCooler'],
+            ['perifericos/mouse.html', 'Mouse'],
+            ['perifericos/teclados.html', 'Keyboard'],
+            ['perifericos/audio/audifonos.html', 'Headphones'],
+            ['laptop/equipos-de-linea.html', 'Notebook'],
+            ['perifericos/impresion-y-escaners/impresion-laser.html',
+             'Printer'],
+            ['perifericos/impresion-y-escaners/'
+             'impresion-inyeccion-de-tinta.html', 'Printer']
         ]
 
         product_urls = []
@@ -51,7 +71,7 @@ class OrbitalStore(Store):
             done = False
 
             while True:
-                if page >= 10:
+                if page >= 15:
                     raise Exception('Page overflow: ' + category_url)
 
                 url = category_url + '?limit=30&p={}'.format(page)

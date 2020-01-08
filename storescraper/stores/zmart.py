@@ -19,6 +19,7 @@ class Zmart(Store):
             'KeyboardMouseCombo',
             'StereoSystem',
             'Headphones',
+            'Notebook'
         ]
 
     @classmethod
@@ -30,6 +31,7 @@ class Zmart(Store):
             ['ConsolasXBOXONE', 'VideoGameConsole'],
             ['ConsolasSwitch', 'VideoGameConsole'],
             ['Consolas3DS', 'VideoGameConsole'],
+            ['Asus', 'Notebook'],
             [37, 'Mouse'],
             [38, 'Keyboard'],
             [45, 'StereoSystem'],
@@ -69,6 +71,7 @@ class Zmart(Store):
                 link_containers = soup.findAll('div', 'BoxProductoS2')
                 link_containers += soup.findAll('div', 'ProdBox240Media')
                 link_containers += soup.findAll('div', 'ProdBox380_520')
+                link_containers += soup.findAll('div', 'BoxProductoNotebook')
 
                 if not link_containers:
                     raise Exception('Empty category: ' + category_url)

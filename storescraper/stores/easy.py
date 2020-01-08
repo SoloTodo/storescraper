@@ -93,9 +93,15 @@ class Easy(Store):
             # ['termoventiladores', 'SpaceHeater'],
 
 
-            ['aire-acondicionado-y-enfriadores-de-aire', ['AirConditioner'],
-             'Inicio > Electrohogar > Climatización > '
-             'Aire acondicionado y Enfriadores de aire', 1],
+            # ['aire-acondicionado-y-enfriadores-de-aire', ['AirConditioner'],
+            #  'Inicio > Electrohogar > Climatización > '
+            #  'Aire acondicionado y Enfriadores de aire', 1],
+            ['aire-acondicionado-portatil-ventilacion', ['AirConditioner'],
+             'Inicio > Electrohogar > Especial Ventilación > '
+             'Aire Acondicionado Portatil', 1],
+            ['aire-acondicionado-split-ventilacion', ['AirConditioner'],
+             'Inicio > Electrohogar > Especial Ventilación > '
+             'Aire Acondicionado Split', 1],
 
             ['parlantes', ['StereoSystem'],
              'Inicio > Electrohogar > Tecnología > Parlantes', 1],
