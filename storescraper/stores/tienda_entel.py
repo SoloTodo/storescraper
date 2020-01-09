@@ -33,8 +33,8 @@ class TiendaEntel(Store):
 
         for record in records:
             cell_id = record['attributes']['productId'][0]
-            cell_url = 'https://miportal.entel.cl/producto/Equipos/' + \
-                       cell_id
+            cell_url = 'https://miportal.entel.cl/personas/producto/Equipos/' \
+                       + cell_id
             product_urls.append(cell_url)
 
         return product_urls
@@ -51,7 +51,8 @@ class TiendaEntel(Store):
         products = []
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        raw_json = soup.find('var', {'id': 'renderData'}).string.strip()
+        raw_json = soup.find(
+            'div', {'id': 'productDetail'}).find('script').string
 
         if not raw_json:
             if retries:
@@ -80,12 +81,18 @@ class TiendaEntel(Store):
 
             sku_id = sku['skuId']
 
-            pictures_container = soup.findAll('div', {'name': sku_id})[2]
+            pictures_container = []
+
+            for view in json_data['skuViews']:
+                if view['skuId'] == sku_id:
+                    pictures_container = view['images']
+                    break
 
             picture_urls = []
-            for container in pictures_container.findAll('img'):
+
+            for container in pictures_container:
                 picture_urls.append('https://miportal.entel.cl' +
-                                    container['src'].replace(' ', '%20'))
+                                    container['heroImage'])
 
             product = Product(
                 sku['skuName'],

@@ -185,8 +185,8 @@ class Hites(Store):
              'Inicio > Celulares > Smartphone > Smartphone Liberados', 1],
             # ['celulares/smartphone/celulares-basicos', ['Cell'],
             #  'Inicio > Celulares > Smartphone > Celulares Basicos', 1],
-            ['celulares/smartphone/smartwatch', ['Wearable'],
-             'Inicio > Celulares > Smartphone > Smartwatch', 1],
+            ['celulares/accesorios/wearables', ['Wearable'],
+             'Inicio > Celulares > Accesorios > Wearables', 1],
 
             ['electro-hogar/electrodomesticos/aspiradoras-y-enceradoras',
              ['VacuumCleaner'],

@@ -15,5 +15,5 @@ class LaCuracaoOnlineNicaragua(LaCuracaoOnline):
         ('refrigeracion/refrigeradoras.html', 'Refrigerator'),
         ('refrigeracion/congeladores.html', 'Refrigerator'),
         ('lavadoras-y-secadoras/lavadoras.html', 'WashingMachine'),
-        ('cocina/microondas.html', 'Oven'),
+        # ('cocina/microondas.html', 'Oven'),
     ]
