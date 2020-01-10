@@ -370,16 +370,25 @@ class Falabella(Store):
 
             prices = {e['type']: e for e in model['prices']}
 
-            normal_price_key = 'internetPrice'
-            offer_price_key = 'cmrPrice'
+            normal_price_keys = ['internetPrice', 'normalPrice']
+            offer_price_keys = ['cmrPrice', 'eventPrice']
 
-            normal_price = Decimal(remove_words(
-                prices[normal_price_key]['price'][0]))
+            normal_price = None
+            offer_price = None
 
-            if offer_price_key in prices:
-                offer_price = Decimal(remove_words(
-                    prices[offer_price_key]['price'][0]))
-            else:
+            for key in normal_price_keys:
+                if key not in prices:
+                    continue
+                normal_price = Decimal(remove_words(prices[key]['price'][0]))
+                break
+
+            for key in offer_price_keys:
+                if key not in prices:
+                    continue
+                offer_price = Decimal(remove_words(prices[key]['price'][0]))
+                break
+
+            if not offer_price:
                 offer_price = normal_price
 
             stock = 0
