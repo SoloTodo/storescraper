@@ -330,7 +330,7 @@ class Falabella(Store):
 
                 if match:
                     video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0]))
+                                      .format(match.groups()[0]).strip())
 
         slug = product_data['slug']
         publication_id = product_data['id']
