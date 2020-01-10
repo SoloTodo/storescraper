@@ -59,8 +59,8 @@ class CyberPuerta(Store):
             ['Computo-Hardware/Discos-Duros-SSD-NAS/'
              'Discos-Duros-para-Videovigilancia', 'StorageDrive'],
             ['Computo-Hardware/Discos-Duros-SSD-NAS/SSD',
-             'StorageDrive'],
-            ['Computo-Hardware/Componentes/Tarjetas-Madre', 'MotherBoard'],
+             'SolidStateDrive'],
+            ['Computo-Hardware/Componentes/Tarjetas-Madre', 'Motherboard'],
             ['Computo-Hardware/Componentes/Procesadores/Procesadores-para-PC',
              'Processor'],
             ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
@@ -105,7 +105,7 @@ class CyberPuerta(Store):
         ]
 
         base_url = 'https://www.cyberpuerta.mx/{}/'
-        filter = 'Filtro/Estatus/En-existencia'
+        filter = 'Filtro/Estatus/En-existencia/EnviadoDesde/MEX'
 
         product_urls = []
         session = session_with_proxy(extra_args)

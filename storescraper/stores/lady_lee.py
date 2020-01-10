@@ -28,7 +28,7 @@ class LadyLee(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('televisores', '217', 'Television'),
-            ('mini-componentes', '1066', 'StereoSystem'),
+            # ('mini-componentes', '1066', 'StereoSystem'),
             ('celulares', '218', 'Cell'),
             ('refrigeradoras', '4551', 'Refrigerator'),
             ('microondas', '1198', 'Oven'),
