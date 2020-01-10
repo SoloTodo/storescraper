@@ -370,6 +370,9 @@ class Falabella(Store):
 
             prices = {e['type']: e for e in model['prices']}
 
+            if not prices:
+                continue
+
             normal_price_keys = ['internetPrice', 'normalPrice']
             offer_price_keys = ['cmrPrice', 'eventPrice']
 
