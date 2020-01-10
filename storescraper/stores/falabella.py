@@ -8,6 +8,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
+from html import unescape
 
 from selenium.common.exceptions import NoSuchElementException
 
@@ -256,6 +257,7 @@ class Falabella(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         return cls._products_for_url(url, category=category,
                                      extra_args=extra_args)
 
@@ -289,49 +291,51 @@ class Falabella(Store):
         return discovered_urls
 
     @classmethod
-    def _products_for_url(cls, url, retries=5, category=None, extra_args=None):
+    def _products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         content = session.get(url, timeout=30).text.replace('&#10;', '')
 
         soup = BeautifulSoup(content, 'html.parser')
 
-        panels = ['fb-product-information__product-information-tab',
-                  'fb-product-information__specification']
+        product_data = json.loads(
+            soup.find('script', {'id': '__NEXT_DATA__'}).text)[
+            'props']['pageProps']['productData']
 
         description = ''
+
+        specification = soup.find('div', 'productInfoContainer')
+        long_description = product_data['longDescription']
+
+        if long_description:
+            description_soup = BeautifulSoup(
+                unescape(long_description), 'html.parser')
+        else:
+            description_soup = None
+
+        panels = [specification, description_soup]
         video_urls = []
 
-        for panel_class in panels:
-            panel = soup.find('div', panel_class)
+        for panel in panels:
             if not panel:
                 continue
 
-            description += html_to_markdown(str(panel)) + '\n\n'
+            description += html_to_markdown(str(panel))
+
             for iframe in panel.findAll('iframe'):
-                match = re.search(r'//www.youtube.com/embed/(.+)\?',
-                                  iframe['src'])
+                match = re.search(
+                    r'//www.youtube.com/embed/(.+)\?', iframe['src'])
+                if not match:
+                    match = re.search(
+                        r'//www.youtube.com/embed/(.+)', iframe['src'])
+
                 if match:
                     video_urls.append('https://www.youtube.com/watch?v={}'
-                                      ''.format(match.groups()[0]))
+                                      .format(match.groups()[0]))
 
-        raw_json_data = re.search('var fbra_browseMainProductConfig = (.+);\r',
-                                  content)
+        slug = product_data['slug']
+        publication_id = product_data['id']
+        global_id = product_data['id']
 
-        if not raw_json_data:
-            if retries:
-                time.sleep(5)
-                return cls._products_for_url(
-                    url, retries=retries-1, category=category,
-                    extra_args=extra_args)
-            else:
-                return []
-
-        product_data = json.loads(raw_json_data.groups()[0])
-        slug = product_data['state']['product']['displayName'].replace(
-            ' ', '-')
-        publication_id = product_data['state']['product']['id']
-        global_id = product_data['state']['product']['id']
-        media_asset_url = product_data['endPoints']['mediaAssetUrl']['path']
         pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
                                 'Falabella/{}?req=set,json'.format(global_id)
         pictures_response = session.get(pictures_resource_url, timeout=30).text
@@ -346,56 +350,50 @@ class Falabella(Store):
             picture_entries = [picture_entries]
 
         for picture_entry in picture_entries:
-            picture_url = 'https:{}{}?scl=1.0'.format(media_asset_url,
-                                                      picture_entry['i']['n'])
+            picture_url = 'https://falabella.scene7.com/is/image/{}?' \
+                          'wid=1500&hei=1500&qlt=70'.format(
+                           picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
-        brand = product_data['state']['product']['brand'] or 'Genérico'
-        base_name = '{} {}'.format(
-            brand, product_data['state']['product']['displayName'])
+        brand = product_data['brandName'] or 'Genérico'
+        base_name = '{} {}'.format(brand, product_data['name'])
 
         products = []
 
-        if 'skus' not in product_data['state']['product']:
+        if 'variants' not in product_data:
             return []
 
-        for model in product_data['state']['product']['skus']:
-            if 'stockAvailable' not in model:
-                continue
-
-            sku = model['skuId']
+        for model in product_data['variants']:
+            sku = model['id']
             sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
                       '{}'.format(publication_id, slug, sku)
 
-            prices = {e['type']: e for e in model['price']}
+            prices = {e['type']: e for e in model['prices']}
 
-            if 3 in prices:
-                normal_price_key = 3
-            else:
-                normal_price_key = 2
-
-            lookup_field = 'originalPrice'
-            if lookup_field not in prices[normal_price_key]:
-                lookup_field = 'formattedLowestPrice'
+            normal_price_key = 'internetPrice'
+            offer_price_key = 'cmrPrice'
 
             normal_price = Decimal(remove_words(
-                prices[normal_price_key][lookup_field]))
+                prices[normal_price_key]['price'][0]))
 
-            if 1 in prices:
-                lookup_field = 'originalPrice'
-                if lookup_field not in prices[1]:
-                    lookup_field = 'formattedLowestPrice'
-                offer_price = Decimal(
-                    remove_words(prices[1][lookup_field]))
+            if offer_price_key in prices:
+                offer_price = Decimal(remove_words(
+                    prices[offer_price_key]['price'][0]))
             else:
                 offer_price = normal_price
 
-            stock = model['stockAvailable']
+            stock = 0
+            availabilities = model['availability']
+
+            for availability in availabilities:
+                if availability['shippingOptionType'] == 'All':
+                    stock = availability['quantity']
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
                           'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
                 .format(sku)
+
             review_data = json.loads(session.get(reviews_url).text)
             review_count = review_data['TotalResults']
 
