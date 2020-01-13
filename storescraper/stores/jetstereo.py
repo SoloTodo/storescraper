@@ -89,8 +89,6 @@ class Jetstereo(Store):
 
         if soup.find('div', 'share-box').find('a', 'add-to-cart-btn'):
             stock = -1
-        elif soup.find('span', 'text-available-stores').text.strip() != '':
-            stock = -1
         else:
             stock = 0
 

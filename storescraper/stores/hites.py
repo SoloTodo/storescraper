@@ -462,8 +462,9 @@ class Hites(Store):
                     # banner_container = driver \
                     #     .find_element_by_class_name('owl-stage-outer')
 
-                    controls = driver\
-                        .find_elements_by_class_name('slider-controls__dots')
+                    controls = driver.find_element_by_class_name(
+                        'carousel__controls').find_elements_by_class_name(
+                        'slider-controls__dots')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
