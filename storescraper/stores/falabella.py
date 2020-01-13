@@ -330,7 +330,7 @@ class Falabella(Store):
 
                 if match:
                     video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0]))
+                                      .format(match.groups()[0]).strip())
 
         slug = product_data['slug']
         publication_id = product_data['id']
@@ -369,6 +369,9 @@ class Falabella(Store):
                       '{}'.format(publication_id, slug, sku)
 
             prices = {e['type']: e for e in model['prices']}
+
+            if not prices:
+                continue
 
             normal_price_keys = ['internetPrice', 'normalPrice']
             offer_price_keys = ['cmrPrice', 'eventPrice']
