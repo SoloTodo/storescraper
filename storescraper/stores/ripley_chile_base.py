@@ -286,12 +286,16 @@ class RipleyChileBase(Store):
 
         description += '\n\n'
 
+        condition = 'https://schema.org/NewCondition'
+
         if 'reacondicionado' in description.lower() or \
                 'reacondicionado' in name.lower() or \
                 'reacondicionado' in short_description.lower():
             condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
+
+        if soup.find('img', {'src': '//home.ripley.cl/promo-badges/'
+                                    'reacondicionado.png'}):
+            condition = 'https://schema.org/RefurbishedCondition'
 
         picture_urls = []
         for path in specs_json['images']:
