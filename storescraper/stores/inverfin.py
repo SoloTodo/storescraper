@@ -28,25 +28,23 @@ class Inverfin(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['tv-y-audio/televisores', 'Television'],
-            ['tv-y-audio/reproductores', 'OpticalDiskPlayer'],
-            ['tv-y-audio/equipos-de-sonido', 'StereoSystem'],
-            ['tv-y-audio/parlante-portatil', 'StereoSystem'],
-            ['tecnologia/celulares', 'Cell'],
-            ['hogar/hornos', 'Oven'],
-            ['hogar/microondas', 'Oven'],
-            ['hogar/cocinas', 'Stove'],
-            ['hogar/anafes', 'Stove'],
-            ['hogar/lavarropas', 'WashingMachine'],
-            ['hogar/secarropas', 'WashingMacihne'],
-            ['hogar/lavasecarropas', 'WashingMachine'],
-            ['tv-y-audio/auriculares', 'Headphones'],
-            ['hogar/aire-acondicionado', 'AirConditioner']
+            ['collections/televisores', 'Television'],
+            ['collections/equipos-de-sonido', 'StereoSystem'],
+            ['collections/smartphones', 'Cell'],
+            ['collections/hornos', 'Oven'],
+            ['collections/microondas', 'Oven'],
+            ['collections/cocinas', 'Stove'],
+            ['collections/anafes', 'Stove'],
+            ['collections/lavarropas', 'WashingMachine'],
+            ['collections/secarropas', 'WashingMacihne'],
+            ['collections/lavasecarropas', 'WashingMachine'],
+            ['collections/audifonos', 'Headphones'],
+            ['collections/acondicionadores-de-aire', 'AirConditioner']
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.inverfin.com.py/{}?pagina={}'
+        base_url = 'https://www.inverfin.com.py/{}?page={}'
 
         for c in category_paths:
             category_path, local_category = c
@@ -63,9 +61,11 @@ class Inverfin(Store):
                     raise Exception('Page overflow' + url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('div', 'item')
+                product_containers = soup.findAll('div', 'product-item')
 
                 if not product_containers:
+                    if page ==1:
+                        raise Exception('Empty category: ' + url)
                     break
 
                 for product in product_containers:
@@ -83,24 +83,22 @@ class Inverfin(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h2', 'product-name').text.strip()
-        sku = soup.find('h2', 'product-name').find('small').text.strip()
-        name = name.replace(sku, '').strip()
+        name = soup.find('h1', 'product-meta__title').text.strip()
+        sku = soup.find('span', 'product-meta__sku-number').text.strip()
         stock = -1
 
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
         price = Decimal(
-            soup.find('span', 'main-price').find('span', 'deadline-price')
-                .text.replace('Gs.', '').replace('.', '').strip())*6
+            soup.find('span', {'id': 'cash-price'}).text.replace('Gs.', '')
+                .replace('.', '').strip())
 
-        pictures = soup.findAll('img', 'zoomable-img')
+        pictures = soup.findAll('img', 'product-gallery__image')
         picture_urls = []
 
         for picture in pictures:
-            picture_url = 'https://inverfin.com.py{}'\
-                .format(picture['data-zoom-image'])
+            picture_url = 'https:' + picture['data-zoom']
             picture_urls.append(picture_url)
 
         return [Product(

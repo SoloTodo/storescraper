@@ -41,9 +41,8 @@ class TiendaToyotomi(Store):
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                category_url = 'https://toyotomi.cl/' \
-                               'product-category/{}/page/{}'\
-                    .format(category_path, page)
+                category_url = 'https://toyotomi.cl/product-category/{}/' \
+                               'page/{}'.format(category_path, page)
 
                 soup = BeautifulSoup(
                     session.get(category_url, verify=False).text,
@@ -78,8 +77,8 @@ class TiendaToyotomi(Store):
 
         price = Decimal(json_data['offers'][0]['price'])
 
-        if json_data['offers'][0]['availability'] == \
-                'https://schema.org/InStock':
+        if json_data['offers'][0]['availability'] in \
+                ['https://schema.org/InStock', 'http://schema.org/InStock']:
             stock = -1
         else:
             stock = 0

@@ -26,7 +26,7 @@ class SonyStore(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['televisores-y-teatro-en-casa/televisores', 'Television'],
-            ['celulares-y-tablets/smartphones-xperia', 'Cell'],
+            # ['celulares-y-tablets/smartphones-xperia', 'Cell'],
             ['camaras/cyber-shot', 'Camera'],
             ['audio/sistemas-de-audio', 'StereoSystem'],
             ['televisores-y-teatro-en-casa/reproductores-de-blu-ray-disc'
@@ -44,8 +44,7 @@ class SonyStore(Store):
             category_url = 'https://store.sony.cl/{}?PS=48'.format(
                 category_path)
 
-            soup = BeautifulSoup(session.get(category_url, verify=False).text,
-                                 'html.parser')
+            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
             containers = soup.findAll('div', 'prod')
 
@@ -60,15 +59,16 @@ class SonyStore(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, verify=False).text
+        page_source = session.get(url).text
 
         pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
                                  page_source).groups()[0]
         pricing_data = json.loads(pricing_data)
 
-        skus_data = re.search(r'var skuJson_0 = ([\S\s]+?);',
-                              page_source).groups()[0]
+        skus_data = re.search(
+            r'var skuJson_0 = ([\S\s]+?);', page_source).groups()[0]
         skus_data = json.loads(skus_data)
         name = '{} {}'.format(pricing_data['productBrandName'],
                               pricing_data['productName'])
