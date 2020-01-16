@@ -159,6 +159,9 @@ class CyberPuerta(Store):
         else:
             stock = int(soup.find('span', 'stockFlag').find('span').text)
 
+        if not soup.find('span', 'priceText'):
+            return
+
         price = Decimal(soup.find('span', 'priceText').text.replace('$', '').replace(',', ''))
 
         picture_urls = []
