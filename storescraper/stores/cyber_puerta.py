@@ -160,7 +160,7 @@ class CyberPuerta(Store):
             stock = int(soup.find('span', 'stockFlag').find('span').text)
 
         if not soup.find('span', 'priceText'):
-            return
+            return []
 
         price = Decimal(soup.find('span', 'priceText').text.replace('$', '').replace(',', ''))
 
