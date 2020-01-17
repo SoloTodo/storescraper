@@ -258,8 +258,8 @@ class Falabella(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        return cls._products_for_url(url, category=category,
-                                     extra_args=extra_args)
+        return cls._products_for_url(
+            url, category=category, extra_args=extra_args)
 
     @classmethod
     def _get_product_urls(cls, session, category_id):
@@ -293,7 +293,12 @@ class Falabella(Store):
     @classmethod
     def _products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        content = session.get(url, timeout=30).text.replace('&#10;', '')
+        response = session.get(url, timeout=30)
+
+        if response.status_code == 500:
+            return
+
+        content = response.text.replace('&#10;', '')
 
         soup = BeautifulSoup(content, 'html.parser')
 
