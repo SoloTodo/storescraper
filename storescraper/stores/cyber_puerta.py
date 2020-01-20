@@ -100,8 +100,8 @@ class CyberPuerta(Store):
             ['Audio-Video/Consolas-Juegos/Nintendo', 'VideoGameConsole'],
             ['Audio-Video/Consolas-Juegos/Playstation-4-PS4/'
              'Consolas-Playstation-4', 'VideoGameConsole'],
-            ['Audio-Video/Consolas-Juegos/Nintendo-2DS/Consolas-Nintendo-2DS',
-             'VideoGameConsole']
+            # ['Audio-Video/Consolas-Juegos/Nintendo-2DS/Consolas-Nintendo-2DS',
+            #  'VideoGameConsole']
         ]
 
         base_url = 'https://www.cyberpuerta.mx/{}/'
