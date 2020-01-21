@@ -500,20 +500,17 @@ class Hites(Store):
                             product_box = image.find('div', 'box-foto')
 
                         if not product_box:
-                            product_box = image.find(
-                                'div', 'slide-new__products')
+                            product_box = image.find('div', 'slide-new__products')
 
                         if not product_box:
-                            product_box = image.find(
-                                'div', 'images_llamados')
+                            product_box = image.find('div', 'images_llamados')
 
                         if not product_box:
-                            product_box = image.find(
-                                'div', 'products-item__img')
+                            product_box = image.find('div', 'products-item__img')
 
                         if not product_box:
-                            product_box = image.find(
-                                'a', 'boxproducto')
+                            product_box = image.find('a', 'boxproducto')
+
                         if not product_box:
                             product_box = image
 
@@ -521,7 +518,12 @@ class Hites(Store):
                                 product_box.find('img')):
                             product_box = image.find('div', 'img_boxproducto')
 
+                        if not product_box:
+                            product_box = image.find('div', 'logocampana')
+
+
                         key_container = product_box.find('source')
+
 
                         if key_container:
                             key = key_container['srcset']
