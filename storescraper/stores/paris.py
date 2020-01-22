@@ -1,3 +1,4 @@
+import json
 import re
 from collections import defaultdict
 from decimal import Decimal
@@ -325,7 +326,8 @@ class Paris(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h4', {'itemprop': 'name'})
+
+        name = soup.find('h1', {'itemprop': 'name'})
 
         if not name:
             return []
@@ -333,11 +335,11 @@ class Paris(Store):
         name = name.text.strip()
 
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
-        offer_price_container = soup.find('div', 'cencosud-price')
+        offer_price_container = soup.find('div', 'cencosud-price-2')
 
         if soup.find('div', 'out-of-stock') or \
                 soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
-                                         'dw8802c553/marketing/home/promotext/'
+                                         'dwdbab8891/marketing/home/promotext/'
                                          'promotext-plp-event3-SF.png'}):
             stock = 0
         else:
