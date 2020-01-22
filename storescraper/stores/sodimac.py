@@ -19,8 +19,6 @@ class Sodimac(Store):
             'WashingMachine',
             'Refrigerator',
             'Oven',
-            'VacuumCleaner',
-            'Lamp',
             'Television',
             'Notebook',
             'LightProjector',
@@ -31,7 +29,6 @@ class Sodimac(Store):
             'Cell',
             'Headphones',
             'StereoSystem',
-            'Wearable',
             'VideoGameConsole',
             'Monitor',
             'Ups',
@@ -40,133 +37,147 @@ class Sodimac(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['scat112555/Lavadoras', ['WashingMachine'],
-            #  'Sodimac.com > Línea Blanca > Lavadoras', 1],
-            # ['scat920819/lavadoras-y-secadoras', ['WashingMachine'],
-            #  'Sodimac.com > Lavadoras y Secadoras > Lavadoras secadoras', 1],
-            # ['scat114994/Secadoras', ['WashingMachine'],
-            # 'Sodimac.com > Lavadoras y Secadoras > Secadoras', 1],
-            ['scat112543/Freezer', ['Refrigerator'],
-             'Sodimac.com > Refrigeradores > Freezer', 1],
-            ['scat114992/No-Frost', ['Refrigerator'],
-             'Sodimac.com > Refrigeradores > Refrigeradores No Frost', 1],
-            ['scat535116/Side-by-Side', ['Refrigerator'],
-             'Sodimac.com > Refrigeradores > Refrigeradores Side by Side', 1],
-            # ['scat114991/Frio-Directo', ['Refrigerator'],
-            # 'Sodimac.com > Refrigeradores > Refrigeradores Frío Directo', 1],
-            ['scat112545/Frigobar', ['Refrigerator'],
-             'Sodimac.com > Refrigeradores > Frigobar', 1],
-            ['cat4850051/Aspiradoras-portatiles', ['VacuumCleaner'],
-             'Sodimac.com > Aspiradoras > Aspiradoras portátiles', 1],
-            ['cat1580015/Hornos-Electricos', ['Oven'],
-             'Sodimac.com > Microondas y Hornos Eléctricos > '
-             'Hornos Eléctricos', 1],
-            ['scat112547/Microondas', ['Oven'],
-             'Sodimac.com > Microondas y Hornos Eléctricos > Microondas', 1],
-            ['cat360045/Ampolletas-LED', ['Lamp'],
-             'Sodimac.com > Ampolletas y Tubos > Ampolletas y Tubos LED', 1],
-            ['cat3810002/Televisores', ['Television'],
-             'Sodimac.com > Tv y Video > Televisores', 1],
-            ['cat3810003/Monitores-LED', ['Monitor'],
-             'Sodimac.com > Tv y Video > Monitores LED', 1],
-            ['cat3390002/Notebook', ['Notebook'],
-             'Sodimac.com > Computación > Notebooks', 1],
-            ['cat2930160/Reflectores-LED', ['LightProjector'],
-             'Sodimac.com > Iluminación Comercial LED > Reflectores LED', 1],
-            ['cat4780002/Aires-Acondicionados-Split', ['AirConditioner'],
-             'Sodimac.com > Calefacción > Aires Acondicionados Split', 1],
-            ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
-             'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
-            ['cat2080050/Calefont-tiro-forzado', ['WaterHeater'],
-             'Sodimac.com > Calefont y Termos > Calefont tiro forzado', 1],
-            ['scat923316/Termos-y-Calderas', ['WaterHeater'],
-             'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
-            ['cat3620002/Tablets', ['Tablet'],
-             'Sodimac.com > Computación > Tablets', 1],
-            ['scat583461/Estufas-Toyotomi', ['SpaceHeater'],
-             'Sodimac.com > Estufas > Estufas Toyotomi', 1],
-            ['scat299492/Estufas-a-Gas', ['SpaceHeater'],
-             'Sodimac.com > Estufas > Estufas a Gas', 1],
-            ['scat411008/Estufas-a-Parafina', ['SpaceHeater'],
-             'Sodimac.com > Estufas > Estufas a Parafina', 1],
-            # ['cat1560069/Termoventiladores', ['SpaceHeater']],
-            # ['cat1560012/Estufas-Far-Infrared', ['SpaceHeater']],
-            # ['cat1560071/Convectores', ['SpaceHeater']],
-            ['cat1590078/Estufas-Tiro-Forzado', ['SpaceHeater'],
-             'Sodimac.com > Estufas > Estufas Tiro Forzado', 1],
-            ['scat301608/Estufas-a-Lena', ['SpaceHeater'],
-             'Sodimac.com > Estufas > Estufas a Leña', 1],
+            ['scat112555', ['WashingMachine'],
+             'Baño y Cocina > Línea Blanca > Lavadoras y Secadoras > '
+             'Lavadoras', 1],
+            ['scat920819', ['WashingMachine'],
+             'Baño y Cocina > Línea Blanca > Lavadoras y Secadoras', 1],
+            ['scat114994', ['WashingMachine'],
+             'Baño y Cocina > Línea Blanca >  Lavadoras y Secadoras > '
+             'Secadoras', 1],
 
-            ['cat3870010/Smartphones', ['Cell'],
-             'Sodimac.com > Celulars y Telefonía > Smartphones', 1],
+            ['scat112543', ['Refrigerator'],
+             'Baño y Cocina > Línea Blanca > Refrigeradores > Freezer', 1],
+            ['scat114992', ['Refrigerator'],
+             'Baño y Cocina > Línea Blanca > Refrigeradores > '
+             'Refrigeradores No Frost', 1],
+            ['scat535116', ['Refrigerator'],
+             'Baño y Cocina > Línea Blanca > Refrigeradores > '
+             'Refrigeradores Side by Side', 1],
+            ['scat114991', ['Refrigerator'],
+             'Baño y Cocina > Línea Blanca > Refrigeradores > '
+             'Refrigeradores Frío Directo', 1],
+            ['scat112545', ['Refrigerator'],
+             'Baño y Cocina > Línea Blanca > Refrigeradores > '
+             'Frigobares y Cavas de Vino', 1],
 
-            ['cat3870001/Audifonos', ['Headphones'],
-             'Sodimac.com > Tecnología Deportiva > Audífonos', 1],
+            ['cat4850343', ['Oven'],
+             'Especiales > Línea blanca y Electrodomésticos > Encimeras, '
+             'hornos y cocinas > Microondas y Hornos Eléctricos', 1],
+            ['scat112547', ['Oven'],
+             'Electrodomésticos > Microondas', 1],
+            ['cat1580015', ['Oven'],
+             'Electrodomésticos > Hornos Eléctricos', 1],
 
-            ['scat913770/Equipos-de-Musica', ['StereoSystem'],
-             'Sodimac.com > Tecnología y Seguridad > Equipos de Música', 1],
-            # ['cat4850257/Home-Theater-y-Soundbars', ['StereoSystem']],
-            ['cat8350012/Parlantes-bluetooth', ['StereoSystem'],
-             'Sodimac.com > Audio > Parlantes bluetooth', 1],
-            # ['cat4850400/Parlantes-y-Karaokes', ['StereoSystem']],
-            ['cat8350014/Tornamesas', ['StereoSystem'],
-             'Sodimac.com > Audio > Tornamesas', 1],
-            ['cat3870009/Wearables', ['Wearable'],
-             'Sodimac.com > Tecnología Deportiva > SmartWatch', 1],
-            ['cat3890001/Consolas-de-videojuegos', ['VideoGameConsole'],
-             'Sodimac.com > Gamer > Consolas de videojuegos', 1],
-            ['cat2940090/Baterias-de-respaldo', ['Ups'],
-             'Sodimac.com > Transformadores Eléctricos y UPS > '
-             'Baterías de respaldo', 1],
+            ['cat3810002', ['Television'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Tv y Video > Televisores LED', 1],
+            ['cat3810003', ['Monitor'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Tv y Video > Monitores LED', 1],
+
+            ['cat3390002', ['Notebook'],
+             'Electrohogar y Climatización > Tecnología y Seguridad >'
+             ' Computación > Notebooks', 1],
+
+            ['cat4780002', ['AirConditioner'],
+             'Electrohogar y Climatización > Aire Acondicionado y Ventilación '
+             '> Aires Acondicionados Split', 1],
+            ['cat4780001', ['AirConditioner'],
+             'Electrohogar y Climatización > Aire Acondicionado y Ventilación '
+             '> Aires Acondicionados Portátiles', 1],
+
+            # ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
+            #  'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
+            # ['cat2080050/Calefont-tiro-forzado', ['WaterHeater'],
+            #  'Sodimac.com > Calefont y Termos > Calefont tiro forzado', 1],
+            # ['scat923316/Termos-y-Calderas', ['WaterHeater'],
+            #  'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
+
+            ['scat299492', ['SpaceHeater'],
+             'Electrohogar y Climatización > Calefacción > '
+             'Estufas > Estufas a Gas', 1],
+            ['scat411008', ['SpaceHeater'],
+             'Electrohogar y Climatización > Calefacción > '
+             'Estufas > Estufas a Parafina', 1],
+            ['scat301608', ['SpaceHeater'],
+             'Electrohogar y Climatización > Calefacción > '
+             'Estufas > Estufas a Leña', 1],
+            ['scat299482', ['SpaceHeater'],
+             'Electrohogar y Climatización > Calefacción > '
+             'Estufas > Estufas a Pellet', 1],
+            ['scat963234', ['SpaceHeater'],
+             'Electrohogar y Climatización > Calefacción > '
+             'Estufas > Estufas Eléctricas', 1],
+
+            ['cat3870010', ['Cell'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Celulares y Telefonía > Smartphones', 1],
+
+            ['cat3870001', ['Headphones'],
+             'Categorías Relacionadas > Tecnología Deportiva > Audífonos', 1],
+
+            ['scat913770', ['StereoSystem'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Equipos de Música', 1],
+            ['cat8350012', ['StereoSystem'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Audio > Parlantes bluetooth', 1],
+
+            ['cat3890001', ['VideoGameConsole'],
+             'Electrohogar y Climatización > Tecnología y Seguridad > '
+             'Gamer > Consolas de videojuegos', 1],
+
+            ['cat2940090', ['Ups'],
+             'Construcción y Reparación > Electricidad > '
+             'Transformadores Eléctricos y UPS > Baterías de respaldo', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
         session = session_with_proxy(extra_args)
+        # session.headers['user-agent'] = \
+        #     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/' \
+        #     '537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'
+        # session.get('https://www.sodimac.cl/')
+        # session.cookies['ZONE_NAME'] = 'CERRILLOS'
+        # session.cookies['comuna'] = '130617'
+        # session.cookies['regionName_key'] = 'REGION+METROPOLITANA+DE+SANTIA'
 
         for e in category_paths:
-            category_path, local_categories, section_name, category_weight = e
+            category_id, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
                 continue
 
-            page = 0
+            page = 1
             current_position = 1
 
             while True:
-                url = 'https://www.sodimac.cl/sodimac-cl/category/{}?No={}' \
-                      '&rnd={}'.format(category_path, page,
-                                       random.randint(0, 100))
-                print(url)
+                url = 'https://www.sodimac.cl/s/search/v1/socl/category/' \
+                      'products?priceGroup=96&zone=130617&currentpage={}&' \
+                      'sortBy=_score,desc&categoryId={}&rnd={}'\
+                    .format(page, category_id, random.randint(0, 1000))
 
                 response = session.get(url, timeout=30)
+                data = json.loads(response.text)['data']
 
-                if '/product/' in response.url:
-                    product_entries[response.url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': current_position
-                    })
-                    break
+                products = data['results']
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-
-                mosaic_divs = soup.findAll('section', 'jq-item')
-
-                if not mosaic_divs:
-                    if page == 0:
+                if not products:
+                    if page == 1:
                         raise Exception('No products for {}'.format(url))
                     break
 
-                for div in mosaic_divs:
-                    product_url = 'https://www.sodimac.cl/sodimac-cl/' \
-                                  'product/' + div['data']
+                for product in products:
+                    product_url = 'https://www.sodimac.cl/sodimac-cl/product/{}'.format(product['productId'])
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
                         'value': current_position
                     })
                     current_position += 1
-                page += 16
+
+                page += 1
 
         return product_entries
 
@@ -210,6 +221,7 @@ class Sodimac(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         response = session.get(url, timeout=30)

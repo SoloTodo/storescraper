@@ -33,6 +33,7 @@ from .creditos_mundiales import CreditosMundiales
 from .cyber_puerta import CyberPuerta
 from .daewoo import Daewoo
 from .david_and_joseph import DavidAndJoseph
+from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled

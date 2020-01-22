@@ -100,8 +100,8 @@ class CyberPuerta(Store):
             ['Audio-Video/Consolas-Juegos/Nintendo', 'VideoGameConsole'],
             ['Audio-Video/Consolas-Juegos/Playstation-4-PS4/'
              'Consolas-Playstation-4', 'VideoGameConsole'],
-            ['Audio-Video/Consolas-Juegos/Nintendo-2DS/Consolas-Nintendo-2DS',
-             'VideoGameConsole']
+            # ['Audio-Video/Consolas-Juegos/Nintendo-2DS/Consolas-Nintendo-2DS',
+            #  'VideoGameConsole']
         ]
 
         base_url = 'https://www.cyberpuerta.mx/{}/'
@@ -158,6 +158,9 @@ class CyberPuerta(Store):
             stock = 0
         else:
             stock = int(soup.find('span', 'stockFlag').find('span').text)
+
+        if not soup.find('span', 'priceText'):
+            return []
 
         price = Decimal(soup.find('span', 'priceText').text.replace('$', '').replace(',', ''))
 
