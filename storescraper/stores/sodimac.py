@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
+from urllib.parse import quote_plus
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -169,7 +170,10 @@ class Sodimac(Store):
                     break
 
                 for product in products:
-                    product_url = 'https://www.sodimac.cl/sodimac-cl/product/{}'.format(product['productId'])
+                    product_id = product['productId']
+                    slug = quote_plus(product['displayName'])
+                    product_url = 'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
+                        .format(product_id, slug, product_id)
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
@@ -233,7 +237,7 @@ class Sodimac(Store):
 
         if soup.find('p', 'sinStock-online-p-SEO'):
             return []
-
+        
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
         key = soup.find('input', {'id': 'currentSkuId'})['value'].strip()
 

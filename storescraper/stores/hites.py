@@ -521,9 +521,7 @@ class Hites(Store):
                         if not product_box:
                             product_box = image.find('div', 'logocampana')
 
-
                         key_container = product_box.find('source')
-
 
                         if key_container:
                             key = key_container['srcset']
