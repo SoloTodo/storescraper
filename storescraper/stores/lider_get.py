@@ -52,8 +52,8 @@ class LiderGet(Store):
         category_paths = [
             ['Televisores', ['Television'],
              'TV y Video > Televisores', 1],
-            ['DVDs_y_Blu-Ray', ['OpticalDiskPlayer'],
-             'TV y Video > DVDs y Blu-Ray', 1],
+            # ['DVDs_y_Blu-Ray', ['OpticalDiskPlayer'],
+            #  'TV y Video > DVDs y Blu-Ray', 1],
             ['Audífonos', ['Headphones'],
              'Equipos de Audio > Audífonos', 1],
             ['Parlantes_portables', ['StereoSystem'],
