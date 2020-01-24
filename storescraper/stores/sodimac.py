@@ -172,8 +172,11 @@ class Sodimac(Store):
                 for product in products:
                     product_id = product['productId']
                     slug = quote_plus(product['displayName'])
-                    product_url = 'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
-                        .format(product_id, slug, product_id)
+                    product_url = \
+                        'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
+                        .format(product_id, slug, product_id) + '?rand={}'\
+                        .format(random.randint(1, 1000))
+
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
@@ -230,7 +233,7 @@ class Sodimac(Store):
 
         response = session.get(url, timeout=30)
 
-        if response.url != url:
+        if response.url != url or response.status_code in [404]:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -238,6 +241,17 @@ class Sodimac(Store):
         if soup.find('p', 'sinStock-online-p-SEO'):
             return []
         
+        sku_container = soup.find('input', {'id': 'currentProductId'})
+
+        if sku_container:
+            print('OLD')
+            return cls._old_products_for_url(url, session, soup, category)
+        else:
+            print('NEW')
+            return cls._new_products_for_url(url, session, soup, category)
+
+    @classmethod
+    def _old_products_for_url(cls, url, session, soup, category):
         sku = soup.find('input', {'id': 'currentProductId'})['value'].strip()
         key = soup.find('input', {'id': 'currentSkuId'})['value'].strip()
 
@@ -322,6 +336,74 @@ class Sodimac(Store):
             description=description,
             picture_urls=picture_urls,
             condition=condition
+        )
+
+        return [p]
+
+    @classmethod
+    def _new_products_for_url(cls, url, session, soup, category):
+        sku = soup.find('div', 'product-cod').text.replace('Código', '').strip()
+        name = soup.find('h1', 'product-title').text.strip()
+        brand = soup.find('div', 'product-brand').text.strip()
+        name = "{} {}".format(brand, name)
+
+        normal_price = Decimal(
+            soup.find('div', 'normal').find('div', 'price').text
+                .replace('c/u', '').replace('$', '').replace('.', '')
+                .replace('Normal', '').strip())
+
+        offer_price_container = soup.find('div', 'cmr')
+
+        if offer_price_container:
+            offer_price = Decimal(
+                soup.find('div', 'cmr').find('div', 'price').text
+                    .replace('c/u', '').replace('$', '').replace('.', '')
+                    .strip())
+        else:
+            offer_price = normal_price
+
+        add_button = soup.find('button', {'id': 'testId-btn-add-to-cart'})
+
+        if add_button:
+            stock = -1
+        else:
+            stock = 0
+
+        pictures_resource_url = 'https://sodimac.scene7.com/is/image/' \
+                                'SodimacCL/{}?req=set,json'.format(sku)
+        pictures_response = session.get(pictures_resource_url).text
+        pictures_json = json.loads(
+            re.search(r's7jsonResponse\((.+),""\);',
+                      pictures_response).groups()[0])
+
+        picture_urls = []
+
+        picture_entries = pictures_json['set']['item']
+        if not isinstance(picture_entries, list):
+            picture_entries = [picture_entries]
+
+        for picture_entry in picture_entries:
+            picture_url = 'https://sodimac.scene7.com/is/image/{}?' \
+                          'wid=1500&hei=1500&qlt=70'\
+                .format(picture_entry['i']['n'])
+            picture_urls.append(picture_url)
+
+        description = html_to_markdown(str(soup.find('div', 'product-info')))
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls,
         )
 
         return [p]
