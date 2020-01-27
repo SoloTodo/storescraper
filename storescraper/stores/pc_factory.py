@@ -155,7 +155,9 @@ class PcFactory(Store):
              'Inicio > Celulares > Wearables > Smartwatches', 1],
             ['38', ['Ups'],
              'Inicio > Accesorios y Periféricos > UPS y Energía > '
-             'UPS y Reguladores', 1]
+             'UPS y Reguladores', 1],
+            ['748', ['StereoSystem'],
+             'Inicio > Smart Home (Domótica)', 1]
         ]
 
         session = session_with_proxy(extra_args)
