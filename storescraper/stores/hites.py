@@ -113,14 +113,18 @@ class Hites(Store):
              'Inicio > Tecnología > TV Video', 0],
             ['tecnologia/tv-video/todos-los-led', ['Television'],
              'Inicio > Tecnología > Tv Video > Todos los Led', 1],
-            ['tecnologia/tv-video/smart-tv', ['Television'],
-             'Inicio > Tecnología > Tv Video > Smart TV', 1],
+            ['tecnologia/tv-video/smart-tv-hasta-50', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart TV Hasta 50', 1],
+            ['tecnologia/tv-video/smart-tv-entre-55-y-60', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart TV Entre 55 y 60', 1],
+            ['tecnologia/tv-video/smart-tv-desde-65', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart TV Desde 65', 1],
             ['tecnologia/tv-video/led-samsung', ['Television'],
              'Inicio > Tecnología > Tv Video > Led Samsung', 1],
             ['tecnologia/tv-video/led-lg', ['Television'],
              'Inicio > Tecnología > Tv Video > Led LG', 1],
-            ['tecnologia/tv-video/led-extra-grandes', ['Television'],
-             'Inicio > Tecnología > Tv Video > Led Extra Grandes', 1],
+            # ['tecnologia/tv-video/led-extra-grandes', ['Television'],
+            #  'Inicio > Tecnología > Tv Video > Led Extra Grandes', 1],
             ['tecnologia/tv-video/todos-los-led', ['Television'],
              'Inicio > Tecnología > Tv Video > Todos los Led', 1],
             # ['tecnologia/tv-video/dvd-y-blu-ray', ['OpticalDiskPlayer'],
@@ -409,10 +413,12 @@ class Hites(Store):
              'tecnologia/tv-video'],
             [bs.TELEVISIONS, 'Todos los Led', bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video/todos-los-led'],
-            [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/smart-tv'],
-            [bs.TELEVISIONS, 'Led Extra Grandes', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/led-extra-grandes'],
+            [bs.TELEVISIONS, 'Smart TV Hasta 50', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-hasta-50'],
+            [bs.TELEVISIONS, 'Smart TV Entre 55 y 60', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-entre-55-y-60'],
+            [bs.TELEVISIONS, 'Smart TV Desde 65', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-desde-65'],
             [bs.CELLS, 'Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
              'celulares/smartphone'],
             [bs.CELLS, 'Smartphone-Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
@@ -463,8 +469,7 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver.find_element_by_class_name(
-                        'carousel__controls').find_elements_by_class_name(
-                        'slider-controls__dots')
+                        'slick-dots').find_elements_by_tag_name('li')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
@@ -477,7 +482,7 @@ class Hites(Store):
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                     images = soup.find('div', 'slick-track')\
-                        .findAll('li', 'slick-slide')
+                        .findAll('div', 'slick-slide')
 
                     # images = soup.find('div', 'owl-stage') \
                     #     .findAll('div', 'owl-item')
@@ -487,7 +492,7 @@ class Hites(Store):
 
                     # images = [a for a in images if
                     #           'cloned' not in a['class']]
-
+                    
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):

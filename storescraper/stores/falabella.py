@@ -399,6 +399,9 @@ class Falabella(Store):
             if not offer_price:
                 offer_price = normal_price
 
+            if not normal_price:
+                normal_price = offer_price
+
             stock = 0
             availabilities = model['availability']
 
