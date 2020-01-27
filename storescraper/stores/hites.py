@@ -492,10 +492,7 @@ class Hites(Store):
 
                     # images = [a for a in images if
                     #           'cloned' not in a['class']]
-
-                    import ipdb
-                    ipdb.set_trace()
-
+                    
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):
