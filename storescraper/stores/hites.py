@@ -469,8 +469,7 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver.find_element_by_class_name(
-                        'carousel__controls').find_elements_by_class_name(
-                        'slider-controls__dots')
+                        'slick-dots').find_elements_by_tag_name('li')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
@@ -483,7 +482,7 @@ class Hites(Store):
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                     images = soup.find('div', 'slick-track')\
-                        .findAll('li', 'slick-slide')
+                        .findAll('div', 'slick-slide')
 
                     # images = soup.find('div', 'owl-stage') \
                     #     .findAll('div', 'owl-item')
@@ -493,6 +492,9 @@ class Hites(Store):
 
                     # images = [a for a in images if
                     #           'cloned' not in a['class']]
+
+                    import ipdb
+                    ipdb.set_trace()
 
                     assert len(images) == len(pictures)
 
