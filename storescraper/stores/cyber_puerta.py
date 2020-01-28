@@ -164,11 +164,14 @@ class CyberPuerta(Store):
 
         price = Decimal(soup.find('span', 'priceText').text.replace('$', '').replace(',', ''))
 
-        picture_urls = []
-        images = soup.find('div', 'emslider2_items').findAll('li')
+        if soup.find('div', 'emslider2_items'):
+            picture_urls = []
+            images = soup.find('div', 'emslider2_items').findAll('li')
 
-        for image in images:
-            picture_urls.append(image.find('a')['data-src'])
+            for image in images:
+                picture_urls.append(image.find('a')['data-src'])
+        else:
+            picture_urls = None
 
         description = html_to_markdown(
             str(soup.find('div', 'cpattributes-box')))

@@ -5,7 +5,6 @@ import re
 from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from urllib.parse import quote_plus
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -171,7 +170,7 @@ class Sodimac(Store):
 
                 for product in products:
                     product_id = product['productId']
-                    slug = quote_plus(product['displayName'])
+                    slug = "productos"
                     product_url = \
                         'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
                         .format(product_id, slug, product_id) + '?rand={}'\
