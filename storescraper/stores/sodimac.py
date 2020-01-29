@@ -38,54 +38,44 @@ class Sodimac(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
             ['scat112555', ['WashingMachine'],
-             'Baño y Cocina > Línea Blanca > Lavadoras y Secadoras > '
-             'Lavadoras', 1],
+             'Lavadoras y Secadoras > Lavadoras', 1],
             ['scat920819', ['WashingMachine'],
-             'Baño y Cocina > Línea Blanca > Lavadoras y Secadoras', 1],
+             'Línea Blanca > Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
-             'Baño y Cocina > Línea Blanca >  Lavadoras y Secadoras > '
-             'Secadoras', 1],
+             'Lavadoras y Secadoras > Secadoras', 1],
 
             ['scat112543', ['Refrigerator'],
-             'Baño y Cocina > Línea Blanca > Refrigeradores > Freezer', 1],
+             'Refrigeradores > Freezer', 1],
             ['scat114992', ['Refrigerator'],
-             'Baño y Cocina > Línea Blanca > Refrigeradores > '
-             'Refrigeradores No Frost', 1],
+             'Refrigeradores > Refrigeradores No Frost', 1],
             ['scat535116', ['Refrigerator'],
-             'Baño y Cocina > Línea Blanca > Refrigeradores > '
-             'Refrigeradores Side by Side', 1],
+             'Refrigeradores > Refrigeradores Side by Side', 1],
             ['scat114991', ['Refrigerator'],
-             'Baño y Cocina > Línea Blanca > Refrigeradores > '
-             'Refrigeradores Frío Directo', 1],
+             'Refrigeradores > Refrigeradores Frío Directo', 1],
             ['scat112545', ['Refrigerator'],
-             'Baño y Cocina > Línea Blanca > Refrigeradores > '
-             'Frigobares y Cavas de Vino', 1],
+             'Refrigeradores > Frigobares y Cavas de Vino', 1],
 
             ['cat4850343', ['Oven'],
-             'Especiales > Línea blanca y Electrodomésticos > Encimeras, '
-             'hornos y cocinas > Microondas y Hornos Eléctricos', 1],
+             'Cocinas, Hornos y Campanas > Microondas y Hornos Eléctricos', 1],
             ['scat112547', ['Oven'],
-             'Electrodomésticos > Microondas', 1],
+             'Microondas y Hornos Eléctricos > Microondas', 1],
             ['cat1580015', ['Oven'],
-             'Electrodomésticos > Hornos Eléctricos', 1],
+             'Microondas y Hornos Eléctricos  > Hornos Eléctricos', 1],
 
             ['cat3810002', ['Television'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
              'Tv y Video > Televisores LED', 1],
             ['cat3810003', ['Monitor'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
              'Tv y Video > Monitores LED', 1],
 
             ['cat3390002', ['Notebook'],
-             'Electrohogar y Climatización > Tecnología y Seguridad >'
-             ' Computación > Notebooks', 1],
+             'Computación > Notebooks', 1],
 
             ['cat4780002', ['AirConditioner'],
-             'Electrohogar y Climatización > Aire Acondicionado y Ventilación '
-             '> Aires Acondicionados Split', 1],
+             'Aire Acondicionado y Ventilación > '
+             'Aires Acondicionados Split', 1],
             ['cat4780001', ['AirConditioner'],
-             'Electrohogar y Climatización > Aire Acondicionado y Ventilación '
-             '> Aires Acondicionados Portátiles', 1],
+             'Aire Acondicionado y Ventilación > '
+             'Aires Acondicionados Portátiles', 1],
 
             # ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
             #  'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
@@ -95,41 +85,33 @@ class Sodimac(Store):
             #  'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
 
             ['scat299492', ['SpaceHeater'],
-             'Electrohogar y Climatización > Calefacción > '
              'Estufas > Estufas a Gas', 1],
             ['scat411008', ['SpaceHeater'],
-             'Electrohogar y Climatización > Calefacción > '
              'Estufas > Estufas a Parafina', 1],
             ['scat301608', ['SpaceHeater'],
-             'Electrohogar y Climatización > Calefacción > '
              'Estufas > Estufas a Leña', 1],
             ['scat299482', ['SpaceHeater'],
-             'Electrohogar y Climatización > Calefacción > '
              'Estufas > Estufas a Pellet', 1],
             ['scat963234', ['SpaceHeater'],
-             'Electrohogar y Climatización > Calefacción > '
              'Estufas > Estufas Eléctricas', 1],
 
             ['cat3870010', ['Cell'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
              'Celulares y Telefonía > Smartphones', 1],
+            ['cat8930005', ['Cell'],
+             'Celulares y Telefonía > Celulares Reacondicionados', 1],
 
             ['cat3870001', ['Headphones'],
-             'Categorías Relacionadas > Tecnología Deportiva > Audífonos', 1],
+             'Tecnología Deportiva > Audífonos', 1],
 
             ['scat913770', ['StereoSystem'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
-             'Equipos de Música', 1],
+             'Tecnología y TV > Equipos de Música', 1],
             ['cat8350012', ['StereoSystem'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
              'Audio > Parlantes bluetooth', 1],
 
             ['cat3890001', ['VideoGameConsole'],
-             'Electrohogar y Climatización > Tecnología y Seguridad > '
              'Gamer > Consolas de videojuegos', 1],
 
             ['cat2940090', ['Ups'],
-             'Construcción y Reparación > Electricidad > '
              'Transformadores Eléctricos y UPS > Baterías de respaldo', 1],
         ]
 
@@ -389,6 +371,11 @@ class Sodimac(Store):
 
         description = html_to_markdown(str(soup.find('div', 'product-info')))
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -403,6 +390,7 @@ class Sodimac(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
