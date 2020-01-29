@@ -54,7 +54,7 @@ class Max(Store):
             ('audio/audio-para-casa/mini-componente', 'StereoSystem'),
             ('audio/audio-para-casa/audio-vertical', 'StereoSystem'),
             ('audio/audio-portatil', 'StereoSystem'),
-            ('audio/audio-multizona', 'StereoSystem'),
+            # ('audio/audio-multizona', 'StereoSystem'),
             ('computacion/pc-gaming/monitores', 'Monitor'),
             ('computacion/proyectores', 'Projector'),
         ]

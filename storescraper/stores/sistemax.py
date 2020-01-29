@@ -118,13 +118,15 @@ class Sistemax(Store):
             'div', 'tab-content').div))
         picture_container = soup.find('ul', 'thumbnails')
 
-        picture_urls = []
-
-        for tag in picture_container.findAll('a'):
-            picture_url = tag['href'].replace(' ', '%20')\
-                .replace('\xa0', '%C2%A0')
-            if picture_url != '':
-                picture_urls.append(picture_url)
+        if picture_container:
+            picture_urls = []
+            for tag in picture_container.findAll('a'):
+                picture_url = tag['href'].replace(' ', '%20')\
+                    .replace('\xa0', '%C2%A0')
+                if picture_url != '':
+                    picture_urls.append(picture_url)
+        else:
+            picture_urls = None
 
         p = Product(
             name,

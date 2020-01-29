@@ -71,7 +71,13 @@ class Tekstore(Store):
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-        data = session.get(url).text
+
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
+        data = response.text
         soup = BeautifulSoup(data, 'html.parser')
 
         name = soup.find('span', "base").text.strip()

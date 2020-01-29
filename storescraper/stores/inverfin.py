@@ -90,6 +90,9 @@ class Inverfin(Store):
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
+        if not soup.find('span', {'id': 'cash-price'}):
+            return []
+
         price = Decimal(
             soup.find('span', {'id': 'cash-price'}).text.replace('Gs.', '')
                 .replace('.', '').strip())
