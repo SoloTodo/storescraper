@@ -137,8 +137,8 @@ class Sodimac(Store):
             while True:
                 url = 'https://www.sodimac.cl/s/search/v1/socl/category/' \
                       'products?priceGroup=96&zone=130617&currentpage={}&' \
-                      'sortBy=_score,desc&categoryId={}&rnd={}'\
-                    .format(page, category_id, random.randint(0, 1000))
+                      'sortBy=_score,desc&categoryId={}'\
+                    .format(page, category_id)
 
                 response = session.get(url, timeout=30)
                 data = json.loads(response.text)['data']
@@ -155,8 +155,7 @@ class Sodimac(Store):
                     slug = "productos"
                     product_url = \
                         'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
-                        .format(product_id, slug, product_id) + '?rand={}'\
-                        .format(random.randint(1, 1000))
+                        .format(product_id, slug, product_id)
 
                     product_entries[product_url].append({
                         'category_weight': category_weight,
@@ -211,10 +210,11 @@ class Sodimac(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        r_url = url + "?rnd={}".format(random.randint(0, 1000))
+        print(r_url)
+        response = session.get(r_url, timeout=30)
 
-        response = session.get(url, timeout=30)
-
-        if response.url != url or response.status_code in [404]:
+        if response.url != r_url or response.status_code in [404]:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -223,7 +223,7 @@ class Sodimac(Store):
             return []
         
         sku_container = soup.find('input', {'id': 'currentProductId'})
-
+        
         if sku_container:
             print('OLD')
             return cls._old_products_for_url(url, session, soup, category)

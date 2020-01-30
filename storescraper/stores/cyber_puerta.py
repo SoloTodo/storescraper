@@ -95,8 +95,8 @@ class CyberPuerta(Store):
             ['Computadoras/All-in-One', 'AllInOne'],
             ['Audio-Video/Consolas-Juegos/Nintendo-Switch/'
              'Consolas-Nintendo-Switch', 'VideoGameConsole'],
-            ['Audio-Video/Consolas-Juegos/Xbox-One/Consolas-Xbox-One',
-             'VideoGameConsole'],
+            # ['Audio-Video/Consolas-Juegos/Xbox-One/Consolas-Xbox-One',
+            #  'VideoGameConsole'],
             ['Audio-Video/Consolas-Juegos/Nintendo', 'VideoGameConsole'],
             ['Audio-Video/Consolas-Juegos/Playstation-4-PS4/'
              'Consolas-Playstation-4', 'VideoGameConsole'],
