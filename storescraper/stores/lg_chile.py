@@ -145,6 +145,9 @@ class LgChile(Store):
         section_paths = section_data['pageInfo'][
                             'subCategoryList']
 
+        if not section_paths:
+            section_paths = [section_data['pageInfo']['subSection']]
+
         if section_paths:
             section_paths = section_paths[0].split(':')[1:]
             section_path = ' > '.join([x for x in section_paths if x.strip()])
