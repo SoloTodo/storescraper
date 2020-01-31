@@ -206,8 +206,7 @@ class Paris(Store):
             ['linea-blanca/cocina/hornos-empotrables', ['Oven'],
              'Línea Blanca > Cocinas > Hornos empotrables', 1],
             ['linea-blanca/cocina/microondas', ['Oven'],
-             'Línea Blanca > Cocinas > Microondas',
-             1],
+             'Línea Blanca > Cocinas > Microondas', 1],
             # Also includes other electrodomésticos
             ['linea-blanca/electrodomesticos', ['Oven'],
              'Línea Blanca > Electrodomésticos', 0],
@@ -359,7 +358,9 @@ class Paris(Store):
         picture_urls = []
         for tag in soup.findAll('a', 'thumbnail-link'):
             picture_url = tag['href'].split('?')[0]
-            picture_urls.append(picture_url)
+            if '.webm' in picture_url:
+                continue
+            picture_urls.append(picture_url.replace(' ', '%20'))
 
         video_urls = []
         for iframe in soup.findAll('iframe'):

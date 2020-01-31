@@ -223,7 +223,7 @@ class Sodimac(Store):
             return []
         
         sku_container = soup.find('input', {'id': 'currentProductId'})
-        
+
         if sku_container:
             print('OLD')
             return cls._old_products_for_url(url, session, soup, category)
