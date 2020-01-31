@@ -143,13 +143,16 @@ class LgChile(Store):
         section_data = re.search(r'digitalData = ({[\S\s]+\});', content)
         section_data = demjson.decode(section_data.groups()[0])
         section_paths = section_data['pageInfo'][
-                            'subCategoryList'][0].split(':')[1:]
+                            'subCategoryList']
 
-        section_path = ' > '.join([x for x in section_paths if x.strip()])
-
-        positions = {
-            section_path: 1
-        }
+        if section_paths:
+            section_paths = section_paths[0].split(':')[1:]
+            section_path = ' > '.join([x for x in section_paths if x.strip()])
+            positions = {
+                section_path: 1
+            }
+        else:
+            positions = None
 
         if colors_container:
             products = []
