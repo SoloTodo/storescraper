@@ -1,6 +1,7 @@
 import json
 import re
 
+import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -130,14 +131,19 @@ class LgChile(Store):
         colors_container = soup.find('div', 'list-colors')
         model_id = soup.find('html')['data-product-id']
 
-        section_data = re.search(r'standardData = ({.+\})', content)
-        section_data = json.loads(section_data.groups()[0])
+        # section_data = re.search(r'standardData = ({.+\})', content)
+        # section_data = json.loads(section_data.groups()[0])
+        #
+        # section_paths = [
+        #     section_data['level1'],
+        #     section_data['level2'],
+        #     section_data['level3'],
+        # ]
 
-        section_paths = [
-            section_data['level1'],
-            section_data['level2'],
-            section_data['level3'],
-        ]
+        section_data = re.search(r'digitalData = ({[\S\s]+\});', content)
+        section_data = demjson.decode(section_data.groups()[0])
+        section_paths = section_data['pageInfo'][
+                            'subCategoryList'][0].split(':')[1:]
 
         section_path = ' > '.join([x for x in section_paths if x.strip()])
 
