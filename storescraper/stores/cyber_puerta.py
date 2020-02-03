@@ -162,11 +162,14 @@ class CyberPuerta(Store):
         if not soup.find('span', 'priceText'):
             return []
 
-        price = Decimal(soup.find('span', 'priceText').text.replace('$', '').replace(',', ''))
+        price = Decimal(soup.find('span', 'priceText')
+                        .text.replace('$', '').replace(',', ''))
 
-        if soup.find('div', 'emslider2_items'):
+        if soup.find('div', 'detailsInfo_left_picture_morepictures')\
+                .find('div', 'emslider2_items'):
             picture_urls = []
-            images = soup.find('div', 'emslider2_items').findAll('li')
+            images = soup.find('div', 'detailsInfo_left_picture_morepictures')\
+                .find('div', 'emslider2_items').findAll('li')
 
             for image in images:
                 picture_urls.append(image.find('a')['data-src'])

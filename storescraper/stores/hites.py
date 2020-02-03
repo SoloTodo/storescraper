@@ -469,7 +469,7 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver.find_element_by_class_name(
-                        'slick-dots').find_elements_by_tag_name('li')
+                        'slider-controls__dots').find_elements_by_tag_name('li')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
