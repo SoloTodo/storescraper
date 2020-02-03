@@ -99,6 +99,10 @@ class DdTech(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', 'name').text
+
+        if not soup.find('a', 'add-cart'):
+            return []
+
         sku = soup.find('a', 'add-cart')['data-product-id']
         stock = int(
             soup.find('div', 'stock-container').find('span', 'value').text)
