@@ -1,3 +1,7 @@
+import json
+import re
+
+import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -103,14 +107,14 @@ class LgChile(Store):
             # Because https://www.lg.com/pa/telefonos-celulares/lg-G2-D805
             page_content = response.text.replace('5,2"', '5,2')
 
-            variant_soup = BeautifulSoup(page_content, 'html.parser')
             products.extend(cls._retrieve_single_product(
-                variant_url, category, variant_soup))
+                variant_url, category, page_content))
 
         return products
 
     @classmethod
-    def _retrieve_single_product(cls, url, category, soup):
+    def _retrieve_single_product(cls, url, category, content):
+        soup = BeautifulSoup(content, 'html.parser')
         model_name = soup.find('title').text.split('|')[0].strip()
         commercial_name_container = soup.find('h2', {'itemprop': 'name'})
 
@@ -125,8 +129,33 @@ class LgChile(Store):
             'img', {'itemprop': 'contentUrl'})['src'].replace(' ', '%20')]
 
         colors_container = soup.find('div', 'list-colors')
-
         model_id = soup.find('html')['data-product-id']
+
+        # section_data = re.search(r'standardData = ({.+\})', content)
+        # section_data = json.loads(section_data.groups()[0])
+        #
+        # section_paths = [
+        #     section_data['level1'],
+        #     section_data['level2'],
+        #     section_data['level3'],
+        # ]
+
+        section_data = re.search(r'digitalData = ({[\S\s]+\});', content)
+        section_data = demjson.decode(section_data.groups()[0])
+        section_paths = section_data['pageInfo'][
+                            'subCategoryList']
+
+        if not section_paths:
+            section_paths = [section_data['pageInfo']['subSection']]
+
+        if section_paths:
+            section_paths = section_paths[0].split(':')[1:]
+            section_path = ' > '.join([x for x in section_paths if x.strip()])
+            positions = {
+                section_path: 1
+            }
+        else:
+            positions = None
 
         if colors_container:
             products = []
@@ -160,7 +189,8 @@ class LgChile(Store):
                     Decimal(0),
                     'CLP',
                     sku=commercial_name,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    positions=positions
                 ))
 
             return products
@@ -177,7 +207,8 @@ class LgChile(Store):
                 Decimal(0),
                 'CLP',
                 sku=commercial_name,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                positions=positions
             )]
 
     @classmethod
