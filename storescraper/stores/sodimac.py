@@ -328,6 +328,9 @@ class Sodimac(Store):
         brand = soup.find('div', 'product-brand').text.strip()
         name = "{} {}".format(brand, name)
 
+        if not soup.find('div', 'normal'):
+            return []
+
         normal_price = Decimal(
             soup.find('div', 'normal').find('div', 'price').text
                 .replace('c/u', '').replace('$', '').replace('.', '')

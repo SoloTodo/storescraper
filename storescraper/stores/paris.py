@@ -63,8 +63,8 @@ class Paris(Store):
             # Also contains other accesories
             ['electro/accesorios-tv/bluray-dvd', ['OpticalDiskPlayer'],
              'Otras categorias > Bluray y DVD', 1],
-            ['electro/accesorios-tv/proyectores', ['Projector'],
-             'Otras categorias > Proyectores', 1],
+            # ['electro/accesorios-tv/proyectores', ['Projector'],
+            #  'Otras categorias > Proyectores', 1],
 
             # Also contains other audio products
             ['electro/audio', ['StereoSystem', 'Headphones'],
