@@ -24,11 +24,8 @@ class PcDigital(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Monitor',
-            # 'Headphones',
             'Tablet',
             'Notebook',
-            # 'StereoSystem',
-            # 'OpticalDiskPlayer',
             'Printer',
             'Cell',
             'Television',
@@ -98,8 +95,6 @@ class PcDigital(Store):
         name = soup.find('h1', {'id': 'title-page'}).text.strip()
         sku = soup.find('input', {'id': 'hiddenModel'})['value']
 
-        stock = -1
-
         price = Decimal(
             soup.find('span', 'price-new').contents[1]
                 .replace('$', '').replace(',', ''))
@@ -108,10 +103,26 @@ class PcDigital(Store):
         picture_urls = []
 
         for image in images:
+            if not image.find('a')['href']:
+                continue
             picture_urls.append(image.find('a')['href'])
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
+
+        stock_id = soup.find('a', {'id': 'stock_tiendas'})['pid']
+        stock_url = 'https://www.pcdigital.com.mx/existencias.php'
+
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        data = 'pid={}'.format(stock_id)
+        stock_source = session.post(stock_url, data=data).text
+        stock_soup = BeautifulSoup(stock_source, 'html.parser')
+
+        table_trs = stock_soup.findAll('tr')[1:]
+        stock = 0
+
+        for tr in table_trs:
+            stock += int(tr.findAll('td')[1].text)
 
         p = Product(
             name,
