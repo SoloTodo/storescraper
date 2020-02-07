@@ -91,7 +91,8 @@ class TiendaMovistar(Store):
         page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        if not soup.find('body'):
+        if not soup.find('body') or \
+                not soup.find('h1', {'id': 'nombre-producto'}):
             return []
 
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()

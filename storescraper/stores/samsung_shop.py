@@ -42,7 +42,7 @@ class SamsungShop(Store):
             ('linea-blanca/aspiradoras', 'VacuumCleaner'),
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             # ('linea-blanca/lavavajillas', 'DishWasher'),
-            ('tv-y-audio/audio-y-video', 'StereoSystem'),
+            # ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
 
         product_urls = []
