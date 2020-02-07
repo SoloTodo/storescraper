@@ -141,6 +141,7 @@ from .pc_express import PcExpress
 from .pc_factory import PcFactory
 from .pc_gamer import PcGamer
 from .pc_ofertas import PcOfertas
+from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
 from .pcx import Pcx
 from .peta import Peta
