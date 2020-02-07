@@ -90,7 +90,8 @@ class Omnisport(Store):
 
         text_info = soup.find('div', 'main-product-info-inner').find('h3')
 
-        sku = text_info.find('span').contents[3].strip()
+        sku = soup.find('meta', {'property': 'product:retailer_item_id'}
+                        )['content']
         model = text_info.find('span').contents[1].replace('|', '').strip()
         name = '{} ({})'.format(text_info.find('strong').text.strip(), model)
 
