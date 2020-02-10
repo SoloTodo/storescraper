@@ -37,6 +37,7 @@ from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
+from .digitalife import Digitalife
 from .do_it_center import DoItCenter
 from .e_vision import EVision
 from .easy import Easy
@@ -119,6 +120,7 @@ from .mercadolibre_daewoo import MercadolibreDaewoo
 from .mercadolibre_lg import MercadolibreLg
 from .mercadolibre_samsung import MercadolibreSamsung
 from .meroli import Meroli
+from .mi_pc import MiPc
 from .microplay import Microplay
 from .movistar import Movistar
 from .movistar_one import MovistarOne
