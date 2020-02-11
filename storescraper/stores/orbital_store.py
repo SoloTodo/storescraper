@@ -105,9 +105,13 @@ class OrbitalStore(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('div', 'product-name').find('h1').text
-        sku = soup.find('div', 'product_info_left').find('p').find('b').text
+        sku = soup.find(
+            'div', 'product_info_left').find('p').find('b').text[:50]
 
-        stock = -1
+        if soup.find('p', 'out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
 
         price = Decimal(soup.find('div', 'price-box').find('span', 'price').text.replace('$', '').replace(',', ''))
 
