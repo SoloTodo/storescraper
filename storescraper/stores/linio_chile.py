@@ -169,7 +169,7 @@ class LinioChile(Store):
         if not availability_container:
             stock = 0
         elif soup.find('div', 'feature-information').find(
-                'div', 'badge-international-shipping'):
+                'span', 'badge-pill-international-shipping'):
             stock = 0
             description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
         elif availability_container['href'] == 'http://schema.org/InStock':
