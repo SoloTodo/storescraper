@@ -133,8 +133,8 @@ class AbcDin(Store):
              'Línea Blanca > Climatización > Splendid', 1],
             # ['47051', ['WaterHeater'],
             #  'Línea Blanca > Climatización > Neckar', 1],
-            ['56052', ['WaterHeater'],
-             'Línea Blanca > Climatización > Rheem', 1],
+            # ['56052', ['WaterHeater'],
+            #  'Línea Blanca > Climatización > Rheem', 1],
             # Contains all electrodomesticos
             ['10039', ['VacuumCleaner', 'Oven'],
              'Línea Blanca > Electrodomésticos', 0],

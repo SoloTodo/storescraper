@@ -117,12 +117,9 @@ class Pcel(Store):
                 if "Envío" not in str(data_container[index+1]):
                     part_number = data_container[index+1].strip()
 
-        if not sku or not soup.find('span', 'price-new'):
-            return []
-
         price = Decimal(
-            soup.find('span', 'price-new')
-                .text.replace('$', '').replace(',', ''))
+            soup.find('td', {'data-description': 'price'})['data-price']
+                .replace('$', '').replace(',', ''))
 
         picture_urls = []
         images = soup.findAll('img', 'cloudzoom')
