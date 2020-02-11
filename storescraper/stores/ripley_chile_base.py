@@ -207,6 +207,10 @@ class RipleyChileBase(Store):
                     'a', 'catalog-product-item')
 
                 if not product_link_containers:
+                    product_link_containers = product_link_container.findAll(
+                        'a', 'ProductItem__Name')
+
+                if not product_link_containers:
                     raise Exception('Category error: ' + category_path)
 
                 for idx, link_tag in enumerate(product_link_containers):
