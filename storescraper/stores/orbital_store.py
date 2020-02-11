@@ -111,11 +111,15 @@ class OrbitalStore(Store):
 
         price = Decimal(soup.find('div', 'price-box').find('span', 'price').text.replace('$', '').replace(',', ''))
 
-        picture_urls = []
-        images = soup.find('ul', 'slides').findAll('li')
+        images_container = soup.find('ul', 'slides')
 
-        for image in images:
-            picture_urls.append(image.find('a')['href'])
+        if images_container:
+            picture_urls = []
+
+            for image in images_container.findAll('li'):
+                picture_urls.append(image.find('a')['href'])
+        else:
+            picture_urls = None
 
         description = html_to_markdown(str(soup.find('div', 'short-description')))
 
