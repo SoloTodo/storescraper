@@ -27,7 +27,7 @@ class ScGlobal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['empresa/workstation/notebook.html', 'Notebook'],
+            # ['empresa/workstation/notebook.html', 'Notebook'],
             ['empresa/notebook-comercial.html', 'Notebook'],
             ['pc-y-portatiles/portatiles.html', 'Notebook'],
             ['empresa/plotters.html', 'Printer'],
