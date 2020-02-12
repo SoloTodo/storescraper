@@ -1,5 +1,6 @@
 import json
 import re
+import math
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -24,8 +25,6 @@ class BestBuyMexico(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['1000067', 'SolidStateDrive'],
-            ['1000068', 'UsbFlashDrive'],
-            ['c69', 'MemoryCard']
         ]
 
         product_urls = []
@@ -36,21 +35,30 @@ class BestBuyMexico(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 category_url = 'https://www.bestbuy.com.mx/c/api/listing?' \
                                'query=categoryId%24{}&page={}' \
                                ''.format(category_path, page)
 
+                print(category_url)
+
                 response = session.get(category_url)
 
-                if response.status_code == 404:
+                if response.status_code in [404, 500]:
                     if page == 1:
                         raise Exception('Empty category: ' + category_url)
                     break
 
                 products_data = json.loads(response.text)
                 product_cells = products_data['products']
+
+                last_page = math.ceil(
+                    products_data['totalCount']/products_data['pageSize'])
+
+                if last_page == page:
+                    done = True
 
                 if not product_cells:
                     if page == 1:
@@ -62,7 +70,7 @@ class BestBuyMexico(Store):
                 for product_cell in product_cells:
                     product_url = product_cell['seoPdpUrl']
                     product_urls.append(product_url)
-
+                
                 page += 1
 
         return product_urls

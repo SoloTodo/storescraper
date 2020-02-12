@@ -13,72 +13,121 @@ class WalmartMexico(Store):
     @classmethod
     def categories(cls):
         return [
-            'ExternalStorageDrive',
-            'MemoryCard',
-            'UsbFlashDrive',
+            # 'ExternalStorageDrive',
             'StorageDrive',
+            'SolidStateDrive',
+            'Motherboard',
+            'Processor',
+            'CpuCooler',
+            'Ram',
+            'VideoCard',
+            'PowerSupply',
+            'ComputerCase',
+            'Mouse',
+            'Keyboard',
+            'KeyboardMouseCombo',
+            'Monitor',
+            'Tablet',
+            'Notebook',
+            'Printer',
+            'Cell',
+            'Television',
+            'AllInOne',
+            'VideoGameConsole'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'https://www.walmart.com.mx/'
+        api_url = 'https://www.walmart.com.mx/api/page/browse/'
+        base_url = 'https://www.walmart.com.mx'
 
         category_paths = [
-            ['l-accesorios-discos-duros', 'StorageDrive'],
-            ['l-accesorio-usb-sd', 'UsbFlashDrive'],
-            ['l-foto-accesorios-memorias-micro', 'MemoryCard'],
-            ['l-foto-accesorios-memorias-sd', 'MemoryCard'],
+            ['computadoras/accesorios-para-computadoras/discos-duros/'
+             '_/N-1dowb3hZ1kv2jt7?Nval=%2F_%2FN-1dowb3hZ1kv2jt7',
+             'StorageDrive'],
+            ['computadoras/accesorios-para-computadoras/discos-duros/'
+             '_/N-1dowb3hZkzndmn?Nval=%2F_%2FN-1dowb3hZkzndmn',
+             'SolidStateDrive'],
+            ['computadoras/componentes-de-computadoras/tarjetas-madre?',
+             'Motherboard'],
+            ['computadoras/componentes-de-computadoras/procesadores?',
+             'Processor'],
+            ['computadoras/componentes-de-computadoras/'
+             'enfriadores-y-ventiladores?', 'CpuCooler'],
+            ['computadoras/componentes-de-computadoras/memoria-ram?', 'Ram'],
+            ['computadoras/componentes-de-computadoras/tarjetas-de-video?',
+             'VideoCard'],
+            ['computadoras/componentes-de-computadoras/fuentes-de-poder?',
+             'PowerSupply'],
+            ['computadoras/componentes-de-computadoras/'
+             'torres-y-gabinetes-de-pc?', 'ComputerCase'],
+            ['computadoras/accesorios-para-computadoras/'
+             'mouse-teclados-y-webcams?', 'Mouse'],
+            ['computadoras/proyectores/monitores?', 'Monitor'],
+            ['computadoras/tablets/todas-las-tablets?', 'Tablet'],
+            ['computadoras/tablets/ipad?', 'Tablet'],
+            ['computadoras/tablets/tablets-android?', 'Tablet'],
+            ['computadoras/laptops/todas-las-laptops?', 'Notebook'],
+            ['computadoras/laptops/macbooks?', 'Notebook'],
+            ['computadoras/laptops/chromebooks?', 'Notebook'],
+            ['computadoras/laptops/notebooks?', 'Notebook'],
+            ['computadoras/laptops/ultrabooks?', 'Notebook'],
+            ['computadoras/laptops/2-en-1-y-touchscreen?', 'Notebook'],
+            ['computadoras/impresoras-y-scanners/multifuncionales?',
+             'Printer'],
+            ['computadoras/impresoras-y-scanners/impresoras?', 'Printer'],
+            ['celulares/smartphones/celulares-desbloqueados?', 'Cell'],
+            ['celulares/smartphones/at-t?', 'Cell'],
+            ['celulares/smartphones/movistar?', 'Cell'],
+            ['celulares/smartphones/telcel?', 'Cell'],
+            ['tv-y-video/pantallas/65-o-mas-pulgadas?', 'Television'],
+            ['tv-y-video/pantallas/55-a-64-pulgadas?', 'Television'],
+            ['tv-y-video/pantallas/47-a-54-pulgadas?', 'Television'],
+            ['tv-y-video/pantallas/37-a-46-pulgadas?', 'Television'],
+            ['tv-y-video/pantallas/28-a-36-pulgadas?', 'Television'],
+            ['tv-y-video/pantallas/27-pulgadas-o-menos?', 'Television'],
+            ['tv-y-video/pantallas/4k-ultra-hd?', 'Television'],
+            ['tv-y-video/pantallas/smart-tv?', 'Television'],
+            ['tv-y-video/pantallas/todas?', 'Television'],
+            ['computadoras/computadoras-de-escritorio/all-in-one?',
+             'AllInOne'],
+            ['videojuegos/xbox-one/consolas?', 'VideoGameConsole'],
+            ['videojuegos/nintendo/consolas?', 'VideoGameConsole'],
+            ['videojuegos/playstation-4/consolas-consola-ps4?',
+             'VideoGameConsole'],
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
 
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
 
             current_index = 0
-
-            local_urls = []
+            page_size = 24
 
             while True:
-                category_url = '{}WebControls/hlGetProductsByLine.ashx?' \
-                               'linea={}&start={}&raw=10' \
-                               ''.format(base_url, category_path,
-                                         current_index)
+                category_url = '{}{}&Nrpp=24&No={}'.format(
+                    api_url, category_path, current_index)
                 print(category_url)
+                page_data = json.loads(session.get(category_url).text)
+                products_data = page_data[
+                    'contents'][0]['mainArea'][-1]['records']
 
-                data = json.loads(session.get(
-                    category_url, verify=False).content.decode('latin-1'))
-
-                if not data:
-                    if current_index == 0:
-                        raise Exception('Empty URL: ' + category_url)
+                if not products_data:
                     break
 
-                done = False
+                for product in products_data:
+                    product_url = product['attributes']['productSeoUrl'][0]
+                    product_url = "{}{}".format(base_url, product_url)
 
-                for entry in data:
-                    product_path = entry['ProductUrl'].strip()
-
-                    if not product_path:
-                        continue
-                    product_url = base_url + product_path
-
-                    if product_url in local_urls:
-                        done = True
-                        break
-
-                    local_urls.append(product_url)
                     product_urls.append(product_url)
 
-                if done:
-                    break
-
-                current_index += 10
+                current_index += page_size
 
         return product_urls
 
@@ -90,83 +139,52 @@ class WalmartMexico(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
-        response = session.get(url)
-        if response.url != url:
-            return []
+        product_id = url.split('_')[-1]
+        api_url = 'https://www.walmart.com.mx/api/rest/model/atg/commerce/' \
+                  'catalog/ProductCatalogActor/getProduct?id={}'\
+            .format(product_id)
 
-        sku = re.search(r'(\d+)$', url).groups()[-1]
+        product_data = json.loads(session.get(api_url).text)['product']
 
-        data_url = 'https://www.walmart.com.mx/webcontrols/' \
-                   'getProductDetailSolr.ashx?upc=' + sku
+        name = product_data['displayName']
+        sku = product_data['childSKUs'][0]['id']
+        stock = -1
 
-        print(data_url)
+        price = Decimal(
+            product_data['childSKUs'][0][
+                'offerList'][0]['priceInfo']['specialPrice'])
 
-        product_data = session.get(
-            data_url, verify=False).content.decode('latin-1')
-        product_json = json.loads(product_data)
+        image_url_base = 'https://res.cloudinary.com/walmart-labs/image/'\
+                         'upload/w_960,dpr_auto,f_auto,q_auto:best/mg{}'
 
-        name = product_json['DisplayName']
+        primary_image = product_data['childSKUs'][0]['images']['large']
+        picture_urls = [image_url_base.format(primary_image)]
 
-        picture_urls = []
-        for i in range(10):
-            if i == 0:
-                suffix = ''
-            else:
-                suffix = '-{}'.format(i)
+        if 'secondaryImages' in product_data['childSKUs'][0]:
+            secondary_images = product_data['childSKUs'][0]['secondaryImages']
+            for image in secondary_images:
+                picture_urls.append(image_url_base.format(image['large']))
 
-            tentative_url = 'https://www.walmart.com.mx/images/products/' \
-                            'img_large/{}{}l.jpg'.format(sku, suffix)
-            response = session.get(tentative_url)
-            if response.apparent_encoding:
-                break
-            picture_urls.append(tentative_url)
+        if 'longDescription' in product_data:
+            description = product_data['longDescription']
+        else:
+            description = product_data['description']
 
-        base_description = ', '.join(product_json['Benefits']) + '\n\n'
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'MXN',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+            part_number=sku
+        )
 
-        products = []
-
-        for variant in product_json['variants']:
-            price = Decimal(variant['data']['Price'])
-
-            if not price:
-                price = Decimal(variant['Offerts'][0]['price'])
-
-            ean = variant['upc']
-            if len(ean) == 12:
-                ean = '0' + ean
-            if not check_ean13(ean):
-                ean = None
-
-            part_number = None
-            for attr in variant['data']['Attributes']:
-                if attr['Name'].lower() == 'modelo':
-                    part_number = attr['Value']
-                    break
-
-            description = base_description
-            for attr_entry in variant['data']['Attributes']:
-                description += '{} {} \n\n'.format(attr_entry['Name'],
-                                                   attr_entry['Value'])
-
-            description += variant['data']['Details']
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                -1,
-                price,
-                price,
-                'MXN',
-                sku=sku,
-                ean=ean,
-                part_number=part_number,
-                description=description,
-                picture_urls=picture_urls
-            )
-            products.append(p)
-
-        return products
+        return [p]
