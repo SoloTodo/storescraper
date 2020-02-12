@@ -216,10 +216,7 @@ class LaPolar(Store):
         sku = soup.find('span', 'sku-code-value').text.strip()
 
         prices = soup.find('div', 'prices')
-        la_polar_card = prices.find(
-            'img', {'src': 'https://www.lapolar.cl/on/demandware.static/-/'
-                           'Library-Sites-lapolar-shared-library/default/'
-                           'dw3c951280/images/icons/tarjeta_icon.jpg'})
+        la_polar_card = prices.find('p', 'js-tlp-price')
 
         highlighted_price = prices.find('p', 'la-polar').find(
             'span', 'price-value') \
