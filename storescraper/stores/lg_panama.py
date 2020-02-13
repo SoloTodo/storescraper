@@ -29,7 +29,7 @@ class LgPanama(LgChile):
             ('CT20188032', 'CT20188032', 'Cell', True),
             # Descontinuado TELÉFONOS CELULARES
             ('CT20188032', 'CT20188032', 'Cell', False),
-            ('CT30006720', 'CT30006720', 'Headphones', True),
+            # ('CT30006720', 'CT30006720', 'Headphones', True),
             # Descontinuado ACCESORIOS PARA CELULAR
             ('CT30006720', 'CT30006720', 'Headphones', False),
             ('CT20188021', 'CT20188021', 'Refrigerator', True),
