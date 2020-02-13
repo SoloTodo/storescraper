@@ -16,7 +16,7 @@ class LgPanama(LgChile):
             # Minicomponentes
             ('CT20188049', 'CT20188050', 'StereoSystem', True),
             # Barra de sonido
-            # ('CT20188049', 'CT32016444', 'StereoSystem', True),
+            ('CT20188049', 'CT32016444', 'StereoSystem', True),
             # Parlantes Bluetooth
             ('CT20188049', 'CT32016443', 'StereoSystem', True),
             # Descontinuado EQUIPO DE SONIDO
