@@ -7,24 +7,44 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import \
+    html_to_markdown, session_with_proxy, check_ean13
 
 
 class BestBuyMexico(Store):
     @classmethod
     def categories(cls):
         return [
-            'ExternalStorageDrive',
-            'MemoryCard',
-            'UsbFlashDrive',
-            'SolidStateDrive',
             'StorageDrive',
+            'SolidStateDrive',
+            'Ram',
+            'Mouse',
+            'Keyboard',
+            'KeyboardMouseCombo',
+            'Monitor',
+            'Tablet',
+            'Notebook',
+            'Printer',
+            'Cell',
+            'Television',
+            'AllInOne',
+            'VideoGameConsole'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['1000067', 'SolidStateDrive'],
+            ['1000069', 'Ram'],
+            ['c1761', 'Mouse'],
+            ['1001372', 'Monitor'],
+            ['c51', 'Tablet'],
+            ['c41', 'Notebook'],
+            ['c45', 'Printer'],
+            ['c53', 'Cell'],
+            ['c35', 'Television'],
+            ['c42', 'AllInOne'],
+            ['1000071', 'VideoGameConsole'],
         ]
 
         product_urls = []
@@ -77,6 +97,7 @@ class BestBuyMexico(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
@@ -90,11 +111,23 @@ class BestBuyMexico(Store):
         offer_price = normal_price
         part_number = product_data.get('modelNumber')
         ean = product_data['upc']
+        stock = -1
+        condition = 'https://schema.org/NewCondition'
+
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
 
         if len(ean) == 12:
             ean = '0' + ean
 
+        if not check_ean13(ean):
+            ean = None
+
         soup = BeautifulSoup(page_source, 'html.parser')
+
+        if 'Agotado' in soup.find('div', 'shop-add-to-cart').text:
+            stock = 0
+
         description = html_to_markdown(
             str(soup.find('div', 'bbmx-product-description')))
         picture_urls = [tag['src'] for tag in
@@ -108,11 +141,12 @@ class BestBuyMexico(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             normal_price,
             offer_price,
             'MXN',
             sku=sku,
+            condition=condition,
             part_number=part_number,
             ean=ean,
             description=description,

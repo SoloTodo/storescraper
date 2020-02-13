@@ -263,6 +263,8 @@ class Paris(Store):
                     break
 
                 for idx, container in enumerate(containers):
+                    if container.find('div', 'box-error'):
+                        continue
                     product_a = container.find('a')
                     if not product_a:
                         continue
@@ -271,6 +273,7 @@ class Paris(Store):
                         continue
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
+
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,

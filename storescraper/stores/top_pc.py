@@ -39,7 +39,7 @@ class TopPc(Store):
             ['22', 'Motherboard'],  # MB
             ['23', 'Ram'],  # RAM
             ['44', 'StorageDrive'],  # HDD PC
-            ['45', 'StorageDrive'],  # HDD Notebook
+            # ['45', 'StorageDrive'],  # HDD Notebook
             ['46', 'SolidStateDrive'],  # SSD
             ['27', 'PowerSupply'],  # Fuentes de poder
             ['26', 'ComputerCase'],  # Gabinetes
