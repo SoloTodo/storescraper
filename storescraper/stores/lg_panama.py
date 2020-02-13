@@ -16,7 +16,7 @@ class LgPanama(LgChile):
             # Minicomponentes
             ('CT20188049', 'CT20188050', 'StereoSystem', True),
             # Barra de sonido
-            # ('CT20188049', 'CT32016444', 'StereoSystem', True),
+            ('CT20188049', 'CT32016444', 'StereoSystem', True),
             # Parlantes Bluetooth
             ('CT20188049', 'CT32016443', 'StereoSystem', True),
             # Descontinuado EQUIPO DE SONIDO
@@ -29,7 +29,7 @@ class LgPanama(LgChile):
             ('CT20188032', 'CT20188032', 'Cell', True),
             # Descontinuado TELÉFONOS CELULARES
             ('CT20188032', 'CT20188032', 'Cell', False),
-            ('CT30006720', 'CT30006720', 'Headphones', True),
+            # ('CT30006720', 'CT30006720', 'Headphones', True),
             # Descontinuado ACCESORIOS PARA CELULAR
             ('CT30006720', 'CT30006720', 'Headphones', False),
             ('CT20188021', 'CT20188021', 'Refrigerator', True),
