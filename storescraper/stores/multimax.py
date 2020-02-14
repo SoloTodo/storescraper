@@ -34,7 +34,7 @@ class Multimax(Store):
             ('equipos-de-sonido', 'StereoSystem'),
             ('barras-de-sonido', 'StereoSystem'),
             ('bocinas', 'StereoSystem'),
-            ('split-inverter', 'AirConditioner'),
+            # ('split-inverter', 'AirConditioner'),
             # ('split-basico', 'AirConditioner'),
             ('estufas', 'Stove'),
             ('lavadoras', 'WashingMachine'),

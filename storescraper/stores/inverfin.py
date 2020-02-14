@@ -83,6 +83,9 @@ class Inverfin(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
+        if 'Liquid error' in soup.text:
+            return []
+
         name = soup.find('h1', 'product-meta__title').text.strip()
         sku = soup.find('span', 'product-meta__sku-number').text.strip()
         stock = -1
