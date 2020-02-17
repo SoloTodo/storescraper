@@ -88,8 +88,9 @@ class MiPc(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 url = base_url.format(url_extension, page)
 
                 if page >= 15:
@@ -106,7 +107,11 @@ class MiPc(Store):
                     break
 
                 for product in products:
-                    product_urls.append(product.find('a')['href'])
+                    product_url = product.find('a')['href']
+                    if product_url in product_urls:
+                        done = True
+                        break
+                    product_urls.append(product_url)
 
                 page += 1
 
