@@ -125,6 +125,9 @@ class PcFactory(Store):
             ['932', ['StorageDrive'],
              'Inicio > Discos Duros y Almacenamiento > '
              'Discos de Video Vigilancia', 1],
+            ['411', ['StorageDrive'],
+             'Inicio > Computadores y Tablets > Servidores > '
+             'Discos Servers', 1],
             ['54', ['PowerSupply'],
              'Inicio > Componentes/Partes y Piezas > '
              'Fuentes de Poder (PSU)', 1],
