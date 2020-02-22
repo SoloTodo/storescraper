@@ -64,6 +64,7 @@ from .gobantes import Gobantes
 from .gollo_tienda import GolloTienda
 from .gonzalez_gimenez import GonzalezGimenez
 from .grupo_cva import GrupoCva
+from .grupo_decme import GrupoDecme
 from .gtd import Gtd
 from .hbt import Hbt
 from .hiraoka import Hiraoka
