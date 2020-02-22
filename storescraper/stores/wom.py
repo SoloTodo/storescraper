@@ -117,15 +117,15 @@ class Wom(Store):
         products = []
 
         plan_prices = {
-            'ver-plan-5': Decimal(9990),
-            'ver-plan-15': Decimal(12990),
-            'ver-plan-25': Decimal(15990),
-            'ver-plan-35': Decimal(19990),
-            'ver-plan-ilimitado': Decimal(25990),
-            'ver-plan-55': Decimal(29990),
+            '35-gigas': Decimal(13990),
+            '45-gigas': Decimal(16990),
+            '60-gigas': Decimal(19990),
+            'libres-gigas': Decimal(25990),
+            '15-gigas': Decimal(9990),
+            '25-gigas': Decimal(11990),
         }
 
-        plan_containers = soup.findAll('article', 'box_plan')
+        plan_containers = soup.findAll('article', 'pb-100')
 
         variants = [
             'sin cuota de arriendo',
@@ -133,15 +133,14 @@ class Wom(Store):
         ]
 
         for container in plan_containers:
-            for variant in variants:
-                plan_name = container['id']
-                plan_price = plan_prices[container['id']]
+            link = container.find('a')
+            plan_name = link['href'].split('=')[-1]
+            plan_price = plan_prices[plan_name]
 
+            for variant in variants:
                 for suffix in ['', ' Portabilidad']:
                     adjusted_plan_name = '{}{} ({})'.format(
                         plan_name, suffix, variant)
-
-                    print(adjusted_plan_name)
 
                     products.append(Product(
                         adjusted_plan_name,
