@@ -469,7 +469,8 @@ class Hites(Store):
                     #     .find_element_by_class_name('owl-stage-outer')
 
                     controls = driver.find_element_by_class_name(
-                        'slick-dots').find_elements_by_tag_name('li')
+                        'carousel__controls__center')\
+                        .find_elements_by_class_name('slider-controls__dots')
 
                     # controls = driver.find_elements_by_class_name('owl-dot')
 
@@ -482,7 +483,7 @@ class Hites(Store):
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                     images = soup.find('div', 'slick-track')\
-                        .findAll('div', 'slick-slide')
+                        .findAll('li', 'slick-slide')
 
                     # images = soup.find('div', 'owl-stage') \
                     #     .findAll('div', 'owl-item')
@@ -492,7 +493,7 @@ class Hites(Store):
 
                     # images = [a for a in images if
                     #           'cloned' not in a['class']]
-                    
+
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):
@@ -533,8 +534,13 @@ class Hites(Store):
                         else:
                             key = product_box.find('img')['src']
 
-                        destination_urls = [d['href'] for d in
-                                            image.findAll('a')]
+                        destinations = [d for d in image.findAll('a')]
+                        destination_urls = []
+
+                        for destination in destinations:
+                            if destination.get('href'):
+                                destination_urls.append(destination['href'])
+
                         destination_urls = list(set(destination_urls))
 
                         banners.append({
