@@ -9,7 +9,7 @@ class MercadolibreDaewoo(MercadolibreChile):
     def categories(cls):
         return [
             'Refrigerator',
-            'WashingMachine'
+            # 'WashingMachine'
         ]
 
     @classmethod
@@ -28,6 +28,7 @@ class MercadolibreDaewoo(MercadolibreChile):
 
             category_url = 'https://electrodomesticos.mercadolibre.cl/{}/' \
                            '_Tienda_daewoo'.format(category_path)
+            print(category_url)
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
