@@ -130,11 +130,13 @@ class LinioChile(Store):
 
         normal_price = Decimal(pricing_data['special_price'])
 
-        if not soup.find('div', 'buy-information'):
+        pricing_container = soup.find('div', 'product-price-lg')
+
+        if not soup.find('span', 'sprite-cmr'):
             offer_price = normal_price
         else:
-            offer_price_container = soup.find(
-                'div', 'buy-information').find('span', 'price-promotional')
+            offer_price_container = pricing_container.find(
+                'span', 'price-promotional')
 
             if offer_price_container:
                 offer_price = Decimal(remove_words(offer_price_container.text))
@@ -158,7 +160,10 @@ class LinioChile(Store):
             condition = 'https://schema.org/NewCondition'
 
         description = html_to_markdown(
-            str(soup.find('div', 'product-description-container')))
+            str(soup.find('div', 'feature-information')))
+
+        description += '\n\n' + html_to_markdown(
+            str(soup.find('div', 'features-box-section')))
 
         picture_urls = ['https:' + tag.find('img')['data-lazy'] for tag in
                         soup.findAll('div', {'id': 'image-product'})]
