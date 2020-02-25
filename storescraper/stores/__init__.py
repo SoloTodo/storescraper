@@ -208,5 +208,6 @@ from .weplay import Weplay
 from .winpy import Winpy
 from .wom import Wom
 from .xl_store import XlStore
+from .xtreme_tec_pc import XtremeTecPc
 from .yoytec import Yoytec
 from .zmart import Zmart
