@@ -17,6 +17,7 @@ class TiendaSmart(Store):
             'Headphones',
             'StereoSystem',
             'Wearable',
+            'CellAccesory'
         ]
 
     @classmethod
@@ -26,6 +27,7 @@ class TiendaSmart(Store):
             ['tablets', 'Tablet'],
             ['audio/auriculares', 'Headphones'],
             ['wearables', 'Wearable'],
+            ['accesorios', 'CellAccesory'],
         ]
 
         product_urls = []

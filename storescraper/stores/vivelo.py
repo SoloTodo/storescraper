@@ -41,6 +41,8 @@ class Vivelo(Store):
             ['audio/por-tipo/audifonos-bluetooth.html', 'Headphones'],
             ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
              'CellAccesory'],
+            ['accesorios/audifonos-15/cargadores-y-conectores.html',
+             'CellAccesory'],
         ]
 
         product_urls = []
