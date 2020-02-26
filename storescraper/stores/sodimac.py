@@ -105,8 +105,8 @@ class Sodimac(Store):
 
             ['scat913770', ['StereoSystem'],
              'Tecnología y TV > Equipos de Música', 1],
-            ['cat8350012', ['StereoSystem'],
-             'Audio > Parlantes bluetooth', 1],
+            # ['cat8350012', ['StereoSystem'],
+            #  'Audio > Parlantes bluetooth', 1],
 
             ['cat3890001', ['VideoGameConsole'],
              'Gamer > Consolas de videojuegos', 1],

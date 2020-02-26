@@ -32,7 +32,7 @@ class DoItCenter(Store):
             ('linea-blanca/refrigeradoras', 'Refrigerator'),
             # ('electronica/smart-tv', 'Television'),
             ('electronica/led-tv', 'Television'),
-            ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
+            # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
             ('electronica/equipos-de-sonido', 'StereoSystem'),
             ('electronica/telefonos-celulares', 'Cell'),
             ('bateria-de-cocina/microondas', 'Oven'),

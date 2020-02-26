@@ -316,7 +316,11 @@ class Hites(Store):
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
 
-        name = json_data['name']
+        if 'name' in json_data:
+            name = json_data['name']
+        else:
+            name = "N/A"
+
         sku = json_data['partNumber']
 
         if soup.find('div', 'buy-action-button').find('button'):
