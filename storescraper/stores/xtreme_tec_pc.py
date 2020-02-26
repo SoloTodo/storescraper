@@ -114,5 +114,55 @@ class XtremeTecPc(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        pass
-        return []
+        session = session_with_proxy(extra_args)
+
+        response = session.get(url)
+
+        if response.url != url:
+            return []
+
+        page_source = response.text
+        soup = BeautifulSoup(page_source, 'html.parser')
+
+        name = soup.find('h1', 'product_title').text
+        sku = soup.find('span', 'sku').text
+
+        if soup.find('p', 'out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
+
+        price_container = soup.find('p', 'price').find('ins')
+
+        if price_container:
+            price = price_container.find('span', 'amount').text
+        else:
+            price = soup.find('p', 'price').find('span', 'amount').text
+
+        price = Decimal(price.replace('$', '').replace(',', ''))
+
+        images = soup.find('figure', 'woocommerce-product-gallery__wrapper').findAll('img')
+
+        picture_urls = [i['src'] for i in images]
+
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'tab-description'})))
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'MXN',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+        )
+
+        return [p]
+
