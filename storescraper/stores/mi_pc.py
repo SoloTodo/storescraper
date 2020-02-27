@@ -122,7 +122,12 @@ class MiPc(Store):
         print(url)
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.status_code in [404]:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html5lib')
 
         name = soup.find('h1', 'name').text
