@@ -127,6 +127,8 @@ class BestBuyMexico(Store):
 
         if 'Agotado' in soup.find('div', 'shop-add-to-cart').text:
             stock = 0
+        elif 'Preventa' in soup.find('div', 'shop-add-to-cart').text:
+            stock = 0
 
         description = html_to_markdown(
             str(soup.find('div', 'bbmx-product-description')))
