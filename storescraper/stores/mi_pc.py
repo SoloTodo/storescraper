@@ -133,7 +133,12 @@ class MiPc(Store):
         name = soup.find('h1', 'name').text
         sku = soup.find('div', {'itemprop': 'sku'}).text
 
-        stock = int(soup.find('div', 'availability').find('strong').text)
+        availability = soup.find('div', 'availability')
+
+        if availability:
+            stock = int(soup.find('div', 'availability').find('strong').text)
+        else:
+            stock = 0
 
         price = Decimal(
             soup.find('span', 'price').text
