@@ -126,6 +126,11 @@ class GrupoDecme(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
+        if 'reacondicionado' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -140,6 +145,7 @@ class GrupoDecme(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
+            condition=condition
         )
 
         return [p]
