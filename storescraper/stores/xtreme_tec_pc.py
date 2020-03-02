@@ -141,7 +141,8 @@ class XtremeTecPc(Store):
 
         price = Decimal(price.replace('$', '').replace(',', ''))
 
-        images = soup.find('figure', 'woocommerce-product-gallery__wrapper').findAll('img')
+        images = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper').findAll('img')
 
         picture_urls = [i['src'] for i in images]
 
@@ -165,4 +166,3 @@ class XtremeTecPc(Store):
         )
 
         return [p]
-

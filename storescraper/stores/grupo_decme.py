@@ -106,8 +106,8 @@ class GrupoDecme(Store):
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('span', 'variant-sku').text
 
-        stock_container = soup.find\
-            ('span', {'id': 'variantQuantity-product-template__message'})
+        stock_container = soup.find(
+            'span', {'id': 'variantQuantity-product-template__message'})
 
         if not stock_container:
             stock = 0

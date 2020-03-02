@@ -221,7 +221,7 @@ class Sodimac(Store):
 
         if soup.find('p', 'sinStock-online-p-SEO'):
             return []
-        
+
         sku_container = soup.find('input', {'id': 'currentProductId'})
 
         if sku_container:
@@ -323,7 +323,8 @@ class Sodimac(Store):
 
     @classmethod
     def _new_products_for_url(cls, url, session, soup, category):
-        sku = soup.find('div', 'product-cod').text.replace('Código', '').strip()
+        sku = soup.find(
+            'div', 'product-cod').text.replace('Código', '').strip()
         name = soup.find('h1', 'product-title').text.strip()
         brand = soup.find('div', 'product-brand').text.strip()
         name = "{} {}".format(brand, name)

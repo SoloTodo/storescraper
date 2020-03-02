@@ -97,8 +97,9 @@ class Jumbo(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        raw_data = re.search(r'renderData = ([\S\s]+?);</script>',
-                                 page_source).groups()[0]
+        raw_data = re.search(
+            r'renderData = ([\S\s]+?);</script>',
+            page_source).groups()[0]
 
         data = json.loads(json.loads(raw_data))
         product_data = data['pdp']['product'][0]['items'][0]
@@ -116,7 +117,8 @@ class Jumbo(Store):
         description = data['pdp']['product'][0]['description']
 
         soup = BeautifulSoup(page_source, 'html.parser')
-        if soup.find('meta', {'property': 'product:availability'})['content'] == 'out of stock':
+        if soup.find('meta', {'property': 'product:availability'})[
+                'content'] == 'out of stock':
             stock = 0
         else:
             stock = -1

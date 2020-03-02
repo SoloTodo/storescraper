@@ -368,7 +368,6 @@ class Hites(Store):
         flixmedia_container = ld_soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
         flixmedia_id = None
-        video_urls = None
 
         if flixmedia_container:
             mpn = flixmedia_container['data-flix-mpn']
@@ -414,7 +413,8 @@ class Hites(Store):
              'tecnologia/tv-video/todos-los-led'],
             [bs.TELEVISIONS, 'Smart TV Hasta 50', bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video/smart-tv-hasta-50'],
-            [bs.TELEVISIONS, 'Smart TV Entre 55 y 60', bs.SUBSECTION_TYPE_MOSAIC,
+            [bs.TELEVISIONS, 'Smart TV Entre 55 y 60',
+             bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video/smart-tv-entre-55-y-60'],
             [bs.TELEVISIONS, 'Smart TV Desde 65', bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video/smart-tv-desde-65'],
@@ -505,13 +505,15 @@ class Hites(Store):
                             product_box = image.find('div', 'box-foto')
 
                         if not product_box:
-                            product_box = image.find('div', 'slide-new__products')
+                            product_box = image.find(
+                                'div', 'slide-new__products')
 
                         if not product_box:
                             product_box = image.find('div', 'images_llamados')
 
                         if not product_box:
-                            product_box = image.find('div', 'products-item__img')
+                            product_box = image.find(
+                                'div', 'products-item__img')
 
                         if not product_box:
                             product_box = image.find('a', 'boxproducto')

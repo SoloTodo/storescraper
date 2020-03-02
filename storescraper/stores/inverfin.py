@@ -64,7 +64,7 @@ class Inverfin(Store):
                 product_containers = soup.findAll('div', 'product-item')
 
                 if not product_containers:
-                    if page ==1:
+                    if page == 1:
                         raise Exception('Empty category: ' + url)
                     break
 

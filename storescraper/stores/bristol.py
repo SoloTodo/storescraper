@@ -83,7 +83,8 @@ class Bristol(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('div', 'product-title').text.strip()
-        sku = soup.find('div', 'product-desc').text.split('/')[0].replace('Cod:', '').strip()
+        sku = soup.find('div', 'product-desc').text.split('/')[
+            0].replace('Cod:', '').strip()
         stock = -1
 
         if 'LG' not in name.upper().split(' '):

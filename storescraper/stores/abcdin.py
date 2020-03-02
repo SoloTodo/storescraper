@@ -219,7 +219,7 @@ class AbcDin(Store):
             ['29575', ['Tablet'],
              'Computación > Tablets > Tablets Lenovo', 1],
             ['29576', ['Tablet'],
-            'Computación > Tablets > Tablets Microlab', 1],
+             'Computación > Tablets > Tablets Microlab', 1],
             ['29580', ['Tablet'],
              'Computación > Tablets > Tablets Huawei', 1],
             # Also contains inks

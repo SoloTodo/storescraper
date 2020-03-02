@@ -79,7 +79,7 @@ class EVision(Store):
         name = soup.find('meta', {'itemprop': 'name'})['content']
         sku = soup.find('meta', {'itemprop': 'productID'})['content']
         stock = -1
-        
+
         price = Decimal(
             soup.find('meta', {'property': 'product:price:amount'})['content']
                 .replace('$', '').replace(',', '').strip())

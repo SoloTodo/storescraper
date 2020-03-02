@@ -179,6 +179,7 @@ from .sony_store import SonyStore
 from .sp_digital import SpDigital
 from .spider import Spider
 from .stylus import Stylus
+from .supermex_digital import SupermexDigital
 from .syd import Syd
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
@@ -191,6 +192,7 @@ from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
 from .tienda_toyotomi import TiendaToyotomi
 from .travel_tienda import TravelTienda
+from .travim import Travim
 from .todo_juegos import TodoJuegos
 from .tomalo import Tomalo
 from .top_pc import TopPc

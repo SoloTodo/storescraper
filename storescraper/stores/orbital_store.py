@@ -113,7 +113,9 @@ class OrbitalStore(Store):
         else:
             stock = -1
 
-        price = Decimal(soup.find('div', 'price-box').find('span', 'price').text.replace('$', '').replace(',', ''))
+        price = Decimal(
+            soup.find('div', 'price-box').find('span', 'price')
+                .text.replace('$', '').replace(',', ''))
 
         images_container = soup.find('ul', 'slides')
 
@@ -125,7 +127,8 @@ class OrbitalStore(Store):
         else:
             picture_urls = None
 
-        description = html_to_markdown(str(soup.find('div', 'short-description')))
+        description = html_to_markdown(
+            str(soup.find('div', 'short-description')))
 
         p = Product(
             name,
