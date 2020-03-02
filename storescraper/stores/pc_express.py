@@ -116,11 +116,12 @@ class PcExpress(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'rm-product-page__title').text
-        sku = soup.find('p', 'rm-product__code').span.text
+        sku = soup.find('div', 'rm-product__id').h3.text
 
         stock_container = soup.find('div', 'rm-producto-stock-message')
 

@@ -334,20 +334,15 @@ class Hites(Store):
         else:
             picture_urls = json_data['children'][0]['images']
 
-        reference_price = json_data['prices']['listPrice']
-
-        normal_price = json_data['prices']['offerPrice']
-
-        if not reference_price and not normal_price:
-            reference_price = json_data["children"][0]['prices']['listPrice']
-            normal_price = json_data["children"][0]['prices']['offerPrice']
+        reference_price = json_data["children"][0]['prices']['listPrice']
+        normal_price = json_data["children"][0]['prices']['offerPrice']
 
         if normal_price:
             normal_price = Decimal(normal_price)
         else:
             normal_price = Decimal(reference_price)
 
-        offer_price = json_data['prices']['cardPrice']
+        offer_price = json_data["children"][0]['prices']['cardPrice']
 
         if offer_price:
             offer_price = Decimal(offer_price)

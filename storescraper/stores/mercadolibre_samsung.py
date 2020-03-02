@@ -27,11 +27,11 @@ class MercadolibreSamsung(MercadolibreChile):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_sections = [
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
-            ('electrodomesticos/pequenos', 'VacuumCleaner'),
+            # ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
             ('salud-equipamiento-medico', 'AirConditioner'),
-            ('electrodomesticos/hornos-cocinas', 'Oven'),
+            # ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('repuestos-accesorios', 'CellAccesory'),
             ('electronica/accesorios-audio-video', 'CellAccesory'),
             # ('electronica/soportes', 'CellAccesory'),

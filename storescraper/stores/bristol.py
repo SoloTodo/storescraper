@@ -89,9 +89,12 @@ class Bristol(Store):
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
-        price = Decimal(
-            soup.find('div', 'product-price').find('span')
-                .text.replace('Gs.', '').replace('.', '').strip())
+        price_text = soup.find('div', 'product-price').find('span').text
+
+        if price_text == "Consulte precio":
+            return []
+
+        price = Decimal(price_text.replace('Gs.', '').replace('.', '').strip())
 
         pictures = soup.find('ul', {'id': 'imageGallery'}).findAll('li')
         picture_urls = []
