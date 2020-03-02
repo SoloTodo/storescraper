@@ -252,7 +252,8 @@ class LaPolar(Store):
         flixmedia_id = None
         video_urls = None
 
-        if 'LG' in name and '//media.flixfacts.com/js/loader.js' in response.text:
+        if 'LG' in name and '//media.flixfacts.com/js/loader.js' in \
+                response.text:
             details_tab = soup.find('div', 'details-tab')
             for label in details_tab.findAll('div', 'attr-label'):
                 if label.text.strip() == 'Modelo:':

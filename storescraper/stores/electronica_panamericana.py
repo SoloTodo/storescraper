@@ -58,8 +58,9 @@ class ElectronicaPanamericana(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://electronicapanamericana.com/categoria-productos/' \
-                      '{}page/{}/'.format(category_path, page)
+                url = 'https://electronicapanamericana.com/' \
+                      'categoria-productos/{}page/{}/'\
+                    .format(category_path, page)
                 print(url)
                 response = session.get(url)
 

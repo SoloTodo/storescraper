@@ -90,7 +90,7 @@ class BestBuyMexico(Store):
                 for product_cell in product_cells:
                     product_url = product_cell['seoPdpUrl']
                     product_urls.append(product_url)
-                
+
                 page += 1
 
         return product_urls
