@@ -143,7 +143,7 @@ class SpDigital(Store):
             local_product_urls = []
 
             while True:
-                if p >= 50:
+                if p >= 80:
                     raise Exception('Page overflow for: {}'.format(
                         category_id))
 

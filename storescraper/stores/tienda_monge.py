@@ -1,3 +1,6 @@
+import json
+import urllib
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -23,69 +26,65 @@ class TiendaMonge(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
+                   'x-algolia-agent=Algolia%20for%20vanilla%20' \
+                   'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
+                   '2.10.2%3BMagento2%20integration%20(1.13.0)%3BJS%20' \
+                   'Helper%202.26.0&x-algolia-application-id=WLT832EA3J&x-al' \
+                   'golia-api-key=MjQyMGI4YWYzNWJkNzg5OTIxMmRkYTljY2ZmNDkyOD' \
+                   'NmMmZmNGU1NWRkZWU3NGE3MjNhYmNmZWZhOWFmNmQ0M3RhZ0ZpbHRlcnM9'
+
         category_filters = [
-            ('125', 'Cell'),
-            ('162', 'Television'),
-            ('171', 'OpticalDiskPlayer'),
-            ('112', 'AirConditioner'),
-            ('127', 'Stove'),
-            ('138', 'Oven'),
-            ('146', 'WashingMachine'),
-            ('170', 'Refrigerator'),
-            ('152', 'StereoSystem'),
-            ('163', 'StereoSystem'),
-            ('174', 'StereoSystem')
+            ('["categories.level2:Productos /// Celulares y Tablets '
+             '/// Celulares"]', 'Cell'),
+            ('["categories.level2:Productos /// TV y Video /// Pantallas"]',
+             'Television'),
+            ('["categories.level2:Productos /// TV y Video /// '
+             'Reproductores de video y proyectores"]', 'OpticalDiskPlayer'),
+            ('["categories.level2:Productos /// Hogar /// '
+             'Aires acondicionados"]', 'AirConditioner'),
+            ('["categories.level2:Productos /// Hogar /// Cocinas"]', 'Stove'),
+            ('["categories.level2:Productos /// Hogar /// '
+             'Hornos y extractores"]', 'Oven'),
+            ('["categories.level2:Productos /// Hogar /// '
+             'Lavadoras y secadoras"]', 'WashingMachine'),
+            ('["categories.level2:Productos /// Hogar /// Refrigeradoras"]',
+             'Refrigerator'),
+            ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
+             'StereoSystem'),
+            ('["categories.level2:Productos /// Audio /// Parlantes"]',
+             'StereoSystem'),
+            ('["categories.level2:Productos /// Audio /// '
+             'Sistemas de audio y accesorios"]', 'StereoSystem')
         ]
 
-        post_data = {'manufacturerId': '0',
-                     'vendorId': '0',
-                     'orderby': 0,
-                     'pagesize': '24',
-                     'queryString': '',
-                     'shouldNotStartFromFirstPage': 'true',
-                     'keyword': '',
-                     'searchCategoryId': '0',
-                     'searchManufacturerId': '0',
-                     'searchVendorId': '0',
-                     'priceFrom': '',
-                     'priceTo': '',
-                     'includeSubcategories': 'False',
-                     'searchInProductDescriptions': 'False',
-                     'advancedSearch': 'False',
-                     'isOnSearchPage': 'False'}
-
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+        session.headers['Content-Type'] = 'application/json'
         product_urls = []
 
         for category_id, local_category in category_filters:
             if local_category != category:
                 continue
 
-            page_number = 1
-            post_data['categoryId'] = category_id
-            url = 'https://www.tiendamonge.com/getFilteredProducts'
+            payload_params = 'hitsPerPage=1000&page=0&facetFilters={}'.format(
+                urllib.parse.quote(category_id).replace('/', '%2F')
+            )
 
-            while True:
-                if page_number >= 20:
-                    raise Exception('Page overflow')
+            payload = {
+                "requests": [
+                    {"indexName": "monge_prod_default_products",
+                     "params": payload_params}
+                ]
+            }
 
-                post_data['pageNumber'] = page_number
-                result = session.post(url, data=post_data)
-                soup = BeautifulSoup(result.text, 'html.parser')
-                items = soup.findAll('div', 'item-box')
-                for item in items:
-                    if item.find('button', 'product-box-add-to-cart-button'):
-                        product_url = 'https://www.tiendamonge.com{}'\
-                            .format(item.find('a')['href'])
-                        product_urls.append(product_url)
-                if not items:
-                    if page_number == 1:
-                        raise Exception('Empty Category')
-                    break
-                page_number += 1
+            response = session.post(endpoint, data=json.dumps(payload))
+            products_json = json.loads(response.text)['results'][0]['hits']
+
+            if not products_json:
+                raise Exception('Empty category: ' + category_id)
+
+            for product in products_json:
+                product_urls.append(product['url'])
 
         return product_urls
 
@@ -98,30 +97,21 @@ class TiendaMonge(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        if soup.find('button', 'add-to-cart-button'):
+        if soup.find('button', {'id': 'product-addtocart-button'}):
             stock = -1
         else:
             stock = 0
 
-        price = Decimal(soup.find('span', {'itemprop': 'price'}).text
-                        .replace('₡', '').replace(',', '').strip())
+        price = Decimal(soup.find('span', 'price').text
+                        .replace('₡', '').replace('.', '').strip())
 
-        pictures = soup.findAll('div', 'picture-thumb')
-        picture_urls = []
-
-        for picture in pictures:
-            picture_url = picture.find('a')['data-full-image-url']
-            picture_urls.append(picture_url)
-
-        if not pictures:
-            picture_url = soup.find('a', 'picture-link')['data-full-image-url']
-            picture_urls = [picture_url]
+        picture_urls = [soup.find('img', {'alt': 'main product photo'})['src']]
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'quickTab-specifications'}))
+            str(soup.find('div', 'product attribute description'))
         )
 
         p = Product(

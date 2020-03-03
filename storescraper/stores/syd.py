@@ -25,11 +25,9 @@ class Syd(Store):
 
         category_paths = [
             ['/collection/macbook-pro-13', 'Notebook'],
-            # ['/collection/macbook-pro-15', 'Notebook'],
+            ['/collection/macbook-pro-16', 'Notebook'],
             ['/collection/macbook-air', 'Notebook'],
-            # ['/computadoras/monitores', 'Monitor'],
             ['/collection/memorias', 'Ram'],
-            # ['/ipodiphoneipad/ipad_retina', 'Tablet'],
         ]
 
         product_urls = []
@@ -48,7 +46,7 @@ class Syd(Store):
 
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            titles = soup.findAll('div', 'eg_product_card')
+            titles = soup.findAll('div', 'bs-product')
 
             if not titles:
                 raise Exception('Empty category: ' + category_url)
