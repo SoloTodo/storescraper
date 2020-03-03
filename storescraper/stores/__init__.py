@@ -103,6 +103,7 @@ from .lider import Lider
 from .lider_black_friday import LiderBlackFriday
 from .lider_get import LiderGet
 from .linio_chile import LinioChile
+from .linio_mexico import LinioMexico
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
 from .lucila import Lucila
