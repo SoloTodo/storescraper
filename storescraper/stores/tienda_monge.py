@@ -84,12 +84,14 @@ class TiendaMonge(Store):
                 raise Exception('Empty category: ' + category_id)
 
             for product in products_json:
-                product_urls.append(product['url'])
+                if product['marca'] == 'LG':
+                    product_urls.append(product['url'])
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
