@@ -25,11 +25,9 @@ class Syd(Store):
 
         category_paths = [
             ['/collection/macbook-pro-13', 'Notebook'],
-            # ['/collection/macbook-pro-15', 'Notebook'],
+            ['/collection/macbook-pro-16', 'Notebook'],
             ['/collection/macbook-air', 'Notebook'],
-            # ['/computadoras/monitores', 'Monitor'],
             ['/collection/memorias', 'Ram'],
-            # ['/ipodiphoneipad/ipad_retina', 'Tablet'],
         ]
 
         product_urls = []
@@ -48,7 +46,7 @@ class Syd(Store):
 
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            titles = soup.findAll('div', 'eg_product_card')
+            titles = soup.findAll('div', 'bs-product')
 
             if not titles:
                 raise Exception('Empty category: ' + category_url)
@@ -66,52 +64,39 @@ class Syd(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h2').text
-        product_web_id = soup.find('input', {'id': 'productWebId'})['value']
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)['@graph']
+        product_data = None
 
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', 'zoom-img-trigger')]
+        for data in json_data:
+            if data['@type'] == 'Product':
+                product_data = data
+                break
 
-        description = soup.find('div', 'row text-justify')
-        description = description.findAll('p')
+        name = product_data['name']
+        sku = product_data['sku']
+        picture_urls = product_data['image']
+        price = Decimal(product_data['offers']['price'])
+
+        description = soup.find('section', 'bs-product-description')
         description = html_to_markdown(str(description))
 
-        variants_container = soup.find('select', {'id': 'variant'})
-        products = []
+        stock = -1
 
-        for variant in variants_container.findAll('option'):
-            sku = variant['data-sku']
-            part_number = sku
-            price = Decimal(remove_words(variant['data-final_price']))
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )
 
-            variant_id = variant['value']
-
-            stock_url = 'https://syd.cl/product/create/{}?q=1&' \
-                        'productWebId={}'.format(variant_id, product_web_id)
-
-            stock_data = json.loads(session.get(stock_url).text)
-            if stock_data['status'] == 'ok':
-                stock = -1
-            else:
-                stock = 0
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                part_number=part_number,
-                description=description,
-                picture_urls=picture_urls
-            )
-
-            products.append(p)
-
-        return products
+        return [p]
