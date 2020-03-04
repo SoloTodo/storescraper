@@ -93,7 +93,7 @@ class MiPc(Store):
             while not done:
                 url = base_url.format(url_extension, page)
 
-                if page >= 15:
+                if page >= 20:
                     raise Exception('Page overflow: ' + url)
 
                 response = session.get(url)
