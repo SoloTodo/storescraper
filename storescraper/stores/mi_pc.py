@@ -30,10 +30,10 @@ class MiPc(Store):
             'Monitor',
             'Tablet',
             'Notebook',
-            'Printer',
+            # 'Printer',
             'Cell',
             'Television',
-            'AllInOne',
+            # 'AllInOne',
         ]
 
     @classmethod
@@ -69,8 +69,8 @@ class MiPc(Store):
             ['equipos/tablets.html', 'Tablet'],
             ['gamer/laptop.html', 'Notebook'],
             ['equipos/laptop.html', 'Notebook'],
-            ['impresion-y-consumibles/impresoras-y-multifuncionales.html',
-             'Printer'],
+            # ['impresion-y-consumibles/impresoras-y-multifuncionales.html',
+            #  'Printer'],
             ['audio-y-video/pantallas/tv.html', 'Television'],
             ['equipos/todo-en-uno.html', 'AllInOne'],
         ]

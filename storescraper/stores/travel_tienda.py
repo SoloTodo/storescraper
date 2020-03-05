@@ -93,7 +93,7 @@ class TravelTienda(Store):
 
         name = soup.find('p', 'txt-nombre-producto').text
 
-        if 'samsung' in name.lower():
+        if 'samsung' in name.lower() or 'galaxy' in name.lower():
             stock = -1
         else:
             stock = 0
