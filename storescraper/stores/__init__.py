@@ -97,6 +97,7 @@ from .led_light_chile import LedLightChile
 from .led_shop import LedShop
 from .led_studio import LedStudio
 from .lenovo_chile import LenovoChile
+from .lenovo_mexico import LenovoMexico
 from .lg_chile import LgChile
 from .lg_panama import LgPanama
 from .lider import Lider
