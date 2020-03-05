@@ -87,7 +87,13 @@ class Tupi(Store):
         name = soup.find('h1', 'product_title').text.strip()
         sku = soup.find(
             'meta', {'property': 'product:retailer_item_id'})['content']
-        stock = int(soup.find('input', {'id': 'the-cantidad-selector'})['max'])
+
+        stock = soup.find('input', {'id': 'the-cantidad-selector'})['max']
+
+        if stock:
+            stock = int()
+        else:
+            stock = -1
 
         if 'LG' not in name.upper().split(' '):
             stock = 0

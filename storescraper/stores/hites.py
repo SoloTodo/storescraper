@@ -316,7 +316,7 @@ class Hites(Store):
         json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
             'product']
 
-        if 'name' in json_data:
+        if 'name' in json_data and json_data['name']:
             name = json_data['name']
         else:
             name = "N/A"
