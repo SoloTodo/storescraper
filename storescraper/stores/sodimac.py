@@ -335,7 +335,7 @@ class Sodimac(Store):
         normal_price = Decimal(
             soup.find('div', 'normal').find('div', 'price').text
                 .replace('c/u', '').replace('$', '').replace('.', '')
-                .replace('Normal', '').strip())
+                .replace('Normal', '').replace('pack', '').strip())
 
         offer_price_container = soup.find('div', 'cmr')
 

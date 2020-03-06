@@ -38,6 +38,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .digitalife import Digitalife
+from .dimercom import Dimercom
 from .do_it_center import DoItCenter
 from .e_vision import EVision
 from .easy import Easy
