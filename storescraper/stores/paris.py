@@ -508,6 +508,7 @@ class Paris(Store):
                                     '{}'.format(subsection_type))
 
                 image_container = soup.find('div', 'home-slider')
+
                 if not image_container:
                     image_container = soup.find('div', 'hero-slider')
 
@@ -518,15 +519,19 @@ class Paris(Store):
                 for index, image in enumerate(images):
                     picture_url = image.find('picture').find('source')[
                         'srcset']
-                    destination_url = image['href']
+                    destination_url = image.get('href')
+                    if destination_url:
+                        destination_urls = [destination_url]
 
-                    if len(destination_url) > 255:
-                        continue
+                        if len(destination_url) > 255:
+                            continue
+                    else:
+                        destination_urls = []
 
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
-                        'destination_urls': [destination_url],
+                        'destination_urls': destination_urls,
                         'key': picture_url,
                         'position': index + 1,
                         'section': section,
