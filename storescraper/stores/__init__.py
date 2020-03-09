@@ -149,6 +149,7 @@ from .pc_gamer import PcGamer
 from .pc_ofertas import PcOfertas
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
+from .pcmig import Pcmig
 from .pcx import Pcx
 from .peta import Peta
 from .pichau import Pichau
@@ -215,4 +216,5 @@ from .wom import Wom
 from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
 from .yoytec import Yoytec
+from .zegucom import Zegucom
 from .zmart import Zmart
