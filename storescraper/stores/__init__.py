@@ -38,7 +38,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .digitalife import Digitalife
-from .dimercom import Dimercom
+# from .dimercom import Dimercom
 from .do_it_center import DoItCenter
 from .e_vision import EVision
 from .easy import Easy
@@ -149,7 +149,7 @@ from .pc_gamer import PcGamer
 from .pc_ofertas import PcOfertas
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
-from .pcmig import Pcmig
+# from .pcmig import Pcmig
 from .pcx import Pcx
 from .peta import Peta
 from .pichau import Pichau
