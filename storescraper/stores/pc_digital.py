@@ -26,7 +26,7 @@ class PcDigital(Store):
             'Monitor',
             'Tablet',
             'Notebook',
-            'Printer',
+            # 'Printer',
             'Cell',
             'Television',
         ]

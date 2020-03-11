@@ -24,10 +24,10 @@ class BestBuyMexico(Store):
             'Monitor',
             'Tablet',
             'Notebook',
-            'Printer',
+            # 'Printer',
             'Cell',
             'Television',
-            'AllInOne',
+            # 'AllInOne',
             'VideoGameConsole'
         ]
 

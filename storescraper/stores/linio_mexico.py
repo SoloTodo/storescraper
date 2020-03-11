@@ -37,6 +37,7 @@ class LinioMexico(Linio):
             ['componentes-de-computadoras/tarjetas-madre', 'Motherboard'],
             ['componentes-de-computadoras/memoria-ram', 'Ram'],
             ['xbox-videojuegos/consolas-xbox', 'VideoGameConsole'],
-            ['playstation-videojuegos/consolas-playstation', 'VideoGameConsole'],
+            ['playstation-videojuegos/consolas-playstation',
+             'VideoGameConsole'],
             ['nintendo-videojuegos/consolas-nintendo', 'VideoGameConsole'],
         ]

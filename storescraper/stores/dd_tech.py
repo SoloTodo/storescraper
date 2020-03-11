@@ -27,7 +27,7 @@ class DdTech(Store):
             'Keyboard',
             'Monitor',
             'Notebook',
-            'Printer',
+            # 'Printer',
             'Cell'
         ]
 

@@ -492,7 +492,7 @@ class Hites(Store):
 
                     # images = [a for a in images if
                     #           'cloned' not in a['class']]
-                    
+
                     assert len(images) == len(pictures)
 
                     for index, image in enumerate(images):

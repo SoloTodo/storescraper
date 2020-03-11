@@ -27,9 +27,9 @@ class OrbitalStore(Store):
             'CpuCooler'
             'Mouse',
             'Keyboard',
-            'Headphones',
+            # 'Headphones',
             'Notebook',
-            'Printer'
+            # 'Printer'
         ]
 
     @classmethod

@@ -28,7 +28,7 @@ class Pcx(Store):
             'KeboardMouseCombo',
             'Monitor',
             'Notebook',
-            'Printer',
+            # 'Printer',
             'Cell'
         ]
 
