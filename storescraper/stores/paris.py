@@ -1,4 +1,3 @@
-import json
 import re
 from collections import defaultdict
 from decimal import Decimal
@@ -234,6 +233,10 @@ class Paris(Store):
              'Línea Blanca > Estufas > Estufas a Gas', 1],
             ['linea-blanca/estufas/parafina', ['SpaceHeater'],
              'Línea Blanca > Estufas > Estufas a Parafina', 1],
+            ['linea-blanca/electrodomesticos/aspiradoras-enceradoras',
+             ['VacuumCleaner'],
+             'Línea Blanca > Electrodomésticos > Aspiradoras y Enceradoras',
+             1],
         ]
 
         session = session_with_proxy(extra_args)
