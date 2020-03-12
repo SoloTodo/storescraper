@@ -219,7 +219,7 @@ class Hites(Store):
                 if page >= 20:
                     raise Exception('Page overflow: ' + category_url)
 
-                response = session.get(category_url, timeout=30)
+                response = session.get(category_url, timeout=60)
 
                 if response.status_code in [404, 500]:
                     if page == 1:
@@ -271,7 +271,7 @@ class Hites(Store):
                 .format(keyword, page)
             print(search_url)
 
-            response = session.get(search_url, timeout=30)
+            response = session.get(search_url, timeout=60)
 
             if response.status_code in [404, 500]:
                 return []
@@ -299,7 +299,7 @@ class Hites(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=10)
+        response = session.get(url, timeout=60)
 
         if response.status_code == 404:
             return []
