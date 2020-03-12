@@ -34,6 +34,7 @@ class Tecnofacil(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
+        lg_product_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
@@ -51,13 +52,17 @@ class Tecnofacil(Store):
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 print(url)
 
-                for container in soup.findAll('div', 'products'):
+                for container in soup.findAll('div', 'item-inner'):
+                    logo = container.find('div', 'brand').find('img')
                     product_url = container.find('a')['href']
 
                     if product_url in product_urls:
                         done = True
                         break
 
+                    if logo and logo['src'] == 'https://www.tecnofacil.com.gt'\
+                                               '/media/marcas/lg.jpg':
+                        lg_product_urls.append(product_url)
                     product_urls.append(product_url)
 
                 if done:
@@ -65,7 +70,7 @@ class Tecnofacil(Store):
 
                 page += 1
 
-        return product_urls
+        return lg_product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

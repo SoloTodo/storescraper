@@ -62,6 +62,7 @@ class Max(Store):
         session = session_with_proxy(extra_args)
 
         product_urls = []
+        lg_product_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
@@ -85,12 +86,16 @@ class Max(Store):
                     raise Exception('No products for url {}'.format(url))
 
                 for container in items:
+                    logo = container.find('div', 'brand').find('img')
                     product_url = container.find('a')['href']
 
                     if product_url in local_urls:
                         done = True
                         break
 
+                    if logo and logo['src'] == \
+                            'https://www.max.com.gt/media/marcas/lg.jpg':
+                        lg_product_urls.append(product_url)
                     local_urls.append(container.find('a')['href'])
 
                 if done:
@@ -100,7 +105,7 @@ class Max(Store):
 
             product_urls.extend(local_urls)
 
-        return list(set(product_urls))
+        return list(set(lg_product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
