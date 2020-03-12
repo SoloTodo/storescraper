@@ -30,12 +30,12 @@ class GrupoDecme(Store):
             'Notebook',
             # 'StereoSystem',
             # 'OpticalDiskPlayer',
-            'Printer',
+            # 'Printer',
             # 'MemoryCard',
             'Cell',
             # 'UsbFlashDrive',
             'Television',
-            'AllInOne',
+            # 'AllInOne',
             'VideoGameConsole'
         ]
 

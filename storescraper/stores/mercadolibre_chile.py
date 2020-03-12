@@ -35,7 +35,7 @@ class MercadolibreChile(Store):
             str(soup.find('section', 'item-description')))
 
         variations = re.search(r'meli.Variations\(\{([\S\s]+?)}\);',
-                                   page_source)
+                               page_source)
 
         if not variations:
             pictures_data = json.loads(html.unescape(

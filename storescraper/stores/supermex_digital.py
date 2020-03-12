@@ -32,8 +32,8 @@ class SupermexDigital(Store):
             # 'Headphones',
             'Tablet',
             'Notebook',
-            'Printer',
-            'AllInOne',
+            # 'Printer',
+            # 'AllInOne',
             'VideoGameConsole'
         ]
 

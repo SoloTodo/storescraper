@@ -1,12 +1,9 @@
-import json
-import re
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
+from storescraper.utils import session_with_proxy, \
     html_to_markdown
 
 
@@ -28,7 +25,7 @@ class Dimercom(Store):
             'Keyboard',
             'Monitor',
             'Tablet',
-            'Printer',
+            # 'Printer',
         ]
 
     @classmethod
@@ -137,4 +134,3 @@ class Dimercom(Store):
         )
 
         return [p]
-

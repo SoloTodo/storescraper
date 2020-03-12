@@ -58,8 +58,9 @@ class Linio(Store):
                                 'div', 'badge-international-shipping'):
                             continue
 
-                        product_url = cls.base_domain + \
-                                      product_container.find('a')['href']
+                        product_url = \
+                            cls.base_domain + \
+                            product_container.find('a')['href']
 
                         product_url = product_url.split('?')[0]
                         product_urls.append(product_url)

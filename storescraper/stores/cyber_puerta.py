@@ -34,14 +34,14 @@ class CyberPuerta(Store):
             'Notebook',
             # 'StereoSystem',
             # 'OpticalDiskPlayer',
-            'Printer',
+            # 'Printer',
             # 'MemoryCard',
             'Cell',
             # 'UsbFlashDrive',
             'Television',
             # 'Camera',
             # 'Projector',
-            'AllInOne',
+            # 'AllInOne',
             'VideoGameConsole'
         ]
 
