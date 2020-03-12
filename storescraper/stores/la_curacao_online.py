@@ -31,6 +31,8 @@ class LaCuracaoOnline(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # KEEPS ONLY LG PRODUCTS
+
         session = session_with_proxy(extra_args)
         product_urls = []
 
@@ -42,7 +44,7 @@ class LaCuracaoOnline(Store):
             local_urls = []
             done = False
 
-            while True:
+            while not done:
                 if page >= 10:
                     raise Exception('Page overflow')
 
@@ -59,16 +61,17 @@ class LaCuracaoOnline(Store):
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
+                    product_name = container.find(
+                        'a', 'product-item-link').text
+
                     if product_url in local_urls:
                         done = True
                         break
 
                     local_urls.append(product_url)
 
-                if done:
-                    break
-
-                product_urls.extend(local_urls)
+                    if 'lg' in product_name.lower():
+                        product_urls.append(product_url)
 
                 page += 1
 

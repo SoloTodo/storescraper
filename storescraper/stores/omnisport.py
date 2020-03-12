@@ -25,15 +25,11 @@ class Omnisport(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # KEEPS ONLY LG PRODUCTS
+
         category_filters = [
-            ('video/android-tv', 'Television'),
-            ('video/pantallas-led', 'Television'),
-            ('video/oled-tv', 'Television'),
-            ('video/smart-tv', 'Television'),
-            ('video/4k-tv', 'Television'),
-            ('audio/mini-parlantes', 'StereoSystem'),
-            ('audio/equipos-de-sonido', 'StereoSystem'),
-            ('audio/sistema-de-teatro', 'StereoSystem'),
+            ('video/productos', 'Television'),
+            ('audio/productos', 'StereoSystem'),
             ('electronica/celulares', 'Cell'),
             ('electrodomesticos/refrigeradores', 'Refrigerator'),
             ('electrodomesticos/hornos', 'Oven'),
@@ -42,8 +38,6 @@ class Omnisport(Store):
              'AirConditioner'),
             ('electrodomesticos/lavadoras', 'WashingMachine'),
             ('electrodomesticos/secadoras', 'WashingMachine'),
-            ('video/dvd', 'OpticalDiskPlayer'),
-            ('video/blu-ray', 'OpticalDiskPlayer'),
             ('electrodomesticos/cocinas', 'Stove'),
             ('electrodomesticos/aspiradoras', 'VacuumCleaner'),
         ]
@@ -72,10 +66,13 @@ class Omnisport(Store):
                     done = True
 
                 for container in containers:
-                    product_url = 'https://www.omnisport.com{}'\
-                        .format(container.find('a')['href'])
+                    link = container.find('a', 'dark')
 
-                    product_urls.append(product_url)
+                    if 'lg' in link.text.strip().lower():
+                        product_url = 'https://www.omnisport.com{}'\
+                            .format(link['href'])
+
+                        product_urls.append(product_url)
 
                 page += 1
 
@@ -92,7 +89,7 @@ class Omnisport(Store):
 
         sku = soup.find('meta', {'property': 'product:retailer_item_id'}
                         )['content']
-        model = text_info.find('span').contents[1].replace('|', '').strip()
+        model = text_info.find('span', {'id': 'cuponproduct_name'}).text
         name = '{} ({})'.format(text_info.find('strong').text.strip(), model)
 
         price_containers = soup.findAll('p', 'product-price')

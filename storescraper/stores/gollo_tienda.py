@@ -25,9 +25,11 @@ class GolloTienda(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # KEEPS ONLY LG PRODUCTS
+
         category_filters = [
             ('productos/telefonia/celulares', 'Cell'),
-            ('productos/pantallas/led', 'Television'),
+            ('productos/pantallas', 'Television'),
             ('productos/audio-y-video/video/reproductores',
              'OpticalDiskPlayer'),
             # ('productos/hogar/ventilacion/aire-acondicionado',
@@ -56,6 +58,9 @@ class GolloTienda(Store):
             page = 1
             done = False
 
+            local_product_urls = []
+            local_lg_product_urls = []
+
             while not done:
                 if page >= 10:
                     raise Exception('Page overflow')
@@ -71,13 +76,18 @@ class GolloTienda(Store):
 
                 if items:
                     for item in items:
+                        product_name = item.find(
+                            'a', 'product-item-link').text.strip()
                         product_url = item.find('a')['href']
 
-                        if product_url in product_urls:
+                        if product_url in local_product_urls:
                             done = True
                             break
 
-                        product_urls.append(product_url)
+                        local_product_urls.append(product_url)
+
+                        if 'lg' in product_name.lower():
+                            local_lg_product_urls.append(product_url)
                 else:
                     if page == 1:
                         raise Exception('No products for category {}'
@@ -85,6 +95,8 @@ class GolloTienda(Store):
                     break
 
                 page += 1
+
+            product_urls.extend(local_lg_product_urls)
 
         return product_urls
 

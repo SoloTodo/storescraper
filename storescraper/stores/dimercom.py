@@ -20,7 +20,7 @@ class Dimercom(Store):
             'VideoCard',
             'PowerSupply',
             'ComputerCase',
-            'Ups',
+            # 'Ups',
             'Mouse',
             'Keyboard',
             'Monitor',
@@ -39,7 +39,9 @@ class Dimercom(Store):
             ['17_182', 'Processor'], ['13_138', 'Ram'], ['13_139', 'Ram'],
             ['26_253', 'VideoCard'], ['26_254', 'VideoCard'],
             ['9_116', 'PowerSupply'], ['10_123', 'ComputerCase'],
-            ['9_117', 'Ups'], ['1_64', 'Keyboard'], ['1_56', 'Mouse'],
+            # ['9_117', 'Ups'],
+            ['1_64', 'Keyboard'],
+            ['1_56', 'Mouse'],
             ['14', 'Monitor'], ['25_250', 'Tablet'], ['12_131', 'Printer'],
             ['12_132', 'Printer']
 

@@ -26,6 +26,8 @@ class TiendaMonge(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # KEEPS ONLY LG PRODUCTS
+
         endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
                    'x-algolia-agent=Algolia%20for%20vanilla%20' \
                    'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
