@@ -122,6 +122,8 @@ class PcExpress(Store):
 
         name = soup.find('h1', 'rm-product-page__title').text
         sku = soup.find('div', 'rm-product__id').h3.text
+        part_number = soup.find(
+            'p', 'rm-product__mpn').text.split(':')[-1].strip()
 
         stock_container = soup.find('div', 'rm-producto-stock-message')
 
@@ -160,7 +162,8 @@ class PcExpress(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
 
         return [p]
