@@ -334,6 +334,9 @@ class Hites(Store):
         else:
             picture_urls = json_data['children'][0]['images']
 
+        if 'prices' not in json_data["children"][0].keys():
+            return []
+
         reference_price = json_data["children"][0]['prices']['listPrice']
         normal_price = json_data["children"][0]['prices']['offerPrice']
 
