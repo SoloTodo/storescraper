@@ -61,6 +61,10 @@ class Jetstereo(Store):
                 raise Exception('Empty category: ' + url)
 
             for container in containers:
+                product_title = container.find('a', 'title')
+                if 'LG' not in product_title.text.upper():
+                    continue
+
                 product_url = '{}{}'\
                     .format(cls.base_url, container.find('a')['href'])
                 product_urls.append(product_url)

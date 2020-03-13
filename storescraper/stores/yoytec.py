@@ -50,6 +50,10 @@ class Yoytec(Store):
                 items = container.findAll('div', 'product_block')
 
                 for item in items:
+                    if item.find(
+                            'div', 'manufacturer_logo').find('img')['src'] != \
+                            'images/manufacturers_lg-01.gif':
+                        continue
                     product_url = item.find('a', 'product_img')['href']
 
                     if product_url in product_urls:

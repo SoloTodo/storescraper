@@ -136,7 +136,6 @@ class Pcmig(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
-            part_number=sku
         )
 
         return [p]

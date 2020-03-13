@@ -72,6 +72,7 @@ class Raenco(Store):
         session = session_with_proxy(extra_args)
 
         product_urls = []
+        lg_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
@@ -100,6 +101,10 @@ class Raenco(Store):
                         done = True
                         break
 
+                    if 'LG' in container.find(
+                            'p', 'product-name').text.upper():
+                        lg_urls.append(product_url)
+
                     local_urls.append(product_url)
 
                 if done:
@@ -109,7 +114,7 @@ class Raenco(Store):
 
                 page += 1
 
-        return list(set(product_urls))
+        return list(set(lg_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

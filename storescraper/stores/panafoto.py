@@ -133,6 +133,8 @@ class Panafoto(Store):
                     break
 
                 for product_json in products_json:
+                    if 'LG' not in product_json['manufacturer']:
+                        continue
                     product_url = product_json['url']
                     if isinstance(product_url, list):
                         product_url = ','.join(product_url)

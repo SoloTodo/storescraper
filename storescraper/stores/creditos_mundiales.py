@@ -55,6 +55,8 @@ class CreditosMundiales(Store):
                 raise Exception('Empty category: ' + category_path)
 
             for container in product_containers:
+                if 'LG' not in container.find('h2').text.upper():
+                    continue
                 product_urls.append(container.find('a')['href'])
 
         return product_urls

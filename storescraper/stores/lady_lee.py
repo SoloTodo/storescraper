@@ -64,6 +64,8 @@ class LadyLee(Store):
 
                 if products:
                     for container in products:
+                        if container.find('h6', 'code').text != 'LG':
+                            continue
                         product_url = '{}{}'\
                             .format(cls.base_url, container.find('a')['href'])
                         product_urls.append(product_url)

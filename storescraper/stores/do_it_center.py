@@ -65,6 +65,9 @@ class DoItCenter(Store):
                     break
 
                 for container in product_containers:
+                    if container.find('span', 'product-grid-item__vendor')\
+                            .text.strip().upper() != 'LG':
+                        continue
                     product_urls.append('https://www.doitcenter.com.pa' +
                                         container.find('a')['href'])
 

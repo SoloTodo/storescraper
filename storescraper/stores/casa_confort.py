@@ -64,6 +64,8 @@ class CasaConfort(Store):
                 soup = BeautifulSoup(response.text, 'html.parser')
 
                 for container in soup.findAll('li', 'isotope-item'):
+                    if 'LG' not in container.find('h4').text.upper():
+                        continue
                     product_urls.append(container.find('a')['href'])
 
                 page += 1

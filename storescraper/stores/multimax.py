@@ -78,6 +78,8 @@ class Multimax(Store):
                     break
 
                 for item in items:
+                    if 'LG' not in  item.find('div', 'vendor').text.upper():
+                        continue
                     product_url = 'https://shopmultimax.com{}'\
                         .format(item.find('a')['href'])
                     product_urls.append(product_url)

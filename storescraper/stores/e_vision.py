@@ -62,6 +62,8 @@ class EVision(Store):
                 raise Exception('Empty section {}'.format(section_id))
 
             for container in product_containers:
+                if 'LG' not in container.find('h4').text.upper():
+                    continue
                 product_url = 'https://www.evisionstore.com/{}'\
                     .format(container.find('a')['href'])
                 product_urls.append(product_url)
