@@ -124,6 +124,9 @@ class PlazaLama(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
+        if not sku:
+            return []
+
         p = Product(
             name,
             cls.__name__,

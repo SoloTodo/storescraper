@@ -46,7 +46,7 @@ class TtChile(Store):
             ['catpro.php?ic=24', 'Motherboard'],  # MB Intel
             ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR4
             ['subpro.php?ic=16&isc=13', 'Ram'],  # RAM Notebook
-            ['subpro.php?ic=10&isc=6', 'StorageDrive'],  # HDD Notebook
+            # ['subpro.php?ic=10&isc=6', 'StorageDrive'],  # HDD Notebook
             ['subpro.php?ic=10&isc=5', 'StorageDrive'],  # HDD SATA
             ['subpro.php?ic=10&isc=7', 'SolidStateDrive'],  # SSD
             ['catpro.php?ic=12', 'PowerSupply'],  # Fuentes de poder

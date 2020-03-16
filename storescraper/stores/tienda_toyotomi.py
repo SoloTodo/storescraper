@@ -85,6 +85,9 @@ class TiendaToyotomi(Store):
 
         description = json_data['description']
 
+        if 'image' not in json_data.keys():
+            return []
+
         picture_urls = [json_data['image']]
 
         p = Product(
