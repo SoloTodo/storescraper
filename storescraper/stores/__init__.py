@@ -12,6 +12,7 @@ from .best_buy_mexico import BestBuyMexico
 from .bip import Bip
 from .bristol import Bristol
 from .byp import Byp
+from .c_network import CNetwork
 from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
 from .casa_confort import CasaConfort
