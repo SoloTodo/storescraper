@@ -49,13 +49,13 @@ class Movistar(Store):
                            'catalogo.html?limit=1000'
             session = session_with_proxy(extra_args)
             soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
-            containers = soup.findAll('li', 'product')
+            containers = soup.findAll('li', 'itemsCatalogo')
 
             if not containers:
                 raise Exception('No cells found')
 
             for idx, container in enumerate(containers):
-                product_url = container['data-producturl']
+                product_url = container.find('a')['href']
                 if product_url.endswith('?codigo='):
                     continue
                 product_entries[product_url].append({
@@ -152,8 +152,8 @@ class Movistar(Store):
         base_name = soup.find('h1').text.strip()
 
         sku_color_choices = []
-        for color_container in soup.find('div', 'color-select').findAll('li'):
-            color_element = color_container.find('span')
+        for color_container in soup.find('ul', 'colorEMP').findAll('li'):
+            color_element = color_container.find('a')
             sku = color_element['data-sku']
             color_id = color_element['data-id']
             color_name = color_element['data-nombre-color']
@@ -161,7 +161,7 @@ class Movistar(Store):
 
         plan_ids = []
         plan_containers = soup.find(
-            'ul', 'modal-select-ul-planes').findAll('li')
+            'div', 'planesHtml').findAll('article')
         for plan_container in plan_containers:
             plan_ids.append(plan_container['data-id'])
 
@@ -186,6 +186,9 @@ class Movistar(Store):
                         'https://catalogo.movistar.cl/equipomasplan/'
                         'emp_detalle/offer',
                         data=payload)
+
+                    import ipdb
+                    ipdb.set_trace()
 
                     if response.status_code in [500, 503]:
                         continue

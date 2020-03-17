@@ -122,8 +122,11 @@ class PcExpress(Store):
 
         name = soup.find('h1', 'rm-product-page__title').text
         sku = soup.find('div', 'rm-product__id').h3.text
-        part_number = soup.find(
-            'p', 'rm-product__mpn').text.split(':')[-1].strip()
+        if not soup.find('p', 'rm-product__mpn'):
+            part_number = None
+        else:
+            part_number = soup.find(
+                'p', 'rm-product__mpn').text.split(':')[-1].strip()
 
         stock_container = soup.find('div', 'rm-producto-stock-message')
 
