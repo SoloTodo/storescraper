@@ -30,7 +30,7 @@ class Max(Store):
         category_filters = [
             ('video/televisores', 'Television'),
             ('video/cine-en-casa', 'StereoSystem'),
-            ('video/reproductores-dvd', 'OpticalDiskPlayer'),
+            # ('video/reproductores-dvd', 'OpticalDiskPlayer'),
             ('celulares/prepago', 'Cell'),
             ('celulares/prepago/tigo', 'Cell'),
             ('celulares/prepago/claro', 'Cell'),
