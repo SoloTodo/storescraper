@@ -30,7 +30,7 @@ class Max(Store):
         category_filters = [
             ('video/televisores', 'Television'),
             ('video/cine-en-casa', 'StereoSystem'),
-            ('video/reproductores-dvd', 'OpticalDiskPlayer'),
+            # ('video/reproductores-dvd', 'OpticalDiskPlayer'),
             ('celulares/prepago', 'Cell'),
             ('celulares/prepago/tigo', 'Cell'),
             ('celulares/prepago/claro', 'Cell'),
@@ -40,7 +40,7 @@ class Max(Store):
             ('lineablanca/secadoras', 'WashingMachine'),
             ('lineablanca/lavadoras', 'WashingMachine'),
             ('lineablanca/empotrables', 'Oven'),
-            ('lineablanca/estufas/hornos-empotrables', 'Oven'),
+            # ('lineablanca/estufas/hornos-empotrables', 'Oven'),
             ('electrodomesticos/microondas', 'Oven'),
             ('lineablanca/refrigeradoras/refrigeradoras', 'Refrigerator'),
             ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),

@@ -196,13 +196,20 @@ class LiderGet(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         sku_id = url.split('/')[-1]
 
         query_url = 'https://buysmart-checkout-bff-production.lider.cl/' \
                     'buysmart-checkout-bff/products/?sku={}&appId=BuySmart' \
                     ''.format(sku_id)
-        entry = json.loads(session.get(query_url).text)[0]
+
+        response = session.get(query_url)
+
+        if response.status_code in [500]:
+            return []
+
+        entry = json.loads(response.text)[0]
 
         name = '{} {}'.format(entry['brand'], entry['displayName'])
         ean = entry['gtin13']
