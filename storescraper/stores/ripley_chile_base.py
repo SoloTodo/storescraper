@@ -327,7 +327,7 @@ class RipleyChileBase(Store):
         for flixmedia_url in flixmedia_urls:
             flixmedia_tag = soup.find(
                 'script', {'src': flixmedia_url})
-            if flixmedia_tag:
+            if flixmedia_tag and flixmedia_tag.has_attr('data-flix-mpn'):
                 flixmedia_id = flixmedia_tag['data-flix-mpn']
                 video_urls = flixmedia_video_urls(flixmedia_id)
                 break

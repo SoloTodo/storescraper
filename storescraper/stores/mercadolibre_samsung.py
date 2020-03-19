@@ -30,7 +30,7 @@ class MercadolibreSamsung(MercadolibreChile):
             # ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
-            ('salud-equipamiento-medico', 'AirConditioner'),
+            # ('salud-equipamiento-medico', 'AirConditioner'),
             # ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('repuestos-accesorios', 'CellAccesory'),
             ('electronica/accesorios-audio-video', 'CellAccesory'),

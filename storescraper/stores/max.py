@@ -40,7 +40,7 @@ class Max(Store):
             ('lineablanca/secadoras', 'WashingMachine'),
             ('lineablanca/lavadoras', 'WashingMachine'),
             ('lineablanca/empotrables', 'Oven'),
-            ('lineablanca/estufas/hornos-empotrables', 'Oven'),
+            # ('lineablanca/estufas/hornos-empotrables', 'Oven'),
             ('electrodomesticos/microondas', 'Oven'),
             ('lineablanca/refrigeradoras/refrigeradoras', 'Refrigerator'),
             ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),
