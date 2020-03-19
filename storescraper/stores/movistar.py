@@ -143,6 +143,10 @@ class Movistar(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
+        ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['Content-Type'] = \
+            'application/x-www-form-urlencoded'
+        ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
         page = session.get(url)
 
         if page.status_code == 404:
@@ -159,112 +163,126 @@ class Movistar(Store):
             color_name = color_element['data-nombre-color']
             sku_color_choices.append((sku, color_id, color_name))
 
-        plan_ids = []
-        plan_containers = soup.find(
-            'div', 'planesHtml').findAll('article')
-        for plan_container in plan_containers:
-            plan_ids.append(plan_container['data-id'])
-
-        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        session.headers['x-requested-with'] = 'XMLHttpRequest'
         products = []
+
+        base_url = url.split('?')[0]
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
 
-            for plan_id in plan_ids:
-                for portability_type_id, portability_suffix in \
-                        cls.portability_choices:
-                    payload = 'current%5Bsku%5D={}&current%5Bplan%5D={}&' \
-                              'current%5Bmovistar1%5D={}&current%5Bpayment' \
-                              '%5D=1&current%5Bcolor%5D={}&current%5Btype' \
-                              '%5D={}'.format(sku, plan_id.replace(' ', '+'),
-                                              cls.movistar1,
-                                              color_id, portability_type_id)
+            for portability_type_id, portability_suffix in \
+                    cls.portability_choices:
 
-                    response = session.post(
+                if portability_type_id == 1:
+                    code = 'null'
+                else:
+                    payload = 'current%5Bcolor%5D=&current%5Bsku%5D={0}' \
+                              '&current%5Btype%5D={1}&current%5Bplan%5D=&' \
+                              'current%5BhasMovistar1%5D={2}&current%5B' \
+                              'movistar1%5D={2}&current%5Bpayment%5D='.format(
+                                sku, portability_type_id, cls.movistar1)
+                    response = ajax_session.post(
                         'https://catalogo.movistar.cl/equipomasplan/'
-                        'emp_detalle/offer',
+                        'emp_detalle/planes',
                         data=payload)
 
-                    import ipdb
-                    ipdb.set_trace()
-
-                    if response.status_code in [500, 503]:
-                        continue
-
                     json_response = json.loads(response.text)
-                    products.extend(cls._assemble_postpago_cells(
-                        json_response, name, url, sku, color_id, plan_id,
-                        portability_suffix))
+                    code = json_response['codeOfferCurrent']
 
-        return products
+                cell_url = '{}?codigo={}'.format(base_url, code)
 
-    @classmethod
-    def _assemble_postpago_cells(cls, json_response, name, url, sku, color_id,
-                                 plan_id, portability_suffix):
-        soup = BeautifulSoup(json_response['offer'], 'html.parser')
-        payment_options = soup.findAll('div', 'price')
+                cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                          'html.parser')
+                plan_containers = cell_soup.findAll('article')
 
-        if len(payment_options) == 2:
-            entry_with_monthly_payment_index = 0
-            entry_without_monthly_payment_index = 1
-        else:
-            entry_with_monthly_payment_index = None
-            entry_without_monthly_payment_index = 0
+                if portability_type_id == 3:
+                    # Nuevo
+                    # Sin arriendo
 
-        adjusted_plan_id = plan_id.replace(
-            '_Ren', '_Porta')
+                    price_container = cell_soup.find(
+                        'div', 'boxpieplusplan').find(
+                        'p', 'boxEMPlan-int-box-pie')
+                    price = Decimal(
+                        price_container.text.split('$')[1].replace('.', ''))
 
-        products = []
+                    for container in plan_containers:
+                        cell_plan_name = container['data-id']
 
-        # Sin cuota de arriendo
-        price = Decimal(remove_words(
-            payment_options[entry_without_monthly_payment_index].contents[2]))
+                        products.append(Product(
+                            name,
+                            cls.__name__,
+                            'Cell',
+                            cell_url,
+                            cell_url,
+                            '{} - {} - {}'.format(sku, color_id,
+                                                  cell_plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_monthly_payment=Decimal(0)
+                        ))
 
-        products.append(Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            '{} - {} - {}{}'.format(sku, color_id, adjusted_plan_id,
-                                    portability_suffix),
-            -1,
-            price,
-            price,
-            'CLP',
-            cell_plan_name='{}{}'.format(adjusted_plan_id,
-                                         portability_suffix),
-            cell_monthly_payment=Decimal(0)
-        ))
+                elif portability_type_id == 1:
+                    # Portabilidad
+                    # Sin arriendo
 
-        # Con cuota de arriendo
-        if entry_with_monthly_payment_index is not None:
-            price = Decimal(remove_words(
-                payment_options[0].contents[2]))
-            monthly_payment_text = \
-                soup.find('div', 'cuotes').text
-            monthly_payment_match = re.search(
-                r'\$([\d|.]+)', monthly_payment_text)
-            monthly_payment = Decimal(
-                remove_words(monthly_payment_match.groups()[0]))
+                    price_container = cell_soup.find(
+                        'div', 'boxpieplusplan').find(
+                        'p', 'boxEMPlan-int-box-pie')
+                    price = Decimal(
+                        price_container.text.split('$')[1].replace('.', ''))
 
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - {} - {}{} cuotas'.format(sku, color_id, adjusted_plan_id,
-                                               portability_suffix),
-                -1,
-                price,
-                price,
-                'CLP',
-                cell_plan_name='{}{} cuotas'.format(
-                    adjusted_plan_id, portability_suffix),
-                cell_monthly_payment=monthly_payment
-            ))
+                    for container in plan_containers:
+                        cell_plan_name = container['data-id']
+
+                        products.append(Product(
+                            name,
+                            cls.__name__,
+                            'Cell',
+                            cell_url,
+                            cell_url,
+                            '{} - {} - {}'.format(sku, color_id,
+                                                  cell_plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_monthly_payment=Decimal(0)
+                        ))
+
+                    # Con arriendo
+
+                    for container in plan_containers:
+                        cell_plan_name = container['data-id']
+                        price = Decimal(remove_words(container.find(
+                            'strong', 'pie-price').text))
+
+                        monthly_payment_text = container.find(
+                            'div', 'pie-detail').findAll('strong')[-1].text
+                        monthly_payment_text = re.search(
+                            r'\$([\d+.]+)', monthly_payment_text).groups()[0]
+                        cell_monthly_payment = Decimal(
+                            monthly_payment_text.replace('.', ''))
+
+                        products.append(Product(
+                            name,
+                            cls.__name__,
+                            'Cell',
+                            cell_url,
+                            cell_url,
+                            '{} - {} - {} cuotas'.format(sku, color_id,
+                                                         cell_plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name='{} cuotas'.format(cell_plan_name),
+                            cell_monthly_payment=cell_monthly_payment
+                        ))
+                else:
+                    raise Exception('Invalid portability ID')
 
         return products
