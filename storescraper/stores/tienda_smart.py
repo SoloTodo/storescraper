@@ -74,27 +74,29 @@ class TiendaSmart(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        pricing_data = json.loads(
-            soup.findAll(
-                'script', {'type': 'application/ld+json'})[2].text.replace(
-                '\n', ''))
+        name = soup.find('h1', 'page-title').text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        name = pricing_data['name']
-        sku = pricing_data['sku']
+        if not soup.find('span', 'price'):
+            return []
 
-        price = Decimal(pricing_data['offers'][0]['price'])
+        price = Decimal(
+            soup.find('span', 'price').text.replace('$', '').replace('.', ''))
 
-        if pricing_data['offers'][0]['availability'] == 'InStock':
+        if soup.find('div', 'stock available'):
             stock = -1
         else:
             stock = 0
 
-        description = '\n\n'.join([html_to_markdown(str(panel)) for
-                                   panel in soup.findAll('div', 'panel')])
-        picture_urls = [pricing_data['image']]
+        description = html_to_markdown(str(
+            soup.find('div', {'id': 'additional'})))
+
+        picture_urls = [
+            soup.find('div', 'gallery-placeholder').find('img')['src']]
 
         p = Product(
             name,
