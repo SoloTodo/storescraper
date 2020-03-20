@@ -27,13 +27,18 @@ class Entel(Store):
         if category == 'Cell':
             # Contrato
 
-            json_product_list = json.loads(session.get(
-                'http://equipos.entel.cl/devices/personas/tm/'
-                'contratacion.json?search=1').text)
+            json_url = 'https://miportal.entel.cl/lista-productos?' \
+                       'No=0&Nrpp=1000&subPath=main%5B1%5D&format=json-rest'
+            session.headers['Content-Type'] = 'application/json; charset=UTF-8'
+            response = session.get(json_url)
 
-            for idx, device in enumerate(json_product_list['devices']):
-                product_url = 'http://equipos.entel.cl/segmentos/' \
-                              'personas/products/' + device['slug']
+            json_product_list = json.loads(
+                response.text)['response']['records']
+
+            for idx, device in enumerate(json_product_list):
+                product_url = 'https://miportal.entel.cl/personas/producto{}'\
+                    .format(device['detailsAction']['recordState'])
+
                 product_entries[product_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',
@@ -46,7 +51,7 @@ class Entel(Store):
                 'section_name': 'Planes',
                 'value': 1
             })
-            product_entries['http://www.entel.cl/planes/'].append({
+            product_entries['http://www.entel.cl/planes-v2/'].append({
                 'category_weight': 1,
                 'section_name': 'Planes',
                 'value': 2
@@ -56,6 +61,7 @@ class Entel(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         products = []
         if url == cls.prepago_url:
             # Plan Prepago
@@ -72,10 +78,10 @@ class Entel(Store):
                 'CLP',
             ))
 
-        elif 'entel.cl/planes/' in url:
+        elif 'entel.cl/planes-v2/' in url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
-        elif 'equipos.entel.cl' in url:
+        elif 'miportal.entel.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
         else:
@@ -123,147 +129,52 @@ class Entel(Store):
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        slug = url.split('/')[-1]
 
-        details_url = 'https://equipos.entel.cl/device/{}.json'.format(slug)
-        details_json = json.loads(session.get(details_url).text)
-        product_name = details_json['title']
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        raw_json = soup.find(
+            'div', {'id': 'productDetail'}).find('script').string
+
+        json_data = json.loads(raw_json)
+
         products = []
-        pricing_variants = {}
 
-        for variant in details_json['variants']:
-            pricing_variant = None
-            variant_name = product_name
+        for variant in json_data['renderSkusBean']['skus']:
+            variant_name = variant['skuName']
+            variant_sku = variant['skuId']
 
-            variant_items = sorted(variant['options'].items(),
-                                   key=lambda x: x[0])
+            plans_url = 'https://miportal.entel.cl/' \
+                        'restpp/equipments/prices/{}'.format(variant_sku)
 
-            for key, value in variant_items:
-                variant_name += ' {} {}'.format(key, value)
-                if key == 'capacidad':
-                    print('Found: ' + value)
-                    if value not in pricing_variants:
-                        print('New value')
-                        pricing_variants[value] = variant
-                    pricing_variant = pricing_variants[value]
+            plans_data = json.loads(
+                session.get(plans_url).text)['response']['Prices']
 
-            if not pricing_variant:
-                print('Using default')
-                pricing_variant = variant
+            suffix_dict = {
+                'Portabilidad': ' Portabilidad',
+                'Venta': ''
+            }
 
-            picture_urls = variant['covers']
-
-            # Plan
-
-            plan_choices = [
-                ('',
-                 ('price_1',),
-                 'sale_price_promotion',
-                 'sale_price'
-                 ),
-                (' Portabilidad',
-                 ('portability_price_promotion', 'price_1'),
-                 'portability_price',
-                 'discount_percentage'
-                 ),
-            ]
-
-            # Use the prices of the first variant with the same capacity
-            for plan in pricing_variant['plans']:
-                plan = plan['plan']
-
-                if plan['plan_type'] in ['cargo_fijo', 'voz',
-                                         'multi_smart',
-                                         'cuenta_controlada']:
+            for plan in plans_data:
+                if plan['orderArea'] == 'Activacion de Linea':
                     continue
 
-                if plan['modality'] != 'contratacion':
-                    continue
+                plan_name = plan['planDisplayName'] + \
+                            suffix_dict[plan['orderArea']]
+                plan_price = Decimal(plan['price'])
 
-                for plan_suffix, field_names, monthly_payment_field, \
-                        direct_buy_field in plan_choices:
-                    base_plan_name = plan['title'] + plan_suffix
-                    base_plan_name = base_plan_name.replace('*', '').strip()
-
-                    for field_name in field_names:
-                        price = plan[field_name]
-
-                        if price is None:
-                            continue
-
-                        price = Decimal(price)
-
-                        if price < 0:
-                            continue
-
-                        if 0 < price < 100:
-                            price = Decimal(plan['price_1'])
-                            if price < 0:
-                                continue
-
-                        break
-
-                    cell_monthly_payment = Decimal(plan[monthly_payment_field])
-                    buyout_payment = Decimal(plan[direct_buy_field])
-
-                    plan_name = base_plan_name
-
-                    # Con cuota de arriendo
-
-                    products.append(Product(
-                        variant_name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {} Cuotas'.format(variant_name, plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name=plan_name + ' Cuotas',
-                        picture_urls=picture_urls,
-                        cell_monthly_payment=cell_monthly_payment
-                    ))
-
-                    # Sin cuota de arriendo
-
-                    products.append(Product(
-                        variant_name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        '{} - {}'.format(variant_name, plan_name),
-                        -1,
-                        buyout_payment,
-                        buyout_payment,
-                        'CLP',
-                        cell_plan_name=plan_name,
-                        picture_urls=picture_urls,
-                        cell_monthly_payment=Decimal(0)
-                    ))
-
-            prepaid_prices = pricing_variant['prepaid_prices']
-
-            if prepaid_prices:
-                prepago_price = Decimal(
-                    pricing_variant['prepaid_prices']['sale_price'])
-
-                product = Product(
+                products.append(Product(
                     variant_name,
                     cls.__name__,
                     'Cell',
                     url,
                     url,
-                    '{} - Entel Prepago'.format(variant_name),
+                    '{} - {}'.format(variant_sku, plan_name),
                     -1,
-                    prepago_price,
-                    prepago_price,
+                    plan_price,
+                    plan_price,
                     'CLP',
-                    cell_plan_name='Entel Prepago',
-                    picture_urls=picture_urls
-                )
-                products.append(product)
+                    sku=variant_sku,
+                    cell_monthly_payment=Decimal(0),
+                    cell_plan_name=plan_name,
+                ))
 
         return products
