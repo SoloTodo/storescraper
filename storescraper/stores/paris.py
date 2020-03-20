@@ -396,7 +396,8 @@ class Paris(Store):
 
         sum_review_scores = 0
         for container in review_containers:
-            sum_review_scores += int(container.find('span', {'itemprop': 'ratingValue'}).text)
+            sum_review_scores += int(container.find(
+                'span', {'itemprop': 'ratingValue'}).text)
 
         if review_containers:
             review_avg_score = sum_review_scores / review_count
