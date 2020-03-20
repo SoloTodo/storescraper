@@ -23,11 +23,11 @@ class TiendaSmart(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['smartphones', 'Cell'],
-            ['tablets', 'Tablet'],
-            ['audio/auriculares', 'Headphones'],
-            ['wearables', 'Wearable'],
-            ['accesorios', 'CellAccesory'],
+            ['3-smartphones.html', 'Cell'],
+            ['tablets.html', 'Tablet'],
+            ['audios/portipo/auriculares.html', 'Headphones'],
+            ['wearabless.html', 'Wearable'],
+            ['accesorios.html', 'CellAccesory'],
         ]
 
         product_urls = []
@@ -43,13 +43,14 @@ class TiendaSmart(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                category_url = 'https://www.tiendasmart.cl/{}?limit=48&p={}' \
-                               ''.format(category_path, page)
+                category_url = 'https://tiendasmart.cl/{}?' \
+                               'p={}&product_list_limit=30'\
+                    .format(category_path, page)
 
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
                 product_containers = soup.findAll(
-                    'div', 'product-image-wrapper')
+                    'div', 'product-hover')
 
                 done = False
 
@@ -57,7 +58,8 @@ class TiendaSmart(Store):
                     raise Exception('Empty category: ' + category_url)
 
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find(
+                        'a', 'product-item-photo')['href']
                     if product_url in product_urls:
                         done = True
                         break

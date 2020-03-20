@@ -28,10 +28,10 @@ class Weplay(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['consolas/consolas3ds.html', 'VideoGameConsole'],
+            # ['consolas/consolas3ds.html', 'VideoGameConsole'],
             ['consolas/consolasswitch.html', 'VideoGameConsole'],
             ['consolas/consolasps4.html', 'VideoGameConsole'],
-            ['consolas/consolasxboxone.html', 'VideoGameConsole'],
+            # ['consolas/consolasxboxone.html', 'VideoGameConsole'],
             ['computacion/audifonosgamer.html', 'Headphones'],
             ['computacion/teclados.html', 'Keyboard'],
             ['computacion/discosdurosexternos.html', 'ExternalStorageDrive'],
@@ -55,7 +55,7 @@ class Weplay(Store):
 
             while not done:
                 if page > 20:
-                    raise Exception('Page overflow')
+                    raise Exception('Page overflow: ' + category_path)
 
                 url = 'https://www.weplay.cl/{}?p={}'.format(
                     category_path, page)
