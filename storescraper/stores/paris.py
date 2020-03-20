@@ -391,6 +391,18 @@ class Paris(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
+        review_containers = soup.findAll('span', {'itemprop': 'reviewRating'})
+        review_count = len(review_containers)
+
+        sum_review_scores = 0
+        for container in review_containers:
+            sum_review_scores += int(container.find('span', {'itemprop': 'ratingValue'}).text)
+
+        if review_containers:
+            review_avg_score = sum_review_scores / review_count
+        else:
+            review_avg_score = None
+
         p = Product(
             name,
             cls.__name__,
@@ -406,7 +418,9 @@ class Paris(Store):
             description=description,
             picture_urls=picture_urls,
             video_urls=video_urls,
-            flixmedia_id=flixmedia_id
+            flixmedia_id=flixmedia_id,
+            review_count=review_count,
+            review_avg_score=review_avg_score
         )
 
         return [p]
