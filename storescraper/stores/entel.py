@@ -95,35 +95,29 @@ class Entel(Store):
 
         products = []
 
-        variants = [
-            'sin cuota de arriendo',
-            'con cuota de arriendo',
-        ]
-
-        for plan_box in soup.findAll('div', 'box-planes'):
-            base_plan_name = plan_box.find('h3').text.split('$')[0].strip()
+        for plan_box in soup.findAll('div', 'plan-box'):
+            base_plan_name = plan_box.find('h3').text.strip()
 
             for suffix in ['', ' Portabilidad']:
-                for variant in variants:
-                    name = '{}{} ({})'.format(base_plan_name, suffix, variant)
+                name = '{}{}'.format(base_plan_name, suffix)
 
-                    price_container = plan_box.find(
-                        'span', 'green-txt')
+                price_text = plan_box.find(
+                    'p', 'txt-price').text.replace('/mes', '')
+                
+                price = Decimal(remove_words(price_text))
 
-                    price = Decimal(remove_words(price_container.text))
-
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'CellPlan',
-                        url,
-                        url,
-                        name,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                    ))
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'CellPlan',
+                    url,
+                    url,
+                    name,
+                    -1,
+                    price,
+                    price,
+                    'CLP'
+                ))
         return products
 
     @classmethod
@@ -157,8 +151,12 @@ class Entel(Store):
                 if plan['orderArea'] == 'Activacion de Linea':
                     continue
 
+                if plan['planDisplayName'] == 'Conectado SIMple 7.990':
+                    continue
+
                 plan_name = plan['planDisplayName'] + \
                             suffix_dict[plan['orderArea']]
+
                 plan_price = Decimal(plan['price'])
 
                 products.append(Product(
