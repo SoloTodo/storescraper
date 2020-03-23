@@ -1,4 +1,5 @@
 import json
+import math
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
@@ -157,7 +158,7 @@ class Entel(Store):
                 plan_name = plan['planDisplayName'] + \
                             suffix_dict[plan['orderArea']]
 
-                plan_price = Decimal(plan['price'])
+                plan_price = Decimal(round(plan['price']))
 
                 products.append(Product(
                     variant_name,
