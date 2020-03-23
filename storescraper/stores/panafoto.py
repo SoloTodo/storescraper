@@ -44,9 +44,9 @@ class Panafoto(Store):
             ('["categories.level3:Categorías /// TV y Video /// '
              'Reproductores de Audio y Video /// Barras de Sonido"]',
              'StereoSystem'),
-            ('["categories.level3:Categorías /// TV y Video /// '
-             'Reproductores de Audio y Video /// Teatro en Casa"]',
-             'StereoSystem'),
+            # ('["categories.level3:Categorías /// TV y Video /// '
+            #  'Reproductores de Audio y Video /// Teatro en Casa"]',
+            # 'StereoSystem'),
             ('["categories.level3:Categorías /// TV y Video /// '
              'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
              'OpticalDiskPlayer'),

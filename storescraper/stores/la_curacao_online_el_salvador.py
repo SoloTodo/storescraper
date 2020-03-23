@@ -6,7 +6,7 @@ class LaCuracaoOnlineElSalvador(LaCuracaoOnline):
     currency = '$'
     currency_iso = 'USD'
     category_filters = [
-        ('electronica/celulares.html', 'Cell'),
+        ('telefonia/celulares', 'Cell'),
         ('audio-y-video/televisores.html', 'Television'),
         ('audio-y-video/equipos-de-sonido.html', 'StereoSystem'),
         # ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),

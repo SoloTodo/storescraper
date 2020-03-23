@@ -88,6 +88,9 @@ class Tupi(Store):
         sku = soup.find(
             'meta', {'property': 'product:retailer_item_id'})['content']
 
+        if not soup.find('input', {'id': 'the-cantidad-selector'}):
+            return []
+
         stock = soup.find('input', {'id': 'the-cantidad-selector'})['max']
 
         if stock:
