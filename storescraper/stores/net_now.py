@@ -28,10 +28,10 @@ class NetNow(Store):
         category_paths = [
             # ['66', 'Notebook'],
             # ['64', 'Monitor'],
-            ['25', 'Notebook'],  # Notebooks gamer
+            # ['25', 'Notebook'],  # Notebooks gamer
             ['28', 'Notebook'],  # Notebooks
             ['35', 'Notebook'],  # Ultradelgados
-            ['31', 'Notebook'],  # Convertibles
+            # ['31', 'Notebook'],  # Convertibles
             # ['34', 'Notebook'],  # 2 en 1
             ['38', 'AllInOne'],  # All in One
             ['36', 'Monitor'],   # Monitors
