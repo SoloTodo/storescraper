@@ -44,6 +44,9 @@ class ElectronicaPanamericana(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
 
         product_urls = []
 
