@@ -81,6 +81,7 @@ from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
 from .inverfin import Inverfin
 from .iprotech import Iprotech
+from .isi_book import IsiBook
 from .jetstereo import Jetstereo
 from .johnson import Johnson
 from .jumbo import Jumbo

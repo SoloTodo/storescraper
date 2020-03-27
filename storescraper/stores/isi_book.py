@@ -7,7 +7,7 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class Danaus(Store):
+class IsiBook(Store):
     @classmethod
     def categories(cls):
         return [
@@ -35,24 +35,24 @@ class Danaus(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['pc-y-portatiles/notebook', 'Notebook'],
-            ['pc-y-portatiles/tablets', 'Tablet'],
+            # ['pc-y-portatiles/tablet', 'Tablet'],
             ['impresion/multifuncionales-tinta', 'Printer'],
-            ['impresion/impresora-laser', 'Printer'],
+            ['impresion/impresoras-laser', 'Printer'],
             ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
-            ['almacenamiento/disco-duros-pc', 'StorageDrive'],
+            ['almacenamiento/disco-duros', 'StorageDrive'],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
-            ['componentes-partes-y-piezas/monitores', 'Monitor'],
-            ['componentes-partes-y-piezas/pantallas', 'Monitor'],
+            ['partes-y-piezas/monitores', 'Monitor'],
+            ['partes-y-piezas/pantallas', 'Monitor'],
             ['pc-y-portatiles/all-in-one', 'AllInOne'],
-            ['componentes-partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
-            ['audio-video-y-fotografia/audifono', 'Headphones'],
-            ['componentes-partes-y-piezas/procesadores', 'Processor'],
-            ['componentes-partes-y-piezas/fuentes-poder', 'PowerSupply'],
-            ['componentes-partes-y-piezas/ram', 'Ram'],
+            ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
+            ['audio-video-y-fotografia/audifonos', 'Headphones'],
+            ['partes-y-piezas/procesadores', 'Processor'],
+            ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
+            ['partes-y-piezas/memorias-ram', 'Ram'],
         ]
 
         session = session_with_proxy(extra_args)
-        base_url = 'https://www.danaus.cl/{}.html?p={}'
+        base_url = 'https://www.isibook.cl/{}.html?p={}'
         product_urls = []
 
         for url_extension, local_category in category_paths:
