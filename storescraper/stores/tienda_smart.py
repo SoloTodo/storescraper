@@ -92,6 +92,11 @@ class TiendaSmart(Store):
         else:
             stock = 0
 
+        if 'semi nuevo' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         description = html_to_markdown(str(
             soup.find('div', {'id': 'additional'})))
 
@@ -112,7 +117,8 @@ class TiendaSmart(Store):
             sku=sku,
             part_number=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
