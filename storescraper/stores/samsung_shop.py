@@ -38,7 +38,7 @@ class SamsungShop(Store):
             ('tv-y-audio/tv', 'Television'),
             ('linea-blanca/refrigeradores', 'Refrigerator'),
             ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
-            ('linea-blanca/microondas', 'Oven'),
+            # ('linea-blanca/microondas', 'Oven'),
             ('linea-blanca/aspiradoras', 'VacuumCleaner'),
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             # ('linea-blanca/lavavajillas', 'DishWasher'),

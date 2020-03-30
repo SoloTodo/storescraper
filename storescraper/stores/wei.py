@@ -46,7 +46,7 @@ class Wei(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_urls = [
-            ['752', 'Tablet'],  # Tablets
+            # ['752', 'Tablet'],  # Tablets
             ['678', 'Tablet'],  # TABLETS
             ['1267', 'Notebook'],  # Notebooks
             ['731', 'Notebook'],  # NOTEBOOK GAMER
