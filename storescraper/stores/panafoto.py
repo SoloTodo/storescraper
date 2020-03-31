@@ -47,13 +47,13 @@ class Panafoto(Store):
             # ('["categories.level3:Categorías /// TV y Video /// '
             #  'Reproductores de Audio y Video /// Teatro en Casa"]',
             # 'StereoSystem'),
-            ('["categories.level3:Categorías /// TV y Video /// '
-             'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
-             'OpticalDiskPlayer'),
+            # ('["categories.level3:Categorías /// TV y Video /// '
+            #  'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
+            #  'OpticalDiskPlayer'),
             ('["categories.level3:Categorías /// Audio /// Bocinas /// '
              'Bocinas Bluetooth"]', 'StereoSystem'),
-            ('["categories.level3:Categorías /// Audio /// Sistemas de Audio '
-             '/// Equipos de Sonido"]', 'StereoSystem'),
+            # ('["categories.level3:Categorías /// Audio /// Sistemas de Audio'
+            #  ' /// Equipos de Sonido"]', 'StereoSystem'),
             ('["categories.level3:Categorías /// Celulares y Tablets '
              '/// Celulares /// Smartphones"]', 'Cell'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '

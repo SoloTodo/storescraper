@@ -418,8 +418,11 @@ class Falabella(Store):
             review_stats = review_data['Includes']
 
             if 'Products' in review_stats:
-                review_avg_score = review_stats['Products'][str(sku)][
-                    'ReviewStatistics']['AverageOverallRating']
+                if str(sku) not in review_stats['Products'].keys():
+                    review_avg_score = None
+                else:
+                    review_avg_score = review_stats['Products'][str(sku)][
+                        'ReviewStatistics']['AverageOverallRating']
             else:
                 review_avg_score = None
 
