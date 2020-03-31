@@ -104,7 +104,7 @@ class Entel(Store):
 
                 price_text = plan_box.find(
                     'p', 'txt-price').text.replace('/mes', '')
-                
+
                 price = Decimal(remove_words(price_text))
 
                 products.append(Product(
@@ -158,7 +158,7 @@ class Entel(Store):
                     continue
 
                 plan_name = plan['planDisplayName'] + \
-                            suffix_dict[plan['orderArea']]
+                    suffix_dict[plan['orderArea']]
 
                 if plan['planCommercePrice']:
                     field = 'planCommercePrice'
