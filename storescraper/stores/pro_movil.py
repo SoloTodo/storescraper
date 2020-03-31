@@ -156,6 +156,11 @@ class ProMovil(Store):
             picture_url = image.find('img')['data-image-large-src']
             picture_urls.append(picture_url)
 
+        if 'semi' in name.lower() or 'reacon' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         return Product(
             name,
             cls.__name__,
@@ -170,4 +175,5 @@ class ProMovil(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
+            condition=condition
         )
