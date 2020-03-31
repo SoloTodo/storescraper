@@ -52,7 +52,7 @@ class Entel(Store):
                 'section_name': 'Planes',
                 'value': 1
             })
-            product_entries['http://www.entel.cl/planes-v2/'].append({
+            product_entries['http://www.entel.cl/planes/'].append({
                 'category_weight': 1,
                 'section_name': 'Planes',
                 'value': 2
@@ -79,7 +79,7 @@ class Entel(Store):
                 'CLP',
             ))
 
-        elif 'entel.cl/planes-v2/' in url:
+        elif 'entel.cl/planes/' in url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
         elif 'miportal.entel.cl' in url:
@@ -143,6 +143,8 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
+            print(json.dumps(plans_data, indent=2))
+
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
                 'Venta': ''
@@ -158,7 +160,12 @@ class Entel(Store):
                 plan_name = plan['planDisplayName'] + \
                             suffix_dict[plan['orderArea']]
 
-                plan_price = Decimal(round(plan['price']))
+                if plan['planCommercePrice']:
+                    field = 'planCommercePrice'
+                else:
+                    field = 'planListPrice'
+
+                plan_price = Decimal(round(plan[field]))
 
                 products.append(Product(
                     variant_name,
