@@ -470,7 +470,7 @@ class Hites(Store):
                     # banner_container = driver \
                     #     .find_element_by_class_name('owl-stage-outer')
 
-                    time.sleep(10)
+                    time.sleep(30)
 
                     modal = driver.find_element_by_class_name('close')
                     if modal:
