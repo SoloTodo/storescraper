@@ -132,6 +132,7 @@ class ProMovil(Store):
                 break
 
         name = soup.find('h1', {'itemprop': 'name'}).text
+
         if name_ext:
             name += ' ({})'.format(name_ext)
 
@@ -156,10 +157,16 @@ class ProMovil(Store):
             picture_url = image.find('img')['data-image-large-src']
             picture_urls.append(picture_url)
 
-        if 'semi' in name.lower() or 'reacon' in name.lower():
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
+        title_name = soup.find('title').text
+
+        condition_name = '{} {}'.format(name, title_name).lower()
+        refurbished_keywords = ['semi', 'reacon', 'open']
+        condition = 'https://schema.org/NewCondition'
+
+        for kw in refurbished_keywords:
+            if kw in condition_name:
+                condition = 'https://schema.org/RefurbishedCondition'
+                break
 
         return Product(
             name,
