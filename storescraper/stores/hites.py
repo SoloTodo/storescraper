@@ -470,11 +470,13 @@ class Hites(Store):
                     # banner_container = driver \
                     #     .find_element_by_class_name('owl-stage-outer')
 
-                    time.sleep(30)
+                    time.sleep(15)
 
                     modal = driver.find_element_by_class_name('close')
                     if modal:
                         modal.click()
+
+                    time.sleep(15)
 
                     controls = driver.find_element_by_class_name(
                         'slick-dots')\
