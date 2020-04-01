@@ -115,8 +115,7 @@ class GrupoDecme(Store):
             stock_text = stock_container.text
             stock = int(stock_text.split()[2])
 
-        price = soup.find('span', {'id': 'productPrice-product-template'})\
-            .find('span', 'visually-hidden').text
+        price = soup.find('span', 'gf_product-price money').text
 
         price = Decimal(price.replace('$', '').replace(',', ''))
 

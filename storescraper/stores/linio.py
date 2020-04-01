@@ -84,7 +84,7 @@ class Linio(Store):
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)[0]
 
-        name = pricing_data['product_name']
+        name = pricing_data['product_name'][0:254]
         sku = pricing_data['sku_config']
 
         reference_code = pricing_data['ean_code'].strip()
@@ -94,6 +94,8 @@ class Linio(Store):
             ean = reference_code
         else:
             name = '{} - {}'.format(name, reference_code)
+
+        name = name[0:256]
 
         normal_price = Decimal(pricing_data['special_price'])
 
