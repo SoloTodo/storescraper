@@ -143,6 +143,8 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
+            print(json.dumps(plans_data, indent=2))
+
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
                 'Venta': ''
@@ -158,7 +160,7 @@ class Entel(Store):
                 plan_name = plan['planDisplayName'] + \
                     suffix_dict[plan['orderArea']]
 
-                price = Decimal(round(plan['price'] * 1.19))
+                price = Decimal(round(plan['priceIVA']))
 
                 products.append(Product(
                     variant_name,
