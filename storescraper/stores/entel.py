@@ -160,12 +160,7 @@ class Entel(Store):
                 plan_name = plan['planDisplayName'] + \
                     suffix_dict[plan['orderArea']]
 
-                if plan['planCommercePrice']:
-                    field = 'planCommercePrice'
-                else:
-                    field = 'planListPrice'
-
-                plan_price = Decimal(round(plan[field]))
+                price = Decimal(round(plan['priceIVA']))
 
                 products.append(Product(
                     variant_name,
@@ -175,8 +170,8 @@ class Entel(Store):
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
                     -1,
-                    plan_price,
-                    plan_price,
+                    price,
+                    price,
                     'CLP',
                     sku=variant_sku,
                     cell_monthly_payment=Decimal(0),
