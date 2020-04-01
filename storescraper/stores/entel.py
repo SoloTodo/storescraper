@@ -143,8 +143,6 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
-            print(json.dumps(plans_data, indent=2))
-
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
                 'Venta': ''
@@ -160,12 +158,7 @@ class Entel(Store):
                 plan_name = plan['planDisplayName'] + \
                     suffix_dict[plan['orderArea']]
 
-                if plan['planCommercePrice']:
-                    field = 'planCommercePrice'
-                else:
-                    field = 'planListPrice'
-
-                plan_price = Decimal(round(plan[field]))
+                price = Decimal(round(plan['price'] * 1.19))
 
                 products.append(Product(
                     variant_name,
@@ -175,8 +168,8 @@ class Entel(Store):
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
                     -1,
-                    plan_price,
-                    plan_price,
+                    price,
+                    price,
                     'CLP',
                     sku=variant_sku,
                     cell_monthly_payment=Decimal(0),
