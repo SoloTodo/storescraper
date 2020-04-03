@@ -32,6 +32,7 @@ class Sodimac(Store):
             'VideoGameConsole',
             'Monitor',
             'Ups',
+            'Printer',
         ]
 
     @classmethod
@@ -94,25 +95,22 @@ class Sodimac(Store):
              'Estufas > Estufas a Pellet', 1],
             ['scat963234', ['SpaceHeater'],
              'Estufas > Estufas Eléctricas', 1],
-
             ['cat3870010', ['Cell'],
              'Celulares y Telefonía > Smartphones', 1],
             ['cat8930005', ['Cell'],
              'Celulares y Telefonía > Celulares Reacondicionados', 1],
-
             ['cat3870001', ['Headphones'],
              'Tecnología Deportiva > Audífonos', 1],
-
             ['scat913770', ['StereoSystem'],
              'Tecnología y TV > Equipos de Música', 1],
             # ['cat8350012', ['StereoSystem'],
             #  'Audio > Parlantes bluetooth', 1],
-
             ['cat3890001', ['VideoGameConsole'],
              'Gamer > Consolas de videojuegos', 1],
-
             ['cat2940090', ['Ups'],
              'Transformadores Eléctricos y UPS > Baterías de respaldo', 1],
+            ['cat3550016', ['Printer'],
+             'Especiales > Tecno indispensables > Impresoras', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
