@@ -96,6 +96,8 @@ class RipleyChileBase(Store):
              'Electro > Refrigeración > Freezers y congeladores', 1],
             ['electro/refrigeracion/frigobar', ['Refrigerator'],
              'Electro > Refrigeración > Frigobar', 1],
+            ['electro/refrigeracion/door-in-door', ['Refrigerator'],
+             'Electro > Refrigeración > Door in Door', 1],
 
             ['electro/cocina/cocinas', ['Stove'],
              'Electro > Cocina > Cocinas', 1],
@@ -111,6 +113,8 @@ class RipleyChileBase(Store):
             ['electro/aseo/aspiradoras-y-enceradoras', ['VacuumCleaner'],
              'Electro > Aseo > Aspiradoras y enceradoras', 1],
 
+            ['electro/lavanderia', ['WashingMachine'],
+             'Electro > Lavandería', 1],
             ['electro/lavanderia/lavadoras', ['WashingMachine'],
              'Electro > Lavandería > Lavadoras', 1],
             ['electro/lavanderia/secadoras', ['WashingMachine'],
