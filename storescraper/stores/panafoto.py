@@ -76,8 +76,8 @@ class Panafoto(Store):
              '/// Refrigeradora French-Door"]', 'Refrigerator'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Congeladores"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Minibares y Vineras"]', 'Refrigerator'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Minibares y Vineras"]', 'Refrigerator'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
             #  '/// Aires portátiles"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
