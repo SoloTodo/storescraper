@@ -45,17 +45,21 @@ class EVision(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         product_urls = []
 
         for section_id, local_category in category_filters:
             if local_category != category:
                 continue
 
-            url = 'https://www.evisionstore.com/index.php?ipp=All' \
-                  '&categoria=onlinesale&codfamilia={}'.format(section_id)
+            url = 'https://www.evisionstore.com/?' \
+                  '&categoria=catalogo&codfamilia={}'.format(section_id)
 
             soup = BeautifulSoup(session.get(url, timeout=30).text,
                                  'html.parser')
+
             product_containers = soup.findAll('div', 'product-items')
 
             if not product_containers:

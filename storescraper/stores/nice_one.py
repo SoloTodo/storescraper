@@ -30,7 +30,7 @@ class NiceOne(Store):
         category_urls = [
             ['22-discos-duros', 'StorageDrive'],
             ['24-gabinetes', 'ComputerCase'],
-            ['26-computadores-armados', 'AllInOne'],
+            # ['26-computadores-armados', 'AllInOne'],
             ['29-mouse-teclados', 'Keyboard'],
             ['32-parlantes-audio', 'Headphones'],
             ['33-placas-madre', 'Motherboard'],

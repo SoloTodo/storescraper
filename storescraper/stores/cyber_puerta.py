@@ -97,7 +97,7 @@ class CyberPuerta(Store):
              'Consolas-Nintendo-Switch', 'VideoGameConsole'],
             # ['Audio-Video/Consolas-Juegos/Xbox-One/Consolas-Xbox-One',
             #  'VideoGameConsole'],
-            ['Audio-Video/Consolas-Juegos/Nintendo', 'VideoGameConsole'],
+            # ['Audio-Video/Consolas-Juegos/Nintendo', 'VideoGameConsole'],
             ['Audio-Video/Consolas-Juegos/Playstation-4-PS4/'
              'Consolas-Playstation-4', 'VideoGameConsole'],
             # ['Audio-Video/Consolas-Juegos/Nintendo-2DS/Consolas-Nintendo-2DS',

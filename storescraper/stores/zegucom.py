@@ -58,7 +58,7 @@ class Zegucom(Store):
             ['sub=DR4', 'Ram'],
             ['sub=LD3', 'Ram'],
             ['sub=LD4', 'Ram'],
-            ['sub=PPC', 'VideoCard'],
+            # ['sub=PPC', 'VideoCard'],
             ['sub=PCI', 'VideoCard'],
             ['sub=FP', 'PowerSupply'],
             ['sub=GC', 'ComputerCase'],

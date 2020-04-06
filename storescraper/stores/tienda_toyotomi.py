@@ -70,7 +70,13 @@ class TiendaToyotomi(Store):
             session.get(url, verify=False).text, 'html.parser')
 
         data = soup.findAll('script', {'type': 'application/ld+json'})[-1]
-        json_data = json.loads(data.text)['@graph'][1]
+
+        json_data = json.loads(data.text)
+
+        if '@graph' not in json_data.keys():
+            return []
+
+        json_data = json_data['@graph'][1]
 
         name = json_data['name']
         sku = json_data['sku']
