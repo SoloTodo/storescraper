@@ -151,6 +151,12 @@ class Linio(Store):
         else:
             stock = 0
 
+        seller_container = soup.find('div', 'seller-name-rating-section')
+        if seller_container:
+            seller = seller_container.text.strip()
+        else:
+            seller = None
+
         p = Product(
             name,
             cls.__name__,
@@ -166,7 +172,8 @@ class Linio(Store):
             ean=ean,
             description=description,
             picture_urls=picture_urls,
-            condition=condition
+            condition=condition,
+            seller=seller
         )
 
         return [p]

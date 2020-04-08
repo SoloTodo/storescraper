@@ -437,6 +437,10 @@ class Falabella(Store):
             else:
                 condition = 'https://schema.org/NewCondition'
 
+            seller = model['offerings'][0]['sellerId']
+            if seller == 'FALABELLA':
+                seller = None
+
             p = Product(
                 '{} ({})'.format(base_name, model['name']),
                 cls.__name__,
@@ -454,7 +458,8 @@ class Falabella(Store):
                 video_urls=video_urls,
                 review_count=review_count,
                 review_avg_score=review_avg_score,
-                condition=condition
+                condition=condition,
+                seller=seller
             )
 
             products.append(p)
