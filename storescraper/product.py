@@ -24,7 +24,7 @@ class Product:
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
                  condition='https://schema.org/NewCondition', positions=None,
                  video_urls=None, review_count=None, review_avg_score=None,
-                 flixmedia_id=None, has_virtual_assistant=None):
+                 flixmedia_id=None, has_virtual_assistant=None, seller=None):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -63,6 +63,9 @@ class Product:
         if has_virtual_assistant:
             assert isinstance(has_virtual_assistant, bool)
 
+        if seller:
+            assert len(seller) <= 256
+
         assert condition in Product.VALID_CONDITIONS
 
         self.name = name
@@ -94,6 +97,7 @@ class Product:
         self.flixmedia_id = flixmedia_id
         self.has_virtual_assistant = has_virtual_assistant
         self.timestamp = timestamp
+        self.seller = seller
 
     def __str__(self):
         lines = list()
@@ -127,6 +131,8 @@ class Product:
             'flixmedia_id')))
         lines.append('Virtual assistant: {}'.format(
             self.optional_field_as_string('has_virtual_assistant')))
+        lines.append('Seller: {}'.format(
+            self.optional_field_as_string('seller')))
         lines.append('Positions: {}'.format(self.positions))
         lines.append('Cell plan name: {}'.format(
             self.optional_field_as_string('cell_plan_name')))
@@ -180,7 +186,8 @@ class Product:
             'review_count': self.review_count,
             'review_avg_score': self.review_avg_score,
             'flixmedia_id': self.flixmedia_id,
-            'has_virtual_assistant': self.has_virtual_assistant
+            'has_virtual_assistant': self.has_virtual_assistant,
+            'seller': self.seller,
         }
 
     @classmethod

@@ -351,6 +351,11 @@ class RipleyChileBase(Store):
                 has_virtual_assistant = True
                 break
 
+        if 'shopName' in specs_json['marketplace']:
+            seller = specs_json['marketplace']['shopName']
+        else:
+            seller = None
+
         p = Product(
             name,
             cls.__name__,
@@ -370,7 +375,8 @@ class RipleyChileBase(Store):
             review_count=review_count,
             review_avg_score=review_avg_score,
             video_urls=video_urls,
-            has_virtual_assistant=has_virtual_assistant
+            has_virtual_assistant=has_virtual_assistant,
+            seller=seller
         )
 
         return [p]
