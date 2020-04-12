@@ -38,7 +38,7 @@ class IsiBook(Store):
             # ['pc-y-portatiles/tablet', 'Tablet'],
             ['impresion/multifuncionales-tinta', 'Printer'],
             ['impresion/impresoras-laser', 'Printer'],
-            ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
+            # ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
             ['almacenamiento/disco-duros', 'StorageDrive'],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
             ['partes-y-piezas/monitores', 'Monitor'],
@@ -46,8 +46,8 @@ class IsiBook(Store):
             ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],
-            ['partes-y-piezas/procesadores', 'Processor'],
-            ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
+            # ['partes-y-piezas/procesadores', 'Processor'],
+            # ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
         ]
 
@@ -68,7 +68,7 @@ class IsiBook(Store):
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty path:' + url)
+                        raise Exception('Empty path: ' + url)
                     break
 
                 products = product_containers.findAll('li', 'item')

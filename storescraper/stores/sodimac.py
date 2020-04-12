@@ -378,6 +378,16 @@ class Sodimac(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
+        # product_info = soup.find('script', {'id': '__NEXT_DATA__'}).text
+        # product_info = json.loads(product_info)
+        #
+        # seller = None
+        # for attr in product_info['props']['pageProps']['productProps']
+        # ['result']['variants'][0]['attributes']:
+        #     if attr['name'] == 'provider_name':
+        #         seller = attr['values'][0]
+        #         break
+        #
         p = Product(
             name,
             cls.__name__,
@@ -392,7 +402,8 @@ class Sodimac(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
-            condition=condition
+            condition=condition,
+            seller=seller
         )
 
         return [p]

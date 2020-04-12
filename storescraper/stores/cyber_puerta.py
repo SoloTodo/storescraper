@@ -14,7 +14,6 @@ class CyberPuerta(Store):
     @classmethod
     def categories(cls):
         return [
-            # 'ExternalStorageDrive',
             'StorageDrive',
             'SolidStateDrive',
             'Motherboard',
@@ -24,24 +23,14 @@ class CyberPuerta(Store):
             'VideoCard',
             'PowerSupply',
             'ComputerCase',
-            # 'Ups',
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
             'Monitor',
-            # 'Headphones',
             'Tablet',
             'Notebook',
-            # 'StereoSystem',
-            # 'OpticalDiskPlayer',
-            # 'Printer',
-            # 'MemoryCard',
             'Cell',
-            # 'UsbFlashDrive',
             'Television',
-            # 'Camera',
-            # 'Projector',
-            # 'AllInOne',
             'VideoGameConsole'
         ]
 
@@ -65,8 +54,8 @@ class CyberPuerta(Store):
              'Processor'],
             ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
              'Disipadores-para-CPU', 'CpuCooler'],
-            ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
-             'Refrigeracion-Liquida', 'CpuCooler'],
+            # ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
+            #  'Refrigeracion-Liquida', 'CpuCooler'],
             ['Computo-Hardware/Memorias-RAM-Flash/Memorias-RAM-para-PC',
              'Ram'],
             ['Computo-Hardware/Memorias-RAM-Flash/Memorias-RAM-para-Laptop',

@@ -10,7 +10,7 @@ class LaCuracaoOnlineElSalvador(LaCuracaoOnline):
         ('audio-y-video/televisores.html', 'Television'),
         ('audio-y-video/equipos-de-sonido.html', 'StereoSystem'),
         # ('audio-y-video/reproductores-de-video.html', 'OpticalDiskPlayer'),
-        ('hogar/aires-acondicionados.html', 'AirConditioner'),
+        ('aires-acondicionados', 'AirConditioner'),
         ('refrigeracion/refrigeradoras.html', 'Refrigerator'),
         ('refrigeracion/congeladores.html', 'Refrigerator'),
         ('lavadoras-y-secadoras/lavadoras.html', 'WashingMachine'),

@@ -149,6 +149,8 @@ class ProMovil(Store):
 
         description = html_to_markdown(
             str(soup.find('div', 'product-desc')))
+        description += html_to_markdown(
+            str(soup.find('div', 'product-description')))
 
         images_containers = soup.find('ul', 'product-images').findAll('li')
         picture_urls = []
@@ -164,7 +166,7 @@ class ProMovil(Store):
         condition = 'https://schema.org/NewCondition'
 
         for kw in refurbished_keywords:
-            if kw in condition_name:
+            if kw in condition_name or kw in description:
                 condition = 'https://schema.org/RefurbishedCondition'
                 break
 

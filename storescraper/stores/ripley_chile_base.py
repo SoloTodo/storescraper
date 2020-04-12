@@ -190,8 +190,6 @@ class RipleyChileBase(Store):
                 category_url = url_base.format(category_path, page)
                 response = session.get(category_url, allow_redirects=False)
 
-                print(category_url)
-
                 if response.status_code != 200:
                     raise Exception('Invalid section: ' + category_url)
 
@@ -277,8 +275,6 @@ class RipleyChileBase(Store):
 
         refurbished_notice = soup.find('div', 'emblemaReaccondicionados19')
 
-        print(refurbished_notice)
-
         if refurbished_notice:
             description += html_to_markdown(str(refurbished_notice))
 
@@ -353,6 +349,8 @@ class RipleyChileBase(Store):
 
         if 'shopName' in specs_json['marketplace']:
             seller = specs_json['marketplace']['shopName']
+        elif specs_json['isMarketplaceProduct']:
+            seller = 'Mercado R'
         else:
             seller = None
 
