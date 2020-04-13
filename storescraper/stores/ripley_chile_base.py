@@ -75,6 +75,8 @@ class RipleyChileBase(Store):
             # ['computacion/computadores/notebooks-gamers', 'Notebook'],
             # ['mercado-ripley/gamer', 'Mouse'],
 
+            ['tecno/television', ['Television'],
+             'Tecno > Televisión', 1],
             ['tecno/television/smart-tv', ['Television'],
              'Tecno > Televisión > Smart TV', 1],
             ['tecno/television/4k-uhd-nanocell', ['Television'],
@@ -83,8 +85,6 @@ class RipleyChileBase(Store):
              'Tecno > Televisión > PREMIUM - OLED - QLED - 8K', 1],
             ['tecno/television/hd-full-hd', ['Television'],
              'Tecno > Televisión > HD - FULL HD', 1],
-            ['tecno/television', ['Television'],
-             'Tecno > Televisión', 1],
 
             ['electro/refrigeracion', ['Refrigerator'],
              'Electro > Refrigeración', 1],
