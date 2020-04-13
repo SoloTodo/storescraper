@@ -403,7 +403,7 @@ class Sodimac(Store):
             description=description,
             picture_urls=picture_urls,
             condition=condition,
-            seller=seller
+            # seller=seller
         )
 
         return [p]
