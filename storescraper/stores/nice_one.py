@@ -23,6 +23,7 @@ class NiceOne(Store):
             'Monitor',
             'Processor',
             'VideoCard',
+            'Ram',
         ]
 
     @classmethod
@@ -37,6 +38,7 @@ class NiceOne(Store):
             ['28-monitores', 'Monitor'],
             ['34-procesadores', 'Processor'],
             ['39-tarjetas-graficas', 'VideoCard'],
+            ['27-memorias', 'Ram'],
         ]
 
         session = session_with_proxy(extra_args)
