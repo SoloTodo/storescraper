@@ -96,8 +96,10 @@ class Falabella(Store):
             #  'Home > Tecnología-Premium', 1],
             ['cat7230007', ['Tablet'],
              'Home > Computación-Tablets', 1],
+
             ['cat3205', ['Refrigerator'],
              'Home > Refrigeración-Refrigeradores', 1],
+
             ['cat4074', ['Refrigerator'],
              'Home > Refrigeración-No Frost', 1],
             ['cat4091', ['Refrigerator'],
@@ -110,6 +112,13 @@ class Falabella(Store):
              'Home > Refrigeración-Frigobar', 1],
             ['cat1840004', ['Refrigerator'],
              'Home > Refrigeración-Cavas', 1],
+            ['cat3205', ['Refrigerator'],
+             'Home > Refrigeración-Bottom freezer', 1,
+             'f.product.attribute.Tipo=Bottom+freezer'],
+            ['cat3205', ['Refrigerator'],
+             'Home > Refrigeración-Top mount', 1,
+             'f.product.attribute.Tipo=Top+mount'],
+
             ['cat1820006', ['Printer'],
              'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
             # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
@@ -207,13 +216,19 @@ class Falabella(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            category_id, local_categories, section_name, category_weight = e
+            category_id, local_categories, section_name, category_weight = \
+                e[:4]
+
+            if len(e) > 4:
+                extra_query_params = e[4]
+            else:
+                extra_query_params = None
 
             if category not in local_categories:
                 continue
 
             category_product_urls = cls._get_product_urls(
-                session, category_id)
+                session, category_id, extra_query_params)
 
             for idx, url in enumerate(category_product_urls):
                 product_entries[url].append({
@@ -266,10 +281,11 @@ class Falabella(Store):
             url, category=category, extra_args=extra_args)
 
     @classmethod
-    def _get_product_urls(cls, session, category_id):
+    def _get_product_urls(cls, session, category_id, extra_query_params):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    'zone=13&categoryId={}&page={}'
+
         page = 1
 
         while True:
@@ -277,6 +293,10 @@ class Falabella(Store):
                 raise Exception('Page overflow: ' + category_id)
 
             pag_url = base_url.format(category_id, page)
+
+            if extra_query_params:
+                pag_url += '&' + extra_query_params
+
             res = session.get(pag_url, timeout=None)
             res = json.loads(res.content.decode('utf-8'))['data']
 
