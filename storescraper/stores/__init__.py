@@ -103,7 +103,7 @@ from .led_studio import LedStudio
 from .lenovo_chile import LenovoChile
 from .lenovo_mexico import LenovoMexico
 from .lg_chile import LgChile
-from .lg_panama import LgPanama
+from .lg_cac import LgCac
 from .lider import Lider
 from .lider_black_friday import LiderBlackFriday
 from .lider_get import LiderGet

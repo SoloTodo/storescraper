@@ -1,7 +1,7 @@
 from .lg_v5 import LgV5
 
 
-class LgPanama(LgV5):
+class LgCac(LgV5):
     region_code = 'cac'
 
     @classmethod

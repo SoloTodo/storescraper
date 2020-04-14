@@ -2,6 +2,7 @@ import json
 import re
 
 import demjson
+import requests
 import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -60,76 +61,57 @@ class LgV5(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        model_id = soup.find('input', {'name': 'modelId'})['value']
+        model_data = cls._retrieve_api_model(model_id)
+        sibling_groups = model_data['siblings']
+        sibling_ids = [model_id]
 
-        sibling_urls = []
-        sibling_areas = soup.findAll('div', 'size-list')
-
-        if len(sibling_areas) == 2:
-            sibling_urls.append(url)
-        else:
-            sibling_links = sibling_areas[-1].findAll('a')
-            if not sibling_links:
-                raise Exception('Siblings error')
-            for sibling_link in sibling_links:
-                sibling_path = sibling_link['href']
-                if '#' in sibling_path:
-                    continue
-                sibling_url = cls.base_url + sibling_path
-                sibling_urls.append(sibling_url)
-
-        colors_container = soup.findAll('div', 'color-list')
-        if len(colors_container) == 2:
-            colors_container = None
-        else:
-            colors_container = colors_container[-1]
-
-        if colors_container:
-            for idx, color_link in enumerate(colors_container.findAll('a')):
-                sub_model_id = color_link.attrs.get('data-model-id')
-                if sub_model_id:
-                    # Variant without own URL, _retrieve_single_product will
-                    # detect it
-                    continue
-                sibling_url = cls.base_url + color_link['href']
-                sibling_urls.append(sibling_url)
-
-        # For the case of https://www.lg.com/cac/televisores/lg-43UM7300PDA
-        if not sibling_urls:
-            sibling_urls = [url]
+        for sibling_group in sibling_groups:
+            if sibling_group['siblingType'] == 'SIZE':
+                # Already considered when detecting entries
+                continue
+            elif sibling_group['siblingType'] == 'COLOR':
+                for sibling in sibling_group['siblingModels']:
+                    if sibling['modelId'] not in sibling_ids:
+                        sibling_ids.append(sibling['modelId'])
+            else:
+                raise Exception('Unkown sibling type for: ' + url)
 
         products = []
 
-        for sibling_url in sibling_urls:
-            response = session.get(sibling_url, timeout=20)
-            # Because https://www.lg.com/pa/telefonos-celulares/lg-G2-D805
-            page_content = response.text.replace('5,2"', '5,2')
-
-            products.extend(cls._retrieve_single_product(
-                sibling_url, category, page_content))
+        for sibling_id in sibling_ids:
+            products.append(cls._retrieve_single_product(sibling_id, category))
 
         return products
 
     @classmethod
-    def _retrieve_single_product(cls, url, category, content):
-        print(url)
-        soup = BeautifulSoup(content, 'html.parser')
-        model_name = soup.find('meta', {'itemprop': 'mpn'})['content'].strip()
-        short_description = soup.findAll(
-            'meta', {'itemprop': 'name'})[1]['content'].strip()
+    def _retrieve_single_product(cls, model_id, category):
+        print(model_id)
+        model_data = cls._retrieve_api_model(model_id)
+        model_name = model_data['modelName']
+        color = None
+        short_description = model_data['userFriendlyName']
 
-        base_name = '{} - {}'.format(model_name, short_description)
+        for sibling_entry in model_data['siblings']:
+            if sibling_entry['siblingType'] == 'COLOR':
+                for sibling in sibling_entry['siblingModels']:
+                    if sibling['modelId'] == model_id:
+                        color = sibling['siblingValue'].strip()
 
-        pictures_container = soup.find('div', {'id': 'modal_detail_target'})
-        picture_tags = pictures_container.findAll('img', 'pc')
-        raw_picture_urls = [cls.base_url + x['data-lazy'].replace(' ', '%20')
-                            for x in picture_tags]
-        picture_urls = [x for x in raw_picture_urls if validators.url(x)]
+        if color:
+            name = '{} ({} / {})'.format(short_description, model_name, color)
+        else:
+            name = '{} - {}'.format(model_name, short_description)
+
+        picture_urls = [cls.base_url + x['largeImageAddr']
+                        for x in model_data['galleryImages']]
+        picture_urls = [x for x in picture_urls if validators.url(x)]
         if not picture_urls:
             picture_urls = None
 
+        url = cls.base_url + model_data['modelUrlPath']
 
-        model_id = soup.find('input', {'name': 'modelId'})['value']
-
+        content = requests.get(url).text
         section_data = re.search(r'_dl =([{\S\s]+\});', content)
         section_data = demjson.decode(section_data.groups()[0])
 
@@ -152,101 +134,37 @@ class LgV5(Store):
             raise Exception('At least one of the section candidates should '
                             'have matched')
 
-        colors_container = soup.findAll('div', 'color-list')
-        if len(colors_container) == 2:
-            colors_container = None
-        else:
-            colors_container = colors_container[-1]
+        return Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            model_id,
+            -1,
+            Decimal(0),
+            Decimal(0),
+            'USD',
+            sku=model_name,
+            picture_urls=picture_urls,
+            positions=positions
+        )
 
-        products = []
+    @classmethod
+    def _ajax_endpoint(cls):
+        return '{}/{}/mkt/ajax/product/retrieveSiblingProductInfo'.format(
+                cls.base_url, cls.region_code
+            )
 
-        if colors_container:
-            for idx, color_link in enumerate(colors_container.findAll('a')):
-                color_name = color_link.text.strip()
-                sub_model_id = color_link.attrs.get('data-model-id')
-                if not sub_model_id:
-                    # Variant with own URL, products_for_url detected it
-                    continue
-
-                if idx == 0:
-                    key = '{}_{}'.format(model_id, sub_model_id)
-                else:
-                    key = sub_model_id
-
-                name = '{} {}'.format(base_name, color_name)[:250]
-
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    key,
-                    -1,
-                    Decimal(0),
-                    Decimal(0),
-                    'USD',
-                    sku=model_name,
-                    picture_urls=picture_urls,
-                    positions=positions
-                ))
-
-        # products may be empty if the product didnt have color options or
-        # if the options were invalid
-        if not products:
-            products.append(Product(
-                base_name[:250],
-                cls.__name__,
-                category,
-                url,
-                url,
-                model_id,
-                -1,
-                Decimal(0),
-                Decimal(0),
-                'USD',
-                sku=model_name,
-                picture_urls=picture_urls,
-                positions=positions
-            ))
-
-        return products
+    @classmethod
+    def _retrieve_api_model(cls, model_id):
+        session = requests.Session()
+        session.headers['content-type'] = 'application/x-www-form-urlencoded'
+        payload = 'modelId={}'.format(model_id)
+        product_data = json.loads(
+            session.post(cls._ajax_endpoint(), payload).text)
+        return product_data['data'][0]
 
     @classmethod
     def _category_paths(cls):
-        return [
-            ('CT20106005', 'CT20106005', 'Television', True),
-            ('CT20106005', 'CT20106005', 'Television', False),
-            ('CT20106017', 'CT20106017', 'OpticalDiskPlayer', False),
-            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', True),
-            ('CT20106017', 'CT20106019', 'OpticalDiskPlayer', False),
-            ('CT20106020', 'CT20106021', 'StereoSystem', True),
-            ('CT20106020', 'CT20106021', 'StereoSystem', False),
-            ('CT30016640', 'CT30016642', 'StereoSystem', True),
-            ('CT30016640', 'CT31903290', 'StereoSystem', True),
-            ('CT20106023', 'CT20106025', 'StereoSystem', True),
-            ('CT20106023', 'CT20106025', 'StereoSystem', False),
-            ('CT30006480', 'CT30006480', 'Projector', True),
-            ('CT20106027', 'CT20106027', 'Cell', True),
-            ('CT20106027', 'CT20106027', 'Cell', False),
-            ('CT30011860', 'CT30011860', 'Cell', True),
-            ('CT20106034', 'CT20106034', 'Refrigerator', True),
-            ('CT20106034', 'CT20106034', 'Refrigerator', False),
-            ('CT20106039', 'CT20106039', 'Oven', True),
-            ('CT20106039', 'CT20106039', 'Oven', False),
-            ('CT20106044', 'CT20106044', 'WashingMachine', True),
-            ('CT20106044', 'CT20106044', 'WashingMachine', False),
-            ('CT20106040', 'CT20106040', 'WashingMachine', True),
-            ('CT20106040', 'CT20106040', 'WashingMachine', False),
-            ('CT20106045', 'CT20106045', 'VacuumCleaner', False),
-            ('CT20106054', 'CT20106054', 'Monitor', True),
-            ('CT20106054', 'CT20106054', 'Monitor', False),
-            ('CT31903594', 'CT31903594', 'CellAccesory', True),
-            ('CT30018920', 'CT30018920', 'Notebook', True),
-            ('CT32002362', 'CT32002362', 'Notebook', True),
-            ('CT20106055', 'CT20106055', 'OpticalDrive', True),
-            ('CT20106055', 'CT20106055', 'OpticalDrive', False),
-            ('CT32004943', 'CT32004943', 'B2B', True),  # Carteleria digital
-            ('CT32004944', 'CT32004944', 'B2B', True),  # Commercial TV
-            ('CT32004945', 'CT32004957', 'B2B', True),  # Wall Paper
-        ]
+        raise NotImplementedError('Subclasses must implement this method')
