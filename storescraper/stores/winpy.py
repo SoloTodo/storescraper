@@ -65,7 +65,7 @@ class Winpy(Store):
             ['partes-y-piezas/procesadores/', 'Processor'],
             ['partes-y-piezas/placas-madres/', 'Motherboard'],
             ['partes-y-piezas/gabinetes/', 'ComputerCase'],
-            # ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
+            ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
             ['partes-y-piezas/disipadores/', 'CpuCooler'],
             ['impresoras/', 'Printer'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
