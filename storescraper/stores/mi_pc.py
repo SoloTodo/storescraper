@@ -41,8 +41,8 @@ class MiPc(Store):
         url_extensions = [
             ['hardware/almacenamiento-interno/disco-duro.html',
              'StorageDrive'],
-            ['gamer/almacenamiento-interno/disco-duro.html',
-             'StorageDrive'],
+            # ['gamer/almacenamiento-interno/disco-duro.html',
+            #  'StorageDrive'],
             ['hardware/almacenamiento-interno/ssd.html', 'SolidStateDrive'],
             ['gamer/almacenamiento-interno/ssd.html', 'SolidStateDrive'],
             ['hardware/tarjetas-madre.html', 'Motherboard'],
