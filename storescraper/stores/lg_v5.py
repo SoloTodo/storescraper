@@ -70,8 +70,15 @@ class LgV5(Store):
             if not sibling_links:
                 raise Exception('Siblings error')
             for sibling_link in sibling_links:
-                sibling_url = cls.base_url + sibling_link['href']
+                sibling_path = sibling_link['href']
+                if '#' in sibling_path:
+                    continue
+                sibling_url = cls.base_url + sibling_path
                 sibling_urls.append(sibling_url)
+
+        # For the case of https://www.lg.com/cac/televisores/lg-43UM7300PDA
+        if not sibling_urls:
+            sibling_urls = [url]
 
         products = []
 
