@@ -137,14 +137,14 @@ class LgV5(Store):
         else:
             colors_container = colors_container[-1]
 
-        # Because Q6 doesn't have valid model ids
-        # https://www.lg.com/cac/telefonos-celulares/lg-LGM700DSK-astro-black
-        if colors_container and model_id != 'MD05890236':
-            products = []
+        products = []
 
+        if colors_container:
             for idx, color_link in enumerate(colors_container.findAll('a')):
                 color_name = color_link.text.strip()
-                sub_model_id = color_link['data-model-id']
+                sub_model_id = color_link.attrs.get('data-model-id')
+                if not sub_model_id:
+                    continue
 
                 if idx == 0:
                     key = '{}_{}'.format(model_id, sub_model_id)
@@ -169,9 +169,10 @@ class LgV5(Store):
                     positions=positions
                 ))
 
-            return products
-        else:
-            return [Product(
+        # products may be empty if the product didnt have color options or
+        # if the options were invalid
+        if not products:
+            products.append(Product(
                 base_name[:250],
                 cls.__name__,
                 category,
@@ -185,7 +186,9 @@ class LgV5(Store):
                 sku=model_name,
                 picture_urls=picture_urls,
                 positions=positions
-            )]
+            ))
+
+        return products
 
     @classmethod
     def _category_paths(cls):
