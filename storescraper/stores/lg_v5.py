@@ -137,7 +137,9 @@ class LgV5(Store):
         else:
             colors_container = colors_container[-1]
 
-        if colors_container:
+        # Because Q6 doesn't have valid model ids
+        # https://www.lg.com/cac/telefonos-celulares/lg-LGM700DSK-astro-black
+        if colors_container and model_id != 'MD05890236':
             products = []
 
             for idx, color_link in enumerate(colors_container.findAll('a')):
