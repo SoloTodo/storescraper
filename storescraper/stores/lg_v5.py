@@ -77,6 +77,22 @@ class LgV5(Store):
                 sibling_url = cls.base_url + sibling_path
                 sibling_urls.append(sibling_url)
 
+        colors_container = soup.findAll('div', 'color-list')
+        if len(colors_container) == 2:
+            colors_container = None
+        else:
+            colors_container = colors_container[-1]
+
+        if colors_container:
+            for idx, color_link in enumerate(colors_container.findAll('a')):
+                sub_model_id = color_link.attrs.get('data-model-id')
+                if sub_model_id:
+                    # Variant without own URL, _retrieve_single_product will
+                    # detect it
+                    continue
+                sibling_url = cls.base_url + color_link['href']
+                sibling_urls.append(sibling_url)
+
         # For the case of https://www.lg.com/cac/televisores/lg-43UM7300PDA
         if not sibling_urls:
             sibling_urls = [url]
@@ -149,6 +165,7 @@ class LgV5(Store):
                 color_name = color_link.text.strip()
                 sub_model_id = color_link.attrs.get('data-model-id')
                 if not sub_model_id:
+                    # Variant with own URL, products_for_url detected it
                     continue
 
                 if idx == 0:

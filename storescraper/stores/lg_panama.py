@@ -24,8 +24,7 @@ class LgPanama(LgV5):
             'Headphones',
             'Stove',
             'AirConditioner',
-            'OpticalDrive',
-            'Headphones'
+            'OpticalDrive'
         ]
 
     @classmethod
