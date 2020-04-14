@@ -104,7 +104,8 @@ class LgV5(Store):
 
         pictures_container = soup.find('div', {'id': 'modal_detail_target'})
         picture_tags = pictures_container.findAll('img', 'pc')
-        picture_urls = [cls.base_url + x['data-lazy'] for x in picture_tags]
+        picture_urls = [cls.base_url + x['data-lazy'].replace(' ', '%20')
+                        for x in picture_tags]
 
         model_id = soup.find('input', {'name': 'modelId'})['value']
 
