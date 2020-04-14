@@ -135,7 +135,7 @@ class LgV5(Store):
                             'have matched')
 
         return Product(
-            name,
+            name[:250],
             cls.__name__,
             category,
             url,
