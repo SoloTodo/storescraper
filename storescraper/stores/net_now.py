@@ -80,10 +80,12 @@ class NetNow(Store):
         part_number = soup.find('div', 'producto-subtitulo').text.strip()
         name = '{} ({})'.format(model, part_number)
 
-        stock = int(re.search(
-            r'STOCK: (\d+)',
-            soup.find('div', 'producto-stock').text).groups()[0]
-        )
+        try:
+            stock = int(re.search(
+                r'STOCK: (\d+)',
+                soup.find('div', 'producto-stock').text).groups()[0])
+        except AttributeError:
+            stock = -1
 
         price = soup.find('div', 'producto-precio').text.split('(')[0]
         price = Decimal(remove_words(price))
