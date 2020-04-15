@@ -42,7 +42,7 @@ class IsiBook(Store):
             ['almacenamiento/disco-duros', 'StorageDrive'],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
             ['partes-y-piezas/monitores', 'Monitor'],
-            ['partes-y-piezas/pantallas', 'Monitor'],
+            # ['partes-y-piezas/pantallas', 'Monitor'],
             ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],

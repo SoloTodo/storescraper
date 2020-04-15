@@ -286,6 +286,13 @@ class Movistar(Store):
                     price_container = cell_soup.find(
                         'div', 'boxpieplusplan').find(
                         'p', 'boxEMPlan-int-box-pie')
+
+                    if not price_container:
+                        price_container = cell_soup.find(
+                            'div', 'boxpieplusplan').find(
+                            'div', 'boxEMPlan-int-costo-0').find(
+                            'p', 'big')
+
                     price = Decimal(
                         price_container.text.split('$')[1].replace('.', ''))
 
