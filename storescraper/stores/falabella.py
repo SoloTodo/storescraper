@@ -129,8 +129,8 @@ class Falabella(Store):
             ['cat3114', ['Oven'],
              'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
              'Hornos Eléctricos', 1],
-            ['cat3025', ['VacuumCleaner'],
-             'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
+            # ['cat3025', ['VacuumCleaner'],
+            #  'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
             ['cat3136', ['WashingMachine'],
              'Home > Electrohogar-Lavado > Lavado', 1],
             ['cat4060', ['WashingMachine'],
