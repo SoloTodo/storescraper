@@ -471,6 +471,8 @@ class Paris(Store):
              'electro/television/todas/'],
             [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
              'electro/television/smart-tv/'],
+            [bs.TELEVISIONS, 'Televisores LED', bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/television/televisores-led/'],
             [bs.TELEVISIONS, 'Oled y Qled', bs.SUBSECTION_TYPE_MOSAIC,
              'television/televisores-oled-qled/'],
             # [bs.TELEVISIONS, 'Monitor TV', bs.SUBSECTION_TYPE_MOSAIC,
