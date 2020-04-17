@@ -200,13 +200,16 @@ class Movistar(Store):
                                               'html.parser')
                     json_soup = BeautifulSoup(json_response['planes']['html'],
                                               'html.parser')
-                    plan_containers = cell_soup.findAll('article')
 
-                    price_container = cell_soup.find(
-                        'div', 'boxpieplusplan').find(
-                        'p', 'boxEMPlan-int-box-pie')
-                    price = Decimal(
-                        price_container.text.split('$')[1].replace('.', ''))
+                    price_container_text = cell_soup.find(
+                        'div', 'boxEMPlan-int-costo-0').findAll(
+                        'b')[1].text
+                    monthly_price = Decimal(
+                        re.search(
+                            r'\$([\d+.]+)',
+                            price_container_text).groups()[0].replace('.', '')
+                        )
+                    price = 18 * monthly_price
 
                     for container in json_soup.findAll('article'):
                         cell_plan_name = container['data-id']
@@ -231,6 +234,8 @@ class Movistar(Store):
 
                     has_arriendo_option = cell_soup.find(
                         'li', {'id': 'metodo2'})
+
+                    plan_containers = cell_soup.findAll('article')
 
                     if has_arriendo_option:
                         for container in plan_containers:
@@ -283,18 +288,15 @@ class Movistar(Store):
                     json_soup = BeautifulSoup(json_response['planes']['html'],
                                               'html.parser')
 
-                    price_container = cell_soup.find(
-                        'div', 'boxpieplusplan').find(
-                        'p', 'boxEMPlan-int-box-pie')
-
-                    if not price_container:
-                        price_container = cell_soup.find(
-                            'div', 'boxpieplusplan').find(
-                            'div', 'boxEMPlan-int-costo-0').find(
-                            'p', 'big')
-
-                    price = Decimal(
-                        price_container.text.split('$')[1].replace('.', ''))
+                    price_container_text = cell_soup.find(
+                        'div', 'boxEMPlan-int-costo-0').findAll(
+                        'b')[1].text
+                    monthly_price = Decimal(
+                        re.search(
+                            r'\$([\d+.]+)',
+                            price_container_text).groups()[0].replace('.', '')
+                    )
+                    price = 18 * monthly_price
 
                     for container in json_soup.findAll('article'):
                         # break
