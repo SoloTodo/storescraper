@@ -81,7 +81,11 @@ class Syd(Store):
         description = soup.find('section', 'bs-product-description')
         description = html_to_markdown(str(description))
 
-        stock = -1
+        if product_data['offers']['availability'] == \
+                'https://schema.org/InStock':
+            stock = -1
+        else:
+            stock = 0
 
         p = Product(
             name,
