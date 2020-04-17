@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    HeadlessChrome
 
 import re
 
@@ -37,7 +38,7 @@ class LadyLee(Store):
             ('estufas', '1095', 'Stove')
         ]
 
-        session = session_with_proxy(extra_args)
+        session = cls._get_initialized_session()
         product_urls = []
 
         for category_path, section_id, local_category in category_filters:
@@ -79,7 +80,7 @@ class LadyLee(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cls._get_initialized_session()
         response = session.get(url, allow_redirects=False)
 
         if response.status_code == 302:
@@ -132,3 +133,19 @@ class LadyLee(Store):
         )
 
         return [p]
+
+    @classmethod
+    def _get_initialized_session(cls):
+        session = session_with_proxy(None)
+
+        with HeadlessChrome() as driver:
+            agent = driver.execute_script("return navigator.userAgent")
+            session.headers['user-agent'] = agent
+
+            driver.get('https://www.ladylee.net/')
+            for cookie in driver.get_cookies():
+                cookie.pop('expiry', None)
+                cookie.pop('httpOnly', None)
+                session.cookies.set(**cookie)
+
+        return session
