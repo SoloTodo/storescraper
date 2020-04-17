@@ -41,19 +41,19 @@ class TiendaMonge(Store):
              '/// Celulares"]', 'Cell'),
             ('["categories.level2:Productos /// TV y Video /// Pantallas"]',
              'Television'),
-            ('["categories.level2:Productos /// TV y Video /// '
-             'Reproductores de video y proyectores"]', 'OpticalDiskPlayer'),
+            # ('["categories.level2:Productos /// TV y Video /// '
+            #  'Reproductores de video y proyectores"]', 'OpticalDiskPlayer'),
             ('["categories.level2:Productos /// Hogar /// '
              'Aires acondicionados"]', 'AirConditioner'),
-            ('["categories.level2:Productos /// Hogar /// Cocinas"]', 'Stove'),
+            # ('["categories.level2:Productos /// Hogar /// Cocinas"]', 'Stove'),
             ('["categories.level2:Productos /// Hogar /// '
              'Hornos y extractores"]', 'Oven'),
             ('["categories.level2:Productos /// Hogar /// '
              'Lavadoras y secadoras"]', 'WashingMachine'),
             ('["categories.level2:Productos /// Hogar /// Refrigeradoras"]',
              'Refrigerator'),
-            ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
-             'StereoSystem'),
+            # ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
+            #  'StereoSystem'),
             ('["categories.level2:Productos /// Audio /// Parlantes"]',
              'StereoSystem'),
             # ('["categories.level2:Productos /// Audio /// '
