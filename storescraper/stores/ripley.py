@@ -95,8 +95,10 @@ class Ripley(RipleyChileBase):
              'tecno/audio-y-musica/parlantes-portables'],
             [bs.CELLS, 'Telefonía',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
-            [bs.CELLS, 'Smartphones',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/smartphones']
+            [bs.CELLS, 'Android',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/android'],
+            [bs.CELLS, 'iPhone',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
 
         session = session_with_proxy(extra_args)

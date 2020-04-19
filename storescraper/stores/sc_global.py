@@ -36,7 +36,7 @@ class ScGlobal(Store):
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
             ['pc-y-portatiles/escritorio.html', 'AllInOne'],
-            ['audio/teclados-y-mouse.html', 'Mouse'],
+            # ['audio/teclados-y-mouse.html', 'Mouse'],
             # ['audio/parlantes.html', 'StereoSystem'],
             ['monitores/monitores.html', 'Monitor'],
         ]
