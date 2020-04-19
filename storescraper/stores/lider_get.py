@@ -70,7 +70,7 @@ class LiderGet(Store):
              ['Wearable'], 'Celulares y Teléfonos > Smartwatch', 1],
             ['Computación/Almacenamiento/Tarjetas De Memoria', ['MemoryCard'],
              'Almacenamiento > Tarjetas de memoria', 1],
-            ['Notebooks', ['Notebook'],
+            ['Computación/Computadores/Notebooks', ['Notebook'],
              'Computación > Notebooks', 1],
             # ['Convertibles', ['Notebook'],
             #  'Computación > Convertibles', 1],
@@ -146,8 +146,6 @@ class LiderGet(Store):
                     }
                 ]
             }
-
-            print(query_params)
 
             response = session.post(query_url, json.dumps(query_params))
             data = json.loads(response.text)
