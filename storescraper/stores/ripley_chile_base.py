@@ -124,9 +124,12 @@ class RipleyChileBase(Store):
             ['electro/lavanderia/doble-carga', ['WashingMachine'],
              'Electro > Lavandería > Doble carga', 1],
 
-            # ['telefonia/celulares/smartphones', 'Cell'],
-            ['tecno/telefonia/smartphones', ['Cell'],
-             'Tecno > Telefonía > Smartphones', 1],
+            ['tecno/telefonia', ['Cell'],
+             'Tecno > Telefonía', 1],
+            ['tecno/telefonia/android', ['Cell'],
+             'Tecno > Telefonía > Android', 1],
+            ['tecno/telefonia/iphone', ['Cell'],
+             'Tecno > Telefonía > iPhone', 1],
             ['tecno/telefonia/basicos', ['Cell'],
              'Tecno > Telefonía > Básicos', 1],
 
@@ -184,7 +187,7 @@ class RipleyChileBase(Store):
             current_position = 1
 
             while True:
-                if page > 50:
+                if page > 70:
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)

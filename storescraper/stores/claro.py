@@ -188,7 +188,7 @@ class Claro(Store):
                 prepago_price = None
 
                 prepago_fields = [
-                    'precio_tienda_web',
+                    # 'precio_tienda_web',
                     'precio_oferta_prepago',
                     'precio_prepago_normal'
                 ]

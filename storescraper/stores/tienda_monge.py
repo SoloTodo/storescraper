@@ -45,7 +45,8 @@ class TiendaMonge(Store):
             #  'Reproductores de video y proyectores"]', 'OpticalDiskPlayer'),
             ('["categories.level2:Productos /// Hogar /// '
              'Aires acondicionados"]', 'AirConditioner'),
-            # ('["categories.level2:Productos /// Hogar /// Cocinas"]', 'Stove'),
+            # ('["categories.level2:Productos /// Hogar /// Cocinas"]',
+            # 'Stove'),
             ('["categories.level2:Productos /// Hogar /// '
              'Hornos y extractores"]', 'Oven'),
             ('["categories.level2:Productos /// Hogar /// '
