@@ -68,10 +68,10 @@ class Easy(Store):
             ['iluminación-led', ['Lamp'],
              'Inicio > Iluminación > Iluminación Led', 1],
 
-            ['calefont-gas-licuado', ['WaterHeater'],
+            ['calefones-a-gas-licuado', ['WaterHeater'],
              'Inicio > Electrohogar > Calefones y Termos > '
-             'Calefones Gas Licuado', 1],
-            ['calefont-gas-natural', ['WaterHeater'],
+             'Calefont > Calefont Tiro Natural', 1],
+            ['calefones-gas-natural-1', ['WaterHeater'],
              'Inicio > Electrohogar > Calefones y Termos > '
              'Calefones Gas Natural', 1],
             ['termos', ['WaterHeater'],
@@ -138,6 +138,7 @@ class Easy(Store):
 
             cat_value = cat_hits[0]['_source']['value']
             cat_field = cat_hits[0]['_source']['field'] + ".raw"
+
             cat_list = [str(i) for i in cat_hits[0]['_source']['SEQ_PROD']]
             prod_source = "if(params.ids.contains(doc['_id'].value) ) " \
                           "{ return params.ids.length - params.ids.indexOf" \
