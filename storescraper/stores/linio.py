@@ -11,6 +11,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
 
 class Linio(Store):
     base_domain = 'https://www.linio.com'
+    currency = property(lambda self: NotImplementedError())
 
     @classmethod
     def _category_paths(cls):
@@ -167,7 +168,7 @@ class Linio(Store):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            cls.currency,
             sku=sku,
             ean=ean,
             description=description,
