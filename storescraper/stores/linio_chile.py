@@ -3,6 +3,7 @@ from .linio import Linio
 
 class LinioChile(Linio):
     base_domain = 'https://www.linio.cl'
+    currency = 'CLP'
 
     @classmethod
     def categories(cls):
