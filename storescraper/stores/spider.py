@@ -48,7 +48,7 @@ class Spider(Store):
             ('28', 'Processor'),
             ('30', 'VideoCard'),
             ('32', 'PowerSupply'),
-            ('34', 'CpuCooler'),
+            # ('34', 'CpuCooler'),
             ('21', 'Monitor'),
             ('25', 'Tablet'),
             ('49', 'Printer'),
