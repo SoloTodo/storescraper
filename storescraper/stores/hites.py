@@ -333,8 +333,9 @@ class Hites(Store):
                 '3%2640004'
             ]
             for code in pickup_store_codes:
-                url = 'https://www.hites.com/api/product/768729001/pickup?value=' + code
-                pickup_data = json.loads(session.get(url).text)
+                pickup_url = 'https://www.hites.com/api/product/768729001/' \
+                             'pickup?value=' + code
+                pickup_data = json.loads(session.get(pickup_url).text)
                 if pickup_data['phyStoreListDataBean']:
                     stock = -1
                     break
