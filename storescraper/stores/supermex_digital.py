@@ -45,7 +45,7 @@ class SupermexDigital(Store):
             ['almacenamiento-interno/m2', 'SolidStateDrive'],
             ['tarjetas-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
-            ['sistema-de-enfriamiento', 'CpuCooler'],
+            # ['sistema-de-enfriamiento', 'CpuCooler'],
             ['memoria-ram', 'Ram'],
             ['tarjeta-de-video', 'VideoCard'],
             ['fuente', 'PowerSupply'],

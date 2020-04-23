@@ -36,11 +36,11 @@ class SamsungShop(Store):
             ('mobile/wearables', 'Wearable'),
             ('mobile/accesorios', 'Headphones'),
             ('tv-y-audio/tv', 'Television'),
-            ('linea-blanca/refrigeradores', 'Refrigerator'),
-            ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
+            # ('linea-blanca/refrigeradores', 'Refrigerator'),
+            # ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
             # ('linea-blanca/microondas', 'Oven'),
             # ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            ('linea-blanca/aires-acondicionados', 'AirConditioner'),
+            # ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             # ('linea-blanca/lavavajillas', 'DishWasher'),
             # ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
@@ -74,7 +74,7 @@ class SamsungShop(Store):
                 url, page*page_size, (page + 1) * page_size - 1
             )
             data = session.get(target_url)
-            
+
             json_data = json.loads(data.text)
 
             if not json_data:
