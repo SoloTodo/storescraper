@@ -36,11 +36,11 @@ class SamsungShop(Store):
             ('mobile/wearables', 'Wearable'),
             ('mobile/accesorios', 'Headphones'),
             ('tv-y-audio/tv', 'Television'),
-            ('linea-blanca/refrigeradores', 'Refrigerator'),
-            ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
+            # ('linea-blanca/refrigeradores', 'Refrigerator'),
+            # ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
             # ('linea-blanca/microondas', 'Oven'),
-            ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            ('linea-blanca/aires-acondicionados', 'AirConditioner'),
+            # ('linea-blanca/aspiradoras', 'VacuumCleaner'),
+            # ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             # ('linea-blanca/lavavajillas', 'DishWasher'),
             # ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
@@ -61,6 +61,7 @@ class SamsungShop(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         # &_from=0&_to=49
         session = session_with_proxy(extra_args)
 
@@ -73,6 +74,7 @@ class SamsungShop(Store):
                 url, page*page_size, (page + 1) * page_size - 1
             )
             data = session.get(target_url)
+
             json_data = json.loads(data.text)
 
             if not json_data:

@@ -463,8 +463,11 @@ class Falabella(Store):
             if seller == 'FALABELLA':
                 seller = None
 
+            print(base_name)
+            print(model['name'])
+
             p = Product(
-                '{} ({})'.format(base_name, model['name']),
+                '{} ({})'.format(base_name, model['name'])[0: 256],
                 cls.__name__,
                 category,
                 sku_url,
