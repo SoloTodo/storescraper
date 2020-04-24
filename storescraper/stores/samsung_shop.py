@@ -31,18 +31,22 @@ class SamsungShop(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
+            ('mobile/accesorios', 'Headphones'),
             ('mobile/smartphones', 'Cell'),
             ('mobile/tablets', 'Tablet'),
             ('mobile/wearables', 'Wearable'),
-            ('mobile/accesorios', 'Headphones'),
+            ('tv-y-audio/accesorios-tv', 'CellAccesory'),
+            ('tv-y-audio/audio-y-video', 'StereoSystem'),
             ('tv-y-audio/tv', 'Television'),
-            # ('linea-blanca/refrigeradores', 'Refrigerator'),
-            # ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
-            # ('linea-blanca/microondas', 'Oven'),
-            # ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            # ('linea-blanca/aires-acondicionados', 'AirConditioner'),
+            ('linea-blanca/accesorios', 'CellAccesory'),
+            ('linea-blanca/aires-acondicionados', 'AirConditioner'),
+            ('linea-blanca/aspiradoras', 'VacuumCleaner'),
+            ('linea-blanca/empotrados', 'Oven'),
+            ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
+            ('linea-blanca/microondas', 'Oven'),
+            ('linea-blanca/refrigeradores', 'Refrigerator'),
+
             # ('linea-blanca/lavavajillas', 'DishWasher'),
-            # ('tv-y-audio/audio-y-video', 'StereoSystem'),
         ]
 
         product_urls = []
