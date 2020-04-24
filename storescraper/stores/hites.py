@@ -323,10 +323,27 @@ class Hites(Store):
 
         sku = json_data['partNumber']
 
-        if soup.find('div', 'buy-action-button').find('button'):
-            stock = -1
+        delivery_stock_container = soup.find('div', 'accordion__desktop').findAll('div')[0]
+
+        if 'product__service--unavailable' in delivery_stock_container.attrs['class']:
+            pickup_store_codes = [
+                '0%2640001',
+                '1%2640002',
+                '2%2640003',
+                '3%2640004'
+            ]
+            for code in pickup_store_codes:
+                pickup_url = 'https://www.hites.com/api/product/{}001/' \
+                             'pickup?value={}'.format(sku, code)
+                pickup_data = json.loads(session.get(pickup_url).text)
+                if pickup_data['phyStoreListDataBean']:
+                    stock = -1
+                    break
+            else:
+                # No "break" was called above
+                stock = 0
         else:
-            stock = 0
+            stock = -1
 
         if json_data['isOutOfStock'] or \
                 'images' not in json_data['children'][0]:

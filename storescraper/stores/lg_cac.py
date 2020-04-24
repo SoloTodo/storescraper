@@ -24,7 +24,8 @@ class LgCac(LgV5):
             'Headphones',
             'Stove',
             'AirConditioner',
-            'OpticalDrive'
+            'OpticalDrive',
+            'DishWasher'
         ]
 
     @classmethod
@@ -79,5 +80,6 @@ class LgCac(LgV5):
             # Dispositivos ópticos
             ('CT20188024', 'Monitor', True),
             ('CT20188024', 'Monitor', False),
-
+            # LG Studio
+            ('CT32021962', 'Stove', True),
         ]
