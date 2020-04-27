@@ -62,7 +62,7 @@ class RipleyChileBase(Store):
 
             ['tecno/computacion/tablets-y-e-readers', ['Tablet'],
              'Tecno > Computación > Tablets y E-readers', 1],
-            ['tecno/computacion/impresoras-y-tintas', ['Printer'],
+            ['tecno/impresoras-y-tintas', ['Printer'],
              'Tecno > Computación > Impresoras y Tintas', 1],
             ['tecno/computacion/almacenamiento',
              ['UsbFlashDrive', 'ExternalStorageDevice'],
