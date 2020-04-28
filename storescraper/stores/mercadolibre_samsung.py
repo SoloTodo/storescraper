@@ -26,22 +26,22 @@ class MercadolibreSamsung(MercadolibreChile):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_sections = [
+            ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
-            # ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
-            # ('salud-equipamiento-medico', 'AirConditioner'),
-            # ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('repuestos-accesorios', 'CellAccesory'),
-            ('electronica/accesorios-audio-video', 'CellAccesory'),
-            # ('electronica/soportes', 'CellAccesory'),
-            # ('audio', 'StereoSystem'),
-            ('electronica/televisores', 'Television'),
-            # ('tablets-accesorio', 'Tablet'),
-            ('computacion', 'Tablet'),
+            ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('celulares-telefonia/celulares', 'Cell'),
+            ('celulares-telefonia/accesorios-celulares', 'CellAccesory'),
             ('smartwatches-accesorios', 'Wearable'),
+            ('audio', 'Headphones'),
+            ('electronica/televisores', 'Television'),
+            ('accesorios-tv', 'CellAccesory'),
+            ('accesorios-audio-video', 'CellAccesory'),
             ('relojes-joyas', 'Wearable'),
+            ('computacion', 'Tablet'),
+            ('instrumentos', 'StereoSystem'),
         ]
 
         session = requests.Session()

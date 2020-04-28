@@ -45,8 +45,7 @@ class SamsungShop(Store):
             ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
             ('linea-blanca/microondas', 'Oven'),
             ('linea-blanca/refrigeradores', 'Refrigerator'),
-
-            # ('linea-blanca/lavavajillas', 'DishWasher'),
+            ('linea-blanca/lavavajillas', 'DishWasher'),
         ]
 
         product_urls = []
