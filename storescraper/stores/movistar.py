@@ -188,7 +188,8 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
                               'current%5Bplan%5D=Plus+S+Cod_OAQ_Porta' \
-                              '&current%5Bpayment%5D=1'.format(sku)
+                              '&current%5Bpayment%5D=1&current%5Bcode%5D=' \
+                              ''.format(sku)
                     json_response = get_json_response(payload)
                     code = json_response['codeOfferCurrent']
 
@@ -271,11 +272,10 @@ class Movistar(Store):
                     # Nuevo
                     # Sin arriendo
 
-                    payload = 'current%5Bsku%5D=9006&current%5Btype%5D=3&' \
-                              'current%5Bplan%5D=Plus+Libre+Cod_OAM&current' \
-                              '%5Bmovistar1%5D=&current%5Bpayment%5D=1'.format(
-                                sku)
-
+                    payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
+                              'current%5Bplan%5D=&current%5Bmovistar1%5D=0&' \
+                              'current%5Bpayment%5D=1&current%5Bcode%5D=' \
+                              ''.format(sku)
                     json_response = get_json_response(payload)
                     code = json_response['codeOfferCurrent']
 

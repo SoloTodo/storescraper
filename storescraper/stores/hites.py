@@ -323,9 +323,11 @@ class Hites(Store):
 
         sku = json_data['partNumber']
 
-        delivery_stock_container = soup.find('div', 'accordion__desktop').findAll('div')[0]
+        delivery_stock_container = soup.find(
+            'div', 'accordion__desktop').findAll('div')[0]
 
-        if 'product__service--unavailable' in delivery_stock_container.attrs['class']:
+        if 'product__service--unavailable' in \
+                delivery_stock_container.attrs['class']:
             pickup_store_codes = [
                 '0%2640001',
                 '1%2640002',

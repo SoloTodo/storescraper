@@ -57,23 +57,23 @@ class Panafoto(Store):
             ('["categories.level3:Categorías /// Celulares y Tablets '
              '/// Celulares /// Smartphones"]', 'Cell'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadora Carga Frontal"]', 'WashingMachine'),
+             '/// Lavadoras"]', 'WashingMachine'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Lavadora Carga Superior"]', 'WashingMachine'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadora Carga Superior"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Secadora Eléctrica"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Secadora Gas"]', 'WashingMachine'),
+             '/// Secadoras"]', 'WashingMachine'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Secadora Gas"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Centros de Lavado"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradora Una y Dos Puertas"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradora Side by Side"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradora French-Door"]', 'Refrigerator'),
+             '/// Refrigeradoras"]', 'Refrigerator'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Refrigeradora Side by Side"]', 'Refrigerator'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Refrigeradora French-Door"]', 'Refrigerator'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Congeladores"]', 'Refrigerator'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
@@ -81,7 +81,7 @@ class Panafoto(Store):
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
             #  '/// Aires portátiles"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Aires acondicionados Split"]', 'AirConditioner'),
+             '/// Aires Acondicionados"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Cómputo /// Monitores '
              '/// Monitores"]', 'Monitor'),
             ('["categories.level3:Categorías /// Cómputo /// Proyectores '
