@@ -33,7 +33,7 @@ class NiceOne(Store):
             ['24-gabinetes', 'ComputerCase'],
             # ['26-computadores-armados', 'AllInOne'],
             ['29-mouse-teclados', 'Keyboard'],
-            ['32-parlantes-audio', 'Headphones'],
+            # ['32-parlantes-audio', 'Headphones'],
             ['33-placas-madre', 'Motherboard'],
             # ['28-monitores', 'Monitor'],
             ['34-procesadores', 'Processor'],
