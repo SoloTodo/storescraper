@@ -98,12 +98,17 @@ class TiendaMovistar(Store):
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        stock = re.search(r'stockMagento: (.*?),', page_source).group(1)
+        ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
+        ajax_session.headers['content-type'] = \
+            'application/x-www-form-urlencoded'
 
-        if not stock:
-            stock = 0
-        else:
-            stock = int(stock)
+        stock_data = json.loads(ajax_session.post(
+            'https://catalogo.movistar.cl/fullprice/stockproducto/validar/',
+            'sku=' + sku
+        ).text)
+
+        stock = stock_data['respuesta']['cantidad']
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
