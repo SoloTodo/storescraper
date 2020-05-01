@@ -102,7 +102,12 @@ class Proglobal(Store):
         else:
             stock = -1
 
-        price = Decimal(soup.find('span', 'precio-ficha')
+        price_container = soup.find('span', 'precio-ficha')
+
+        if not price_container:
+            price_container = soup.find('span', 'tachado-efectivo')
+
+        price = Decimal(price_container
                         .text.replace('Precio final:', '')
                         .replace('$', '')
                         .replace('.-', '')
