@@ -150,11 +150,12 @@ class Zegucom(Store):
                 if data_pair[0] == 'Disponibilidad':
                     stock = int(data_pair[1].strip().split(' ')[0])
 
-        prices = soup.findAll('span', 'price-text')
-        prices = [Decimal(price.text.strip().replace('$', '').replace(',', ''))
-                  for price in prices]
-        prices = set(prices)
-        prices = list(prices)
+        price_tags = soup.findAll('span', 'price-text')
+        prices = []
+
+        for price_tag in price_tags:
+            price_text = re.search(r'\$(\d+\.?\d*)', price_tag.text).groups()[0]
+            prices.append(Decimal(price_text))
 
         price = min(prices)
 

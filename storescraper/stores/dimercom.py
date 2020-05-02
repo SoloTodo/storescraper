@@ -31,18 +31,33 @@ class Dimercom(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['6_109', 'StorageDrive'], ['6_110', 'SolidStateDrive'],
-            ['27_255', 'Motherboard'], ['27_257', 'Motherboard'],
-            ['17_175', 'Processor'], ['7_176', 'Processor'],
-            ['17_177', 'Processor'], ['17_178', 'Processor'],
-            ['17_180', 'Processor'], ['17_181', 'Processor'],
-            ['17_182', 'Processor'], ['13_138', 'Ram'], ['13_139', 'Ram'],
-            ['26_253', 'VideoCard'], ['26_254', 'VideoCard'],
-            ['9_116', 'PowerSupply'], ['10_123', 'ComputerCase'],
-            # ['9_117', 'Ups'],
+            ['6_109', 'StorageDrive'],
+            ['6_110', 'SolidStateDrive'],
+            ['27_255', 'Motherboard'],
+            ['27_257', 'Motherboard'],
+            # A-Series
+            ['17_175', 'Processor'],
+            # AMD
+            ['7_176', 'Processor'],
+            # Celeron
+            ['17_177', 'Processor'],
+            # Core
+            ['17_178', 'Processor'],
+            # Pentium
+            ['17_181', 'Processor'],
+            # Ryzen
+            ['17_182', 'Processor'],
+            ['13_138', 'Ram'],
+            ['13_139', 'Ram'],
+            ['26_253', 'VideoCard'],
+            ['26_254', 'VideoCard'],
+            ['9_116', 'PowerSupply'],
+            ['10_123', 'ComputerCase'],
             ['1_64', 'Keyboard'],
             ['1_56', 'Mouse'],
-            ['14', 'Monitor'], ['25_250', 'Tablet'], ['12_131', 'Printer'],
+            ['14', 'Monitor'],
+            ['25_250', 'Tablet'],
+            ['12_131', 'Printer'],
             ['12_132', 'Printer']
 
         ]
