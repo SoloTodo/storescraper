@@ -154,8 +154,8 @@ class Zegucom(Store):
         prices = []
 
         for price_tag in price_tags:
-            price_text = re.search(r'\$(\d+\.?\d*)', price_tag.text).groups()[0]
-            prices.append(Decimal(price_text))
+            price_text = re.search(r'\$(\d*,?\d+\.?\d*)', price_tag.text).groups()[0]
+            prices.append(Decimal(price_text.replace(',', '')))
 
         price = min(prices)
 
