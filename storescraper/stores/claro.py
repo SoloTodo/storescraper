@@ -51,7 +51,8 @@ class Claro(Store):
 
             soup = BeautifulSoup(session.post(
                 'https://equipos.clarochile.cl/servicio/catalogo',
-                'destacados=destacado'
+                'destacados=destacado',
+                verify=False
             ).text, 'html.parser')
 
             products_json = json.loads(soup.contents[-1])
@@ -104,7 +105,8 @@ class Claro(Store):
         data_url = 'https://digital.clarochile.cl/wcm-inyect/' \
                    'landing-postpago/content.html'
 
-        soup = BeautifulSoup(session.get(data_url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(data_url, verify=False).text,
+                             'html.parser')
         containers = soup.findAll('article', 'plan-destacado-Landing')
 
         products = []
@@ -154,7 +156,8 @@ class Claro(Store):
         data = 'id={}'.format(cell_id)
 
         response = session.post(
-            'https://equipos.clarochile.cl/servicio/detalle', data=data)
+            'https://equipos.clarochile.cl/servicio/detalle',
+            data=data, verify=False)
 
         try:
             product_json = json.loads(response.text)[0]
