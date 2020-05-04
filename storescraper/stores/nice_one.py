@@ -24,6 +24,7 @@ class NiceOne(Store):
             'Processor',
             'VideoCard',
             'Ram',
+            'PowerSupply',
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class NiceOne(Store):
             ['34-procesadores', 'Processor'],
             ['39-tarjetas-graficas', 'VideoCard'],
             ['27-memorias', 'Ram'],
+            ['23-fuentes-de-poder', 'PowerSupply'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -95,12 +97,18 @@ class NiceOne(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
         name = soup.find('h1').text.strip()
         sku = soup.find('input', {'name': 'id_product'})['value']
-        availability = soup.find('link', {'itemprop': 'availability'})['href']
 
-        if availability == 'https://schema.org/InStock':
-            stock = -1
-        else:
+        add_to_cart_button = soup.find('div', 'product-add-to-cart').find(
+            'button', 'add-to-cart')
+        availability_text = soup.find(
+            'span', {'id': 'product-availability'}).text.strip()
+
+        if 'disabled' in add_to_cart_button.attrs:
             stock = 0
+        elif 'A PEDIDO' in availability_text.upper():
+            stock = 0
+        else:
+            stock = -1
 
         normal_price = soup.find('span', 'regular-price').text
         normal_price = Decimal(normal_price.replace(
