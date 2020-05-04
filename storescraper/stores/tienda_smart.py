@@ -46,10 +46,12 @@ class TiendaSmart(Store):
                 category_url = 'https://tiendasmart.cl/{}?' \
                                'p={}&product_list_limit=30'\
                     .format(category_path, page)
+                print(category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
-                product_containers = soup.findAll(
+                product_containers = soup.find(
+                    'div', {'id': 'amasty-shopby-product-list'}).findAll(
                     'div', 'product-hover')
 
                 done = False
@@ -61,6 +63,7 @@ class TiendaSmart(Store):
                     product_url = container.find(
                         'a', 'product-item-photo')['href']
                     if product_url in product_urls:
+                        print(product_url)
                         done = True
                         break
                     product_urls.append(product_url)
