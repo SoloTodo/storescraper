@@ -636,6 +636,11 @@ class Falabella(Store):
                     pictures = []
 
                     try:
+                        pips_container = driver.find_element_by_class_name(
+                            'fb-hero-carousel__pips')
+
+                        driver.execute_script("arguments[0].setAttribute('style', 'display:block !important;');", pips_container)
+
                         elements = driver.find_element_by_class_name(
                             'fb-hero-carousel__pips')\
                             .find_elements_by_class_name(
