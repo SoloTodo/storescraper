@@ -52,7 +52,7 @@ class PcExpress(Store):
             ['102', 'ExternalStorageDrive'],  # Discod Duros Externos
             ['118', 'PowerSupply'],           # Fuentes Estandar
             ['279', 'PowerSupply'],           # Fuentes Certificadas
-            ['119', 'ComputerCase'],          # Gabinetes Basicos
+            # ['119', 'ComputerCase'],          # Gabinetes Basicos
             ['120', 'ComputerCase'],          # Gabinetes Gamer
             # ['278', 'ComputerCase'],          # Gabinetes SLIM
             ['169', 'CpuCooler'],             # Ventilacion para CPU
