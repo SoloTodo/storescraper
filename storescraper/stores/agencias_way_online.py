@@ -8,6 +8,9 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class AgenciasWayOnline(Store):
+    preferred_products_for_url_concurrency = 1
+    preferred_discover_urls_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -47,7 +50,7 @@ class AgenciasWayOnline(Store):
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                url = 'https://www.agenciaswayonline.com/{}/page/{}/'\
+                url = 'https://agenciaswayonline.com/{}/page/{}/'\
                     .format(category_path, page)
 
                 soup = BeautifulSoup(session.get(url, timeout=20).text,

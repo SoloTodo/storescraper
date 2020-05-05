@@ -89,7 +89,12 @@ class PcDigital(Store):
         print(url)
         session = session_with_proxy(extra_args)
 
-        page_source = session.get(url).text
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
+        page_source = response.text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', {'id': 'title-page'}).text.strip()
