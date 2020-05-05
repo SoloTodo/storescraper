@@ -66,9 +66,9 @@ class AgenciasWayOnline(Store):
                 products = products_container.findAll('div', 'block-item')
 
                 for product in products:
-                    product_url = product.find('a')['href']
-
-                    product_urls.append(product_url)
+                    if product.find('img', {'alt': 'LG'}):
+                        product_url = product.find('a')['href']
+                        product_urls.append(product_url)
 
                 page += 1
 
