@@ -44,7 +44,7 @@ class Tecnofacil(Store):
             done = False
 
             while True:
-                if page >= 20:
+                if page >= 25:
                     raise Exception('Page overflow')
 
                 url = 'https://www.tecnofacil.com.gt/{}?p={}'\
