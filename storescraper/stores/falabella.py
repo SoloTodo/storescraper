@@ -202,9 +202,9 @@ class Falabella(Store):
             ['cat2370002', ['Keyboard'],
              'Home > Computación- Accesorios Tecnología > '
              'Accesorios Computación > Teclados', 1],
-            ['cat2930003', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > Accesorios TV > '
-             'Teclados Smart', 1],
+            # ['cat2930003', ['Keyboard'],
+            #  'Home > Computación- Accesorios Tecnología > Accesorios TV > '
+            #  'Teclados Smart', 1],
             ['cat1640002', ['Headphones'],
              'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
              'Audífonos', 1],
