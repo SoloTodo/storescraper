@@ -55,7 +55,7 @@ class Raenco(Store):
              'WashingMachine'),
             ('hogar/linea-blanca/secadoras/secadoras-electricas.html',
              'WashingMachine'),
-            ('hogar/aires-acondicionados.html', 'AirConditioner'),
+            # ('hogar/aires-acondicionados.html', 'AirConditioner'),
             ('hogar/linea-blanca/electrodomesticos/microondas.html', 'Oven'),
             ('hogar/linea-blanca/hornos-empotrables.html', 'Oven'),
             ('hogar/linea-blanca/estufas.html', 'Stove'),
