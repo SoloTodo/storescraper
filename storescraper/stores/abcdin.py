@@ -452,9 +452,13 @@ class AbcDin(Store):
         video_urls = None
         flixmedia_tag = soup.find(
             'script', {'src': '//media.flixfacts.com/js/loader.js'})
+
         if flixmedia_tag:
-            flixmedia_id = flixmedia_tag['data-flix-mpn']
-            video_urls = flixmedia_video_urls(flixmedia_id)
+            try:
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+            except KeyError:
+                pass
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'

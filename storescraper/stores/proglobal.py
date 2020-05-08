@@ -43,7 +43,7 @@ class Proglobal(Store):
             ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
             ['computacion-y-gamer/gamers/mouse', 'Mouse'],
             ['computacion-y-gamer/gamers/teclados', 'Keyboard'],
-            ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
+            # ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
             # ['computacion-y-gamer/gamers/memoria-ram', 'Ram'],
             # ['computacion-y-gamer/gamers/fuentes-de-poder', 'PowerSupply'],
             # ['computacion-y-gamer/gamers/monitores', 'Monitor'],

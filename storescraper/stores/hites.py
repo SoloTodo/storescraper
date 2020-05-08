@@ -147,8 +147,8 @@ class Hites(Store):
              ['Printer'],
              'Inicio > Tecnología > Computación > '
              'Impresoras y Multifuncionales', 1],
-            ['tecnologia/computacion/pendrive', ['UsbFlashDrive'],
-             'Inicio > Tecnología > Computación > Pendrive', 1],
+            # ['tecnologia/computacion/pendrive', ['UsbFlashDrive'],
+            #  'Inicio > Tecnología > Computación > Pendrive', 1],
             ['tecnologia/computacion/disco-duro', ['ExternalStorageDrive'],
              'Inicio > Tecnología > Computación > Disco Duro', 1],
 
