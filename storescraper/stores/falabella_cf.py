@@ -216,7 +216,9 @@ class FalabellaCf(Store):
         ]
 
         product_dict = {}
+        print(extra_args)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.64.1'
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = \
@@ -324,6 +326,7 @@ class FalabellaCf(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.64.1'
 
         base_url = "https://www.falabella.com/falabella-cl/search?" \
                    "Ntt={}&page={}"
@@ -573,6 +576,7 @@ class FalabellaCf(Store):
                                 '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = session_with_proxy(extra_args)
+                session.headers['user-agent'] = 'curl/7.64.1'
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
                 banner = soup.find('div', 'fb-huincha-main-wrap')
