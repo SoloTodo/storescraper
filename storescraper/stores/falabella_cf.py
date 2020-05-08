@@ -1,26 +1,25 @@
 import json
-import re
 import time
 import base64
 
-from collections import defaultdict
 from decimal import Decimal
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
-from html import unescape
 
 from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import session_with_proxy
 from storescraper import banner_sections as bs
 from storescraper.utils import HeadlessChrome
 
 
-class Falabella(Store):
+class FalabellaCf(Store):
+    # Special Falabella scraper that bypasses Cloudflare but retrieves less
+    # info for each product
+
     preferred_discover_urls_concurrency = 1
     preferred_products_for_url_concurrency = 10
 
@@ -60,7 +59,11 @@ class Falabella(Store):
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
+        return [category]
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
@@ -212,8 +215,8 @@ class Falabella(Store):
              'Home > Lavado-Lavavajillas', 1],
         ]
 
+        product_dict = {}
         session = session_with_proxy(extra_args)
-        product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = \
@@ -227,17 +230,96 @@ class Falabella(Store):
             if category not in local_categories:
                 continue
 
-            category_product_urls = cls._get_product_urls(
-                session, category_id, extra_query_params)
+            base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
+                       'zone=13&categoryId={}&page={}'
 
-            for idx, url in enumerate(category_product_urls):
-                product_entries[url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+            if extra_query_params:
+                base_url += '&' + extra_query_params
 
-        return product_entries
+            page = 1
+            position = 1
+
+            while True:
+                if page > 60:
+                    raise Exception('Page overflow: ' + category_id)
+
+                pag_url = base_url.format(category_id, page)
+                res = session.get(pag_url, timeout=None)
+                res = json.loads(res.content.decode('utf-8'))['data']
+
+                if 'results' not in res:
+                    if page == 1:
+                        raise Exception(
+                            'Empty category: {}'.format(category_id))
+                    break
+
+                for result in res['results']:
+                    url = 'https://www.falabella.com{}'.format(result['url'])
+                    name = result['displayName']
+                    sku = result['skuId']
+                    picture_urls = [
+                        'https://falabella.scene7.com/is/image/'
+                        'Falabella/{}?scl=1.0'.format(sku)]
+                    stock = -1
+                    offer_price = None
+                    normal_price = None
+                    backup_price = None
+
+                    for price in result['prices']:
+                        if price['icons']:
+                            offer_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        elif price['label']:
+                            normal_price = Decimal(
+                                price['price'][0].replace('.', ''))
+                        else:
+                            backup_price = Decimal(
+                                price['price'][0].replace('.', ''))
+
+                    if not normal_price:
+                        normal_price = backup_price
+
+                    if not offer_price:
+                        offer_price = normal_price
+
+                    variants = result['variants'][0]['options']
+
+                    if variants:
+                        for variant in variants:
+                            name += ' ({})'.format(variant['label'])
+                            sku = variant['mediaId']
+                            picture_urls = [
+                                'https://falabella.scene7.com/is/image/'
+                                'Falabella/{}?scl=1.0'.format(sku)]
+
+                            product = product_dict.get(sku, None)
+
+                            if not product:
+                                product = Product(
+                                    name, cls.__name__, category, url, url,
+                                    sku, stock, normal_price, offer_price,
+                                    'CLP', sku=sku, picture_urls=picture_urls)
+                                product_dict[sku] = product
+
+                            product.positions[section_name] = position
+                    else:
+                        product = product_dict.get(sku, None)
+
+                        if not product:
+                            product = Product(
+                                name, cls.__name__, category, url, url,
+                                sku, stock, normal_price, offer_price,
+                                'CLP', sku=sku, picture_urls=picture_urls)
+                            product_dict[sku] = product
+
+                        product.positions[section_name] = position
+
+                    position += 1
+                page += 1
+
+        products_list = [p for p in product_dict.values()]
+
+        return products_list
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
@@ -273,223 +355,6 @@ class Falabella(Store):
             page += 1
 
         return discovered_urls
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        return cls._products_for_url(
-            url, category=category, extra_args=extra_args)
-
-    @classmethod
-    def _get_product_urls(cls, session, category_id, extra_query_params):
-        discovered_urls = []
-        base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zone=13&categoryId={}&page={}'
-
-        page = 1
-
-        while True:
-            if page > 60:
-                raise Exception('Page overflow: ' + category_id)
-
-            pag_url = base_url.format(category_id, page)
-
-            if extra_query_params:
-                pag_url += '&' + extra_query_params
-
-            res = session.get(pag_url, timeout=None)
-            res = json.loads(res.content.decode('utf-8'))['data']
-
-            if 'results' not in res:
-                if page == 1:
-                    raise Exception('Empty category: {}'.format(category_id))
-                break
-
-            for result in res['results']:
-                product_url = result['url']
-
-                discovered_urls.append(product_url)
-
-            page += 1
-
-        return discovered_urls
-
-    @classmethod
-    def _products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=30)
-
-        if response.status_code == 500:
-            return []
-
-        content = response.text.replace('&#10;', '')
-
-        soup = BeautifulSoup(content, 'html.parser')
-
-        product_data = json.loads(
-            soup.find('script', {'id': '__NEXT_DATA__'}).text)[
-            'props']['pageProps']['productData']
-
-        description = ''
-
-        specification = soup.find('div', 'productInfoContainer')
-        long_description = product_data['longDescription']
-
-        if long_description:
-            description_soup = BeautifulSoup(
-                unescape(long_description), 'html.parser')
-        else:
-            description_soup = None
-
-        panels = [specification, description_soup]
-        video_urls = []
-
-        for panel in panels:
-            if not panel:
-                continue
-
-            description += html_to_markdown(str(panel))
-
-            for iframe in panel.findAll('iframe'):
-                match = re.search(
-                    r'//www.youtube.com/embed/(.+)\?', iframe['src'])
-                if not match:
-                    match = re.search(
-                        r'//www.youtube.com/embed/(.+)', iframe['src'])
-
-                if match:
-                    video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0]).strip())
-
-        slug = product_data['slug']
-        publication_id = product_data['id']
-        global_id = product_data['id']
-
-        pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
-                                'Falabella/{}?req=set,json'.format(global_id)
-        pictures_response = session.get(pictures_resource_url, timeout=30).text
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      pictures_response).groups()[0])
-
-        picture_urls = []
-
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
-
-        for picture_entry in picture_entries:
-            picture_url = 'https://falabella.scene7.com/is/image/{}?' \
-                          'wid=1500&hei=1500&qlt=70'.format(
-                           picture_entry['i']['n'])
-            picture_urls.append(picture_url)
-
-        brand = product_data['brandName'] or 'Genérico'
-        base_name = '{} {}'.format(brand, product_data['name'])
-
-        products = []
-
-        if 'variants' not in product_data:
-            return []
-
-        for model in product_data['variants']:
-            sku = model['id']
-            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
-                      '{}'.format(publication_id, slug, sku)
-
-            prices = {e['type']: e for e in model['prices']}
-
-            if not prices:
-                continue
-
-            normal_price_keys = ['internetPrice', 'normalPrice']
-            offer_price_keys = ['cmrPrice', 'eventPrice']
-
-            normal_price = None
-            offer_price = None
-
-            for key in normal_price_keys:
-                if key not in prices:
-                    continue
-                normal_price = Decimal(remove_words(prices[key]['price'][0]))
-                break
-
-            for key in offer_price_keys:
-                if key not in prices:
-                    continue
-                offer_price = Decimal(remove_words(prices[key]['price'][0]))
-                break
-
-            if not offer_price:
-                offer_price = normal_price
-
-            if not normal_price:
-                normal_price = offer_price
-
-            stock = 0
-            availabilities = model['availability']
-
-            for availability in availabilities:
-                if availability['shippingOptionType'] == 'All':
-                    stock = availability['quantity']
-
-            reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
-                          'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
-                .format(sku)
-
-            review_data = json.loads(session.get(reviews_url).text)
-            review_count = review_data['TotalResults']
-
-            review_stats = review_data['Includes']
-
-            if 'Products' in review_stats:
-                if str(sku) not in review_stats['Products'].keys():
-                    key = list(review_stats['Products'].keys())[0]
-                    review_avg_score = review_stats['Products'][key][
-                        'ReviewStatistics']['AverageOverallRating']
-                else:
-                    review_avg_score = review_stats['Products'][str(sku)][
-                        'ReviewStatistics']['AverageOverallRating']
-            else:
-                review_avg_score = None
-
-            if 'reacondicionado' in base_name.lower():
-                condition = 'https://schema.org/RefurbishedCondition'
-            else:
-                condition = 'https://schema.org/NewCondition'
-
-            seller = model['offerings'][0]['sellerId']
-            if seller == 'FALABELLA':
-                seller = None
-
-            print(base_name)
-            print(model['name'])
-
-            p = Product(
-                '{} ({})'.format(base_name, model['name'])[0: 256],
-                cls.__name__,
-                category,
-                sku_url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls,
-                video_urls=video_urls,
-                review_count=review_count,
-                review_avg_score=review_avg_score,
-                condition=condition,
-                seller=seller
-            )
-
-            products.append(p)
-
-        return products
 
     @classmethod
     def banners(cls, extra_args=None):

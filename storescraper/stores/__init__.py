@@ -56,6 +56,7 @@ from .entel import Entel
 from .exito import Exito
 from .extra_brasil import ExtraBrasil
 from .falabella import Falabella
+from .falabella_cf import FalabellaCf
 from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
 from .fnac import Fnac
