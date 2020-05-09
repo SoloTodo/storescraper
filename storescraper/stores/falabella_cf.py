@@ -21,7 +21,7 @@ class FalabellaCf(Store):
     # info for each product
 
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 10
+    preferred_products_for_url_concurrency = 1
 
     @classmethod
     def categories(cls):
@@ -216,7 +216,6 @@ class FalabellaCf(Store):
         ]
 
         product_dict = {}
-        print(extra_args)
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'curl/7.64.1'
 
@@ -256,7 +255,7 @@ class FalabellaCf(Store):
                     break
 
                 for result in res['results']:
-                    url = 'https://www.falabella.com{}'.format(result['url'])
+                    url = result['url']
                     name = result['displayName']
                     sku = result['skuId']
                     picture_urls = [
