@@ -60,8 +60,8 @@ class Paris(Store):
              'Electro > Televisión > Oled y Qled', 1],
 
             # Also contains other accesories
-            ['electro/accesorios-tv/bluray-dvd', ['OpticalDiskPlayer'],
-             'Otras categorias > Bluray y DVD', 1],
+            # ['electro/accesorios-tv/bluray-dvd', ['OpticalDiskPlayer'],
+            #  'Otras categorias > Bluray y DVD', 1],
             # ['electro/accesorios-tv/proyectores', ['Projector'],
             #  'Otras categorias > Proyectores', 1],
 
