@@ -31,9 +31,9 @@ class DoItCenter(Store):
             ('linea-blanca/secadoras', 'WashingMachine'),
             ('linea-blanca/refrigeradoras', 'Refrigerator'),
             # ('electronica/smart-tv', 'Television'),
-            ('electronica/led-tv', 'Television'),
+            # ('electronica/led-tv', 'Television'),
             # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
-            ('electronica/equipos-de-sonido', 'StereoSystem'),
+            # ('electronica/equipos-de-sonido', 'StereoSystem'),
             ('electronica/telefonos-celulares', 'Cell'),
             ('bateria-de-cocina/microondas', 'Oven'),
         ]
