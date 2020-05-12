@@ -72,7 +72,9 @@ class Tupi(Store):
                     break
 
                 for product in product_containers:
-                    product_urls.append(product.find('a')['href'])
+                    product_link = product.findAll('a')[1]
+                    if 'lg' in product_link.text.lower():
+                        product_urls.append(product_link['href'])
 
                 page += 1
 
@@ -94,7 +96,7 @@ class Tupi(Store):
         stock = soup.find('input', {'id': 'the-cantidad-selector'})['max']
 
         if stock:
-            stock = int()
+            stock = int(stock)
         else:
             stock = -1
 
