@@ -27,9 +27,7 @@ class Bristol(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['televisores-hd-c166', 'Television'],
-            ['televisores-fhd-c167', 'Television'],
-            ['televisores-uhd-4k-c168', 'Television'],
+            ['televisores-c174', 'Television'],
             ['audio-c48', 'StereoSystem'],
             ['proyectores-c169', 'Projector'],
             ['celulares-f3', 'Cell'],
@@ -65,12 +63,17 @@ class Bristol(Store):
                 product_containers = soup.findAll('div', 'product-item-box')
 
                 if not product_containers:
+                    if page == 1:
+                        raise Exception('Empty category', url)
                     break
 
                 for product in product_containers:
-                    product_url = 'https://bristol.com.py/{}'.format(
-                        product.find('a')['href'])
-                    product_urls.append(product_url)
+                    product_link = product.find('a')
+
+                    if 'lg' in product_link.text.lower():
+                        product_url = 'https://bristol.com.py/{}'.format(
+                            product_link['href'])
+                        product_urls.append(product_url)
 
                 page += 1
 
