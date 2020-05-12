@@ -39,11 +39,11 @@ class Multimax(Store):
             ('estufas', 'Stove'),
             ('lavadoras', 'WashingMachine'),
             ('secadoras', 'WashingMachine'),
-            ('centro-de-lavado', 'WashingMachine'),
+            # ('centro-de-lavado', 'WashingMachine'),
             ('refrigeradoras', 'Refrigerator'),
             ('congeladores', 'Refrigerator'),
-            ('microondas', 'Oven'),
-            ('hornos', 'Oven'),
+            # ('microondas', 'Oven'),
+            # ('hornos', 'Oven'),
             ('monitores', 'Monitor'),
         ]
 
@@ -60,7 +60,7 @@ class Multimax(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://shopmultimax.com/collections/{}?page={}'\
+                url = 'https://www.multimax.net/collections/{}?page={}'\
                     .format(category_path, page)
 
                 print(url)
@@ -80,7 +80,7 @@ class Multimax(Store):
                 for item in items:
                     if 'LG' not in item.find('div', 'vendor').text.upper():
                         continue
-                    product_url = 'https://shopmultimax.com{}'\
+                    product_url = 'https://www.multimax.net{}'\
                         .format(item.find('a')['href'])
                     product_urls.append(product_url)
 
