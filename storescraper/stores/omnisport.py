@@ -36,6 +36,8 @@ class Omnisport(Store):
             ('electrodomesticos/microondas', 'Oven'),
             ('electrodomesticos/aires-acondicionados/productos',
              'AirConditioner'),
+            ('electrodomesticos/aires-acondicionados/inverter',
+             'AirConditioner'),
             ('electrodomesticos/lavadoras', 'WashingMachine'),
             ('electrodomesticos/secadoras', 'WashingMachine'),
             ('electrodomesticos/cocinas', 'Stove'),
@@ -48,35 +50,44 @@ class Omnisport(Store):
             if local_category != category:
                 continue
 
-            page = 1
-            done = False
+            sorters = [
+                'n_a',
+                'n_d',
+                'p_a',
+                'p_d',
+                'r_a',
+                'r_d',
+            ]
 
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
+            for sorter in sorters:
+                page = 1
 
-                url = 'https://www.omnisport.com/catalogo/{}?page={}'\
-                    .format(category_path, page)
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                    url = 'https://www.omnisport.com/catalogo/{}?sort={}&page={}'\
+                        .format(category_path, sorter, page)
+                    print(url)
 
-                containers = soup.findAll('div', 'catalog-product')
+                    soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                    containers = soup.findAll('div', 'catalog-product')
 
-                if not containers:
-                    done = True
+                    if not containers:
+                        break
 
-                for container in containers:
-                    link = container.find('a', 'dark')
+                    for container in containers:
+                        link = container.find('a', 'dark')
 
-                    if 'lg' in link.text.strip().lower():
-                        product_url = 'https://www.omnisport.com{}'\
-                            .format(link['href'])
+                        if 'lg' in link.text.strip().lower():
+                            product_url = 'https://www.omnisport.com{}'\
+                                .format(link['href'])
 
-                        product_urls.append(product_url)
+                            product_urls.append(product_url)
 
-                page += 1
+                    page += 1
 
-        return product_urls
+        return list(set(product_urls))
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
