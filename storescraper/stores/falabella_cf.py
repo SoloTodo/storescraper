@@ -448,12 +448,16 @@ class FalabellaCf(Store):
 
         banners = []
 
+        proxy = None
+        if 'proxy' in extra_args:
+            proxy = extra_args['proxy']
+
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
-            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
+                with HeadlessChrome(
+                        images_enabled=True, proxy=proxy) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -496,7 +500,7 @@ class FalabellaCf(Store):
                                 '{}'.format(url, index + 1))
                         index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                with HeadlessChrome(images_enabled=True, timeout=99) as driver:
+                with HeadlessChrome(images_enabled=True, proxy=proxy, timeout=99) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
