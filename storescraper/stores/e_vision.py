@@ -56,7 +56,7 @@ class EVision(Store):
             if local_category != category:
                 continue
 
-            url = 'https://www.evisionstore.com/?' \
+            url = 'https://www.evisionstore.com/?ipp=All' \
                   '&categoria=catalogo&codfamilia={}'.format(section_id)
 
             soup = BeautifulSoup(session.get(url, timeout=30).text,
