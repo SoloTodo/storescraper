@@ -17,7 +17,8 @@ class EVision(Store):
             'Refrigerator',
             'WashingMachine',
             'Oven',
-            'Stove'
+            'Stove',
+            'Monitor'
         ]
 
     @classmethod
@@ -43,7 +44,8 @@ class EVision(Store):
             ('970', 'Oven'),
             # ('980', 'Oven'),
             ('990', 'Oven'),
-            ('950', 'Stove')
+            ('950', 'Stove'),
+            ('620', 'Monitor'),
         ]
 
         session = session_with_proxy(extra_args)

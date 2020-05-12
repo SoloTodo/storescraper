@@ -20,7 +20,8 @@ class Jetstereo(Store):
             'Oven',
             'AirConditioner',
             'WashingMachine',
-            'Stove'
+            'Stove',
+            'Monitor'
         ]
 
     @classmethod
@@ -43,7 +44,8 @@ class Jetstereo(Store):
             ('lavadora-carga-frontal', 'WashingMachine'),
             ('secadoras', 'WashingMachine'),
             ('estufas-electricas', 'Stove'),
-            ('estufas-de-gas', 'Stove')
+            ('estufas-de-gas', 'Stove'),
+            ('monitores', 'Monitor'),
         ]
 
         session = session_with_proxy(extra_args)
