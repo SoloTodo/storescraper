@@ -238,7 +238,10 @@ class LiderGet(Store):
         if part_number:
             part_number = part_number[:49]
 
-        description = html_to_markdown(entry['longDescription'])
+        description = entry['longDescription']
+
+        if description:
+            description = html_to_markdown(description)
 
         picture_urls = ['https://images.lider.cl/wmtcl?source=url'
                         '[file:/productos/{}{}]&sink'.format(sku, img)

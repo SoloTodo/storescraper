@@ -61,7 +61,10 @@ class TiendaEntel(Store):
             else:
                 raise Exception('JSON error')
 
-        json_data = json.loads(raw_json)
+        try:
+            json_data = json.loads(raw_json)
+        except json.decoder.JSONDecodeError:
+            return []
 
         description = html_to_markdown(
             str(soup.find('div', 'details-description'))

@@ -129,7 +129,10 @@ class Entel(Store):
         raw_json = soup.find(
             'div', {'id': 'productDetail'}).find('script').string
 
-        json_data = json.loads(raw_json)
+        try:
+            json_data = json.loads(raw_json)
+        except json.decoder.JSONDecodeError:
+            return []
 
         products = []
 
