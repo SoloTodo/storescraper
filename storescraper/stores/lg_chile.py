@@ -61,7 +61,6 @@ class LgChile(LgV5):
             ('CT20106054', 'Monitor', False),
             # Proyectores
             ('CT30006480', 'Projector', True),
-            ('CT30006480', 'Projector', False),
 
             # Desaparecidos de la navegacion pero aun con
             # urls validas en LG.com
