@@ -81,6 +81,9 @@ class TiendaSmart(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
+        if 'An error has happened' in soup.text:
+            return []
+
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
