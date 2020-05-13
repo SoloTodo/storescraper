@@ -62,7 +62,7 @@ class LgV5(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        model_id = soup.find('input', {'name': 'modelId'})['value']
+        model_id = soup.find('div', 'pdp-conts-area')['id']
         model_data = cls._retrieve_api_model(model_id)
         sibling_groups = model_data['siblings']
         sibling_ids = [model_id]
