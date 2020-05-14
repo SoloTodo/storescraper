@@ -52,6 +52,9 @@ class Danaus(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         base_url = 'https://www.danaus.cl/{}.html?p={}'
         product_urls = []
 
@@ -63,6 +66,10 @@ class Danaus(Store):
 
             while True:
                 url = base_url.format(url_extension, page)
+
+                if page >= 20:
+                    raise Exception('Page overflow: ' + url)
+
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.find('ol', 'products')
 
