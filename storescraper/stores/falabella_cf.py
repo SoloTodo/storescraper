@@ -64,6 +64,8 @@ class FalabellaCf(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        from .falabella import Falabella
+
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
@@ -255,65 +257,22 @@ class FalabellaCf(Store):
                     break
 
                 for result in res['results']:
-                    url = result['url']
-                    name = result['displayName']
-                    sku = result['skuId']
-                    picture_urls = [
-                        'https://falabella.scene7.com/is/image/'
-                        'Falabella/{}?scl=1.0'.format(sku)]
-                    stock = -1
-                    offer_price = None
-                    normal_price = None
-                    backup_price = None
-
-                    for price in result['prices']:
-                        if price['icons']:
-                            offer_price = Decimal(
-                                price['price'][0].replace('.', ''))
-                        elif price['label']:
-                            normal_price = Decimal(
-                                price['price'][0].replace('.', ''))
-                        else:
-                            backup_price = Decimal(
-                                price['price'][0].replace('.', ''))
-
-                    if not normal_price:
-                        normal_price = backup_price
-
-                    if not offer_price:
-                        offer_price = normal_price
-
-                    variants = result['variants'][0]['options']
-
-                    if variants:
-                        for variant in variants:
-                            name += ' ({})'.format(variant['label'])
-                            sku = variant['mediaId']
-                            picture_urls = [
-                                'https://falabella.scene7.com/is/image/'
-                                'Falabella/{}?scl=1.0'.format(sku)]
-
-                            product = product_dict.get(sku, None)
-
-                            if not product:
-                                product = Product(
-                                    name, cls.__name__, category, url, url,
-                                    sku, stock, normal_price, offer_price,
-                                    'CLP', sku=sku, picture_urls=picture_urls)
-                                product_dict[sku] = product
-
-                            product.positions[section_name] = position
+                    if result.get('brand', '').upper() == 'LG':
+                        print(result['url'])
+                        local_products = Falabella.products_for_url(
+                            result['url'], category, extra_args)
                     else:
-                        product = product_dict.get(sku, None)
+                        local_products = cls._assemble_products(
+                            result, category)
 
-                        if not product:
-                            product = Product(
-                                name, cls.__name__, category, url, url,
-                                sku, stock, normal_price, offer_price,
-                                'CLP', sku=sku, picture_urls=picture_urls)
-                            product_dict[sku] = product
+                    for product in local_products:
+                        if product.sku in product_dict:
+                            product_to_update = product_dict[product.sku]
+                        else:
+                            product_dict[product.sku] = product
+                            product_to_update = product
 
-                        product.positions[section_name] = position
+                        product_to_update.positions[section_name] = position
 
                     position += 1
                 page += 1
@@ -321,6 +280,98 @@ class FalabellaCf(Store):
         products_list = [p for p in product_dict.values()]
 
         return products_list
+
+    @classmethod
+    def _assemble_products(cls, result, category,):
+        url = result['url']
+        name = result['displayName']
+        sku = result['skuId']
+
+        if 'totalReviews' in result:
+            review_count = int(result['totalReviews'])
+            review_avg_score = float(result['rating'])
+        else:
+            review_count = None
+            review_avg_score = None
+
+        picture_urls = [
+            'https://falabella.scene7.com/is/image/'
+            'Falabella/{}?scl=1.0'.format(sku)]
+        stock = -1
+        offer_price = None
+        normal_price = None
+        backup_price = None
+
+        for price in result['prices']:
+            if price['icons']:
+                offer_price = Decimal(
+                    price['price'][0].replace('.', ''))
+            elif price['label']:
+                normal_price = Decimal(
+                    price['price'][0].replace('.', ''))
+            else:
+                backup_price = Decimal(
+                    price['price'][0].replace('.', ''))
+
+        if not normal_price:
+            normal_price = backup_price
+
+        if not offer_price:
+            offer_price = normal_price
+
+        variants = result['variants'][0]['options']
+
+        if variants:
+            products = []
+            for variant in variants:
+                name += ' ({})'.format(variant['label'])
+                sku = variant['mediaId']
+                picture_urls = [
+                    'https://falabella.scene7.com/is/image/'
+                    'Falabella/{}?scl=1.0'.format(sku)]
+
+                # product = product_dict.get(sku, None)
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls,
+                    review_count=review_count,
+                    review_avg_score=review_avg_score
+                ))
+                # product_dict[sku] = product
+                # product.positions[section_name] = position
+        else:
+            # product = product_dict.get(sku, None)
+
+            products = [
+                Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls,
+                    review_count=review_count,
+                    review_avg_score=review_avg_score
+                )
+            ]
+
+        return products
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
@@ -500,7 +551,8 @@ class FalabellaCf(Store):
                                 '{}'.format(url, index + 1))
                         index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                with HeadlessChrome(images_enabled=True, proxy=proxy, timeout=99) as driver:
+                with HeadlessChrome(images_enabled=True, proxy=proxy,
+                                    timeout=99) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 

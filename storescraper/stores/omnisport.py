@@ -66,8 +66,8 @@ class Omnisport(Store):
                     if page >= 10:
                         raise Exception('Page overflow')
 
-                    url = 'https://www.omnisport.com/catalogo/{}?sort={}&page={}'\
-                        .format(category_path, sorter, page)
+                    url = 'https://www.omnisport.com/catalogo/{}?sort={}' \
+                          '&page={}'.format(category_path, sorter, page)
                     print(url)
 
                     soup = BeautifulSoup(session.get(url).text, 'html.parser')
