@@ -85,8 +85,14 @@ class GonzalezGimenez(Store):
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
+        price_containers = soup.findAll('p', 'price')
+        price_container = price_containers[0].find('ins')
+
+        if not price_container:
+            price_container = price_containers[1].find('ins')
+
         price = Decimal(
-            soup.find('p', 'price').find('ins').find('span', 'amount').text
+            price_container.find('span', 'amount').text
                 .replace('₲.', '').replace('*', '').replace('.', '').strip())
 
         description = html_to_markdown(str(soup.find('div', 'tab-pane')))

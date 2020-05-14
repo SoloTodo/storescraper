@@ -29,7 +29,7 @@ class Raenco(Store):
             ('tecnologia/tv.html', 'Television'),
             ('tecnologia/tv/tv-led-hd-fhd.html', 'Television'),
             ('tecnologia/tv/tv-4k.html', 'Television'),
-            ('tecnologia/tv/tv-qled.html', 'Television'),
+            # ('tecnologia/tv/tv-qled.html', 'Television'),
             ('tecnologia/audio-hogar/equipos-de-sonido.html', 'StereoSystem'),
             ('tecnologia/celulares.html', 'Cell'),
             ('tecnologia/celulares/8-gb.html', 'Cell'),
