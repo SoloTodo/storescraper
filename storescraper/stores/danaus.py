@@ -34,21 +34,21 @@ class Danaus(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['pc-y-portatiles/notebook', 'Notebook'],
-            ['pc-y-portatiles/tablets', 'Tablet'],
-            ['impresion/multifuncionales-tinta', 'Printer'],
-            ['impresion/impresora-laser', 'Printer'],
-            ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
-            ['almacenamiento/disco-duros-pc', 'StorageDrive'],
-            ['audio-video-y-fotografia/videoproyectores', 'Projector'],
-            ['componentes-partes-y-piezas/monitores', 'Monitor'],
-            ['componentes-partes-y-piezas/pantallas', 'Monitor'],
-            ['pc-y-portatiles/all-in-one', 'AllInOne'],
-            ['componentes-partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
-            ['audio-video-y-fotografia/audifono', 'Headphones'],
-            ['componentes-partes-y-piezas/procesadores', 'Processor'],
-            ['componentes-partes-y-piezas/fuentes-poder', 'PowerSupply'],
-            ['componentes-partes-y-piezas/ram', 'Ram'],
+            ['tecnologia/pc-y-portatiles/notebook', 'Notebook'],
+            ['tecnologia/pc-y-portatiles/tablets', 'Tablet'],
+            ['tecnologia/impresion/multifuncionales-tinta', 'Printer'],
+            ['tecnologia/impresion/impresora-laser', 'Printer'],
+            ['tecnologia/audio-video-y-fotografia/parlantes', 'StereoSystem'],
+            ['tecnologia/almacenamiento/disco-duros-pc', 'StorageDrive'],
+            ['tecnologia/audio-video-y-fotografia/videoproyectores', 'Projector'],
+            ['tecnologia/componentes-partes-y-piezas/monitores', 'Monitor'],
+            ['tecnologia/componentes-partes-y-piezas/pantallas', 'Monitor'],
+            ['tecnologia/pc-y-portatiles/all-in-one', 'AllInOne'],
+            ['tecnologia/componentes-partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
+            ['tecnologia/audio-video-y-fotografia/audifono', 'Headphones'],
+            ['tecnologia/componentes-partes-y-piezas/procesadores', 'Processor'],
+            ['tecnologia/componentes-partes-y-piezas/fuentes-poder', 'PowerSupply'],
+            ['tecnologia/componentes-partes-y-piezas/ram', 'Ram'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -66,6 +66,7 @@ class Danaus(Store):
 
             while True:
                 url = base_url.format(url_extension, page)
+                print(url)
 
                 if page >= 20:
                     raise Exception('Page overflow: ' + url)
