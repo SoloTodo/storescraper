@@ -88,7 +88,7 @@ class TiendaClaro(Store):
             price = Decimal(remove_words(res['catalogEntry']['offerPrice']))
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
-                product_entry['ItemImage467'])]
+                product_entry['ItemImage467']).replace(' ', '%20')]
 
             products.append(Product(
                 name,

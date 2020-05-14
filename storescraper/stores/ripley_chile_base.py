@@ -187,7 +187,7 @@ class RipleyChileBase(Store):
             current_position = 1
 
             while True:
-                if page > 80:
+                if page > 95:
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
