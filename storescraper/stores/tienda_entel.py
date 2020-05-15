@@ -76,18 +76,14 @@ class TiendaEntel(Store):
                 continue
 
             price = Decimal(price_container).quantize(0)
-
-            if sku['available']:
-                stock = -1
-            else:
-                stock = 0
-
             sku_id = sku['skuId']
 
             pictures_container = []
+            stock = 0
 
             for view in json_data['skuViews']:
                 if view['skuId'] == sku_id:
+                    stock = view['stockDelivery'] + view['stockPickup']
                     pictures_container = view['images']
                     break
 
