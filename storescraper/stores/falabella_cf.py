@@ -64,8 +64,6 @@ class FalabellaCf(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        from .falabella import Falabella
-
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
@@ -257,13 +255,8 @@ class FalabellaCf(Store):
                     break
 
                 for result in res['results']:
-                    if result.get('brand', '').upper() == 'LG':
-                        print(result['url'])
-                        local_products = Falabella.products_for_url(
-                            result['url'], category, extra_args)
-                    else:
-                        local_products = cls._assemble_products(
-                            result, category)
+                    local_products = cls._assemble_products(
+                        result, category)
 
                     for product in local_products:
                         if product.sku in product_dict:
