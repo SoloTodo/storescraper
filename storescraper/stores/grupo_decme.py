@@ -103,7 +103,11 @@ class GrupoDecme(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'}).text
+        name = soup.find('h1', {'itemprop': 'name'})
+        if not name:
+            name = soup.find('p', {'itemprop': 'name'})
+
+        name = name.text
         sku = soup.find('span', 'variant-sku').text
 
         potential_stock_containers = soup.findAll('h6')

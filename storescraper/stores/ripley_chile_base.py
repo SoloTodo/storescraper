@@ -194,7 +194,7 @@ class RipleyChileBase(Store):
 
                 response = session.get(category_url, allow_redirects=False)
 
-                if response.status_code != 200:
+                if response.status_code != 200 and page == 1:
                     raise Exception('Invalid section: ' + category_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
