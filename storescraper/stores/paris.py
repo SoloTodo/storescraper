@@ -1,3 +1,4 @@
+import json
 import re
 from collections import defaultdict
 from decimal import Decimal
@@ -402,15 +403,19 @@ class Paris(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
-        review_containers = soup.findAll('span', {'itemprop': 'reviewRating'})
-        review_count = len(review_containers)
+        reviews_endpoint = 'https://api.bazaarvoice.com/data/batch.json?pass' \
+                           'key=caKNy0lDYfGnjpRhD27b7ZtxiSbxdwBcuuIEwXCyc9Zr' \
+                           'M&apiversion=5.5&resource.q0=reviews&filter.q0=p' \
+                           'roductid%3Aeq%3A{}&limit.q0=100'.format(sku)
+        review_data = json.loads(session.get(reviews_endpoint).text)
+        reviews = review_data['BatchedResults']['q0']['Results']
+        review_count = len(reviews)
 
         sum_review_scores = 0
-        for container in review_containers:
-            sum_review_scores += int(container.find(
-                'span', {'itemprop': 'ratingValue'}).text)
+        for review in reviews:
+            sum_review_scores += review['Rating']
 
-        if review_containers:
+        if review_count:
             review_avg_score = sum_review_scores / review_count
         else:
             review_avg_score = None
