@@ -70,7 +70,12 @@ class Hbt(Store):
         price = Decimal(remove_words(price_container.find('span', 'price').text))
         description = html_to_markdown(str(soup.find('div', 'p-text')))
 
-        picture_urls = [soup.find('div', 'product-image').find('img')['src']]
+        gallery = soup.find('div', {'id':'amasty_gallery'})
+        if not gallery:
+            gallery = soup.find('div', 'product-image')
+
+        picture_urls = [i['src'].strip() for i in
+                        gallery.findAll('img')]
 
         p = Product(
             name,
