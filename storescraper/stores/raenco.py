@@ -60,7 +60,7 @@ class Raenco(Store):
             ('hogar/linea-blanca/hornos-empotrables.html', 'Oven'),
             ('hogar/linea-blanca/estufas.html', 'Stove'),
             # ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
-            ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
+            # ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
             ('hogar/linea-blanca/estufas/de-mesa-a-gas-y-electricas.html',
              'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-20-y-24-pulgadas.html',

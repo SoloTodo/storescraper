@@ -93,7 +93,7 @@ class GonzalezGimenez(Store):
 
         price = Decimal(
             price_container.find('span', 'amount').text
-                .replace('₲.', '').replace('*', '').replace('.', '').strip())
+            .replace('₲.', '').replace('*', '').replace('.', '').strip())
 
         description = html_to_markdown(str(soup.find('div', 'tab-pane')))
 

@@ -117,9 +117,14 @@ class PlazaLama(Store):
             picture_urls = ['https:{}'.format(image['href'])
                             for image in images_container.findAll('a')]
         else:
-            picture_url = soup.find('div', 'product-photo-container')\
-                .findAll('img')[-1]['src']
-            picture_urls = ['https:{}'.format(picture_url)]
+            picture_containers = soup.find('div', 'product-photo-container')\
+                .findAll('img')
+            if picture_containers:
+                picture_url = soup.find('div', 'product-photo-container')\
+                    .findAll('img')[-1]['src']
+                picture_urls = ['https:{}'.format(picture_url)]
+            else:
+                picture_urls = None
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))

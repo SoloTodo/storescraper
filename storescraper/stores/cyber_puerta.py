@@ -80,7 +80,7 @@ class CyberPuerta(Store):
             ['Impresion-Copiado/Impresoras-Multifuncionales/Multifuncionales',
              'Printer'],
             ['Telecomunicacion/Telefonia-Movil/Smartphones', 'Cell'],
-            ['Audio-Video/TV-Pantallas/Pantallas-LED/', 'Television'],
+            # ['Audio-Video/TV-Pantallas/Pantallas-LED/', 'Television'],
             ['Computadoras/All-in-One', 'AllInOne'],
             ['Audio-Video/Consolas-Juegos/Nintendo-Switch/'
              'Consolas-Nintendo-Switch', 'VideoGameConsole'],
