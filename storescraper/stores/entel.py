@@ -146,7 +146,13 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
-            print(json.dumps(plans_data, indent=2))
+            stock = 0
+
+            for view in json_data['skuViews']:
+                if view['skuId'] == variant_sku:
+                    print(view)
+                    stock = view['stockDelivery'] + view['stockPickup']
+                    break
 
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
@@ -172,7 +178,7 @@ class Entel(Store):
                     url,
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
-                    -1,
+                    stock,
                     price,
                     price,
                     'CLP',
@@ -180,5 +186,28 @@ class Entel(Store):
                     cell_monthly_payment=Decimal(0),
                     cell_plan_name=plan_name,
                 ))
+
+            # Prepago
+            price_container = variant['skuPrice']
+            if not price_container:
+                continue
+
+            price = Decimal(price_container).quantize(0)
+
+            product = Product(
+                variant_name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - Entel Prepago'.format(variant_sku),
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=variant_sku,
+                cell_plan_name='Entel Prepago'
+            )
+            products.append(product)
 
         return products
