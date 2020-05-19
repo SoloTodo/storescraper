@@ -146,14 +146,6 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
-            stock = 0
-
-            for view in json_data['skuViews']:
-                if view['skuId'] == variant_sku:
-                    print(view)
-                    stock = view['stockDelivery'] + view['stockPickup']
-                    break
-
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
                 'Venta': ''
@@ -171,6 +163,10 @@ class Entel(Store):
 
                 price = Decimal(round(plan['priceIVA']))
 
+                # Please keep the stock as -1 even if the product is marked
+                # as "Unavailable" in Entel's website as requested by client
+                # Value
+
                 products.append(Product(
                     variant_name,
                     cls.__name__,
@@ -178,7 +174,7 @@ class Entel(Store):
                     url,
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
-                    stock,
+                    -1,
                     price,
                     price,
                     'CLP',
@@ -201,11 +197,12 @@ class Entel(Store):
                 url,
                 url,
                 '{} - Entel Prepago'.format(variant_sku),
-                stock,
+                -1,
                 price,
                 price,
                 'CLP',
                 sku=variant_sku,
+                cell_monthly_payment=Decimal(0),
                 cell_plan_name='Entel Prepago'
             )
             products.append(product)
