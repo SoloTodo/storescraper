@@ -23,29 +23,29 @@ class Hbt(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('samsung/hornos-y-microondas/162', 'Oven'),
-            ('samsung/campanas-y-extractores/163', 'CellAccesory'),
-            ('samsung/encimeras/161', 'Stove'),
+            ('electrodomesticos/hornos-y-microondas/microondas', 'Oven'),
+            ('electrodomesticos/hornos-y-microondas/hornos', 'Oven'),
+            ('electrodomesticos/encimeras/vitroelectrica', 'Stove'),
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.54.0'
         product_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
                 continue
 
-            url = 'https://www.hbt.cl/tienda/electro/{}'\
+            url = 'https://www.hbt.cl/productos/{}'\
                 .format(category_path)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            items = soup.findAll('div', 'caja-producto')
+            item_container = soup.find('ul', 'itemgrid')
+            items = item_container.findAll('li', 'item')
 
             for item in items:
-                product_url = item.find('a', 'produc-hover')['href']
+                product_url = item.find('a')['href']
                 product_urls.append(product_url)
 
         return product_urls
@@ -61,18 +61,21 @@ class Hbt(Store):
         soup = BeautifulSoup(data, 'html.parser')
 
         name = soup.find('h1').text.strip()
-        sku = re.search(r'https://www.hbt.cl/tienda/ficha/(\d+)/', url)
-        sku = sku.groups()[0]
+        sku = soup.find('div', 'sku').text.strip()
 
-        price = Decimal(remove_words(soup.find('div', 'precioWeb').text))
+        price_container = soup.find('p', 'special-price')
+        if not price_container:
+            price_container = soup.find('span', 'regular-price')
 
-        description = ''
+        price = Decimal(remove_words(price_container.find('span', 'price').text))
+        description = html_to_markdown(str(soup.find('div', 'p-text')))
 
-        for box in soup.findAll('div', 'accordionContent'):
-            description += html_to_markdown(str(box) + '\n\n')
+        gallery = soup.find('div', {'id':'amasty_gallery'})
+        if not gallery:
+            gallery = soup.find('div', 'product-image')
 
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', 'foto-ficha1')]
+        picture_urls = [i['src'].strip() for i in
+                        gallery.findAll('img')]
 
         p = Product(
             name,
@@ -84,7 +87,7 @@ class Hbt(Store):
             -1,
             price,
             price,
-            'CRC',
+            'CLP',
             sku=sku,
             description=description,
             picture_urls=picture_urls
