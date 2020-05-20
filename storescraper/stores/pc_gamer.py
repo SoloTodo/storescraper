@@ -39,20 +39,20 @@ class PcGamer(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['33', 'Processor'],  # Procesadores
-            ['20', 'Motherboard'],  # MB
-            ['18', 'Ram'],  # RAM
-            ['25_29', 'StorageDrive'],  # HDD Desktop
-            ['25_35', 'SolidStateDrive'],  # SSD
-            ['34', 'VideoCard'],  # Tarjetas de video
-            ['17_48', 'ComputerCase'],  # Gabinetes c/fuente
-            ['17_43', 'ComputerCase'],  # Gabinetes s/fuente
-            ['24', 'PowerSupply'],  # Fuentes de poder
-            ['17_69', 'CpuCooler'],  # Coolers
-            ['91', 'CpuCooler'],  # Refrigeracion
-            ['88', 'Mouse'],  # Mouse y teclados
-            ['92', 'Keyboard'],  # accesorios gamer
-            ['87', 'StereoSystem'],  # audio
+            ['62', 'Processor'],  # Procesadores
+            ['33', 'Motherboard'],  # MB
+            ['70', 'Ram'],  # RAM
+            # ['75', 'StorageDrive'],  # HDD Desktop
+            # ['25_35', 'SolidStateDrive'],  # SSD
+            ['87', 'VideoCard'],  # Tarjetas de video
+            ['81_83', 'ComputerCase'],  # Gabinetes c/fuente
+            ['81_82', 'ComputerCase'],  # Gabinetes s/fuente
+            ['84', 'PowerSupply'],  # Fuentes de poder
+            # ['17_69', 'CpuCooler'],  # Coolers
+            # ['91', 'CpuCooler'],  # Refrigeracion
+            # ['88', 'Mouse'],  # Mouse y teclados
+            # ['92', 'Keyboard'],  # accesorios gamer
+            # ['87', 'StereoSystem'],  # audio
         ]
 
         product_urls = []
