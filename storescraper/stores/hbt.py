@@ -67,10 +67,11 @@ class Hbt(Store):
         if not price_container:
             price_container = soup.find('span', 'regular-price')
 
-        price = Decimal(remove_words(price_container.find('span', 'price').text))
+        price = Decimal(remove_words(price_container.find(
+            'span', 'price').text))
         description = html_to_markdown(str(soup.find('div', 'p-text')))
 
-        gallery = soup.find('div', {'id':'amasty_gallery'})
+        gallery = soup.find('div', {'id': 'amasty_gallery'})
         if not gallery:
             gallery = soup.find('div', 'product-image')
 

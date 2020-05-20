@@ -146,8 +146,6 @@ class Entel(Store):
             plans_data = json.loads(
                 session.get(plans_url).text)['response']['Prices']
 
-            print(json.dumps(plans_data, indent=2))
-
             suffix_dict = {
                 'Portabilidad': ' Portabilidad',
                 'Venta': ''
@@ -165,6 +163,10 @@ class Entel(Store):
 
                 price = Decimal(round(plan['priceIVA']))
 
+                # Please keep the stock as -1 even if the product is marked
+                # as "Unavailable" in Entel's website as requested by client
+                # Value
+
                 products.append(Product(
                     variant_name,
                     cls.__name__,
@@ -180,5 +182,29 @@ class Entel(Store):
                     cell_monthly_payment=Decimal(0),
                     cell_plan_name=plan_name,
                 ))
+
+            # Prepago
+            price_container = variant['skuPrice']
+            if not price_container:
+                continue
+
+            price = Decimal(price_container).quantize(0)
+
+            product = Product(
+                variant_name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - Entel Prepago'.format(variant_sku),
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=variant_sku,
+                cell_monthly_payment=Decimal(0),
+                cell_plan_name='Entel Prepago'
+            )
+            products.append(product)
 
         return products
