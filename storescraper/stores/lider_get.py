@@ -238,7 +238,9 @@ class LiderGet(Store):
         if part_number:
             part_number = part_number[:49]
 
-        description = entry['longDescription']
+        description = None
+        if 'longDescription' in entry:
+            description = entry['longDescription']
 
         if description:
             description = html_to_markdown(description)

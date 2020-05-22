@@ -111,7 +111,7 @@ class PcGamer(Store):
 
         stock_container = pricing_container.find(
             'ul', 'list-unstyled').findAll('li')[-1]
-        stock_container = re.search('Disponibilidad: (\d+)',
+        stock_container = re.search('Disponibilidad (\d+)',
                                     stock_container.text)
 
         if stock_container:

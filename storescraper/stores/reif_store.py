@@ -23,7 +23,7 @@ class ReifStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['88-portatil', 'Notebook'],
+            # ['88-portatil', 'Notebook'],
             ['85-iphone-', 'Cell'],
             ['207-ipad', 'Tablet'],
             ['127-audifonos', 'Headphones'],
