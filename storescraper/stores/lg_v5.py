@@ -58,7 +58,7 @@ class LgV5(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=20)
 
-        if response.url != url:
+        if response.url != url or response.status_code == 404:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
