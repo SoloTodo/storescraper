@@ -239,9 +239,11 @@ class Wom(Store):
                         initial_price,
                         initial_price,
                         'CLP',
-                        cell_plan_name='{}{}{}'.format(plan_name,
-                                                       modality['suffix'],
-                                                       combination['suffix']),
+                        cell_plan_name='WOM {}{}{}'.format(
+                            plan_name,
+                            modality['suffix'],
+                            combination['suffix']
+                        ),
                         picture_urls=picture_urls,
                         description=description,
                         cell_monthly_payment=cell_monthly_payment
