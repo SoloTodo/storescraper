@@ -15,6 +15,8 @@ from storescraper.utils import session_with_proxy
 from storescraper import banner_sections as bs
 from storescraper.utils import HeadlessChrome
 
+from .falabella import Falabella
+
 
 class FalabellaCf(Store):
     # Special Falabella scraper that bypasses Cloudflare but retrieves less
@@ -256,7 +258,7 @@ class FalabellaCf(Store):
 
                 for result in res['results']:
                     local_products = cls._assemble_products(
-                        result, category)
+                        result, category, session)
 
                     for product in local_products:
                         if product.sku in product_dict:
@@ -275,7 +277,7 @@ class FalabellaCf(Store):
         return products_list
 
     @classmethod
-    def _assemble_products(cls, result, category,):
+    def _assemble_products(cls, result, category, session):
         url = result['url']
         name = result['displayName']
         sku = result['skuId']
@@ -287,9 +289,14 @@ class FalabellaCf(Store):
             review_count = None
             review_avg_score = None
 
-        picture_urls = [
-            'https://falabella.scene7.com/is/image/'
-            'Falabella/{}?scl=1.0'.format(sku)]
+        if result.get('brand', 'N/A').upper() in ['LG', 'SAMSUNG']:
+            picture_urls = Falabella._get_picture_urls(
+                session, result['productId'])
+        else:
+            picture_urls = [
+                'https://falabella.scene7.com/is/image/'
+                'Falabella/{}?scl=1.0'.format(sku)]
+
         stock = -1
         offer_price = None
         normal_price = None
