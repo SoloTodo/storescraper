@@ -134,7 +134,7 @@ class Peta(Store):
         print(request_url)
         response = session.get(request_url)
 
-        if not response.text:
+        if response.status_code == 404 or not response.text:
             return []
 
         page_source = response.text

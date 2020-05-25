@@ -54,8 +54,8 @@ class Panafoto(Store):
              'Bocinas Bluetooth"]', 'StereoSystem'),
             # ('["categories.level3:Categorías /// Audio /// Sistemas de Audio'
             #  ' /// Equipos de Sonido"]', 'StereoSystem'),
-            ('["categories.level3:Categorías /// Celulares y Tablets '
-             '/// Celulares /// Smartphones"]', 'Cell'),
+            ('["categories.level2:Categorías /// Celulares y Tablets /// '
+             'Celulares"]', 'Cell'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Lavadoras"]', 'WashingMachine'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '

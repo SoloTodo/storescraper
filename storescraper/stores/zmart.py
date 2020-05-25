@@ -87,6 +87,9 @@ class Zmart(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
+        if soup.find('img', {'src': '/productos/upload/2015/09/23/20150922-errorpage.jpg'}):
+            return []
+
         name = soup.find('h1').text.strip()
 
         query_string = urllib.parse.urlparse(url).query
