@@ -30,36 +30,89 @@ class Dimercom(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # Don't use extensions without underscore ("_") because Dimercom
+        # main categories don't list all of the products of the subcategories
         url_extensions = [
+            # Discos duros internos
             ['6_109', 'StorageDrive'],
+            # Unidades SSD
             ['6_110', 'SolidStateDrive'],
+            # Tarjetas madre AMD
             ['27_255', 'Motherboard'],
+            # Tarjetas madre Gamer
+            ['27_256', 'Motherboard'],
+            # Tarjetas madre Intel
             ['27_257', 'Motherboard'],
-            # A-Series
+            # Procesadores A-Series
             ['17_175', 'Processor'],
-            # AMD
+            # Procesadores AMD
             ['7_176', 'Processor'],
-            # Celeron
+            # Procesadores Celeron
             ['17_177', 'Processor'],
-            # Core
+            # Procesadores Core
             ['17_178', 'Processor'],
-            # Pentium
+            # Procesadores Intel
+            ['17_180', 'Processor'],
+            # Procesadores Pentium
             ['17_181', 'Processor'],
-            # Ryzen
+            # Procesadores Ryzen
             ['17_182', 'Processor'],
+            # Procesadores Xeon
+            ['17_183', 'Processor'],
+            # Memorias RAM para Desktop
             ['13_138', 'Ram'],
+            # Memorias RAM para Laptop
             ['13_139', 'Ram'],
+            # Tarjetas de video NVIDIA
             ['26_253', 'VideoCard'],
+            # Tarjetas de video Radeon
             ['26_254', 'VideoCard'],
+            # Fuentes de Poder
             ['9_116', 'PowerSupply'],
+            # Gabinetes
             ['10_123', 'ComputerCase'],
+            # Teclados
             ['1_64', 'Keyboard'],
+            # Mouse
             ['1_56', 'Mouse'],
-            ['14', 'Monitor'],
+            # Monitores 15.6"
+            ['14_143', 'Monitor'],
+            # Monitores 18.5"
+            ['14_144', 'Monitor'],
+            # Monitores 19.5"
+            ['14_145', 'Monitor'],
+            # Monitores 20"
+            ['14_146', 'Monitor'],
+            # Monitores 21.5"
+            ['14_147', 'Monitor'],
+            # Monitores 23"
+            ['14_148', 'Monitor'],
+            # Monitores 23.5"
+            # ['14_149', 'Monitor'],
+            # Monitores 23.6"
+            ['14_150', 'Monitor'],
+            # Monitores 23.8"
+            ['14_151', 'Monitor'],
+            # Monitores 24"
+            ['14_152', 'Monitor'],
+            # Monitores 25"
+            # ['14_153', 'Monitor'],
+            # Monitores 27"
+            ['14_154', 'Monitor'],
+            # Monitores 28"
+            # ['14_155', 'Monitor'],
+            # Monitores 29"
+            # ['14_156', 'Monitor'],
+            # Monitores 31.5"
+            ['14_157', 'Monitor'],
+            # Monitores 32"
+            # ['14_158', 'Monitor'],
+            # Monitores 34"
+            ['14_159', 'Monitor'],
+            # Monitores LED
+            ['14_160', 'Monitor'],
+            # Tablets
             ['25_250', 'Tablet'],
-            ['12_131', 'Printer'],
-            ['12_132', 'Printer']
-
         ]
 
         base_url = 'https://www.dimercom.mx/index.php?' \

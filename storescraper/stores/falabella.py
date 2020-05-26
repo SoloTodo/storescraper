@@ -365,24 +365,7 @@ class Falabella(Store):
         publication_id = product_data['id']
         global_id = product_data['id']
 
-        pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
-                                'Falabella/{}?req=set,json'.format(global_id)
-        pictures_response = session.get(pictures_resource_url, timeout=30).text
-        pictures_json = json.loads(
-            re.search(r's7jsonResponse\((.+),""\);',
-                      pictures_response).groups()[0])
 
-        picture_urls = []
-
-        picture_entries = pictures_json['set']['item']
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
-
-        for picture_entry in picture_entries:
-            picture_url = 'https://falabella.scene7.com/is/image/{}?' \
-                          'wid=1500&hei=1500&qlt=70'.format(
-                           picture_entry['i']['n'])
-            picture_urls.append(picture_url)
 
         brand = product_data['brandName'] or 'Genérico'
         base_name = '{} {}'.format(brand, product_data['name'])
@@ -463,8 +446,7 @@ class Falabella(Store):
             if seller == 'FALABELLA':
                 seller = None
 
-            print(base_name)
-            print(model['name'])
+            picture_urls = cls._get_picture_urls(session, model['id'])
 
             p = Product(
                 '{} ({})'.format(base_name, model['name'])[0: 256],
@@ -729,3 +711,26 @@ class Falabella(Store):
                     'type': subsection_type})
 
         return banners
+
+    @classmethod
+    def _get_picture_urls(cls, session, product_id):
+        pictures_resource_url = 'https://falabella.scene7.com/is/image/' \
+                                'Falabella/{}?req=set,json'.format(product_id)
+        pictures_response = session.get(pictures_resource_url, timeout=30).text
+        pictures_json = json.loads(
+            re.search(r's7jsonResponse\((.+),""\);',
+                      pictures_response).groups()[0])
+
+        picture_urls = []
+
+        picture_entries = pictures_json['set']['item']
+        if not isinstance(picture_entries, list):
+            picture_entries = [picture_entries]
+
+        for picture_entry in picture_entries:
+            picture_url = 'https://falabella.scene7.com/is/image/{}?' \
+                          'wid=1500&hei=1500&qlt=70'.format(
+                picture_entry['i']['n'])
+            picture_urls.append(picture_url)
+
+        return picture_urls
