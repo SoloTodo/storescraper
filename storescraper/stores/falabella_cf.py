@@ -290,6 +290,7 @@ class FalabellaCf(Store):
             review_avg_score = None
 
         if result.get('brand', 'N/A').upper() in ['LG', 'SAMSUNG']:
+            print(result['productId'])
             picture_urls = Falabella._get_picture_urls(
                 session, result['productId'])
         else:
@@ -326,11 +327,17 @@ class FalabellaCf(Store):
             for variant in variants:
                 name += ' ({})'.format(variant['label'])
                 sku = variant['mediaId']
-                picture_urls = [
-                    'https://falabella.scene7.com/is/image/'
-                    'Falabella/{}?scl=1.0'.format(sku)]
 
-                # product = product_dict.get(sku, None)
+                # Only rewrite the picture urls if there is at least two
+                # variants of the product. For some reason there are SKUs
+                # (e.g. 10761120) that only have one variant and have the
+                # variants field loaded. This prevents resetting the images
+                # possibly loadded for LG and Samsung products above
+                if len(variants) > 1:
+                    picture_urls = [
+                        'https://falabella.scene7.com/is/image/'
+                        'Falabella/{}?scl=1.0'.format(sku)]
+
                 products.append(Product(
                     name,
                     cls.__name__,
@@ -347,11 +354,7 @@ class FalabellaCf(Store):
                     review_count=review_count,
                     review_avg_score=review_avg_score
                 ))
-                # product_dict[sku] = product
-                # product.positions[section_name] = position
         else:
-            # product = product_dict.get(sku, None)
-
             products = [
                 Product(
                     name,
