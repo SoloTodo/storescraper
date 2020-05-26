@@ -130,10 +130,6 @@ class Paris(Store):
             ['tecnologia/gamers',
              ['Notebook', 'VideoGameConsole', 'Keyboard', 'Headphones'],
              'Tecno > Gamers', 0.5],
-            ['tecnologia/gamer/notebooks', ['Notebook'],
-             'Tecno > Gamers > Notebooks', 1],
-            ['tecnologia/gamer/consolas', ['VideoGameConsole'],
-             'Tecno > Gamers > Consolas', 1],
             ['tecnologia/gamer/teclados', ['Keyboard'],
              'Tecno > Gamers > Teclados y Mouse', 1],
             ['tecnologia/gamer/headset', ['Headphones'],
@@ -141,10 +137,10 @@ class Paris(Store):
             # Also includes videogames
             ['tecnologia/consolas-videojuegos', ['VideoGameConsole'],
              'Tecno > Consolas VideoJuegos', 0],
-            ['tecnologia/consolas-videojuegos/ps4', ['VideoGameConsole'],
-             'Tecno > Consolas VideoJuegos > Consolas PS4', 1],
-            ['tecnologia/consolas-videojuegos/xbox-one', ['VideoGameConsole'],
-             'Tecno > Consolas VideoJuegos > Consolas Xbox One', 1],
+            ['tecnologia/consolas-videojuegos/playstation', ['VideoGameConsole'],
+             'Tecno > Consolas VideoJuegos > Consolas PlayStation', 1],
+            ['tecnologia/consolas-videojuegos/xbox', ['VideoGameConsole'],
+             'Tecno > Consolas VideoJuegos > Consolas Xbox', 1],
             ['tecnologia/consolas-videojuegos/nintendo', ['VideoGameConsole'],
              'Tecno > Consolas VideoJuegos > Consolas Nintendo', 1],
             ['tecnologia/impresoras', ['Printer'], 'Tecno > Impresoras', 0],
@@ -216,9 +212,7 @@ class Paris(Store):
             ['linea-blanca/cocina/encimeras', ['Oven'],
              'Línea Blanca > Cocinas > Encimeras', 1],
             ['linea-blanca/cocina/hornos-empotrables', ['Oven'],
-             'Línea Blanca > Cocinas > Hornos empotrables', 1],
-            ['linea-blanca/cocina/microondas', ['Oven'],
-             'Línea Blanca > Cocinas > Microondas', 1],
+             'Línea Blanca > Cocinas > Hornos y Microondas empotrables', 1],
             # Also includes other electrodomésticos
             ['linea-blanca/electrodomesticos', ['Oven'],
              'Línea Blanca > Electrodomésticos', 0],
@@ -237,10 +231,6 @@ class Paris(Store):
              'Línea Blanca > Estufas', 1],
             ['linea-blanca/estufas/electricas', ['SpaceHeater'],
              'Línea Blanca > Estufas > Estufas Eléctricas', 1],
-            ['linea-blanca/estufas/infrarrojas', ['SpaceHeater'],
-             'Línea Blanca > Estufas > Estufas Infrarrojas', 1],
-            ['linea-blanca/estufas/laser', ['SpaceHeater'],
-             'Línea Blanca > Estufas > Estufas Láser', 1],
             ['linea-blanca/estufas/gas', ['SpaceHeater'],
              'Línea Blanca > Estufas > Estufas a Gas', 1],
             ['linea-blanca/estufas/parafina', ['SpaceHeater'],
@@ -268,8 +258,13 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                response = session.get(category_url)
+
+                if response.url != category_url:
+                    raise Exception('Mismatching URL: {} - {}'.format(
+                        response.url, category_url))
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 containers = soup.findAll('li', 'flex-item-products')
 

@@ -289,10 +289,9 @@ class FalabellaCf(Store):
             review_count = None
             review_avg_score = None
 
-        if result.get('brand', 'N/A').upper() in ['LG', 'SAMSUNG']:
-            print(result['productId'])
-            picture_urls = Falabella._get_picture_urls(
-                session, result['productId'])
+        if result.get('brand', 'N/A').upper() in ['LG', 'SAMSUNG'] or \
+                'LG' in name or 'Samsung' in name:
+            picture_urls = Falabella._get_picture_urls(session, sku)
         else:
             picture_urls = [
                 'https://falabella.scene7.com/is/image/'
