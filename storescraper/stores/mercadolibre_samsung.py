@@ -26,7 +26,7 @@ class MercadolibreSamsung(MercadolibreChile):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_sections = [
-            ('electrodomesticos/pequenos', 'VacuumCleaner'),
+            # ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
             ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),

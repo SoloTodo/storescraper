@@ -105,7 +105,7 @@ class Dimercom(Store):
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url).text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html5lib')
 
         name = soup.find('div', 'right').find('h1').text
         sku = soup.find('input', {'name': 'product_id'})['value']
