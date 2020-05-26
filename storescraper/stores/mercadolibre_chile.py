@@ -13,13 +13,42 @@ from storescraper.utils import html_to_markdown
 
 
 class MercadolibreChile(Store):
+    store_extension = ''
+
     @classmethod
     def categories(cls):
-        raise NotImplementedError('Subclasses must implement this')
+        category_paths = cls._category_paths()
+        return list(set(e[1] for e in category_paths))
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        raise NotImplementedError('Subclasses must implement this')
+        category_sections = cls._category_paths()
+
+        session = requests.Session()
+        product_urls = []
+
+        for category_path, local_category in category_sections:
+            if local_category != category:
+                continue
+
+            category_url = 'https://listado.mercadolibre.cl/{}/' \
+                           '{}'.format(category_path, cls.store_extension)
+            print(category_url)
+            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+
+            if soup.find('div', 'zrp-offical-message'):
+                raise Exception('Invalid category: ' + category_url)
+
+            containers = soup.findAll('li', 'results-item')
+
+            if not containers:
+                raise Exception('Empty category: ' + category_url)
+
+            for container in containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -98,3 +127,7 @@ class MercadolibreChile(Store):
                 ))
 
         return products
+
+    @classmethod
+    def _category_paths(cls):
+        raise NotImplementedError('Subclasses must implement this')
