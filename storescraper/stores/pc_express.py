@@ -43,7 +43,9 @@ class PcExpress(Store):
             ['136', 'Notebook'],              # Comercial y corporativos
             ['475', 'VideoCard'],             # Tarjetas de Video
             ['473', 'Processor'],             # Procesadores
-            ['171', 'Monitor'],               # Monitores
+            ['73_523_171', 'Monitor'],        # Monitores Tradicionales
+            ['73_523_128', 'Monitor'],        # Monitores Gamer
+            ['73_523_129', 'Monitor'],        # Monitores Profesionales
             ['472', 'Motherboard'],           # Placas Madres
             ['72', 'Ram'],                    # Memorias
             ['101', 'StorageDrive'],          # Discos Duros para PC
