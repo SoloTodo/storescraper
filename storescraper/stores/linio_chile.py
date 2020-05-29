@@ -6,33 +6,13 @@ class LinioChile(Linio):
     currency = 'CLP'
 
     @classmethod
-    def categories(cls):
-        return [
-            'Notebook',
-            'Cell',
-            'Television',
-            'Tablet',
-            'Printer',
-            'VideoGameConsole',
-            'Refrigerator',
-            'WashingMachine',
-            'Oven',
-            'VacuumCleaner',
-            'ExternalStorageDrive',
-            'Keyboard',
-            'Mouse',
-            'AllInOne',
-            'Monitor',
-        ]
-
-    @classmethod
     def _category_paths(cls):
         return [
             ['computacion/pc-portatil', 'Notebook'],
-            # ['zona-gamer/notebook-gamer', 'Notebook'],
+            ['zona-gamer/notebook-gamer', 'Notebook'],
+            ['zona-gamer/monitores-gamers', 'Monitor'],
             ['celulares-y-smartphones/liberados', 'Cell'],
             ['tv-y-video/televisores/', 'Television'],
-            # ['tv-audio-y-foto/', 'Television'],
             ['tablets/tablet', 'Tablet'],
             ['impresoras-y-scanners/impresoras', 'Printer'],
             ['impresoras/impresoras-laser', 'Printer'],
@@ -47,8 +27,13 @@ class LinioChile(Linio):
             ['pequenos-electrodomesticos/microondas-y-hornos/', 'Oven'],
             ['pequenos-electrodomesticos/aspiradoras/', 'VacuumCleaner'],
             ['discos-duros/discos-duros-externos/', 'ExternalStorageDrive'],
-            # ['tabletas-digitalizadoras/teclados-pc/', 'Keyboard'],
             ['mouse-kit/mouse/', 'Mouse'],
             ['pc-escritorio/all-in-one/', 'AllInOne'],
             ['pc-escritorio/monitores/', 'Monitor'],
+            ['componentes-de-computadoras/gabinetes/', 'ComputerCase'],
+            ['componentes-de-computadoras/procesadores/', 'Processor'],
+            ['componentes-de-computadoras/placas-madre/', 'Motherboard'],
+            ['componentes-de-computadoras/memoria-ram/', 'Ram'],
+            ['componentes-de-computadoras/tarjetas-de-video/', 'VideoCard'],
+            ['componentes-de-computadoras/memoria-interna/', 'SolidStateDrive'],
         ]
