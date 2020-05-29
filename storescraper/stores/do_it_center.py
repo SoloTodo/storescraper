@@ -35,7 +35,7 @@ class DoItCenter(Store):
             # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
             # ('electronica/equipos-de-sonido', 'StereoSystem'),
             ('electronica/telefonos-celulares', 'Cell'),
-            ('bateria-de-cocina/microondas', 'Oven'),
+            # ('bateria-de-cocina/microondas', 'Oven'),
         ]
 
         session = session_with_proxy(extra_args)

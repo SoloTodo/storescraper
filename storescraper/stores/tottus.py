@@ -103,6 +103,10 @@ class Tottus(Store):
                 'div', 'active-offer').find('span', 'red').text
 
             prices_array = re.findall(r'([\d.]+)', prices_raw_text)
+
+            if not prices_array:
+                return []
+
             offer_price_text = prices_array[0]
 
             if len(prices_array) > 1:
