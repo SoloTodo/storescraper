@@ -35,5 +35,6 @@ class LinioChile(Linio):
             ['componentes-de-computadoras/placas-madre/', 'Motherboard'],
             ['componentes-de-computadoras/memoria-ram/', 'Ram'],
             ['componentes-de-computadoras/tarjetas-de-video/', 'VideoCard'],
-            ['componentes-de-computadoras/memoria-interna/', 'SolidStateDrive'],
+            ['componentes-de-computadoras/memoria-interna/',
+             'SolidStateDrive'],
         ]

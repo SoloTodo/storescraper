@@ -115,7 +115,7 @@ class LiderGet(Store):
             ['Electrohogar/Electrodomésticos/Hornos Eléctricos', ['Oven'],
              '-NO-TITLE- > Hornos eléctricos', 1],
             ['Electrohogar/Electrodomésticos/Microondas', ['Oven'],
-              '-NO-TITLE- > Microondas', 1],
+             '-NO-TITLE- > Microondas', 1],
             ['Electrohogar/Cocina/Calefont', ['WaterHeater'],
              'Calefacción > Calefont', 1],
             ['Electrohogar/Climatización/Estufas Eléctricas', ['SpaceHeater'],
