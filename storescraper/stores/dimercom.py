@@ -110,7 +110,7 @@ class Dimercom(Store):
             # Monitores 34"
             ['14_159', 'Monitor'],
             # Monitores LED
-            ['14_160', 'Monitor'],
+            # ['14_160', 'Monitor'],
             # Tablets
             ['25_250', 'Tablet'],
         ]

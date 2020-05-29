@@ -54,20 +54,19 @@ class PcExpress(Store):
             ['102', 'ExternalStorageDrive'],  # Discod Duros Externos
             ['118', 'PowerSupply'],           # Fuentes Estandar
             ['279', 'PowerSupply'],           # Fuentes Certificadas
-            # ['119', 'ComputerCase'],          # Gabinetes Basicos
-            # ['120', 'ComputerCase'],          # Gabinetes Gamer
-            # ['278', 'ComputerCase'],          # Gabinetes SLIM
+            ['460_462_119', 'ComputerCase'],  # Gabinetes Basicos
+            ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
+            ['460_462_278', 'ComputerCase'],  # Gabinetes SLIM
             ['169', 'CpuCooler'],             # Ventilacion para CPU
             ['269', 'Tablet'],                # Tablets
             ['106', 'MemoryCard'],            # Memorias Flash
             ['107', 'UsbFlashDrive'],         # Pendrive
             ['493', 'Printer'],               # Impresoras Hogar y Oficina
-            # ['129', 'Television'],          # Monitores Profesionales
-            ['319', 'Mouse'],                 # Mouse Gamers
-            ['318', 'Keyboard'],              # Teclados Gamers
-            # ['131', 'KeyboardMouseCombo'],  # ????
+            ['460_466_471', 'Mouse'],         # Mouse Gamers
+            ['460_466_470', 'Keyboard'],      # Teclados Gamers
+            ['460_466_467', 'KeyboardMouseCombo'],  # Combos Teclado y Mouse
             ['321', 'Headphones'],            # Audifonos Gamers
-            # ['353', 'Headphones'],            # Audifonos Microfono Bluetooth
+            ['282', 'Headphones'],            # Audifonos Microfono Bluetooth
             ['282', 'Headphones'],            # Microfonos y Manos Libres
             ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
             ['154', 'Ups']                    # Ups
