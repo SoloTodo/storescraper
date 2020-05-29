@@ -6,23 +6,6 @@ class LinioMexico(Linio):
     currency = 'MXN'
 
     @classmethod
-    def categories(cls):
-        return [
-            'Cell',
-            'Television',
-            'Notebook',
-            'Monitor',
-            'StorageDrive',
-            'SolidStateDrive',
-            'ComputerCase',
-            'Processor',
-            'VideoCard',
-            'Motherboard',
-            'Ram',
-            'VideoGameConsole'
-        ]
-
-    @classmethod
     def _category_paths(cls):
         return [
             ['celulares-y-tablets/celulares-y-smartphones', 'Cell'],

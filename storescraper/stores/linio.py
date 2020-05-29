@@ -19,6 +19,11 @@ class Linio(Store):
                                   'subclasses of Linio')
 
     @classmethod
+    def categories(cls):
+        category_paths = cls._category_paths()
+        return list(set(e[1] for e in category_paths))
+
+    @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = cls._category_paths()
 
