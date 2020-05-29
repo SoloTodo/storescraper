@@ -173,9 +173,9 @@ class Paris(Store):
              'Línea Blanca > Refrigeración', 1],
             ['linea-blanca/refrigeracion/refrigeradores/', ['Refrigerator'],
              'Línea Blanca > Refrigeración > Refrigeradores', 1],
-            ['linea-blanca/refrigeracion/refrigeradores/no-frost/',
-             ['Refrigerator'],
-             'Línea Blanca > Refrigeración > No Frost', 1],
+            # ['linea-blanca/refrigeracion/refrigeradores/no-frost/',
+            #  ['Refrigerator'],
+            #  'Línea Blanca > Refrigeración > No Frost', 1],
             ['linea-blanca/refrigeracion/refrigeradores/'
              'refrigerador-top-mount/',
              ['Refrigerator'],
