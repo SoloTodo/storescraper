@@ -20,7 +20,6 @@ class Sincex(Store):
             'WashingMachine',
             'Refrigerator',
             'Oven',
-
         ]
 
     @classmethod
@@ -50,9 +49,8 @@ class Sincex(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://www.llevatelo.cl/categoria-producto/{}/page/{}/'\
-                    .format(category_path, page)
-                print(url)
+                url = 'https://www.llevatelo.cl/categoria-producto/{}/page/' \
+                      '{}/'.format(category_path, page)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')

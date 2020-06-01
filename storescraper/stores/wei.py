@@ -135,27 +135,28 @@ class Wei(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-
         page_source = session.get(url).text
-
         sku = re.search(r"productoPrint\('(.+)'\);", page_source)
 
         if not sku:
             return []
 
         sku = sku.groups()[0]
-
         soup = BeautifulSoup(page_source, 'html.parser')
-
         name_container = soup.find('div', 'titulo')
 
         if name_container.text == 'PRODUCTO NO DISPONIBLE':
             return []
 
-        if soup.find('a', {'data-tooltip': 'Sin Stock'}):
-            stock = 0
+        availability_link = soup.find('a', 'fa fa-check-circle bdg')
+
+        if availability_link:
+            if availability_link['data-tooltip'] == 'Sin Stock':
+                stock = 0
+            else:
+                stock = -1
         else:
-            stock = -1
+            stock = 0
 
         name = name_container.contents[-1].replace('&sol;', '').strip()
         pricing_container = soup.find('div', 'producto-precio')
