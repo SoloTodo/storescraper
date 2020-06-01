@@ -102,6 +102,7 @@ class XtremeTecPc(Store):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_container = soup.find('ul', 'products')\
 
+                print(url)
                 products = product_container.findAll('li', 'product')
 
                 for product in products:

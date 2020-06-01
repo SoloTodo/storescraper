@@ -96,6 +96,7 @@ class Winpy(Store):
                 soup = BeautifulSoup(session.get(url_with_page).text,
                                      'html5lib')
                 product_containers = soup.find('section', {'id': 'productos'})
+                print(url_with_page)
                 product_containers = product_containers.findAll('article')
 
                 if not product_containers:

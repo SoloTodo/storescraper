@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -73,7 +75,7 @@ class GlobalMac(Store):
                              'html.parser')
 
         name = soup.find('title').text.strip()
-        sku = soup.find('meta', {'itemprop': 'model'})['content']
+        sku = soup.find('input', {'name': 'product_id'})['value']
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
@@ -85,14 +87,18 @@ class GlobalMac(Store):
         else:
             picture_urls = None
 
-        if soup.find('link', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        if soup.find('button', {'id': 'button-cart'}):
             stock = -1
         else:
             stock = 0
 
-        price = soup.find('meta', {'itemprop': 'price'})['content']
-        price = Decimal(remove_words(price))
+        price_text = soup.findAll('h2')[-1].text.replace('.', '')
+
+        normal_price = re.search(r'Webpay: \$(\d+)', price_text)
+        normal_price = Decimal(normal_price.groups()[0])
+
+        offer_price = re.search(r'Transferencia: \$(\d+)', price_text)
+        offer_price = Decimal(offer_price.groups()[0])
 
         p = Product(
             name,
@@ -102,8 +108,8 @@ class GlobalMac(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,

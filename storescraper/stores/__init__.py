@@ -124,11 +124,8 @@ from .mercadolibre_argentina_sandisk import MercadoLibreArgentinaSandisk
 from .mercadolibre_argentina_seagate import MercadoLibreArgentinaSeagate
 from .mercadolibre_argentina_western_digital import \
     MercadoLibreArgentinaWesternDigital
-from .mercadolibre_daewoo import MercadolibreDaewoo
-from .mercadolibre_lg import MercadolibreLg
+from .mercadolibre_chile import MercadolibreChile
 from .mercadolibre_samsung import MercadolibreSamsung
-from .mercadolibre_hp import MercadolibreHp
-from .mercadolibre_motorola import MercadolibreMotorola
 from .meroli import Meroli
 from .mi_pc import MiPc
 from .microplay import Microplay

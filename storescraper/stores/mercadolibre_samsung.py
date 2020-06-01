@@ -6,7 +6,7 @@ class MercadolibreSamsung(MercadolibreChile):
 
     @classmethod
     def _category_paths(cls):
-        return [
+        return {'_Tienda_samsung': [
             # ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
             ('electrodomesticos/lavado', 'WashingMachine'),
@@ -23,4 +23,4 @@ class MercadolibreSamsung(MercadolibreChile):
             ('relojes-joyas', 'Wearable'),
             ('computacion', 'Tablet'),
             ('instrumentos', 'StereoSystem'),
-        ]
+        ]}
