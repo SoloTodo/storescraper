@@ -181,7 +181,6 @@ class MercadolibreChile(Store):
             ],
             '_Tienda_lenovo': [
                 ('pc-escritorio-all-in-one', 'AllInOne'),
-                ('tablets-accesorios', 'Tablet'),
             ],
             '_Tienda_logitech': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
