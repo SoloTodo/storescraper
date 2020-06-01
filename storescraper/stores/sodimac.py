@@ -337,13 +337,22 @@ class Sodimac(Store):
                 .strip())
 
         offer_price_container = soup.find('div', 'cmr')
+        offer_price = None
 
         if offer_price_container:
             offer_price = Decimal(
                 soup.find('div', 'cmr').find('div', 'price').text
                     .replace('c/u', '').replace('$', '').replace('.', '')
                     .strip())
-        else:
+
+        if not offer_price:
+            data_json = json.loads(
+                soup.find("script", {"id": "__NEXT_DATA__"}).text)
+            offer_price = Decimal(
+                data_json['props']['pageProps']['productProps']['result']
+                ['variants'][0]['price'][0]['price'].replace('.', ''))
+
+        if not offer_price:
             offer_price = normal_price
 
         add_button = soup.find('button', {'id': 'testId-btn-add-to-cart'})

@@ -63,6 +63,9 @@ class HpOnline(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        if soup.find('ol', 'products'):
+            return []
+
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock = -1
