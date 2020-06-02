@@ -65,8 +65,8 @@ class Sodimac(Store):
 
             ['cat3810002', ['Television'],
              'Tv y Video > Televisores LED', 1],
-            ['cat3810003', ['Monitor'],
-             'Tv y Video > Monitores LED', 1],
+            # ['cat3810003', ['Monitor'],
+            #  'Tv y Video > Monitores LED', 1],
 
             ['cat3390002', ['Notebook'],
              'Computación > Notebooks', 1],

@@ -149,7 +149,7 @@ class MercadolibreChile(Store):
                 ('notebooks-accesorios', 'CpuCooler'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('componentes-pc', 'PowerSupply'),
+                # ('componentes-pc', 'PowerSupply'),
             ],
             '_Tienda_cougar': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
