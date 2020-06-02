@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 import json
 
@@ -89,6 +89,11 @@ class SamsungChile(Store):
                             'https://images.samsung.com/is/image/samsung/{}'
                             .format(picture))
 
+                    if model['price1Display']:
+                        price = Decimal(remove_words(model['price1Display']))
+                    else:
+                        price = Decimal(0)
+
                     products.append(Product(
                         '{} ({})'.format(name, key),
                         cls.__name__,
@@ -97,8 +102,8 @@ class SamsungChile(Store):
                         url,
                         key,
                         -1,
-                        Decimal(0),
-                        Decimal(0),
+                        price,
+                        price,
                         'CLP',
                         sku=key,
                         picture_urls=picture_urls
