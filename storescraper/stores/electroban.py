@@ -43,7 +43,7 @@ class Electroban(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.eban.com.py/familias_paginacion/{}/{}/'
+        base_url = 'https://www.electroban.com.py/familias_paginacion/{}/{}/'
 
         for c in category_paths:
             category_path, local_category = c
@@ -113,7 +113,7 @@ class Electroban(Store):
 
         if not price:
             price = Decimal(session.post(
-                'https://www.eban.com.py/ajax/calculo_plazo.php',
+                'https://www.electroban.com.py/ajax/calculo_plazo.php',
                 data=post_data).text)
         else:
             price = Decimal(price)
