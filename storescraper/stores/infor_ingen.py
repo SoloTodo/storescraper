@@ -45,13 +45,13 @@ class InforIngen(Store):
             ['78', 'VideoCard'],  # Tarjetas de video
             ['81_84', 'ComputerCase'],  # Gabinetes c/fuente
             ['81_85', 'ComputerCase'],  # Gabinetes s/fuente
-            ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
+            # ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
             ['81_83', 'PowerSupply'],  # Fuentes de poder Reales
             ['92_95', 'CpuCooler'],  # Coolers CPU Aire
             ['92_96', 'CpuCooler'],  # Coolers CPU Liquido
             ['98', 'Monitor'],  # Monitores LCD
             ['105_106', 'Mouse'],  # Teclados y mouse
-            ['105_123', 'Notebook'],  # Notebooks
+            # ['105_123', 'Notebook'],  # Notebooks
             # ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
             ['90_91', 'Headphones'],  # Audífonos
         ]
