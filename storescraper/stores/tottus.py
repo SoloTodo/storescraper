@@ -1,4 +1,5 @@
 import re
+import json
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
@@ -16,6 +17,7 @@ class Tottus(Store):
         return [
             'Television',
             'Cell',
+            'Wearable',
             'Tablet',
             'StereoSystem',
             'Headphones',
@@ -31,24 +33,16 @@ class Tottus(Store):
         url_base = 'http://www.tottus.cl'
 
         category_paths = [
-            ['Televisores/cat2290025', ['Television'],
-             'Televisores', 1],
-            ['Televisores/cat2290025',
-             ['Television'],
-             'Televisores', 1],
-            ['Smartphones/cat2290023', ['Cell'],
-             'Smartphones', 1],
-            ['Celulares/cat2280074', ['Cell', 'Tablet'],
-             'Celulares', 0],
-            ['Freezer-y-Refrigerador/cat2130070', ['Refrigerator'],
+            ['televisores-cat070301', ['Television'], 'Televisores', 1],
+            ['smartphones-cat2290023', ['Cell'], 'Smartphones', 1],
+            ['smartwatch-cat3010050', ['Wearable'], 'Smartwatch', 1],
+            ['tablet-cat2360034', ['Tablet'], 'Tablet', 1],
+            ['parlantes-cat070501', ['StereoSystem'], 'Parlantes', 1],
+            ['audifonos-cat3010062', ['Headphones'], 'Audífonos', 1],
+            ['freezer-y-refrigerador-cat070104', ['Refrigerator'],
              'Freezer y Refrigerador', 1],
-            ['Lavadora/cat2130072', ['WashingMachine'],
+            ['lavadoras-y-secadoras-cat070106', ['WashingMachine'],
              'Lavadora', 1],
-            ['Audio/cat2280075', ['StereoSystem'],
-             'Audio', 1],
-            # ['NoteBook-y-PC/cat660015', ['Notebook'], 'NoteBook y PC', 1],
-            # ['Consolas-y-Videojuegos/cat2290026', ['VideoGameConsole'],
-            #  'Consolas y Videojuegos', 1],
         ]
 
         session = session_with_proxy(extra_args)
@@ -60,19 +54,14 @@ class Tottus(Store):
             if category not in local_categories:
                 continue
 
-            category_url = '{}/tottus/browse/{}'.format(url_base,
-                                                        category_path)
+            category_url = '{}/api/product-search/by-category-slug?' \
+                           'slug={}&sort=recommended_web&perPage=1000'\
+                .format(url_base, category_path)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            product_containers = soup.findAll(
-                'div', 'item-product-caption')
+            data = json.loads(session.get(category_url).text)['results']
 
-            if not product_containers:
-                raise Exception('Empty category: ' + category_url)
-
-            for idx, container in enumerate(product_containers):
-                product_url = container.findAll('a')[3]['href'].split('?')[0]
-                product_url = '{}{}'.format(url_base, product_url)
+            for idx, product_data in enumerate(data):
+                product_url = '{}/{}/p/'.format(url_base, product_data['slug'])
 
                 product_entries[product_url].append({
                     'category_weight': category_weight,
@@ -86,60 +75,53 @@ class Tottus(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = None
 
-        name = soup.find('div', 'title').find('h5').text.strip()
-        sku = soup.find('input', {
-            'name': '/atg/commerce/order/purchase/CartModifierFormHandler.'
-                    'items[0].productId'})['value'].strip()
+        for i in range(0, 10):
+            response = session.get(url)
+            if response.status_code == 200:
+                break
 
-        if len(soup.findAll('div', 'out-of-stock')) == 2:
-            stock = 0
-        else:
+        soup = BeautifulSoup(response.text, 'html5lib')
+        data_options = soup.findAll('script', {'type': 'application/ld+json'})
+        data = None
+        for d in data_options:
+            data = json.loads(d.text)
+            if data['@type'] == "Product":
+                break
+
+        if not data or data['@type'] != "Product":
+            return []
+
+        name = data['name']
+        sku = data['sku']
+
+        if data['offers']['availability'] == "https://schema.org/InStock":
             stock = -1
-
-        if soup.find('div', 'offer-imbatible'):
-            prices_raw_text = soup.find(
-                'div', 'active-offer').find('span', 'red').text
-
-            prices_array = re.findall(r'([\d.]+)', prices_raw_text)
-
-            if not prices_array:
-                return []
-
-            offer_price_text = prices_array[0]
-
-            if len(prices_array) > 1:
-                normal_price_text = prices_array[1]
-            else:
-                normal_price_text = offer_price_text
-
-            normal_price = Decimal(remove_words(normal_price_text))
-            offer_price = Decimal(remove_words(offer_price_text))
-
-            if offer_price > normal_price:
-                offer_price = normal_price
         else:
-            prices_container = soup.find('div', 'price-selector')
+            stock = 0
 
-            offer_price_container = prices_container.find('span', 'red')
+        special_price = soup.find('span', 'cmrPrice')
+        data_price = None
 
-            if offer_price_container:
-                price = Decimal(remove_words(
-                    offer_price_container.text
-                ))
-            else:
-                price = Decimal(remove_words(
-                    prices_container.find(
-                        'span', 'active-price').find('span').text
-                ))
+        if 'price' in data['offers']:
+            data_price = data['offers']['price']
+        elif 'lowPrice' in data['offers']:
+            data_price = data['offers']['lowPrice']
+        else:
+            raise Exception('No data price')
 
-            normal_price = offer_price = price
+        if special_price:
+            offer_price = Decimal(
+                special_price.text.strip().replace('$', '').replace('.', ''))
+            normal_price = Decimal(data_price)
+        else:
+            offer_price = Decimal(data_price)
+            normal_price = offer_price
 
-        description = html_to_markdown(str(soup.find('div', {'id': 'tab_1'})))
+        description = html_to_markdown(str(soup.find('div', 'react-tabs')))
 
-        picture_urls = ['http://s7d2.scene7.com/is/image/Tottus/{}?scl=1.0'
-                        ''.format(sku)]
+        picture_urls = data['image']
 
         p = Product(
             name,
