@@ -148,7 +148,7 @@ class MercadolibreChile(Store):
             '_Tienda_corsair': [
                 ('notebooks-accesorios', 'CpuCooler'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 # ('componentes-pc', 'PowerSupply'),
             ],
             '_Tienda_cougar': [
@@ -171,7 +171,8 @@ class MercadolibreChile(Store):
                 ('notebooks-accesorios', 'Notebook'),
                 ('tablets-accesorios', 'Tablet'),
                 ('audio-audifonos', 'Headphones'),
-                ('electronica/audio-hogar/parlantes-subwoofers', 'Headphones'),
+                # ('electronica/audio-hogar/parlantes-subwoofers',
+                # 'Headphones'),
             ],
             '_Tienda_hyperx': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),

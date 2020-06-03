@@ -33,7 +33,7 @@ class Max(Store):
             # ('video/reproductores-dvd', 'OpticalDiskPlayer'),
             ('celulares/prepago', 'Cell'),
             ('celulares/prepago/tigo', 'Cell'),
-            ('celulares/prepago/claro', 'Cell'),
+            # ('celulares/prepago/claro', 'Cell'),
             # ('celulares/prepago/movistar', 'Cell'),
             ('celulares/liberados', 'Cell'),
             ('lineablanca/combos-lavadora-y-secadora', 'WashingMachine'),
