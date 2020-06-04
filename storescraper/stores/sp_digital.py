@@ -122,6 +122,8 @@ class SpDigital(Store):
              'Home > Accesorios > Kit Teclados Mouse', 1],
             ['337', ['Headphones'],
              'Home > Accesorios > Audífonos', 1],
+            ['586', ['Headphones'],
+             'Home > Sistemas para conferencias > Audífonos y micrófonos', 1],
             ['357', ['VideoGameConsole'],
              'Home > Audio y Video > Consolas', 1],
             ['572', ['VideoGameConsole'],
