@@ -26,7 +26,7 @@ class GonzalezGimenez(Store):
         category_paths = [
             ['televisores-c11', 'Television'],
             ['audio-c12', 'StereoSystem'],
-            ['celulares-c20', 'Cell'],
+            ['celulares-c69', 'Cell'],
             ['refrigeracion-c4', 'Refrigerator'],
             ['hornos-c16', 'Oven'],
             ['cocinas-c15', 'Stove'],
