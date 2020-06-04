@@ -197,6 +197,31 @@ class MercadolibreChile(Store):
                 ('electronica', 'Headphones'),
                 ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
+            '_Tienda_marvo': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc-audifonos', 'Headphones'),
+                ('webcams-audio-pc-parlantes', 'StereoSystem'),
+            ],
+            '_Tienda_ozone': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc', 'Headphones'),
+                ('videojuegos', 'Headphones'),
+            ],
+            '_Tienda_pc-factory_OfficialStoreId_810': [
+                ('celulares-telefonia', 'Cell'),
+                ('computacion', 'Notebook'),
+            ],
+            '_Tienda_primus': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+            ],
+            '_Tienda_razer': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc', 'Headphones'),
+            ],
             '_Tienda_motorola': [
                 ('audio', 'Headphones'),
                 ('celulares-telefonia/celulares', 'Cell'),
