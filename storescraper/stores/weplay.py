@@ -30,7 +30,7 @@ class Weplay(Store):
         category_paths = [
             # ['consolas/consolas3ds.html', 'VideoGameConsole'],
             ['consolas/consolasswitch.html', 'VideoGameConsole'],
-            ['consolas/consolasps4.html', 'VideoGameConsole'],
+            # ['consolas/consolasps4.html', 'VideoGameConsole'],
             # ['consolas/consolasxboxone.html', 'VideoGameConsole'],
             ['computacion/audifonosgamer.html', 'Headphones'],
             ['computacion/teclados.html', 'Keyboard'],

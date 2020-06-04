@@ -28,6 +28,7 @@ class Yoytec(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
+        lg_product_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
@@ -43,17 +44,15 @@ class Yoytec(Store):
                 url = 'https://www.yoytec.com/{}?page={}'\
                     .format(category_path, page)
 
+                print(url)
+
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html5lib')
                 container = soup.find('div', {'id':  'tabs-2'})
 
                 items = container.findAll('div', 'product_block')
-
+                
                 for item in items:
-                    if item.find(
-                            'div', 'manufacturer_logo').find('img')['src'] != \
-                            'images/manufacturers_lg-01.gif':
-                        continue
                     product_url = item.find('a', 'product_img')['href']
 
                     if product_url in product_urls:
@@ -61,10 +60,14 @@ class Yoytec(Store):
                         break
 
                     product_urls.append(product_url)
+                    if item.find(
+                            'div', 'manufacturer_logo').find('img')['src'] == \
+                            'images/manufacturers_lg-01.gif':
+                        lg_product_urls.append(product_url)
 
                 page += 1
 
-        return product_urls
+        return lg_product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
