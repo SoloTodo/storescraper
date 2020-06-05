@@ -69,7 +69,7 @@ class PcGamer(Store):
                 if page >= 5:
                     raise Exception('Page overflow: ' + category_path)
 
-                url_webpage = 'http://www.pc-gamer.cl/index.php?' \
+                url_webpage = 'https://www.pc-gamer.cl/index.php?' \
                               'route=product/category&limit=100&path={}' \
                               '&page={}'.format(category_path, page)
 
@@ -89,7 +89,7 @@ class PcGamer(Store):
                     original_product_url = link_container.find('a')['href']
                     product_id = re.search(r'product_id=(\d+)',
                                            original_product_url).groups()[0]
-                    product_url = 'http://www.pc-gamer.cl/' \
+                    product_url = 'https://www.pc-gamer.cl/' \
                                   'index.php?route=product/product&' \
                                   'product_id=' + product_id
                     product_urls.append(product_url)
