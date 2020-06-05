@@ -114,8 +114,8 @@ class Paris(Store):
              'Tecno > Computadores > PC Gamers', 1],
             ['tecnologia/computadores/desktop-all-in-one', ['AllInOne'],
              'Tecno > Computadores > Desktop y All InOne', 1],
-            ['tecnologia/computadores/convertibles-2-en-1', ['Notebook'],
-             'Tecno > Computadores > Convertibles 2 en 1', 1],
+            # ['tecnologia/computadores/convertibles-2-en-1', ['Notebook'],
+            #  'Tecno > Computadores > Convertibles 2 en 1', 1],
             ['tecnologia/computadores/ipad-tablet', ['Tablet'],
              'Tecno > Computadores > iPad y Tablet', 1],
             # Also includes accesories

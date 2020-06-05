@@ -125,7 +125,9 @@ class BestBuyMexico(Store):
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        if 'Agotado' in soup.find('div', 'shop-add-to-cart').text:
+        if not soup.find('div', 'shop-add-to-cart'):
+            stock = 0
+        elif 'Agotado' in soup.find('div', 'shop-add-to-cart').text:
             stock = 0
         elif 'Preventa' in soup.find('div', 'shop-add-to-cart').text:
             stock = 0
