@@ -117,12 +117,12 @@ class Wom(Store):
         products = []
 
         plan_prices = {
-            '35-gigas': Decimal(13990),
-            '45-gigas': Decimal(16990),
-            '60-gigas': Decimal(19990),
+            '40-gigas': Decimal(13990),
+            '50-gigas': Decimal(16990),
+            '65-gigas': Decimal(19990),
             'libres-gigas': Decimal(25990),
             '15-gigas': Decimal(9990),
-            '25-gigas': Decimal(11990),
+            '30-gigas': Decimal(11990),
         }
 
         plan_containers = soup.findAll('article', 'pb-100')

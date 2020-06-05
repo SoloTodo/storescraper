@@ -44,8 +44,8 @@ class Peta(Store):
              'notebooks-para-el-trabajo.html', 'Notebook'],
             # ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
             #  'notebooks-para-edicion-grafica.html', 'Notebook'],
-            ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
-             'notebooks-gamers.html', 'Notebook'],
+            # ['equipos-computadores-tablets-aio-ebooks/moviles/notebooks/'
+            #  'notebooks-gamers.html', 'Notebook'],
             # ['equipos-computadores-tablets-aio-ebooks/moviles/'
             #  'equipos-2-en-1.html', 'Notebook'],
             # ['apple/mac/macbook.html', 'Notebook'],
