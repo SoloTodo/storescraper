@@ -201,7 +201,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc-audifonos', 'Headphones'),
-                ('webcams-audio-pc-parlantes', 'StereoSystem'),
+                # ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_ozone': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),

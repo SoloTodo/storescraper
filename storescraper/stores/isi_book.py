@@ -93,7 +93,10 @@ class IsiBook(Store):
 
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('span', 'sku').text.split(':')[1].strip()
-        stock = -1
+        stock = 0
+
+        if soup.find('button', {'id': 'product-addtocart-button'}):
+            stock = -1
 
         offer_price = Decimal(
             soup.find('span', 'special-price').find('span', 'price')

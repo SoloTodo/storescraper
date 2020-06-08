@@ -94,7 +94,7 @@ class Dimercom(Store):
             # Monitores 23.8"
             ['14_151', 'Monitor'],
             # Monitores 24"
-            ['14_152', 'Monitor'],
+            # ['14_152', 'Monitor'],
             # Monitores 25"
             # ['14_153', 'Monitor'],
             # Monitores 27"
