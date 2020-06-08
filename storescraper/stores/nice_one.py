@@ -25,7 +25,8 @@ class NiceOne(Store):
             'VideoCard',
             'Ram',
             'PowerSupply',
-            'Monitor,'
+            'Monitor',
+            'CpuCooler',
         ]
 
     @classmethod
@@ -43,6 +44,7 @@ class NiceOne(Store):
             ['27-memorias', 'Ram'],
             ['23-fuentes-de-poder', 'PowerSupply'],
             ['28-monitores', 'Monitor'],
+            ['35-refrigeracion', 'CpuCooler'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -100,17 +102,19 @@ class NiceOne(Store):
         name = soup.find('h1').text.strip()
         sku = soup.find('input', {'name': 'id_product'})['value']
 
-        add_to_cart_button = soup.find('div', 'product-add-to-cart').find(
-            'button', 'add-to-cart')
-        availability_text = soup.find(
-            'span', {'id': 'product-availability'}).text.strip()
+        availability_tag = soup.find(
+            'span', {'id': 'product-availability'}).find('i')
 
-        if 'disabled' in add_to_cart_button.attrs:
-            stock = 0
-        elif 'A PEDIDO' in availability_text.upper():
-            stock = 0
+        if not availability_tag:
+            stock = -1  # Normal stock
+        elif 'product-last-items' in availability_tag['class']:
+            stock = -1  # Últimas unidades en stock
+        elif 'product-unavailable' in availability_tag['class']:
+            stock = 0  # Pronto en stock
+        elif 'product-available' in availability_tag['class']:
+            stock = 0  # A PEDIDO ENTREGA 10 DIAS
         else:
-            stock = -1
+            raise Exception('Invalid stock status')
 
         normal_price = soup.find('span', 'regular-price').text
         normal_price = Decimal(normal_price.replace(

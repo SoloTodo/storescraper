@@ -201,7 +201,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc-audifonos', 'Headphones'),
-                ('webcams-audio-pc-parlantes', 'StereoSystem'),
+                # ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_ozone': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
@@ -221,6 +221,35 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
+            ],
+            '_Tienda_redragon': [
+                ('mouses-teclados-controles', 'Keyboard'),
+            ],
+            '_Tienda_seagate': [
+                ('almacenamiento-discos-accesorios-duros-ssds/externo',
+                 'ExternalStorageDrive'),
+                ('almacenamiento-discos-accesorios-duros-ssds/interno',
+                 'StorageDrive'),
+            ],
+            '_Tienda_trust': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+            ],
+            '_Tienda_western-digital': [
+                ('almacenamiento-discos-duros-removibles-accesorios', 'SolidStateDrive'),
+                ('almacenamiento-discos-accesorios-duros-ssds/externo', 'ExternalStorageDrive'),
+                ('almacenamiento-discos-accesorios-duros-ssds/interno', 'StorageDrive'),
+            ],
+            '_Tienda_xpg': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc', 'Headphones'),
+            ],
+            '_Tienda_xtech': [
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('componentes-pc', 'PowerSupply'),
+                ('audio-audifonos', 'Headphones'),
             ],
             '_Tienda_motorola': [
                 ('audio', 'Headphones'),
