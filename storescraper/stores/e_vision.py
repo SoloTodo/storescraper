@@ -90,7 +90,7 @@ class EVision(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         name = soup.find('meta', {'itemprop': 'name'})['content']
-        sku = soup.find('meta', {'itemprop': 'productID'})['content']
+        sku = soup.find('input', {'id': 'productId'})['value']
 
         if soup.find('a', {'id': 'addtocart'}):
             stock = -1

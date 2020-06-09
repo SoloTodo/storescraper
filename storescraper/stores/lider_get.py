@@ -204,16 +204,15 @@ class LiderGet(Store):
         session = session_with_proxy(extra_args)
         sku_id = url.split('/')[-1]
 
-        query_url = 'https://buysmart-checkout-bff-production.lider.cl/' \
-                    'buysmart-checkout-bff/products/?sku={}&appId=BuySmart' \
-                    ''.format(sku_id)
+        query_url = 'https://buysmart-bff-production.lider.cl/buysmart-bff/' \
+                    'products/{}?appId=BuySmart'.format(sku_id)
 
         response = session.get(query_url)
 
         if response.status_code in [500]:
             return []
 
-        entry = json.loads(response.text)[0]
+        entry = json.loads(response.text)
 
         name = '{} {}'.format(entry['brand'], entry['displayName'])
         ean = entry['gtin13']
