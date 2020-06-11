@@ -58,6 +58,8 @@ class Tottus(Store):
                            'slug={}&sort=recommended_web&perPage=1000'\
                 .format(url_base, category_path)
 
+            print(category_url)
+
             data = json.loads(session.get(category_url).text)['results']
 
             for idx, product_data in enumerate(data):

@@ -79,12 +79,12 @@ class RipleyChileBase(Store):
              'Tecno > Televisión', 1],
             ['tecno/television/smart-tv', ['Television'],
              'Tecno > Televisión > Smart TV', 1],
-            ['tecno/television/4k-uhd-nanocell', ['Television'],
-             'Tecno > Televisión > 4K - UHD - NANOCELL', 1],
-            ['tecno/television/premium-oled-qled-8k', ['Television'],
-             'Tecno > Televisión > PREMIUM - OLED - QLED - 8K', 1],
-            ['tecno/television/hd-full-hd', ['Television'],
-             'Tecno > Televisión > HD - FULL HD', 1],
+            # ['tecno/television/4k-uhd-nanocell', ['Television'],
+            # 'Tecno > Televisión > 4K - UHD - NANOCELL', 1],
+            # ['tecno/television/premium-oled-qled-8k', ['Television'],
+            #  'Tecno > Televisión > PREMIUM - OLED - QLED - 8K', 1],
+            # "['tecno/television/hd-full-hd', ['Television'],
+            #  'Tecno > Televisión > HD - FULL HD', 1],
 
             ['electro/refrigeracion', ['Refrigerator'],
              'Electro > Refrigeración', 1],
@@ -154,7 +154,7 @@ class RipleyChileBase(Store):
              ['OpticalDiskPlayer'],
              'Tecno > Televisión > Bluray -DVD y TV Portátil', 1],
 
-            # ['telefonia/accesorios-telefonia/memorias', 'MemoryCard'],
+            # ['telefonia/accesorios-telefonia/4kmemorias', 'MemoryCard'],
             ['tecno/mundo-gamer/consolas', ['VideoGameConsole'],
              'Tecno > Mundo Gamer > Consolas', 1],
 

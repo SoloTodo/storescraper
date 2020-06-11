@@ -49,8 +49,8 @@ class Wei(Store):
             # ['752', 'Tablet'],  # Tablets
             ['678', 'Tablet'],  # TABLETS
             ['1267', 'Notebook'],  # Notebooks
-            ['731', 'Notebook'],  # NOTEBOOK GAMER
-            ['755', 'Notebook'],  # MACBOOK
+            # ['731', 'Notebook'],  # NOTEBOOK GAMER
+            # ['755', 'Notebook'],  # MACBOOK
             ['1252', 'Mouse'],  # Mouse
             ['807', 'Mouse'],  # MOUSE GAMER
             ['1138', 'ExternalStorageDrive'],  # Discos externos

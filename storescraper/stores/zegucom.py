@@ -133,6 +133,9 @@ class Zegucom(Store):
 
         name = soup.find('div', 'item-description').text.strip()
 
+        if len(name) > 256:
+            name = name[0:256]
+
         sku = None
         part_number = None
         stock = 0

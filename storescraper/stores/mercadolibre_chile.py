@@ -155,7 +155,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
-                ('electronica', 'Headphones'),
+                # ('electronica', 'Headphones'),
             ],
             '_Tienda_hp': [
                 ('computacion/notebooks', 'Notebook'),
@@ -194,7 +194,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc-audifonos', 'Headphones'),
-                ('electronica', 'Headphones'),
+                # ('electronica', 'Headphones'),
                 ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_marvo': [
@@ -222,9 +222,9 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
             ],
-            '_Tienda_redragon': [
-                ('mouses-teclados-controles', 'Keyboard'),
-            ],
+            # '_Tienda_redragon': [
+            #     ('mouses-teclados-controles', 'Keyboard'),
+            # ],
             '_Tienda_seagate': [
                 ('almacenamiento-discos-accesorios-duros-ssds/externo',
                  'ExternalStorageDrive'),
@@ -246,7 +246,7 @@ class MercadolibreChile(Store):
                 ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_xtech': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('componentes-pc', 'PowerSupply'),
                 ('audio-audifonos', 'Headphones'),
