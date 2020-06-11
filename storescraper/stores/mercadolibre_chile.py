@@ -222,9 +222,9 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
             ],
-            '_Tienda_redragon': [
-                ('mouses-teclados-controles', 'Keyboard'),
-            ],
+            # '_Tienda_redragon': [
+            #     ('mouses-teclados-controles', 'Keyboard'),
+            # ],
             '_Tienda_seagate': [
                 ('almacenamiento-discos-accesorios-duros-ssds/externo',
                  'ExternalStorageDrive'),

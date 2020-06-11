@@ -64,16 +64,16 @@ class PcOfertas(Store):
              'fuentes-de-poder.html', 'PowerSupply'],
             # ['partes-y-piezas/componentes/gabinetes.html', 'ComputerCase'],
             # ['partes-y-piezas/display/televisores.html', 'Television'],
-            ['computadores-notebooks-y-tablets/moviles/tablets.html',
-             'Tablet'],
+            # ['computadores-notebooks-y-tablets/moviles/tablets.html',
+            #  'Tablet'],
             # ['apple/ipad.html', 'Tablet'],
             ['partes-y-piezas/impresoras/inyeccion-de-tinta.html', 'Printer'],
             ['partes-y-piezas/impresoras/http-laserwaca-com.html', 'Printer'],
             ['partes-y-piezas/almacenamiento/externos.html',
              'ExternalStorageDrive'],
-            ['accesorios-y-perifericos/perifericos/mouse/mouse.html', 'Mouse'],
-            ['accesorios-y-perifericos/perifericos/teclados.html', 'Keyboard'],
-            ['audiovisual/audio/audifonos.html', 'Headphones'],
+            # ['accesorios-y-perifericos/perifericos/mouse/mouse.html', 'Mouse'],
+            # ['accesorios-y-perifericos/perifericos/teclados.html', 'Keyboard'],
+            # ['audiovisual/audio/audifonos.html', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)

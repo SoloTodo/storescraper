@@ -65,7 +65,7 @@ class Cintegral(Store):
             ['pc-y-portatiles/partes-y-piezas/memorias.html', 'Ram'],
             ['pc-y-portatiles/partes-y-piezas/tarjetas-de-video.html',
              'VideoCard'],
-            ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
+            # ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
             ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
