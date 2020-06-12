@@ -33,7 +33,7 @@ class ProMovil(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.promovil.cl/es/{}?page={}'.format(
+                category_url = 'https://www.promovil.cl/{}?page={}'.format(
                     category_path, page)
 
                 if page >= 20:
