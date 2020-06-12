@@ -162,7 +162,7 @@ class MercadolibreChile(Store):
                 ('pc-escritorio', 'AllInOne'),
                 ('computacion/impresoras/impresoras', 'Printer'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                ('almacenamiento', 'AllInOne'),
+                # ('almacenamiento', 'AllInOne'),
                 ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_huawei': [
@@ -222,9 +222,9 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
             ],
-            # '_Tienda_redragon': [
-            #     ('mouses-teclados-controles', 'Keyboard'),
-            # ],
+            '_Tienda_redragon': [
+                # ('mouses-teclados-controles', 'Keyboard'),
+            ],
             '_Tienda_seagate': [
                 ('almacenamiento-discos-accesorios-duros-ssds/externo',
                  'ExternalStorageDrive'),
@@ -251,13 +251,29 @@ class MercadolibreChile(Store):
                 ('componentes-pc', 'PowerSupply'),
                 ('audio-audifonos', 'Headphones'),
             ],
+            '_Tienda_blu': [
+                ('celulares-telefonia/celulares', 'Cell'),
+            ],
+            '_Tienda_kingston': [
+                ('celulares-telefonia', 'MemoryCard'),
+                ('almacenamiento-discos-accesorios', 'SolidStateDrive'),
+                ('almacenamiento-pen-drives', 'UsbFlashDrive'),
+            ],
             '_Tienda_motorola': [
                 ('audio', 'Headphones'),
                 ('celulares-telefonia/celulares', 'Cell'),
                 ('celulares-telefonia/accesorios-celulares', 'StereoSystem'),
             ],
+            '_Tienda_nokia': [
+                ('celulares-telefonia/celulares', 'Cell'),
+            ],
             '_Tienda_daewoo': [
                 ('refrigeracion', 'Refrigerator'),
                 ('lavado-y-secado-de-ropa', 'WashingMachine'),
+            ],
+            '_Tienda_xiaomi': [
+                ('celulares-telefonia/celulares', 'Cell'),
+                ('smartwatches-accesorios-smartwatch', 'Wearable'),
+                ('audio', 'Headphones'),
             ]
         }
