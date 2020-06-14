@@ -46,8 +46,8 @@ class Cintegral(Store):
             ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
             # ['pc-y-portatiles/portatiles/tablet.html', 'Tablet'],
             ['pc-y-portatiles/partes-y-piezas/cpu.html', 'Processor'],
-            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
-             'discos-duros-pc.html', 'StorageDrive'],
+            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
+            #  'discos-duros-pc.html', 'StorageDrive'],
             ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
              'discos-duros-externos.html', 'ExternalStorageDrive'],
             ['pc-y-portatiles/partes-y-piezas/almacenamiento/ssd.html',
@@ -58,8 +58,8 @@ class Cintegral(Store):
              'UsbFlashDrive'],
             # ['pc-y-portatiles/partes-y-piezas/gabinetes.html',
             # 'ComputerCase'],
-            ['pc-y-portatiles/partes-y-piezas/fuentes-de-poder.html',
-             'PowerSupply'],
+            # ['pc-y-portatiles/partes-y-piezas/fuentes-de-poder.html',
+            #  'PowerSupply'],
             ['pc-y-portatiles/partes-y-piezas/placa-madre.html',
              'Motherboard'],
             ['pc-y-portatiles/partes-y-piezas/memorias.html', 'Ram'],

@@ -60,7 +60,7 @@ class ScGlobal(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                json_data = json.loads(session.get(category_url).text)
+                json_data = json.loads(session.get(category_url, verify=False).text)
                 soup = BeautifulSoup(json_data['listing'], 'html.parser')
                 product_cells = soup.findAll('li', 'item')
 
@@ -89,7 +89,7 @@ class ScGlobal(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        data = session.get(url, verify=False).text
         soup = BeautifulSoup(data, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
