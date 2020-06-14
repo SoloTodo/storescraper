@@ -46,7 +46,7 @@ class PcGamer(Store):
             ['75_79', 'SolidStateDrive'],  # SSD
             ['87', 'VideoCard'],  # Tarjetas de video
             ['81', 'ComputerCase'],  # Gabinetes s/fuente
-            # ['84', 'PowerSupply'],  # Fuentes de poder
+            ['84', 'PowerSupply'],  # Fuentes de poder
             # ['17_69', 'CpuCooler'],  # Coolers
             # ['91', 'CpuCooler'],  # Refrigeracion
             ['106', 'Mouse'],  # Mouse y teclados
