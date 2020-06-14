@@ -35,7 +35,7 @@ class MovistarOne(Store):
         for entry in json_data:
             name = entry['telefono']
             picture_urls = ['https://ww2.movistar.cl/movistarone/' +
-                            entry['imagenUrl']]
+                            entry['imagenUrl'].replace(' ', '%20')]
 
             for plan_entry in entry['planes']:
                 cell_plan_name = plans_dict[plan_entry['tipoPlan']]
