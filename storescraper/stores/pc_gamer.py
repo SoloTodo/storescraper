@@ -41,9 +41,8 @@ class PcGamer(Store):
         url_extensions = [
             ['62', 'Processor'],  # Procesadores
             ['33', 'Motherboard'],  # MB
-            ['70', 'Ram'],  # RAM
-            ['75_78', 'StorageDrive'],  # HDD Desktop
-            ['75_79', 'SolidStateDrive'],  # SSD
+            ['70', 'Ram'],  # RAM Notebook
+            ['75', 'StorageDrive'],  # Almacenamiento
             ['87', 'VideoCard'],  # Tarjetas de video
             ['81', 'ComputerCase'],  # Gabinetes s/fuente
             ['84', 'PowerSupply'],  # Fuentes de poder
@@ -55,46 +54,63 @@ class PcGamer(Store):
             ['98', 'Monitor'],  # Monitores
         ]
 
-        product_urls = []
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.54.0'
+
+        product_urls = []
 
         for category_path, local_category in url_extensions:
             if local_category != category:
                 continue
 
-            page = 1
+            subcategory_urls = []
 
-            while True:
-                if page >= 5:
-                    raise Exception('Page overflow: ' + category_path)
+            url_webpage = 'https://www.pc-gamer.cl/index.php?' \
+                          'route=product/category&path={}'.format(
+                category_path)
 
-                url_webpage = 'https://www.pc-gamer.cl/index.php?' \
-                              'route=product/category&limit=100&path={}' \
-                              '&page={}'.format(category_path, page)
+            soup = BeautifulSoup(session.get(url_webpage).text,
+                                 'html.parser')
 
-                print(url_webpage)
+            subcategory_containers = soup.find('div', {'id': 'content'}).findAll('li')
 
-                soup = BeautifulSoup(session.get(url_webpage).text,
-                                     'html.parser')
+            for container in subcategory_containers:
+                link = container.find('a')
+                if not link:
+                    continue
+                url = link['href']
+                if 'page' in url:
+                    continue
+                subcategory_urls.append(url)
 
-                link_containers = soup.findAll('div', 'product-layout')
+            if not subcategory_urls:
+                subcategory_urls.append(url_webpage)
 
-                if not link_containers:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_path)
-                    break
+            for subcategory_url in subcategory_urls:
+                page = 1
 
-                for link_container in link_containers:
-                    original_product_url = link_container.find('a')['href']
-                    product_id = re.search(r'product_id=(\d+)',
-                                           original_product_url).groups()[0]
-                    product_url = 'https://www.pc-gamer.cl/' \
-                                  'index.php?route=product/product&' \
-                                  'product_id=' + product_id
-                    product_urls.append(product_url)
+                while True:
+                    if page >= 5:
+                        raise Exception('Page overflow: ' + category_path)
 
-                page += 1
+                    url_webpage = '{}&page={}'.format(subcategory_url, page)
+                    soup = BeautifulSoup(session.get(url_webpage).text,
+                                         'html.parser')
+                    link_containers = soup.findAll('div', 'product-layout')
+
+                    if not link_containers:
+                        break
+
+                    for link_container in link_containers:
+                        original_product_url = link_container.find('a')['href']
+                        product_id = re.search(r'product_id=(\d+)',
+                                               original_product_url).groups()[0]
+                        product_url = 'https://www.pc-gamer.cl/' \
+                                      'index.php?route=product/product&' \
+                                      'product_id=' + product_id
+                        product_urls.append(product_url)
+
+                    page += 1
 
         return product_urls
 
