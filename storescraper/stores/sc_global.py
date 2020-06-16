@@ -53,7 +53,7 @@ class ScGlobal(Store):
             page = 1
 
             while True:
-                category_url = 'http://www.scglobal.cl/index.php/{}?p={}' \
+                category_url = 'https://www.scglobal.cl/index.php/{}?p={}' \
                                ''.format(category_path, page)
                 print(category_url)
 
