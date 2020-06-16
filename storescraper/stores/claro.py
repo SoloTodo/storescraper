@@ -15,12 +15,15 @@ class Claro(Store):
                  'servicios-moviles/postpago/planes-y-precios/'
     prepago_url = 'https://www.clarochile.cl/personas/servicios/' \
                   'servicios-moviles/prepago/'
-    plan_variations = [
-        ('', 'fi_precio', ''),
-        (' Sin Equipo', 'fi_precio_television_espn', 'ESPN'),
-        (' Portabilidad', 'fi_precio_telefonia_enps', 'ENPS'),
-        (' Portabilidad Sin Equipo', 'fi_precio_internet_esps', 'ESPS'),
+
+    combinations = [
+        ('', 'valor_contado_planes', None),
+        (' Cuotas', 'papcn_pc_valor_cuota_inicial', 'papcn_pc_12_cuotas_de'),
+        (' Portabilidad', 'valor_contado_planes', None),
+        (' Portabilidad Cuotas', 'pap_pc_valor_cuota_inicial',
+         'pap_pc_12_cuotas_de'),
     ]
+    include_prepago_price = True
 
     @classmethod
     def categories(cls):
@@ -51,8 +54,7 @@ class Claro(Store):
 
             soup = BeautifulSoup(session.post(
                 'https://equipos.clarochile.cl/servicio/catalogo',
-                'destacados=destacado',
-                verify=False
+                'destacados=destacado'
             ).text, 'html.parser')
 
             products_json = json.loads(soup.contents[-1])
@@ -105,7 +107,7 @@ class Claro(Store):
         data_url = 'https://digital.clarochile.cl/wcm-inyect/' \
                    'landing-postpago/content.html'
 
-        soup = BeautifulSoup(session.get(data_url, verify=False).text,
+        soup = BeautifulSoup(session.get(data_url).text,
                              'html.parser')
         containers = soup.findAll('article', 'plan-destacado-Landing')
 
@@ -156,16 +158,17 @@ class Claro(Store):
         data = 'id={}'.format(cell_id)
 
         response = session.post(
-            'https://equipos.clarochile.cl/servicio/detalle',
-            data=data, verify=False)
+            'https://equipos.clarochile.cl/servicio/detalle/equipo_plan',
+            data=data)
 
         try:
             product_json = json.loads(response.text)[0]
         except json.decoder.JSONDecodeError:
             return []
 
-        base_cell_name = '{} {}'.format(product_json['marca'],
-                                        product_json['modelo_comercial'])
+        base_cell_name = '{} {} ({})'.format(product_json['marca'],
+                                             product_json['modelo_comercial'],
+                                             product_json['modelo_tecnico'])
 
         products = []
 
@@ -186,77 +189,88 @@ class Claro(Store):
                 if sku == '70004672':
                     color = 'ceramic white'
 
-                cell_name = '{} {}'.format(base_cell_name, color)
-
-                prepago_price = None
-
-                prepago_fields = [
-                    # 'precio_tienda_web',
-                    'precio_oferta_prepago',
-                    'precio_prepago_normal'
-                ]
-
-                for prepago_field in prepago_fields:
-                    prepago_price = Decimal(remove_words(
-                        product_json[prepago_field]))
-                    if prepago_price:
-                        break
-
+                cell_name = '{} - {}'.format(base_cell_name, color)
+                base_key = '{} {}'.format(cell_id, color)
                 pictures_field = 'sku_{}_img_{}'.format(variant, color_index)
                 picture_paths = [path for path in product_json[pictures_field]
                                  if path]
-
                 picture_urls = ['https://equipos.clarochile.cl/adminequipos/'
                                 'uploads/equipo/' + path.replace(' ', '%20')
                                 for path in picture_paths]
 
-                base_key = '{} {}'.format(cell_id, color)
+                if cls.include_prepago_price:
+                    prepago_price = None
 
-                if prepago_price:
-                    product = Product(
-                        cell_name,
-                        cls.__name__,
-                        'Cell',
-                        url,
-                        url,
-                        base_key + ' Claro Prepago',
-                        -1,
-                        prepago_price,
-                        prepago_price,
-                        'CLP',
-                        cell_plan_name='Claro Prepago',
-                        picture_urls=picture_urls
-                    )
-                    products.append(product)
+                    prepago_fields = [
+                        'precio_tienda_web',
+                        'precio_oferta_prepago',
+                        'precio_prepago_normal'
+                    ]
+
+                    for prepago_field in prepago_fields:
+                        prepago_price = Decimal(remove_words(
+                            product_json[prepago_field]))
+                        if prepago_price:
+                            break
+
+                    if prepago_price:
+                        product = Product(
+                            cell_name,
+                            cls.__name__,
+                            'Cell',
+                            url,
+                            url,
+                            base_key + ' Claro Prepago',
+                            -1,
+                            prepago_price,
+                            prepago_price,
+                            'CLP',
+                            cell_plan_name='Claro Prepago',
+                            picture_urls=picture_urls
+                        )
+                        products.append(product)
 
                 for plan_entry in product_json.get('planes', []):
-                    base_plan_name = plan_entry['nombre']
+                    plan_id = plan_entry['cat04_plan_id']
+                    data = 'id_plan={}&id={}'.format(plan_id,
+                                                     product_json['id'])
+                    response = session.post(
+                        'https://equipos.clarochile.cl/servicio/detalle/'
+                        'planes_equipo',
+                        data=data)
+                    plan_data = json.loads(response.text)
+                    base_plan_name = plan_data['cat04_plan_nombre']
 
-                    for suffix in ['', ' Portabilidad']:
-                        plan_name = base_plan_name + suffix
+                    for plan_suffix, price_field, cell_monthly_payment_field \
+                            in cls.combinations:
+                        plan_name = base_plan_name + plan_suffix
 
-                        if suffix:
-                            # Portabilidad
-
-                            if int(product_json['postpago_cuotas_view']):
-                                # Con cuota mensual de arriendo
-                                cell_monthly_payment = Decimal(remove_words(
-                                    plan_entry[
-                                        'valor_cuota_mensual_portabilidad']))
-                                price = Decimal(remove_words(
-                                    plan_entry['valor_pie']))
-                                plan_name += ' Cuotas'
-                            else:
-                                # Sin cuota mensual de arriendo
-                                cell_monthly_payment = Decimal(0)
-                                price = Decimal(remove_words(
-                                    plan_entry['cuota_inicial_portado']))
-                        else:
-                            cell_monthly_payment = Decimal(0)
+                        if plan_data[price_field]:
                             price = Decimal(remove_words(
-                                plan_entry['cuota_inicial']))
+                                plan_data[price_field]))
+                        else:
+                            # Equipo de la otra modalidad (ClaroUp si estamos
+                            # scrapeando Claro, Claro si estamos scrapeando
+                            # ClaroUp), ver las dos variantes de "combinations"
+                            # que hay.
+                            # Asegurarse que sea una combinación que tenga
+                            # cuota de arriendo
+                            assert cell_monthly_payment_field is not None
+                            continue
 
-                        price = Decimal(price)
+                        if cell_monthly_payment_field:
+                            cell_monthly_payment_text = plan_data[
+                                cell_monthly_payment_field]
+                            if cell_monthly_payment_text:
+                                cell_monthly_payment = Decimal(remove_words(
+                                    cell_monthly_payment_text))
+                            else:
+                                # Equipo no tiene la modalidad de pago en
+                                # cuotas
+                                continue
+                        else:
+                            # Equipo con pago al contado
+                            cell_monthly_payment = Decimal(0)
 
                         product = Product(
                             cell_name,
