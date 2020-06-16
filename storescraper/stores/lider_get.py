@@ -271,12 +271,17 @@ class LiderGet(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = 'https://productionbuysmart.blob.core.windows.net/' \
+        base_url = 'https://buysmartstatic.lider.cl/' \
                    'landing/json/banners.json?ts={}'
+        # base_url = 'https://productionbuysmart.blob.core.windows.net/' \
+        #            'landing/json/banners.json?ts={}'
 
         destination_url_base = 'https://www.lider.cl{}'
-        image_url_base = 'https://productionbuysmart.blob.core.windows.net/' \
-            'landing/banners/{}'
+        image_url_base = 'https://buysmartstatic.lider.cl/' \
+                         'landing/banners/{}'
+        
+        # image_url_base = 'https://productionbuysmart.blob.core.windows.net/' \
+        #     'landing/banners/{}'
 
         session = session_with_proxy(extra_args)
         banners = []

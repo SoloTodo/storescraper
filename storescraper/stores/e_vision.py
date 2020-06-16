@@ -89,6 +89,9 @@ class EVision(Store):
 
         soup = BeautifulSoup(response.text, 'html5lib')
 
+        if not soup.find('section', 'product-details'):
+            return []
+
         name = soup.find('meta', {'itemprop': 'name'})['content']
         sku = soup.find('input', {'id': 'productId'})['value']
 

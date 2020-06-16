@@ -167,7 +167,7 @@ class RipleyChileBase(Store):
             ['electro/climatizacion/estufas-y-calefactores',
              ['SpaceHeater'],
              'Electro > Climatización > Estufas y calefactores', 1],
-            ['tecno/telefonia/smartwatches-y-wearables', ['Wearable'],
+            ['tecno/corner-smartwatch', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables', 1],
             ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
