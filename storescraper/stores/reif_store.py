@@ -25,7 +25,7 @@ class ReifStore(Store):
         category_paths = [
             # ['88-portatil', 'Notebook'],
             ['85-iphone-', 'Cell'],
-            ['207-ipad', 'Tablet'],
+            # ['207-ipad', 'Tablet'],
             ['127-audifonos', 'Headphones'],
         ]
 

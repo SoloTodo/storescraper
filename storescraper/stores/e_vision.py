@@ -31,8 +31,8 @@ class EVision(Store):
             ('911', 'AirConditioner'),
             ('912', 'AirConditioner'),
             # "Para empezar la decada", contains other categories too
-            ('1400', 'AirConditioner'),
-            # ('913', 'AirConditioner'),
+            # ('1400', 'AirConditioner'),
+            ('913', 'AirConditioner'),
             ('921', 'Refrigerator'),
             ('922', 'Refrigerator'),
             ('923', 'Refrigerator'),
