@@ -226,7 +226,8 @@ class Claro(Store):
                             prepago_price,
                             'CLP',
                             cell_plan_name='Claro Prepago',
-                            picture_urls=picture_urls
+                            picture_urls=picture_urls,
+                            cell_monthly_payment=Decimal(0)
                         )
                         products.append(product)
 
