@@ -85,6 +85,9 @@ class TiendaClaro(Store):
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView?'
                 'storeId=10151&catalogEntryId=' + sku, verify=False).text)
 
+            if not res['catalogEntry']['offerPrice']:
+                return []
+
             price = Decimal(remove_words(res['catalogEntry']['offerPrice']))
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
