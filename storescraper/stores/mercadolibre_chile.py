@@ -136,7 +136,7 @@ class MercadolibreChile(Store):
         return {
             '_Tienda_acer': [
                 ('computacion/notebooks', 'Notebook'),
-                ('almacenamiento', 'ExternalStorageDrive'),
+                # ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
                 # ('monitores-accesorios', 'Monitor'),
             ],
