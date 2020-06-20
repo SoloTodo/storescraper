@@ -7,7 +7,7 @@ import re
 import math
 
 import requests
-from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver import DesiredCapabilities
 
 CLP_BLACKLIST = ['CLP$', 'CLP', 'precio', 'internet', 'normal',
@@ -139,11 +139,20 @@ class HeadlessChrome:
         options.add_argument('headless')
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
-        if proxy:
-            options.add_argument('--proxy-server={}'.format(proxy))
+        # if proxy:
+        #     print(proxy)
+        #     options.add_argument('--proxy-server={}'.format(proxy))
         # prefs = {"profile.managed_default_content_settings.images": 2}
         # options.add_experimental_option("prefs", prefs)
-        self.driver = webdriver.Chrome(chrome_options=options)
+
+        seleniumwire_options = {}
+        if proxy:
+            print('wire', proxy)
+            seleniumwire_options['proxy'] = {
+                'http': proxy,
+            }
+
+        self.driver = webdriver.Chrome(chrome_options=options, seleniumwire_options=seleniumwire_options)
         self.driver.set_page_load_timeout(timeout)
 
     def __enter__(self):
