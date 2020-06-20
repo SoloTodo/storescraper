@@ -150,6 +150,7 @@ class HeadlessChrome:
             print('wire', proxy)
             seleniumwire_options['proxy'] = {
                 'http': proxy,
+                'https': proxy
             }
 
         self.driver = webdriver.Chrome(chrome_options=options, seleniumwire_options=seleniumwire_options)
