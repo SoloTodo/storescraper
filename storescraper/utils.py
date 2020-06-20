@@ -141,11 +141,6 @@ class HeadlessChrome:
             options.add_argument('headless')
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
-        # if proxy:
-        #     print(proxy)
-        #     options.add_argument('--proxy-server={}'.format(proxy))
-        # prefs = {"profile.managed_default_content_settings.images": 2}
-        # options.add_experimental_option("prefs", prefs)
 
         seleniumwire_options = {}
         if proxy:

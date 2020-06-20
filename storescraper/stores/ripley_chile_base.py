@@ -1,6 +1,8 @@
 import json
 import re
 from collections import defaultdict
+
+import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -174,7 +176,7 @@ class RipleyChileBase(Store):
             # ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
         ]
 
-        session = session_with_proxy(extra_args)
+        session = cls._get_session(extra_args)
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -191,14 +193,12 @@ class RipleyChileBase(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
-
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:
                     raise Exception('Invalid section: ' + category_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-
                 product_link_container = soup.find(
                     'div', 'catalog-container')
 
@@ -235,7 +235,7 @@ class RipleyChileBase(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = cls._get_session(extra_args)
         page_source = session.get(url).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -293,7 +293,6 @@ class RipleyChileBase(Store):
                                                   attribute['value'])
 
         description += '\n\n'
-
         condition = 'https://schema.org/NewCondition'
 
         if 'reacondicionado' in description.lower() or \
@@ -386,3 +385,12 @@ class RipleyChileBase(Store):
     @classmethod
     def filter_url(cls, url):
         raise Exception('Subclasses of RipleyChileBase should implement this')
+
+    @classmethod
+    def _get_session(cls, extra_args):
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+        session.headers['Accept-Language'] = 'en-US'
+        cookie = requests.cookies.create_cookie(name='cf_clearance', value=extra_args['cf_clearance'])
+        session.cookies.set_cookie(cookie)
+        return session
