@@ -236,6 +236,10 @@ class RipleyChileBase(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        return cls._products_for_url(url, category, extra_args)
+
+    @classmethod
+    def _products_for_url(cls, url, category=None, extra_args=None, retries=9):
         session = cls._get_session(extra_args)
         page_source = session.get(url).text
 
@@ -246,6 +250,12 @@ class RipleyChileBase(Store):
 
         product_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                  page_source)
+        if not product_data:
+            if retries:
+                return cls._products_for_url(url, category, extra_args,
+                                             retries=retries-1)
+            else:
+                return []
         product_json = json.loads(product_data.groups()[0])
         specs_json = product_json['product']['product']
 
