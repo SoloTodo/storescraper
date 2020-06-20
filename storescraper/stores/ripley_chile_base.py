@@ -9,12 +9,14 @@ from decimal import Decimal
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, get_cf_session
 
 from .ripley_chile_base_lg_assistant_keywords import keywords
 
 
 class RipleyChileBase(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
@@ -176,7 +178,7 @@ class RipleyChileBase(Store):
             # ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
         ]
 
-        session = cls._get_session(extra_args)
+        session = get_cf_session(extra_args)
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -240,7 +242,7 @@ class RipleyChileBase(Store):
 
     @classmethod
     def _products_for_url(cls, url, category=None, extra_args=None, retries=9):
-        session = cls._get_session(extra_args)
+        session = get_cf_session(extra_args)
         page_source = session.get(url).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -396,14 +398,3 @@ class RipleyChileBase(Store):
     @classmethod
     def filter_url(cls, url):
         raise Exception('Subclasses of RipleyChileBase should implement this')
-
-    @classmethod
-    def _get_session(cls, extra_args):
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
-        session.headers['Accept-Language'] = 'en-US'
-        cookie = requests.cookies.create_cookie(name='cf_clearance', value=extra_args['cf_clearance'])
-        session.cookies.set_cookie(cookie)
-        cookie = requests.cookies.create_cookie(name='__cfduid', value=extra_args['__cfduid'])
-        session.cookies.set_cookie(cookie)
-        return session

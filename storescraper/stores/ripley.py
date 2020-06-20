@@ -2,7 +2,8 @@ import re
 import time
 from bs4 import BeautifulSoup
 
-from storescraper.utils import session_with_proxy, HeadlessChrome
+from storescraper.utils import get_cf_session, HeadlessChrome, \
+    load_driver_cf_cookies
 from storescraper import banner_sections as bs
 from .ripley_chile_base import RipleyChileBase
 from selenium.common.exceptions import NoSuchElementException
@@ -11,7 +12,7 @@ from selenium.common.exceptions import NoSuchElementException
 class Ripley(RipleyChileBase):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = get_cf_session(extra_args)
         product_urls = []
 
         page = 1
@@ -101,7 +102,7 @@ class Ripley(RipleyChileBase):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
 
-        session = session_with_proxy(extra_args)
+        session = get_cf_session(extra_args)
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:
@@ -111,12 +112,12 @@ class Ripley(RipleyChileBase):
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 banners = banners + cls.get_owl_banners(
-                    url, section, subsection, subsection_type)
+                    url, section, subsection, subsection_type, extra_args)
 
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 if soup.find('div', 'owl-carousel'):
                     banners = banners + cls.get_owl_banners(
-                        url, section, subsection, subsection_type)
+                        url, section, subsection, subsection_type, extra_args)
                 else:
                     images = soup.findAll('a', 'item')
 
@@ -177,13 +178,20 @@ class Ripley(RipleyChileBase):
         return banners
 
     @classmethod
-    def get_owl_banners(cls, url, section, subsection, type):
-        with HeadlessChrome(images_enabled=True, timeout=60) as driver:
+    def get_owl_banners(cls, url, section, subsection, type, extra_args):
+        with HeadlessChrome(images_enabled=True, timeout=60,
+                            proxy=extra_args['proxy']) as driver:
+            print(url)
             banners = []
             driver.set_window_size(1920, 1080)
             driver.set_page_load_timeout(240)
+            # Open the page first so that the CF cookies can be loaded in
+            # this domain
             driver.get(url)
-
+            # Then set the sesion cookies
+            load_driver_cf_cookies(driver, extra_args, '.ripley.cl')
+            # Then re-open the page
+            driver.get(url)
             driver.execute_script("scrollTo(0, 0);")
 
             pictures = []
