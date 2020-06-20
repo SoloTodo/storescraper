@@ -41,7 +41,7 @@ class SamsungShop(Store):
             ('linea-blanca/accesorios', 'CellAccesory'),
             ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            ('linea-blanca/empotrados', 'Oven'),
+            # ('linea-blanca/empotrados', 'Oven'),
             ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
             ('linea-blanca/microondas', 'Oven'),
             ('linea-blanca/refrigeradores', 'Refrigerator'),

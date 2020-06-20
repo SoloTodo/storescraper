@@ -47,7 +47,7 @@ class Proglobal(Store):
             # ['computacion-y-gamer/gamers/memoria-ram', 'Ram'],
             # ['computacion-y-gamer/gamers/fuentes-de-poder', 'PowerSupply'],
             # ['computacion-y-gamer/gamers/monitores', 'Monitor'],
-            ['camaras-audio-video/audio/audio-alta-fidelidad', 'StereoSystem'],
+            # ['camaras-audio-video/audio/audio-alta-fidelidad', 'StereoSystem'],
             ['camaras-audio-video/audio/audifonos-inalambricos', 'Headphones'],
             ['camaras-audio-video/audio/audifonos-alambricos', 'Headphones'],
             ['camaras-audio-video/audio/parlantes', 'StereoSystem']

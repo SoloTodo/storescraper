@@ -12,7 +12,7 @@ class MercadolibreSamsung(MercadolibreChile):
             ('electrodomesticos/lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
             ('repuestos-accesorios', 'CellAccesory'),
-            ('electrodomesticos/hornos-cocinas', 'Oven'),
+            # ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('celulares-telefonia/celulares', 'Cell'),
             ('celulares-telefonia/accesorios-celulares', 'CellAccesory'),
             ('smartwatches-accesorios', 'Wearable'),
