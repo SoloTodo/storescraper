@@ -193,6 +193,7 @@ class RipleyChileBase(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
+                print(category_url)
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:
@@ -392,5 +393,7 @@ class RipleyChileBase(Store):
         session.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
         session.headers['Accept-Language'] = 'en-US'
         cookie = requests.cookies.create_cookie(name='cf_clearance', value=extra_args['cf_clearance'])
+        session.cookies.set_cookie(cookie)
+        cookie = requests.cookies.create_cookie(name='__cfduid', value=extra_args['__cfduid'])
         session.cookies.set_cookie(cookie)
         return session
