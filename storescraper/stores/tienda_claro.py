@@ -58,6 +58,7 @@ class TiendaClaro(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+
         soup = BeautifulSoup(session.get(url, verify=False).text,
                              'html.parser')
 
@@ -85,10 +86,30 @@ class TiendaClaro(Store):
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView?'
                 'storeId=10151&catalogEntryId=' + sku, verify=False).text)
 
+            if not res['catalogEntry']['offerPrice']:
+                return []
+
             price = Decimal(remove_words(res['catalogEntry']['offerPrice']))
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
                 product_entry['ItemImage467']).replace(' ', '%20')]
+            catalog_entry_id = res['catalogEntry']['catalogEntryIdentifier']['uniqueID']
+
+            session.headers['Content-Type'] = \
+                'application/x-www-form-urlencoded; charset=UTF-8'
+            stock_payload = 'storeId=10151&catalogId=10052&langId=-5' \
+                            '&orderId=.&inventoryValidation=true' \
+                            '&calculateOrder=0&catEntryId={}&quantity=1' \
+                            '&requesttype=ajax'.format(catalog_entry_id)
+            stock_data = session.post(
+                'https://tienda.clarochile.cl/AjaxRESTOrderItemAdd',
+                stock_payload, verify=False)
+            stock_data = json.loads(stock_data.text.strip()[2:-2])
+
+            if 'orderId' in stock_data:
+                stock = -1
+            else:
+                stock = 0
 
             products.append(Product(
                 name,
@@ -97,7 +118,7 @@ class TiendaClaro(Store):
                 url,
                 url,
                 sku,
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',
