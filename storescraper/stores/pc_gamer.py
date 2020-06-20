@@ -67,12 +67,13 @@ class PcGamer(Store):
 
             url_webpage = 'https://www.pc-gamer.cl/index.php?' \
                           'route=product/category&path={}'.format(
-                category_path)
+                            category_path)
 
             soup = BeautifulSoup(session.get(url_webpage).text,
                                  'html.parser')
 
-            subcategory_containers = soup.find('div', {'id': 'content'}).findAll('li')
+            subcategory_containers = soup.find(
+                'div', {'id': 'content'}).findAll('li')
 
             for container in subcategory_containers:
                 link = container.find('a')
@@ -103,8 +104,9 @@ class PcGamer(Store):
 
                     for link_container in link_containers:
                         original_product_url = link_container.find('a')['href']
-                        product_id = re.search(r'product_id=(\d+)',
-                                               original_product_url).groups()[0]
+                        product_id = re.search(
+                            r'product_id=(\d+)',
+                            original_product_url).groups()[0]
                         product_url = 'https://www.pc-gamer.cl/' \
                                       'index.php?route=product/product&' \
                                       'product_id=' + product_id

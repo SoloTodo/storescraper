@@ -279,9 +279,6 @@ class LiderGet(Store):
         destination_url_base = 'https://www.lider.cl{}'
         image_url_base = 'https://buysmartstatic.lider.cl/' \
                          'landing/banners/{}'
-        
-        # image_url_base = 'https://productionbuysmart.blob.core.windows.net/' \
-        #     'landing/banners/{}'
 
         session = session_with_proxy(extra_args)
         banners = []

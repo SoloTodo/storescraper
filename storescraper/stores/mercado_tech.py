@@ -49,7 +49,8 @@ class MercadoTech(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
 
         category_urls = [
-            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros', 'StorageDrive']
+            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros',
+             'StorageDrive']
         ]
 
         session = session_with_proxy(extra_args)

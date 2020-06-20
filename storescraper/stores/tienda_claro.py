@@ -93,7 +93,8 @@ class TiendaClaro(Store):
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
                 product_entry['ItemImage467']).replace(' ', '%20')]
-            catalog_entry_id = res['catalogEntry']['catalogEntryIdentifier']['uniqueID']
+            catalog_entry_id = res['catalogEntry']['catalogEntryIdentifier'][
+                'uniqueID']
 
             session.headers['Content-Type'] = \
                 'application/x-www-form-urlencoded; charset=UTF-8'

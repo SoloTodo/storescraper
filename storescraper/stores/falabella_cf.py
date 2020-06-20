@@ -281,7 +281,8 @@ class FalabellaCf(Store):
         url = result['url']
         name = result['displayName']
         sku = result['skuId']
-        seller = result['sellerId'] if result['sellerId'] != 'FALABELLA' else None
+        seller = result['sellerId'] \
+            if result['sellerId'] != 'FALABELLA' else None
 
         if 'totalReviews' in result:
             review_count = int(result['totalReviews'])

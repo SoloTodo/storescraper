@@ -236,9 +236,12 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
             ],
             '_Tienda_western-digital': [
-                ('almacenamiento-discos-duros-removibles-accesorios', 'SolidStateDrive'),
-                ('almacenamiento-discos-accesorios-duros-ssds/externo', 'ExternalStorageDrive'),
-                ('almacenamiento-discos-accesorios-duros-ssds/interno', 'StorageDrive'),
+                ('almacenamiento-discos-duros-removibles-accesorios',
+                 'SolidStateDrive'),
+                ('almacenamiento-discos-accesorios-duros-ssds/externo',
+                 'ExternalStorageDrive'),
+                ('almacenamiento-discos-accesorios-duros-ssds/interno',
+                 'StorageDrive'),
             ],
             '_Tienda_xpg': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
