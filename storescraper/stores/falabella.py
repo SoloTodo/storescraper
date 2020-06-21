@@ -355,10 +355,9 @@ class Falabella(Store):
                 if not match:
                     match = re.search(
                         r'//www.youtube.com/embed/(.+)', iframe['src'])
-
                 if match:
                     video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0]).strip())
+                                      .format(match.groups()[0].strip()))
 
         slug = product_data['slug']
         publication_id = product_data['id']
