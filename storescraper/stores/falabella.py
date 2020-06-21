@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, CF_REQUEST_HEADERS
 from storescraper import banner_sections as bs
 from storescraper.utils import HeadlessChrome
 
@@ -208,6 +208,7 @@ class Falabella(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -288,6 +289,7 @@ class Falabella(Store):
                 raise Exception('Page overflow: ' + category_id)
 
             pag_url = base_url.format(category_id, page)
+            print(pag_url)
 
             if extra_query_params:
                 pag_url += '&' + extra_query_params
