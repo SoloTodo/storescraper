@@ -22,7 +22,7 @@ from storescraper.utils import HeadlessChrome
 
 class Falabella(Store):
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 10
+    preferred_products_for_url_concurrency = 3
 
     @classmethod
     def categories(cls):
@@ -64,8 +64,8 @@ class Falabella(Store):
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
-            ['cat5860031', ['Notebook'],
-             'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
+            # ['cat5860031', ['Notebook'],
+            #  'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
             ['cat2028', ['Notebook'],
              'Home > Computación-Notebooks Gamers', 1],
             ['cat2450060', ['Notebook'],
@@ -76,7 +76,6 @@ class Falabella(Store):
              'Home > Computación-Notebooks > MacBooks', 1],
             ['cat4850013', ['Notebook'],
              'Home > Computación-Computación Gamer', 1],
-
             ['cat1012', ['Television'],
              'Home > Tecnología-TV', 1],
             ['cat7190148', ['Television'],
@@ -87,7 +86,6 @@ class Falabella(Store):
              'Home > Tecnología-TV > LEDs entre 50 - 55 pulgadas', 1],
             ['cat11161679', ['Television'],
              'Home > Tecnología-TV > LEDs sobre 55 pulgadas', 1],
-
             # ['cat2850016', ['Television'],
             #  'Home > TV-Televisores OLED', 1],
             ['cat10020021', ['Television'],
@@ -96,10 +94,8 @@ class Falabella(Store):
             #  'Home > Tecnología-Premium', 1],
             ['cat7230007', ['Tablet'],
              'Home > Computación-Tablets', 1],
-
             ['cat3205', ['Refrigerator'],
              'Home > Refrigeración-Refrigeradores', 1],
-
             ['cat4074', ['Refrigerator'],
              'Home > Refrigeración-No Frost', 1],
             ['cat4091', ['Refrigerator'],
@@ -118,7 +114,6 @@ class Falabella(Store):
             ['cat3205', ['Refrigerator'],
              'Home > Refrigeración-Top mount', 1,
              'f.product.attribute.Tipo=Top+mount'],
-
             ['cat1820006', ['Printer'],
              'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
             # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
