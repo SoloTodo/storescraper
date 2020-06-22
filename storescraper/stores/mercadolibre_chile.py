@@ -177,8 +177,7 @@ class MercadolibreChile(Store):
             '_Tienda_hyperx': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc', 'Headphones'),
-                ('webcams-audio-pc', 'Headphones'),
+                # ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_lenovo': [
                 ('pc-escritorio-all-in-one', 'AllInOne'),
@@ -193,7 +192,7 @@ class MercadolibreChile(Store):
             '_Tienda_logitech-g': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc-audifonos', 'Headphones'),
+                # ('webcams-audio-pc-audifonos', 'Headphones'),
                 # ('electronica', 'Headphones'),
                 ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
@@ -252,7 +251,7 @@ class MercadolibreChile(Store):
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('componentes-pc', 'PowerSupply'),
-                ('audio-audifonos', 'Headphones'),
+                # ('audio-audifonos', 'Headphones'),
             ],
             '_Tienda_blu': [
                 ('celulares-telefonia/celulares', 'Cell'),

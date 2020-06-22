@@ -54,7 +54,7 @@ class Dimercom(Store):
             # Procesadores Intel
             ['17_180', 'Processor'],
             # Procesadores Pentium
-            ['17_181', 'Processor'],
+            # ['17_181', 'Processor'],
             # Procesadores Ryzen
             ['17_182', 'Processor'],
             # Procesadores Xeon

@@ -137,7 +137,7 @@ class PcGamer(Store):
         else:
             stock = 0
 
-        price_containers = pricing_container.findAll('h2')
+        price_containers = pricing_container.findAll('h3')
         normal_price = Decimal(remove_words(price_containers[0].text))
 
         if len(price_containers) > 1:

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
-    HeadlessChrome
+    HeadlessChrome, CF_REQUEST_HEADERS
 
 import re
 
@@ -39,6 +39,7 @@ class LadyLee(Store):
         ]
 
         session = cls._get_initialized_session()
+        session.headers['user-agent'] = CF_REQUEST_HEADERS['User-Agent']
         product_urls = []
 
         for category_path, section_id, local_category in category_filters:
@@ -54,8 +55,8 @@ class LadyLee(Store):
 
                 url = '{}/section/stores/{}/products?ps_{}={}'\
                     .format(cls.base_url, section_id, section_id, page)
-
-                data = session.get(url).text
+                response = session.get(url)
+                data = response.text
                 html_data = re.search(r'el\.replaceWith\(\'(.*?)\'\)',
                                       data, flags=re.S).group(1)\
                     .replace('\\n', '').replace('\\', '')
