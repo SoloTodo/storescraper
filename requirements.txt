@@ -1,5 +1,6 @@
 amqp==2.4.2
 appnope==0.1.0
+backcall==0.2.0
 beautifulsoup4==4.6.0
 billiard==3.5.0.2
 celery==4.1.1
@@ -11,7 +12,7 @@ html2text==2016.9.19
 html5lib==1.0.1
 idna==2.5
 ipdb==0.10.3
-ipython==6.1.0
+ipython==7.15.0
 ipython-genutils==0.2.0
 jedi==0.10.2
 kombu==4.5.0
@@ -20,7 +21,7 @@ pep8==1.7.0
 pexpect==4.6.0
 pickleshare==0.7.4
 Pillow==6.0.0
-prompt-toolkit==1.0.14
+prompt-toolkit==3.0.5
 ptyprocess==0.5.2
 Pygments==2.2.0
 PySocks==1.6.7
@@ -28,6 +29,7 @@ python-dateutil==2.6.1
 pytz==2017.2
 requests==2.21.0
 selenium==3.141.0
+selenium-wire==1.2.3
 simplegeneric==0.8.1
 six==1.10.0
 traitlets==4.3.2

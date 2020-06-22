@@ -43,15 +43,11 @@ class Yoytec(Store):
 
                 url = 'https://www.yoytec.com/{}?page={}'\
                     .format(category_path, page)
-
-                print(url)
-
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html5lib')
                 container = soup.find('div', {'id':  'tabs-2'})
-
                 items = container.findAll('div', 'product_block')
-                
+
                 for item in items:
                     product_url = item.find('a', 'product_img')['href']
 

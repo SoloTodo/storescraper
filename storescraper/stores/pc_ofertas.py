@@ -71,8 +71,10 @@ class PcOfertas(Store):
             ['partes-y-piezas/impresoras/http-laserwaca-com.html', 'Printer'],
             ['partes-y-piezas/almacenamiento/externos.html',
              'ExternalStorageDrive'],
-            # ['accesorios-y-perifericos/perifericos/mouse/mouse.html', 'Mouse'],
-            # ['accesorios-y-perifericos/perifericos/teclados.html', 'Keyboard'],
+            # ['accesorios-y-perifericos/perifericos/mouse/mouse.html',
+            # 'Mouse'],
+            # ['accesorios-y-perifericos/perifericos/teclados.html',
+            # 'Keyboard'],
             # ['audiovisual/audio/audifonos.html', 'Headphones'],
         ]
 

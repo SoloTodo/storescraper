@@ -1,18 +1,22 @@
 import json
 import re
 from collections import defaultdict
+
+import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, get_cf_session
 
 from .ripley_chile_base_lg_assistant_keywords import keywords
 
 
 class RipleyChileBase(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
@@ -174,7 +178,7 @@ class RipleyChileBase(Store):
             # ['telefonia/smartwatches-and-wearables/smartwatch', 'Wearable'],
         ]
 
-        session = session_with_proxy(extra_args)
+        session = get_cf_session(extra_args)
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -191,14 +195,13 @@ class RipleyChileBase(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
-
+                print(category_url)
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:
                     raise Exception('Invalid section: ' + category_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-
                 product_link_container = soup.find(
                     'div', 'catalog-container')
 
@@ -235,7 +238,11 @@ class RipleyChileBase(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
+        return cls._products_for_url(url, category, extra_args)
+
+    @classmethod
+    def _products_for_url(cls, url, category=None, extra_args=None, retries=9):
+        session = get_cf_session(extra_args)
         page_source = session.get(url).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -245,6 +252,12 @@ class RipleyChileBase(Store):
 
         product_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                  page_source)
+        if not product_data:
+            if retries:
+                return cls._products_for_url(url, category, extra_args,
+                                             retries=retries-1)
+            else:
+                return []
         product_json = json.loads(product_data.groups()[0])
         specs_json = product_json['product']['product']
 
@@ -293,7 +306,6 @@ class RipleyChileBase(Store):
                                                   attribute['value'])
 
         description += '\n\n'
-
         condition = 'https://schema.org/NewCondition'
 
         if 'reacondicionado' in description.lower() or \

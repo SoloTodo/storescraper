@@ -7,7 +7,7 @@ import re
 import math
 
 import requests
-from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver import DesiredCapabilities
 
 CLP_BLACKLIST = ['CLP$', 'CLP', 'precio', 'internet', 'normal',
@@ -133,24 +133,72 @@ class InvalidSessionCookieException(Exception):
     pass
 
 
+CF_REQUEST_HEADERS = {
+    'Accept-Language': 'en-US',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, '
+                  'like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+}
+
+
+def get_cf_session(extra_args):
+    session = session_with_proxy(extra_args)
+
+    for header_name, header_value in CF_REQUEST_HEADERS.items():
+        session.headers[header_name] = header_value
+
+    cookie_names = ['cf_clearance', '__cfduid']
+
+    for cookie_name in cookie_names:
+        assert cookie_name in extra_args
+
+        cookie = requests.cookies.create_cookie(name=cookie_name,
+                                                value=extra_args[cookie_name],
+                                                expires=1609419599)
+        session.cookies.set_cookie(cookie)
+    return session
+
+
 class HeadlessChrome:
-    def __init__(self, images_enabled=False, proxy=None, timeout=30):
+    def __init__(self, images_enabled=False, proxy=None, headless=True,
+                 timeout=30):
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        if headless:
+            options.add_argument('headless')
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
+
+        seleniumwire_options = {}
         if proxy:
-            options.add_argument('--proxy-server={}'.format(proxy))
-        # prefs = {"profile.managed_default_content_settings.images": 2}
-        # options.add_experimental_option("prefs", prefs)
-        self.driver = webdriver.Chrome(chrome_options=options)
+            seleniumwire_options['proxy'] = {
+                'http': proxy,
+                'https': proxy
+            }
+
+        self.driver = webdriver.Chrome(
+            chrome_options=options, seleniumwire_options=seleniumwire_options)
         self.driver.set_page_load_timeout(timeout)
+        self.driver.header_overrides = CF_REQUEST_HEADERS
 
     def __enter__(self):
         return self.driver
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.close()
+
+
+def load_driver_cf_cookies(driver, extra_args, domain):
+    driver.add_cookie({
+        'domain': domain,
+        'name': 'cf_clearance',
+        'value': extra_args['cf_clearance'],
+        'expires': 1609419599
+    })
+    driver.add_cookie({
+        'domain': domain,
+        'name': '__cfduid',
+        'value': extra_args['__cfduid'],
+        'expires': 1609419599
+    })
 
 
 class PhantomJS:

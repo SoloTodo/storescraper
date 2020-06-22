@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, CF_REQUEST_HEADERS
 from storescraper import banner_sections as bs
 from storescraper.utils import HeadlessChrome
 
@@ -64,8 +64,8 @@ class Falabella(Store):
         category_paths = [
             ['cat70057', ['Notebook'],
              'Home > Computación-Notebooks', 1],
-            ['cat5860031', ['Notebook'],
-             'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
+            # ['cat5860031', ['Notebook'],
+            #  'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
             ['cat2028', ['Notebook'],
              'Home > Computación-Notebooks Gamers', 1],
             ['cat2450060', ['Notebook'],
@@ -76,7 +76,6 @@ class Falabella(Store):
              'Home > Computación-Notebooks > MacBooks', 1],
             ['cat4850013', ['Notebook'],
              'Home > Computación-Computación Gamer', 1],
-
             ['cat1012', ['Television'],
              'Home > Tecnología-TV', 1],
             ['cat7190148', ['Television'],
@@ -87,7 +86,6 @@ class Falabella(Store):
              'Home > Tecnología-TV > LEDs entre 50 - 55 pulgadas', 1],
             ['cat11161679', ['Television'],
              'Home > Tecnología-TV > LEDs sobre 55 pulgadas', 1],
-
             # ['cat2850016', ['Television'],
             #  'Home > TV-Televisores OLED', 1],
             ['cat10020021', ['Television'],
@@ -96,10 +94,8 @@ class Falabella(Store):
             #  'Home > Tecnología-Premium', 1],
             ['cat7230007', ['Tablet'],
              'Home > Computación-Tablets', 1],
-
             ['cat3205', ['Refrigerator'],
              'Home > Refrigeración-Refrigeradores', 1],
-
             ['cat4074', ['Refrigerator'],
              'Home > Refrigeración-No Frost', 1],
             ['cat4091', ['Refrigerator'],
@@ -118,7 +114,6 @@ class Falabella(Store):
             ['cat3205', ['Refrigerator'],
              'Home > Refrigeración-Top mount', 1,
              'f.product.attribute.Tipo=Top+mount'],
-
             ['cat1820006', ['Printer'],
              'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
             # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
@@ -213,6 +208,7 @@ class Falabella(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -242,6 +238,7 @@ class Falabella(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
 
         base_url = "https://www.falabella.com/falabella-cl/search?" \
                    "Ntt={}&page={}"
@@ -293,6 +290,7 @@ class Falabella(Store):
                 raise Exception('Page overflow: ' + category_id)
 
             pag_url = base_url.format(category_id, page)
+            print(pag_url)
 
             if extra_query_params:
                 pag_url += '&' + extra_query_params
@@ -317,6 +315,7 @@ class Falabella(Store):
     @classmethod
     def _products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
         response = session.get(url, timeout=30)
 
         if response.status_code == 500:
@@ -356,10 +355,9 @@ class Falabella(Store):
                 if not match:
                     match = re.search(
                         r'//www.youtube.com/embed/(.+)', iframe['src'])
-
                 if match:
                     video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0]).strip())
+                                      .format(match.groups()[0].strip()))
 
         slug = product_data['slug']
         publication_id = product_data['id']
@@ -688,6 +686,8 @@ class Falabella(Store):
                                 '{}'.format(url, index + 1))
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = session_with_proxy(extra_args)
+                session.headers['User-Agent'] = CF_REQUEST_HEADERS[
+                    'User-Agent']
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
                 banner = soup.find('div', 'fb-huincha-main-wrap')

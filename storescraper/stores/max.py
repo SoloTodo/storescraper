@@ -43,7 +43,7 @@ class Max(Store):
             # ('lineablanca/estufas/hornos-empotrables', 'Oven'),
             ('electrodomesticos/microondas', 'Oven'),
             ('lineablanca/refrigeradoras/refrigeradoras', 'Refrigerator'),
-            ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),
+            # ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),
             ('lineablanca/estufas/estufas-a-gas', 'Stove'),
             ('lineablanca/estufas/estufas-electricas', 'Stove'),
             ('lineablanca/estufas/cooktops-a-gas', 'Stove'),

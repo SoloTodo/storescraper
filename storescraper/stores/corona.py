@@ -105,9 +105,9 @@ class Corona(Store):
             # ['C:/9/35/36', '&fq=specificationFilter_41%3aFull+HD',
             #  ['Television'],
             #  'Tecnología > Televisión > Televisores > Full HD', 1],
-            ['C:/9/35/36', '&fq=specificationFilter_41%3aUltra+HD+-+4K',
-             ['Television'],
-             'Tecnología > Televisión > Televisores > Ultra HD', 1],
+            # ['C:/9/35/36', '&fq=specificationFilter_41%3aUltra+HD+-+4K',
+            #  ['Television'],
+            #  'Tecnología > Televisión > Televisores > Ultra HD', 1],
             # ['C:/9/35/37', None, ['OpticalDiskPlayer'],
             #  'Tecnología > Televisión > Blu-ray y DVD', 1],
             # Also includes other audio products
@@ -120,8 +120,8 @@ class Corona(Store):
             ['C:/9/48/51', None, ['Headphones'],
              'Tecnología > Audio > Audífonos', 1],
             # Also includes other accesories
-            ['C:/9/39', None, ['Notebook', 'Tablet', 'AllInOne', 'Printer'],
-             'Tecnología > Computación', 0],
+            # ['C:/9/39', None, ['Notebook', 'Tablet', 'AllInOne', 'Printer'],
+            #  'Tecnología > Computación', 0],
             # ['C:/9/39/40', None, ['Notebook'],
             #  'Tecnología > Computación > Notebook', 1],
             # ['C:/9/39/42', None, ['Tablet'],
