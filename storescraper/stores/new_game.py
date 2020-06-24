@@ -110,6 +110,14 @@ class NewGame(Store):
         else:
             picture_urls = None
 
+        video_urls = []
+        for iframe in soup.findAll('iframe'):
+            match = re.match('https://www.youtube.com/embed/(.+)',
+                             iframe['src'])
+            if match:
+                video_urls.append('https://www.youtube.com/watch?v={}'.format(
+                    match.groups()[0]))
+
         p = Product(
             name,
             cls.__name__,
@@ -123,7 +131,8 @@ class NewGame(Store):
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            video_urls=video_urls
         )
 
         return [p]

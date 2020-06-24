@@ -55,7 +55,7 @@ class PcExpress(Store):
             ['118', 'PowerSupply'],           # Fuentes Estandar
             ['279', 'PowerSupply'],           # Fuentes Certificadas
             ['460_462_119', 'ComputerCase'],  # Gabinetes Basicos
-            # ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
+            ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
             ['460_462_278', 'ComputerCase'],  # Gabinetes SLIM
             ['169', 'CpuCooler'],             # Ventilacion para CPU
             ['269', 'Tablet'],                # Tablets

@@ -256,6 +256,15 @@ class PcFactory(Store):
         picture_urls = ['https://www.pcfactory.cl/public/foto/{}/{}'.format(
             sku, path) for path in product_data['imagen']]
 
+        video_urls = []
+        soup = BeautifulSoup(product_data['descripcion'], 'html.parser')
+        for iframe in soup.findAll('iframe'):
+            match = re.match('//www.youtube.com/embed/(.+)',
+                             iframe['src'])
+            if match:
+                video_urls.append('https://www.youtube.com/watch?v={}'.format(
+                    match.groups()[0]))
+
         p = Product(
             full_name,
             cls.__name__,
@@ -270,7 +279,8 @@ class PcFactory(Store):
             sku=sku,
             part_number=product_data['partno'],
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            video_urls=video_urls
         )
 
         return [p]

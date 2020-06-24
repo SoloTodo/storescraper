@@ -102,8 +102,7 @@ class MyBox(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'idTab1'})))
 
-        picture_urls = [soup.find('div',
-                                  {'id': 'image-block'}).find('img')['src']]
+        picture_urls = [x['href'] for x in soup.findAll('a', 'thickbox')]
 
         p = Product(
             name,

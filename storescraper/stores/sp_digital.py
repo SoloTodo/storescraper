@@ -1,9 +1,11 @@
+import json
 import re
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -259,6 +261,32 @@ class SpDigital(Store):
                 picture_url = 'https://www.spdigital.cl' + picture_url
             picture_urls.append(picture_url)
 
+        reviews_url = 'https://d1le22hyhj2ui8.cloudfront.net/onpage/' \
+                      'spdigital.cl/reviews.js?url_key={}'.format(sku)
+        review_data = json.loads(session.get(reviews_url).text)
+
+        if 'user_review_count' in review_data:
+            review_count = review_data['user_review_count']
+            if review_count:
+                review_avg_score = review_data['score'] / 2
+            else:
+                review_avg_score = None
+        else:
+            review_count = None
+            review_avg_score = None
+
+        flixmedia_id = None
+        video_urls = None
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+
+        if flixmedia_tag:
+            try:
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+            except KeyError:
+                pass
+
         p = Product(
             name,
             cls.__name__,
@@ -273,7 +301,11 @@ class SpDigital(Store):
             sku=sku,
             part_number=part_number,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            review_count=review_count,
+            review_avg_score=review_avg_score,
+            flixmedia_id=flixmedia_id,
+            video_urls=video_urls
         )
 
         return [p]

@@ -161,7 +161,7 @@ class AllTec(Store):
         if offer_price > normal_price:
             offer_price = normal_price
 
-        picture_urls = [soup.find('img', {'itemprop': 'image'})['src']]
+        picture_urls = [x['href'] for x in soup.findAll('a', 'fancybox')]
 
         p = Product(
             name,
