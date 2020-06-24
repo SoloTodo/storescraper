@@ -24,15 +24,15 @@ class CreditosMundiales(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('linea-blanca/aires-acondicionados', 'AirConditioner'),
+            # ('linea-blanca/aires-acondicionados', 'AirConditioner'),
             ('linea-blanca/lavadoras', 'WashingMachine'),
             ('linea-blanca/refrigeradora', 'Refrigerator'),
             ('linea-blanca/congeladores', 'Refrigerator'),
             ('linea-blanca/hornos', 'Oven'),
             ('electronica/televisores', 'Television'),
             ('electronica/equipos-de-sonido', 'StereoSystem'),
-            ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
-            ('celulares/movil', 'Cell'),
+            # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
+            # ('celulares/movil', 'Cell'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -47,6 +47,7 @@ class CreditosMundiales(Store):
                 continue
 
             url = 'http://creditosmundiales.com/{}/'.format(category_path)
+            print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
             product_containers = soup.findAll('li', 'product')

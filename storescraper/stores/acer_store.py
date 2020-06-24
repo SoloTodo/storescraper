@@ -77,7 +77,7 @@ class AcerStore(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         sku = re.search(r'/p/(\d+)/', url).groups()[0]
-        model = soup.find('div', 'producto-nombre').text.strip()
+        model = soup.find('h1', 'producto-nombre').text.strip()
         part_number = soup.find('div', 'producto-subtitulo').text.strip()
         name = '{} ({})'.format(model, part_number)
 

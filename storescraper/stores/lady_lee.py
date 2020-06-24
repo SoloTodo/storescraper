@@ -1,3 +1,4 @@
+import random
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -53,13 +54,17 @@ class LadyLee(Store):
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url = '{}/section/stores/{}/products?ps_{}={}'\
-                    .format(cls.base_url, section_id, section_id, page)
+                url = '{}/section/stores/{}/products?ps_{}={}&_={}'.format(
+                    cls.base_url, section_id, section_id, page,
+                    random.randint(0, 100))
+
                 response = session.get(url)
                 data = response.text
+
                 html_data = re.search(r'el\.replaceWith\(\'(.*?)\'\)',
                                       data, flags=re.S).group(1)\
                     .replace('\\n', '').replace('\\', '')
+
                 soup = BeautifulSoup(html_data, 'html.parser')
 
                 products = soup.findAll('div', 'product')

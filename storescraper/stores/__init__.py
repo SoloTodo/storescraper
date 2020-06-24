@@ -119,6 +119,7 @@ from .magazine_luiza import MagazineLuiza
 from .max import Max
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
+from .mercado_tech import MercadoTech
 from .mercadolibre_argentina import MercadoLibreArgentina
 from .mercadolibre_argentina_adata import MercadoLibreArgentinaAdata
 from .mercadolibre_argentina_sandisk import MercadoLibreArgentinaSandisk

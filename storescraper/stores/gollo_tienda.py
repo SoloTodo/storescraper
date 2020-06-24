@@ -30,8 +30,8 @@ class GolloTienda(Store):
         category_filters = [
             ('productos/telefonia/celulares', 'Cell'),
             ('productos/pantallas', 'Television'),
-            ('productos/audio-y-video/video/reproductores',
-             'OpticalDiskPlayer'),
+            # ('productos/audio-y-video/video/reproductores',
+            #  'OpticalDiskPlayer'),
             # ('productos/hogar/ventilacion/aire-acondicionado',
             #  'AirConditioner'),
             ('productos/linea-blanca/cocina/de-gas', 'Stove'),
@@ -67,6 +67,8 @@ class GolloTienda(Store):
 
                 url = 'https://www.gollotienda.com/{}.html?p={}.html'\
                     .format(category_path, page)
+
+                print(url)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
