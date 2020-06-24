@@ -135,7 +135,7 @@ class MercadolibreChile(Store):
     def _category_paths(cls):
         return {
             '_Tienda_acer': [
-                ('computacion/notebooks', 'Notebook'),
+                # ('computacion/notebooks', 'Notebook'),
                 # ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
                 # ('monitores-accesorios', 'Monitor'),

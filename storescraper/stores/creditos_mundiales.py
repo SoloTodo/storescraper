@@ -32,7 +32,7 @@ class CreditosMundiales(Store):
             ('electronica/televisores', 'Television'),
             ('electronica/equipos-de-sonido', 'StereoSystem'),
             # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
-            ('celulares/movil', 'Cell'),
+            # ('celulares/movil', 'Cell'),
         ]
 
         session = session_with_proxy(extra_args)
