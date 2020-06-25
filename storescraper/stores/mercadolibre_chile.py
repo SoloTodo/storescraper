@@ -138,7 +138,7 @@ class MercadolibreChile(Store):
                 # ('computacion/notebooks', 'Notebook'),
                 # ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
-                # ('monitores-accesorios', 'Monitor'),
+                ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_cintegral': [
                 ('notebooks-accesorios', 'Notebook'),

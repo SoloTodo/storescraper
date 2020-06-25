@@ -5,6 +5,7 @@ import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -92,11 +93,9 @@ class Winpy(Store):
                     raise Exception('Page overflow: ' + category_path)
 
                 url_with_page = url + 'paged/' + str(page) + '/'
-                print(url_with_page)
                 soup = BeautifulSoup(session.get(url_with_page).text,
                                      'html5lib')
                 product_containers = soup.find('section', {'id': 'productos'})
-                print(url_with_page)
                 product_containers = product_containers.findAll('article')
 
                 if not product_containers:
@@ -126,7 +125,6 @@ class Winpy(Store):
 
         page_source = response.text
         soup = BeautifulSoup(page_source, 'html5lib')
-        print(str(soup))
 
         name = soup.find('h1', {'itemprop': 'name'}).text.strip()
         part_number = soup.find('span', 'sku').text.strip()
@@ -169,7 +167,17 @@ class Winpy(Store):
         picture_urls = ['https://www.winpy.cl' + urllib.parse.quote(tag['src'])
                         for tag in picture_tags]
 
-        print(picture_urls)
+        flixmedia_id = None
+        video_urls = None
+        flixmedia_tag = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+
+        if flixmedia_tag:
+            try:
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+            except KeyError:
+                pass
 
         p = Product(
             name,
@@ -186,7 +194,9 @@ class Winpy(Store):
             part_number=part_number,
             condition=condition,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            flixmedia_id=flixmedia_id,
+            video_urls=video_urls
         )
 
         return [p]

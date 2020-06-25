@@ -2,7 +2,6 @@ import json
 import re
 from collections import defaultdict
 
-import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 

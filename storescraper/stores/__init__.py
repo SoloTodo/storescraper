@@ -40,6 +40,7 @@ from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
+from .digiplot import Digiplot
 from .digitalife import Digitalife
 from .dimercom import Dimercom
 from .do_it_center import DoItCenter
