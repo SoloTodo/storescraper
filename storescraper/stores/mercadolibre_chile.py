@@ -213,7 +213,7 @@ class MercadolibreChile(Store):
                 ('computacion', 'Notebook'),
             ],
             '_Tienda_primus': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
             ],
             '_Tienda_razer': [
