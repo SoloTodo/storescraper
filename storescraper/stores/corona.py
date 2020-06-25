@@ -115,8 +115,8 @@ class Corona(Store):
              'Tecnología > Audio', 0],
             # ['C:/9/48/90', None, ['StereoSystem'],
             #  'Tecnología > Audio > Hi-Fi', 1],
-            ['C:/9/48/49', None, ['StereoSystem'],
-             'Tecnología > Audio > Equipos de Música', 1],
+            # ['C:/9/48/49', None, ['StereoSystem'],
+            #  'Tecnología > Audio > Equipos de Música', 1],
             ['C:/9/48/51', None, ['Headphones'],
              'Tecnología > Audio > Audífonos', 1],
             # Also includes other accesories
