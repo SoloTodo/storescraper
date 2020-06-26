@@ -92,8 +92,8 @@ class Panafoto(Store):
             #  '/// Hornos eléctricos"]', 'Oven'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Estufas eléctricas"]', 'Stove'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Estufas a Gas"]', 'Stove'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Estufas a Gas"]', 'Stove'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
              '/// Aspiradoras"]', 'VacuumCleaner'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '

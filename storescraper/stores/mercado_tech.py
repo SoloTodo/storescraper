@@ -16,40 +16,50 @@ class MercadoTech(Store):
             'ExternalStorageDrive',
             'StorageDrive',
             'SolidStateDrive',
-            'Tablet',
             'Notebook',
             'StereoSystem',
-            'OpticalDiskPlayer',
             'PowerSupply',
             'ComputerCase',
             'Motherboard',
             'Processor',
             'VideoCard',
-            'CpuCooler',
             'Printer',
             'Ram',
             'Monitor',
-            'MemoryCard',
             'Mouse',
             'Cell',
-            'UsbFlashDrive',
-            'Television',
-            'Camera',
             'Projector',
             'AllInOne',
             'Keyboard',
-            'KeyboardMouseCombo',
             'Headphones',
-            'VideoGameConsole',
-            'Ups',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
 
         category_urls = [
-            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros',
-             'StorageDrive']
+            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
+             'discos-externos', 'ExternalStorageDrive'],
+            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
+             'discos-internos', 'StorageDrive'],
+            ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
+             'ssd', 'SolidStateDrive'],
+            ['tecnologia/equipos/notebooks', 'Notebook'],
+            ['audio-y-video/parlantes', 'StereoSystem'],
+            ['tecnologia/componentes-pc/fuente-de-poder', 'PowerSupply'],
+            ['tecnologia/componentes-pc/gabinetes', 'ComputerCase'],
+            ['tecnologia/componentes-pc/placas-madres', 'Motherboard'],
+            ['tecnologia/componentes-pc/procesadores', 'Processor'],
+            ['tecnologia/componentes-pc/tarjetas-de-video', 'VideoCard'],
+            ['tecnologia/partes-y-piezas/impresoras', 'Printer'],
+            ['tecnologia/partes-y-piezas/memorias-ram', 'Ram'],
+            ['tecnologia/partes-y-piezas/monitores', 'Monitor'],
+            ['tecnologia/accesorios/mouse', 'Mouse'],
+            ['movil/celulares', 'Cell'],
+            ['tecnologia/partes-y-piezas/proyectores', 'Projector'],
+            ['tecnologia/equipos/all-in-one', 'AllInOne'],
+            ['tecnologia/accesorios/teclados', 'Keyboard'],
+            ['audio-y-video/audifonos', 'Headphones']
         ]
 
         session = session_with_proxy(extra_args)
@@ -114,7 +124,19 @@ class MercadoTech(Store):
             stock = -1
 
         price = Decimal(json_data['offers']['price'])
-        picture_urls = [json_data['image']]
+        picture_containers = [c.find('img') for c in soup.findAll('div', 'carousel-inner')[-1].findAll(
+            'div', 'product-carousel-item-squared')]
+
+        picture_urls = []
+
+        for picture_container in picture_containers:
+            try:
+                picture_url = picture_container['data-src']
+            except KeyError:
+                picture_url = picture_container['src']
+
+            picture_urls.append(picture_url)
+
         description = html_to_markdown(json_data['description'])
 
         p = Product(

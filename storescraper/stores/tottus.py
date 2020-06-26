@@ -121,6 +121,9 @@ class Tottus(Store):
             offer_price = Decimal(data_price)
             normal_price = offer_price
 
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         description = html_to_markdown(str(soup.find('div', 'react-tabs')))
 
         picture_urls = data['image']
