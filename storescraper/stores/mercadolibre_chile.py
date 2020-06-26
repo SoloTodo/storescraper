@@ -194,7 +194,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 # ('webcams-audio-pc-audifonos', 'Headphones'),
                 # ('electronica', 'Headphones'),
-                ('webcams-audio-pc-parlantes', 'StereoSystem'),
+                # ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_marvo': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
