@@ -152,9 +152,9 @@ class MercadolibreChile(Store):
                 # ('componentes-pc', 'PowerSupply'),
             ],
             '_Tienda_cougar': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc', 'Headphones'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                # ('webcams-audio-pc', 'Headphones'),
                 # ('electronica', 'Headphones'),
             ],
             '_Tienda_hp': [
