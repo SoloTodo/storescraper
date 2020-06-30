@@ -90,8 +90,8 @@ class Panafoto(Store):
             #  '/// Hornos a gas"]', 'Oven'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
             #  '/// Hornos eléctricos"]', 'Oven'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Estufas eléctricas"]', 'Stove'),
+            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+            #  '/// Estufas eléctricas"]', 'Stove'),
             # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
             #  '/// Estufas a Gas"]', 'Stove'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '

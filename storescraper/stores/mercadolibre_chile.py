@@ -138,7 +138,7 @@ class MercadolibreChile(Store):
                 # ('computacion/notebooks', 'Notebook'),
                 # ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
-                ('monitores-accesorios', 'Monitor'),
+                # ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_cintegral': [
                 ('notebooks-accesorios', 'Notebook'),
@@ -175,7 +175,7 @@ class MercadolibreChile(Store):
                 # 'Headphones'),
             ],
             '_Tienda_hyperx': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 # ('webcams-audio-pc', 'Headphones'),
             ],
