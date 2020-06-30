@@ -137,7 +137,7 @@ class MercadoTech(Store):
 
             picture_urls.append(picture_url)
 
-        description = html_to_markdown(json_data['description'])
+        description = html_to_markdown(json_data['description'] or '')
 
         p = Product(
             name,
