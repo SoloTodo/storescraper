@@ -59,33 +59,32 @@ class Omnisport(Store):
                 'r_d',
             ]
 
-            for sorter in sorters:
-                page = 1
+            page = 1
 
-                while True:
-                    if page >= 10:
-                        raise Exception('Page overflow')
+            while True:
+                if page >= 10:
+                    raise Exception('Page overflow')
 
-                    url = 'https://www.omnisport.com/catalogo/{}?sort={}' \
-                          '&page={}'.format(category_path, sorter, page)
-                    print(url)
+                url = 'https://www.omnisport.com/catalogo/{}?sort={}' \
+                      '&page={}'.format(category_path, sorters[0], page)
+                print(url)
 
-                    soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                    containers = soup.findAll('div', 'catalog-product')
+                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                containers = soup.findAll('div', 'catalog-product')
 
-                    if not containers:
-                        break
+                if not containers:
+                    break
 
-                    for container in containers:
-                        link = container.find('a', 'dark')
+                for container in containers:
+                    link = container.find('a', 'dark')
 
-                        if 'lg' in link.text.strip().lower():
-                            product_url = 'https://www.omnisport.com{}'\
-                                .format(link['href'])
+                    if 'lg' in link.text.strip().lower():
+                        product_url = 'https://www.omnisport.com{}'\
+                            .format(link['href'])
 
-                            product_urls.append(product_url)
+                        product_urls.append(product_url)
 
-                    page += 1
+                page += 1
 
         return list(set(product_urls))
 
