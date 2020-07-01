@@ -124,18 +124,19 @@ class MercadoTech(Store):
             stock = -1
 
         price = Decimal(json_data['offers']['price'])
-        picture_containers = [c.find('img') for c in soup.findAll('div', 'carousel-inner')[-1].findAll(
-            'div', 'product-carousel-item-squared')]
-
+        picture_containers = soup.findAll('div', 'carousel-inner')
         picture_urls = []
+        if picture_containers:
+            picture_containers = [c.find('img') for c in picture_containers[-1].findAll(
+                'div', 'product-carousel-item-squared')]
 
-        for picture_container in picture_containers:
-            try:
-                picture_url = picture_container['data-src']
-            except KeyError:
-                picture_url = picture_container['src']
+            for picture_container in picture_containers:
+                try:
+                    picture_url = picture_container['data-src']
+                except KeyError:
+                    picture_url = picture_container['src']
 
-            picture_urls.append(picture_url)
+                picture_urls.append(picture_url)
 
         description = html_to_markdown(json_data['description'] or '')
 
