@@ -47,6 +47,7 @@ class PcFactory(Store):
             'Headphones',
             'Wearable',
             'Ups',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -160,7 +161,9 @@ class PcFactory(Store):
              'Inicio > Accesorios y Periféricos > UPS y Energía > '
              'UPS y Reguladores', 1],
             ['748', ['StereoSystem'],
-             'Inicio > Smart Home (Domótica)', 1]
+             'Inicio > Smart Home (Domótica)', 1],
+            ['1026', ['AirConditioner'],
+             'Inicio > Aires Acondicionados', 1]
         ]
 
         session = session_with_proxy(extra_args)
