@@ -79,6 +79,7 @@ from .hp_online import HpOnline
 from .ibyte import Ibyte
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
+from .infographics_solutions import InfographicsSolutions
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
