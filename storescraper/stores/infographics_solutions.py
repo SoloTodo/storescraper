@@ -25,6 +25,7 @@ class InfographicsSolutions(Store):
             'Tablet',
             'Headphones',
             'Mouse',
+            'SolidStateDrive',
         ]
 
     @classmethod
@@ -38,7 +39,8 @@ class InfographicsSolutions(Store):
             ['tecnologia/tablet/', 'Tablet'],
             ['accesorios-gamer/headset-audifonos/', 'Headphones'],
             ['accesorios-gamer/mouse/', 'Mouse'],
-
+            ['componentes-de-pc/almacenamiento/discos-solidos/',
+             'SolidStateDrive'],
         ]
 
         session = session_with_proxy(extra_args)
