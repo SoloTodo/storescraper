@@ -120,6 +120,11 @@ class MercadoTech(Store):
         sku = json_data['sku']
         stock = 0
 
+        if 'bad box' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         if json_data['offers']['availability'] == 'InStock':
             stock = -1
 
@@ -153,7 +158,8 @@ class MercadoTech(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            condition=condition
         )
 
         return [p]

@@ -132,6 +132,7 @@ from .mercadolibre_samsung import MercadolibreSamsung
 from .meroli import Meroli
 from .mi_pc import MiPc
 from .microplay import Microplay
+from .mobile_hut import MobileHut
 from .movistar import Movistar
 from .movistar_one import MovistarOne
 from .multimax import Multimax
