@@ -52,10 +52,10 @@ class Cintegral(Store):
              'discos-duros-externos.html', 'ExternalStorageDrive'],
             ['pc-y-portatiles/partes-y-piezas/almacenamiento/ssd.html',
              'SolidStateDrive'],
-            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
-             'memorias-flash.html', 'MemoryCard'],
-            ['pc-y-portatiles/partes-y-piezas/almacenamiento/pendrive.html',
-             'UsbFlashDrive'],
+            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
+            # 'memorias-flash.html', 'MemoryCard'],
+            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/pendrive.html',
+            #  'UsbFlashDrive'],
             # ['pc-y-portatiles/partes-y-piezas/gabinetes.html',
             # 'ComputerCase'],
             # ['pc-y-portatiles/partes-y-piezas/fuentes-de-poder.html',
@@ -70,11 +70,11 @@ class Cintegral(Store):
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
             ['monitores-y-proyeccion/monitores.html', 'Monitor'],
-            ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
-            ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
+            # ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
+            # ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
             ['pc-y-portatiles/mouse-teclados/combo-mouse-teclado.html',
              'KeyboardMouseCombo'],
-            ['audio/audifonos.html', 'Headphones'],
+            # ['audio/audifonos.html', 'Headphones'],
             ['pc-y-portatiles/escritorio/todo-en-uno-aio.html', 'AllInOne'],
             ['audio/parlantes.html', 'StereoSystem'],
             ['redes-y-servidores/ups.html', 'Ups'],
@@ -97,6 +97,7 @@ class Cintegral(Store):
                     raise Exception('Page overflow: ' + category_url)
 
                 url = category_url + '?p=' + str(page)
+                print(url)
                 json_data = json.loads(session.get(url, verify=False).text)
                 soup = BeautifulSoup(json_data['listing'], 'html.parser')
 

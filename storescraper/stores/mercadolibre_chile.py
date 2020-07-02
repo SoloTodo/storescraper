@@ -250,7 +250,7 @@ class MercadolibreChile(Store):
             '_Tienda_xtech': [
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('componentes-pc', 'PowerSupply'),
+                # ('componentes-pc', 'PowerSupply'),
                 # ('audio-audifonos', 'Headphones'),
             ],
             '_Tienda_blu': [
