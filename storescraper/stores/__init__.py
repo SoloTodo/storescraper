@@ -140,6 +140,7 @@ from .musimundo import Musimundo
 from .my_box import MyBox
 from .new_game import NewGame
 from .nice_one import NiceOne
+from .notebook_store import NotebookStore
 from .olier import Olier
 from .omnisport import Omnisport
 from .orbital_store import OrbitalStore
