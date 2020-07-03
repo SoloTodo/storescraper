@@ -132,6 +132,7 @@ from .mercadolibre_samsung import MercadolibreSamsung
 from .meroli import Meroli
 from .mi_pc import MiPc
 from .microplay import Microplay
+from .mobile_hut import MobileHut
 from .movistar import Movistar
 from .movistar_one import MovistarOne
 from .multimax import Multimax
@@ -139,6 +140,7 @@ from .musimundo import Musimundo
 from .my_box import MyBox
 from .new_game import NewGame
 from .nice_one import NiceOne
+from .notebook_store import NotebookStore
 from .olier import Olier
 from .omnisport import Omnisport
 from .orbital_store import OrbitalStore

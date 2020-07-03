@@ -544,9 +544,12 @@ class Paris(Store):
 
                 if not image_container:
                     image_container = soup.find('div', 'hero-slider')
+                if not image_container:
+                    image_container = soup.find('div', 'slick-slider')
 
                 images = image_container.findAll('a')
-
+                images = [i for i in images if i.find('picture')]
+                
                 assert len(images) > 0
 
                 for index, image in enumerate(images):
