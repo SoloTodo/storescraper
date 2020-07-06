@@ -26,6 +26,8 @@ class InfographicsSolutions(Store):
             'Headphones',
             'Mouse',
             'SolidStateDrive',
+            'StorageDrive',
+            'Keyboard',
         ]
 
     @classmethod
@@ -41,6 +43,10 @@ class InfographicsSolutions(Store):
             ['accesorios-gamer/mouse/', 'Mouse'],
             ['componentes-de-pc/almacenamiento/discos-solidos/',
              'SolidStateDrive'],
+            ['componentes-de-pc/almacenamiento/discos-duros/',
+             'StorageDrive'],
+            ['accesorios-gamer/teclados/',
+             'Keyboard'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -73,14 +79,15 @@ class InfographicsSolutions(Store):
         sku = soup.find('div', 'wd-wishlist-btn').find('a')['data-product-id']
 
         stock_container = soup.find('p', 'stock')
-        stock = 'Agotado'
-        if stock_container:
-            stock = stock_container.text.split(' ')[0]
 
-        if not stock_container or stock == 'Agotado':
-            stock = 0
+        if stock_container:
+            stock_text = stock_container.text.split(' ')[0]
+            if stock_text == 'Agotado':
+                stock = 0
+            else:
+                stock = int(stock_text)
         else:
-            stock = int(stock)
+            stock = -1
 
         price_container = soup.find('p', 'price')
 
