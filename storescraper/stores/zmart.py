@@ -32,6 +32,8 @@ class Zmart(Store):
             ['ConsolasSwitch', 'VideoGameConsole'],
             ['Consolas3DS', 'VideoGameConsole'],
             ['Asus', 'Notebook'],
+            ['logitech', 'Keyboard'],
+            ['Razer', 'Mouse'],
             [37, 'Mouse'],
             [38, 'Keyboard'],
             [45, 'StereoSystem'],
