@@ -180,7 +180,7 @@ class MercadolibreChile(Store):
                 # ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_lenovo': [
-                ('pc-escritorio-all-in-one', 'AllInOne'),
+                # ('pc-escritorio-all-in-one', 'AllInOne'),
             ],
             '_Tienda_logitech': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),

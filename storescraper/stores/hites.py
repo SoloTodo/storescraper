@@ -85,8 +85,9 @@ class Hites(Store):
              'Inicio > Electro Hogar > Cocina > Encimeras', 1],
             ['electro-hogar/cocina/hornos-empotrados', ['Oven'],
              'Inicio > Electro Hogar > Cocina > Hornos Empotrados', 1],
-            ['electro-hogar/cocina/hornos-electricos', ['Oven'],
-             'Inicio > Electro Hogar > Cocina > Hornos Eléctricos', 1],
+            ['electro-hogar/cocina/hornos-electricos-y-microondas', ['Oven'],
+             'Inicio > Electro Hogar > Cocina > '
+             'Hornos Eléctricos y Microondas', 1],
             ['electro-hogar/cocina/microondas', ['Oven'],
              'Inicio > Electro Hogar > Cocina > Microondas', 1],
 
@@ -115,12 +116,10 @@ class Hites(Store):
              'Inicio > Tecnología > TV Video', 0],
             ['tecnologia/tv-video/todos-los-led', ['Television'],
              'Inicio > Tecnología > Tv Video > Todos los Led', 1],
-            ['tecnologia/tv-video/smart-tv-hasta-50', ['Television'],
-             'Inicio > Tecnología > Tv Video > Smart TV Hasta 50', 1],
-            ['tecnologia/tv-video/smart-tv-entre-55-y-60', ['Television'],
-             'Inicio > Tecnología > Tv Video > Smart TV Entre 55 y 60', 1],
-            ['tecnologia/tv-video/smart-tv-desde-65', ['Television'],
-             'Inicio > Tecnología > Tv Video > Smart TV Desde 65', 1],
+            ['tecnologia/tv-video/smart-tv-hasta-49', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart TV Hasta 49', 1],
+            ['tecnologia/tv-video/smart-tv-entre-50-y-55', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart TV Entre 50 y 55', 1],
             ['tecnologia/tv-video/led-samsung', ['Television'],
              'Inicio > Tecnología > Tv Video > Led Samsung', 1],
             ['tecnologia/tv-video/led-lg', ['Television'],
@@ -209,43 +208,36 @@ class Hites(Store):
             if category not in local_categories:
                 continue
 
-            page = 1
+            start = 0
             current_position = 1
 
             while True:
-                category_url = 'https://www.hites.com/{}?pageSize=48&page={}' \
-                               ''.format(category_path, page)
+                category_url = 'https://www.hites.com/{}/?sz=24&start={}&srule=best-matches' \
+                               ''.format(category_path, start)
 
                 print(category_url)
 
-                if page >= 20:
+                if start >= 360:
                     raise Exception('Page overflow: ' + category_url)
 
                 response = session.get(category_url, timeout=60)
 
                 if response.status_code in [404, 500]:
-                    if page == 1:
+                    if start == 0:
                         raise Exception('Empty category: ' + category_url)
                     break
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                json_data = json.loads(soup.find(
-                    'script', {'id': 'hy-data'}).text)
 
-                if not json_data.get('result'):
-                    if page == 1:
+                products = soup.findAll('div', 'product-tile')
+
+                if not products:
+                    if start == 0:
                         raise Exception('Empty category: ' + category_url)
                     break
 
-                product_data = json_data['result']['products']
-
-                if not product_data:
-                    if page == 1:
-                        raise Exception('Empty category: ' + category_url)
-                    break
-
-                for product_entry in product_data:
-                    slug = product_entry['productString']
+                for product_entry in products:
+                    slug = product_entry.find('a')['href']
                     product_url = 'https://www.hites.com/' + slug
                     product_entries[product_url].append({
                         'category_weight': category_weight,
@@ -254,7 +246,7 @@ class Hites(Store):
                     })
                     current_position += 1
 
-                page += 1
+                start += 24
 
         return product_entries
 
@@ -315,95 +307,56 @@ class Hites(Store):
         if soup.find('img', {'src': '/public/statics/images/404.svg'}):
             return []
 
-        json_data = json.loads(soup.find('script', {'id': 'hy-data'}).text)[
-            'product']
+        name = soup.find('h1', 'product-name').text
+        sku = soup.find('span', 'product-id').text
+        stock = -1
 
-        if 'name' in json_data and json_data['name']:
-            name = json_data['name']
-        else:
-            name = "N/A"
+        prices = soup.find('div', 'prices')
 
-        sku = json_data['partNumber']
+        offer_price_container = prices.find('span', 'hites-price')
+        offer_price = None
+        if offer_price_container:
+            offer_price = Decimal(offer_price_container.text.strip()\
+                .replace('$', '').replace('.', ''))
 
-        delivery_stock_container = soup.find(
-            'div', 'accordion__desktop').findAll('div')[0]
+        normal_price_container = prices.find('span', 'sales')
+        if not normal_price_container:
+            normal_price_container = prices.find('span', 'list')
 
-        if 'product__service--unavailable' in \
-                delivery_stock_container.attrs['class']:
-            pickup_store_codes = [
-                '0%2640001',
-                '1%2640002',
-                '2%2640003',
-                '3%2640004'
-            ]
-            for code in pickup_store_codes:
-                pickup_url = 'https://www.hites.com/api/product/{}001/' \
-                             'pickup?value={}'.format(sku, code)
-                pickup_data = json.loads(session.get(pickup_url).text)
-                if pickup_data['phyStoreListDataBean']:
-                    stock = -1
-                    break
-            else:
-                # No "break" was called above
-                stock = 0
-        else:
-            stock = -1
-
-        if json_data['isOutOfStock'] or \
-                'images' not in json_data['children'][0]:
-            picture_urls = [json_data['fullImage']]
-        else:
-            picture_urls = json_data['children'][0]['images']
-
-        if 'prices' not in json_data["children"][0].keys():
+        if not normal_price_container and not offer_price_container:
             return []
 
-        reference_price = json_data["children"][0]['prices']['listPrice']
-        normal_price = json_data["children"][0]['prices']['offerPrice']
+        normal_price = Decimal(
+            normal_price_container.find('span', 'value')['content'])
 
-        if normal_price:
-            normal_price = Decimal(normal_price)
-        else:
-            normal_price = Decimal(reference_price)
-
-        offer_price = json_data["children"][0]['prices']['cardPrice']
-
-        if offer_price:
-            offer_price = Decimal(offer_price)
-        else:
+        if not offer_price:
             offer_price = normal_price
-
-        if offer_price > normal_price:
-            offer_price = normal_price
-
-        long_description = json_data.get('longDescription', '') or ''
-        description = html_to_markdown(long_description)
-
-        for attribute in json_data['attributes']:
-            if attribute['displayable']:
-                description += '\n{} {}'.format(attribute['name'],
-                                                attribute.get('value', ''))
 
         has_virtual_assistant = \
             'cdn.livechatinc.com/tracking.js' in response.text
 
-        ld_soup = BeautifulSoup(long_description, 'html.parser')
-
-        flixmedia_container = ld_soup.find(
-            'script', {'src': '//media.flixfacts.com/js/loader.js'})
-        flixmedia_id = None
-
-        if flixmedia_container:
-            mpn = flixmedia_container['data-flix-mpn']
-            video_urls = flixmedia_video_urls(mpn)
-            if video_urls is not None:
-                flixmedia_id = mpn
+        # TODO: revisar esto
+        # ld_soup = BeautifulSoup(long_description, 'html.parser')
+        # flixmedia_container = ld_soup.find(
+        #     'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        # flixmedia_id = None
+        #
+        # if flixmedia_container:
+        #     mpn = flixmedia_container['data-flix-mpn']
+        #     video_urls = flixmedia_video_urls(mpn)
+        #     if video_urls is not None:
+        #         flixmedia_id = mpn
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 
+        images = soup.find('div', 'primary-images')\
+            .findAll('div', 'carousel-item')
+
+        picture_urls = [i.find('img')['src'] for i in images]
+        
         p = Product(
             name,
             cls.__name__,
@@ -417,9 +370,7 @@ class Hites(Store):
             'CLP',
             sku=sku,
             condition=condition,
-            description=description,
             picture_urls=picture_urls,
-            flixmedia_id=flixmedia_id,
             has_virtual_assistant=has_virtual_assistant
         )
 
