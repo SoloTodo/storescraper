@@ -60,7 +60,13 @@ class PortatilChile(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
+        response = session.get(url, verify=False)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(session.get(url, verify=False).text,
                              'html.parser')
 
