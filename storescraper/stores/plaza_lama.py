@@ -19,7 +19,8 @@ class PlazaLama(Store):
             'Oven',
             'WashingMachine',
             'Stove',
-            'AirConditioner'
+            'AirConditioner',
+            'CellAccesory'
         ]
 
     @classmethod
@@ -41,7 +42,8 @@ class PlazaLama(Store):
             ('lavadora-secadora', 'WashingMachine'),
             ('estufa', 'Stove'),
             ('estufa-de-20', 'Stove'),
-            ('aire-acondicionado', 'AirConditioner')
+            ('aire-acondicionado', 'AirConditioner'),
+            ('extractor-de-grasa', 'CellAccesory'),
         ]
 
         session = session_with_proxy(extra_args)
