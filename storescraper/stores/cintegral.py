@@ -15,109 +15,89 @@ class Cintegral(Store):
     def categories(cls):
         return [
             'Notebook',
+            'AllInOne',
             'Tablet',
             'StorageDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'Ram',
-            'Monitor',
-            'Processor',
-            'VideoCard',
-            'Motherboard',
-            'Printer',
-            'Cell',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'AllInOne',
-            'StereoSystem',
+            'ExternalStorageDrive',
             'SolidStateDrive',
             'MemoryCard',
             'UsbFlashDrive',
+            'Processor',
+            'ComputerCase',
+            'PowerSupply',
+            'Motherboard',
+            'Ram',
+            'VideoCard',
+            'Mouse',
+            'Printer',
+            'Headphones',
+            'StereoSystem',
             'Ups',
+            'Monitor'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://www.cintegral.cl/'
+        url_base = 'https://www.cintegral.cl/index.php?' \
+                   'id_category={}&controller=category&page={}'
 
         url_extensions = [
-            ['pc-y-portatiles/portatiles/notebook.html', 'Notebook'],
-            # ['pc-y-portatiles/portatiles/tablet.html', 'Tablet'],
-            ['pc-y-portatiles/partes-y-piezas/cpu.html', 'Processor'],
-            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
-            #  'discos-duros-pc.html', 'StorageDrive'],
-            ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
-             'discos-duros-externos.html', 'ExternalStorageDrive'],
-            ['pc-y-portatiles/partes-y-piezas/almacenamiento/ssd.html',
-             'SolidStateDrive'],
-            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/'
-            # 'memorias-flash.html', 'MemoryCard'],
-            # ['pc-y-portatiles/partes-y-piezas/almacenamiento/pendrive.html',
-            #  'UsbFlashDrive'],
-            # ['pc-y-portatiles/partes-y-piezas/gabinetes.html',
-            # 'ComputerCase'],
-            # ['pc-y-portatiles/partes-y-piezas/fuentes-de-poder.html',
-            #  'PowerSupply'],
-            ['pc-y-portatiles/partes-y-piezas/placa-madre.html',
-             'Motherboard'],
-            ['pc-y-portatiles/partes-y-piezas/memorias.html', 'Ram'],
-            ['pc-y-portatiles/partes-y-piezas/tarjetas-de-video.html',
-             'VideoCard'],
-            # ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
-            ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
-            ['impresion-e-imagen/multifuncionales.html', 'Printer'],
-            ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
-            ['monitores-y-proyeccion/monitores.html', 'Monitor'],
-            # ['pc-y-portatiles/mouse-teclados/mouse.html', 'Mouse'],
-            # ['pc-y-portatiles/mouse-teclados/teclados.html', 'Keyboard'],
-            ['pc-y-portatiles/mouse-teclados/combo-mouse-teclado.html',
-             'KeyboardMouseCombo'],
-            # ['audio/audifonos.html', 'Headphones'],
-            ['pc-y-portatiles/escritorio/todo-en-uno-aio.html', 'AllInOne'],
-            ['audio/parlantes.html', 'StereoSystem'],
-            ['redes-y-servidores/ups.html', 'Ups'],
+            ['17', 'Notebook'],
+            ['84', 'AllInOne'],
+            ['85', 'Tablet'],
+            ['101', 'StorageDrive'],
+            ['102', 'ExternalStorageDrive'],
+            ['103', 'SolidStateDrive'],
+            ['104', 'MemoryCard'],
+            ['105', 'UsbFlashDrive'],
+            ['94', 'Processor'],
+            ['95', 'ComputerCase'],
+            ['96', 'PowerSupply'],
+            ['97', 'Motherboard'],
+            ['98', 'Ram'],
+            ['99', 'VideoCard'],
+            ['113', 'Mouse'],
+            ['23', 'Printer'],
+            ['24', 'Printer'],
+            ['25', 'Printer'],
+            ['26', 'Printer'],
+            ['34', 'Headphones'],
+            ['35', 'StereoSystem'],
+            ['37', 'Ups'],
+            ['15', 'Monitor'],
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
-        session.headers['X-Requested-With'] = 'XMLHttpRequest'
 
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            category_url = url_base + 'index.php/' + url_extension
-            page = 1
 
-            local_product_urls = []
+            page = 1
 
             while True:
                 if page >= 10:
-                    raise Exception('Page overflow: ' + category_url)
+                    raise Exception('Page overflow: ' + url_extension)
 
-                url = category_url + '?p=' + str(page)
-                print(url)
-                json_data = json.loads(session.get(url, verify=False).text)
-                soup = BeautifulSoup(json_data['listing'], 'html.parser')
+                url = url_base.format(url_extension, page)
+                source = session.get(url, verify=False).text
+                soup = BeautifulSoup(source, 'html.parser')
 
-                done = False
+                products = soup.find('div', 'products row')
 
-                containers = soup.findAll('a', 'product-image')
+                if page == 1 and not products:
+                    raise Exception('Empty category: ' + url)
 
-                if not containers:
-                    raise Exception('Empty category: ' + category_url)
+                if not products:
+                    break
+
+                containers = soup.find('div', 'products row') \
+                    .findAll('a', 'product-thumbnail')
 
                 for product_link in containers:
                     product_url = product_link['href']
-                    if product_url in local_product_urls:
-                        done = True
-                        break
-                    local_product_urls.append(product_url)
                     product_urls.append(product_url)
-
-                if done:
-                    break
 
                 page += 1
 
@@ -125,36 +105,33 @@ class Cintegral(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
 
         page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
-        name = soup.find(
-            'h1', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('li', 'product').text.split(':')[1].strip()
-        part_number = re.search(
-            r"ccs_cc_args.push\(\['pn', '(.*)'\]\);", page_source).groups()[0]
-        if not part_number:
-            part_number = None
+        name = soup.find('h1', 'product-detail-title').text.strip()
+        sku = soup.find('input', {'name':'id_product'})['value']
+
+        part_number = None
+        part_number_container = soup.find('span', {'itemprop': 'sku'})
+        if part_number_container:
+            part_number = part_number_container.text.strip()
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
-        if soup.find('button', {'id': 'product-addtocart-button'}):
-            stock = -1
-        else:
-            stock = 0
+        stock_container = soup.find('div', 'product-quantities')
+        stock = 0
 
-        price_box = soup.find('div', 'price-box')
-        special_price_container = price_box.find('p', 'special-price')
-        if special_price_container:
-            price = Decimal(remove_words(special_price_container.find(
-                'span', 'price').text.strip()))
-        else:
-            price = Decimal(remove_words(price_box.find(
-                'span', 'regular-price').find('span', 'price').text.strip()))
+        if stock_container:
+            stock = int(stock_container.find('span')['data-stock'])
 
-        picture_urls = [link['href'] for link in soup.findAll('a', 'lightbox')]
+        price = Decimal(soup.find('div', 'current-price')
+                        .find('span', {'itemprop':'price'})['content'])
+
+        pictures = soup.find('ul', 'product-images').findAll('img')
+        picture_urls = [p['data-image-large-src'] for p in pictures]
 
         p = Product(
             name,
