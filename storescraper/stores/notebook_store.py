@@ -37,7 +37,6 @@ class NotebookStore(Store):
             'Motherboard',
             'ComputerCase',
             'Monitor',
-            'Projector',
             'Television',
             'StereoSystem',
             'Printer',
@@ -79,8 +78,6 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/'
              'cajas-gabinetes.html', 'ComputerCase'],
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            ['audio-y-video/monitores-proyectores/'
-             'proyectores-1.html', 'Projector'],
             ['audio-y-video/monitores-proyectores/'
              'televisores.html', 'Television'],
             ['audio-y-video/audio-y-video/'
