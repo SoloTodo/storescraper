@@ -118,6 +118,14 @@ class MercadoTech(Store):
 
         name = json_data['name']
         sku = json_data['sku']
+
+        potential_pns = soup.findAll('li', 'extended d-none')
+        part_number = None
+        for ppn in potential_pns:
+            contents = [a for a in ppn.contents if a not in ['\n']]
+            if contents[0].text == 'part_number:':
+                part_number = contents[1].text
+
         stock = 0
 
         if 'bad box' in name.lower():
@@ -157,6 +165,7 @@ class MercadoTech(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls,
             description=description,
             condition=condition

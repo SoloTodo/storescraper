@@ -40,7 +40,7 @@ class ElectronicaPanamericana(Store):
             ('hogar/lavanderia/', 'WashingMachine'),
             ('tecnologia/proyeccion/', 'Projector'),
             ('tecnologia/monitores/', 'Monitor'),
-            ('celulares/', 'Cell'),
+            ('celulares/samsung-celulares/', 'Cell'),
         ]
 
         session = session_with_proxy(extra_args)

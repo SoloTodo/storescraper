@@ -365,9 +365,10 @@ class Paris(Store):
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'price-internet').text.split('$')[1].split('\n')[0]))
         else:
-            price_text = soup.find('div', 'default-price').text.strip()
+            price_text = soup.find('div', 'default-price').contents[0]
             if price_text == 'N/A':
                 return []
+
             normal_price = Decimal(remove_words(price_text))
             offer_price = normal_price
 
