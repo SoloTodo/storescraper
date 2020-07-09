@@ -122,6 +122,13 @@ class PcNitro(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', {'itemprop': 'name'}).text
+
+        model_container = soup.find('strong', text='MODELO:\xa0')
+        if model_container:
+            model = model_container.parent.parent.findAll(
+                'strong')[1].text.strip()
+            name = '{} ({})'.format(name, model)
+
         sku = soup.find('input', {'name': 'id_product'})['value']
         key = None
 
@@ -162,6 +169,12 @@ class PcNitro(Store):
         description = html_to_markdown(str(soup.find(
             'div', 'product-description')))
 
+        pn_container = soup.find('span', {'itemprop': 'sku'})
+        if pn_container:
+            part_number = pn_container.text.strip()[:50]
+        else:
+            part_number = None
+
         p = Product(
             name,
             cls.__name__,
@@ -176,6 +189,7 @@ class PcNitro(Store):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
+            part_number=part_number
         )
 
         return [p]
