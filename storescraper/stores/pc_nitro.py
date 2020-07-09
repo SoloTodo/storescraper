@@ -125,9 +125,9 @@ class PcNitro(Store):
 
         model_container = soup.find('strong', text='MODELO:\xa0')
         if model_container:
-            model = model_container.parent.parent.findAll(
-                'strong')[1].text.strip()
-            name = '{} ({})'.format(name, model)
+            model = model_container.parent.parent.findAll('strong')
+            if len(model) > 1:
+                name = '{} ({})'.format(name[1].text.strip(), model)
 
         sku = soup.find('input', {'name': 'id_product'})['value']
         key = None
