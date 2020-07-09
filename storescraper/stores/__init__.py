@@ -158,6 +158,7 @@ from .pc_ofertas import PcOfertas
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
 from .pcmig import Pcmig
+from .pc_nitro import PcNitro
 from .pcx import Pcx
 from .peta import Peta
 from .pichau import Pichau
