@@ -333,20 +333,22 @@ class Paris(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        retries = 3
-        response = []
+        return cls._products_for_url(url, category, extra_args)
 
-        for i in range(retries):
-            try:
-                response = [cls._get_product(url, category, extra_args)]
-            except InvalidOperation:
-                continue
-
-        return response
+    @classmethod
+    def _products_for_url(cls, url, category, extra_args, retries=5):
+        try:
+            return cls._get_product(url, category, extra_args)
+        except Exception:
+            if retries:
+                return cls._products_for_url(url, category, extra_args,
+                                             retries=retries-1)
+            else:
+                raise
 
     @classmethod
     def _get_product(cls, url, category, extra_args):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -432,6 +434,12 @@ class Paris(Store):
         else:
             review_avg_score = None
 
+        seller_container = soup.find('b', 'sellerMkp')
+        if seller_container:
+            seller = seller_container.text.strip()
+        else:
+            seller = None
+
         p = Product(
             name,
             cls.__name__,
@@ -449,10 +457,11 @@ class Paris(Store):
             video_urls=video_urls,
             flixmedia_id=flixmedia_id,
             review_count=review_count,
-            review_avg_score=review_avg_score
+            review_avg_score=review_avg_score,
+            seller=seller
         )
 
-        return p
+        return [p]
 
     @classmethod
     def banners(cls, extra_args=None):
