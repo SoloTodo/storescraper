@@ -197,7 +197,7 @@ class RipleyChileBaseCf(Store):
                         int(product_json['position']) - 1]
                     product_data = product_json['item']
 
-                    brand = product_data['brand'].upper()
+                    brand = product_data.get('brand', '').upper()
 
                     if brand in ['LG', 'SAMSUNG']:
                         from storescraper.stores import Ripley
