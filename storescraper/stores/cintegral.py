@@ -111,7 +111,7 @@ class Cintegral(Store):
         page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
         name = soup.find('h1', 'product-detail-title').text.strip()
-        sku = soup.find('input', {'name':'id_product'})['value']
+        sku = soup.find('input', {'name': 'id_product'})['value']
 
         part_number = None
         part_number_container = soup.find('span', {'itemprop': 'sku'})
@@ -121,11 +121,10 @@ class Cintegral(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
-        stock_container = soup.find('div', 'product-quantities')
-        stock = 0
-
-        if stock_container:
-            stock = int(stock_container.find('span')['data-stock'])
+        if soup.find('i', 'product-available'):
+            stock = -1
+        else:
+            stock = 0
 
         price = Decimal(soup.find('div', 'current-price')
                         .find('span', {'itemprop':'price'})['content'])
