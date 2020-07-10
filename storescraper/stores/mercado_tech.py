@@ -28,7 +28,7 @@ class MercadoTech(Store):
             'Monitor',
             'Mouse',
             'Cell',
-            'Projector',
+            # 'Projector',
             'AllInOne',
             'Keyboard',
             'Headphones',
