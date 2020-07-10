@@ -1,7 +1,7 @@
 import json
 import re
 from collections import defaultdict
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from bs4 import BeautifulSoup
 
@@ -334,6 +334,19 @@ class Paris(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        retries = 3
+        response = []
+
+        for i in range(retries):
+            try:
+                response = [cls._get_product(url, category, extra_args)]
+            except InvalidOperation:
+                continue
+
+        return response
+
+    @classmethod
+    def _get_product(cls, url, category, extra_args):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -361,7 +374,8 @@ class Paris(Store):
             stock = -1
 
         if offer_price_container:
-            offer_price = Decimal(remove_words(offer_price_container.contents[0]))
+            offer_price = Decimal(
+                remove_words(offer_price_container.contents[0]))
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'price-internet').text.split('$')[1].split('\n')[0]))
         else:
@@ -438,7 +452,7 @@ class Paris(Store):
             review_avg_score=review_avg_score
         )
 
-        return [p]
+        return p
 
     @classmethod
     def banners(cls, extra_args=None):
