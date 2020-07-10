@@ -196,10 +196,20 @@ class RipleyChileBaseCf(Store):
                     product_element = products_elements[
                         int(product_json['position']) - 1]
                     product_data = product_json['item']
-                    product = cls._assemble_product(
-                        product_data, product_element, category)
 
-                    if product and cls.filter_url(product.url):
+                    brand = product_data['brand'].upper()
+
+                    if brand in ['LG', 'SAMSUNG']:
+                        from storescraper.stores import Ripley
+                        url = cls._get_entry_url(product_element)
+                        print(url)
+                        product = Ripley.products_for_url(
+                            url, category, extra_args)[0]
+                    else:
+                        product = cls._assemble_product(
+                            product_data, product_element, category)
+
+                    if product:
                         if product.sku in product_dict:
                             product_to_update = product_dict[product.sku]
                         else:
@@ -217,17 +227,26 @@ class RipleyChileBaseCf(Store):
         return products_list
 
     @classmethod
+    def _get_entry_url(cls, element):
+        # Element Data (Varies by page)
+        if element.name == 'div':
+            url_extension = element.find('a')['href']
+        else:
+            url_extension = element['href']
+
+        url = 'https://simple.ripley.cl{}'.format(url_extension)
+        return url
+
+    @classmethod
     def _assemble_product(cls, data, element, category):
         # Element Data (Varies by page)
         if element.name == 'div':
             element_name = element.find(
                 'a', 'ProductItem__Name').text.replace('  ', ' ').strip()
-            url_extension = element.find('a')['href']
         else:
             element_name = element.find(
                 'div', 'catalog-product-details__name')\
                 .text.replace('  ', ' ').strip()
-            url_extension = element['href']
 
         # Common
 
@@ -236,14 +255,10 @@ class RipleyChileBaseCf(Store):
         data_name = " ".join([a for a in data['name'].split(' ') if a != ''])\
             .strip()
 
-        try:
-            assert(element_name == data_name)
-        except:
-            import ipdb
-            ipdb.set_trace()
+        assert(element_name == data_name)
 
         sku = data['sku']
-        url = 'https://simple.ripley.cl{}'.format(url_extension)
+        url = cls._get_entry_url(element)
         picture_urls = ['https:{}'.format(data['image'])]
 
         if data['offers']['price'] == 'undefined':
@@ -267,6 +282,11 @@ class RipleyChileBaseCf(Store):
         if data['offers']['availability'] == 'http://schema.org/InStock':
             stock = -1
 
+        if '-mpm' in url:
+            seller = 'External seller'
+        else:
+            seller = None
+
         p = Product(
             data_name,
             cls.__name__,
@@ -279,11 +299,8 @@ class RipleyChileBaseCf(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            seller=seller
         )
 
         return p
-
-    @classmethod
-    def filter_url(cls, url):
-        raise Exception('Subclasses of RipleyChileBase should implement this')
