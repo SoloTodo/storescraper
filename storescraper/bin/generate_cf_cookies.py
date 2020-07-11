@@ -1,6 +1,8 @@
 import argparse
 import json
 import logging
+import time
+
 import sys
 sys.path.append('../..')
 
@@ -29,16 +31,22 @@ def main():
 
         cfduid_cookie = None
         cf_clearance_cookie = None
+        cf_clearance_expiration = None
 
         for cookie in driver.get_cookies():
             if cookie['name'] == '__cfduid':
                 cfduid_cookie = cookie['value']
+                print('__cfduid', cookie)
             if cookie['name'] == 'cf_clearance':
                 cf_clearance_cookie = cookie['value']
+                cf_clearance_expiration = cookie['expiry']
 
         assert cfduid_cookie and cf_clearance_cookie
 
         print('Use the following parameters as "extra args" for scraping')
+        print('Cookie expires on:',
+              time.strftime('%Y-%m-%d %H:%M:%S',
+                            time.localtime(cf_clearance_expiration)))
 
         d = {
             "proxy": proxy,

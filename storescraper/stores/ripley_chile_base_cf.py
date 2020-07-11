@@ -9,7 +9,7 @@ from storescraper.utils import get_cf_session
 
 
 class RipleyChileBaseCf(Store):
-    preferred_products_for_url_concurrency = 10
+    preferred_products_for_url_concurrency = 3
 
     @classmethod
     def categories(cls):
@@ -203,8 +203,12 @@ class RipleyChileBaseCf(Store):
                         from storescraper.stores import Ripley
                         url = cls._get_entry_url(product_element)
                         print(url)
-                        product = Ripley.products_for_url(
-                            url, category, extra_args)[0]
+                        products = Ripley.products_for_url(
+                            url, category, extra_args)
+                        if products:
+                            product = products[0]
+                        else:
+                            product = None
                     else:
                         product = cls._assemble_product(
                             product_data, product_element, category)
