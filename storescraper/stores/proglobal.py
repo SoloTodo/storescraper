@@ -40,7 +40,7 @@ class Proglobal(Store):
             ['computacion-y-gamer/almacenamiento/pendrives', 'UsbFlashDrive'],
             # ['computacion-y-gamer/almacenamiento/discos-duros',
             #  'ExternalStorageDrive'],
-            ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
+            # ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
             ['computacion-y-gamer/gamers/mouse', 'Mouse'],
             ['computacion-y-gamer/gamers/teclados', 'Keyboard'],
             # ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
