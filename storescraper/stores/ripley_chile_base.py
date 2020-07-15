@@ -261,7 +261,7 @@ class RipleyChileBase(Store):
         specs_json = product_json['product']['product']
 
         sku = specs_json['partNumber']
-        name = specs_json['name']
+        name = specs_json['name'].encode('ascii', 'ignore').decode('ascii')
         short_description = specs_json.get('shortDescription', '')
 
         # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
