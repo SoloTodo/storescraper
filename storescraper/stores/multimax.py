@@ -41,7 +41,7 @@ class Multimax(Store):
             ('secadoras', 'WashingMachine'),
             # ('centro-de-lavado', 'WashingMachine'),
             ('refrigeradoras', 'Refrigerator'),
-            ('congeladores', 'Refrigerator'),
+            # ('congeladores', 'Refrigerator'),
             # ('microondas', 'Oven'),
             # ('hornos', 'Oven'),
             ('monitores', 'Monitor'),

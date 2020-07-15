@@ -35,13 +35,17 @@ class MercadolibreChile(Store):
                 category_url = 'https://listado.mercadolibre.cl/{}/' \
                                '{}'.format(category_path, store_extension)
                 print(category_url)
-                soup = BeautifulSoup(session.get(category_url).text,
+                response = session.get(category_url)
+                soup = BeautifulSoup(response.text,
                                      'html.parser')
 
                 if soup.find('div', 'zrp-offical-message'):
                     raise Exception('Invalid category: ' + category_url)
 
                 containers = soup.findAll('li', 'results-item')
+
+                if not containers:
+                    containers = soup.findAll('li', 'ui-search-layout__item')
 
                 if not containers:
                     raise Exception('Empty category: ' + category_url)
@@ -146,7 +150,7 @@ class MercadolibreChile(Store):
                 ('almacenamiento', 'SolidStateDrive'),
             ],
             '_Tienda_corsair': [
-                ('notebooks-accesorios', 'CpuCooler'),
+                # ('notebooks-accesorios', 'CpuCooler'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 # ('componentes-pc', 'PowerSupply'),

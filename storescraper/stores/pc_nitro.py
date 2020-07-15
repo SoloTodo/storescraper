@@ -48,8 +48,8 @@ class PcNitro(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['27-todo-en-uno', 'AllInOne'],
-            ['29-portátiles', 'Notebook'],
-            ['216-notebook-gaming', 'Notebook'],
+            # ['29-portátiles', 'Notebook'],
+            # ['216-notebook-gaming', 'Notebook'],
             ['31-tablet', 'Tablet'],
             ['40-cajas-gabinetes', 'ComputerCase'],
             ['41-ventiladores-y-sist-de-enfriamiento', 'CpuCooler'],

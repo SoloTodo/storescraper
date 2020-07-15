@@ -58,16 +58,17 @@ class NotebookStore(Store):
             ['equipos/memorias/tarjetas-de-memoria-flash.html', 'MemoryCard'],
             ['equipos/memorias/modulos-ram-genericos.html', 'Ram'],
             ['equipos/memorias/memoria-ram.html', 'Ram'],
-            ['equipos/alm/discos-duros-externos.html', 'ExternalStorageDrive'],
+            # ['equipos/alm/discos-duros-externos.html',
+            #  'ExternalStorageDrive'],
             ['equipos/alm/discos-duros-internos.html', 'StorageDrive'],
             ['equipos/alm/discos-de-estado-solido.html', 'SolidStateDrive'],
             ['equipos/perifericos/ratones.html', 'Mouse'],
             ['equipos/perifericos/'
              'teclados-y-teclados-de-numeros.html', 'Keyboard'],
-            ['equipos/perifericos/'
-             'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
-            ['equipos/perifericos/'
-             'auriculares-y-manos-libres.html', 'Headphones'],
+            # ['equipos/perifericos/'
+            #  'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
+            # ['equipos/perifericos/'
+            #  'auriculares-y-manos-libres.html', 'Headphones'],
             ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
             ['equipos/componentes-informaticos/'
              'procesadores.html', 'Processor'],
@@ -78,13 +79,12 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/'
              'cajas-gabinetes.html', 'ComputerCase'],
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            ['audio-y-video/monitores-proyectores/'
-             'televisores.html', 'Television'],
-            ['audio-y-video/audio-y-video/'
-             'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
+            # ['audio-y-video/monitores-proyectores/'
+            #  'televisores.html', 'Television'],
+            # ['audio-y-video/audio-y-video/'
+            #  'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
             ['impresion/impresoras-y-escaneres.html', 'Printer'],
-            ['gaming/videojuegos/consolas.html', 'VideoGameConsole']
-
+            # ['gaming/videojuegos/consolas.html', 'VideoGameConsole']
         ]
 
         session = session_with_proxy(extra_args)
@@ -103,6 +103,7 @@ class NotebookStore(Store):
 
                 url = 'https://notebookstore.cl/{}?p={}'.format(
                     category_path, page)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 products = soup.findAll('li', 'product')

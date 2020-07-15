@@ -43,6 +43,7 @@ from .demasled import Demasled
 from .digiplot import Digiplot
 from .digitalife import Digitalife
 from .dimercom import Dimercom
+from .diunsa import Diunsa
 from .do_it_center import DoItCenter
 from .e_vision import EVision
 from .easy import Easy
