@@ -91,10 +91,8 @@ class RipleyChileBaseCf(Store):
              'Electro > Refrigeración > Door in Door', 1],
             ['electro/cocina/cocinas', ['Stove'],
              'Electro > Cocina > Cocinas', 1],
-            ['electro/cocina/microondas', ['Oven'],
-             'Electro > Cocina > Microondas', 1],
-            ['electro/cocina/hornos-y-microondas', ['Oven'],
-             'Electro > Cocina > Hornos y Microondas', 1],
+            ['electro/electrodomesticos/hornos-y-microondas', ['Oven'],
+             'Electro > Electrodomésticos > Hornos y Microondas', 1],
             ['electro/cocina/lavavajillas', ['DishWasher'],
              'Electro > Cocina > Lavavajillas', 1],
             ['electro/aseo/aspiradoras-y-enceradoras', ['VacuumCleaner'],
@@ -199,7 +197,10 @@ class RipleyChileBaseCf(Store):
 
                     brand = product_data.get('brand', '').upper()
 
-                    if brand in ['LG', 'SAMSUNG']:
+                    # If the product is LG or Samsung and is sold directly by
+                    # Ripley (not marketplace) obtain the full data
+                    if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
+                            product_data['sku']:
                         from storescraper.stores import Ripley
                         url = cls._get_entry_url(product_element)
                         print(url)
@@ -261,6 +262,9 @@ class RipleyChileBaseCf(Store):
 
         assert(element_name == data_name)
 
+        # Remove weird characters, e.g.
+        # https://simple.ripley.cl/tv-portatil-7-negro-mpm00003032468
+        name = data_name.encode('ascii', 'ignore').decode('ascii')
         sku = data['sku']
         url = cls._get_entry_url(element)
         picture_urls = ['https:{}'.format(data['image'])]
@@ -292,7 +296,7 @@ class RipleyChileBaseCf(Store):
             seller = None
 
         p = Product(
-            data_name,
+            name,
             cls.__name__,
             category,
             url,
