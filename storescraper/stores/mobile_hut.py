@@ -26,7 +26,8 @@ class MobileHut(Store):
             'Wearable',
             'UsbFlashDrive',
             'MemoryCard',
-            'VideoGameConsole'
+            'VideoGameConsole',
+            'Monitor',
         ]
 
     @classmethod
@@ -42,7 +43,8 @@ class MobileHut(Store):
             ['133205065792', 'smartwatch', 'Wearable'],
             ['132830560320', 'pendrives', 'UsbFlashDrive'],
             ['132830593088', 'tarjetas-de-memoria', 'MemoryCard'],
-            ['129583054912', 'consolas', 'VideoGameConsole']
+            ['129583054912', 'consolas', 'VideoGameConsole'],
+            ['206952595607', 'monitores', 'Monitor'],
         ]
 
         session = session_with_proxy(extra_args)
