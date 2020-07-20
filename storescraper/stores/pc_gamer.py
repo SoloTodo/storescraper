@@ -47,7 +47,7 @@ class PcGamer(Store):
             ['81', 'ComputerCase'],  # Gabinetes s/fuente
             ['84', 'PowerSupply'],  # Fuentes de poder
             # ['17_69', 'CpuCooler'],  # Coolers
-            # ['91', 'CpuCooler'],  # Refrigeracion
+            ['108', 'CpuCooler'],  # Refrigeracion
             ['106', 'Mouse'],  # Mouse y teclados
             # ['92', 'Keyboard'],  # accesorios gamer
             ['105', 'Headphones'],  # Audio
@@ -72,8 +72,7 @@ class PcGamer(Store):
             soup = BeautifulSoup(session.get(url_webpage).text,
                                  'html.parser')
 
-            subcategory_containers = soup.find(
-                'div', {'id': 'content'}).findAll('li')
+            subcategory_containers = soup.findAll('li', {'data-depth': 1})
 
             for container in subcategory_containers:
                 link = container.find('a')
@@ -97,7 +96,8 @@ class PcGamer(Store):
                     url_webpage = '{}&page={}'.format(subcategory_url, page)
                     soup = BeautifulSoup(session.get(url_webpage).text,
                                          'html.parser')
-                    link_containers = soup.findAll('div', 'product-layout')
+
+                    link_containers = soup.findAll('article', 'item')
 
                     if not link_containers:
                         break
@@ -123,21 +123,14 @@ class PcGamer(Store):
         session.headers['User-Agent'] = 'curl/7.54.0'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        pricing_container = soup.find('div', {'id': 'product'}).parent
-        name = pricing_container.find('h1').text.strip()
+        name = soup.find('h5', 'ttvproduct-title').text.strip()
         sku = soup.find('input', {'name': 'product_id'})['value']
 
-        stock_container = pricing_container.find(
-            'ul', 'list-unstyled').findAll('li')[-1]
-        stock_container = re.search('Disponibilidad (\d+)',
-                                    stock_container.text)
+        stock = int(soup.find(
+            'span', 'ttvproduct-stock-status').text.strip())
 
-        if stock_container:
-            stock = int(stock_container.groups()[0])
-        else:
-            stock = 0
-
-        price_containers = pricing_container.findAll('h3')
+        price_containers = soup.find('ul', 'product-price-and-shipping')\
+            .findAll('h3')
         normal_price = Decimal(remove_words(price_containers[0].text))
 
         if len(price_containers) > 1:
@@ -148,9 +141,7 @@ class PcGamer(Store):
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 
-        picture_urls = [tag['href'].replace(' ', '%20')
-                        for tag in soup.findAll('a', 'thumbnail')
-                        if tag['href']]
+        picture_urls = [soup.find('img', {'id':'img_zoom'})['data-zoom-image']]
 
         p = Product(
             name,

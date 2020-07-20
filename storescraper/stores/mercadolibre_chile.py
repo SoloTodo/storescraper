@@ -180,7 +180,7 @@ class MercadolibreChile(Store):
             ],
             '_Tienda_hyperx': [
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 # ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_lenovo': [

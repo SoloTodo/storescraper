@@ -29,7 +29,7 @@ class Max(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('video/televisores', 'Television'),
-            ('video/cine-en-casa', 'StereoSystem'),
+            # ('video/cine-en-casa', 'StereoSystem'),
             # ('video/reproductores-dvd', 'OpticalDiskPlayer'),
             ('celulares/prepago', 'Cell'),
             ('celulares/prepago/tigo', 'Cell'),
