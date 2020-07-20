@@ -109,6 +109,8 @@ class Diunsa(Store):
         description = html_to_markdown(
             str(soup.find('div', 'productDescription')))
 
+        part_number = soup.find('div', 'productReference').text.strip()
+
         p = Product(
             name,
             cls.__name__,
@@ -123,6 +125,7 @@ class Diunsa(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
+            part_number=part_number
         )
 
         return [p]
