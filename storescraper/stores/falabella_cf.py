@@ -262,7 +262,13 @@ class FalabellaCf(Store):
                             product_dict[product.sku] = product
                             product_to_update = product
 
-                        product_to_update.positions[section_name] = position
+                        # For some unkown reason the same SKU may appear
+                        # more than once on the same section, so set the
+                        # position of the sku only if it hasn't been set
+                        # beforce (i.e. keep the lowest position)
+                        if section_name not in product_to_update.positions:
+                            product_to_update.positions[section_name] = \
+                                position
 
                     position += 1
                 page += 1
