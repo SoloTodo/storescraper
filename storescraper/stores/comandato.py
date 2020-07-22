@@ -20,7 +20,6 @@ class Comandato(Store):
             'AirConditioner',
             'Television',
             'Cell',
-
             'Tablet',
             'StereoSystem',
             'CellAccesory',
