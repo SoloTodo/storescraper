@@ -116,11 +116,16 @@ class NiceOne(Store):
         else:
             raise Exception('Invalid stock status')
 
-        normal_price = soup.find('span', 'regular-price').text
-        normal_price = Decimal(normal_price.replace(
-            '\xa0$', '').replace('.', ''))
+        price_containers = soup.find('div', 'product-prices')
         offer_price = Decimal(soup.find(
             'span', {'itemprop': 'price'})['content'])
+        normal_price = price_containers.find('span', 'regular-price')
+        if normal_price:
+            normal_price = Decimal(normal_price.text.replace(
+                '\xa0$', '').replace('.', ''))
+        else:
+            normal_price = offer_price
+
         description = html_to_markdown(str(soup.find('div', 'product_desc')))
         pictures_containers = soup.findAll('img', 'js-thumb')
 

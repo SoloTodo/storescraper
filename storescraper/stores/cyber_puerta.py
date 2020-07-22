@@ -52,8 +52,8 @@ class CyberPuerta(Store):
             ['Computo-Hardware/Componentes/Tarjetas-Madre', 'Motherboard'],
             ['Computo-Hardware/Componentes/Procesadores/Procesadores-para-PC',
              'Processor'],
-            ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
-             'Disipadores-para-CPU', 'CpuCooler'],
+            # ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
+            #  'Disipadores-para-CPU', 'CpuCooler'],
             # ['Computo-Hardware/Componentes/Enfriamiento-Ventilacion/'
             #  'Refrigeracion-Liquida', 'CpuCooler'],
             ['Computo-Hardware/Memorias-RAM-Flash/Memorias-RAM-para-PC',
