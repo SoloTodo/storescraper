@@ -73,7 +73,7 @@ class LgCac(LgV5):
             ('CT30014140', 'AirConditioner', True),
             ('CT30014140', 'AirConditioner', False),
             # Deshumidificador
-            ('CT32021782', 'AirConditioner', True),
+            # ('CT32021782', 'AirConditioner', True),
             # Monitores
             ('CT20188028', 'Monitor', True),
             ('CT20188028', 'Monitor', False),

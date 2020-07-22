@@ -1,11 +1,16 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from selenium import webdriver
+
+import requests
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, PhantomJS
+from storescraper.utils import session_with_proxy, html_to_markdown, HeadlessChrome, PhantomJS
 
+# Disable some SSL verifications because Intcomex uses a vulnerable SSL
+# implementation
+requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 
 class Intcomex(Store):
     SESSION_COOKIES = None
@@ -14,36 +19,15 @@ class Intcomex(Store):
     def categories(cls):
         return [
             'Notebook',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'StorageDrive',
-            'SolidStateDrive',
-            'Printer',
-            'VideoCard',
-            'Motherboard',
-            'Processor'
+            'AllInOne'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('cpt.notebook', 'Notebook'),  # Portatiles
-            # ('cpt.ultrabook', 'Notebook'),  # Ultrabooks
-            # ('cpt.twoinone', 'Notebook'),  # 2 en 1
-            ('sto.exthd', 'ExternalStorageDrive'),  # Discos externos
-            ('mem.usbflash', 'UsbFlashDrive'),  # Pendrives
-            ('mem.flash', 'MemoryCard'),  # Tarjetas de memoria
-            ('sto.ssd', 'SolidStateDrive'),  # SSD
-            ('sto.inthd', 'StorageDrive'),  # Discos duros internos
-            # ('prt.photo', 'Printer'),  # Impresoras Fotograficas
-            ('prt.inkjet', 'Printer'),  # Impresoras Inkjet
-            ('prt.laser', 'Printer'),  # Impresoras Laser
-            ('prt.mfp', 'Printer'),  # Impresoras Multifuncionales
-            # ('prt.plotter', 'Printer'),  # Impresoras Plotter
-            ('cco.graphic', 'VideoCard'),  # Tarjetas de video
-            ('cco.mobo', 'Motherboard'),  # Placas madre
-            ('cco.cpu', 'Processor'),  # Procesadores
+            ('cpt.ultrabook', 'Notebook'),  # Ultrabooks
+            ('cpt.allone', 'AllInOne'),  # all-en-uno
         ]
 
         product_urls = []
@@ -136,7 +120,7 @@ class Intcomex(Store):
     @classmethod
     def _retrieve_page(cls, session, url, extra_args, refresh=False):
         cookies = cls._session_cookies(extra_args, refresh)
-        response = session.get(url, cookies=cookies)
+        response = session.get(url, cookies=cookies, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         if not soup.find('span', {'id': 'lblTicker'}):
@@ -151,9 +135,8 @@ class Intcomex(Store):
     @classmethod
     def _session_cookies(cls, extra_args, refresh=True):
         if not cls.SESSION_COOKIES or refresh:
+            # We use Phantom because of a weird SSl error on Chrome
             with PhantomJS() as driver:
-                # driver = webdriver.Chrome()
-
                 driver.get('https://store.intcomex.com/es-XCL/Account/Login')
 
                 driver.find_element_by_id('User').send_keys(

@@ -132,6 +132,10 @@ class LgV5(Store):
             raise Exception('At least one of the section candidates should '
                             'have matched')
 
+        assert len(section_data['products']) == 1
+
+        sku = section_data['products'][0]['sales_model_code']
+
         return Product(
             name[:250],
             cls.__name__,
@@ -143,7 +147,7 @@ class LgV5(Store):
             Decimal(0),
             Decimal(0),
             'USD',
-            sku=model_name,
+            sku=sku,
             picture_urls=picture_urls,
             positions=positions
         )
