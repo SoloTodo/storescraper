@@ -1,11 +1,12 @@
 import time
 
 from decimal import Decimal
+import urllib
 from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import check_ean13
+from storescraper.utils import check_ean13, HeadlessChrome
 
 
 class IngramMicro(Store):
@@ -16,30 +17,16 @@ class IngramMicro(Store):
     def categories(cls):
         return [
             'Notebook',
-            'StorageDrive',
-            'SolidStateDrive',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Printer',
-            'VideoCard',
-            'Motherboard',
-            'Processor'
+            'AllInOne',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('4294948168+4293946954', 'Notebook'),
-            ('4294966665+4294124479', 'StorageDrive'),
-            ('4294966665+4294966664', 'StorageDrive'),
-            ('4294966665+4294966254+4294966184', 'UsbFlashDrive'),
-            ('4294966665+4294966254+4294966253', 'MemoryCard'),
-            ('4293946979+4293946978', 'Printer'),
-            ('4293946979+4293944935', 'Printer'),
-            ('4294966677+4293939789', 'VideoCard'),
-            ('4294966677+4294965496', 'Motherboard'),
-            ('4294966677+4294965687', 'Processor'),
+            ('Computadores Servidores y Notebooks,subCategory:Computadores '
+             'Portátiles/Tablets', 'Notebook'),
+            ('Computadores Servidores y Notebooks,subCategory:Computadores '
+             'de Escritorio', 'AllInOne'),
         ]
 
         discovered_urls = []
@@ -49,8 +36,8 @@ class IngramMicro(Store):
                 continue
 
             url = 'https://cl.ingrammicro.com/_layouts/CommerceServer/IM/' \
-                  'search2.aspx#PNavDS=N:{0}+202'.format(category_path)
-
+                  'search2.aspx#category%3A{}'.format(
+                urllib.parse.quote(category_path))
             discovered_urls.append(url)
 
         return discovered_urls
@@ -165,7 +152,6 @@ class IngramMicro(Store):
         time.sleep(1)
         # Browser initialization
         driver = webdriver.PhantomJS()
-        # driver = webdriver.Chrome()
 
         driver.get('https://cl.ingrammicro.com/_layouts/'
                    'CommerceServer/IM/Login.aspx')
