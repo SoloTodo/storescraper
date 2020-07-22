@@ -68,7 +68,7 @@ class LgV5(Store):
         sibling_ids = [model_id]
 
         for sibling_group in sibling_groups:
-            if sibling_group['siblingType'] in ['COLOR', 'SIZE']:
+            if sibling_group['siblingType'] in ['COLOR', 'SIZE', 'CAPACITY']:
                 for sibling in sibling_group['siblingModels']:
                     if sibling['modelId'] not in sibling_ids:
                         sibling_ids.append(sibling['modelId'])
