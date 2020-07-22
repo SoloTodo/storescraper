@@ -32,16 +32,16 @@ class Easy(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['frio-directo', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > Frío Directo', 1],
-            ['no-frost', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > No Frost', 1],
-            ['freezer', ['Refrigerator'],
+            # ['frio-directo', ['Refrigerator'],
+            #  'Inicio > Electrohogar > Refrigeración > Frío Directo', 1],
+            # ['no-frost', ['Refrigerator'],
+            #  'Inicio > Electrohogar > Refrigeración > No Frost', 1],
+            ['refrigeracion-freezer', ['Refrigerator'],
              'Inicio > Electrohogar > Refrigeración > Freezer', 1],
-            ['frigobar', ['Refrigerator'],
+            ['refrigeracion-frigobar', ['Refrigerator'],
              'Inicio > Electrohogar > Refrigeración > Frigobar', 1],
-            ['side-by-side', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > Side by Side', 1],
+            ['refrigeracion-refrigeradores', ['Refrigerator'],
+             'Inicio > Electrohogar > Refrigeración > Refrigeradores', 1],
 
             ['hornos-electricos', ['Oven'],
              'Inicio > Electrohogar > Cocina > Hornos Eléctricos', 1],
@@ -77,15 +77,15 @@ class Easy(Store):
             ['termos', ['WaterHeater'],
              'Inicio > Electrohogar > Calefones y Termos > Termos', 1],
 
-            ['estufas-electrica', ['SpaceHeater'],
+            ['estufas-electricas-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas Eléctricas', 1],
-            ['estufas-a-gas', ['SpaceHeater'],
+            ['estufas-a-gas-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas a Gas', 1],
-            ['estufas-a-parafina', ['SpaceHeater'],
+            ['estufas-a-parafina-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas a Parafina', 1],
-            ['calefactores-a-leña', ['SpaceHeater'],
-             'Inicio > Electrohogar > Calefacción > Estufas a Leña', 1],
-            ['calefactores-a-pellet', ['SpaceHeater'],
+            # ['calefactores-a-leña', ['SpaceHeater'],
+            #  'Inicio > Electrohogar > Calefacción > Estufas a Leña', 1],
+            ['estufas-a-pellet-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
             # ['estufas-infrarrojas', 'SpaceHeater'],
             # ['chimeneas-electricas', 'SpaceHeater'],
@@ -103,10 +103,10 @@ class Easy(Store):
             #  'Inicio > Electrohogar > Especial Ventilación > '
             #  'Aire Acondicionado Split', 1],
 
-            ['parlantes', ['StereoSystem'],
-             'Inicio > Electrohogar > Tecnología > Parlantes', 1],
-            ['audifonos', ['Headphones'],
-             'Inicio > Electrohogar > Tecnología > Audífonos', 1]
+            # ['parlantes', ['StereoSystem'],
+            #  'Inicio > Electrohogar > Tecnología > Parlantes', 1],
+            # ['audifonos', ['Headphones'],
+            #  'Inicio > Electrohogar > Tecnología > Audífonos', 1]
         ]
 
         base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
