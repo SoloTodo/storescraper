@@ -394,7 +394,8 @@ class Paris(Store):
             picture_url = tag['href'].split('?')[0]
             if '.webm' in picture_url:
                 continue
-            picture_urls.append(picture_url.replace(' ', '%20'))
+            picture_urls.append(
+                picture_url.replace(' ', '%20').replace('href=', ''))
 
         video_urls = []
         for iframe in soup.findAll('iframe'):
