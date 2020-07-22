@@ -68,7 +68,7 @@ class LgV5(Store):
         sibling_ids = [model_id]
 
         for sibling_group in sibling_groups:
-            if sibling_group['siblingType'] in ['COLOR', 'SIZE']:
+            if sibling_group['siblingType'] in ['COLOR', 'SIZE', 'CAPACITY']:
                 for sibling in sibling_group['siblingModels']:
                     if sibling['modelId'] not in sibling_ids:
                         sibling_ids.append(sibling['modelId'])
@@ -78,7 +78,9 @@ class LgV5(Store):
         products = []
 
         for sibling_id in sibling_ids:
-            products.append(cls._retrieve_single_product(sibling_id, category))
+            sibling = cls._retrieve_single_product(sibling_id, category)
+            if sibling:
+                products.append(sibling)
 
         return products
 
@@ -86,6 +88,10 @@ class LgV5(Store):
     def _retrieve_single_product(cls, model_id, category):
         print(model_id)
         model_data = cls._retrieve_api_model(model_id)
+
+        if model_data['modelStatusCode'] == 'SUSPENDED':
+            return None
+
         model_name = model_data['modelName']
         color = None
         short_description = model_data['userFriendlyName']
@@ -110,6 +116,7 @@ class LgV5(Store):
         url = cls.base_url + model_data['modelUrlPath']
 
         content = requests.get(url).text
+
         section_data = re.search(r'_dl =([{\S\s]+\});', content)
         section_data = demjson.decode(section_data.groups()[0])
 
