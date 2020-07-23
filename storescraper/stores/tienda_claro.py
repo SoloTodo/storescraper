@@ -58,9 +58,12 @@ class TiendaClaro(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        response = session.get(url, verify=False)
 
-        soup = BeautifulSoup(session.get(url, verify=False).text,
-                             'html.parser')
+        if response.status_code == 400:
+            return []
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         base_name = soup.find('h1', 'main_header').text.strip()
         page_id = soup.find('meta', {'name': 'pageId'})['content']

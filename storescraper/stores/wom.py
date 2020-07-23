@@ -170,7 +170,7 @@ class Wom(Store):
         picture_urls = []
         for tag in soup.findAll('span', 'vista-minuatura'):
             image_url = 'http://www.wom.cl' + tag.find('img')['data-img']
-            picture_urls.append(image_url)
+            picture_urls.append(image_url.replace(' ', '%20'))
 
         products = []
 
