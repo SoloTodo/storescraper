@@ -73,6 +73,9 @@ class HpOnline(Store):
         if soup.find('meta', {'itemprop':'availability'})['content'] == 'OutOfStock':
             stock = 0
 
+        if not soup.find('span', {'data-price-type': 'finalPrice'}).find('span', 'price'):
+            return []
+
         price = soup.find('span', {'data-price-type': 'finalPrice'})\
             .find('span', 'price').text.strip()
         price = Decimal(price.replace('$', '').replace('.', ''))

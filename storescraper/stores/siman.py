@@ -74,25 +74,17 @@ class Siman(Store):
         if product_data['brand'] != 'LG':
             return []
 
-        name = soup.find(
-            'span', 'vtex-store-components-3-x-productBrand').text.strip()
+        name = product_data['name']
         sku = soup.find(
-            'span', 'vtex-product-identifier-0-x-product-identifier__value')\
-            .text.strip()
+            'meta', {'property': 'product:retailer_item_id'})['content']
         stock = 0
         if soup.find('meta', {'property': 'product:availability'})['content'] \
                 == 'instock':
             stock = -1
 
-        price = Decimal(soup.find(
-            'span', 'vtex-store-components-3-x-sellingPrice')
-                        .text.strip().replace('$', '').replace('USD', ''))
-
-        picture_urls = [soup.find(
-            'img', 'vtex-store-components-3-x-productImageTag')['src']]
-
-        description = html_to_markdown(str(soup.find(
-                'div', 'vtex-store-components-3-x-productDescriptionText')))
+        price = Decimal(product_data['offers']['lowPrice'])
+        picture_urls = [product_data['image']]
+        description = product_data['description']
 
         p = Product(
             name,
