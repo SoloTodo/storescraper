@@ -11,31 +11,28 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class Diunsa(Store):
+class Marcimex(Store):
     @classmethod
     def categories(cls):
         return [
-            'Stove',
+            'AirConditioner',
+            'Oven',
             'WashingMachine',
             'Refrigerator',
-            'Oven',
-            'StereoSystem',
-            'Cell',
+            'SteroSystem',
             'Television',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['C:/1/73/84/86/', 'Stove'],
-            ['C:/1/73/84/88/', 'WashingMachine'],
-            ['C:/1/73/84/85/', 'Refrigerator'],
-            ['C:/1/73/74/75/', 'Oven'],
-            ['C:/1/58/64/68/', 'StereoSystem'],
-            ['C:/1/58/64/66/', 'StereoSystem'],
-            ['C:/1/58/64/65/', 'StereoSystem'],
-            ['C:/1/58/69/', 'Cell'],
-            ['C:/1/58/71/', 'Television'],
+            ['C:/2/14/', 'AirConditioner'],
+            ['C:/2/11/', 'Oven'],
+            ['C:/2/12/', 'WashingMachine'],
+            ['C:/2/13/', 'Refrigerator'],
+            ['C:/3/28/', 'StereoSystem'],
+            ['C:/3/29/', 'Television'],
+            ['C:/5/50/', 'Oven']
         ]
 
         session = session_with_proxy(extra_args)
@@ -51,15 +48,14 @@ class Diunsa(Store):
                 if page > 30:
                     raise Exception('Page overflow')
 
-                url = 'https://www.diunsa.hn/buscapagina?fq={}&PS=12&' \
-                      'sl=47de5394-cc68-404f-93ee-dca7e0b26b7f&cc=12&' \
-                      'O=OrderByReleaseDateDESC&sm=0&PageNumber={}' \
-                      '&fq=B:2000683'.format(
+                url = 'https://www.marcimex.com/buscapagina?fq={}&' \
+                      'PS=12&sl=2d6db67e-7134-4424-be62-6bbea419c476&cc=12&' \
+                      'sm=0&PageNumber={}&fq=B:2000002'.format(
                        urllib.parse.quote_plus(category_path), page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-                products = soup.findAll('div', 'contentShelve')
+                products = soup.findAll('div', 'productVitrine')
 
                 if not products:
                     if page == 1:
@@ -99,14 +95,13 @@ class Diunsa(Store):
         if product_json['available']:
             stock = -1
 
-        price = Decimal(product_json['skus'][0]['bestPrice']/100)
-        picture_urls = [
-            a['zoom'] for a in soup.findAll('a', {'id': 'botaoZoom'})]
+        tax = Decimal(1.12)
+        normal_price = Decimal(product_json['skus'][0]['listPrice']/100)*tax
+        offer_price = Decimal(product_json['skus'][0]['bestPrice']/100)*tax
+        picture_urls = [product_json['skus'][0]['image']]
 
         description = html_to_markdown(
-            str(soup.find('div', 'productDescription')))
-
-        part_number = soup.find('div', 'productReference').text.strip()
+            str(soup.find('div', {'id': 'caracteristicas'})))
 
         p = Product(
             name,
@@ -116,13 +111,12 @@ class Diunsa(Store):
             url,
             sku,
             stock,
-            price,
-            price,
-            'HNL',
+            normal_price,
+            offer_price,
+            'USD',
             sku=sku,
             picture_urls=picture_urls,
             description=description,
-            part_number=part_number
         )
 
         return [p]

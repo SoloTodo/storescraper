@@ -1,4 +1,3 @@
-import urllib
 import re
 import json
 
