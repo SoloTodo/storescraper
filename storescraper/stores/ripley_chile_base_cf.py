@@ -202,14 +202,17 @@ class RipleyChileBaseCf(Store):
                     if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
                             product_data['sku']:
                         from storescraper.stores import Ripley
-                        url = cls._get_entry_url(product_element)
-                        print(url)
-                        products = Ripley.products_for_url(
-                            url, category, extra_args)
-                        if products:
-                            product = products[0]
+
+                        product = product_dict.get(product_data['sku'], None)
+                        if not product:
+                            url = cls._get_entry_url(product_element)
+                            print(url)
+                            products = Ripley.products_for_url(
+                                url, category, extra_args)
+                            if products:
+                                product = products[0]
                         else:
-                            product = None
+                            print('Match!')
                     else:
                         product = cls._assemble_product(
                             product_data, product_element, category)
