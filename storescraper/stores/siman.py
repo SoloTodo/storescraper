@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class Siman(Store):
