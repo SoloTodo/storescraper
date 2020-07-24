@@ -137,8 +137,16 @@ class RipleyChileBaseCf(Store):
             ['electro/climatizacion/estufas-y-calefactores',
              ['SpaceHeater'],
              'Electro > Climatización > Estufas y calefactores', 1],
-            ['tecno/corner-smartwatch', ['Wearable'],
-             'Tecno > Telefonía > Smartwatches y Wearables', 1],
+            ['tecno/corner-smartwatch/garmin', ['Wearable'],
+             'Tecno > Telefonía > Smartwatches y Wearables > Garmin', 1],
+            ['tecno/corner-smartwatch/polar', ['Wearable'],
+             'Tecno > Telefonía > Smartwatches y Wearables > Polar', 1],
+            ['tecno/corner-smartwatch/apple-watch', ['Wearable'],
+             'Tecno > Telefonía > Smartwatches y Wearables > Apple Watch', 1],
+            ['tecno/corner-smartwatch/samsung', ['Wearable'],
+             'Tecno > Telefonía > Smartwatches y Wearables > Samsung', 1],
+            ['tecno/corner-smartwatch/huawei', ['Wearable'],
+             'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
             ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
         ]
@@ -211,8 +219,6 @@ class RipleyChileBaseCf(Store):
                                 url, category, extra_args)
                             if products:
                                 product = products[0]
-                        else:
-                            print('Match!')
                     else:
                         product = cls._assemble_product(
                             product_data, product_element, category)
