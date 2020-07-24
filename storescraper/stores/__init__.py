@@ -4,6 +4,7 @@ from .agencias_way_online import AgenciasWayOnline
 from .aire_center import AireCenter
 from .al_kosto import AlKosto
 from .alltec import AllTec
+from .almacenes_japon import AlmacenesJapon
 from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
