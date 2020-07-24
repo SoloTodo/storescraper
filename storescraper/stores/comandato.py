@@ -95,7 +95,7 @@ class Comandato(Store):
                                  data).groups()[0]
         pricing_data = json.loads(pricing_data)
 
-        tax = Decimal(1.12)
+        tax = Decimal('1.12')
         offer_price = Decimal(pricing_data['productPriceFrom'])*tax
         normal_price = Decimal(pricing_data['productListPriceFrom'])*tax
 

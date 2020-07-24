@@ -100,7 +100,7 @@ class CreditosEconomicos(Store):
         if product_json['available']:
             stock = -1
 
-        tax = Decimal(1.12)
+        tax = Decimal('1.12')
         price = Decimal(product_json['skus'][0]['bestPrice']/100)*tax
 
         picture_urls = [
