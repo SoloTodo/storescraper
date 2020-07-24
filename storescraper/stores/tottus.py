@@ -115,7 +115,8 @@ class Tottus(Store):
 
         if special_price:
             offer_price = Decimal(
-                special_price.text.strip().replace('$', '').replace('.', ''))
+                special_price.text.replace('$', '').replace('.', '')
+                .replace('UN', '').strip())
             normal_price = Decimal(data_price)
         else:
             offer_price = Decimal(data_price)
@@ -126,7 +127,10 @@ class Tottus(Store):
 
         description = html_to_markdown(str(soup.find('div', 'react-tabs')))
 
-        picture_urls = data['image']
+        picture_containers = [b.find('img') for b in soup.findAll(
+            'button', 'product-gallery-thumbnails-item')]
+        picture_urls = [i['src'] for i in picture_containers]
+        picture_urls = [p for p in picture_urls if 'placeholder' not in p]
 
         p = Product(
             name,
