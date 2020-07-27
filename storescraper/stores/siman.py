@@ -44,7 +44,8 @@ class Siman(Store):
                     cls.country_url, category_path, page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                products = soup.findAll('section', 'vtex-product-summary-2-x-container')
+                products = soup.findAll(
+                    'section', 'vtex-product-summary-2-x-container')
 
                 if not products:
                     if page == 1:

@@ -82,7 +82,8 @@ class MercadoTech(Store):
 
                 soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
 
-                product_content = soup.find('div', {'data-hook': 'homepage_products'})
+                product_content = soup.find(
+                    'div', {'data-hook': 'homepage_products'})
 
                 if page == 1 and not product_content:
                     raise Exception('No products for url {}'.format(page_url))
@@ -140,8 +141,9 @@ class MercadoTech(Store):
         picture_containers = soup.findAll('div', 'carousel-inner')
         picture_urls = []
         if picture_containers:
-            picture_containers = [c.find('img') for c in picture_containers[-1].findAll(
-                'div', 'product-carousel-item-squared')]
+            picture_containers = [
+                c.find('img') for c in picture_containers[-1].findAll(
+                    'div', 'product-carousel-item-squared')]
 
             for picture_container in picture_containers:
                 try:

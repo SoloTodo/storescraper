@@ -1,13 +1,9 @@
-import json
-import re
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Cintegral(Store):
@@ -127,7 +123,7 @@ class Cintegral(Store):
             stock = 0
 
         price = Decimal(soup.find('div', 'current-price')
-                        .find('span', {'itemprop':'price'})['content'])
+                        .find('span', {'itemprop': 'price'})['content'])
 
         pictures = soup.find('ul', 'product-images').findAll('img')
         picture_urls = [p['data-image-large-src'] for p in pictures]

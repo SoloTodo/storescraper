@@ -1,15 +1,10 @@
-import json
-import re
-
-from datetime import datetime
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class PcNitro(Store):
@@ -99,7 +94,7 @@ class PcNitro(Store):
                     .format(category_id, page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                products = soup.findAll('div','product-description')
+                products = soup.findAll('div', 'product-description')
 
                 if not products and page == 1:
                     raise Exception('Empty path ' + url)

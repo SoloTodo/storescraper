@@ -5,11 +5,9 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy,\
-    HeadlessChrome
+from storescraper.utils import session_with_proxy, HeadlessChrome
 from storescraper import banner_sections as bs
 
 
@@ -212,8 +210,9 @@ class Hites(Store):
             current_position = 1
 
             while True:
-                category_url = 'https://www.hites.com/{}/?sz=24&start={}&srule=best-matches' \
-                               ''.format(category_path, start)
+                category_url = 'https://www.hites.com/{}/?sz=24&start={}&' \
+                               'srule=best-matches'.format(
+                                category_path, start)
 
                 print(category_url)
 
@@ -316,8 +315,8 @@ class Hites(Store):
         offer_price_container = prices.find('span', 'hites-price')
         offer_price = None
         if offer_price_container:
-            offer_price = Decimal(offer_price_container.text.strip()\
-                .replace('$', '').replace('.', ''))
+            offer_price = Decimal(offer_price_container.text.strip()
+                                  .replace('$', '').replace('.', ''))
 
         normal_price_container = prices.find('span', 'sales')
         if not normal_price_container:
@@ -356,7 +355,7 @@ class Hites(Store):
             .findAll('div', 'carousel-item')
 
         picture_urls = [i.find('img')['src'] for i in images]
-        
+
         p = Product(
             name,
             cls.__name__,
