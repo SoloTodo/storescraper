@@ -204,6 +204,7 @@ from .sony_store import SonyStore
 from .sp_digital import SpDigital
 from .spider import Spider
 from .stylus import Stylus
+from .sukasa import Sukasa
 from .supermex_digital import SupermexDigital
 from .syd import Syd
 from .tecnofacil import Tecnofacil
