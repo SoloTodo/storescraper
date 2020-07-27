@@ -60,8 +60,8 @@ class TiendaMonge(Store):
              'StereoSystem'),
             # ('["categories.level2:Productos /// Audio /// '
             #  'Sistemas de audio y accesorios"]', 'StereoSystem')
-            ('["categories.level2:Productos /// Computadoras /// De Escritorio"]',
-             'Monitor'),
+            ('["categories.level2:Productos /// Computadoras /// '
+             'De Escritorio"]', 'Monitor'),
         ]
 
         session = session_with_proxy(extra_args)

@@ -89,6 +89,13 @@ class InfographicsSolutions(Store):
         else:
             stock = -1
 
+        part_number_container = soup.find('span', 'sku')
+
+        if part_number_container:
+            part_number = part_number_container.text.strip()
+        else:
+            part_number = None
+
         price_container = soup.find('p', 'price')
 
         if price_container.find('ins'):
@@ -118,6 +125,7 @@ class InfographicsSolutions(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
+            part_number=part_number
         )
 
         return [p]
