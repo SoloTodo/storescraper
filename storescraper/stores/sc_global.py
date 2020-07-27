@@ -31,7 +31,7 @@ class ScGlobal(Store):
             ['empresa/notebook-comercial.html', 'Notebook'],
             ['pc-y-portatiles/portatiles.html', 'Notebook'],
             ['empresa/plotters.html', 'Printer'],
-            ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
+            # ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
             ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],

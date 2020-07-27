@@ -95,7 +95,7 @@ class Marcimex(Store):
         if product_json['available']:
             stock = -1
 
-        tax = Decimal(1.12)
+        tax = Decimal('1.12')
         normal_price = Decimal(product_json['skus'][0]['listPrice']/100)*tax
         offer_price = Decimal(product_json['skus'][0]['bestPrice']/100)*tax
         picture_urls = [product_json['skus'][0]['image']]

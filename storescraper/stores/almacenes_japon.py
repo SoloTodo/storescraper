@@ -56,7 +56,8 @@ class AlmacenesJapon(Store):
             products = product_containers.findAll('div', {'id': 'grid_list'})
 
             for product in products:
-                product_url = 'https://www.almacenesjapon.com{}'.format(product.find('a')['href'])
+                product_url = 'https://www.almacenesjapon.com{}'\
+                    .format(product.find('a')['href'])
                 product_urls.append(product_url)
 
         return product_urls
@@ -76,7 +77,8 @@ class AlmacenesJapon(Store):
         sku = soup.find('span', 'item-code').text.strip()
         stock = 0
 
-        if soup.find('link', {'itemprop': 'availability'})['href'] == 'https://schema.org/InStock':
+        if soup.find('link', {'itemprop': 'availability'})['href'] == \
+                'https://schema.org/InStock':
             stock = -1
 
         price = Decimal(

@@ -214,7 +214,7 @@ class MercadolibreChile(Store):
             ],
             '_Tienda_pc-factory_OfficialStoreId_810': [
                 ('celulares-telefonia', 'Cell'),
-                ('computacion', 'Notebook'),
+                # ('computacion', 'Notebook'),
             ],
             '_Tienda_primus': [
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
