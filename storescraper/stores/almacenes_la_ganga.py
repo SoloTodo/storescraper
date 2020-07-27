@@ -98,7 +98,7 @@ class AlmacenesLaGanga(Store):
             price,
             'USD',
             sku=sku,
-            part_number = part_number,
+            part_number=part_number,
             picture_urls=picture_urls,
             description=description,
         )
