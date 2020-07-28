@@ -153,7 +153,7 @@ class NotebookStore(Store):
             str(soup.find('div', 'description')))
 
         if len(sku) > 50:
-            return []
+            sku = sku[0:50]
 
         p = Product(
             name,
