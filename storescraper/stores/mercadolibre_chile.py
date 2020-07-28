@@ -235,8 +235,8 @@ class MercadolibreChile(Store):
                  'StorageDrive'),
             ],
             '_Tienda_trust': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
             ],
             '_Tienda_western-digital': [
                 ('almacenamiento-discos-duros-removibles-accesorios',
@@ -247,7 +247,7 @@ class MercadolibreChile(Store):
                  'StorageDrive'),
             ],
             '_Tienda_xpg': [
-                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('webcams-audio-pc', 'Headphones'),
             ],

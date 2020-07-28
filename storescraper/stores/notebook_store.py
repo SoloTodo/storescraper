@@ -1,16 +1,11 @@
 import json
-import re
 
-from collections import defaultdict
-from datetime import datetime
 from decimal import Decimal
-
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class NotebookStore(Store):
@@ -156,6 +151,9 @@ class NotebookStore(Store):
 
         description = html_to_markdown(
             str(soup.find('div', 'description')))
+
+        if len(sku) > 50:
+            return []
 
         p = Product(
             name,
