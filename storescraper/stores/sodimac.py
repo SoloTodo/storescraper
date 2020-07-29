@@ -74,9 +74,9 @@ class Sodimac(Store):
             ['cat4780002', ['AirConditioner'],
              'Aire Acondicionado y Ventilación > '
              'Aires Acondicionados Split', 1],
-            ['cat4780001', ['AirConditioner'],
-             'Aire Acondicionado y Ventilación > '
-             'Aires Acondicionados Portátiles', 1],
+            # ['cat4780001', ['AirConditioner'],
+            #  'Aire Acondicionado y Ventilación > '
+            #  'Aires Acondicionados Portátiles', 1],
 
             # ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
             #  'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
