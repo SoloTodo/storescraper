@@ -1,7 +1,7 @@
 import json
 import re
 from collections import defaultdict
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
@@ -575,7 +575,7 @@ class Paris(Store):
 
                 images = image_container.findAll('a')
                 images = [i for i in images if i.find('picture')]
-                
+
                 assert len(images) > 0
 
                 for index, image in enumerate(images):

@@ -40,7 +40,7 @@ class Sodimac(Store):
         category_paths = [
             ['scat112555', ['WashingMachine'],
              'Lavadoras y Secadoras > Lavadoras', 1],
-            ['scat920819', ['WashingMachine'],
+            ['cat1590057', ['WashingMachine'],
              'Línea Blanca > Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
              'Lavadoras y Secadoras > Secadoras', 1],
@@ -74,9 +74,9 @@ class Sodimac(Store):
             ['cat4780002', ['AirConditioner'],
              'Aire Acondicionado y Ventilación > '
              'Aires Acondicionados Split', 1],
-            ['cat4780001', ['AirConditioner'],
-             'Aire Acondicionado y Ventilación > '
-             'Aires Acondicionados Portátiles', 1],
+            # ['cat4780001', ['AirConditioner'],
+            #  'Aire Acondicionado y Ventilación > '
+            #  'Aires Acondicionados Portátiles', 1],
 
             # ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
             #  'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],

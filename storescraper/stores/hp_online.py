@@ -1,5 +1,4 @@
 import json
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -70,10 +69,12 @@ class HpOnline(Store):
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock = -1
 
-        if soup.find('meta', {'itemprop':'availability'})['content'] == 'OutOfStock':
+        if soup.find('meta', {'itemprop': 'availability'})['content'] == \
+                'OutOfStock':
             stock = 0
 
-        if not soup.find('span', {'data-price-type': 'finalPrice'}).find('span', 'price'):
+        if not soup.find('span', {'data-price-type': 'finalPrice'})\
+                .find('span', 'price'):
             return []
 
         price = soup.find('span', {'data-price-type': 'finalPrice'})\

@@ -5,6 +5,7 @@ from .aire_center import AireCenter
 from .al_kosto import AlKosto
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
+from .almacenes_la_ganga import AlmacenesLaGanga
 from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
@@ -203,6 +204,7 @@ from .sony_store import SonyStore
 from .sp_digital import SpDigital
 from .spider import Spider
 from .stylus import Stylus
+from .sukasa import Sukasa
 from .supermex_digital import SupermexDigital
 from .syd import Syd
 from .tecnofacil import Tecnofacil
