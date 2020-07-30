@@ -211,7 +211,7 @@ class RipleyChileBaseCf(Store):
 
                     # If the product is LG or Samsung and is sold directly by
                     # Ripley (not marketplace) obtain the full data
-                    if False and brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
+                    if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
                             product_data['sku']:
                         from storescraper.stores import Ripley
 
