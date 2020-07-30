@@ -40,7 +40,7 @@ class Sodimac(Store):
         category_paths = [
             ['scat112555', ['WashingMachine'],
              'Lavadoras y Secadoras > Lavadoras', 1],
-            ['scat920819', ['WashingMachine'],
+            ['cat1590057', ['WashingMachine'],
              'Línea Blanca > Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
              'Lavadoras y Secadoras > Secadoras', 1],

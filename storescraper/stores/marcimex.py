@@ -32,7 +32,7 @@ class Marcimex(Store):
             ['C:/2/13/', 'Refrigerator'],
             ['C:/3/28/', 'StereoSystem'],
             ['C:/3/29/', 'Television'],
-            ['C:/5/50/', 'Oven']
+            # ['C:/5/50/', 'Oven']
         ]
 
         session = session_with_proxy(extra_args)
