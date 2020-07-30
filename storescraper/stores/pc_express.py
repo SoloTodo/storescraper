@@ -50,6 +50,8 @@ class PcExpress(Store):
             ['72', 'Ram'],                    # Memorias
             ['101', 'StorageDrive'],          # Discos Duros para PC
             ['103', 'StorageDrive'],          # Discos Duros para Notebook
+            ['411', 'StorageDrive'],          # Discos Duros para NAS
+            ['412', 'StorageDrive'],          # Discos Duros para vigilancia
             ['331', 'SolidStateDrive'],       # Unidades de estado Solido
             ['102', 'ExternalStorageDrive'],  # Discod Duros Externos
             ['118', 'PowerSupply'],           # Fuentes Estandar

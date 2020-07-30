@@ -126,8 +126,12 @@ class RipleyChileBaseCf(Store):
             ['tecno/television/bluray-dvd-y-tv-portatil',
              ['OpticalDiskPlayer'],
              'Tecno > Televisión > Bluray -DVD y TV Portátil', 1],
-            ['tecno/mundo-gamer/consolas', ['VideoGameConsole'],
-             'Tecno > Mundo Gamer > Consolas', 1],
+            ['tecno/playstation/consolas', ['VideoGameConsole'],
+             'Tecno > PlayStation > Consolas', 1],
+            ['tecno/nintendo/consolas', ['VideoGameConsole'],
+             'Tecno > Nintendo > Consolas', 1],
+            ['tecno/xbox/consolas', ['VideoGameConsole'],
+             'Tecno > Xbox > Consolas', 1],
             ['electro/climatizacion/aire-acondicionado',
              ['AirConditioner'],
              'Electro > Climatización > Ventiladores y aire acondicionado', 1],
@@ -207,7 +211,7 @@ class RipleyChileBaseCf(Store):
 
                     # If the product is LG or Samsung and is sold directly by
                     # Ripley (not marketplace) obtain the full data
-                    if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
+                    if False and brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
                             product_data['sku']:
                         from storescraper.stores import Ripley
 
