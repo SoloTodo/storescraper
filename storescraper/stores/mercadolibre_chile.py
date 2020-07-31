@@ -261,9 +261,9 @@ class MercadolibreChile(Store):
                 ('celulares-telefonia/celulares', 'Cell'),
             ],
             '_Tienda_kingston': [
-                ('celulares-telefonia', 'MemoryCard'),
+                # ('celulares-telefonia', 'MemoryCard'),
                 ('almacenamiento-discos-accesorios', 'SolidStateDrive'),
-                ('almacenamiento-pen-drives', 'UsbFlashDrive'),
+                # ('almacenamiento-pen-drives', 'UsbFlashDrive'),
             ],
             '_Tienda_motorola': [
                 ('audio', 'Headphones'),

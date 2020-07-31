@@ -91,9 +91,10 @@ class Marcimex(Store):
 
         name = product_json['name']
         sku = str(product_json['skus'][0]['sku'])
-        stock = 0
-        if product_json['available']:
-            stock = -1
+        stock = -1
+        if not product_json['available']:
+            # Products with no stock have wrong prices for some reason
+            return []
 
         tax = Decimal('1.12')
         normal_price = Decimal(product_json['skus'][0]['listPrice']/100)*tax
