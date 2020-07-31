@@ -63,6 +63,9 @@ class Intcomex(Store):
 
         pricing_area = soup.find('div', 'productArea')
 
+        if not pricing_area:
+            return []
+
         name = pricing_area.find('div', 'title')['data-productname'].strip()
         sku, part_number = [tag.text.strip() for tag in pricing_area.findAll(
             'span', 'font-bold')]
