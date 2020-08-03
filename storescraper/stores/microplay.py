@@ -73,7 +73,7 @@ class Microplay(Store):
                                         'reader', data)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'producto')
+                product_containers = soup.findAll('div', 'card__item')
 
                 if not product_containers:
                     break
@@ -97,14 +97,14 @@ class Microplay(Store):
         if 'Producto no disponible' in page_source:
             return []
 
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
+        name = soup.find('h1').text.strip()
         sku = re.search('ecomm_prodid: (\d+)', page_source).groups()[0]
 
         price_container = soup.find('span', 'text_web')
 
         if price_container:
-            price = remove_words(price_container.nextSibling.nextSibling.find(
-                'p').next_sibling)
+            price = remove_words(
+                price_container.find('strong').find('p').nextSibling)
         else:
             price_container = soup.find('span', 'oferta')
             if not price_container:
