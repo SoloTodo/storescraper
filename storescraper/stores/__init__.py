@@ -158,6 +158,7 @@ from .ortiz_y_ortega import OrtizYOrtega
 from .panafoto import Panafoto
 from .panamericana import Panamericana
 from .paris import Paris
+from .pc_com import PcCom
 from .pc_digital import PcDigital
 from .pc_express import PcExpress
 from .pc_factory import PcFactory
