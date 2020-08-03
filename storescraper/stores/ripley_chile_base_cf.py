@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import get_cf_session
+from storescraper.utils import get_cf_session, session_with_proxy
 
 
 class RipleyChileBaseCf(Store):
@@ -107,10 +107,18 @@ class RipleyChileBaseCf(Store):
              'Electro > Lavandería > Lavadora-secadora', 1],
             ['electro/lavanderia/doble-carga', ['WashingMachine'],
              'Electro > Lavandería > Doble carga', 1],
-            ['tecno/telefonia/android', ['Cell'],
-             'Tecno > Telefonía > Android', 1],
+            # ['tecno/telefonia/android', ['Cell'],
+            #  'Tecno > Telefonía > Android', 1],
             ['tecno/telefonia/iphone', ['Cell'],
              'Tecno > Telefonía > iPhone', 1],
+            ['tecno/telefonia/samsung', ['Cell'],
+             'Tecno > Telefonía > Samsung', 1],
+            ['tecno/telefonia/huawei', ['Cell'],
+             'Tecno > Telefonía > Huawei', 1],
+            ['tecno/telefonia/xiaomi', ['Cell'],
+             'Tecno > Telefonía > Xiaomi', 1],
+            ['tecno/telefonia/motorola', ['Cell'],
+             'Tecno > Telefonía > Motorola', 1],
             ['tecno/telefonia/basicos', ['Cell'],
              'Tecno > Telefonía > Básicos', 1],
             ['tecno/fotografia-y-video/camaras-reflex', ['Camera'],
@@ -154,7 +162,13 @@ class RipleyChileBaseCf(Store):
             ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
         ]
-        session = get_cf_session(extra_args)
+
+        debug = extra_args.get('debug', False)
+        if debug:
+            session = session_with_proxy(extra_args)
+        else:
+            session = get_cf_session(extra_args)
+
         url_base = 'https://simple.ripley.cl/{}?page={}'
         product_dict = {}
 
@@ -176,13 +190,23 @@ class RipleyChileBaseCf(Store):
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:
-                    raise Exception('Invalid section: ' + category_url)
+                    if debug:
+                        print('Invalid section: ' + category_url)
+                        break
+                    else:
+                        raise Exception('Invalid section: ' + category_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
                 products_data = soup.find('script',
                                           {'type': 'application/ld+json'})
 
                 products_soup = soup.find('div', 'catalog-container')
+
+                if debug:
+                    if not products_data or not products_soup:
+                        print('Empty path: {}'.format(url))
+
+                    break
 
                 if not products_data or not products_soup:
                     if page == 1:
