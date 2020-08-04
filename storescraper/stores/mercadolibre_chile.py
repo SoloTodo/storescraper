@@ -209,7 +209,7 @@ class MercadolibreChile(Store):
             '_Tienda_ozone': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc', 'Headphones'),
+                # ('webcams-audio-pc', 'Headphones'),
                 ('videojuegos', 'Headphones'),
             ],
             '_Tienda_pc-factory_OfficialStoreId_810': [
@@ -223,7 +223,7 @@ class MercadolibreChile(Store):
             '_Tienda_razer': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc', 'Headphones'),
+                # ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_redragon': [
                 # ('mouses-teclados-controles', 'Keyboard'),
@@ -249,7 +249,7 @@ class MercadolibreChile(Store):
             '_Tienda_xpg': [
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                ('webcams-audio-pc', 'Headphones'),
+                # ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_xtech': [
                 # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
