@@ -295,7 +295,7 @@ class Hites(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=60)
 
-        if response.status_code == 404:
+        if response.status_code in [404, 410]:
             return []
 
         page_source = response.text

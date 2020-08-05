@@ -138,6 +138,9 @@ class PcGamer(Store):
         else:
             offer_price = normal_price
 
+        if normal_price < offer_price:
+            offer_price = normal_price
+
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 
