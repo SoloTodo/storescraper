@@ -5,6 +5,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, HeadlessChrome
@@ -334,17 +335,16 @@ class Hites(Store):
         has_virtual_assistant = \
             'cdn.livechatinc.com/tracking.js' in response.text
 
-        # TODO: revisar esto
-        # ld_soup = BeautifulSoup(long_description, 'html.parser')
-        # flixmedia_container = ld_soup.find(
-        #     'script', {'src': '//media.flixfacts.com/js/loader.js'})
-        # flixmedia_id = None
-        #
-        # if flixmedia_container:
-        #     mpn = flixmedia_container['data-flix-mpn']
-        #     video_urls = flixmedia_video_urls(mpn)
-        #     if video_urls is not None:
-        #         flixmedia_id = mpn
+        flixmedia_container = soup.find(
+            'script', {'src': '//media.flixfacts.com/js/loader.js'})
+        flixmedia_id = None
+        video_urls = None
+
+        if flixmedia_container:
+            mpn = flixmedia_container['data-flix-mpn']
+            video_urls = flixmedia_video_urls(mpn)
+            if video_urls is not None:
+                flixmedia_id = mpn
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
@@ -370,7 +370,9 @@ class Hites(Store):
             sku=sku,
             condition=condition,
             picture_urls=picture_urls,
-            has_virtual_assistant=has_virtual_assistant
+            video_urls=video_urls,
+            has_virtual_assistant=has_virtual_assistant,
+            flixmedia_id=flixmedia_id
         )
 
         return [p]
