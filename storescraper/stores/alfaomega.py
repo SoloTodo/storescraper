@@ -1,0 +1,105 @@
+from bs4 import BeautifulSoup
+from decimal import Decimal
+
+from storescraper.product import Product
+from storescraper.store import Store
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
+
+
+class Alfaomega(Store):
+    @classmethod
+    def categories(cls):
+        return [
+            'Processor',
+            'Motherboard',
+            'VideoCard',
+        ]
+
+    @classmethod
+    def discover_urls_for_category(cls, category, extra_args=None):
+        category_paths = [
+            ['procesador-2', 'Processor'],
+            ['placa-madre', 'Motherboard'],
+            ['tarjeta-de-video', 'VideoCard']
+        ]
+
+        product_urls = []
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
+
+            url = 'https://aopc.cl/categoria/{}/?post_type=product'\
+                .format(category_path)
+            response = session.get(url)
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            products = soup.findAll('li', 'product-col')
+
+            if not products:
+                raise Exception('Empty path: {}'.format(url))
+
+            for product in products:
+                product_url = product.find('a')['href']
+                product_urls.append(product_url)
+
+        return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
+        name = soup.find('h2', 'product_title').text.strip()
+        sku = soup.find('span', 'sku').text.strip()
+
+        stock_text = soup.find('span', 'stock').text.strip()
+        stock = 0
+        if stock_text != 'Agotado':
+            stock = int(stock_text.split(' ')[0])
+
+        price_container = soup.find('p', 'price')
+        offer_price = Decimal(
+            remove_words(price_container.find('ins').find('span').text))
+        normal_price = Decimal(
+            remove_words(price_container.find('del').find('span').text))
+
+        picture_containers = soup.findAll('div', 'img-thumbnail')
+        picture_urls = []
+
+        for picture in picture_containers:
+            try:
+                picture_url = picture.find('img')['content']
+                picture_urls.append(picture_url)
+            except KeyError:
+                continue
+
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'tab-description'})))
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            description=description,
+            picture_urls=picture_urls
+        )
+
+        return [p]

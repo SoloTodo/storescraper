@@ -3,6 +3,7 @@ from .acer_store import AcerStore
 from .agencias_way_online import AgenciasWayOnline
 from .aire_center import AireCenter
 from .al_kosto import AlKosto
+from .alfaomega import Alfaomega
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
 from .almacenes_la_ganga import AlmacenesLaGanga
