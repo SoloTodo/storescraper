@@ -274,8 +274,28 @@ class Falabella(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        return cls._products_for_url(
-            url, category=category, extra_args=extra_args)
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
+        response = session.get(url, timeout=30)
+
+        if response.status_code == 500:
+            return []
+
+        content = response.text.replace('&#10;', '')
+
+        if 'fbra_browseMainProductConfig' in content:
+            print('NEW')
+            return cls._new_products_for_url(
+                url, content, session,
+                category=category, extra_args=extra_args)
+        elif 'NEXT_DATA' in content:
+            print('OLD')
+            return cls._old_products_for_url(
+                url, content, session,
+                category=category, extra_args=extra_args)
+        else:
+            print('ERROR ESTRUCTURA: {}'.format(url))
+            return []
 
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_query_params):
@@ -313,17 +333,121 @@ class Falabella(Store):
         return discovered_urls
 
     @classmethod
-    def _products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
-        response = session.get(url, timeout=30)
-
-        if response.status_code == 500:
-            return []
-
-        content = response.text.replace('&#10;', '')
-
+    def _new_products_for_url(
+            cls, url, content, session, category=None, extra_args=None):
         soup = BeautifulSoup(content, 'html.parser')
+
+        product_data = json.loads(re.search(
+            r'var fbra_browseMainProductConfig = ([\S\s]+?);\r\n',
+            content).groups()[0])['state']['product']
+
+        publication_id = product_data['id']
+        brand = product_data['brand'] or 'Genérico'
+        base_name = '{} {}'.format(brand, product_data['displayName'])
+        slug = product_data['displayName'].replace(' ', '-')
+
+        seller = None
+        if product_data['isMarketPlace']:
+            seller = product_data['fulFilledBy']
+
+        products = []
+
+        for model in product_data['skus']:
+            sku = model['skuId']
+            sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
+                      '{}'.format(publication_id, slug, sku)
+            prices = {e['type']: e for e in model['price']}
+            normal_price_keys = [3]
+            offer_price_keys = [1]
+
+            if not prices:
+                continue
+
+            normal_price = None
+            offer_price = None
+
+            for key in normal_price_keys:
+                if key not in prices:
+                    continue
+                normal_price = Decimal(
+                    remove_words(prices[key]['originalPrice']))
+                break
+
+            for key in offer_price_keys:
+                if key not in prices:
+                    continue
+                offer_price = Decimal(
+                    remove_words(prices[key]['originalPrice']))
+
+            if not offer_price:
+                offer_price = normal_price
+
+            if not normal_price:
+                normal_price = offer_price
+
+            stock = model['stockAvailable']
+            picture_urls = cls._get_picture_urls(session, model['skuId'])
+
+            # TODO: Video Urls
+
+            # REVIEWS
+            reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
+                          'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
+                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
+                .format(sku)
+
+            review_data = json.loads(session.get(reviews_url).text)
+            review_count = review_data['TotalResults']
+
+            review_stats = review_data['Includes']
+
+            if 'Products' in review_stats:
+                if str(sku) not in review_stats['Products'].keys():
+                    key = list(review_stats['Products'].keys())[0]
+                    review_avg_score = review_stats['Products'][key][
+                        'ReviewStatistics']['AverageOverallRating']
+                else:
+                    review_avg_score = review_stats['Products'][str(sku)][
+                        'ReviewStatistics']['AverageOverallRating']
+            else:
+                review_avg_score = None
+
+            # CONDITION
+            if 'reacondicionado' in base_name.lower():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
+
+            p = Product(
+                base_name,
+                cls.__name__,
+                category,
+                sku_url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                review_count=review_count,
+                review_avg_score=review_avg_score,
+                condition=condition,
+                seller=seller
+            )
+
+            products.append(p)
+
+        return products
+
+    @classmethod
+    def _old_products_for_url(
+            cls, url, content, session,  category=None, extra_args=None):
+        soup = BeautifulSoup(content, 'html.parser')
+
+        import ipdb
+        ipdb.set_trace()
 
         product_data = json.loads(
             soup.find('script', {'id': '__NEXT_DATA__'}).text)[

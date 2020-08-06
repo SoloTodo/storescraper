@@ -36,7 +36,7 @@ class MobileHut(Store):
             ['129574076480', 'mouse-gamer', 'Mouse'],
             ['132834033728', 'teclados-1', 'Keyboard'],
             ['133205065792', 'smartwatch', 'Wearable'],
-            ['132830560320', 'pendrives', 'UsbFlashDrive'],
+            # ['132830560320', 'pendrives', 'UsbFlashDrive'],
             ['132830593088', 'tarjetas-de-memoria', 'MemoryCard'],
             ['129583054912', 'consolas', 'VideoGameConsole'],
             ['206952595607', 'monitores', 'Monitor'],
