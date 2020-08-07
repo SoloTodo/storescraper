@@ -146,7 +146,7 @@ class MercadolibreChile(Store):
             ],
             '_Tienda_cintegral': [
                 ('notebooks-accesorios', 'Notebook'),
-                ('pc-escritorio', 'AllInOne'),
+                # ('pc-escritorio', 'AllInOne'),
                 ('almacenamiento', 'SolidStateDrive'),
             ],
             '_Tienda_corsair': [

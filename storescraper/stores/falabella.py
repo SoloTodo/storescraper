@@ -276,26 +276,25 @@ class Falabella(Store):
         print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
-        response = session.get(url, timeout=30)
 
-        if response.status_code == 500:
-            return []
+        for i in range(3):
+            response = session.get(url, timeout=30)
 
-        content = response.text.replace('&#10;', '')
+            if response.status_code == 500:
+                return []
 
-        if 'fbra_browseMainProductConfig' in content:
-            print('NEW')
-            return cls._new_products_for_url(
-                url, content, session,
-                category=category, extra_args=extra_args)
-        elif 'NEXT_DATA' in content:
-            print('OLD')
-            return cls._old_products_for_url(
-                url, content, session,
-                category=category, extra_args=extra_args)
-        else:
-            print('ERROR ESTRUCTURA: {}'.format(url))
-            return []
+            content = response.text.replace('&#10;', '')
+
+            if 'fbra_browseMainProductConfig' in content:
+                print('NEW')
+                return cls._new_products_for_url(
+                    url, content, session,
+                    category=category, extra_args=extra_args)
+            elif 'NEXT_DATA' in content:
+                print('OLD')
+                return cls._old_products_for_url(
+                    url, content, session,
+                    category=category, extra_args=extra_args)
 
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_query_params):
@@ -445,9 +444,6 @@ class Falabella(Store):
     def _old_products_for_url(
             cls, url, content, session,  category=None, extra_args=None):
         soup = BeautifulSoup(content, 'html.parser')
-
-        import ipdb
-        ipdb.set_trace()
 
         product_data = json.loads(
             soup.find('script', {'id': '__NEXT_DATA__'}).text)[
