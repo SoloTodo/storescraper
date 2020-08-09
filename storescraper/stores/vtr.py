@@ -1,4 +1,5 @@
 import re
+import json
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -31,19 +32,18 @@ class Vtr(Store):
             ])
         elif category == 'Cell':
             session = session_with_proxy(extra_args)
-            soup = BeautifulSoup(
-                session.get('https://vtr.com/productos/moviles/'
-                            'product.clasificacion/MovilesEquipos').text,
-                'html.parser')
 
-            containers = soup.findAll('div', 'mep-device-module')
+            data = json.loads(session.get(
+                'https://www.vtr.com/ccstoreui/v1/search?'
+                'Ntk=product.category&Ntt=Equipments&No=0&'
+                'Nrpp=100&Ns=Device.x_OrderForCollectionPage%7C0').text)
 
-            if not containers:
+            if not data:
                 raise Exception('Empty cell category')
 
-            for container in containers:
-                product_path = container.find('a')['href'].split('?')[0]
-                product_url = 'https://vtr.com' + product_path
+            for record in data['resultsList']['records']:
+                product_id = record['attributes']['product.repositoryId'][0]
+                product_url = 'https://www.vtr.com/product/{}'.format(product_id)
                 product_urls.append(product_url)
 
         return product_urls
@@ -69,7 +69,7 @@ class Vtr(Store):
         elif url == cls.planes_url:
             # Plan Postpago
             products.extend(cls._plans(url, extra_args))
-        elif 'productos/detalle' in url:
+        elif 'product' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
         else:
@@ -129,6 +129,28 @@ class Vtr(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
+
+        # TODO: Lo comentado aquí es lo que corresponde al uso de la API
+        # product_id = url.split('/')[-1]
+        # data_url = 'https://www.vtr.com/ccstoreui/v1/pages/product/{}?' \
+        #            'dataOnly=false&cacheableDataOnly=true&' \
+        #            'productTypesRequired=true'.format(product_id)
+        # response = session.get(data_url)
+        # product_data = json.loads(response.text)['data']['page']['product']
+        #
+        # base_name = product_data['displayName']
+        # sku = re.search(r'prod(\d+)', url).groups()[0]
+        #
+        # variants = product_data['childSKUs']
+        # plans = product_data['relatedProducts']
+        #
+        # for variant in variants:
+        #     name = "{} - {}".format(base_name, variant['x_device_color'])
+        #     cell_url = '{}?selection={}'.format(url, variant['x_colorClass'])
+        #
+        #     for plan in plans:
+        #         continue
+
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h3', 'mep-model').text.strip()

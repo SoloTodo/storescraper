@@ -55,7 +55,7 @@ class MyBox(Store):
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-            category_url = 'http://www.mybox.cl/' + category_path + '?n=50'
+            category_url = 'https://www.mybox.cl/' + category_path + '?n=50'
 
             print(category_url)
 
@@ -72,7 +72,8 @@ class MyBox(Store):
                 raise Exception('Empty category: ' + category_url)
 
             for cell in prod_cells:
-                product_urls.append(cell.find('a')['href'])
+                product_urls.append(
+                    cell.find('a')['href'].replace('http:', 'https:'))
 
         return product_urls
 
