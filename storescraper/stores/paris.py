@@ -132,8 +132,8 @@ class Paris(Store):
              'Tecno > Gamers', 0.5],
             ['tecnologia/gamer/teclados', ['Keyboard'],
              'Tecno > Gamers > Teclados y Mouse', 1],
-            ['tecnologia/gamer/headset', ['Headphones'],
-             'Tecno > Gamers > Headset', 1],
+            # ['tecnologia/gamer/headset', ['Headphones'],
+            #  'Tecno > Gamers > Headset', 1],
             # Also includes videogames
             ['tecnologia/consolas-videojuegos', ['VideoGameConsole'],
              'Tecno > Consolas VideoJuegos', 0],
@@ -390,8 +390,8 @@ class Paris(Store):
             offer_price = normal_price
 
         picture_urls = []
-        for tag in soup.findAll('a', 'thumbnail-link'):
-            picture_url = tag['href'].split('?')[0]
+        for tag in soup.findAll('img', 'pdpMod_Mobile_GalleryImage'):
+            picture_url = tag['src'].split('?')[0]
             if '.webm' in picture_url:
                 continue
             picture_urls.append(
