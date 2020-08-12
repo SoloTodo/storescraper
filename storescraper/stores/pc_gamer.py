@@ -144,8 +144,11 @@ class PcGamer(Store):
         description = html_to_markdown(str(soup.find(
             'div', {'id': 'tab-description'})))
 
-        picture_urls = [
-            soup.find('img', {'id': 'img_zoom'})['data-zoom-image']]
+        picture_container = soup.find('img', {'id': 'img_zoom'})
+        picture_urls = []
+
+        if picture_container:
+            picture_urls.append(picture_container['data-zoom-image'])
 
         p = Product(
             name,
