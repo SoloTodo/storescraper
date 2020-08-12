@@ -37,7 +37,7 @@ class Raenco(Store):
             ('tecnologia/celulares/32-gb.html', 'Cell'),
             ('tecnologia/celulares/64-gb.html', 'Cell'),
             ('tecnologia/celulares/128-gb.html', 'Cell'),
-            ('tecnologia/celulares/256-gb.html', 'Cell'),
+            # ('tecnologia/celulares/256-gb.html', 'Cell'),
             ('hogar/linea-blanca/refrigeradoras.html', 'Refrigerator'),
             ('hogar/linea-blanca/refrigeradoras/puerta-horizontal.html',
              'Refrigerator'),
