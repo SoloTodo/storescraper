@@ -1,4 +1,6 @@
 import json
+import re
+
 import time
 from collections import defaultdict
 
@@ -309,7 +311,16 @@ class Hites(Store):
 
         name = soup.find('h1', 'product-name').text
         sku = soup.find('span', 'product-id').text
-        stock = -1
+
+        availability_match = re.search(r'"availability":"(.+)"', response.text)
+        availability_text = availability_match.groups()[0]
+
+        if availability_text == 'http://schema.org/OutOfStock':
+            stock = 0
+        elif availability_text == 'http://schema.org/InStock':
+            stock = -1
+        else:
+            raise Exception('Invalid availability text: {}'.format(availability_text))
 
         prices = soup.find('div', 'prices')
 
