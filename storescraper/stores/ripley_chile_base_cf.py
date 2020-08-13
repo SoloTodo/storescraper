@@ -186,7 +186,7 @@ class RipleyChileBaseCf(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
-                print(category_url)
+                # print(category_url)
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:

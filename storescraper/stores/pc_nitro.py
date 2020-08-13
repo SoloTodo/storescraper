@@ -55,7 +55,7 @@ class PcNitro(Store):
             ['36-ups-respaldo-energía', 'Ups'],
             ['46-tarjetas-de-memoria-flash', 'MemoryCard'],
             ['48-memorias-ram', 'Ram'],
-            ['49-unidades-flash-usb', 'UsbFlashDrive'],
+            # ['49-unidades-flash-usb', 'UsbFlashDrive'],
             ['60-auriculares-y-manos-libres', 'Headphones'],
             ['120-auriculares', 'Headphones'],
             ['61-teclados-teclado-numéricos', 'Keyboard'],

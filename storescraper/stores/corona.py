@@ -50,7 +50,7 @@ class Corona(Store):
              'Hogar > Línea Blanca > Refrigeración', 1],
             ['C:/8/11/12/', None, ['WashingMachine'],
              'Hogar > Línea Blanca > Lavado y Secado', 1],
-            # Also contains campanas and other subcateories
+            # Also contains campanas and other subcategories
             ['C:/8/11/16/', None, ['Stove', 'Oven', 'DishWasher'],
              'Hogar > Línea Blanca > Cocina', 0],
             # Also contains calientacamas and other categories
@@ -60,13 +60,13 @@ class Corona(Store):
             # ['C:/8/11/15/','&fq=specificationFilter_26%3aAire+Acondicionado',
             #  ['AirConditioner'],
             #  'Hogar > Línea Blanca > Climatización > Aire Acondicionado', 1],
-            ['C:/8/11/15/',
-             '&fq=specificationFilter_26%3aCalefactores+y+Termoventiladores',
-             ['SpaceHeater'], 'Hogar > Línea Blanca > Climatización > '
-                              'Calefactores y Termoventiladores', 1],
-            ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
-             ['WaterHeater'],
-             'Hogar > Línea Blanca > Climatización > Calefont', 1],
+            # ['C:/8/11/15/',
+            #  '&fq=specificationFilter_26%3aCalefactores+y+Termoventiladores',
+            #  ['SpaceHeater'], 'Hogar > Línea Blanca > Climatización > '
+            #                   'Calefactores y Termoventiladores', 1],
+            # ['C:/8/11/15/', '&fq=specificationFilter_26%3aCalefont',
+            #  ['WaterHeater'],
+            #  'Hogar > Línea Blanca > Climatización > Calefont', 1],
             # ['C:/8/11/15/', '&fq=specificationFilter_26%3aEstufas+a+Gas',
             # ['SpaceHeater'],
             #  'Hogar > Línea Blanca > Climatización > Estufas a Gas', 1],
@@ -86,13 +86,13 @@ class Corona(Store):
             # ['C:/8/11/14/', '&fq=specificationFilter_32%3aAspiradoras',
             # ['VacuumCleaner'],
             #  'Hogar > Línea Blanca > Electrodomésticos > Aspiradoras', 1],
-            ['C:/8/11/14/',
-             '&fq=specificationFilter_32%3aHornos+El%c3%a9ctricos', ['Oven'],
-             'Hogar > Línea Blanca > Electrodomésticos > Hornos Eléctricos',
-             1],
-            ['C:/8/11/14/', '&fq=specificationFilter_32%3aMicroondas',
-             ['Oven'], 'Hogar > Línea Blanca > Electrodomésticos > Microondas',
-             1],
+            #['C:/8/11/14/',
+            # '&fq=specificationFilter_32%3aHornos+El%c3%a9ctricos', ['Oven'],
+            # 'Hogar > Línea Blanca > Electrodomésticos > Hornos Eléctricos',
+            # 1],
+            # ['C:/8/11/14/', '&fq=specificationFilter_32%3aMicroondas',
+            # ['Oven'], 'Hogar > Línea Blanca > Electrodomésticos >
+            # Microondas', 1],
             # Also contains TV accesories
             # ['C:/9/35/', None, ['Television', 'OpticalDiskPlayer'],
             #  'Tecnología > Televisión', 0],
