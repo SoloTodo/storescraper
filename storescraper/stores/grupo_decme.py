@@ -75,7 +75,7 @@ class GrupoDecme(Store):
             while True:
                 url = base_url.format(url_extension, page)
 
-                if page >= 15:
+                if page > 15:
                     raise Exception('Page overflow' + url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
