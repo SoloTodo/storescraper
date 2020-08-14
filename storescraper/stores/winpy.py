@@ -71,7 +71,7 @@ class Winpy(Store):
             ['impresoras/', 'Printer'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
             ['accesorios/mouse-y-teclados/', 'Mouse'],
-            ['zona-teclados-mecanicos/', 'Keyboard'],
+            # ['zona-teclados-mecanicos/', 'Keyboard'],
             ['computadores/todo-en-uno/', 'AllInOne'],
             ['electronica/parlantes/', 'StereoSystem'],
             ['electronica/audifonos/', 'Headphones'],
