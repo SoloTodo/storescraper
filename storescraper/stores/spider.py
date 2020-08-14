@@ -100,9 +100,9 @@ class Spider(Store):
 
         price_containers = soup.findAll('span', {'id': 'our_price_display'})
 
-        offer_price = Decimal(price_containers[0]['content'])
-        normal_price = Decimal(remove_words(price_containers[1].text))
-
+        offer_price = Decimal(price_containers[0]['content']).quantize(0)
+        normal_price = Decimal(remove_words(price_containers[1].text)
+                               ).quantize(0)
         part_number = soup.find('span', {'itemprop': 'sku'}).text.strip()
 
         description = html_to_markdown(str(soup.find(
