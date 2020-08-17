@@ -75,8 +75,8 @@ class Hites(Store):
              ['WashingMachine'],
              'Inicio > Electro Hogar > Lavado y Secado > Lavadoras-Secadoras',
              1],
-            ['electro-hogar/lavado-y-secado/lavavajillas', ['DishWasher'],
-             'Inicio > Electro Hogar > Lavado y Secado > Lavavajillas', 1],
+            # ['electro-hogar/lavado-y-secado/lavavajillas', ['DishWasher'],
+            #  'Inicio > Electro Hogar > Lavado y Secado > Lavavajillas', 1],
 
             ['electro-hogar/cocina', ['Oven', 'Stove'],
              'Inicio > Electro Hogar > Cocina', 0],

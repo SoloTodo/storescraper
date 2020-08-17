@@ -213,7 +213,7 @@ class MercadolibreChile(Store):
                 ('videojuegos', 'Headphones'),
             ],
             '_Tienda_pc-factory_OfficialStoreId_810': [
-                ('celulares-telefonia', 'Cell'),
+                # ('celulares-telefonia', 'Cell'),
                 # ('computacion', 'Notebook'),
             ],
             '_Tienda_primus': [
