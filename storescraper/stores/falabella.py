@@ -776,6 +776,9 @@ class Falabella(Store):
 
                     images = images_div + images_article + images_module
 
+                    if not images:
+                        continue
+
                     assert len(images) == len(pictures)
 
                     for index, image_url in enumerate(images):
