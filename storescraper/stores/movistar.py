@@ -112,7 +112,6 @@ class Movistar(Store):
 
             price_text = plan_container.find('div', 'mb-parrilla_price').find(
                 'p', 'price').text
-            print(price_text)
             price = Decimal(remove_words(price_text.split()[0]))
 
             portability_suffixes = ['', ' Portabilidad']
