@@ -103,6 +103,7 @@ class Movistar(Store):
         plan_containers = soup.findAll('div', 'mb-parrilla_col')
 
         for plan_container in plan_containers:
+            print(plan_container)
             plan_link = plan_container.find('a')
             plan_url = plan_link['href']
 
@@ -111,7 +112,7 @@ class Movistar(Store):
 
             price_text = plan_container.find('div', 'mb-parrilla_price').find(
                 'p', 'price').text
-            price = Decimal(remove_words(price_text.split(' ')[0]))
+            price = Decimal(remove_words(price_text.split()[0]))
 
             portability_suffixes = ['', ' Portabilidad']
             cuotas_suffixes = [
