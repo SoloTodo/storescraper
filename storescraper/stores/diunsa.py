@@ -22,6 +22,7 @@ class Diunsa(Store):
             'StereoSystem',
             'Cell',
             'Television',
+            'AirConditioner',
         ]
 
     @classmethod
@@ -36,6 +37,7 @@ class Diunsa(Store):
             ['C:/1/58/64/65/', 'StereoSystem'],
             ['C:/1/58/69/', 'Cell'],
             ['C:/1/58/71/', 'Television'],
+            ['C:/1/73/119/', 'AirConditioner'],
         ]
 
         session = session_with_proxy(extra_args)
