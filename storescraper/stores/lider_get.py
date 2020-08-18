@@ -62,7 +62,7 @@ class LiderGet(Store):
              ['StereoSystem'], 'Equipos de Audio > Equipos de música', 1],
             ['Electrónica/Videojuegos/Consolas', ['VideoGameConsole'],
              'Videojuegos > Consolas', 1],
-            ['Telefonía y Fotografía/Celulares y Teléfonos/Smartphones',
+            ['Telefonía/Celulares_y_Teléfonos/Smartphones',
              ['Cell'], 'Celulares y Teléfonos > Smartphones', 1],
             # ['Celulares_básicos', ['Cell'],
             #  'Celulares y Teléfonos > Celulares básicos', 1],
