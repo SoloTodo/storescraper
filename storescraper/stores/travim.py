@@ -1,13 +1,9 @@
-import json
-import re
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Travim(Store):
@@ -39,7 +35,7 @@ class Travim(Store):
             ['gabinete', 'ComputerCase'],
             ['mouse', 'Mouse'],
             ['teclado', 'Keyboard'],
-            ['monitores', 'Monitor'],
+            # ['monitores', 'Monitor'],
             ['tablet', 'Table'],
             ['smartphones', 'Cell']
         ]
@@ -57,6 +53,7 @@ class Travim(Store):
 
             while True:
                 url = base_url.format(url_extension, page)
+                print(url)
 
                 if page >= 15:
                     raise Exception('Page overflow: ' + url)
