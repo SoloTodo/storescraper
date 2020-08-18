@@ -14,6 +14,9 @@ class Alfaomega(Store):
             'Processor',
             'Motherboard',
             'VideoCard',
+            'PowerSupply',
+            'SolidStateDrive',
+            'Mouse',
         ]
 
     @classmethod
@@ -21,7 +24,10 @@ class Alfaomega(Store):
         category_paths = [
             ['procesador-2', 'Processor'],
             ['placa-madre', 'Motherboard'],
-            ['tarjeta-de-video', 'VideoCard']
+            ['tarjeta-de-video', 'VideoCard'],
+            ['disco-de-estado-solido', 'SolidStateDrive'],
+            ['fuente-de-poder', 'PowerSupply'],
+            ['mouse-y-teclados-2', 'Mouse'],
         ]
 
         product_urls = []
@@ -68,6 +74,10 @@ class Alfaomega(Store):
             stock = int(stock_text.split(' ')[0])
 
         price_container = soup.find('p', 'price')
+
+        if not price_container.text.strip():
+            return []
+
         offer_price = Decimal(
             remove_words(price_container.find('ins').find('span').text))
         normal_price = Decimal(
