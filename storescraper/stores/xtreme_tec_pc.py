@@ -126,7 +126,11 @@ class XtremeTecPc(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('span', 'sku').text
+        sku_container = soup.find('span', 'sku')
+        if not sku_container:
+            return []
+
+        sku = sku_container.text
 
         if soup.find('p', 'out-of-stock'):
             stock = 0
