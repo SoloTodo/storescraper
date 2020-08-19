@@ -14,14 +14,16 @@ class UltimateGamerStore(Store):
     def categories(cls):
         return [
             'VideoCard',
-            'Processor'
+            'Processor',
+            'Monitor'
         ]
     
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['tarjeta-de-video', 'VideoCard'],
-            ['procesadores', 'Processor']
+            ['procesadores', 'Processor'],
+            ['productos/accesorios', 'Monitor']
         ]
 
         product_urls = []

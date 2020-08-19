@@ -36,7 +36,7 @@ class Proglobal(Store):
             # ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
             ['computacion-y-gamer/almacenamiento/microsd-alta-velocidad',
              'MemoryCard'],
-            ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
+            # ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
             ['computacion-y-gamer/almacenamiento/pendrives', 'UsbFlashDrive'],
             # ['computacion-y-gamer/almacenamiento/discos-duros',
             #  'ExternalStorageDrive'],

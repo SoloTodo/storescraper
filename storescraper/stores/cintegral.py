@@ -48,7 +48,7 @@ class Cintegral(Store):
             ['105', 'UsbFlashDrive'],
             ['94', 'Processor'],
             ['95', 'ComputerCase'],
-            ['96', 'PowerSupply'],
+            # ['96', 'PowerSupply'],
             ['97', 'Motherboard'],
             ['98', 'Ram'],
             ['99', 'VideoCard'],
