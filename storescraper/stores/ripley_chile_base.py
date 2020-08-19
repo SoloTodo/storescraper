@@ -323,7 +323,7 @@ class RipleyChileBase(Store):
             if 'file://' in picture_url:
                 continue
 
-            if not picture_url.startswith('https'):
+            if not picture_url.startswith('http'):
                 picture_url = 'https:' + picture_url
 
             picture_urls.append(picture_url)
