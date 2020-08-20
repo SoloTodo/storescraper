@@ -29,6 +29,7 @@ class IsiBook(Store):
             'Processor',
             'PowerSupply',
             'Ram',
+            'VideoCard',
         ]
 
     @classmethod
@@ -49,6 +50,7 @@ class IsiBook(Store):
             # ['partes-y-piezas/procesadores', 'Processor'],
             # ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
+            ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
         ]
 
         session = session_with_proxy(extra_args)
