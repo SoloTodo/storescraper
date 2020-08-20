@@ -36,16 +36,20 @@ class NotebookStore(Store):
             'StereoSystem',
             'Printer',
             'VideoGameConsole',
+            'PowerSupply',
+            'CpuCooler',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
+            # Portabilidad
             ['tecnologia-portatil/celulares/'
              'celulares-desbloqueados.html', 'Cell'],
             ['tecnologia-portatil/celulares/tableta-2.html', 'Tablet'],
             ['tecnologia-portatil/relojes-y-trackers/'
              'trackers-de-actividad.html', 'Wearable'],
+            # Equipos
             ['equipos/computadores-1/portatiles-1.html', 'Notebook'],
             ['equipos/computadores-1/ultrabooks.html', 'Notebook'],
             ['equipos/computadores-1/todo-en-uno.html', 'AllInOne'],
@@ -53,33 +57,43 @@ class NotebookStore(Store):
             ['equipos/memorias/tarjetas-de-memoria-flash.html', 'MemoryCard'],
             ['equipos/memorias/modulos-ram-genericos.html', 'Ram'],
             ['equipos/memorias/memoria-ram.html', 'Ram'],
-            # ['equipos/alm/discos-duros-externos.html',
-            #  'ExternalStorageDrive'],
+            ['equipos/alm/discos-duros-externos.html', 'ExternalStorageDrive'],
             ['equipos/alm/discos-duros-internos.html', 'StorageDrive'],
             ['equipos/alm/discos-de-estado-solido.html', 'SolidStateDrive'],
             ['equipos/perifericos/ratones.html', 'Mouse'],
             ['equipos/perifericos/'
              'teclados-y-teclados-de-numeros.html', 'Keyboard'],
-            # ['equipos/perifericos/'
-            #  'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
-            # ['equipos/perifericos/'
-            #  'auriculares-y-manos-libres.html', 'Headphones'],
-            ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
-            ['equipos/componentes-informaticos/'
-             'procesadores.html', 'Processor'],
-            ['equipos/componentes-informaticos/'
-             'tarjetas-de-video.html', 'VideoCard'],
-            ['equipos/componentes-informaticos/'
-             'tarjetas-madre-placas-madre.html', 'Motherboard'],
-            ['equipos/componentes-informaticos/'
-             'cajas-gabinetes.html', 'ComputerCase'],
+            ['equipos/perifericos/'
+             'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
+            ['equipos/perifericos/'
+             'auriculares-y-manos-libres.html', 'Headphones'],
+            ['equipos/componentes-informaticos/procesadores.html', 'Processor'],
+            ['equipos/componentes-informaticos/tarjetas-de-video.html',
+             'VideoCard'],
+            ['equipos/componentes-informaticos/tarjetas-madre-placas-madre.html', 'Motherboard'],
+            ['equipos/componentes-informaticos/fuentes-de-poder.html', 'PowerSupply'],
+            ['equipos/componentes-informaticos/cajas-gabinetes.html', 'ComputerCase'],
+            ['equipos/componentes-informaticos/ventiladores-y-sistemas-de-enfriamiento.html', 'CpuCooler'],
+            # Audio Video y Foto
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            # ['audio-y-video/monitores-proyectores/'
-            #  'televisores.html', 'Television'],
-            # ['audio-y-video/audio-y-video/'
-            #  'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
+            ['audio-y-video/monitores-proyectores/'
+             'televisores.html', 'Television'],
+            ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
+            ['audio-y-video/audio-y-video/'
+             'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
+            # Impresion
             ['impresion/impresoras-y-escaneres.html', 'Printer'],
-            # ['gaming/videojuegos/consolas.html', 'VideoGameConsole']
+            # Gaming
+            ['gaming/equipos/notebooks.html', 'Notebook'],
+            ['gaming/equipos/monitores.html', 'Monitor'],
+            ['gaming/accesorios/audifonos.html', 'Headphones'],
+            ['gaming/accesorios/teclados-y-mouse.html', 'Mouse'],
+            ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
+            ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
+            ['gaming/componentes/gabinetes.html', 'ComputerCase'],
+            ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
+            ['gaming/componentes/memoria-ram.html', 'Ram'],
+            ['gaming/componentes/procesadores.html', 'Processor'],
         ]
 
         session = session_with_proxy(extra_args)
