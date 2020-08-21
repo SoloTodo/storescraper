@@ -295,6 +295,8 @@ class Falabella(Store):
                 return cls._old_products_for_url(
                     url, content, session,
                     category=category, extra_args=extra_args)
+            else:
+                raise Exception('Invalid product type')
 
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_query_params):
@@ -334,8 +336,6 @@ class Falabella(Store):
     @classmethod
     def _new_products_for_url(
             cls, url, content, session, category=None, extra_args=None):
-        soup = BeautifulSoup(content, 'html.parser')
-
         product_data = json.loads(re.search(
             r'var fbra_browseMainProductConfig = ([\S\s]+?);\r\n',
             content).groups()[0])['state']['product']
