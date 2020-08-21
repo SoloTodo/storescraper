@@ -64,8 +64,9 @@ class GlobalMac(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'text/html'
+        session.headers['Accept-Encoding'] = 'deflate'
         response = session.get(url)
 
         if response.status_code == 500:

@@ -84,13 +84,13 @@ class NotebookStore(Store):
             # Impresion
             ['impresion/impresoras-y-escaneres.html', 'Printer'],
             # Gaming
-            ['gaming/equipos/notebooks.html', 'Notebook'],
+            # ['gaming/equipos/notebooks.html', 'Notebook'],
             ['gaming/equipos/monitores.html', 'Monitor'],
             ['gaming/accesorios/audifonos.html', 'Headphones'],
             ['gaming/accesorios/teclados-y-mouse.html', 'Mouse'],
             ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
             ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
-            ['gaming/componentes/gabinetes.html', 'ComputerCase'],
+            # ['gaming/componentes/gabinetes.html', 'ComputerCase'],
             ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
             ['gaming/componentes/memoria-ram.html', 'Ram'],
             ['gaming/componentes/procesadores.html', 'Processor'],

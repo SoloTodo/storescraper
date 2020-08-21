@@ -69,8 +69,7 @@ class HpOnline(Store):
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock = -1
 
-        if soup.find('meta', {'itemprop': 'availability'})['content'] == \
-                'OutOfStock':
+        if not soup.find('span', 'product-available'):
             stock = 0
 
         if not soup.find('span', {'data-price-type': 'finalPrice'})\
