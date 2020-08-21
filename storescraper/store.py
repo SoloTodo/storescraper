@@ -46,11 +46,7 @@ class Store:
         logger.info('Obtaining products from: {}'.format(cls.__name__))
         logger.info('Categories: {}'.format(', '.join(categories)))
 
-        if extra_args is None:
-            extra_args = dict()
-
-        preflight_args = cls.preflight(extra_args)
-        extra_args.update(preflight_args)
+        extra_args = cls._extra_args_with_preflight(extra_args)
 
         discovered_entries = cls.discover_entries_for_categories(
             categories=categories,
@@ -78,6 +74,8 @@ class Store:
         products_for_url_concurrency = \
             sanitized_parameters['products_for_url_concurrency']
         use_async = sanitized_parameters['use_async']
+
+        extra_args = cls._extra_args_with_preflight(extra_args)
 
         product_urls = cls.discover_urls_for_keyword(
             keyword,
@@ -118,6 +116,7 @@ class Store:
 
         entry_positions = defaultdict(lambda: {})
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
+        extra_args = cls._extra_args_with_preflight(extra_args)
 
         if use_async:
             category_chunks = chunks(categories, discover_urls_concurrency)
@@ -223,6 +222,7 @@ class Store:
 
         products = []
         discovery_urls_without_products = []
+        extra_args = cls._extra_args_with_preflight(extra_args)
 
         if use_async:
             discovery_entries_chunks = chunks(
@@ -447,3 +447,25 @@ class Store:
             'products_for_url_concurrency': products_for_url_concurrency,
             'use_async': use_async,
         }
+
+    ######################################################################
+    # Private methods
+    ######################################################################
+
+    @classmethod
+    def _extra_args_with_preflight(cls, extra_args=None):
+        # Merges the extra_args with the preflight args and prevents
+        # preflight from being called twice unnecesarily
+
+        # If the preflight args have already been calculated, return
+        if extra_args is not None and 'preflight_done' in extra_args:
+            return extra_args
+
+        preflight_args = {
+            'preflight_done': True
+        }
+        preflight_args.update(cls.preflight(extra_args))
+        if extra_args is not None:
+            preflight_args.update(extra_args)
+
+        return preflight_args

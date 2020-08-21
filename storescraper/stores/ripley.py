@@ -3,7 +3,7 @@ import time
 from bs4 import BeautifulSoup
 
 from storescraper.utils import get_cf_session, HeadlessChrome, \
-    load_driver_cf_cookies
+    load_driver_cf_cookies, session_with_proxy
 from storescraper import banner_sections as bs
 from .ripley_chile_base import RipleyChileBase
 from selenium.common.exceptions import NoSuchElementException
@@ -49,6 +49,10 @@ class Ripley(RipleyChileBase):
 
     @classmethod
     def banners(cls, extra_args=None):
+        from .ripley_chile_base_cf import RipleyChileBaseCf
+
+        extra_args = RipleyChileBaseCf._extra_args_with_preflight(extra_args)
+
         base_url = 'https://simple.ripley.cl/{}'
 
         sections_data = [
@@ -102,7 +106,11 @@ class Ripley(RipleyChileBase):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
 
-        session = get_cf_session(extra_args)
+        debug = extra_args.get('debug', False)
+        if debug:
+            session = session_with_proxy(extra_args)
+        else:
+            session = get_cf_session(extra_args)
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:

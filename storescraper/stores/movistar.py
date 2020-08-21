@@ -48,8 +48,12 @@ class Movistar(Store):
         elif category == 'Cell':
             catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
                            'catalogo.html?limit=1000'
+            print(catalogo_url)
+            print(extra_args)
             session = session_with_proxy(extra_args)
             session = cfscrape.create_scraper(sess=session)
+            print(session.headers)
+            print(session.proxies)
             soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
             containers = soup.findAll('li', 'itemsCatalogo')
 
