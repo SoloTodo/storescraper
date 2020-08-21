@@ -46,6 +46,12 @@ class Store:
         logger.info('Obtaining products from: {}'.format(cls.__name__))
         logger.info('Categories: {}'.format(', '.join(categories)))
 
+        if extra_args is None:
+            extra_args = dict()
+
+        preflight_args = cls.preflight(extra_args)
+        extra_args.update(preflight_args)
+
         discovered_entries = cls.discover_entries_for_categories(
             categories=categories,
             extra_args=extra_args,
@@ -126,8 +132,7 @@ class Store:
                     task = cls.discover_entries_for_category_task.s(
                         cls.__name__, category, extra_args)
                     task.set(
-                        queue='storescraper',
-                        max_retries=5
+                        queue='storescraper'
                     )
                     chunk_tasks.append(task)
                 tasks_group = cls.create_celery_group(chunk_tasks)
@@ -235,8 +240,7 @@ class Store:
                         cls.__name__, entry_url,
                         entry_metadata['category'], extra_args)
                     task.set(
-                        queue='storescraper',
-                        max_retries=5
+                        queue='storescraper'
                     )
                     chunk_tasks.append(task)
                     task_counter += 1
@@ -287,7 +291,8 @@ class Store:
     ##########################################################################
 
     @staticmethod
-    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+    @shared_task(autoretry_for=(StoreScrapError,),
+                 max_retries=5,
                  default_retry_delay=5)
     def discover_entries_for_category_task(store_class_name, category,
                                            extra_args=None):
@@ -312,7 +317,8 @@ class Store:
         return discovered_entries
 
     @staticmethod
-    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+    @shared_task(autoretry_for=(StoreScrapError,),
+                 max_retries=5,
                  default_retry_delay=5)
     def products_for_url_task(store_class_name, url, category=None,
                               extra_args=None):
@@ -340,7 +346,8 @@ class Store:
         return serialized_products
 
     @staticmethod
-    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5,
+    @shared_task(autoretry_for=(StoreScrapError,),
+                 max_retries=5,
                  default_retry_delay=5)
     def products_for_urls_task(store_class_name,
                                discovery_entries,
@@ -391,6 +398,14 @@ class Store:
         # discover_urls_for_category method and patch it
         urls = cls.discover_urls_for_category(category, extra_args)
         return {url: [] for url in urls}
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        # Executes any logic that needs to be done only once per scraping
+        # (e.g. obtaining session cookies). Should return a dictionary that
+        # is merged with the "extra_args" available in the "discover" methods
+        # above or products_for_url.
+        return {}
 
     ##########################################################################
     # Utility methods
