@@ -8,7 +8,6 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
-import cfscrape
 
 
 class Movistar(Store):
@@ -48,12 +47,8 @@ class Movistar(Store):
         elif category == 'Cell':
             catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
                            'catalogo.html?limit=1000'
-            print(catalogo_url)
-            print(extra_args)
             session = session_with_proxy(extra_args)
-            session = cfscrape.create_scraper(sess=session)
-            print(session.headers)
-            print(session.proxies)
+            session.headers['user-agent'] = 'python-requests/2.21.0'
             soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
             containers = soup.findAll('li', 'itemsCatalogo')
 
@@ -103,7 +98,7 @@ class Movistar(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        session = cfscrape.create_scraper(sess=session)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
         soup = BeautifulSoup(session.get(url, timeout=30).text, 'html5lib')
         products = []
 
@@ -151,12 +146,12 @@ class Movistar(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
-        session = cfscrape.create_scraper(sess=session)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)
         ajax_session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded'
+        ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
-        ajax_session = cfscrape.create_scraper(sess=ajax_session)
         page = session.get(url)
 
         if page.status_code == 404:

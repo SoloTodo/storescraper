@@ -35,6 +35,7 @@ class TiendaMovistar(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -83,6 +84,7 @@ class TiendaMovistar(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
         response = session.get(url)
 
         if response.status_code == 404:
@@ -99,6 +101,7 @@ class TiendaMovistar(Store):
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
         ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
         ajax_session.headers['content-type'] = \
             'application/x-www-form-urlencoded'
