@@ -47,7 +47,7 @@ class MercadoTech(Store):
             ['tecnologia/equipos/notebooks', 'Notebook'],
             ['audio-y-video/parlantes', 'StereoSystem'],
             # ['tecnologia/componentes-pc/fuente-de-poder', 'PowerSupply'],
-            ['tecnologia/componentes-pc/gabinetes', 'ComputerCase'],
+            # ['tecnologia/componentes-pc/gabinetes', 'ComputerCase'],
             ['tecnologia/componentes-pc/placas-madres', 'Motherboard'],
             ['tecnologia/componentes-pc/procesadores', 'Processor'],
             ['tecnologia/componentes-pc/tarjetas-de-video', 'VideoCard'],
