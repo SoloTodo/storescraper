@@ -100,6 +100,8 @@ class PcGamer(Store):
                     link_containers = soup.findAll('article', 'item')
 
                     if not link_containers:
+                        if page == 1:
+                            raise Exception('Invalid category: ' + url_webpage)
                         break
 
                     for link_container in link_containers:
