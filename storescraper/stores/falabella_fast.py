@@ -1,23 +1,10 @@
 import json
-import re
-import time
-import base64
-
-from collections import defaultdict
 from decimal import Decimal
-from bs4 import BeautifulSoup
-from PIL import Image
-from io import BytesIO
-from html import unescape
-
-from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy, CF_REQUEST_HEADERS
-from storescraper import banner_sections as bs
-from storescraper.utils import HeadlessChrome
+from storescraper.utils import \
+    remove_words, session_with_proxy, CF_REQUEST_HEADERS
 
 
 class FalabellaFast(Store):
