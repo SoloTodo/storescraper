@@ -1,18 +1,14 @@
-import random
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    HeadlessChrome, CF_REQUEST_HEADERS
-
-import re
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class LadyLee(Store):
-    base_url = 'https://www.ladylee.net'
+    base_url = 'https://ladylee.net'
 
     @classmethod
     def categories(cls):
@@ -29,55 +25,61 @@ class LadyLee(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('televisores', '217', 'Television'),
-            # ('mini-componentes', '1066', 'StereoSystem'),
-            ('celulares', '218', 'Cell'),
-            ('refrigeradoras', '4551', 'Refrigerator'),
-            ('microondas', '1198', 'Oven'),
-            ('lavadoras', '1096', 'WashingMachine'),
-            ('secadoras', '1100', 'WashingMachine'),
-            ('estufas', '1095', 'Stove')
+            ('television', 'Television'),
+            ('parlantes-portatiles', 'StereoSystem'),
+            ('equipos-de-sonido', 'StereoSystem'),
+            ('teatros-en-casa', 'StereoSystem'),
+            ('equipo-para-auto', 'StereoSystem'),
+            ('celulares-1', 'Cell'),
+            ('refrigeradoras-1-puerta', 'Refrigerator'),
+            ('refrigeradoras-top-freezer', 'Refrigerator'),
+            ('refrigeradoras-side-by-side', 'Refrigerator'),
+            ('refrigeradoras-frech-door', 'Refrigerator'),
+            ('freezers', 'Refrigerator'),
+            ('estufas-electricas', 'Stove'),
+            ('estufas-de-gas', 'Stove'),
+            ('cooktop', 'Stove'),
+            ('lavadoras-twinwash', 'WashingMachine'),
+            ('lavadoras-carga-frontal', 'WashingMachine'),
+            ('lavadoras-carga-superior', 'WashingMachine'),
+            ('centro-de-lavado', 'WashingMachine'),
+            ('secadoras', 'WashingMachine'),
+            ('microondas', 'Oven'),
+            ('hornos', 'Oven'),
         ]
 
-        session = cls._get_initialized_session()
-        session.headers['user-agent'] = CF_REQUEST_HEADERS['User-Agent']
+        session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, section_id, local_category in category_filters:
+        for category_path, local_category in category_filters:
             if local_category != category:
                 continue
 
             page = 1
-            done = False
 
-            while not done:
+            while True:
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url = '{}/section/stores/{}/products?ps_{}={}&_={}'.format(
-                    cls.base_url, section_id, section_id, page,
-                    random.randint(0, 100))
+                url = '{}/collections/{}?page={}'.format(
+                    cls.base_url, category_path, page)
 
                 response = session.get(url)
                 data = response.text
 
-                html_data = re.search(r'el\.replaceWith\(\'(.*?)\'\)',
-                                      data, flags=re.S).group(1)\
-                    .replace('\\n', '').replace('\\', '')
+                soup = BeautifulSoup(data, 'html.parser')
+                products = soup.findAll('div', 'main_box')
 
-                soup = BeautifulSoup(html_data, 'html.parser')
+                if not products:
+                    if page == 1:
+                        raise Exception('Empty category: ' + url)
+                    break
 
-                products = soup.findAll('div', 'product')
-
-                if products:
-                    for container in products:
-                        if container.find('h6', 'code').text != 'LG':
-                            continue
-                        product_url = '{}{}'\
-                            .format(cls.base_url, container.find('a')['href'])
-                        product_urls.append(product_url)
-                else:
-                    done = True
+                for container in products:
+                    product_link = container.find('a')
+                    product_url = '{}{}'\
+                        .format(cls.base_url, product_link['href'])
+                    product_urls.append(product_url)
 
                 page += 1
 
@@ -86,41 +88,38 @@ class LadyLee(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = cls._get_initialized_session()
+        session = session_with_proxy(extra_args)
         response = session.get(url, allow_redirects=False)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        if response.status_code == 302:
-            return []
+        sku_container = soup.find('div', 'variant-sku')
+        sku = sku_container.text.split(':')[1].strip()
+        model_name = soup.find('div', 'description-first-part').text.split(
+            ':')[1].strip()
+        title = soup.find('h1').text.strip()
+        name = '{} ({})'.format(title, model_name)
 
-        data = response.text
-        soup = BeautifulSoup(data, 'html.parser')
+        brand = soup.find('div', 'product-vendor').text.split(':')[1].strip()
 
-        sku_container = soup.find('div', 'sku')
-        sku = sku_container.contents[0].replace('SKU', '').strip()
-        reference = sku_container.contents[2].replace('REF:', '').strip()
+        # We're only interested in LG products
+        if brand == 'LG' and soup.find(
+                'link', {'href': 'http://schema.org/InStock'}):
+            stock = -1
+        else:
+            stock = 0
 
-        name = soup.find('h1', 'heading').text.strip()
-
-        if reference:
-            name += ' ({})'.format(reference)
-
-        stock = -1
-
-        price = soup.find('dd', {'id': 'product-promotional-price'})
-        if not price:
-            price = soup.find('dd', {'id': 'product-price'})
-
+        price = soup.find('span', {'id': 'productPrice'})
         price = Decimal(price.text.replace('L', '').replace(',', ''))
 
         picture_urls = []
-        pictures = soup.find('ul', 'product-image-list')
 
-        for picture in pictures.findAll('li'):
-            picture_url = '{}{}'.format(cls.base_url, picture['data-src'])
+
+        for picture in soup.findAll('a', 'image-slide-link'):
+            picture_url = 'https:' + picture['href']
             picture_urls.append(picture_url)
 
         description = html_to_markdown(str(
-            soup.find('div', 'product-description')))
+            soup.find('div', 'desc_blk')))
 
         p = Product(
             name,
@@ -139,19 +138,3 @@ class LadyLee(Store):
         )
 
         return [p]
-
-    @classmethod
-    def _get_initialized_session(cls):
-        session = session_with_proxy(None)
-
-        with HeadlessChrome() as driver:
-            agent = driver.execute_script("return navigator.userAgent")
-            session.headers['user-agent'] = agent
-
-            driver.get('https://www.ladylee.net/')
-            for cookie in driver.get_cookies():
-                cookie.pop('expiry', None)
-                cookie.pop('httpOnly', None)
-                session.cookies.set(**cookie)
-
-        return session
