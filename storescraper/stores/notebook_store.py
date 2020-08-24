@@ -88,7 +88,7 @@ class NotebookStore(Store):
             ['gaming/equipos/monitores.html', 'Monitor'],
             ['gaming/accesorios/audifonos.html', 'Headphones'],
             ['gaming/accesorios/teclados-y-mouse.html', 'Mouse'],
-            ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
+            # ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
             ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
             # ['gaming/componentes/gabinetes.html', 'ComputerCase'],
             ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
@@ -116,6 +116,9 @@ class NotebookStore(Store):
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 products = soup.findAll('li', 'product')
+
+                if not products:
+                    raise Exception('Empty category: ' + url)
 
                 for product in products:
                     product_url = product.find('a')['href']

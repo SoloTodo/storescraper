@@ -135,7 +135,8 @@ class PcExpress(Store):
 
         if not stock_container:
             stock = 0
-
+        elif stock_container.text == 'Sin disponibilidad para venta web':
+            stock = 0
         else:
             stock = int(stock_container.text.split(' ')[0])
 
