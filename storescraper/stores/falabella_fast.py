@@ -1,6 +1,7 @@
 import json
 from decimal import Decimal
 
+from storescraper.stores import Falabella
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import \
@@ -52,151 +53,7 @@ class FalabellaFast(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        category_paths = [
-            ['cat70057', ['Notebook'],
-             'Home > Computación-Notebooks', 1],
-            # ['cat5860031', ['Notebook'],
-            #  'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
-            ['cat2028', ['Notebook'],
-             'Home > Computación-Notebooks Gamers', 1],
-            ['cat2450060', ['Notebook'],
-             'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
-            # ['cat15880017', ['Notebook'],
-            #  'Home > Especiales-Gamer', 1],
-            ['cat5860030', ['Notebook'],
-             'Home > Computación-Notebooks > MacBooks', 1],
-            ['cat4850013', ['Notebook'],
-             'Home > Computación-Computación Gamer', 1],
-            ['cat1012', ['Television'],
-             'Home > Tecnología-TV', 1],
-            ['cat7190148', ['Television'],
-             'Home > Tecnología-TV > Televisores LED', 1],
-            ['cat11161614', ['Television'],
-             'Home > Tecnología-TV > LEDs menores a 50 pulgadas', 1],
-            ['cat11161675', ['Television'],
-             'Home > Tecnología-TV > LEDs entre 50 - 55 pulgadas', 1],
-            ['cat11161679', ['Television'],
-             'Home > Tecnología-TV > LEDs sobre 55 pulgadas', 1],
-            # ['cat2850016', ['Television'],
-            #  'Home > TV-Televisores OLED', 1],
-            ['cat10020021', ['Television'],
-             'Home > TV-Televisores QLED', 1],
-            # ['cat18110001', ['Television'],
-            #  'Home > Tecnología-Premium', 1],
-            ['cat7230007', ['Tablet'],
-             'Home > Computación-Tablets', 1],
-            ['cat3205', ['Refrigerator'],
-             'Home > Refrigeración-Refrigeradores', 1],
-            ['cat4074', ['Refrigerator'],
-             'Home > Refrigeración-No Frost', 1],
-            ['cat4091', ['Refrigerator'],
-             'Home > Refrigeración-Side by Side', 1],
-            ['cat4036', ['Refrigerator'],
-             'Home > Refrigeración-Frío Directo', 1],
-            ['cat4048', ['Refrigerator'],
-             'Home > Refrigeración-Freezers', 1],
-            ['cat4049', ['Refrigerator'],
-             'Home > Refrigeración-Frigobar', 1],
-            ['cat1840004', ['Refrigerator'],
-             'Home > Refrigeración-Cavas', 1],
-            ['cat3205', ['Refrigerator'],
-             'Home > Refrigeración-Bottom freezer', 1,
-             'f.product.attribute.Tipo=Bottom+freezer'],
-            ['cat3205', ['Refrigerator'],
-             'Home > Refrigeración-Top mount', 1,
-             'f.product.attribute.Tipo=Top+mount'],
-            ['cat1820006', ['Printer'],
-             'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
-            # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
-            # ['cat11970007/Impresoras-Laser', 'Printer'],
-            # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
-            ['cat3151', ['Oven'],
-             'Home > Microondas', 1],
-            ['cat3114', ['Oven'],
-             'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
-             'Hornos Eléctricos', 1],
-            # ['cat3025', ['VacuumCleaner'],
-            #  'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
-            ['cat3136', ['WashingMachine'],
-             'Home > Electrohogar-Lavado > Lavado', 1],
-            ['cat4060', ['WashingMachine'],
-             'Home > Electrohogar-Lavado > Lavadoras', 1],
-            ['cat1700002', ['WashingMachine'],
-             'Home > Electrohogar-Lavado > Lavadoras-Secadoras', 1],
-            ['cat4088', ['WashingMachine'],
-             'Home > Electrohogar-Lavado > Secadoras', 1],
-            ['cat1280018', ['Cell'],
-             'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
-            ['cat720161', ['Cell'],
-             'Home > Telefonía- Celulares y Teléfonos > Smartphones', 1],
-            ['cat70028', ['Camera'],
-             'Home > Fotografía-Cámaras Compactas', 1],
-            ['cat70029', ['Camera'],
-             'Home > Fotografía-Cámaras Semiprofesionales', 1],
-            ['cat3091', ['StereoSystem'],
-             'Home > Audio-Equipos de Música y Karaokes', 1],
-            ['cat3171', ['StereoSystem'],
-             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-             'Parlantes Bluetooth', 1],
-            ['cat2045', ['StereoSystem'],
-             'Home > Audio-Soundbar y Home Theater', 1],
-            ['cat1130010', ['StereoSystem'],
-             'Home > Audio- Hi-Fi > Tornamesas', 1],
-            ['cat6260041', ['StereoSystem'],
-             'Home > Día del Niño Chile- Tecnología > Audio > Karaoke', 1],
-            ['cat2032', ['OpticalDiskPlayer'],
-             'Home > TV-Blu Ray y DVD', 1],
-            ['cat3087', ['ExternalStorageDrive'],
-             'Home > Computación- Almacenamiento > Discos duros', 1],
-            ['cat3177', ['UsbFlashDrive'],
-             'Home > Computación- Almacenamiento > Pendrives', 1],
-            ['cat70037', ['MemoryCard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Fotografía > Tarjetas de Memoria', 1],
-            ['cat2070', ['Projector'],
-             'Home > TV-Proyectores', 1],
-            ['cat3770004', ['VideoGameConsole'],
-             'Home > Tecnología- Videojuegos > Consolas', 1],
-            ['cat40051', ['AllInOne'],
-             'Home > Computación-All In One', 1],
-            ['cat7830015', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado > Portátiles', 1],
-            ['cat7830014', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado >Split', 1],
-            ['cat3197', ['AirConditioner'],
-             'Home > Electrohogar- Aire Acondicionado > Purificadores', 1],
-            ['cat2062', ['Monitor'],
-             'Home > Computación-Monitores', 1],
-            ['cat2013', ['WaterHeater'],
-             'Home > Electrohogar- Aire Acondicionado > Calefont y Termos', 1],
-            ['cat3155', ['Mouse'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Mouse', 1],
-            ['cat9900007', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Parafina Láser', 1],
-            ['cat9910024', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Gas', 1],
-            ['cat9910006', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Eléctricas', 1],
-            ['cat9910027', ['SpaceHeater'],
-             'Home > Electrohogar- Calefacción > Estufas Pellet y Leña', 1],
-            ['cat4290063', ['Wearable'],
-             'Home > Telefonía- Wearables > SmartWatch', 1],
-            ['cat4730023', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Teclados > Teclados Gamers', 1],
-            ['cat2370002', ['Keyboard'],
-             'Home > Computación- Accesorios Tecnología > '
-             'Accesorios Computación > Teclados', 1],
-            # ['cat2930003', ['Keyboard'],
-            #  'Home > Computación- Accesorios Tecnología > Accesorios TV > '
-            #  'Teclados Smart', 1],
-            ['cat1640002', ['Headphones'],
-             'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-             'Audífonos', 1],
-            ['cat4061', ['DishWasher'],
-             'Home > Lavado-Lavavajillas', 1],
-        ]
+        category_paths = Falabella.category_paths
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
@@ -214,24 +71,27 @@ class FalabellaFast(Store):
             if category not in local_categories:
                 continue
 
-            category_products = cls._get_products(
-                session, category_id, category, extra_query_params)
+            products_data = cls._get_products_data(
+                session, category_id, extra_query_params)
 
-            for idx, product in enumerate(category_products):
-                if product.sku in products_dict:
-                    product_to_update = products_dict[product.sku]
-                else:
-                    products_dict[product.sku] = product
-                    product_to_update = product
+            for idx, product_data in enumerate(products_data):
+                products = cls._get_products(product_data, category)
 
-                product_to_update.positions[section_name] = idx + 1
+                for product in products:
+                    if product.sku in products_dict:
+                        product_to_update = products_dict[product.sku]
+                    else:
+                        products_dict[product.sku] = product
+                        product_to_update = product
+
+                    product_to_update.positions[section_name] = idx + 1
 
         products_list = [p for p in products_dict.values()]
         return products_list
 
     @classmethod
-    def _get_products(cls, session, category_id, category, extra_query_params):
-        products = []
+    def _get_products_data(cls, session, category_id, extra_query_params):
+        products_data = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    'zone=13&categoryId={}&page={}'
 
@@ -256,44 +116,80 @@ class FalabellaFast(Store):
                 break
 
             for result in res['results']:
-                product_url = result['url']
-                product_name = result['displayName']
-                product_sku = result['skuId']
-                product_stock = -1
+                products_data.append(result)
 
-                prices = result['prices']
-                offer_price = None
-                normal_price = None
+            page += 1
 
-                for price in prices:
-                    if price['label'] == '(Oferta)':
-                        offer_price = Decimal(remove_words(price['price'][0]))
-                    else:
-                        normal_price = Decimal(remove_words(price['price'][0]))
+        return products_data
 
-                if not normal_price:
-                    normal_price = offer_price
 
-                if not offer_price:
-                    offer_price = normal_price
+    @classmethod
+    def _get_products(cls, product_data, category):
+        products = []
 
-                print(product_url)
+        product_url = product_data['url']
+        product_name = product_data['displayName']
+        product_sku = product_data['skuId']
+        product_stock = -1
 
+        prices = product_data['prices']
+        offer_price = None
+        normal_price = None
+
+        for price in prices:
+            if price['label'] == '(Oferta)':
+                normal_price = Decimal(remove_words(price['price'][0]))
+                break
+            if price['icons'] == 'cmr-icon':
+                    continue
+            normal_price = Decimal(remove_words(price['price'][0]))
+
+
+        for price in prices:
+            if price['icons'] == 'cmr-icon':
+                offer_price = Decimal(remove_words(price['price'][0]))
+
+        if not normal_price:
+            normal_price = offer_price
+
+        if not offer_price:
+            offer_price = normal_price
+
+        variants = product_data['variants'][0]['options']
+
+        if variants:
+            for variant in variants:
+                variant_sku = variant['extraInfo']
+                variant_name = '{} ({})'.format(product_name, variant['label'])
                 p = Product(
-                    product_name,
+                    variant_name,
                     cls.__name__,
                     category,
                     product_url,
                     product_url,
-                    product_sku,
+                    variant_sku,
                     product_stock,
                     normal_price,
                     offer_price,
                     'CLP',
-                    sku=product_sku,
+                    sku=variant_sku
                 )
                 products.append(p)
 
-            page += 1
+        else:
+            p = Product(
+                product_name,
+                cls.__name__,
+                category,
+                product_url,
+                product_url,
+                product_sku,
+                product_stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=product_sku,
+            )
+            products.append(p)
 
         return products
