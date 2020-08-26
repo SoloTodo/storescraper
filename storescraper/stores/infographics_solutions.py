@@ -56,14 +56,29 @@ class InfographicsSolutions(Store):
             if local_category != category:
                 continue
 
-            url = 'https://infograsolutions.cl/categoria-producto/{}'\
-                .format(category_path)
+            page = 1
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('div', 'product-grid-item')
+            while True:
+                url = 'https://infograsolutions.cl/categoria-producto/{}/' \
+                      'page/{}/'.format(category_path, page)
+                print(url)
 
-            for product in products:
-                product_urls.append(product.find('a')['href'])
+                if page > 10:
+                    raise Exception('Page overflow: ' + page)
+
+                res = session.get(url)
+                if res.status_code == 404:
+                    if page == 1:
+                        raise Exception('Invalid category: ' + url)
+                    break
+
+                soup = BeautifulSoup(res.text, 'html.parser')
+                products = soup.findAll('div', 'product-grid-item')
+
+                for product in products:
+                    product_urls.append(product.find('a')['href'])
+
+                page += 1
 
         return product_urls
 
