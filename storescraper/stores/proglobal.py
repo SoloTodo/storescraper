@@ -31,7 +31,7 @@ class Proglobal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['celulares/smartphone', 'Cell'],
+            # ['celulares/smartphone', 'Cell'],
             ['celulares/pulseras-inteligentes', 'Wearable'],
             # ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
             ['computacion-y-gamer/almacenamiento/microsd-alta-velocidad',

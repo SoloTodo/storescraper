@@ -40,18 +40,18 @@ class PcGamer(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['62', 'Processor'],  # Procesadores
-            ['33', 'Motherboard'],  # MB
+            # ['33', 'Motherboard'],  # MB
             ['70', 'Ram'],  # RAM Notebook
             ['75', 'StorageDrive'],  # Almacenamiento
-            ['87', 'VideoCard'],  # Tarjetas de video
-            ['81', 'ComputerCase'],  # Gabinetes s/fuente
+            # ['87', 'VideoCard'],  # Tarjetas de video
+            # ['81', 'ComputerCase'],  # Gabinetes s/fuente
             ['84', 'PowerSupply'],  # Fuentes de poder
             # ['17_69', 'CpuCooler'],  # Coolers
             ['108', 'CpuCooler'],  # Refrigeracion
             ['106', 'Mouse'],  # Mouse y teclados
             # ['92', 'Keyboard'],  # accesorios gamer
             ['105', 'Headphones'],  # Audio
-            ['98', 'Monitor'],  # Monitores
+            # ['98', 'Monitor'],  # Monitores
         ]
 
         session = session_with_proxy(extra_args)
@@ -76,7 +76,7 @@ class PcGamer(Store):
 
             for container in subcategory_containers:
                 link = container.find('a')
-                if not link:
+                if not link or '(0)' in link.text:
                     continue
                 url = link['href']
                 if 'page' in url:
