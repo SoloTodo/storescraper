@@ -36,7 +36,7 @@ class IsiBook(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['pc-y-portatiles/notebook', 'Notebook'],
-            # ['pc-y-portatiles/tablet', 'Tablet'],
+            ['pc-y-portatiles/tablet', 'Tablet'],
             ['impresion/multifuncionales-tinta', 'Printer'],
             ['impresion/impresoras-laser', 'Printer'],
             # ['audio-video-y-fotografia/parlantes', 'StereoSystem'],

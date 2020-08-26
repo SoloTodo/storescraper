@@ -135,9 +135,9 @@ class PcFactory(Store):
             ['16', ['ComputerCase'],
              'Inicio > Componentes/Partes y Piezas > Gabinetes > '
              'Gabinetes con Fuente', 1],
-            # ['328', ['ComputerCase'],
-            #  'Inicio > Componentes/Partes y Piezas > Gabinetes > '
-            #  'Gabinetes sin Fuente', 1],
+            ['328', ['ComputerCase'],
+             'Inicio > Componentes/Partes y Piezas > Gabinetes > '
+             'Gabinetes sin Fuente', 1],
             ['42', ['CpuCooler'],
              'Inicio > Componentes/Partes y Piezas > Refrigeración', 1],
             ['262', ['Printer'],
