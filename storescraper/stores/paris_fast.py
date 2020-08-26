@@ -58,13 +58,15 @@ class ParisFast(Store):
         category_paths = Paris.category_paths
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
         products_dict = {}
 
         for e in category_paths:
             category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
+                continue
+
+            if category_weight == 0:
                 continue
 
             page = 0
@@ -92,6 +94,15 @@ class ParisFast(Store):
                     break
 
                 for idx, container in enumerate(containers):
+                    if container.find('div', 'box-error'):
+                        continue
+                    product_a = container.find('a')
+                    if not product_a:
+                        continue
+                    product_url = product_a['href'].split('?')[0]
+                    if product_url == "null":
+                        continue
+
                     product = cls._get_product(container, category)
                     if product.sku in products_dict:
                         product_to_update = products_dict[product.sku]
@@ -99,7 +110,7 @@ class ParisFast(Store):
                         products_dict[product.sku] = product
                         product_to_update = product
 
-                    product_to_update.positions[section_name] = idx + 1
+                    product_to_update.positions[section_name] = 40 * page + idx + 1
 
                 page += 1
 
