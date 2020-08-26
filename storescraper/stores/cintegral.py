@@ -45,7 +45,7 @@ class Cintegral(Store):
             ['102', 'ExternalStorageDrive'],
             ['103', 'SolidStateDrive'],
             # ['104', 'MemoryCard'],
-            ['105', 'UsbFlashDrive'],
+            # ['105', 'UsbFlashDrive'],
             ['94', 'Processor'],
             # ['95', 'ComputerCase'],
             # ['96', 'PowerSupply'],

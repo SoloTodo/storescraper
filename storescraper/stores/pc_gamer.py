@@ -40,7 +40,7 @@ class PcGamer(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['62', 'Processor'],  # Procesadores
-            ['33', 'Motherboard'],  # MB
+            # ['33', 'Motherboard'],  # MB
             ['70', 'Ram'],  # RAM Notebook
             ['75', 'StorageDrive'],  # Almacenamiento
             # ['87', 'VideoCard'],  # Tarjetas de video

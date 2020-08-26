@@ -191,7 +191,7 @@ class MercadolibreChile(Store):
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('mouses-teclados-controles-kits-mouse-teclado',
                  'KeyboardMouseCombo'),
-                ('webcams-audio-pc', 'StereoSystem'),
+                # ('webcams-audio-pc', 'StereoSystem'),
             ],
             '_Tienda_logitech-g': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
