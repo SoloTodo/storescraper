@@ -43,8 +43,8 @@ class Easy(Store):
             ['refrigeracion-refrigeradores', ['Refrigerator'],
              'Inicio > Electrohogar > Refrigeración > Refrigeradores', 1],
 
-            ['hornos-electricos', ['Oven'],
-             'Inicio > Electrohogar > Cocina > Hornos Eléctricos', 1],
+            # ['hornos-electricos', ['Oven'],
+            #  'Inicio > Electrohogar > Cocina > Hornos Eléctricos', 1],
             ['hornos-empotrables', ['Oven'],
              'Inicio > Electrohogar > Cocina > Hornos Empotrables', 1],
             ['microondas', ['Oven'],
