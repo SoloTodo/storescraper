@@ -540,7 +540,7 @@ class Ripley(Store):
             extra_args['PROXY_PORT'],
         )
         with HeadlessChrome(images_enabled=True, proxy=proxy,
-                            headless=False) as driver:
+                            headless=True) as driver:
             driver.get('https://simple.ripley.cl')
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
