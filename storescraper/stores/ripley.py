@@ -162,7 +162,7 @@ class Ripley(Store):
              'Tecno > Audio y Música > Audífonos', 1],
         ]
 
-        if not 'PROXY_USERNAME' in extra_args:
+        if 'PROXY_USERNAME' not in extra_args:
             session = session_with_proxy(extra_args)
         else:
             session = get_cf_session(extra_args)
@@ -184,6 +184,7 @@ class Ripley(Store):
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
+                print(category_url)
                 response = session.get(category_url, allow_redirects=False)
 
                 if response.status_code != 200 and page == 1:
@@ -235,7 +236,6 @@ class Ripley(Store):
                             product_data, product_element, category)
 
                     if product:
-                        print(product.url)
                         if product.sku in product_dict:
                             product_to_update = product_dict[product.sku]
                         else:
@@ -265,11 +265,12 @@ class Ripley(Store):
 
     @classmethod
     def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        if not 'PROXY_USERNAME' in extra_args:
+        if 'PROXY_USERNAME' not in extra_args:
             session = session_with_proxy(extra_args)
         else:
             session = get_cf_session(extra_args)
 
+        print(url)
         page_source = session.get(url).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -529,7 +530,7 @@ class Ripley(Store):
             raise Exception("extra_args should contain the parameters to "
                             "obtain the Cloudflare session cookie or the "
                             "'debug' flag if testing locally")
-        if not 'PROXY_USERNAME' in extra_args:
+        if 'PROXY_USERNAME' not in extra_args:
             return {}
 
         proxy = 'http://{}:{}@{}:{}'.format(
@@ -539,7 +540,7 @@ class Ripley(Store):
             extra_args['PROXY_PORT'],
         )
         with HeadlessChrome(images_enabled=True, proxy=proxy,
-                            headless=True) as driver:
+                            headless=False) as driver:
             driver.get('https://simple.ripley.cl')
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
@@ -682,7 +683,7 @@ class Ripley(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
 
-        if not 'PROXY_USERNAME' in extra_args:
+        if 'PROXY_USERNAME' not in extra_args:
             session = session_with_proxy(extra_args)
         else:
             session = get_cf_session(extra_args)
