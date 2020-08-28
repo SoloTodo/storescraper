@@ -693,8 +693,8 @@ class Falabella(Store):
                     driver.get(url)
 
                     images = driver\
-                        .find_element_by_class_name('swiper-container')\
-                        .find_elements_by_class_name('dy_unit')[1:-1]
+                        .find_element_by_class_name('carousel-inner')\
+                        .find_elements_by_class_name('carousel-item')
 
                     index = 1
 
