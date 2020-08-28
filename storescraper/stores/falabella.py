@@ -709,10 +709,6 @@ class Falabella(Store):
                             picture_url = picture.get_property(
                                 'srcset').split(' ')[0]
 
-                            if 'https://www.falabella.com' not in picture_url:
-                                picture_url = 'https://www.falabella.com' \
-                                              '{}'.format(picture_url)
-
                             if picture_url:
                                 banners.append({
                                     'url': url,
@@ -792,9 +788,6 @@ class Falabella(Store):
 
                         for picture in picture_array:
                             key = picture['srcset'].split(' ')[0]
-
-                            if 'https' not in key:
-                                key = 'https://www.falabella.com' + key
 
                             if 'webp' not in key:
                                 banners.append({
