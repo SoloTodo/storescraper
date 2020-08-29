@@ -32,9 +32,8 @@ class Diunsa(Store):
             ['C:/1/73/84/88/', 'WashingMachine'],
             ['C:/1/73/84/85/', 'Refrigerator'],
             ['C:/1/73/74/75/', 'Oven'],
-            ['C:/1/58/64/68/', 'StereoSystem'],
-            ['C:/1/58/64/66/', 'StereoSystem'],
-            ['C:/1/58/64/65/', 'StereoSystem'],
+            # Audio
+            ['C:/1/58/64/', 'StereoSystem'],
             ['C:/1/58/69/', 'Cell'],
             ['C:/1/58/71/', 'Television'],
             ['C:/1/73/119/', 'AirConditioner'],
@@ -65,7 +64,7 @@ class Diunsa(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty url {}'.format(url))
+                        raise Exception('Empty url {}'.format(category_path))
                     else:
                         break
 

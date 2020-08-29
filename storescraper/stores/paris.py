@@ -262,6 +262,7 @@ class Paris(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
                                ''.format(category_path, page * 40)
+                print(category_url)
                 response = session.get(category_url)
 
                 if response.url != category_url:
@@ -269,20 +270,17 @@ class Paris(Store):
                         response.url, category_url))
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                containers = soup.findAll('li', 'flex-item-products')
+                containers = soup\
+                    .find('ul', {'id': 'search-result-items'})\
+                    .findAll('li', recursive=False)
 
                 if not containers:
                     if page == 0:
-                        raise Exception('Empty category: ' + category_path)
+                        raise Exception('Empty category: ' + category_url)
                     break
 
                 for idx, container in enumerate(containers):
-                    if container.find('div', 'box-error'):
-                        continue
-                    product_a = container.find('a')
-                    if not product_a:
-                        continue
-                    product_url = product_a['href'].split('?')[0]
+                    product_url = container.find('a')['href'].split('?')[0]
                     if product_url == "null":
                         continue
                     if 'https' not in product_url:

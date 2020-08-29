@@ -77,6 +77,7 @@ class ParisFast(Store):
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}'\
                     .format(category_path, page * 40)
+                print(category_url)
                 response = session.get(category_url)
 
                 print(category_url)
@@ -86,7 +87,9 @@ class ParisFast(Store):
                         response.url, category_url))
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                containers = soup.findAll('li', 'flex-item-products')
+                containers = soup \
+                    .find('ul', {'id': 'search-result-items'}) \
+                    .findAll('li', recursive=False)
 
                 if not containers:
                     if page == 0:
@@ -94,8 +97,6 @@ class ParisFast(Store):
                     break
 
                 for idx, container in enumerate(containers):
-                    if container.find('div', 'box-error'):
-                        continue
                     product_a = container.find('a')
                     if not product_a:
                         continue
