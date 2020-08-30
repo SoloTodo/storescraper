@@ -445,7 +445,11 @@ class Ripley(Store):
         name = data_name.encode('ascii', 'ignore').decode('ascii')
         sku = data['sku']
         url = cls._get_entry_url(element)
-        picture_urls = ['https:{}'.format(data['image'])]
+
+        if 'image' in data:
+            picture_urls = ['https:{}'.format(data['image'])]
+        else:
+            picture_urls = None
 
         if data['offers']['price'] == 'undefined':
             return None

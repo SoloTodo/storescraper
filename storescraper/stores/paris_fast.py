@@ -80,8 +80,6 @@ class ParisFast(Store):
                 print(category_url)
                 response = session.get(category_url)
 
-                print(category_url)
-
                 if response.url != category_url:
                     raise Exception('Mismatching URL: {} - {}'.format(
                         response.url, category_url))
