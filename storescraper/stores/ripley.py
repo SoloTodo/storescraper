@@ -162,10 +162,15 @@ class Ripley(Store):
              'Tecno > Audio y Música > Audífonos', 1],
         ]
 
-        if 'PROXY_USERNAME' not in extra_args:
-            session = session_with_proxy(extra_args)
-        else:
+        if extra_args is None:
+            extra_args = {}
+
+        if 'PROXY_USERNAME' in extra_args:
             session = get_cf_session(extra_args)
+        else:
+            session = session_with_proxy(extra_args)
+
+        fast_mode = extra_args.pop('fast_mode', False)
 
         url_base = 'https://simple.ripley.cl/{}?page={}'
         product_dict = {}
@@ -224,7 +229,7 @@ class Ripley(Store):
                     # If the product is LG or Samsung and is sold directly by
                     # Ripley (not marketplace) obtain the full data
                     if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
-                            product_data['sku']:
+                            product_data['sku'] and not fast_mode:
 
                         product = product_dict.get(product_data['sku'], None)
                         if not product:

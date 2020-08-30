@@ -26,7 +26,7 @@ class AlmacenesLaGanga(Store):
             ['Televisores', 'Television'],
             ['Aires-Split', 'AirConditioner'],
             ['Lavadoras', 'WashingMachine'],
-            ['Equipos-de-sonido', 'StereoSystem'],
+            # ['Equipos-de-sonido', 'StereoSystem'],
             ['Refrigeradoras', 'Refrigerator'],
             ['Cocinas', 'Oven']
         ]
