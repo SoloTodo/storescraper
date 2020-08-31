@@ -60,28 +60,26 @@ class Hites(Store):
              'Inicio > Electro Hogar > Refrigeradores > No Frost', 1],
             ['electro-hogar/refrigeradores/side-by-side', ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > Side by Side', 1],
-            # ['electro-hogar/refrigeradores/freezers-y-frigobar',
-            # ['Refrigerator'],
-            # 'Inicio > Electro Hogar > Refrigeradores > Freezers y Frigobar',
-            # 1],
-
+            ['electro-hogar/refrigeradores/freezers-y-frigobar',
+            ['Refrigerator'],
+             'Inicio > Electro Hogar > Refrigeradores > Freezers y Frigobar',
+             1],
             ['electro-hogar/lavado-y-secado', ['WashingMachine', 'DishWasher'],
              'Inicio > Electro Hogar > Lavado y Secado', 0.5],
             ['electro-hogar/lavado-y-secado/lavadoras', ['WashingMachine'],
              'Inicio > Electro Hogar > Lavado y Secado > Lavadoras', 1],
-            # ['electro-hogar/lavado-y-secado/secadoras', ['WashingMachine'],
-            #  'Inicio > Electro Hogar > Lavado y Secado > Secadoras', 1],
+            ['electro-hogar/lavado-y-secado/secadoras', ['WashingMachine'],
+             'Inicio > Electro Hogar > Lavado y Secado > Secadoras', 1],
             ['electro-hogar/lavado-y-secado/lavadoras-secadoras',
              ['WashingMachine'],
              'Inicio > Electro Hogar > Lavado y Secado > Lavadoras-Secadoras',
              1],
-            # ['electro-hogar/lavado-y-secado/lavavajillas', ['DishWasher'],
-            #  'Inicio > Electro Hogar > Lavado y Secado > Lavavajillas', 1],
-
+            ['electro-hogar/lavado-y-secado/lavavajillas', ['DishWasher'],
+             'Inicio > Electro Hogar > Lavado y Secado > Lavavajillas', 1],
             ['electro-hogar/cocina', ['Oven', 'Stove'],
              'Inicio > Electro Hogar > Cocina', 0],
-            # ['electro-hogar/cocina/cocinas', ['Stove'],
-            #  'Inicio > Electro Hogar > Cocina > Cocinas', 1],
+            ['electro-hogar/cocina/cocinas', ['Stove'],
+             'Inicio > Electro Hogar > Cocina > Cocinas', 1],
             ['electro-hogar/cocina/encimeras', ['Stove'],
              'Inicio > Electro Hogar > Cocina > Encimeras', 1],
             ['electro-hogar/cocina/hornos-empotrados', ['Oven'],
@@ -91,28 +89,25 @@ class Hites(Store):
              'Hornos Eléctricos y Microondas', 1],
             ['electro-hogar/cocina/microondas', ['Oven'],
              'Inicio > Electro Hogar > Cocina > Microondas', 1],
-
             ['electro-hogar/climatizacion',
              ['AirConditioner', 'SpaceHeater', 'WaterHeater'],
              'Inicio > Electro Hogar > Climatización', 0],
             ['electro-hogar/climatizacion/enfriadores-y-aire-acondicionado',
              ['AirConditioner'], 'Inicio > Electro Hogar > Climatizacioń >  '
                                  'Enfriadores y Aire Acondicionado', 1],
-            # ['electro-hogar/climatizacion/estufas-a-parafinas',
-            #  ['SpaceHeater'],
-            #  'Inicio > Electro Hogar > Climatizacioń > Estufas a Parafinas',
-            #  1],
+            ['electro-hogar/climatizacion/estufas-a-parafinas',
+             ['SpaceHeater'],
+             'Inicio > Electro Hogar > Climatizacioń > Estufas a Parafinas',
+             1],
             ['electro-hogar/climatizacion/estufas-a-gas', ['SpaceHeater'],
              'Inicio > Electro Hogar > Climatización > Estufas a Gas', 1],
-            # ['electro-hogar/climatizacion/estufa-a-lena', ['SpaceHeater'],
-            #  'Inicio > Electro Hogar > Climatización > Estufa a Leña', 1],
+            ['electro-hogar/climatizacion/estufa-a-lena', ['SpaceHeater'],
+             'Inicio > Electro Hogar > Climatización > Estufa a Leña', 1],
             ['electro-hogar/climatizacion/estufas-electricas', ['SpaceHeater'],
              'Inicio > Electro Hogar > Climatización > Estufas Eléctricas', 1],
-            # ['electro-hogar/climatizacion/calefont-y-termos',
-            # ['WaterHeater'],
-            #  'Inicio > Electro Hogar > Climatización >
-            #  Calefont y Termos', 1],
-
+            ['electro-hogar/climatizacion/calefont-y-termos',
+            ['WaterHeater'],
+             'Inicio > Electro Hogar > Climatización > Calefont y Termos', 1],
             ['tecnologia/tv-video', ['Television', 'OpticalDiskPlayer'],
              'Inicio > Tecnología > TV Video', 0],
             ['tecnologia/tv-video/todos-los-led', ['Television'],
@@ -125,12 +120,12 @@ class Hites(Store):
              'Inicio > Tecnología > Tv Video > Led Samsung', 1],
             ['tecnologia/tv-video/led-lg', ['Television'],
              'Inicio > Tecnología > Tv Video > Led LG', 1],
-            # ['tecnologia/tv-video/led-extra-grandes', ['Television'],
-            #  'Inicio > Tecnología > Tv Video > Led Extra Grandes', 1],
+            ['tecnologia/tv-video/led-extra-grandes', ['Television'],
+             'Inicio > Tecnología > Tv Video > Led Extra Grandes', 1],
             ['tecnologia/tv-video/todos-los-led', ['Television'],
              'Inicio > Tecnología > Tv Video > Todos los Led', 1],
-            # ['tecnologia/tv-video/dvd-y-blu-ray', ['OpticalDiskPlayer'],
-            #  'Inicio > Tecnología > TV Video > DVD y Blu-Ray', 1],
+            ['tecnologia/tv-video/dvd-y-blu-ray', ['OpticalDiskPlayer'],
+             'Inicio > Tecnología > TV Video > DVD y Blu-Ray', 1],
             ['tecnologia/computacion',
              ['Notebook', 'Tablet', 'Printer', 'Monitor', 'Projector',
               'Pendrive', 'ExternalStorageDrive'],
@@ -141,22 +136,20 @@ class Hites(Store):
              'Inicio > Tecnología > Computación > Tablets', 1],
             ['tecnologia/computacion/all-in-one', ['AllInOne'],
              'Inicio > Tecnología > Computacioń > All in One', 1],
-            # ['tecnologia/computacion/monitores-y-proyectores',
-            #  ['Monitor', 'Projector'],
-            #  'Inicio > Tecnología > Computación > Monitores y Proyectores',
-            #  0.5],
+            ['tecnologia/computacion/monitores-y-proyectores',
+             ['Monitor', 'Projector'],
+             'Inicio > Tecnología > Computación > Monitores y Proyectores',
+             0.5],
             ['tecnologia/computacion/impresoras-y-multifuncionales',
              ['Printer'],
              'Inicio > Tecnología > Computación > '
              'Impresoras y Multifuncionales', 1],
-            # ['tecnologia/computacion/pendrive', ['UsbFlashDrive'],
-            #  'Inicio > Tecnología > Computación > Pendrive', 1],
+            ['tecnologia/computacion/pendrive', ['UsbFlashDrive'],
+             'Inicio > Tecnología > Computación > Pendrive', 1],
             ['tecnologia/computacion/disco-duro', ['ExternalStorageDrive'],
              'Inicio > Tecnología > Computación > Disco Duro', 1],
-
             ['tecnologia/video-juego/consolas', ['VideoGameConsole'],
              'Inicio > Tecnología > Video Juego > Consolas', 1],
-
             ['tecnologia/audio', ['StereoSystem', 'Headphones'],
              'Inicio > Tecnología > Audio', 0],
             ['tecnologia/audio/parlantes-bluetooth', ['StereoSystem'],
@@ -165,13 +158,12 @@ class Hites(Store):
              'Inicio > Tecnología > Audio > Karaokes', 1],
             ['tecnologia/audio/minicomponentes', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Minicomponentes', 1],
-            # ['tecnologia/audio/soundbar-y-home-theater', ['StereoSystem'],
-            #  'Inicio > Tecnología > Audio > Soundbar y Home Theater', 1],
-            # ['tecnologia/audio/microcomponentes', ['StereoSystem'],
-            #  'Inicio > Tecnología > Audio > Microcomponentes', 1],
+            ['tecnologia/audio/soundbar-y-home-theater', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Soundbar y Home Theater', 1],
+            ['tecnologia/audio/microcomponentes', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Microcomponentes', 1],
             ['tecnologia/audio/audifonos', ['Headphones'],
              'Inicio > Tecnología > Audio > Audífonos', 1],
-
             ['celulares/accesorios/audifonos', ['Headphones'],
              'Inicio > Celulares > Accesorios > Audífonos', 1],
             ['tecnologia/accesorios-y-otros/mouse-y-teclados',
@@ -182,18 +174,16 @@ class Hites(Store):
              ['MemoryCard'],
              'Inicio > Tecnología > Accesorios y Otros > Tarjetas de Memoria',
              1],
-
             ['celulares/smartphone', ['Cell', 'Wearable'],
              'Inicio > Celulares > Smartphone', 0],
             ['celulares/smartphone/smartphone', ['Cell'],
              'Inicio > Celulares > Smartphone > Smartphone', 1],
-            # ['celulares/smartphone/smartphone-liberados', ['Cell'],
-            #  'Inicio > Celulares > Smartphone > Smartphone Liberados', 1],
-            # ['celulares/smartphone/celulares-basicos', ['Cell'],
-            #  'Inicio > Celulares > Smartphone > Celulares Basicos', 1],
+            ['celulares/smartphone/smartphone-liberados', ['Cell'],
+             'Inicio > Celulares > Smartphone > Smartphone Liberados', 1],
+            ['celulares/smartphone/celulares-basicos', ['Cell'],
+             'Inicio > Celulares > Smartphone > Celulares Basicos', 1],
             ['celulares/accesorios/smartwatch-y-wearables', ['Wearable'],
              'Inicio > Celulares > Accesorios > Smartwatch Y Wearables', 1],
-
             ['electro-hogar/electrodomesticos/aspiradoras-y-enceradoras',
              ['VacuumCleaner'],
              'Inicio > Electro Hogar > Electrodomésticos > '
@@ -225,8 +215,6 @@ class Hites(Store):
                 response = session.get(category_url, timeout=60)
 
                 if response.status_code in [404, 500]:
-                    if start == 0:
-                        raise Exception('Empty category: ' + category_url)
                     break
 
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -234,8 +222,6 @@ class Hites(Store):
                 products = soup.findAll('div', 'product-tile')
 
                 if not products:
-                    if start == 0:
-                        raise Exception('Empty category: ' + category_url)
                     break
 
                 for product_entry in products:
