@@ -149,3 +149,8 @@ class ParisFast(Store):
         )
 
         return p
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        from .paris import Paris
+        return Paris.banners(extra_args=extra_args)

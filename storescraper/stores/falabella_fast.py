@@ -193,3 +193,8 @@ class FalabellaFast(Store):
             products.append(p)
 
         return products
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        from .falabella import Falabella
+        return Falabella.banners(extra_args=extra_args)
