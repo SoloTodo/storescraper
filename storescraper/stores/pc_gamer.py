@@ -43,11 +43,11 @@ class PcGamer(Store):
             ['33', 'Motherboard'],  # MB
             ['70', 'Ram'],  # RAM Notebook
             ['75', 'StorageDrive'],  # Almacenamiento
-            # ['87', 'VideoCard'],  # Tarjetas de video
+            ['87', 'VideoCard'],  # Tarjetas de video
             ['81', 'ComputerCase'],  # Gabinetes s/fuente
             ['84', 'PowerSupply'],  # Fuentes de poder
-            # ['17_69', 'CpuCooler'],  # Coolers
-            # ['108', 'CpuCooler'],  # Refrigeracion
+            ['17_69', 'CpuCooler'],  # Coolers
+            ['108', 'CpuCooler'],  # Refrigeracion
             ['106', 'Mouse'],  # Mouse y teclados
             ['92', 'Keyboard'],  # accesorios gamer
             ['105', 'Headphones'],  # Audio
@@ -100,8 +100,6 @@ class PcGamer(Store):
                     link_containers = soup.findAll('article', 'item')
 
                     if not link_containers:
-                        if page == 1:
-                            raise Exception('Invalid category: ' + url_webpage)
                         break
 
                     for link_container in link_containers:

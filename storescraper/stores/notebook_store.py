@@ -76,8 +76,8 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/ventiladores-y-sistemas-de-enfriamiento.html', 'CpuCooler'],
             # Audio Video y Foto
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            ['audio-y-video/monitores-proyectores/'
-             'televisores.html', 'Television'],
+            # ['audio-y-video/monitores-proyectores/'
+            #  'televisores.html', 'Television'],
             ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
             ['audio-y-video/audio-y-video/'
              'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
