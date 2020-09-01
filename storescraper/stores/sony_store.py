@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -26,7 +27,7 @@ class SonyStore(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['televisores-y-teatro-en-casa/televisores', 'Television'],
-            # ['celulares-y-tablets/smartphones-xperia', 'Cell'],
+            ['celulares-y-tablets/smartphones-xperia', 'Cell'],
             ['camaras/cyber-shot', 'Camera'],
             ['audio/sistemas-de-audio', 'StereoSystem'],
             ['televisores-y-teatro-en-casa/reproductores-de-blu-ray-disc'
@@ -49,7 +50,7 @@ class SonyStore(Store):
             containers = soup.findAll('div', 'prod')
 
             if not containers:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
 
             for product_container in containers:
                 product_url = product_container.find('a')['href']
@@ -66,10 +67,6 @@ class SonyStore(Store):
         pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
                                  page_source).groups()[0]
         pricing_data = json.loads(pricing_data)
-
-        skus_data = re.search(
-            r'var skuJson_0 = ([\S\s]+?);', page_source).groups()[0]
-        skus_data = json.loads(skus_data)
         name = '{} {}'.format(pricing_data['productBrandName'],
                               pricing_data['productName'])
         price = Decimal(pricing_data['productPriceTo'])
@@ -93,13 +90,12 @@ class SonyStore(Store):
         else:
             ean = None
 
-        for sku_data in skus_data['skus']:
-            sku = str(sku_data['sku'])
-            stock = pricing_data['skuStocks'][sku]
-            sku_name = '{} / {}'.format(name, sku_data['skuname'])
+        name = '{} / {}'.format(pricing_data['productReferenceId'],
+                                pricing_data['productName'])[:255]
 
+        for sku, stock in pricing_data['skuStocks'].items():
             p = Product(
-                sku_name,
+                name,
                 cls.__name__,
                 category,
                 url,

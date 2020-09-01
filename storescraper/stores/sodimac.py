@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 import re
 
@@ -44,7 +45,6 @@ class Sodimac(Store):
              'Línea Blanca > Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
              'Lavadoras y Secadoras > Secadoras', 1],
-
             ['scat112543', ['Refrigerator'],
              'Refrigeradores > Freezer', 1],
             ['scat114992', ['Refrigerator'],
@@ -55,50 +55,44 @@ class Sodimac(Store):
              'Refrigeradores > Refrigeradores Frío Directo', 1],
             ['scat112545', ['Refrigerator'],
              'Refrigeradores > Frigobares y Cavas de Vino', 1],
-
             ['cat4850343', ['Oven'],
              'Cocinas, Hornos y Campanas > Microondas y Hornos Eléctricos', 1],
             ['scat112547', ['Oven'],
              'Microondas y Hornos Eléctricos > Microondas', 1],
             ['cat1580015', ['Oven'],
              'Microondas y Hornos Eléctricos  > Hornos Eléctricos', 1],
-
             ['cat3810002', ['Television'],
              'Tv y Video > Televisores LED', 1],
-            # ['cat3810003', ['Monitor'],
-            #  'Tv y Video > Monitores LED', 1],
-
+            ['cat3810003', ['Monitor'],
+             'Tv y Video > Monitores LED', 1],
             ['cat3390002', ['Notebook'],
              'Computación > Notebooks', 1],
-
             ['cat4780002', ['AirConditioner'],
              'Aire Acondicionado y Ventilación > '
              'Aires Acondicionados Split', 1],
-            # ['cat4780001', ['AirConditioner'],
-            #  'Aire Acondicionado y Ventilación > '
-            #  'Aires Acondicionados Portátiles', 1],
-
-            # ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
-            #  'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
-            # ['cat2080050/Calefont-tiro-forzado', ['WaterHeater'],
-            #  'Sodimac.com > Calefont y Termos > Calefont tiro forzado', 1],
-            # ['scat923316/Termos-y-Calderas', ['WaterHeater'],
-            #  'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
-
+            ['cat4780001', ['AirConditioner'],
+             'Aire Acondicionado y Ventilación > '
+             'Aires Acondicionados Portátiles', 1],
+            ['scat663002/Calefont-tiro-natural', ['WaterHeater'],
+             'Sodimac.com > Calefont y Termos > Calefont tiro natural', 1],
+            ['cat2080050/Calefont-tiro-forzado', ['WaterHeater'],
+             'Sodimac.com > Calefont y Termos > Calefont tiro forzado', 1],
+            ['scat923316/Termos-y-Calderas', ['WaterHeater'],
+             'Sodimac.com > Calefont y Termos > Termos y Calderas', 1],
             ['scat299492', ['SpaceHeater'],
              'Estufas > Estufas a Gas', 1],
             ['scat411008', ['SpaceHeater'],
              'Estufas > Estufas a Parafina', 1],
-            # ['scat301608', ['SpaceHeater'],
-            #  'Estufas > Estufas a Leña', 1],
+            ['scat301608', ['SpaceHeater'],
+             'Estufas > Estufas a Leña', 1],
             ['scat299482', ['SpaceHeater'],
              'Estufas > Estufas a Pellet', 1],
             ['scat963234', ['SpaceHeater'],
              'Estufas > Estufas Eléctricas', 1],
             ['cat3870010', ['Cell'],
              'Celulares y Telefonía > Smartphones', 1],
-            # ['cat8930005', ['Cell'],
-            #  'Celulares y Telefonía > Celulares Reacondicionados', 1],
+            ['cat8930005', ['Cell'],
+             'Celulares y Telefonía > Celulares Reacondicionados', 1],
             ['cat3870001', ['Headphones'],
              'Tecnología Deportiva > Audífonos', 1],
             ['scat913770', ['StereoSystem'],
@@ -115,13 +109,6 @@ class Sodimac(Store):
 
         product_entries = defaultdict(lambda: [])
         session = session_with_proxy(extra_args)
-        # session.headers['user-agent'] = \
-        #     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/' \
-        #     '537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'
-        # session.get('https://www.sodimac.cl/')
-        # session.cookies['ZONE_NAME'] = 'CERRILLOS'
-        # session.cookies['comuna'] = '130617'
-        # session.cookies['regionName_key'] = 'REGION+METROPOLITANA+DE+SANTIA'
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
@@ -145,7 +132,7 @@ class Sodimac(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('No products for {}'.format(url))
+                        logging.warning('No products for {}'.format(url))
                     break
 
                 for product in products:
@@ -388,16 +375,6 @@ class Sodimac(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        # product_info = soup.find('script', {'id': '__NEXT_DATA__'}).text
-        # product_info = json.loads(product_info)
-        #
-        # seller = None
-        # for attr in product_info['props']['pageProps']['productProps']
-        # ['result']['variants'][0]['attributes']:
-        #     if attr['name'] == 'provider_name':
-        #         seller = attr['values'][0]
-        #         break
-        #
         p = Product(
             name,
             cls.__name__,

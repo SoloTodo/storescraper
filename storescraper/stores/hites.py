@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 import time
@@ -225,8 +226,10 @@ class Hites(Store):
                     break
 
                 for product_entry in products:
-                    slug = product_entry.find('a')['href']
-                    product_url = 'https://www.hites.com/' + slug
+                    path = product_entry.find('a')['href']
+                    if path == '/':
+                        logging.warning('Invalid URL: ' + category_url)
+                    product_url = 'https://www.hites.com' + path
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,

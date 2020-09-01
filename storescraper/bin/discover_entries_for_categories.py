@@ -9,9 +9,9 @@ from storescraper.utils import get_store_class_by_name  # noqa
 
 def main():
     logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(message)s',
-                        filename='discover_urls_for_categories.log',
-                        filemode='w')
+                        stream=sys.stdout)
+    logging.basicConfig(level=logging.WARNING,
+                        stream=sys.stdout)
 
     parser = argparse.ArgumentParser(
         description='Discovers the URLs of the given store and (optional) '

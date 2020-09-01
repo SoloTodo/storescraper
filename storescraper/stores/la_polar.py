@@ -1,3 +1,5 @@
+import logging
+
 import time
 import json
 
@@ -49,34 +51,34 @@ class LaPolar(Store):
              'Inicio > Tecnología > Computadores > Notebooks', 1],
             ['tablet', ['Tablet'],
              'Inicio > Tecnología > Computadores > Tablet', 1],
-            # ['led', ['Television'],
-            #  'Inicio > Tecnología > Televisores > LED', 1],
+            ['led', ['Television'],
+             'Inicio > Tecnología > Televisores > LED', 1],
             ['smart-tv', ['Television'],
              'Inicio > Tecnología > Televisores > Smart TV', 1],
-            # ['oled-i-qled-i-curvo', ['Television'],
-            #  'Inicio > Tecnología > Televisores > OLED | QLED | Curvo', 1],
-            # ['dvd-i-blu-ray', ['OpticalDiskPlayer'],
-            #  'Inicio > Teconología > Televisores > DVD | Blu-Ray', 1],
+            ['oled-i-qled-i-curvo', ['Television'],
+             'Inicio > Tecnología > Televisores > OLED | QLED | Curvo', 1],
+            ['dvd-i-blu-ray', ['OpticalDiskPlayer'],
+             'Inicio > Teconología > Televisores > DVD | Blu-Ray', 1],
             ['smartphones', ['Cell'],
              'Inicio > Tecnología > Celulares > Smartphones', 1],
             ['telefonos-basicos', ['Cell'],
              'Inicio > Tecnología > Celulares > Teléfonos Básicos', 1],
             ['todo-impresoras', ['Printer'],
              'Inicio > Tecnología > Computadores > Impresoras', 1],
-            # ['disco-duro-externo', ['ExternalStorageDrive'], 'Inicio > '
-            #   'Tecnología > Accesorios Computación > Disco Duro Externo', 1],
+            ['disco-duro-externo', ['ExternalStorageDrive'], 'Inicio > '
+             'Tecnología > Accesorios Computación > Disco Duro Externo', 1],
             ['mouse-i-teclados', ['Mouse', 'Keyboard'], 'Inicio > '
                 'Tecnología > Accesorios Computación > Mouse | Teclados', 0.5],
-            # ['pendrives', ['UsbFlashDrive'],
-            #  'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
+            ['pendrives', ['UsbFlashDrive'],
+             'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
             ['parlantes-portátiles', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Parlantes Portátiles', 1],
-            # ['equipos-de-musica', ['StereoSystem'],
-            #  'Inicio > Tecnología > Audio > Equipos de música', 1],
-            # ['karaoke', ['StereoSystem'],
-            #  'Inicio > Tecnología > Audio > Karaoke', 1],
-            # ['home-theater', ['StereoSystem'],
-            #  'Inicio > Tecnología > Audio > Home Theater', 1],
+            ['equipos-de-musica', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Equipos de música', 1],
+            ['karaoke', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Karaoke', 1],
+            ['home-theater', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Home Theater', 1],
             ['audifonos', ['Headphones'],
              'Inicio > Tecnología > Audio > Audífonos', 1],
             ['consolas', ['VideoGameConsole'],
@@ -88,8 +90,8 @@ class LaPolar(Store):
              1],
             ['secadoras', ['WashingMachine'],
              'Inicio > Línea Blanca > Lavado y Secado > Secadoras', 1],
-            # ['centrifugas', ['WashingMachine'],
-            #  'Inicio > Línea Blanca > Lavado y Secado > Centrífugas', 1],
+            ['centrifugas', ['WashingMachine'],
+             'Inicio > Línea Blanca > Lavado y Secado > Centrífugas', 1],
             ['side-by-side', ['Refrigerator'],
              'Inicio > Línea Blanca > Refrigeradores > Side by Side', 1],
             ['no-frost', ['Refrigerator'],
@@ -98,30 +100,30 @@ class LaPolar(Store):
              'Inicio > Línea Blanca > Refrigeradores > Frío Directo', 1],
             ['frigobar', ['Refrigerator'],
              'Inicio > Línea Blanca > Refrigeradores > Frigobar', 1],
-            # ['freezer', ['Refrigerator'],
-            #  'Inicio > Línea Blanca > Refrigeradores > Freezer', 1],
+            ['freezer', ['Refrigerator'],
+             'Inicio > Línea Blanca > Refrigeradores > Freezer', 1],
             ['cocinas-a-gas', ['Stove'],
              'Inicio > Línea Blanca > Cocina > Cocinas a Gas', 1],
-            # ['encimeras', ['Stove'],
-            #  'Inicio > Línea Blanca > Cocina > Encimeras', 1],
+            ['encimeras', ['Stove'],
+             'Inicio > Línea Blanca > Cocina > Encimeras', 1],
             ['hornos-y-microondas', ['Oven'],
              'Inicio > Línea Blanca > Cocina > Microondas', 1],
-            # ['hornos-electricos', ['Oven'],
-            #  'Inicio > Línea Blanca > Cocina > Hornos Eléctricos', 1],
-            # ['lavavajillas', ['DishWasher'],
-            #  'Inicio > Línea Blanca > Cocina > Lavavajillas', 1],
+            ['hornos-electricos', ['Oven'],
+             'Inicio > Línea Blanca > Cocina > Hornos Eléctricos', 1],
+            ['lavavajillas', ['DishWasher'],
+             'Inicio > Línea Blanca > Cocina > Lavavajillas', 1],
             ['aspiradoras', ['VacuumCleaner'],
              'Inicio > Línea Blanca > Electrodomésticos > Aspiradoras', 1],
             ['calefont-y-termos', ['WaterHeater'],
              'Inicio > Línea Blanca > Climatización > Calefont y Termos', 1],
-            # ['estufas-a-parafina', ['SpaceHeater'],
-            # 'Inicio > Línea Blanca > Climatización > Estufas a Parafina', 1],
-            # ['estufas-a-gas', ['SpaceHeater'],
-            #  'Inicio > Línea Blanca > Climatización > Estufas a Gas', 1],
-            # ['estufas-electricas', ['SpaceHeater'],
-            # 'Inicio > Línea Blanca > Climatización > Estufas Eléctricas', 1],
-            # ['enfriadores', ['AirConditioner'],
-            #  'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
+            ['estufas-a-parafina', ['SpaceHeater'],
+            'Inicio > Línea Blanca > Climatización > Estufas a Parafina', 1],
+            ['estufas-a-gas', ['SpaceHeater'],
+             'Inicio > Línea Blanca > Climatización > Estufas a Gas', 1],
+            ['estufas-electricas', ['SpaceHeater'],
+            'Inicio > Línea Blanca > Climatización > Estufas Eléctricas', 1],
+            ['enfriadores', ['AirConditioner'],
+             'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
             ['accesorios-telefonos', ['Wearable'],
              'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 0]
         ]
@@ -147,7 +149,7 @@ class LaPolar(Store):
             products = soup.findAll('div', 'lp-product-tile')
 
             if not products:
-                raise Exception('Empty category path: {} - {}'.format(
+                logging.warning('Empty category path: {} - {}'.format(
                     category, category_path))
 
             for idx, container in enumerate(products):
@@ -158,17 +160,6 @@ class LaPolar(Store):
                   'section_name': section_name,
                   'value': idx + 1
                 })
-
-        # if category == 'Cell':
-        #     url = 'https://www.lapolar.cl/internet/catalogo/fbind/postplu/' \
-        #           'destacados-smartphones'
-        #     cells_data = json.loads(session.get(url).text)['lista_completa']
-        #
-        #     for row in cells_data:
-        #         for cell in row['sub_lista']:
-        #             product_url = 'https://tienda.lapolar.cl/producto/sku/{}'
-        #                           ''.format(cell['prid'])
-        #             product_urls.append(product_url)
 
         return product_entries
 
