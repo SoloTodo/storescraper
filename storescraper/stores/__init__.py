@@ -137,7 +137,7 @@ from .mercadolibre_argentina_sandisk import MercadoLibreArgentinaSandisk
 from .mercadolibre_argentina_seagate import MercadoLibreArgentinaSeagate
 from .mercadolibre_argentina_western_digital import \
     MercadoLibreArgentinaWesternDigital
-from .mercadolibre_chile import MercadolibreChile
+from .mercadolibre_chile import MercadoLibreChile
 from .mercadolibre_samsung import MercadolibreSamsung
 from .meroli import Meroli
 from .mi_pc import MiPc

@@ -1,5 +1,7 @@
 import html
 import json
+import logging
+
 import demjson
 import re
 from decimal import Decimal
@@ -12,7 +14,7 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown
 
 
-class MercadolibreChile(Store):
+class MercadoLibreChile(Store):
     @classmethod
     def categories(cls):
         categories = set()
@@ -48,7 +50,7 @@ class MercadolibreChile(Store):
                     containers = soup.findAll('li', 'ui-search-layout__item')
 
                 if not containers:
-                    raise Exception('Empty category: ' + category_url)
+                    logging.warning('Empty category: ' + category_url)
 
                 for container in containers:
                     product_url = container.find('a')['href'].split(
@@ -139,34 +141,34 @@ class MercadolibreChile(Store):
     def _category_paths(cls):
         return {
             '_Tienda_acer': [
-                # ('computacion/notebooks', 'Notebook'),
-                # ('almacenamiento', 'ExternalStorageDrive'),
+                ('computacion/notebooks', 'Notebook'),
+                ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
                 # ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_cintegral': [
                 ('notebooks-accesorios', 'Notebook'),
-                # ('pc-escritorio', 'AllInOne'),
+                ('pc-escritorio', 'AllInOne'),
                 ('almacenamiento', 'SolidStateDrive'),
             ],
             '_Tienda_corsair': [
-                # ('notebooks-accesorios', 'CpuCooler'),
+                ('notebooks-accesorios', 'CpuCooler'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('componentes-pc', 'PowerSupply'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('componentes-pc', 'PowerSupply'),
             ],
             '_Tienda_cougar': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc', 'Headphones'),
-                # ('electronica', 'Headphones'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc', 'Headphones'),
+                ('electronica', 'Headphones'),
             ],
             '_Tienda_hp': [
                 ('computacion/notebooks', 'Notebook'),
                 ('pc-escritorio', 'AllInOne'),
                 ('computacion/impresoras/impresoras', 'Printer'),
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('almacenamiento', 'AllInOne'),
+                ('almacenamiento', 'AllInOne'),
                 ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_huawei': [
@@ -175,58 +177,58 @@ class MercadolibreChile(Store):
                 ('notebooks-accesorios', 'Notebook'),
                 ('tablets-accesorios', 'Tablet'),
                 ('audio-audifonos', 'Headphones'),
-                # ('electronica/audio-hogar/parlantes-subwoofers',
-                # 'Headphones'),
+                ('electronica/audio-hogar/parlantes-subwoofers',
+                 'Headphones'),
             ],
             '_Tienda_hyperx': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc', 'Headphones'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_lenovo': [
-                # ('pc-escritorio-all-in-one', 'AllInOne'),
+                ('pc-escritorio-all-in-one', 'AllInOne'),
             ],
             '_Tienda_logitech': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
                 ('mouses-teclados-controles-kits-mouse-teclado',
                  'KeyboardMouseCombo'),
-                # ('webcams-audio-pc', 'StereoSystem'),
+                ('webcams-audio-pc', 'StereoSystem'),
             ],
             '_Tienda_logitech-g': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc-audifonos', 'Headphones'),
-                # ('electronica', 'Headphones'),
-                # ('webcams-audio-pc-parlantes', 'StereoSystem'),
+                ('webcams-audio-pc-audifonos', 'Headphones'),
+                ('electronica', 'Headphones'),
+                ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_marvo': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc-audifonos', 'Headphones'),
-                # ('webcams-audio-pc-parlantes', 'StereoSystem'),
+                ('webcams-audio-pc-audifonos', 'Headphones'),
+                ('webcams-audio-pc-parlantes', 'StereoSystem'),
             ],
             '_Tienda_ozone': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc', 'Headphones'),
+                ('webcams-audio-pc', 'Headphones'),
                 ('videojuegos', 'Headphones'),
             ],
             '_Tienda_pc-factory_OfficialStoreId_810': [
-                # ('celulares-telefonia', 'Cell'),
-                # ('computacion', 'Notebook'),
+                ('celulares-telefonia', 'Cell'),
+                ('computacion', 'Notebook'),
             ],
             '_Tienda_primus': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
             ],
             '_Tienda_razer': [
                 ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc', 'Headphones'),
+                ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_redragon': [
-                # ('mouses-teclados-controles', 'Keyboard'),
+                ('mouses-teclados-controles', 'Keyboard'),
             ],
             '_Tienda_seagate': [
                 ('almacenamiento-discos-accesorios-duros-ssds/externo',
@@ -235,8 +237,8 @@ class MercadolibreChile(Store):
                  'StorageDrive'),
             ],
             '_Tienda_trust': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
             ],
             '_Tienda_western-digital': [
                 ('almacenamiento-discos-duros-removibles-accesorios',
@@ -247,23 +249,23 @@ class MercadolibreChile(Store):
                  'StorageDrive'),
             ],
             '_Tienda_xpg': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
                 ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('webcams-audio-pc', 'Headphones'),
+                ('webcams-audio-pc', 'Headphones'),
             ],
             '_Tienda_xtech': [
-                # ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
-                # ('computacion/perifericos-accesorios/mouses', 'Mouse'),
-                # ('componentes-pc', 'PowerSupply'),
-                # ('audio-audifonos', 'Headphones'),
+                ('computacion/perifericos-accesorios/teclados', 'Keyboard'),
+                ('computacion/perifericos-accesorios/mouses', 'Mouse'),
+                ('componentes-pc', 'PowerSupply'),
+                ('audio-audifonos', 'Headphones'),
             ],
             '_Tienda_blu': [
                 ('celulares-telefonia/celulares', 'Cell'),
             ],
             '_Tienda_kingston': [
-                # ('celulares-telefonia', 'MemoryCard'),
+                ('celulares-telefonia', 'MemoryCard'),
                 ('almacenamiento-discos-accesorios', 'SolidStateDrive'),
-                # ('almacenamiento-pen-drives', 'UsbFlashDrive'),
+                ('almacenamiento-pen-drives', 'UsbFlashDrive'),
             ],
             '_Tienda_motorola': [
                 ('audio', 'Headphones'),

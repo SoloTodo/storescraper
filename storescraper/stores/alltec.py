@@ -1,3 +1,5 @@
+import logging
+
 import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -29,6 +31,7 @@ class AllTec(Store):
             'KeyboardMouseCombo',
             'Headphones',
             'StereoSystem',
+            'Notebook',
         ]
 
     @classmethod
@@ -56,6 +59,7 @@ class AllTec(Store):
             ['92-water-cooling', 'CpuCooler'],
             ['25-auriculares', 'Headphones'],
             ['26-parlantes', 'StereoSystem'],
+            ['65-notebook-tablet', 'Notebook'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -69,7 +73,8 @@ class AllTec(Store):
             subcategory_containers = soup.findAll('div', 'subcategory-image')
 
             if not subcategory_containers:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
+                continue
 
             for container in subcategory_containers:
                 subcategory_url = \
@@ -97,6 +102,7 @@ class AllTec(Store):
                 link_containers = soup.findAll('div', 'product-container')
 
                 if not link_containers and page == 1:
+                    logging.warning('Empty subcategory: ' + subcategory_url)
                     break
 
                 for link_container in link_containers:

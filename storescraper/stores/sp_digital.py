@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from collections import defaultdict
@@ -73,11 +74,12 @@ class SpDigital(Store):
              'Home > Computadores y Notebooks > Notebook Gamer', 1],
             ['344', ['StereoSystem'],
              'Home > Accesorios > Parlantes', 1],
-            # ['360', ['StereoSystem'],
-            #  'Home > Audio y Video > Equipos de Música', 1],
-            # ['362', 'StereoSystem'],    # Home Theater
-            # ['512', 'StereoSystem'],    # 512
-            # ['359', 'OpticalDiskPlayer'],
+            ['360', ['StereoSystem'],
+             'Home > Audio y Video > Equipos de Música', 1],
+            ['362', ['StereoSystem'],
+             'Home > Audio y Video > Home Theater', 1],
+            ['359', ['OpticalDiskPlayer'],
+             'Home > Audio y Video > Reproductor Blu-Ray DVD', 1],
             ['376', ['PowerSupply'],
              'Home > Componentes para PC > Fuentes de Poder', 1],
             ['375', ['ComputerCase'],
@@ -128,10 +130,10 @@ class SpDigital(Store):
              'Home > Sistemas para conferencias > Audífonos y micrófonos', 1],
             ['357', ['VideoGameConsole'],
              'Home > Audio y Video > Consolas', 1],
-            # ['572', ['VideoGameConsole'],
-            #  'Home > Consolas > Consolas XBOX', 1],
-            # ['575', ['VideoGameConsole'],
-            #  'Home > Consolas > Consolas PlayStation', 1],
+            ['572', ['VideoGameConsole'],
+             'Home > Consolas > Consolas XBOX', 1],
+            ['575', ['VideoGameConsole'],
+             'Home > Consolas > Consolas PlayStation', 1],
             ['463', ['Ups'],
              'Home > UPS y protección de poder > UPS y respaldo de energía',
              1],
@@ -165,7 +167,7 @@ class SpDigital(Store):
 
                 if not product_containers:
                     if p == 1:
-                        raise Exception('Empty category: {}'.format(
+                        logging.warning('Empty category: {}'.format(
                             category_id))
                     else:
                         break

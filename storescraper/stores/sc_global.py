@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from bs4 import BeautifulSoup
@@ -27,17 +28,17 @@ class ScGlobal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['empresa/workstation/notebook.html', 'Notebook'],
+            ['empresa/workstation/notebook.html', 'Notebook'],
             ['empresa/notebook-comercial.html', 'Notebook'],
             ['pc-y-portatiles/portatiles.html', 'Notebook'],
             ['empresa/plotters.html', 'Printer'],
             ['impresion-e-imagen/impresoras-de-tinta.html', 'Printer'],
-            # ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
+            ['impresion-e-imagen/impresoras-laser.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales.html', 'Printer'],
             ['impresion-e-imagen/multifuncionales-laser.html', 'Printer'],
-            # ['pc-y-portatiles/escritorio.html', 'AllInOne'],
-            # ['audio/teclados-y-mouse.html', 'Mouse'],
-            # ['audio/parlantes.html', 'StereoSystem'],
+            ['pc-y-portatiles/escritorio.html', 'AllInOne'],
+            ['audio/teclados-y-mouse.html', 'Mouse'],
+            ['audio/parlantes.html', 'StereoSystem'],
             ['monitores/monitores.html', 'Monitor'],
         ]
 
@@ -60,13 +61,18 @@ class ScGlobal(Store):
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
-                json_data = json.loads(session.get(
-                    category_url, verify=False).text)
+                response = session.get(category_url, verify=False)
+
+                if response.status_code == 404:
+                    break
+
+                json_data = json.loads(response.text)
                 soup = BeautifulSoup(json_data['listing'], 'html.parser')
                 product_cells = soup.findAll('li', 'item')
 
                 if not product_cells and page == 1:
-                    raise Exception('Empty category: ' + category_url)
+                    logging.warning('Empty category: ' + category_url)
+                    break
 
                 done = False
 
