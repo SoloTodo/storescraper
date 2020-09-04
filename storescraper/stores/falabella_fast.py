@@ -1,4 +1,5 @@
 import json
+import logging
 from decimal import Decimal
 
 from storescraper.stores import Falabella
@@ -112,7 +113,7 @@ class FalabellaFast(Store):
 
             if 'results' not in res:
                 if page == 1:
-                    raise Exception('Empty category: {}'.format(category_id))
+                    logging.warning('Empty category: {}'.format(category_id))
                 break
 
             for result in res['results']:
