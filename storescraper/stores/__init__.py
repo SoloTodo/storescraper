@@ -84,6 +84,7 @@ from .hbt import Hbt
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hp_online import HpOnline
+from .huawei import Huawei
 from .ibyte import Ibyte
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
