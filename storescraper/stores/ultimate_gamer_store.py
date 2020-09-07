@@ -15,7 +15,10 @@ class UltimateGamerStore(Store):
         return [
             'VideoCard',
             'Processor',
-            'Monitor'
+            'Monitor',
+            'Ram',
+            'SolidStateDrive',
+            'Motherboard',
         ]
     
     @classmethod
@@ -23,7 +26,10 @@ class UltimateGamerStore(Store):
         category_paths = [
             ['tarjeta-de-video', 'VideoCard'],
             ['procesadores', 'Processor'],
-            ['productos/accesorios', 'Monitor']
+            ['productos/memorias', 'Ram'],
+            ['productos/ssd', 'SolidStateDrive'],
+            ['productos/accesorios', 'Monitor'],
+            ['placas-madre', 'Motherboard'],
         ]
 
         product_urls = []
