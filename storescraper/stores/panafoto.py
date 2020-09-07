@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import urllib
 from decimal import Decimal
@@ -44,56 +45,54 @@ class Panafoto(Store):
             ('["categories.level3:Categorías /// TV y Video /// '
              'Reproductores de Audio y Video /// Barras de Sonido"]',
              'StereoSystem'),
-            # ('["categories.level3:Categorías /// TV y Video /// '
-            #  'Reproductores de Audio y Video /// Teatro en Casa"]',
-            # 'StereoSystem'),
-            # ('["categories.level3:Categorías /// TV y Video /// '
-            #  'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
-            #  'OpticalDiskPlayer'),
+            ('["categories.level3:Categorías /// TV y Video /// '
+             'Reproductores de Audio y Video /// Teatro en Casa"]',
+             'StereoSystem'),
+            ('["categories.level3:Categorías /// TV y Video /// '
+             'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
+             'OpticalDiskPlayer'),
             ('["categories.level3:Categorías /// Audio /// Bocinas /// '
              'Bocinas Bluetooth"]', 'StereoSystem'),
-            # ('["categories.level3:Categorías /// Audio /// Sistemas de Audio'
-            #  ' /// Equipos de Sonido"]', 'StereoSystem'),
+            ('["categories.level2:Categorías /// Audio /// Sistemas de Audio'
+             '"]', 'StereoSystem'),
             ('["categories.level2:Categorías /// Celulares y Tablets /// '
              'Celulares"]', 'Cell'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Lavadoras"]', 'WashingMachine'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Lavadora Carga Superior"]', 'WashingMachine'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Lavadora Carga Superior"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Secadoras"]', 'WashingMachine'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Secadora Gas"]', 'WashingMachine'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Secadora Gas"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Centros de Lavado"]', 'WashingMachine'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Refrigeradoras"]', 'Refrigerator'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Refrigeradora Side by Side"]', 'Refrigerator'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Refrigeradora French-Door"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Refrigeradora Side by Side"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Refrigeradora French-Door"]', 'Refrigerator'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Congeladores"]', 'Refrigerator'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Minibares y Vineras"]', 'Refrigerator'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Aires portátiles"]', 'AirConditioner'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Minibares y Vineras"]', 'Refrigerator'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Aires portátiles"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
              '/// Aires Acondicionados"]', 'AirConditioner'),
             ('["categories.level3:Categorías /// Cómputo /// Monitores '
              '/// Monitores"]', 'Monitor'),
             ('["categories.level3:Categorías /// Cómputo /// Proyectores '
              '/// Proyectores"]', 'Projector'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Hornos a gas"]', 'Oven'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Hornos eléctricos"]', 'Oven'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Estufas eléctricas"]', 'Stove'),
-            # ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-            #  '/// Estufas a Gas"]', 'Stove'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Hornos a gas"]', 'Oven'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Hornos eléctricos"]', 'Oven'),
+            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
+             '/// Estufas"]', 'Stove'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
              '/// Aspiradoras"]', 'VacuumCleaner'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
@@ -129,7 +128,7 @@ class Panafoto(Store):
 
                 if not products_json:
                     if page == 0:
-                        raise Exception('Empty category: ' + category_filter)
+                        logging.warning('Empty category: ' + category_filter)
                     break
 
                 for product_json in products_json:
@@ -161,13 +160,10 @@ class Panafoto(Store):
         sku = soup.find('form', {'id': 'product_addtocart_form'})[
             'data-product-sku']
 
-        part_number_match = re.search(
-            r"ccs_cc_args.push\(\['pn', '(.+)'\]\);", data)
+        model_label = soup.find('div', 'attibute-label', text='Modelo')
+        part_number = model_label.next.next.text.strip()
 
-        if part_number_match:
-            part_number = part_number_match.groups()[0]
-        else:
-            part_number = None
+        name = '{} - {}'.format(part_number, name)
 
         if soup.find('div', 'unavailable'):
             stock = 0
