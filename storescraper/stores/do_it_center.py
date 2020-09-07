@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from decimal import Decimal
 
@@ -30,12 +31,12 @@ class DoItCenter(Store):
             ('linea-blanca/lavadoras', 'WashingMachine'),
             ('linea-blanca/secadoras', 'WashingMachine'),
             ('linea-blanca/refrigeradoras', 'Refrigerator'),
-            # ('electronica/smart-tv', 'Television'),
-            # ('electronica/led-tv', 'Television'),
-            # ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
-            # ('electronica/equipos-de-sonido', 'StereoSystem'),
+            ('electronica/smart-tv', 'Television'),
+            ('electronica/led-tv', 'Television'),
+            ('electronica/reproductores-de-video', 'OpticalDiskPlayer'),
+            ('electronica/equipos-de-sonido', 'StereoSystem'),
             ('electronica/telefonos-celulares', 'Cell'),
-            # ('bateria-de-cocina/microondas', 'Oven'),
+            ('bateria-de-cocina/microondas', 'Oven'),
         ]
 
         session = session_with_proxy(extra_args)
@@ -61,7 +62,7 @@ class DoItCenter(Store):
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_path)
+                        logging.warning('Empty category: ' + url)
                     break
 
                 for container in product_containers:
@@ -88,34 +89,7 @@ class DoItCenter(Store):
         model = soup.find('h2', 'product__title').text.strip()
         name = '{} {} ({})'.format(brand, model, sku)
         product_id = re.search(r'var productId = (\d+);', data).groups()[0]
-        session.headers['authorization'] = \
-            'Token token=ca55cd751e3c42fab4ed49b862328a0c'
-        store_stock_endpoint = 'https://proxy.doitcenter.com.pa/shopify/api/' \
-                               'v1/products/{}/inventories'.format(product_id)
-
-        stock_response = session.get(store_stock_endpoint)
-
-        if stock_response.status_code in [404, 500, 502, 504]:
-            stock_options = soup.find('form', {'id': 'product_form'})\
-                .findAll('option')
-
-            stock = 0
-            for option in stock_options:
-                if int(option['data-quantity']) > 0:
-                    stock += int(option['data-quantity'])
-        else:
-            inventories = json.loads(stock_response.text)
-            stock = 0
-
-            for entry in inventories:
-                if entry['inventory_quantity'] is None:
-                    continue
-
-                store_stock = int(entry['inventory_quantity'])
-
-                if store_stock < 2:
-                    store_stock = 0
-                stock += store_stock
+        stock = -1
 
         price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
         pictures_container = soup.find('div', 'product-images')
@@ -142,7 +116,5 @@ class DoItCenter(Store):
             sku=sku,
             picture_urls=picture_urls
         )
-
-        print(p)
 
         return [p]

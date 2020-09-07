@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 import re
 
@@ -27,16 +28,13 @@ class Diunsa(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # Since we only care for LG products the paths don't have to be very
+        # specific
         category_paths = [
-            ['C:/1/73/84/86/', 'Stove'],
-            ['C:/1/73/84/88/', 'WashingMachine'],
-            ['C:/1/73/84/85/', 'Refrigerator'],
-            ['C:/1/73/74/75/', 'Oven'],
-            # Audio
-            ['C:/1/58/64/', 'StereoSystem'],
-            ['C:/1/58/69/', 'Cell'],
-            ['C:/1/58/71/', 'Television'],
-            ['C:/1/73/119/', 'AirConditioner'],
+            # Electrodomésticos
+            ['C:/1/73/', 'Refrigerator'],
+            # Electrónica Tecnología
+            ['C:/1/58/', 'Television'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -64,7 +62,7 @@ class Diunsa(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty url {}'.format(category_path))
+                        logging.warning('Empty url {}'.format(category_path))
                     else:
                         break
 

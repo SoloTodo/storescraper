@@ -105,6 +105,9 @@ class BestBuyMexico(Store):
         product_data = json.loads(match.groups()[0].encode('utf-8').decode(
             'unicode_escape'))
 
+        if 'customerPrice' not in product_data:
+            return []
+
         name = product_data['title']
         sku = product_data['skuId']
         normal_price = Decimal(product_data['customerPrice'])
