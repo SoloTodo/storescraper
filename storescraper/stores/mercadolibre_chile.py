@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class MercadoLibreChile(Store):
@@ -26,7 +26,7 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         product_urls = []
 
         for store_extension, store_paths in cls._category_paths().items():
@@ -44,6 +44,11 @@ class MercadoLibreChile(Store):
                     continue
 
                 soup = BeautifulSoup(response.text, 'html.parser')
+                title_tag = soup.find('title')
+
+                if not title_tag or 'oficial' not in title_tag.text.lower():
+                    logging.warning('Non official store: ' + response.url)
+                    continue
 
                 if soup.find('div', 'zrp-offical-message'):
                     raise Exception('Invalid category: ' + category_url)
@@ -66,7 +71,7 @@ class MercadoLibreChile(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = requests.Session()
+        session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
@@ -78,6 +83,7 @@ class MercadoLibreChile(Store):
 
         variations = re.search(r'meli.Variations\(\{([\S\s]+?)}\);',
                                page_source)
+        seller = soup.find('p', 'title').text.strip()
 
         if not variations:
             pictures_data = json.loads(html.unescape(
@@ -103,7 +109,8 @@ class MercadoLibreChile(Store):
                 'CLP',
                 sku=sku,
                 description=description,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                seller=seller
             ))
 
         else:
@@ -136,7 +143,8 @@ class MercadoLibreChile(Store):
                     'CLP',
                     sku=sku,
                     description=description,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    seller=seller
                 ))
 
         return products
