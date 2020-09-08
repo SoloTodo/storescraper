@@ -80,7 +80,9 @@ class HuaweiShop(Store):
             name = product['name'].replace('&#x2b;', ', ')
             sku = product['sbomCode']
             stock = int(inventory[sku])
-            picture_urls = cls.create_pictures_urls(product)
+            picture_base_url = 'https://img01.huaweifile.com/sg/ms/cl/pms/product/{}/group/428_428_{}'
+            picture_urls = [picture_base_url.format(product['gbomCode'], picture['photoName'])
+                            for picture in product['groupPhotoList']]
             p = Product(
                 name,
                 cls.__name__,
@@ -99,11 +101,3 @@ class HuaweiShop(Store):
             products.append(p)
 
         return products
-
-    @classmethod
-    def create_pictures_urls(cls, info):
-        picture_urls = []
-        base_url = 'https://img01.huaweifile.com/sg/ms/cl/pms/product/{}/group/428_428_{}'
-        for picture in info['groupPhotoList']:
-            picture_urls.append(base_url.format(info['gbomCode'], picture['photoName']))
-        return picture_urls
