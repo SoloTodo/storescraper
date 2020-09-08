@@ -31,8 +31,10 @@ class MercadoLibreSamsung(MercadoLibreChile):
         # standalone retailer, in particular because the Samsung WTB system
         # only displays entries without a seller (not from marketplaces)
         # and we want to consider MercadoLibreSamsung for that.
-        products = super(cls).products_for_url(
+        products = super().products_for_url(
             url, category=category, extra_args=extra_args)
+
         for product in products:
             product.seller = None
+
         return products
