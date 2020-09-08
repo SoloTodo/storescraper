@@ -43,7 +43,8 @@ class Vtr(Store):
 
             for record in data['resultsList']['records']:
                 product_id = record['attributes']['product.repositoryId'][0]
-                product_url = 'https://www.vtr.com/product/{}'.format(product_id)
+                product_url = 'https://www.vtr.com/product/{}'.format(
+                    product_id)
                 product_urls.append(product_url)
 
         return product_urls

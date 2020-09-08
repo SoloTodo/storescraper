@@ -37,7 +37,7 @@ class IngramMicro(Store):
 
             url = 'https://cl.ingrammicro.com/_layouts/CommerceServer/IM/' \
                   'search2.aspx#category%3A{}'.format(
-                urllib.parse.quote(category_path))
+                    urllib.parse.quote(category_path))
             discovered_urls.append(url)
 
         return discovered_urls

@@ -113,7 +113,6 @@ class LadyLee(Store):
 
         picture_urls = []
 
-
         for picture in soup.findAll('a', 'image-slide-link'):
             picture_url = 'https:' + picture['href']
             picture_urls.append(picture_url)

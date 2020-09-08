@@ -108,8 +108,8 @@ class Ripley(Store):
              'Electro > Lavandería > Secadoras', 1],
             ['electro/lavanderia/lavadora-secadora', ['WashingMachine'],
              'Electro > Lavandería > Lavadora-secadora', 1],
-            ['electro/lavanderia/doble-carga', ['WashingMachine'],
-             'Electro > Lavandería > Doble carga', 1],
+            # ['electro/lavanderia/doble-carga', ['WashingMachine'],
+            #  'Electro > Lavandería > Doble carga', 1],
             ['tecno/telefonia/iphone', ['Cell'],
              'Tecno > Telefonía > iPhone', 1],
             ['tecno/telefonia/samsung', ['Cell'],
@@ -203,7 +203,7 @@ class Ripley(Store):
 
                 if not products_data or not products_soup:
                     if page == 1:
-                        raise Exception('Empty path: {}'.format(url))
+                        raise Exception('Empty path: {}'.format(category_url))
                     else:
                         break
 
@@ -287,7 +287,8 @@ class Ripley(Store):
                                  page_source)
         if not product_data:
             if retries:
-                return cls._assemble_full_product(url, category, extra_args, retries=retries-1)
+                return cls._assemble_full_product(url, category, extra_args,
+                                                  retries=retries-1)
             else:
                 return []
 
@@ -461,7 +462,7 @@ class Ripley(Store):
         if normal_price_container:
             normal_price = Decimal(
                 element.find('li', 'catalog-prices__offer-price')
-                    .text.replace('$', '').replace('.', ''))
+                .text.replace('$', '').replace('.', ''))
         else:
             normal_price = offer_price
 
@@ -625,7 +626,7 @@ class Ripley(Store):
                                       "foo.setAttribute('value','{1}'); "
                                       "document.getElementsByTagName('form')"
                                       "[0].appendChild(foo);".format(
-                    field, hcaptcha_response))
+                                        field, hcaptcha_response))
             driver.execute_script("document.getElementsByTagName('form')"
                                   "[0].submit()")
 
@@ -771,9 +772,12 @@ class Ripley(Store):
         return banners
 
     @classmethod
-    def get_owl_banners(cls, url, section, subsection, subsection_type, extra_args):
+    def get_owl_banners(cls, url, section, subsection, subsection_type,
+                        extra_args):
+        extra_args = extra_args or {}
+        proxy = extra_args.pop('proxy', None)
         with HeadlessChrome(images_enabled=True, timeout=60,
-                            proxy=extra_args['proxy']) as driver:
+                            proxy=proxy) as driver:
             print(url)
             banners = []
             driver.set_window_size(1920, 1080)
@@ -782,9 +786,11 @@ class Ripley(Store):
             # this domain
             driver.get(url)
             # Then set the sesion cookies
-            load_driver_cf_cookies(driver, extra_args, '.ripley.cl')
-            # Then re-open the page
-            driver.get(url)
+            if 'cf_clearance' in extra_args:
+                load_driver_cf_cookies(driver, extra_args, '.ripley.cl')
+                # Then re-open the page
+                driver.get(url)
+
             driver.execute_script("scrollTo(0, 0);")
 
             pictures = []
@@ -834,4 +840,3 @@ class Ripley(Store):
                 })
 
             return banners
-

@@ -1,4 +1,5 @@
 import json
+import logging
 from decimal import Decimal
 
 from storescraper.stores import Falabella
@@ -112,7 +113,7 @@ class FalabellaFast(Store):
 
             if 'results' not in res:
                 if page == 1:
-                    raise Exception('Empty category: {}'.format(category_id))
+                    logging.warning('Empty category: {}'.format(category_id))
                 break
 
             for result in res['results']:
@@ -121,7 +122,6 @@ class FalabellaFast(Store):
             page += 1
 
         return products_data
-
 
     @classmethod
     def _get_products(cls, product_data, category):
@@ -143,7 +143,6 @@ class FalabellaFast(Store):
             if price['icons'] == 'cmr-icon':
                     continue
             normal_price = Decimal(remove_words(price['price'][0]))
-
 
         for price in prices:
             if price['icons'] == 'cmr-icon':

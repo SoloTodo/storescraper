@@ -1,3 +1,4 @@
+import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -44,7 +45,7 @@ class PcExpress(Store):
             ['475', 'VideoCard'],             # Tarjetas de Video
             ['473', 'Processor'],             # Procesadores
             ['73_523_171', 'Monitor'],        # Monitores Tradicionales
-            # ['73_523_128', 'Monitor'],        # Monitores Gamer
+            ['73_523_128', 'Monitor'],        # Monitores Gamer
             ['73_523_129', 'Monitor'],        # Monitores Profesionales
             ['472', 'Motherboard'],           # Placas Madres
             ['72', 'Ram'],                    # Memorias
@@ -57,7 +58,7 @@ class PcExpress(Store):
             ['118', 'PowerSupply'],           # Fuentes Estandar
             ['279', 'PowerSupply'],           # Fuentes Certificadas
             ['460_462_119', 'ComputerCase'],  # Gabinetes Basicos
-            # ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
+            ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
             ['460_462_278', 'ComputerCase'],  # Gabinetes SLIM
             ['169', 'CpuCooler'],             # Ventilacion para CPU
             ['269', 'Tablet'],                # Tablets
@@ -96,7 +97,7 @@ class PcExpress(Store):
 
                 if len(td_products) == 0:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_id)
+                        logging.warning('Empty category: ' + category_id)
                     break
 
                 else:

@@ -5,12 +5,13 @@ import requests
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, HeadlessChrome, PhantomJS
+from storescraper.utils import session_with_proxy, html_to_markdown, PhantomJS
 
 # Disable some SSL verifications because Intcomex uses a vulnerable SSL
 # implementation
 requests.packages.urllib3.disable_warnings()
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+
 
 class Intcomex(Store):
     SESSION_COOKIES = None

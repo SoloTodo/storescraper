@@ -62,7 +62,7 @@ class Hites(Store):
             ['electro-hogar/refrigeradores/side-by-side', ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > Side by Side', 1],
             ['electro-hogar/refrigeradores/freezers-y-frigobar',
-            ['Refrigerator'],
+             ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > Freezers y Frigobar',
              1],
             ['electro-hogar/lavado-y-secado', ['WashingMachine', 'DishWasher'],
@@ -107,7 +107,7 @@ class Hites(Store):
             ['electro-hogar/climatizacion/estufas-electricas', ['SpaceHeater'],
              'Inicio > Electro Hogar > Climatización > Estufas Eléctricas', 1],
             ['electro-hogar/climatizacion/calefont-y-termos',
-            ['WaterHeater'],
+             ['WaterHeater'],
              'Inicio > Electro Hogar > Climatización > Calefont y Termos', 1],
             ['tecnologia/tv-video', ['Television', 'OpticalDiskPlayer'],
              'Inicio > Tecnología > TV Video', 0],
@@ -309,7 +309,8 @@ class Hites(Store):
         elif availability_text == 'http://schema.org/InStock':
             stock = -1
         else:
-            raise Exception('Invalid availability text: {}'.format(availability_text))
+            raise Exception('Invalid availability text: {}'.format(
+                availability_text))
 
         prices = soup.find('div', 'prices')
 

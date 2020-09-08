@@ -27,22 +27,24 @@ class Tupi(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['19', 'Television'],
-            ['5', 'Television'],
-            ['98', 'Television'],
-            ['16', 'StereoSystem'],
-            ['36', 'StereoSystem'],
-            ['37', 'StereoSystem'],
-            ['44', 'Cell'],
-            ['24', 'Refrigerator'],
-            ['87', 'Refrigerator'],
-            ['6', 'Oven'],
-            ['31', 'Oven'],
-            ['29', 'Stove'],
-            ['73', 'Stove'],
-            ['52', 'WashingMachine'],
-            ['35', 'WashingMachine'],
-            ['22', 'AirConditioner']
+            # Televisores
+            ['189', 'Television'],
+            # Audio
+            ['192', 'StereoSystem'],
+            # Celulares_y_Tablets
+            ['155', 'Cell'],
+            # Heladeras
+            ['158', 'Refrigerator'],
+            # Heladeras y freezers
+            ['13', 'Refrigerator'],
+            # Hornos
+            ['168', 'Oven'],
+            # Microondas
+            ['172', 'Oven'],
+            # Lavado
+            ['33', 'WashingMachine'],
+            # Climatización
+            ['12', 'AirConditioner']
         ]
 
         session = session_with_proxy(extra_args)
