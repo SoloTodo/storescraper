@@ -36,10 +36,14 @@ class MercadoLibreChile(Store):
 
                 category_url = 'https://listado.mercadolibre.cl/{}/' \
                                '{}'.format(category_path, store_extension)
-                print(category_url)
                 response = session.get(category_url)
-                soup = BeautifulSoup(response.text,
-                                     'html.parser')
+
+                if response.url != category_url:
+                    logging.warning('Invalid and/or empty category: ' +
+                                    response.url)
+                    continue
+
+                soup = BeautifulSoup(response.text, 'html.parser')
 
                 if soup.find('div', 'zrp-offical-message'):
                     raise Exception('Invalid category: ' + category_url)
@@ -144,7 +148,7 @@ class MercadoLibreChile(Store):
                 ('computacion/notebooks', 'Notebook'),
                 ('almacenamiento', 'ExternalStorageDrive'),
                 ('tablets-accesorios', 'Tablet'),
-                # ('monitores-accesorios', 'Monitor'),
+                ('monitores-accesorios', 'Monitor'),
             ],
             '_Tienda_cintegral': [
                 ('notebooks-accesorios', 'Notebook'),
