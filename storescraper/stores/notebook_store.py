@@ -125,6 +125,7 @@ class NotebookStore(Store):
 
                 if not products:
                     logging.warning('Empty category: ' + url)
+                    break
 
                 for product in products:
                     product_url = product.find('a')['href']
