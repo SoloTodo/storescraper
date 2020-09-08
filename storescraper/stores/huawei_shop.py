@@ -4,34 +4,36 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import NOTEBOOK, CELL, TABLET, WEARABLE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
-class Huawei(Store):
+class HuaweiShop(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Cell',
-            'Tablet',
-            'Wereable'
+            NOTEBOOK,
+            CELL,
+            TABLET,
+            WEARABLE,
+            HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             # Notebooks
-            ['403', 'Notebook'],
+            ['403', NOTEBOOK],
             # Cells
-            ['387', 'Cell'],
+            ['387', CELL],
             # Tablets
-            ['407', 'Tablet'],
-            # Wereables
-            ['399', 'Wereable'],
+            ['407', TABLET],
+            # Wearables
+            ['399', WEARABLE],
             # Headphones
-            ['391', 'Headphone']
+            ['391', HEADPHONES]
         ]
 
         session = session_with_proxy(extra_args)
@@ -42,20 +44,21 @@ class Huawei(Store):
                 continue
             offset = 1
             while True:
+                if offset > 50:
+                    raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://shop.huawei.com/cl/list-data-{}?sortField=registterTime&' \
                               'sortType=desc&prdAttrList=%5B%5D&pageNumber={}&pageSize=9'.format(url_extension, offset)
 
                 data = session.get(url_webpage).text
 
-                soup = BeautifulSoup(data, 'html5lib')
+                soup = BeautifulSoup(data, 'html.parser')
                 product_container = soup.findAll('li', 'dataitem')
 
                 if not product_container:
                     break
                 for container in product_container:
                     product_url = container.find('a')['href']
-                    # TODO add https: to begin of href
-                    product_urls.append(product_url)
+                    product_urls.append('https:' + product_url.split('?')[0])
                 offset += 1
 
         return product_urls
@@ -64,11 +67,11 @@ class Huawei(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        if response.status_code == 500:
-            return []
-        soup = BeautifulSoup(response.text, 'html5lib')
-        script_container = soup.findAll('script')
-        json_info, inventory = cls.get_products_info(script_container)
+        response_text = BeautifulSoup(response.text, 'html.parser').text
+        product_info = re.search(r'var productInfo = transObjectAttribute\(.*?\)', response_text)
+        inventory_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);', response_text)
+        inventory = {i[0]: i[1] for i in inventory_info}
+        json_info = json.loads(product_info.group(0)[40:-2])
         products = []
         products_json = json_info['sbomList']
         normal_price = Decimal(json_info['totalUnitPrice'])
@@ -98,22 +101,9 @@ class Huawei(Store):
         return products
 
     @classmethod
-    def get_products_info(cls, script_container):
-        for s in script_container:
-            product_info = re.search(r'var productInfo = transObjectAttribute\(.*?\)', s.text)
-            inventory_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);', s.text)
-            if product_info and inventory_info:
-                break
-        inventory = {i[0]: i[1] for i in inventory_info}
-
-        json_info = json.loads(product_info.group(0)[40:-2])
-        return json_info, inventory
-
-    @classmethod
     def create_pictures_urls(cls, info):
         picture_urls = []
-
-        base_url = 'https://img01.huaweifile.com/sg/ms/cl/pms/product/{}/{}'
+        base_url = 'https://img01.huaweifile.com/sg/ms/cl/pms/product/{}/group/428_428_{}'
         for picture in info['groupPhotoList']:
             picture_urls.append(base_url.format(info['gbomCode'], picture['photoName']))
         return picture_urls
