@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from collections import defaultdict
 from decimal import Decimal
@@ -32,89 +33,99 @@ class Easy(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['frio-directo', ['Refrigerator'],
-            #  'Inicio > Electrohogar > Refrigeración > Frío Directo', 1],
-            # ['no-frost', ['Refrigerator'],
-            #  'Inicio > Electrohogar > Refrigeración > No Frost', 1],
-            ['refrigeracion-freezer', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > Freezer', 1],
-            ['refrigeracion-frigobar', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > Frigobar', 1],
-            ['refrigeracion-refrigeradores', ['Refrigerator'],
-             'Inicio > Electrohogar > Refrigeración > Refrigeradores', 1],
+            # Electrohogar y climatización
 
-            # ['hornos-electricos', ['Oven'],
-            #  'Inicio > Electrohogar > Cocina > Hornos Eléctricos', 1],
-            ['hornos-empotrables', ['Oven'],
-             'Inicio > Electrohogar > Cocina > Hornos Empotrables', 1],
-            ['microondas', ['Oven'],
-             'Inicio > Electrohogar > Cocina > Microondas', 1],
-
-            # ['aspiradoras', ['VacuumCleaner'],
-            #  'Inicio > Electrohogar > Electrodomésticos > Aspiradoras', 1],
-
-            ['lavadoras-8', ['WashingMachine'],
-             'Inicio > Electrohogar > Lavado y Secado > Lavadoras', 1],
-            ['lava-seca', ['WashingMachine'],
-             'Inicio > Electrohogar > Lavado y Secado > Lavadoras-Secadoras',
-             1],
-            ['secadoras-8', ['WashingMachine'],
-             'Inicio > Electrohogar > Lavado y Secado > Secadoras', 1],
-            ['lavavajillas', ['DishWasher'],
-             'Inicio > Electrohogar > Lavado y Secado > Lavavajillas', 1],
-
-            # ['reproductores', 'OpticalDiskPlayer'],
-
-            ['iluminación-led', ['Lamp'],
-             'Inicio > Iluminación > Iluminación Led', 1],
-
-            ['calefones-a-gas-licuado', ['WaterHeater'],
-             'Inicio > Electrohogar > Calefones y Termos > '
-             'Calefont > Calefont Tiro Natural', 1],
-            ['calefones-gas-natural-1', ['WaterHeater'],
-             'Inicio > Electrohogar > Calefones y Termos > '
-             'Calefones Gas Natural', 1],
-            ['termos', ['WaterHeater'],
-             'Inicio > Electrohogar > Calefones y Termos > Termos', 1],
-
+            # Calefacción
             ['estufas-electricas-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas Eléctricas', 1],
+            ['estufas-a-pellet-', ['SpaceHeater'],
+             'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
             ['estufas-a-gas-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas a Gas', 1],
             ['estufas-a-parafina-', ['SpaceHeater'],
              'Inicio > Electrohogar > Calefacción > Estufas a Parafina', 1],
-            # ['calefactores-a-leña', ['SpaceHeater'],
-            #  'Inicio > Electrohogar > Calefacción > Estufas a Leña', 1],
-            ['estufas-a-pellet-', ['SpaceHeater'],
-             'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
-            # ['estufas-infrarrojas', 'SpaceHeater'],
-            # ['chimeneas-electricas', 'SpaceHeater'],
-            # ['paneles-calefactores', 'SpaceHeater'],
-            # ['termoventiladores', 'SpaceHeater'],
+            ['calefont-8', ['WaterHeater'],
+             'Inicio > Electrohogar y Climatización > Calefacción > '
+             'Calefont', 1],
+            ['estufas-a-lena', ['SpaceHeater'],
+             'Inicio > Electrohogar > Calefacción > Estufas a leña', 1],
+            ['termos-calderas', ['WaterHeater'],
+             'Inicio > Electrohogar y Climatización > Calefacción > '
+             'Termos y calderas', 1],
+            ['purificadores-y-humificadores', ['AirConditioner'],
+             'Inicio > Electrohogar y Climatización > Calefacción > '
+             'Purificadores y humidificadores', 1],
 
+            # Calefont y Termos
+            ['calefont-8', ['WaterHeater'],
+             'Inicio > Electrohogar y Climatización > Calefont y Termos > '
+             'Calefont', 1],
+            ['termos-calderas', ['WaterHeater'],
+             'Inicio > Electrohogar y Climatización > Calefont y Termos > '
+             'Termos y calderas', 1],
 
-            # ['aire-acondicionado-y-enfriadores-de-aire', ['AirConditioner'],
-            #  'Inicio > Electrohogar > Climatización > '
-            #  'Aire acondicionado y Enfriadores de aire', 1],
-            # ['aire-acondicionado-portatil-ventilacion', ['AirConditioner'],
-            #  'Inicio > Electrohogar > Especial Ventilación > '
-            #  'Aire Acondicionado Portatil', 1],
-            # ['aire-acondicionado-split-ventilacion', ['AirConditioner'],
-            #  'Inicio > Electrohogar > Especial Ventilación > '
-            #  'Aire Acondicionado Split', 1],
+            # Refrigeración
+            ['refrigeracion-refrigeradores', ['Refrigerator'],
+             'Inicio > Electrohogar y Climatización > Refrigeración > '
+             'Refrigeradores', 1],
+            ['refrigeracion-freezer', ['Refrigerator'],
+             'Inicio > Electrohogar y Climatización > Refrigeración > '
+             'Freezer', 1],
+            ['refrigeracion-frigobar', ['Refrigerator'],
+             'Inicio > Electrohogar y Climatización > Refrigeración > '
+             'Frigobar', 1],
 
-            # ['parlantes', ['StereoSystem'],
-            #  'Inicio > Electrohogar > Tecnología > Parlantes', 1],
-            # ['audifonos', ['Headphones'],
-            #  'Inicio > Electrohogar > Tecnología > Audífonos', 1]
+            # Cocina
+            ['hornos-empotrables-8', ['Oven'],
+             'Inicio > Electrohogar y Climatización > Cocina > '
+             'Hornos Empotrables', 1],
+            ['microondas-8', ['Oven'],
+             'Inicio > Electrohogar y Climatización > Cocina > Microondas', 1],
+
+            # Lavado y planchado
+            ['lavadoras-8', ['WashingMachine'],
+             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
+             'Lavadoras', 1],
+            ['secadoras-8', ['WashingMachine'],
+             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
+             'Secadoras', 1],
+            ['lava-seca', ['WashingMachine'],
+             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
+             'Lava - seca', 1],
+
+            # Aspirado y limpieza
+            ['aspiradoras-', ['VacuumCleaner'],
+             'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
+             'Aspiradoras', 1],
+            ['robots-de-limpieza', ['VacuumCleaner'],
+             'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
+             'Robots de limpieza', 1],
+
+            # Electrodomésticos
+            ['hornos-electricos-8', ['Oven'],
+             'Inicio > Electrohogar y Climatización > Electrodomésticos > '
+             'Hornos eléctricos', 1],
+            ['microondas-8', ['Oven'],
+             'Inicio > Electrohogar y Climatización > Electrodomésticos > '
+             'Microondas', 1],
+
+            # Ventilación
+            ['ventilacion-aire-acondicionado-portatil', ['AirConditioner'],
+             'Inicio > Electrohogar y Climatización > Ventilación > '
+             'Aire acondicionado portátil', 1],
+            ['ventilacion-aire-acondicionado-split', ['AirConditioner'],
+             'Inicio > Electrohogar y Climatización > Ventilación > '
+             'Aire Acondicionado split', 1],
+            ['purificadores-y-humificadores', ['AirConditioner'],
+             'Inicio > Electrohogar y Climatización > Ventilación > '
+             'Purificadores y humidificadores', 1],
         ]
 
         base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
         cat_url = 'https://www.easy.cl/api/cateasy/_search'
-        prods_url = 'https://www.easy.cl/api//prodeasy/_search'
+        prods_url = 'https://www.easy.cl/api/prodeasy/_search'
         product_entries = defaultdict(lambda: [])
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
 
         for e in category_paths:
             category_path, local_categories, section_name, category_weight = e
@@ -129,20 +140,17 @@ class Easy(Store):
                 }
             }
 
-            cat_response = session.post(cat_url, data=json.dumps(cat_data))
-            cat_json = json.loads(cat_response.text)
+            cat_response = session.post(cat_url, json=cat_data)
+            cat_json = json.loads(cat_response.content.decode('utf-8'))
             cat_hits = cat_json['hits']['hits']
 
             if not cat_hits:
-                raise Exception('Bad cat id {}'.format(category_path))
+                logging.warning('Empty category: {}'.format(category_path))
+                raise Exception
+                continue
 
             cat_value = cat_hits[0]['_source']['value']
             cat_field = cat_hits[0]['_source']['field'] + ".raw"
-
-            cat_list = [str(i) for i in cat_hits[0]['_source']['SEQ_PROD']]
-            prod_source = "if(params.ids.contains(doc['_id'].value) ) " \
-                          "{ return params.ids.length - params.ids.indexOf" \
-                          "(doc['_id'].value)} else {return(0)}"
 
             prods_data = {
                 "query": {
@@ -150,26 +158,20 @@ class Easy(Store):
                         "query": {
                             "bool": {
                                 "must": [
-                                    {"term": {cat_field: cat_value}},
-                                    {"match_all": {}}]}},
-                        "boost_mode": "sum",
-                        "score_mode": "max",
-                        "functions": [
-                            {"field_value_factor": {
-                                "field": "boost",
-                                "factor": 10}},
-                            {"script_score": {
-                                "script": {
-                                    "params": {"ids": cat_list},
-                                    "source": prod_source}},
-                                "weight": 100000}]}},
-                "size": 450,
-                "from": 0,
-                "sort": [
-                    {"_score": {"order": "desc"}}]}
+                                    {
+                                        "term": {
+                                            cat_field: cat_value
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "size": 10000
+            }
 
-            prods_response = session.post(prods_url,
-                                          data=json.dumps(prods_data))
+            prods_response = session.post(prods_url, json=prods_data)
             prods_json = json.loads(prods_response.text)
             prods_hits = prods_json['hits']['hits']
 

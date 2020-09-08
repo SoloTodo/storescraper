@@ -1,4 +1,5 @@
 import json
+import logging
 
 from decimal import Decimal
 from bs4 import BeautifulSoup
@@ -55,8 +56,8 @@ class NotebookStore(Store):
             ['equipos/computadores-1/todo-en-uno.html', 'AllInOne'],
             ['equipos/memorias/unidades-flash-usb.html', 'UsbFlashDrive'],
             ['equipos/memorias/tarjetas-de-memoria-flash.html', 'MemoryCard'],
-            # ['equipos/memorias/modulos-ram-genericos.html', 'Ram'],
-            # ['equipos/memorias/memoria-ram.html', 'Ram'],
+            ['equipos/memorias/modulos-ram-genericos.html', 'Ram'],
+            ['equipos/memorias/memoria-ram.html', 'Ram'],
             ['equipos/alm/discos-duros-externos.html', 'ExternalStorageDrive'],
             ['equipos/alm/discos-duros-internos.html', 'StorageDrive'],
             ['equipos/alm/discos-de-estado-solido.html', 'SolidStateDrive'],
@@ -67,30 +68,35 @@ class NotebookStore(Store):
              'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
             ['equipos/perifericos/'
              'auriculares-y-manos-libres.html', 'Headphones'],
-            ['equipos/componentes-informaticos/procesadores.html', 'Processor'],
+            ['equipos/componentes-informaticos/procesadores.html',
+             'Processor'],
             ['equipos/componentes-informaticos/tarjetas-de-video.html',
              'VideoCard'],
-            ['equipos/componentes-informaticos/tarjetas-madre-placas-madre.html', 'Motherboard'],
-            ['equipos/componentes-informaticos/fuentes-de-poder.html', 'PowerSupply'],
-            ['equipos/componentes-informaticos/cajas-gabinetes.html', 'ComputerCase'],
-            ['equipos/componentes-informaticos/ventiladores-y-sistemas-de-enfriamiento.html', 'CpuCooler'],
+            ['equipos/componentes-informaticos/tarjetas-madre-'
+             'placas-madre.html', 'Motherboard'],
+            ['equipos/componentes-informaticos/fuentes-de-poder.html',
+             'PowerSupply'],
+            ['equipos/componentes-informaticos/cajas-gabinetes.html',
+             'ComputerCase'],
+            ['equipos/componentes-informaticos/ventiladores-y-sistemas'
+             '-de-enfriamiento.html', 'CpuCooler'],
             # Audio Video y Foto
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            # ['audio-y-video/monitores-proyectores/'
-            #  'televisores.html', 'Television'],
+            ['audio-y-video/monitores-proyectores/'
+             'televisores.html', 'Television'],
             ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
             ['audio-y-video/audio-y-video/'
              'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
             # Impresion
             ['impresion/impresoras-y-escaneres.html', 'Printer'],
             # Gaming
-            # ['gaming/equipos/notebooks.html', 'Notebook'],
+            ['gaming/equipos/notebooks.html', 'Notebook'],
             ['gaming/equipos/monitores.html', 'Monitor'],
             ['gaming/accesorios/audifonos.html', 'Headphones'],
             ['gaming/accesorios/teclados-y-mouse.html', 'Mouse'],
-            # ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
+            ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
             ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
-            # ['gaming/componentes/gabinetes.html', 'ComputerCase'],
+            ['gaming/componentes/gabinetes.html', 'ComputerCase'],
             ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
             ['gaming/componentes/memoria-ram.html', 'Ram'],
             ['gaming/componentes/procesadores.html', 'Processor'],
@@ -118,7 +124,7 @@ class NotebookStore(Store):
                 products = soup.findAll('li', 'product')
 
                 if not products:
-                    raise Exception('Empty category: ' + url)
+                    logging.warning('Empty category: ' + url)
 
                 for product in products:
                     product_url = product.find('a')['href']

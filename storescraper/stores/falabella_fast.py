@@ -123,7 +123,6 @@ class FalabellaFast(Store):
 
         return products_data
 
-
     @classmethod
     def _get_products(cls, product_data, category):
         products = []
@@ -144,7 +143,6 @@ class FalabellaFast(Store):
             if price['icons'] == 'cmr-icon':
                     continue
             normal_price = Decimal(remove_words(price['price'][0]))
-
 
         for price in prices:
             if price['icons'] == 'cmr-icon':

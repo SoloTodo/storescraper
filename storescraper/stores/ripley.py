@@ -287,7 +287,8 @@ class Ripley(Store):
                                  page_source)
         if not product_data:
             if retries:
-                return cls._assemble_full_product(url, category, extra_args, retries=retries-1)
+                return cls._assemble_full_product(url, category, extra_args,
+                                                  retries=retries-1)
             else:
                 return []
 
@@ -461,7 +462,7 @@ class Ripley(Store):
         if normal_price_container:
             normal_price = Decimal(
                 element.find('li', 'catalog-prices__offer-price')
-                    .text.replace('$', '').replace('.', ''))
+                .text.replace('$', '').replace('.', ''))
         else:
             normal_price = offer_price
 
@@ -625,7 +626,7 @@ class Ripley(Store):
                                       "foo.setAttribute('value','{1}'); "
                                       "document.getElementsByTagName('form')"
                                       "[0].appendChild(foo);".format(
-                    field, hcaptcha_response))
+                                        field, hcaptcha_response))
             driver.execute_script("document.getElementsByTagName('form')"
                                   "[0].submit()")
 
@@ -771,7 +772,8 @@ class Ripley(Store):
         return banners
 
     @classmethod
-    def get_owl_banners(cls, url, section, subsection, subsection_type, extra_args):
+    def get_owl_banners(cls, url, section, subsection, subsection_type,
+                        extra_args):
         extra_args = extra_args or {}
         proxy = extra_args.pop('proxy', None)
         with HeadlessChrome(images_enabled=True, timeout=60,
@@ -838,4 +840,3 @@ class Ripley(Store):
                 })
 
             return banners
-

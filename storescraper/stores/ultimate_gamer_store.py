@@ -20,7 +20,7 @@ class UltimateGamerStore(Store):
             'SolidStateDrive',
             'Motherboard',
         ]
-    
+
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [

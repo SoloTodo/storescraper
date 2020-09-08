@@ -109,7 +109,8 @@ class ParisFast(Store):
                         products_dict[product.sku] = product
                         product_to_update = product
 
-                    product_to_update.positions[section_name] = 40 * page + idx + 1
+                    product_to_update.positions[section_name] = \
+                        40 * page + idx + 1
 
                 page += 1
 
@@ -122,7 +123,8 @@ class ParisFast(Store):
         if 'https' not in product_url:
             product_url = 'https://www.paris.cl' + product_url
 
-        data = json.loads(container.find('div', 'product-tile')['data-product'])
+        data = json.loads(
+            container.find('div', 'product-tile')['data-product'])
         name = data['name']
         sku = data['variant']
 

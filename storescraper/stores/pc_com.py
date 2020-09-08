@@ -107,7 +107,8 @@ class PcCom(Store):
         picture_containers = soup.findAll(
             'div', 'woocommerce-product-gallery__image')
 
-        picture_urls = [ic.find('img')['src'] for ic in picture_containers if ic['data-thumb']]
+        picture_urls = [ic.find('img')['src'] for ic in picture_containers
+                        if ic['data-thumb']]
 
         description = html_to_markdown(
             str(soup.find('div', 'woocommerce-Tabs-panel--description')))
