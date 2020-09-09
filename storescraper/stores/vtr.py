@@ -82,8 +82,9 @@ class Vtr(Store):
 
         json_data = json.loads(session.get(
             'https://www.vtr.com/ccstoreui/v1/products?categoryId='
-            'MovilesPlanes&fields=items.displayName%2Citems.id%2C'
-            'items.listPrice').text)
+            'MovilesPlanes&fields=items.displayName%2C'
+            'items.childSKUs.x_relatedDeviceProductId%2C'
+            'items.childSKUs.listPrice').text)
         cuotas_suffixes = [
             (' Portabilidad (con cuota de arriendo)', Decimal('1.0')),
             (' Portabilidad (sin cuota de arriendo)', Decimal('0.7')),
@@ -93,7 +94,14 @@ class Vtr(Store):
 
         for plan_entry in json_data['items']:
             base_plan_name = plan_entry['displayName']
-            base_price = Decimal(plan_entry['listPrice'])
+
+            base_price = None
+            for child_sku in plan_entry['childSKUs']:
+                if not child_sku['x_relatedDeviceProductId']:
+                    base_price = Decimal(child_sku['listPrice'])
+                    break
+
+            assert base_price
 
             for suffix, multiplier in cuotas_suffixes:
                 price = base_price * multiplier
