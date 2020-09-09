@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -16,15 +17,15 @@ class IsiBook(Store):
             'Printer',
             'StereoSystem',
             'StorageDrive',
-            # 'ExternalStorageDrive'
-            # 'UsbFlashDrive',
-            # 'MemoryCard',
-            # 'SolidStateDrive',
+            'ExternalStorageDrive'
+            'UsbFlashDrive',
+            'MemoryCard',
+            'SolidStateDrive',
             'Projector',
             'Monitor',
             'AllInOne',
             'Mouse',
-            # 'Keyboard',
+            'Keyboard',
             'Headphones',
             'Processor',
             'PowerSupply',
@@ -39,16 +40,16 @@ class IsiBook(Store):
             ['pc-y-portatiles/tablet', 'Tablet'],
             ['impresion/multifuncionales-tinta', 'Printer'],
             ['impresion/impresoras-laser', 'Printer'],
-            # ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
+            ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
             ['almacenamiento/disco-duros', 'StorageDrive'],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
             ['partes-y-piezas/monitores', 'Monitor'],
-            # ['partes-y-piezas/pantallas', 'Monitor'],
+            ['partes-y-piezas/pantallas', 'Monitor'],
             ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],
-            # ['partes-y-piezas/procesadores', 'Processor'],
-            # ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
+            ['partes-y-piezas/procesadores', 'Processor'],
+            ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
             ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
         ]
@@ -64,13 +65,16 @@ class IsiBook(Store):
             page = 1
 
             while True:
+                if page > 10:
+                    raise Exception('Page overflow')
+
                 url = base_url.format(url_extension, page)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_containers = soup.find('ol', 'products')
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty path: ' + url)
+                        logging.warning('Empty path: ' + url)
                     break
 
                 products = product_containers.findAll('li', 'item')
