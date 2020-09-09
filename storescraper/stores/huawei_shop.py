@@ -1,10 +1,12 @@
+import html
 import json
 import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, CELL, TABLET, WEARABLE, HEADPHONES
+from storescraper.categories import NOTEBOOK, CELL, TABLET, \
+    WEARABLE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -44,19 +46,20 @@ class HuaweiShop(Store):
                 continue
             offset = 1
             while True:
-                if offset > 50:
+                if offset > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://shop.huawei.com/cl/list-data-{}?sortField=registterTime&' \
-                              'sortType=desc&prdAttrList=%5B%5D&pageNumber={}&pageSize=9'.format(url_extension, offset)
+                url_webpage = 'https://shop.huawei.com/cl/list-data-{}' \
+                              '?pageNumber={}&pageSize=9'. \
+                    format(url_extension, offset)
 
                 data = session.get(url_webpage).text
 
                 soup = BeautifulSoup(data, 'html.parser')
-                product_container = soup.findAll('li', 'dataitem')
+                product_containers = soup.findAll('li', 'dataitem')
 
-                if not product_container:
+                if not product_containers:
                     break
-                for container in product_container:
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append('https:' + product_url.split('?')[0])
                 offset += 1
@@ -68,20 +71,24 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         response_text = BeautifulSoup(response.text, 'html.parser').text
-        product_info = re.search(r'var productInfo = transObjectAttribute\(.*?\)', response_text)
-        inventory_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);', response_text)
-        inventory = {i[0]: i[1] for i in inventory_info}
+        product_info = re.search(r'var productInfo = '
+                                 r'transObjectAttribute\(.*?\)', response_text)
+        stock_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);',
+                                response_text)
+        stock_info = {i[0]: i[1] for i in stock_info}
         json_info = json.loads(product_info.group(0)[40:-2])
         products = []
         products_json = json_info['sbomList']
         normal_price = Decimal(json_info['totalUnitPrice'])
         offer_price = normal_price
+        picture_base_url = 'https://img01.huaweifile.com/sg/ms' \
+                           '/cl/pms/product/{}/group/428_428_{}'
         for product in products_json:
-            name = product['name'].replace('&#x2b;', ', ')
+            name = html.unescape(product['name'])
             sku = product['sbomCode']
-            stock = int(inventory[sku])
-            picture_base_url = 'https://img01.huaweifile.com/sg/ms/cl/pms/product/{}/group/428_428_{}'
-            picture_urls = [picture_base_url.format(product['gbomCode'], picture['photoName'])
+            stock = int(stock_info[sku])
+            picture_urls = [picture_base_url.format(product['gbomCode'],
+                                                    picture['photoName'])
                             for picture in product['groupPhotoList']]
             p = Product(
                 name,
