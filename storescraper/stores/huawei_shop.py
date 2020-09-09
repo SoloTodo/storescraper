@@ -53,7 +53,6 @@ class HuaweiShop(Store):
                     format(url_extension, offset)
 
                 data = session.get(url_webpage).text
-
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('li', 'dataitem')
 
@@ -71,12 +70,14 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         response_text = BeautifulSoup(response.text, 'html.parser').text
-        product_info = re.search(r'var productInfo = '
-                                 r'transObjectAttribute\(.*?\)', response_text)
+        product_info = re.search(
+            r"var productInfo = transObjectAttribute\('(.*?)'\)",
+            response_text
+        )
         stock_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);',
                                 response_text)
         stock_info = {i[0]: i[1] for i in stock_info}
-        json_info = json.loads(product_info.group(0)[40:-2])
+        json_info = json.loads(product_info.groups()[0])
         products = []
         products_json = json_info['sbomList']
         normal_price = Decimal(json_info['totalUnitPrice'])
