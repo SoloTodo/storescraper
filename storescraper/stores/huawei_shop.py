@@ -71,10 +71,10 @@ class HuaweiShop(Store):
         response = session.get(url)
         response_text = BeautifulSoup(response.text, 'html.parser').text
         product_info = re.search(
-            r"var productInfo = transObjectAttribute\('(.*?)'\)",
+            r"var productInfo = transObjectAttribute\('(.*)'\)",
             response_text
         )
-        stock_info = re.findall(r'sbomInvInfo\["(.*?)"] = (.*?);',
+        stock_info = re.findall(r'sbomInvInfo\["(.*)"] = (.*);',
                                 response_text)
         stock_info = {i[0]: i[1] for i in stock_info}
         json_info = json.loads(product_info.groups()[0])
