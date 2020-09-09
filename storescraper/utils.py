@@ -1,4 +1,5 @@
 import importlib
+import logging
 from decimal import Decimal
 
 import html2text
@@ -149,7 +150,10 @@ def get_cf_session(extra_args):
     cookie_names = ['cf_clearance', '__cfduid']
 
     for cookie_name in cookie_names:
-        assert cookie_name in extra_args
+        if cookie_name not in extra_args:
+            logging.warning(
+                'This scraper expects a CloudFlare cookie in production')
+            continue
 
         cookie = requests.cookies.create_cookie(name=cookie_name,
                                                 value=extra_args[cookie_name],

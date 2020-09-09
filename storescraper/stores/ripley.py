@@ -10,8 +10,7 @@ from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.utils import get_cf_session, HeadlessChrome, \
-    load_driver_cf_cookies, session_with_proxy, html_to_markdown, \
-    CF_REQUEST_HEADERS
+    load_driver_cf_cookies, html_to_markdown, CF_REQUEST_HEADERS
 from storescraper import banner_sections as bs
 
 from selenium.common.exceptions import NoSuchElementException
@@ -165,11 +164,7 @@ class Ripley(Store):
         if extra_args is None:
             extra_args = {}
 
-        if 'PROXY_USERNAME' in extra_args:
-            session = get_cf_session(extra_args)
-        else:
-            session = session_with_proxy(extra_args)
-
+        session = get_cf_session(extra_args)
         fast_mode = extra_args.pop('fast_mode', False)
 
         url_base = 'https://simple.ripley.cl/{}?page={}'
@@ -270,11 +265,7 @@ class Ripley(Store):
 
     @classmethod
     def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        if 'PROXY_USERNAME' not in extra_args:
-            session = session_with_proxy(extra_args)
-        else:
-            session = get_cf_session(extra_args)
-
+        session = get_cf_session(extra_args)
         print(url)
         page_source = session.get(url).text
 
@@ -650,8 +641,22 @@ class Ripley(Store):
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno/'],
             [bs.REFRIGERATION, 'Refrigeración',
              bs.SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/'],
+            [bs.REFRIGERATION, 'Side by Side',
+             bs.SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/side-by-side/'],
             [bs.REFRIGERATION, 'Refrigeradores', bs.SUBSECTION_TYPE_MOSAIC,
              'electro/refrigeracion/refrigeradores/'],
+            [bs.REFRIGERATION, 'Freezers y congeladores',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/freezers-y-congeladores/'],
+            [bs.REFRIGERATION, 'Door In Door',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/door-in-door/'],
+            [bs.REFRIGERATION, 'Frigobar',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/frigobar/'],
+            [bs.REFRIGERATION, 'Refrigeracion Comercial e Industrial',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/refrigeracion-comercial-e-industrial/'],
             [bs.WASHING_MACHINES, 'Lavandería',
              bs.SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia'],
             [bs.WASHING_MACHINES, 'Lavadoras',
@@ -659,32 +664,39 @@ class Ripley(Store):
             [bs.WASHING_MACHINES, 'Lavadora-secadora',
              bs.SUBSECTION_TYPE_MOSAIC,
              'electro/lavanderia/lavadora-secadora'],
+            [bs.WASHING_MACHINES, 'Secadoras',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/lavanderia/secadoras'],
             [bs.WASHING_MACHINES, 'Doble Carga',
              bs.SUBSECTION_TYPE_MOSAIC, 'electro/lavanderia/doble-carga'],
             [bs.TELEVISIONS, 'Televisión',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television'],
             [bs.TELEVISIONS, 'Smart TV',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
-            [bs.TELEVISIONS, '4K – UHD - NanoCell',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/4k-uhd-nanocell'],
-            [bs.TELEVISIONS, 'Premium - OLED - QLED - 8K',
+            [bs.TELEVISIONS, 'Ultra HD 4K',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-4k'],
+            [bs.TELEVISIONS, 'Premium y 8K',
              bs.SUBSECTION_TYPE_MOSAIC,
-             'tecno/television/premium-oled-qled-8k'],
-            [bs.TELEVISIONS, 'HD - Full HD',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/hd-full-hd'],
+             'tecno/television/premium-y-8k'],
+            [bs.TELEVISIONS, 'HD y Full HD',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/hd-y-full-hd'],
             [bs.AUDIO, 'Audio y Música',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
-            # [AUDIO, 'Parlantes y Subwoofer', SUBSECTION_TYPE_MOSAIC,
-            #  'tecno/audio-y-musica/parlantes-y-subwoofer'],
-            # [AUDIO, 'Microcomponentes',
-            #  SUBSECTION_TYPE_MOSAIC,
-            #  'tecno/audio-y-musica/microcomponentes'],
-            [bs.AUDIO, 'Soundbar y Home theater',
-             bs.SUBSECTION_TYPE_MOSAIC,
-             'tecno/audio-y-musica/soundbard-y-home-theater'],
             [bs.AUDIO, 'Parlantes Portables',
              bs.SUBSECTION_TYPE_MOSAIC,
              'tecno/audio-y-musica/parlantes-portables'],
+            [bs.AUDIO, 'Soundbar y Home theater',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/soundbar-y-home-theater'],
+            [bs.AUDIO, 'Receiver y Amplificadores',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/receiver-y-amplificadores'],
+            [bs.AUDIO, 'Equipos de música',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/equipos-de-musica'],
+            [bs.AUDIO, 'Accesorios',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/accesorios-audio'],
             [bs.CELLS, 'Telefonía',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
             [bs.CELLS, 'Android',
@@ -693,54 +705,28 @@ class Ripley(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
 
-        if 'PROXY_USERNAME' not in extra_args:
-            session = session_with_proxy(extra_args)
-        else:
-            session = get_cf_session(extra_args)
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
-            response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 banners = banners + cls.get_owl_banners(
                     url, section, subsection, subsection_type, extra_args)
 
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                if soup.find('div', 'owl-carousel'):
-                    banners = banners + cls.get_owl_banners(
-                        url, section, subsection, subsection_type, extra_args)
-                else:
-                    images = soup.findAll('a', 'item')
-
-                    if not images:
-                        print('No banners')
-
-                    for index, image in enumerate(images):
-                        picture = image.find('span', 'bg-item')
-                        picture_url = re.search(
-                            r'url\((.*?)\)', picture['style']).group(1)
-
-                        destination_urls = [image['href']]
-
-                        banners.append({
-                            'url': url,
-                            'picture_url': picture_url,
-                            'destination_urls': destination_urls,
-                            'key': picture_url,
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
+                banners = banners + cls.get_owl_banners(
+                    url, section, subsection, subsection_type, extra_args)
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+                session = get_cf_session(extra_args)
+                soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 picture_container = soup.find('section', 'catalog-top-banner')
 
                 if not picture_container:
-                    print('No banners')
-                    continue
+                    raise Exception('No banners for: ' + url)
+                    # print('No banners')
+                    # continue
 
                 picture_url = picture_container.find('img')
 
@@ -775,20 +761,19 @@ class Ripley(Store):
     def get_owl_banners(cls, url, section, subsection, subsection_type,
                         extra_args):
         extra_args = extra_args or {}
-        proxy = extra_args.pop('proxy', None)
-        with HeadlessChrome(images_enabled=True, timeout=60,
-                            proxy=proxy) as driver:
-            print(url)
+        proxy = extra_args.get('proxy', None)
+        with HeadlessChrome(images_enabled=True, timeout=240,
+                            proxy=proxy, headless=True) as driver:
             banners = []
             driver.set_window_size(1920, 1080)
-            driver.set_page_load_timeout(240)
             # Open the page first so that the CF cookies can be loaded in
             # this domain
-            driver.get(url)
             # Then set the sesion cookies
             if 'cf_clearance' in extra_args:
+                driver.get(url)
                 load_driver_cf_cookies(driver, extra_args, '.ripley.cl')
-                # Then re-open the page
+                driver.get(url)
+            else:
                 driver.get(url)
 
             driver.execute_script("scrollTo(0, 0);")
@@ -798,8 +783,17 @@ class Ripley(Store):
             banner_container = driver \
                 .find_element_by_class_name('owl-carousel')
 
-            controls = banner_container \
-                .find_elements_by_class_name('owl-page')
+            retries = 10
+
+            for i in range(retries):
+                print('Retry {} for owl banner'.format(i + 1))
+                time.sleep(10)
+                controls = banner_container \
+                    .find_elements_by_class_name('owl-page')
+                if controls:
+                    break
+            else:
+                raise Exception('Timeout waiting for owl banners: ' + url)
 
             for control in controls:
                 control.click()
@@ -840,3 +834,7 @@ class Ripley(Store):
                 })
 
             return banners
+
+    @classmethod
+    def get_headless_chrome(cls):
+        pass
