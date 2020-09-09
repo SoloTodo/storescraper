@@ -125,7 +125,7 @@ class Wom(Store):
             '30-gigas': Decimal(11990),
         }
 
-        plan_containers = soup.findAll('article', 'pb-100')
+        plan_containers = soup.find('section', 'box-planes').findAll('article')
 
         variants = [
             'sin cuota de arriendo',
@@ -133,8 +133,15 @@ class Wom(Store):
         ]
 
         for container in plan_containers:
+            print(str(container))
             link = container.find('a')
-            plan_name = link['href'].split('=')[-1]
+
+            try:
+                link_href = link['data-c2c']
+            except:
+                link_href = link['href']
+
+            plan_name = link_href.split('=')[-1]
             plan_price = plan_prices[plan_name]
 
             for variant in variants:
