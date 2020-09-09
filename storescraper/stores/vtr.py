@@ -153,7 +153,7 @@ class Vtr(Store):
             session.get(product_plan_pricing_url).text)
 
         variant_data = [
-            (' Portabilidad cuotas', True),
+            (' Portabilidad Cuotas', True),
             (' Portabilidad', False),
             ('', False)
         ]
