@@ -104,7 +104,7 @@ class Vtr(Store):
             assert base_price
 
             for suffix, multiplier in cuotas_suffixes:
-                price = base_price * multiplier
+                price = (base_price * multiplier).quantize(0)
                 name = base_plan_name + suffix
 
                 p = Product(
