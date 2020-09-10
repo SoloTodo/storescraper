@@ -146,7 +146,7 @@ class Vtr(Store):
                 base_price = variant_price
 
         product_json_url = 'https://www.vtr.com/ccstoreui/v1/pages/product/' \
-                          '{}'.format(prod_id)
+                           '{}'.format(prod_id)
         product_json = json.loads(session.get(product_json_url).text)
         product_with_plan_ids = product_json[
             'data']['page']['product']['x_BundlePlanSkusIds']
