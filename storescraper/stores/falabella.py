@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import time
 import base64
@@ -27,14 +28,14 @@ class Falabella(Store):
     category_paths = [
         ['cat70057', ['Notebook'],
          'Home > Computación-Notebooks', 1],
-        # ['cat5860031', ['Notebook'],
-        #  'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
+        ['cat5860031', ['Notebook'],
+         'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
         ['cat2028', ['Notebook'],
          'Home > Computación-Notebooks Gamers', 1],
         ['cat2450060', ['Notebook'],
          'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
-        # ['cat15880017', ['Notebook'],
-        #  'Home > Especiales-Gamer', 1],
+        ['cat15880017', ['Notebook'],
+         'Home > Especiales-Gamer', 1],
         ['cat5860030', ['Notebook'],
          'Home > Computación-Notebooks > MacBooks', 1],
         ['cat4850013', ['Notebook'],
@@ -49,12 +50,12 @@ class Falabella(Store):
          'Home > Tecnología-TV > LEDs entre 50 - 55 pulgadas', 1],
         ['cat11161679', ['Television'],
          'Home > Tecnología-TV > LEDs sobre 55 pulgadas', 1],
-        # ['cat2850016', ['Television'],
-        #  'Home > TV-Televisores OLED', 1],
+        ['cat2850016', ['Television'],
+         'Home > TV-Televisores OLED', 1],
         ['cat10020021', ['Television'],
          'Home > TV-Televisores QLED', 1],
-        # ['cat18110001', ['Television'],
-        #  'Home > Tecnología-Premium', 1],
+        ['cat18110001', ['Television'],
+         'Home > Tecnología-Premium', 1],
         ['cat7230007', ['Tablet'],
          'Home > Computación-Tablets', 1],
         ['cat3205', ['Refrigerator'],
@@ -79,16 +80,14 @@ class Falabella(Store):
          'f.product.attribute.Tipo=Top+mount'],
         ['cat1820006', ['Printer'],
          'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
-        # ['cat6680042/Impresoras-Tradicionales', 'Printer'],
-        # ['cat11970007/Impresoras-Laser', 'Printer'],
-        # ['cat11970009/Impresoras-Fotograficas', 'Printer'],
+        ['cat2049', ['Printer'], 'Home > Tecnología-Computadores > Impresoras', 1],
         ['cat3151', ['Oven'],
          'Home > Microondas', 1],
         ['cat3114', ['Oven'],
          'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
          'Hornos Eléctricos', 1],
-        # ['cat3025', ['VacuumCleaner'],
-        #  'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
+        ['cat3025', ['VacuumCleaner'],
+         'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
         ['cat3136', ['WashingMachine'],
          'Home > Electrohogar-Lavado > Lavado', 1],
         ['cat4060', ['WashingMachine'],
@@ -160,9 +159,9 @@ class Falabella(Store):
         ['cat2370002', ['Keyboard'],
          'Home > Computación- Accesorios Tecnología > '
          'Accesorios Computación > Teclados', 1],
-        # ['cat2930003', ['Keyboard'],
-        #  'Home > Computación- Accesorios Tecnología > Accesorios TV > '
-        #  'Teclados Smart', 1],
+        ['cat2930003', ['Keyboard'],
+         'Home > Computación- Accesorios Tecnología > Accesorios TV > '
+         'Teclados Smart', 1],
         ['cat1640002', ['Headphones'],
          'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
          'Audífonos', 1],
@@ -208,7 +207,6 @@ class Falabella(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = cls.category_paths
-
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
         product_entries = defaultdict(lambda: [])
@@ -323,7 +321,7 @@ class Falabella(Store):
 
             if 'results' not in res:
                 if page == 1:
-                    raise Exception('Empty category: {}'.format(category_id))
+                    logging.warning('Empty category: {}'.format(category_id))
                 break
 
             for result in res['results']:
@@ -597,20 +595,20 @@ class Falabella(Store):
 
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+
             # # CATEGORY PAGES # #
-            # Currently displaying a smart picker
             [bs.REFRIGERATION, 'Electrohogar-Refrigeradores',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat3205/Refrigeradores'],
+             'category/cat3205/Refrigeradores?isLanding=true'],
             [bs.WASHING_MACHINES, 'Electrohogar-Lavado',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavado'],
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'category/cat3136/Lavado?isLanding=true'],
             [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat1012/TV'],
+             'category/cat1012/TV?isLanding=true'],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat2005/Audio'],
+             'category/cat2005/Audio?isLanding=true'],
             [bs.CELLS, 'Telefonía-Celulares y Teléfonos',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat2018/Celulares-y-Telefonos'],
+             'category/cat2018/Celulares-y-Telefonos?isLanding=true'],
 
             # # MOSAICS ##
             [bs.LINEA_BLANCA_FALABELLA, 'Electro y Tecnología-Línea Blanca',
@@ -620,8 +618,8 @@ class Falabella(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4074/No-Frost'],
             [bs.REFRIGERATION, 'Refrigeradores-Side by Side',
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4091/Side-by-Side'],
-            # [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat3136/Lavadoras '],
+            [bs.WASHING_MACHINES, 'Lavadoras', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat3136/Lavadoras'],
             [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras',
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat4060/Lavadoras'],
             [bs.WASHING_MACHINES, 'Lavadoras-Lavadoras-Secadoras',
@@ -645,19 +643,18 @@ class Falabella(Store):
             [bs.TELEVISIONS, 'LEDs sobre 55 pulgadas',
              bs.SUBSECTION_TYPE_MOSAIC,
              'category/cat11161679/LEDs-sobre-55-pulgadas'],
-
-            # [bs.TELEVISIONS, 'TV-LED', bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat2850014/LED'],
-            # [bs.TELEVISIONS, 'TV-Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat3040054/Smart-TV'],
-            # [bs.TELEVISIONS, 'TV-4K UHD', bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat3990038/4K-UHD'],
-            # [bs.TELEVISIONS, 'TV-Televisores OLED',
-            # bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat2850016/Televisores-OLED'],
-            # [bs.TELEVISIONS, 'TV-Pulgadas Altas',
-            #  bs.SUBSECTION_TYPE_MOSAIC,
-            #  'category/cat12910024/Televisores-LED-Desde-65"'],
+            [bs.TELEVISIONS, 'TV-LED', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat2850014/LED'],
+            [bs.TELEVISIONS, 'TV-Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat3040054/Smart-TV'],
+            [bs.TELEVISIONS, 'TV-4K UHD', bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat3990038/4K-UHD'],
+            [bs.TELEVISIONS, 'TV-Televisores OLED',
+            bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat2850016/Televisores-OLED'],
+            [bs.TELEVISIONS, 'TV-Pulgadas Altas',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'category/cat12910024/Televisores-LED-Desde-65"'],
             [bs.AUDIO, 'Audio-Soundbar y Home Theater',
              bs.SUBSECTION_TYPE_MOSAIC, 'category/cat2045/Home-Theater'],
             [bs.AUDIO, 'Home Theater', bs.SUBSECTION_TYPE_MOSAIC,
@@ -727,43 +724,35 @@ class Falabella(Store):
                                 '{}'.format(url, index + 1))
                         index += 1
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                with HeadlessChrome(images_enabled=True,
-                                    proxy=proxy, timeout=99) as driver:
+                with HeadlessChrome(images_enabled=True, proxy=proxy,
+                                    timeout=99) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
                     pictures = []
 
-                    try:
-                        pips_container = driver.find_element_by_class_name(
-                            'fb-hero-carousel__pips')
+                    pips_container = driver.find_element_by_class_name(
+                        'fb-hero-carousel__pips')
 
-                        driver.execute_script(
-                            "arguments[0].setAttribute('style', "
-                            "'display:block !important;');", pips_container)
+                    driver.execute_script(
+                        "arguments[0].setAttribute('style', "
+                        "'display:block !important;');", pips_container)
 
-                        elements = driver.find_element_by_class_name(
-                            'fb-hero-carousel__pips')\
-                            .find_elements_by_class_name(
-                            'fb-hero-carousel__pips__pip')
+                    elements = driver.find_element_by_class_name(
+                        'fb-hero-carousel__pips')\
+                        .find_elements_by_class_name(
+                        'fb-hero-carousel__pips__pip')
 
-                        for element in elements:
-                            element.click()
-                            time.sleep(2)
-                            image_url = Image.open(
-                                BytesIO(driver.get_screenshot_as_png()))
-                            image_url = image_url.crop((0, 187, 1920, 769))
-                            buffered = BytesIO()
-                            image_url.save(buffered, format='PNG')
-                            pictures.append(
-                                base64.b64encode(buffered.getvalue()))
-                    except NoSuchElementException:
+                    for element in elements:
+                        element.click()
+                        time.sleep(2)
                         image_url = Image.open(
                             BytesIO(driver.get_screenshot_as_png()))
                         image_url = image_url.crop((0, 187, 1920, 769))
                         buffered = BytesIO()
                         image_url.save(buffered, format='PNG')
-                        pictures.append(base64.b64encode(buffered.getvalue()))
+                        pictures.append(
+                            base64.b64encode(buffered.getvalue()))
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     images_div = soup.findAll('div', 'fb-hero-carousel-slide')
@@ -810,10 +799,10 @@ class Falabella(Store):
                 session.headers['User-Agent'] = CF_REQUEST_HEADERS[
                     'User-Agent']
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
                 banner = soup.find('div', 'fb-huincha-main-wrap')
 
                 if not banner:
+                    print('No banner for ' + url)
                     continue
 
                 image_url = banner.find('source')['srcset']
