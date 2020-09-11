@@ -116,7 +116,10 @@ class Multimax(Store):
             if not check_ean13(barcode):
                 barcode = None
 
-            stock = variant['inventory_quantity']
+            # The stock may be listed as zero for available products, and no
+            # active products at Multimax seem to be unavailable, so
+            # assume available stok but unkwon quantity
+            stock = variant['inventory_quantity'] or -1
             price = Decimal(variant['price'])/Decimal(100)
 
             products.append(Product(
