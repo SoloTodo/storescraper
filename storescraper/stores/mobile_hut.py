@@ -106,9 +106,13 @@ class MobileHut(Store):
                     'http://schema.org/InStock':
                 stock = -1
 
-            price = Decimal(soup.find('span', 'current_price')
-                            .text.replace('$', '').replace('.', ''))
+            price_text = soup.find('span', 'current_price').text.strip()\
+                .replace('$', '').replace('.', '')
 
+            if price_text == '-':
+                continue
+
+            price = Decimal(price_text)
             image_containers = soup.findAll('div', 'image__container')
             picture_urls = ['http:' + i.find('img')['data-src']
                             for i in image_containers]
