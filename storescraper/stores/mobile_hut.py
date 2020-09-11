@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from decimal import Decimal
@@ -7,39 +8,42 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import CELL, HEADPHONES, MOUSE, KEYBOARD, \
+    WEARABLE, USB_FLASH_DRIVE, MEMORY_CARD, VIDEO_GAME_CONSOLE, MONITOR, \
+    STEREO_SYSTEM
 
 
 class MobileHut(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Headphones',
-            'StereoSystem',
-            'Mouse',
-            'Keyboard',
-            'Wearable',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'VideoGameConsole',
-            'Monitor',
+            CELL,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            MOUSE,
+            KEYBOARD,
+            WEARABLE,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            VIDEO_GAME_CONSOLE,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_urls = [
-            ['89857884224', 'smartphones', 'Cell'],
-            ['89858244672', 'audifonos', 'Headphones'],
-            ['129582760000', 'audio-gamer', 'Headphones'],
-            ['89858441280', 'parlantes', 'StereoSystem'],
-            ['132833869888', 'mouses', 'Mouse'],
-            ['129574076480', 'mouse-gamer', 'Mouse'],
-            ['132834033728', 'teclados-1', 'Keyboard'],
-            ['133205065792', 'smartwatch', 'Wearable'],
-            # ['132830560320', 'pendrives', 'UsbFlashDrive'],
-            ['132830593088', 'tarjetas-de-memoria', 'MemoryCard'],
-            ['129583054912', 'consolas', 'VideoGameConsole'],
-            ['206952595607', 'monitores', 'Monitor'],
+            ['89857884224', 'smartphones', CELL],
+            ['89858244672', 'audifonos', HEADPHONES],
+            ['129582760000', 'audio-gamer', HEADPHONES],
+            ['89858441280', 'parlantes', STEREO_SYSTEM],
+            ['132833869888', 'mouses', MOUSE],
+            ['129574076480', 'mouse-gamer', MOUSE],
+            ['132834033728', 'teclados-1', KEYBOARD],
+            ['133205065792', 'smartwatch', WEARABLE],
+            ['132830560320', 'pendrives', USB_FLASH_DRIVE],
+            ['132830593088', 'tarjetas-de-memoria', MEMORY_CARD],
+            ['129583054912', 'consolas', VIDEO_GAME_CONSOLE],
+            ['206952595607', 'monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -60,10 +64,9 @@ class MobileHut(Store):
                 products_data = json.loads(
                     session.get(api_url).text)['products']
 
-                if not products_data and page == 1:
-                    raise Exception('No products for collection {}'
-                                    .format(category_name))
                 if not products_data:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_id)
                     break
 
                 for product in products_data:

@@ -7,46 +7,49 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
+from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
+    SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
+    HEADPHONES, MONITOR, MOUSE, KEYBOARD
 
 
 class PcCom(Store):
     @classmethod
     def categories(cls):
         return [
-            'Processor',
-            'Ram',
-            'VideoCard',
-            'SolidStateDrive',
-            'ExternalStorageDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'Headphones',
-            'Monitor',
-            'Mouse',
-            'Keyboard',
+            PROCESSOR,
+            RAM,
+            VIDEO_CARD,
+            SOLID_STATE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            HEADPHONES,
+            MONITOR,
+            MOUSE,
+            KEYBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['procesadores', 'Processor'],
-            ['memorias-ram', 'Ram'],
-            ['tarjetas-de-video', 'VideoCard'],
-            ['unidades-de-estado-solido', 'SolidStateDrive'],
-            ['discos-duros/discos-duros-externos', 'ExternalStorageDrive'],
-            ['fuentes-de-poder', 'PowerSupply'],
-            ['gabinetes', 'ComputerCase'],
-            ['audio/audifonos-gamer', 'Headphones'],
-            ['audio/audifonos-bluetooth', 'Headphones'],
-            ['audio/audifonos-in-ear', 'Headphones'],
-            ['monitores-y-accesorios/monitores', 'Monitor'],
-            ['perifericos/mouse-alambricos', 'Mouse'],
-            ['perifericos/mouse-inalambricos', 'Mouse'],
-            ['zona-gamers/mouse-gamers', 'Mouse'],
-            ['perifericos/teclado-alambricos', 'Keyboard'],
-            ['perifericos/teclado-inalambricos', 'Keyboard'],
-            ['zona-gamers/teclados-mecanicos', 'Keyboard'],
-            ['zona-gamers/teclados-membrana', 'Keyboard'],
+            ['procesadores', PROCESSOR],
+            ['memorias-ram', RAM],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
+            ['discos-duros/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['audio/audifonos-gamer', HEADPHONES],
+            ['audio/audifonos-bluetooth', HEADPHONES],
+            ['audio/audifonos-in-ear', HEADPHONES],
+            ['monitores-y-accesorios/monitores', MONITOR],
+            ['perifericos/mouse-alambricos', MOUSE],
+            ['perifericos/mouse-inalambricos', MOUSE],
+            ['zona-gamers/mouse-gamers', MOUSE],
+            ['perifericos/teclado-alambricos', KEYBOARD],
+            ['perifericos/teclado-inalambricos', KEYBOARD],
+            ['zona-gamers/teclados-mecanicos', KEYBOARD],
+            ['zona-gamers/teclados-membrana', KEYBOARD],
         ]
 
         product_urls = []
@@ -95,8 +98,13 @@ class PcCom(Store):
         name = soup.find('h1', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[1]
 
+        stock_container = soup.find('p', 'stock')
+
+        if not stock_container:
+            return []
+
         stock = 0
-        if soup.find('p', 'stock').text == 'Hay existencias':
+        if stock_container.text == 'Hay existencias':
             stock = -1
 
         price_container = soup.find('p', 'price')
