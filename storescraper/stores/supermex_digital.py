@@ -1,62 +1,53 @@
 import json
-import re
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    MOTHERBOARD, PROCESSOR, CPU_COOLER, RAM, VIDEO_CARD, POWER_SUPPLY, \
+    COMPUTER_CASE, MOUSE, MONITOR, TABLET, NOTEBOOK
 
 
 class SupermexDigital(Store):
     @classmethod
     def categories(cls):
         return [
-            # 'ExternalStorageDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'Motherboard',
-            'Processor',
-            'CpuCooler',
-            'Ram',
-            'VideoCard',
-            'PowerSupply',
-            'ComputerCase',
-            # 'Ups',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Monitor',
-            # 'Headphones',
-            'Tablet',
-            'Notebook',
-            # 'Printer',
-            # 'AllInOne',
-            'VideoGameConsole'
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            MOTHERBOARD,
+            PROCESSOR,
+            CPU_COOLER,
+            RAM,
+            VIDEO_CARD,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            MOUSE,
+            MONITOR,
+            TABLET,
+            NOTEBOOK,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-interno/disco-mecanico', 'StorageDrive'],
-            ['almacenamiento-interno/disco-solido', 'SolidStateDrive'],
-            ['almacenamiento-interno/m2', 'SolidStateDrive'],
-            ['tarjetas-madre', 'Motherboard'],
-            ['procesadores', 'Processor'],
-            # ['sistema-de-enfriamiento', 'CpuCooler'],
-            ['memoria-ram', 'Ram'],
-            ['tarjeta-de-video', 'VideoCard'],
-            ['fuente', 'PowerSupply'],
-            ['gabinetes', 'ComputerCase'],
-            ['mouse', 'Mouse'],
-            ['teclados', 'Keyboard'],
-            ['monitores', 'Monitor'],
-            ['tablet', 'Tablet'],
-            ['laptop', 'Notebook'],
-            ['impresoras', 'Printer'],
-            ['computadoras', 'AllInOne']
+            ['almacenamiento-interno/disco-mecanico', STORAGE_DRIVE],
+            ['almacenamiento-interno/disco-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento-interno/m2', SOLID_STATE_DRIVE],
+            ['tarjetas-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['sistema-de-enfriamiento', CPU_COOLER],
+            ['memoria-ram', RAM],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['fuente', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['mouse', MOUSE],
+            ['monitores', MONITOR],
+            ['tablet', TABLET],
+            ['laptop', NOTEBOOK],
 
         ]
 
@@ -73,6 +64,7 @@ class SupermexDigital(Store):
 
             while True:
                 url = base_url.format(url_extension, page)
+                print(url)
 
                 if page >= 15:
                     raise Exception('Page overflow: ' + url)
@@ -84,7 +76,7 @@ class SupermexDigital(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty category: ' + url)
+                        logging.warning('Empty category: ' + url)
                     break
 
                 for product in products:

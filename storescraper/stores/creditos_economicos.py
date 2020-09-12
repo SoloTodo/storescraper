@@ -9,32 +9,34 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import STOVE, WASHING_MACHINE, REFRIGERATOR, \
+    OVEN, STEREO_SYSTEM, CELL, TELEVISION, AIR_CONDITIONER
 
 
 class CreditosEconomicos(Store):
     @classmethod
     def categories(cls):
         return [
-            'Stove',
-            'WashingMachine',
-            'Refrigerator',
-            'Oven',
-            'StereoSystem',
-            'Cell',
-            'Television',
-            'AirConditioner',
+            STOVE,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            OVEN,
+            STEREO_SYSTEM,
+            CELL,
+            TELEVISION,
+            AIR_CONDITIONER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['C:/1/96/97/', 'Television'],
-            ['C:/1/2/', 'StereoSystem'],
-            ['C:/105/109/', 'Cell'],
-            ['C:/8/17/', 'Refrigerator'],
-            ['C:/8/18/', 'AirConditioner'],
-            ['C:/8/15/', 'Oven'],
-            ['C:/8/16/', 'WashingMachine'],
+            ['C:/1/96/97/', TELEVISION],
+            ['C:/1/2/', STEREO_SYSTEM],
+            ['C:/105/109/', CELL],
+            ['C:/8/17/', REFRIGERATOR],
+            ['C:/8/18/', AIR_CONDITIONER],
+            ['C:/8/15/', OVEN],
+            ['C:/8/16/', WASHING_MACHINE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,11 +67,12 @@ class CreditosEconomicos(Store):
                         break
 
                 for product in products:
-                    if product['href'] == '#':
+                    product_url = product['href']
+                    if product_url == '#':
                         continue
                     if product.find('div', 'brand-name').text != 'LG':
                         continue
-                    product_url = product['href'] + '?sc=2'
+
                     product_urls.append(product_url)
 
                 page += 1
@@ -81,6 +84,10 @@ class CreditosEconomicos(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code != 200:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         scripts = soup.findAll('script')

@@ -100,8 +100,8 @@ class ElectronicaPanamericana(Store):
         else:
             sku = sku.text.strip()
 
-        name = '{} ({})'.format(
-            soup.find('h1', 'product_title').text.strip(), sku)
+        name = '{} - {}'.format(
+            sku, soup.find('h1', 'product_title').text.strip())[:255]
 
         if soup.find('p', 'out-of-stock'):
             stock = 0

@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -5,27 +7,27 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, \
     html_to_markdown
+from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    MOTHERBOARD, PROCESSOR, RAM, VIDEO_CARD, POWER_SUPPLY, COMPUTER_CASE, \
+    MOUSE, KEYBOARD, MONITOR, TABLET
 
 
 class Dimercom(Store):
     @classmethod
     def categories(cls):
         return [
-            # 'ExternalStorageDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'Motherboard',
-            'Processor',
-            'Ram',
-            'VideoCard',
-            'PowerSupply',
-            'ComputerCase',
-            # 'Ups',
-            'Mouse',
-            'Keyboard',
-            'Monitor',
-            'Tablet',
-            # 'Printer',
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            MOTHERBOARD,
+            PROCESSOR,
+            RAM,
+            VIDEO_CARD,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            MOUSE,
+            KEYBOARD,
+            MONITOR,
+            TABLET,
         ]
 
     @classmethod
@@ -34,85 +36,85 @@ class Dimercom(Store):
         # main categories don't list all of the products of the subcategories
         url_extensions = [
             # Discos duros internos
-            ['6_109', 'StorageDrive'],
+            ['6_109', STORAGE_DRIVE],
             # Unidades SSD
-            ['6_110', 'SolidStateDrive'],
+            ['6_110', SOLID_STATE_DRIVE],
             # Tarjetas madre AMD
-            ['27_255', 'Motherboard'],
+            ['27_255', MOTHERBOARD],
             # Tarjetas madre Gamer
-            ['27_256', 'Motherboard'],
+            ['27_256', MOTHERBOARD],
             # Tarjetas madre Intel
-            ['27_257', 'Motherboard'],
+            ['27_257', MOTHERBOARD],
             # Procesadores A-Series
-            ['17_175', 'Processor'],
+            ['17_175', PROCESSOR],
             # Procesadores AMD
-            ['7_176', 'Processor'],
+            ['7_176', PROCESSOR],
             # Procesadores Celeron
-            ['17_177', 'Processor'],
+            ['17_177', PROCESSOR],
             # Procesadores Core
-            ['17_178', 'Processor'],
+            ['17_178', PROCESSOR],
             # Procesadores Intel
-            ['17_180', 'Processor'],
+            ['17_180', PROCESSOR],
             # Procesadores Pentium
-            # ['17_181', 'Processor'],
+            ['17_181', PROCESSOR],
             # Procesadores Ryzen
-            ['17_182', 'Processor'],
+            ['17_182', PROCESSOR],
             # Procesadores Xeon
-            ['17_183', 'Processor'],
+            ['17_183', PROCESSOR],
             # Memorias RAM para Desktop
-            ['13_138', 'Ram'],
+            ['13_138', RAM],
             # Memorias RAM para Laptop
-            ['13_139', 'Ram'],
+            ['13_139', RAM],
             # Tarjetas de video NVIDIA
-            ['26_253', 'VideoCard'],
+            ['26_253', VIDEO_CARD],
             # Tarjetas de video Radeon
-            ['26_254', 'VideoCard'],
+            ['26_254', VIDEO_CARD],
             # Fuentes de Poder
-            ['9_116', 'PowerSupply'],
+            ['9_116', POWER_SUPPLY],
             # Gabinetes
-            ['10_123', 'ComputerCase'],
+            ['10_123', COMPUTER_CASE],
             # Teclados
-            ['1_64', 'Keyboard'],
+            ['1_64', KEYBOARD],
             # Mouse
-            ['1_56', 'Mouse'],
+            ['1_56', MOUSE],
             # Monitores 15.6"
-            ['14_143', 'Monitor'],
+            ['14_143', MONITOR],
             # Monitores 18.5"
-            ['14_144', 'Monitor'],
+            ['14_144', MONITOR],
             # Monitores 19.5"
-            ['14_145', 'Monitor'],
+            ['14_145', MONITOR],
             # Monitores 20"
-            # ['14_146', 'Monitor'],
+            ['14_146', MONITOR],
             # Monitores 21.5"
-            ['14_147', 'Monitor'],
+            ['14_147', MONITOR],
             # Monitores 23"
-            ['14_148', 'Monitor'],
+            ['14_148', MONITOR],
             # Monitores 23.5"
-            # ['14_149', 'Monitor'],
+            ['14_149', MONITOR],
             # Monitores 23.6"
-            ['14_150', 'Monitor'],
+            ['14_150', MONITOR],
             # Monitores 23.8"
-            ['14_151', 'Monitor'],
+            ['14_151', MONITOR],
             # Monitores 24"
-            # ['14_152', 'Monitor'],
+            ['14_152', MONITOR],
             # Monitores 25"
-            # ['14_153', 'Monitor'],
+            ['14_153', MONITOR],
             # Monitores 27"
-            ['14_154', 'Monitor'],
+            ['14_154', MONITOR],
             # Monitores 28"
-            # ['14_155', 'Monitor'],
+            ['14_155', MONITOR],
             # Monitores 29"
-            # ['14_156', 'Monitor'],
+            ['14_156', MONITOR],
             # Monitores 31.5"
-            # ['14_157', 'Monitor'],
+            ['14_157', MONITOR],
             # Monitores 32"
-            # ['14_158', 'Monitor'],
+            ['14_158', MONITOR],
             # Monitores 34"
-            # ['14_159', 'Monitor'],
+            ['14_159', MONITOR],
             # Monitores LED
-            # ['14_160', 'Monitor'],
+            ['14_160', MONITOR],
             # Tablets
-            ['25_250', 'Tablet'],
+            ['25_250', TABLET],
         ]
 
         base_url = 'https://www.dimercom.mx/index.php?' \
@@ -139,7 +141,7 @@ class Dimercom(Store):
 
                 if not product_container:
                     if page == 1:
-                        raise Exception('Empty category: ' + url)
+                        logging.warning('Empty category: ' + url)
                     break
 
                 products = product_container.findAll('div', 'image')

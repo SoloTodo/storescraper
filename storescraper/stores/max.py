@@ -1,4 +1,4 @@
-import re
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -6,57 +6,60 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
+    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, \
+    OPTICAL_DISK_PLAYER, STOVE, MONITOR, PROJECTOR
 
 
 class Max(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'OpticalDiskPlayer',
-            'Stove',
-            'Monitor',
-            'Projector',
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            REFRIGERATOR,
+            OVEN,
+            AIR_CONDITIONER,
+            WASHING_MACHINE,
+            OPTICAL_DISK_PLAYER,
+            STOVE,
+            MONITOR,
+            PROJECTOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('video/televisores', 'Television'),
-            # ('video/cine-en-casa', 'StereoSystem'),
-            # ('video/reproductores-dvd', 'OpticalDiskPlayer'),
-            ('celulares/prepago', 'Cell'),
-            ('celulares/prepago/tigo', 'Cell'),
-            # ('celulares/prepago/claro', 'Cell'),
-            # ('celulares/prepago/movistar', 'Cell'),
-            ('celulares/liberados', 'Cell'),
-            # ('lineablanca/combos-lavadora-y-secadora', 'WashingMachine'),
-            ('lineablanca/secadoras', 'WashingMachine'),
-            ('lineablanca/lavadoras', 'WashingMachine'),
-            ('lineablanca/empotrables', 'Oven'),
-            # ('lineablanca/estufas/hornos-empotrables', 'Oven'),
-            ('electrodomesticos/microondas', 'Oven'),
-            ('lineablanca/refrigeradoras/refrigeradoras', 'Refrigerator'),
-            # ('lineablanca/refrigeradoras/congeladores', 'Refrigerator'),
-            ('lineablanca/estufas/estufas-a-gas', 'Stove'),
-            ('lineablanca/estufas/estufas-electricas', 'Stove'),
-            ('lineablanca/estufas/cooktops-a-gas', 'Stove'),
-            # ('lineablanca/estufas/cooktops-electricos', 'Stove'),
-            ('computacion/proyectores', 'Projector'),
-            ('audio', 'StereoSystem'),
-            # ('audio/audio-para-casa/micro-componente', 'StereoSystem'),
-            ('audio/audio-para-casa/mini-componente', 'StereoSystem'),
-            ('audio/audio-para-casa/audio-vertical', 'StereoSystem'),
-            ('audio/audio-portatil', 'StereoSystem'),
-            # ('audio/audio-multizona', 'StereoSystem'),
-            # ('computacion/pc-gaming/monitores', 'Monitor'),
-            ('computacion/proyectores', 'Projector'),
+            ('video/televisores', TELEVISION),
+            ('video/cine-en-casa', STEREO_SYSTEM),
+            ('video/reproductores-dvd', OPTICAL_DISK_PLAYER),
+            ('celulares/prepago', CELL),
+            ('celulares/prepago/tigo', CELL),
+            ('celulares/prepago/claro', CELL),
+            ('celulares/prepago/movistar', CELL),
+            ('celulares/liberados', CELL),
+            ('lineablanca/combos-lavadora-y-secadora', WASHING_MACHINE),
+            ('lineablanca/secadoras', WASHING_MACHINE),
+            ('lineablanca/lavadoras', WASHING_MACHINE),
+            ('lineablanca/empotrables', OVEN),
+            ('lineablanca/estufas/hornos-empotrables', OVEN),
+            ('electrodomesticos/microondas', OVEN),
+            ('lineablanca/refrigeradoras/refrigeradoras', REFRIGERATOR),
+            ('lineablanca/refrigeradoras/congeladores', REFRIGERATOR),
+            ('lineablanca/estufas/estufas-a-gas', STOVE),
+            ('lineablanca/estufas/estufas-electricas', STOVE),
+            ('lineablanca/estufas/cooktops-a-gas', STOVE),
+            ('lineablanca/estufas/cooktops-electricos', STOVE),
+            ('computacion/proyectores', PROJECTOR),
+            ('audio', STEREO_SYSTEM),
+            ('audio/audio-para-casa/micro-componente', STEREO_SYSTEM),
+            ('audio/audio-para-casa/mini-componente', STEREO_SYSTEM),
+            ('audio/audio-para-casa/audio-vertical', STEREO_SYSTEM),
+            ('audio/audio-portatil', STEREO_SYSTEM),
+            ('audio/audio-multizona', STEREO_SYSTEM),
+            ('computacion/pc-gaming/monitores', MONITOR),
+            ('computacion/proyectores', PROJECTOR),
         ]
 
         session = session_with_proxy(extra_args)
@@ -72,7 +75,7 @@ class Max(Store):
             done = False
             local_urls = []
 
-            while True:
+            while not done:
                 if page >= 10:
                     raise Exception('Page overflow')
 
@@ -82,8 +85,10 @@ class Max(Store):
 
                 items = soup.findAll('div', 'item')
 
-                if page == 1 and not items:
-                    raise Exception('No products for url {}'.format(url))
+                if not items:
+                    if page == 1:
+                        logging.warning('No products for url {}'.format(url))
+                    break
 
                 for container in items:
                     logo = container.find('div', 'brand').find('img')
@@ -97,9 +102,6 @@ class Max(Store):
                             'https://www.max.com.gt/media/marcas/lg.jpg':
                         lg_product_urls.append(product_url)
                     local_urls.append(container.find('a')['href'])
-
-                if done:
-                    break
 
                 page += 1
 
