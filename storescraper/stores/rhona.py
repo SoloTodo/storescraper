@@ -64,7 +64,7 @@ class Rhona(Store):
 
         identifier = soup.find('div', 'identif').text.strip()
         sku, part_number = \
-            re.search('Código Rhona: (\d+) \| Código Fabricante: (.+)',
+            re.search(r'Código Rhona: (\d+) \| Código Fabricante: (.+)',
                       identifier).groups()
 
         price = soup.find('span', 'verde')

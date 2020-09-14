@@ -92,7 +92,7 @@ class Pontofrio(Store):
         session.headers['Accept-Language'] = \
             'en-US,en;q=0.9,es;q=0.8,pt;q=0.7,pt-BR;q=0.6'
         page_source = session.get(url, timeout=30).text
-        pricing_data = re.search('var siteMetadata = ([\S\s]+?);',
+        pricing_data = re.search(r'var siteMetadata = ([\S\s]+?);',
                                  page_source).groups()[0]
 
         pricing_data = json.loads(pricing_data)['page']

@@ -1,5 +1,3 @@
-import urllib
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -9,7 +7,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
-    HEADPHONES, MONITOR, MOUSE, KEYBOARD
+    HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER
 
 
 class PcCom(Store):
@@ -27,6 +25,8 @@ class PcCom(Store):
             MONITOR,
             MOUSE,
             KEYBOARD,
+            STORAGE_DRIVE,
+            CPU_COOLER
         ]
 
     @classmethod
@@ -36,6 +36,7 @@ class PcCom(Store):
             ['memorias-ram', RAM],
             ['tarjetas-de-video', VIDEO_CARD],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
+            ['disco-duro-pc', STORAGE_DRIVE],
             ['discos-duros/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
@@ -50,6 +51,7 @@ class PcCom(Store):
             ['perifericos/teclado-inalambricos', KEYBOARD],
             ['zona-gamers/teclados-mecanicos', KEYBOARD],
             ['zona-gamers/teclados-membrana', KEYBOARD],
+            ['enfriamiento', CPU_COOLER],
         ]
 
         product_urls = []
@@ -103,9 +105,10 @@ class PcCom(Store):
         if not stock_container:
             return []
 
-        stock = 0
         if stock_container.text == 'Hay existencias':
             stock = -1
+        else:
+            stock = 0
 
         price_container = soup.find('p', 'price')
         if price_container.find('ins'):

@@ -67,7 +67,7 @@ class MagazineLuiza(Store):
 
         page_source = response.text
 
-        pricing_data = re.search('digitalData = ([\S\s]+?); </script',
+        pricing_data = re.search(r'digitalData = ([\S\s]+?); </script',
                                  page_source).groups()[0]
 
         for kw in ['domain', 'fullName', 'protocol', 'pathname', 'referrer']:

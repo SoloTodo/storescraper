@@ -138,7 +138,7 @@ class Wom(Store):
 
             try:
                 link_href = link['data-c2c']
-            except:
+            except Exception:
                 link_href = link['href']
 
             plan_name = link_href.split('=')[-1]

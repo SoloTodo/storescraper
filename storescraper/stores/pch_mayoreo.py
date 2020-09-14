@@ -113,14 +113,14 @@ class PchMayoreo(Store):
 
         sku_and_part_number_text = soup.find('div', 'std').text.split('|')
         sku_text = sku_and_part_number_text[0]
-        sku = re.search('CLAVE: (\S*)', sku_text).groups()[0]
+        sku = re.search(r'CLAVE: (\S*)', sku_text).groups()[0]
 
         part_number = None
 
         for section in sku_and_part_number_text:
             if 'CLAVE FABRICANTE' in section:
                 part_number = re.search(
-                    'CLAVE FABRICANTE: (\S*)', section).groups()[0]
+                    r'CLAVE FABRICANTE: (\S*)', section).groups()[0]
                 break
 
         stock = 0

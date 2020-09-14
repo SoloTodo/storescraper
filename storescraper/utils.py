@@ -22,10 +22,10 @@ def remove_words(text, blacklist=CLP_BLACKLIST):
     return text
 
 
-def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+def chunks(a_list, n):
+    """Yield successive n-sized chunks from a_list."""
+    for i in range(0, len(a_list), n):
+        yield a_list[i:i + n]
 
 
 def get_store_class_by_name(store_class_name):
@@ -94,7 +94,7 @@ def check_ean13(ean):
         return False
     try:
         int(ean)
-    except:
+    except Exception:
         return False
     oddsum = 0
     evensum = 0

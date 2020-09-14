@@ -98,7 +98,7 @@ class Microplay(Store):
             return []
 
         name = soup.find('h1').text.strip()
-        sku = re.search('ecomm_prodid: (\d+)', page_source).groups()[0]
+        sku = re.search(r'ecomm_prodid: (\d+)', page_source).groups()[0]
 
         price_container = soup.find('span', 'text_web')
 

@@ -101,7 +101,7 @@ class Megatone(Store):
         model = soup.find('span', {'id': 'MainContent_lblNombre'}).text.strip()
         name = '{} {}'.format(brand, model)
 
-        product_data = re.search('var google_tag_params = ([\s\S]+?);',
+        product_data = re.search(r'var google_tag_params = ([\s\S]+?);',
                                  page_source).groups()[0]
         product_json = demjson.decode(product_data)
 

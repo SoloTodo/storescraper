@@ -41,5 +41,6 @@ def main():
     else:
         print('No products found')
 
+
 if __name__ == '__main__':
     main()

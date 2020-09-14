@@ -316,7 +316,7 @@ class Easy(Store):
                 picture_entries = [picture_entries]
 
             for picture_entry in picture_entries:
-                if 'i'in picture_entry:
+                if 'i' in picture_entry:
                     picture_url = 'https://s7d2.scene7.com/is/image/' \
                                   '{}?scl=1.0'.format(picture_entry['i']['n'])
                     picture_urls.append(picture_url)

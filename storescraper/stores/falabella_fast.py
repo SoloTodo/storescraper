@@ -141,7 +141,7 @@ class FalabellaFast(Store):
                 normal_price = Decimal(remove_words(price['price'][0]))
                 break
             if price['icons'] == 'cmr-icon':
-                    continue
+                continue
             normal_price = Decimal(remove_words(price['price'][0]))
 
         for price in prices:

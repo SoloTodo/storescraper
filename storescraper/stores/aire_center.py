@@ -84,7 +84,7 @@ class AireCenter(Store):
         resized_picture_urls = soup.find('ul', 'pagination2').img['src']
 
         resized_picture_name = resized_picture_urls.split('/')[-1]
-        picture_size = re.search('(_\d+x\d+)',
+        picture_size = re.search(r'(_\d+x\d+)',
                                  resized_picture_name).groups()[0]
         picture_name = resized_picture_name.replace(picture_size, '')
 
