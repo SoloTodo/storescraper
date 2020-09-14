@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
+    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, STOVE, MONITOR
 
 
 class Jetstereo(Store):
@@ -13,39 +15,39 @@ class Jetstereo(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'Stove',
-            'Monitor'
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            REFRIGERATOR,
+            OVEN,
+            AIR_CONDITIONER,
+            WASHING_MACHINE,
+            STOVE,
+            MONITOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('tvs', 'Television'),
-            ('audio-portatil', 'StereoSystem'),
-            ('equipos-de-sonido', 'StereoSystem'),
-            ('teatros-en-casa', 'StereoSystem'),
-            ('smartphones', 'Cell'),
-            ('refrigeradoras-side-by-side', 'Refrigerator'),
-            ('refrigeradoras-french-door', 'Refrigerator'),
-            ('refrigeradoras-twin', 'Refrigerator'),
-            ('refrigeradora-top-mount', 'Refrigerator'),
-            ('microondas', 'Oven'),
-            ('hornos', 'Oven'),
-            ('aire-acondicionado', 'AirConditioner'),
-            ('twinwash', 'WashingMachine'),
-            ('lavadoras-top-load', 'WashingMachine'),
-            ('lavadora-carga-frontal', 'WashingMachine'),
-            ('secadoras', 'WashingMachine'),
-            ('estufas-electricas', 'Stove'),
-            ('estufas-de-gas', 'Stove'),
-            ('monitores', 'Monitor'),
+            ('tvs', TELEVISION),
+            ('audio-portatil', STEREO_SYSTEM),
+            ('equipos-de-sonido', STEREO_SYSTEM),
+            ('teatros-en-casa', STEREO_SYSTEM),
+            ('smartphones', CELL),
+            ('refrigeradoras-side-by-side', REFRIGERATOR),
+            ('refrigeradoras-french-door', REFRIGERATOR),
+            ('refrigeradoras-twin', REFRIGERATOR),
+            ('refrigeradora-top-mount', REFRIGERATOR),
+            ('microondas', OVEN),
+            ('hornos', OVEN),
+            ('aire-acondicionado', AIR_CONDITIONER),
+            ('twinwash', WASHING_MACHINE),
+            ('lavadoras-top-load', WASHING_MACHINE),
+            ('lavadora-carga-frontal', WASHING_MACHINE),
+            ('secadoras', WASHING_MACHINE),
+            ('estufas-electricas', STOVE),
+            ('estufas-de-gas', STOVE),
+            ('monitores', MONITOR),
         ]
 
         session = session_with_proxy(extra_args)
@@ -56,7 +58,8 @@ class Jetstereo(Store):
                 continue
 
             url = '{}/{}?pv=1000'.format(cls.base_url, category_path)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(url, verify=False).text,
+                                 'html.parser')
             containers = soup.findAll('div', 'product-slide-entry')
 
             if not containers:
@@ -76,20 +79,18 @@ class Jetstereo(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        data = session.get(url, allow_redirects=False)
+        data = session.get(url, allow_redirects=False, verify=False)
 
         if data.status_code == 302:
             return []
 
         soup = BeautifulSoup(data.text, 'html.parser')
-
         sku_container = soup.find('div', 'star')
 
         if not sku_container:
             return []
 
         sku = sku_container.find('h4').text.replace('SKU: ', '').strip()
-
         name = '{} ({})'\
             .format(soup.find('div', 'article-container').find('h1').text, sku)
 
