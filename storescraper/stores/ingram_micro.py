@@ -2,7 +2,6 @@ import time
 
 from decimal import Decimal
 import urllib
-from selenium import webdriver
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -151,20 +150,24 @@ class IngramMicro(Store):
     def _session_driver(cls, extra_args):
         time.sleep(1)
         # Browser initialization
-        driver = webdriver.PhantomJS()
-
+        driver = HeadlessChrome(headless=True).driver
         driver.get('https://cl.ingrammicro.com/_layouts/'
                    'CommerceServer/IM/Login.aspx')
 
-        driver.find_element_by_id(
-            'ctl00_PlaceHolderMain_txtUserEmail').send_keys(
-            extra_args['username'])
-        driver.find_element_by_id(
-            'ctl00_PlaceHolderMain_txtPassword').send_keys(
-            extra_args['password'])
-        driver.find_element_by_id(
-            'ctl00_PlaceHolderMain_btnLogin').click()
+        retries = 1
 
-        time.sleep(3)
+        while retries < 5:
+            if driver.find_elements_by_id('okta-signin-username'):
+                break
+            time.sleep(1)
+            retries += 1
+
+        driver.find_element_by_id(
+            'okta-signin-username').send_keys(extra_args['username'])
+        driver.find_element_by_id(
+            'okta-signin-password').send_keys(extra_args['password'])
+        driver.find_element_by_id('okta-signin-submit').click()
+
+        time.sleep(10)
 
         return driver
