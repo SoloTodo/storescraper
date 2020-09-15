@@ -11,7 +11,7 @@ from storescraper.categories import RAM, HEADPHONES, COMPUTER_CASE, MONITOR, \
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class SetupsSpace(Store):
+class SetupSpace(Store):
     @classmethod
     def categories(cls):
         return [

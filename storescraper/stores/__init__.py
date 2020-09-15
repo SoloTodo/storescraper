@@ -194,7 +194,7 @@ from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
-from .setups_space import SetupsSpace
+from .setup_space import SetupSpace
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
 from .sincex import Sincex
