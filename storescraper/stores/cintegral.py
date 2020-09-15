@@ -1,35 +1,41 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import NOTEBOOK, ALL_IN_ONE, TABLET, \
+    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
+    USB_FLASH_DRIVE, PROCESSOR, COMPUTER_CASE, POWER_SUPPLY, MOTHERBOARD, \
+    RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR
 
 
 class Cintegral(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'AllInOne',
-            'Tablet',
-            'StorageDrive',
-            'ExternalStorageDrive',
-            'SolidStateDrive',
-            'MemoryCard',
-            'UsbFlashDrive',
-            'Processor',
-            'ComputerCase',
-            'PowerSupply',
-            'Motherboard',
-            'Ram',
-            'VideoCard',
-            'Mouse',
-            'Printer',
-            'Headphones',
-            'StereoSystem',
-            'Ups',
-            'Monitor'
+            NOTEBOOK,
+            ALL_IN_ONE,
+            TABLET,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            PROCESSOR,
+            COMPUTER_CASE,
+            POWER_SUPPLY,
+            MOTHERBOARD,
+            RAM,
+            VIDEO_CARD,
+            MOUSE,
+            PRINTER,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            UPS,
+            MONITOR
         ]
 
     @classmethod
@@ -38,29 +44,29 @@ class Cintegral(Store):
                    'id_category={}&controller=category&page={}'
 
         url_extensions = [
-            ['17', 'Notebook'],
-            ['84', 'AllInOne'],
-            ['85', 'Tablet'],
-            ['101', 'StorageDrive'],
-            ['102', 'ExternalStorageDrive'],
-            ['103', 'SolidStateDrive'],
-            # ['104', 'MemoryCard'],
-            # ['105', 'UsbFlashDrive'],
-            ['94', 'Processor'],
-            # ['95', 'ComputerCase'],
-            # ['96', 'PowerSupply'],
-            ['97', 'Motherboard'],
-            # ['98', 'Ram'],
-            ['99', 'VideoCard'],
-            # ['113', 'Mouse'],
-            ['23', 'Printer'],
-            # ['24', 'Printer'],
-            ['25', 'Printer'],
-            ['26', 'Printer'],
-            ['34', 'Headphones'],
-            ['35', 'StereoSystem'],
-            ['37', 'Ups'],
-            ['15', 'Monitor'],
+            ['17', NOTEBOOK],
+            ['84', ALL_IN_ONE],
+            ['85', TABLET],
+            ['101', STORAGE_DRIVE],
+            ['102', EXTERNAL_STORAGE_DRIVE],
+            ['103', SOLID_STATE_DRIVE],
+            ['104', MEMORY_CARD],
+            ['105', USB_FLASH_DRIVE],
+            ['94', PROCESSOR],
+            ['95', COMPUTER_CASE],
+            ['96', POWER_SUPPLY],
+            ['97', MOTHERBOARD],
+            ['98', RAM],
+            ['99', VIDEO_CARD],
+            ['113', MOUSE],
+            ['23', PRINTER],
+            ['24', PRINTER],
+            ['25', PRINTER],
+            ['26', PRINTER],
+            ['34', HEADPHONES],
+            ['35', STEREO_SYSTEM],
+            ['37', UPS],
+            ['15', MONITOR],
         ]
 
         product_urls = []
@@ -82,10 +88,9 @@ class Cintegral(Store):
 
                 products = soup.find('div', 'products row')
 
-                if page == 1 and not products:
-                    raise Exception('Empty category: ' + url)
-
                 if not products:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url)
                     break
 
                 containers = soup.find('div', 'products row') \

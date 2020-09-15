@@ -119,10 +119,10 @@ class Max(Store):
         sku = soup.find('h6', 'sku').text.strip()
         name = '{} ({})'.format(soup.find('h1').text.strip(), sku)
 
-        if not soup.find('input', {'id': 'qty_stock'}):
-            stock = 0
-        else:
+        if soup.find('input', {'id': 'qty_stock'}):
             stock = int(soup.find('input', {'id': 'qty_stock'})['value'])
+        else:
+            stock = -1
 
         price_container = soup.find('span', {'itemprop': 'price'})
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
