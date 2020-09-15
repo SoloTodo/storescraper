@@ -60,6 +60,7 @@ from .eight_bits import EightBits
 from .electroban import Electroban
 from .electronica_panamericana import ElectronicaPanamericana
 from .el_gallo_mas_gallo import ElGalloMasGallo
+from .elite_center import EliteCenter
 from .enel import Enel
 from .entel import Entel
 from .exito import Exito
