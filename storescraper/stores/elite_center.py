@@ -67,7 +67,7 @@ class EliteCenter(Store):
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?orderby=popularity&paged={}'.format(
-                    url_extension, page)
+                                url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
@@ -90,7 +90,8 @@ class EliteCenter(Store):
         sku = soup.find('span', 'sku').text
         stock = int(soup.find('p', 'stock').text.split()[0])
         normal_price = Decimal(
-            remove_words(soup.find('div', 'product-main').find('bdi').text))
+            remove_words(
+                soup.find('div', 'product-main').findAll('bdi')[-1].text))
         offer_price = normal_price
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-gallery').findAll('img')]
