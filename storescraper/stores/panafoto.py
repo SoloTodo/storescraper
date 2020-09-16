@@ -27,6 +27,7 @@ class Panafoto(Store):
             'VacuumCleaner',
             'WashingMachine',
             'Stove',
+            'Headphones',
         ]
 
     @classmethod
@@ -99,6 +100,8 @@ class Panafoto(Store):
              '/// Aspiradoras"]', 'VacuumCleaner'),
             ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
              '/// Microondas"]', 'Oven'),
+            ('["categories.level3:Categorías /// Audio /// Audífonos /// '
+             'Inalámbricos"]', 'Headphones'),
         ]
 
         session = session_with_proxy(extra_args)
