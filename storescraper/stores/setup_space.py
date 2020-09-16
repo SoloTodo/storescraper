@@ -1,4 +1,4 @@
-import html
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -27,7 +27,8 @@ class SetupSpace(Store):
             SOLID_STATE_DRIVE,
             VIDEO_CARD,
             KEYBOARD,
-            PRINTER
+            PRINTER,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -47,7 +48,7 @@ class SetupSpace(Store):
             ['teclados', KEYBOARD],
             ['impresoras', PRINTER],
             ['ssd', STORAGE_DRIVE],
-
+            ['gaming', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
@@ -67,6 +68,8 @@ class SetupSpace(Store):
                 product_containers = soup.findAll('div', 'product-wrap')
 
                 if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_webpage)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
