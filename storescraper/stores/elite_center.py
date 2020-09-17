@@ -68,6 +68,7 @@ class EliteCenter(Store):
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?orderby=popularity&paged={}'.format(
                                 url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
@@ -83,6 +84,7 @@ class EliteCenter(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
