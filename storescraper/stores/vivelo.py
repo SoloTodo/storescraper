@@ -79,8 +79,7 @@ class Vivelo(Store):
             return []
 
         page_source = response.text
-
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, 'html5lib')
 
         base_name = soup.find('div', 'product-name').text.strip()
         description = html_to_markdown(

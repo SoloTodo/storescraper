@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from bs4 import BeautifulSoup
@@ -14,7 +15,7 @@ class MiPc(Store):
     @classmethod
     def categories(cls):
         return [
-            # 'ExternalStorageDrive',
+            'ExternalStorageDrive',
             'StorageDrive',
             'SolidStateDrive',
             'Motherboard',
@@ -30,10 +31,8 @@ class MiPc(Store):
             'Monitor',
             'Tablet',
             'Notebook',
-            # 'Printer',
             'Cell',
             'Television',
-            # 'AllInOne',
         ]
 
     @classmethod
@@ -41,8 +40,8 @@ class MiPc(Store):
         url_extensions = [
             ['hardware/almacenamiento-interno/disco-duro.html',
              'StorageDrive'],
-            # ['gamer/almacenamiento-interno/disco-duro.html',
-            #  'StorageDrive'],
+            ['gamer/almacenamiento-interno/disco-duro.html',
+             'StorageDrive'],
             ['hardware/almacenamiento-interno/ssd.html', 'SolidStateDrive'],
             ['gamer/almacenamiento-interno/ssd.html', 'SolidStateDrive'],
             ['hardware/tarjetas-madre.html', 'Motherboard'],
@@ -69,13 +68,10 @@ class MiPc(Store):
             ['equipos/tablets.html', 'Tablet'],
             ['gamer/laptop.html', 'Notebook'],
             ['equipos/laptop.html', 'Notebook'],
-            # ['impresion-y-consumibles/impresoras-y-multifuncionales.html',
-            #  'Printer'],
             ['audio-y-video/pantallas/tv.html', 'Television'],
-            ['equipos/todo-en-uno.html', 'AllInOne'],
         ]
 
-        base_url = 'https://mipc.com.mx/{}?p={}'
+        base_url = 'https://mipc.com.mx/{}'
 
         product_urls = []
         session = session_with_proxy(extra_args)
@@ -91,7 +87,12 @@ class MiPc(Store):
             done = False
 
             while not done:
-                url = base_url.format(url_extension, page)
+                url = base_url.format(url_extension)
+
+                if page > 1:
+                    url += '?p={}'.format(page)
+
+                print(url)
 
                 if page >= 20:
                     raise Exception('Page overflow: ' + url)
@@ -103,7 +104,7 @@ class MiPc(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty category: ' + url)
+                        logging.warning('Empty category: ' + url)
                     break
 
                 for product in products:

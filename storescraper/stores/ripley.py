@@ -50,6 +50,7 @@ class Ripley(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
+            'Ram'
         ]
 
     @classmethod
