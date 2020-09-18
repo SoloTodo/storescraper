@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 
 from bs4 import BeautifulSoup
@@ -7,22 +8,26 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import CELL, TELEVISION, OPTICAL_DISK_PLAYER, \
+    AIR_CONDITIONER, STOVE, OVEN, WASHING_MACHINE, REFRIGERATOR, \
+    STEREO_SYSTEM, MONITOR, HEADPHONES
 
 
 class TiendaMonge(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Television',
-            'OpticalDiskPlayer',
-            'AirConditioner',
-            'Stove',
-            'Oven',
-            'WashingMachine',
-            'Refrigerator',
-            'StereoSystem',
-            'Monitor',
+            CELL,
+            TELEVISION,
+            OPTICAL_DISK_PLAYER,
+            AIR_CONDITIONER,
+            STOVE,
+            OVEN,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            STEREO_SYSTEM,
+            MONITOR,
+            HEADPHONES
         ]
 
     @classmethod
@@ -39,29 +44,38 @@ class TiendaMonge(Store):
 
         category_filters = [
             ('["categories.level2:Productos /// Celulares y Tablets '
-             '/// Celulares"]', 'Cell'),
+             '/// Celulares"]',
+             CELL),
             ('["categories.level2:Productos /// TV y Video /// Pantallas"]',
-             'Television'),
-            # ('["categories.level2:Productos /// TV y Video /// '
-            #  'Reproductores de video y proyectores"]', 'OpticalDiskPlayer'),
+             TELEVISION),
+            ('["categories.level2:Productos /// TV y Video /// '
+             'Reproductores de video y proyectores"]',
+             OPTICAL_DISK_PLAYER),
             ('["categories.level2:Productos /// Hogar /// '
-             'Aires acondicionados"]', 'AirConditioner'),
-            # ('["categories.level2:Productos /// Hogar /// Cocinas"]',
-            # 'Stove'),
+             'Aires acondicionados"]',
+             AIR_CONDITIONER),
+            ('["categories.level2:Productos /// Hogar /// Cocinas"]',
+             STOVE),
             ('["categories.level2:Productos /// Hogar /// '
-             'Hornos y extractores"]', 'Oven'),
+             'Hornos y extractores"]',
+             OVEN),
             ('["categories.level2:Productos /// Hogar /// '
-             'Lavadoras y secadoras"]', 'WashingMachine'),
+             'Lavadoras y secadoras"]',
+             WASHING_MACHINE),
             ('["categories.level2:Productos /// Hogar /// Refrigeradoras"]',
-             'Refrigerator'),
-            # ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
-            #  'StereoSystem'),
+             REFRIGERATOR),
+            ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
+             STEREO_SYSTEM),
             ('["categories.level2:Productos /// Audio /// Parlantes"]',
-             'StereoSystem'),
-            # ('["categories.level2:Productos /// Audio /// '
-            #  'Sistemas de audio y accesorios"]', 'StereoSystem')
-            # ('["categories.level2:Productos /// Computadoras /// '
-            # 'De Escritorio"]', 'Monitor'),
+             STEREO_SYSTEM),
+            ('["categories.level2:Productos /// Audio /// '
+             'Sistemas de audio y accesorios"]',
+             STEREO_SYSTEM),
+            ('["categories.level2:Productos /// Computadoras /// '
+             'De Escritorio"]',
+             MONITOR),
+            ('["categories.level2:Productos /// Audio /// Audífonos"]',
+             HEADPHONES),
         ]
 
         session = session_with_proxy(extra_args)
@@ -87,7 +101,7 @@ class TiendaMonge(Store):
             products_json = json.loads(response.text)['results'][0]['hits']
 
             if not products_json:
-                raise Exception('Empty category: ' + category_id)
+                logging.warning('Empty category: ' + category_id)
 
             for product in products_json:
                 if product['marca'] == 'LG':

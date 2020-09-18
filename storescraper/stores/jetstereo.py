@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -6,7 +7,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
-    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, STOVE, MONITOR
+    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, STOVE, MONITOR, \
+    HEADPHONES
 
 
 class Jetstereo(Store):
@@ -23,7 +25,8 @@ class Jetstereo(Store):
             AIR_CONDITIONER,
             WASHING_MACHINE,
             STOVE,
-            MONITOR
+            MONITOR,
+            HEADPHONES
         ]
 
     @classmethod
@@ -48,6 +51,7 @@ class Jetstereo(Store):
             ('estufas-electricas', STOVE),
             ('estufas-de-gas', STOVE),
             ('monitores', MONITOR),
+            ('audifonos', HEADPHONES),
         ]
 
         session = session_with_proxy(extra_args)
@@ -57,22 +61,40 @@ class Jetstereo(Store):
             if local_category != category:
                 continue
 
-            url = '{}/{}?pv=1000'.format(cls.base_url, category_path)
-            soup = BeautifulSoup(session.get(url, verify=False).text,
-                                 'html.parser')
-            containers = soup.findAll('div', 'product-slide-entry')
+            page = 1
+            local_urls = []
+            done = False
 
-            if not containers:
-                raise Exception('Empty category: ' + url)
+            while not done:
+                url = '{}/{}?pv=50&page={}'.format(
+                    cls.base_url, category_path, page)
+                print(url)
 
-            for container in containers:
-                product_title = container.find('a', 'title')
-                if 'LG' not in product_title.text.upper():
-                    continue
+                if page > 20:
+                    raise Exception('Page overflow: ' + url)
 
-                product_url = '{}{}'\
-                    .format(cls.base_url, container.find('a')['href'])
-                product_urls.append(product_url)
+                soup = BeautifulSoup(session.get(url, verify=False).text,
+                                     'html.parser')
+                containers = soup.findAll('div', 'product-slide-entry')
+
+                if not containers:
+                    logging.warning('Empty category: ' + url)
+                    break
+
+                for container in containers:
+                    product_title = container.find('a', 'title')
+                    product_url = '{}{}'\
+                        .format(cls.base_url, container.find('a')['href'])
+                    if (product_title, product_url) in local_urls:
+                        done = True
+                        break
+                    local_urls.append((product_title, product_url))
+
+                page += 1
+
+            for product_title, product_url in local_urls:
+                if 'LG' in product_title.text.upper():
+                    product_urls.append(product_url)
 
         return product_urls
 
