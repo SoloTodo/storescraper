@@ -125,6 +125,7 @@ from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
+from .llevatelo import Llevatelo
 from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
@@ -198,7 +199,6 @@ from .sears_mexico import SearsMexico
 from .setup_space import SetupSpace
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
-from .sincex import Sincex
 from .sindelen import Sindelen
 from .sistemax import Sistemax
 from .sodimac import Sodimac

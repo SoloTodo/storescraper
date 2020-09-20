@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 import json
@@ -205,9 +206,8 @@ class Ripley(Store):
 
                 if not products_data or not products_soup:
                     if page == 1:
-                        raise Exception('Empty path: {}'.format(category_url))
-                    else:
-                        break
+                        logging.warning('Empty path: {}'.format(category_url))
+                    break
 
                 products_elements = products_soup.findAll(
                     'div', 'ProductItem__Row')

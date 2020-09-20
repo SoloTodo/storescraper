@@ -1,39 +1,40 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import TELEVISION, STEREO_SYSTEM, \
+    OPTICAL_DISK_PLAYER, CELL, WASHING_MACHINE, REFRIGERATOR, OVEN
 
-import re
-import json
 
-
-class Sincex(Store):
+class Llevatelo(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'Cell',
-            'WashingMachine',
-            'Refrigerator',
-            'Oven',
+            TELEVISION,
+            STEREO_SYSTEM,
+            OPTICAL_DISK_PLAYER,
+            CELL,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            OVEN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('electronica/televisores', 'Television'),
-            ('electronica/audio', 'StereoSystem'),
-            ('electronica/home-theater', 'StereoSystem'),
-            ('electronica/video', 'OpticalDiskPlayer'),
-            ('telefonia/celular', 'Cell'),
-            ('linea-blanca/lavadoras', 'WashingMachine'),
-            ('linea-blanca/secadoras-de-ropa', 'WashingMachine'),
-            ('linea-blanca/refrigeradores', 'Refrigerator'),
-            ('linea-blanca/microondas/', 'Oven')
+            ('electronica/televisores', TELEVISION),
+            ('electronica/audio', STEREO_SYSTEM),
+            ('electronica/home-theater', STEREO_SYSTEM),
+            ('electronica/video', OPTICAL_DISK_PLAYER),
+            ('telefonia/celular', CELL),
+            ('linea-blanca/lavadoras', WASHING_MACHINE),
+            ('linea-blanca/secadoras-de-ropa', WASHING_MACHINE),
+            ('linea-blanca/refrigeradores', REFRIGERATOR),
+            ('linea-blanca/microondas/', OVEN)
         ]
 
         session = session_with_proxy(extra_args)
@@ -59,9 +60,8 @@ class Sincex(Store):
 
                 if not items:
                     if page == 1:
-                        raise Exception('No products for {}'.format(url))
-                    else:
-                        break
+                        logging.warning('No products for {}'.format(url))
+                    break
 
                 for item in items:
                     product_url = item.find('a')['href']

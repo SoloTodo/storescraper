@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
@@ -31,24 +32,24 @@ class Proglobal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['celulares/smartphone', 'Cell'],
+            ['celulares/smartphone', 'Cell'],
             ['celulares/pulseras-inteligentes', 'Wearable'],
-            # ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
+            ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
             ['computacion-y-gamer/almacenamiento/microsd-alta-velocidad',
              'MemoryCard'],
-            # ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
+            ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
             ['computacion-y-gamer/almacenamiento/pendrives', 'UsbFlashDrive'],
-            # ['computacion-y-gamer/almacenamiento/discos-duros',
-            #  'ExternalStorageDrive'],
-            # ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
+            ['computacion-y-gamer/almacenamiento/discos-duros',
+             'ExternalStorageDrive'],
+            ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
             ['computacion-y-gamer/gamers/mouse', 'Mouse'],
             ['computacion-y-gamer/gamers/teclados', 'Keyboard'],
-            # ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
-            # ['computacion-y-gamer/gamers/memoria-ram', 'Ram'],
-            # ['computacion-y-gamer/gamers/fuentes-de-poder', 'PowerSupply'],
-            # ['computacion-y-gamer/gamers/monitores', 'Monitor'],
-            # ['camaras-audio-video/audio/audio-alta-fidelidad',
-            # 'StereoSystem'],
+            ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
+            ['computacion-y-gamer/gamers/memoria-ram', 'Ram'],
+            ['computacion-y-gamer/gamers/fuentes-de-poder', 'PowerSupply'],
+            ['computacion-y-gamer/gamers/monitores', 'Monitor'],
+            ['camaras-audio-video/audio/audio-alta-fidelidad',
+             'StereoSystem'],
             ['camaras-audio-video/audio/audifonos-inalambricos', 'Headphones'],
             ['camaras-audio-video/audio/audifonos-alambricos', 'Headphones'],
             ['camaras-audio-video/audio/parlantes', 'StereoSystem']
@@ -78,7 +79,7 @@ class Proglobal(Store):
 
                 if not len(product_containers):
                     if page == 1:
-                        raise Exception('Empty category: {}'.format(url))
+                        logging.warning('Empty category: {}'.format(url))
                     break
 
                 for container in product_containers:
@@ -107,6 +108,9 @@ class Proglobal(Store):
 
         if not price_container:
             price_container = soup.find('span', 'tachado-efectivo')
+
+        if not price_container:
+            return []
 
         price = Decimal(price_container
                         .text.replace('Precio final:', '')

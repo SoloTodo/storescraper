@@ -88,9 +88,14 @@ class SetupSpace(Store):
         normal_price = Decimal(remove_words(
             soup.find('span', 'current_price').find('span', 'money').text))
         offer_price = normal_price
-        stock = soup.find('form', 'shopify-product-form') \
-            .find('div', 'items_left').text
-        if stock == '':
+
+        stock_container = soup.find(
+            'form', 'shopify-product-form').find('div', 'items_left')
+
+        if not stock_container:
+            return []
+
+        if stock_container.text == '':
             stock = -1
         else:
             stock = int(stock.split()[0])

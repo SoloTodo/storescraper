@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from collections import defaultdict
@@ -191,13 +192,13 @@ class PcFactory(Store):
                                      'html.parser')
 
                 if not soup.find('div', 'titulo_categoria'):
-                    raise Exception('Invalid category:' + category_url)
+                    logging.warning('Invalid category:' + category_url)
 
                 product_cells = soup.findAll('div', 'wrap-caluga-matrix')
 
                 if not product_cells:
                     if page == 1:
-                        raise Exception('Empty category path: {}'.format(
+                        logging.warning('Empty category path: {}'.format(
                             category_url))
                     else:
                         break

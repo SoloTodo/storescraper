@@ -146,7 +146,6 @@ class Easy(Store):
 
             if not cat_hits:
                 logging.warning('Empty category: {}'.format(category_path))
-                raise Exception
                 continue
 
             cat_value = cat_hits[0]['_source']['value']
@@ -176,7 +175,7 @@ class Easy(Store):
             prods_hits = prods_json['hits']['hits']
 
             if not prods_hits:
-                raise Exception('Empty section {}'.format(category_path))
+                logging.warning('Empty section {}'.format(category_path))
 
             for idx, prods_hit in enumerate(prods_hits):
                 product_url = base_prod_url.format(prods_hit['_source']['url'])
