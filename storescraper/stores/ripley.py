@@ -727,13 +727,17 @@ class Ripley(Store):
                     url, section, subsection, subsection_type, extra_args)
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = get_cf_session(extra_args)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                if soup.find('svg', {'title': 'nofound'}):
+                    logging.warning('Deactivated category: ' + url)
+                    continue
+
                 picture_container = soup.find('section', 'catalog-top-banner')
 
                 if not picture_container:
                     raise Exception('No banners for: ' + url)
-                    # print('No banners')
-                    # continue
 
                 picture_url = picture_container.find('img')
 

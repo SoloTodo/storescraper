@@ -470,8 +470,8 @@ class Paris(Store):
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.LINEA_BLANCA_PARIS, 'Línea Blanca Paris',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'linea-blanca/'],
-            # [bs.ELECTRO_PARIS, 'Electro Paris',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+            [bs.ELECTRO_PARIS, 'Electro Paris',
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
             [bs.TECNO_PARIS, 'Tecno Paris',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecnologia/'],
             [bs.REFRIGERATION, 'Refrigeración',
@@ -521,9 +521,8 @@ class Paris(Store):
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
             response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-
             print(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 image = soup.find('div', 'desktop-plp-2')
@@ -569,6 +568,9 @@ class Paris(Store):
                     image_container = soup.find('div', 'hero-slider')
                 if not image_container:
                     image_container = soup.find('div', 'slick-slider')
+                if not image_container:
+                    image_container = soup.find(
+                        'section', 'horizontal-scrollable')
 
                 images = image_container.findAll('a')
                 images = [i for i in images if i.find('picture')]
