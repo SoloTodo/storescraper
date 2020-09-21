@@ -73,7 +73,14 @@ class Proglobal(Store):
                     .format(category_path, page)
                 print(url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                response = session.get(url)
+
+                # Deactivated category
+                if response.url != url:
+                    logging.warning('Deactivated category: ' + url)
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll(
                     'div', 'producto-carrusel-home')
 

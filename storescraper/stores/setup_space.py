@@ -98,7 +98,8 @@ class SetupSpace(Store):
         if stock_container.text == '':
             stock = -1
         else:
-            stock = int(stock.split()[0])
+            stock = int(stock_container.text.split()[0])
+
         picture_urls = []
 
         for pictures in soup.find('div', 'product_gallery_nav') \

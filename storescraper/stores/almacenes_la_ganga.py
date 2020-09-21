@@ -1,3 +1,4 @@
+import logging
 import re
 
 from decimal import Decimal
@@ -6,18 +7,20 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import TELEVISION, AIR_CONDITIONER, \
+    WASHING_MACHINE, STEREO_SYSTEM, REFRIGERATOR, OVEN
 
 
 class AlmacenesLaGanga(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'AirConditioner',
-            'WashingMachine',
-            'StereoSystem',
-            'Refrigerator',
-            'Oven'
+            TELEVISION,
+            AIR_CONDITIONER,
+            WASHING_MACHINE,
+            STEREO_SYSTEM,
+            REFRIGERATOR,
+            OVEN
         ]
 
     @classmethod
@@ -26,7 +29,7 @@ class AlmacenesLaGanga(Store):
             ['Televisores', 'Television'],
             ['Aires-Split', 'AirConditioner'],
             ['Lavadoras', 'WashingMachine'],
-            # ['Equipos-de-sonido', 'StereoSystem'],
+            ['Equipos-de-sonido', 'StereoSystem'],
             ['Refrigeradoras', 'Refrigerator'],
             ['Cocinas', 'Oven']
         ]
@@ -45,7 +48,7 @@ class AlmacenesLaGanga(Store):
             products = soup.findAll('div', 'esquema_producto')
 
             if not products:
-                raise Exception('Empty path: ' + url)
+                logging.warning('Empty path: ' + url)
 
             for product in products:
                 product_slug = product.find(
