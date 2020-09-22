@@ -81,6 +81,7 @@ from .gonzalez_gimenez import GonzalezGimenez
 from .grupo_cva import GrupoCva
 from .grupo_decme import GrupoDecme
 from .gtd import Gtd
+from .hard_gaming import HardGaming
 from .hbt import Hbt
 from .hiraoka import Hiraoka
 from .hites import Hites
