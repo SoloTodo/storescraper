@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -77,20 +78,7 @@ class HardGaming(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-form_title page-title').text
-        sku_container = soup.find('meta', property='og:image')['content']
-        sku = re.search(r"/(\d+)/", sku_container).group(1)
-        stock_container = soup.find('form', 'product-form form-horizontal'). \
-            find('div',
-                 'form-group product-stock product-out-stock text-center '
-                 'hidden')
-        if not stock_container:
-            stock = 0
-        else:
-            stock = -1
-        normal_price = Decimal(
-            remove_words(soup.find('span', 'product-form_price').text))
-        offer_price = normal_price
+        base_name = soup.find('h1', 'product-form_title page-title').text
         picture_containers = soup.find('div', 'owl-thumbs product-page-thumbs '
                                               'overflow-hidden '
                                               'mt-3')
@@ -101,18 +89,70 @@ class HardGaming(Store):
         else:
             picture_urls = [tag['src'].split('?')[0] for tag in
                             picture_containers.findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+
+        variants_match = re.search(
+            r'Jumpseller.productVariantListener'
+            r'\(".qty-select select", {product: \'(.+)\'', response.text)
+        variants = json.loads(variants_match.groups()[0])
+
+        if variants:
+            products = []
+            for variant in variants:
+                values = ' / '.join(x['value']['name']
+                                    for x in variant['values'])
+                name = '{} ({})'.format(base_name, values)
+                sku = str(variant['variant']['id'])
+
+                if variant['variant']['stock']:
+                    stock = -1
+                else:
+                    stock = 0
+
+                price = Decimal(variant['variant']['price']).quantize(0)
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                ))
+            return products
+        else:
+            sku_container = soup.find(
+                'meta', property='og:image')['content']
+            sku = re.search(r"/(\d+)/", sku_container).group(1)
+            stock_container = soup\
+                .find('form', 'product-form form-horizontal')\
+                .find('div',
+                      'form-group product-stock product-out-stock text-center '
+                      'hidden')
+            if not stock_container:
+                stock = 0
+            else:
+                stock = -1
+
+            price = Decimal(
+                remove_words(soup.find('span', 'product-form_price').text))
+
+            return [Product(
+                base_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )]
