@@ -75,8 +75,8 @@ class HardGaming(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title page-title').text
-        sku = soup.find('span', 'sku_elem').text
-        if sku.strip() == '':
+        sku = soup.find('span', 'sku_elem').text.strip()
+        if sku == '':
             return []
         stock_container = soup.find('form', 'product-form form-horizontal'). \
             find('div',
