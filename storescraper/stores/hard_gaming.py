@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -40,8 +41,10 @@ class HardGaming(Store):
             ['monitores', MONITOR],
             ['mouse', MOUSE],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['procesadores', PROCESSOR],
+            ['placas-madres', MOTHERBOARD],
             ['teclados', KEYBOARD],
-            ['refrigeracion', CPU_COOLER],
+            ['refrigeracion', CPU_COOLER]
         ]
 
         session = session_with_proxy(extra_args)
@@ -75,9 +78,8 @@ class HardGaming(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title page-title').text
-        sku = soup.find('span', 'sku_elem').text.strip()
-        if sku == '':
-            return []
+        sku_container = soup.find('meta', property='og:image')['content']
+        sku = re.search(r"/(\d+)/", sku_container).group(1)
         stock_container = soup.find('form', 'product-form form-horizontal'). \
             find('div',
                  'form-group product-stock product-out-stock text-center '
