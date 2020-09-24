@@ -686,6 +686,8 @@ class Falabella(Store):
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 session = session_with_proxy(extra_args)
+                session.headers['User-Agent'] = CF_REQUEST_HEADERS[
+                    'User-Agent']
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 next_data = json.loads(soup.find(
                     'script', {'id': '__NEXT_DATA__'}).text)
