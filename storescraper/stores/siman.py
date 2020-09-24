@@ -1,4 +1,5 @@
 import json
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -49,7 +50,7 @@ class Siman(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty url {}'.format(url))
+                        logging.warning('Empty url {}'.format(url))
                     else:
                         break
 

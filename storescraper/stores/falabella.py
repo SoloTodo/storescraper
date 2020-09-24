@@ -685,60 +685,48 @@ class Falabella(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(
-                        images_enabled=True, proxy=proxy) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
+                session = session_with_proxy(extra_args)
+                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                next_data = json.loads(soup.find(
+                    'script', {'id': '__NEXT_DATA__'}).text)
 
-                    images = driver\
-                        .find_element_by_class_name('carousel-inner')\
-                        .find_elements_by_class_name('carousel-item')
+                for container in \
+                        next_data['props']['pageProps']['page']['containers']:
+                    if container['key'] == 'showcase':
+                        showcase_container = container
+                        break
+                else:
+                    raise Exception('No showcase container found')
 
-                    index = 1
+                slides = showcase_container['components'][0]['data']['slides']
 
-                    for image_url in images:
-                        picture_array = image_url.find_element_by_tag_name(
-                            'picture').find_elements_by_tag_name('source')
-                        destination_urls = [
-                            d.get_property('href') for d in
-                            image_url.find_elements_by_tag_name('a')]
-                        destination_urls = list(set(destination_urls))
-                        for picture in picture_array:
-                            picture_url = picture.get_property(
-                                'srcset').split(' ')[0]
+                for idx, slide in enumerate(slides):
+                    # Yes, the variable is called "rigth"
+                    destination_urls = list(
+                        {slide['urlLeft'], slide['urlRigth']})
+                    picture_url = slide['imgBackgroundDesktopUrl']
 
-                            if picture_url:
-                                banners.append({
-                                    'url': url,
-                                    'picture_url': picture_url,
-                                    'destination_urls': destination_urls,
-                                    'key': picture_url,
-                                    'position': index,
-                                    'section': section,
-                                    'subsection': subsection,
-                                    'type': subsection_type
-                                })
-                                break
-                        else:
-                            raise Exception(
-                                'No valid banners found for {} in position '
-                                '{}'.format(url, index + 1))
-                        index += 1
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': idx + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 with HeadlessChrome(images_enabled=True, proxy=proxy,
-                                    timeout=99) as driver:
+                                    timeout=99, headless=True) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
-
                     pictures = []
-
                     pips_container = driver.find_element_by_class_name(
                         'fb-hero-carousel__pips')
-
                     driver.execute_script(
                         "arguments[0].setAttribute('style', "
                         "'display:block !important;');", pips_container)
-
                     elements = driver.find_element_by_class_name(
                         'fb-hero-carousel__pips')\
                         .find_elements_by_class_name(

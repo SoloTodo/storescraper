@@ -118,9 +118,8 @@ class NotebookStore(Store):
 
                 url = 'https://notebookstore.cl/{}?p={}'.format(
                     category_path, page)
-                print(url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(url).text, 'html5lib')
                 products = soup.findAll('li', 'product')
 
                 if not products:
@@ -128,6 +127,8 @@ class NotebookStore(Store):
                     break
 
                 for product in products:
+                    print('asdf')
+                    print(str(product))
                     product_url = product.find('a')['href']
                     if product_url in product_urls:
                         done = True
