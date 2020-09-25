@@ -36,6 +36,8 @@ class CreditosEconomicos(Store):
             ['C:/8/17/', REFRIGERATOR],
             ['C:/8/18/', AIR_CONDITIONER],
             ['C:/8/15/', OVEN],
+            # Hornos y microondas
+            ['C:/8/11/32/', OVEN],
             ['C:/8/16/', WASHING_MACHINE],
         ]
 
