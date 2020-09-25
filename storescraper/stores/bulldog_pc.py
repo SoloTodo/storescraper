@@ -18,7 +18,6 @@ class BulldogPc(Store):
             RAM,
             MOTHERBOARD,
             VIDEO_CARD,
-
         ]
 
     @classmethod
@@ -56,6 +55,7 @@ class BulldogPc(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -63,9 +63,9 @@ class BulldogPc(Store):
         sku_container = soup.find(
             'meta', property='og:image')['content']
         sku = re.search(r"/(\d+)/", sku_container).group(1)
-        stock_status = soup.find('div', 'form-group product-stock '
-                                        'product-unavailable row hidden')
-        if not stock_status:
+        unavailable_tag = soup.find('div', 'form-group product-stock '
+                                            'product-out-stock row visible')
+        if unavailable_tag:
             stock = 0
         else:
             stock = int(soup.find('div', {'id': 'stock'}).
