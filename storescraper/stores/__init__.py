@@ -145,6 +145,7 @@ from .mercadolibre_argentina_western_digital import \
 from .mercado_libre_chile import MercadoLibreChile
 from .mercado_libre_samsung import MercadoLibreSamsung
 from .meroli import Meroli
+from .mhw_store import MHWStore
 from .mi_pc import MiPc
 from .microplay import Microplay
 from .mobile_hut import MobileHut
