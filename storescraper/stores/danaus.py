@@ -98,8 +98,6 @@ class Danaus(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, allow_redirects=False)
 
-        print(response.status_code)
-
         if response.status_code in [410, 404, 302]:
             return []
 
