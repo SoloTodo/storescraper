@@ -96,9 +96,11 @@ class Danaus(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, allow_redirects=False)
 
-        if response.status_code in [410, 404]:
+        print(response.status_code)
+
+        if response.status_code in [410, 404, 302]:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
