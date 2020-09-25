@@ -23,7 +23,7 @@ from storescraper.utils import HeadlessChrome
 
 class Falabella(Store):
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 10
+    preferred_products_for_url_concurrency = 20
 
     category_paths = [
         ['cat70057', ['Notebook'],
