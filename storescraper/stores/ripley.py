@@ -188,7 +188,7 @@ class Ripley(Store):
             position = 1
 
             while True:
-                if page > 100:
+                if page > 200:
                     raise Exception('Page overflow')
 
                 category_url = url_base.format(category_path, page)
@@ -228,16 +228,20 @@ class Ripley(Store):
 
                     brand = product_data.get('brand', '').upper()
 
-                    # If the product is LG or Samsung and is sold directly by
-                    # Ripley (not marketplace) obtain the full data
                     if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
                             product_data['sku'] and not fast_mode:
+                        # If the product is LG or Samsung and is sold directly
+                        # by Ripley (not marketplace) obtain the full data
 
                         product = product_dict.get(product_data['sku'], None)
                         if not product:
                             url = cls._get_entry_url(product_element)
                             product = cls._assemble_full_product(
                                 url, category, extra_args)
+                    elif category == 'Headphones' and 'MPM' in \
+                            product_data['sku']:
+                        # Skip the thousands of headphones sold in marketplace
+                        continue
                     else:
                         product = cls._assemble_product(
                             product_data, product_element, category)
