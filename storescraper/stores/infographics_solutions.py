@@ -1,52 +1,58 @@
-import json
-import re
-
-from collections import defaultdict
-from datetime import datetime
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
+    NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
+    COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL
 
 
 class InfographicsSolutions(Store):
     @classmethod
     def categories(cls):
         return [
-            'Motherboard',
-            'Ram',
-            'Processor',
-            'VideoCard',
-            'Notebook',
-            'Tablet',
-            'Headphones',
-            'Mouse',
-            'SolidStateDrive',
-            'StorageDrive',
-            'Keyboard',
+            MOTHERBOARD,
+            RAM,
+            PROCESSOR,
+            VIDEO_CARD,
+            NOTEBOOK,
+            TABLET,
+            HEADPHONES,
+            MOUSE,
+            SOLID_STATE_DRIVE,
+            KEYBOARD,
+            COMPUTER_CASE,
+            MONITOR,
+            STORAGE_DRIVE,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            CELL
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['componentes-de-pc/placa-madre/', 'Motherboard'],
-            ['componentes-de-pc/memorias-ram/', 'Ram'],
-            ['componentes-de-pc/procesadores/', 'Processor'],
-            ['componentes-de-pc/tarjetas-de-video/', 'VideoCard'],
-            ['equipos/portatiles/', 'Notebook'],
-            ['tecnologia/tablet/', 'Tablet'],
-            ['accesorios-gamer/headset-audifonos/', 'Headphones'],
-            ['accesorios-gamer/mouse/', 'Mouse'],
-            ['componentes-de-pc/almacenamiento/discos-solidos/',
-             'SolidStateDrive'],
-            ['componentes-de-pc/almacenamiento/discos-duros/',
-             'StorageDrive'],
-            ['accesorios-gamer/teclados/',
-             'Keyboard'],
+            ['equipos/portatiles', NOTEBOOK],
+            ['tecnologia/smarthphone', CELL],
+            ['tecnologia/tablet', TABLET],
+            ['componentes-de-pc/placa-madre', MOTHERBOARD],
+            ['componentes-de-pc/memorias-ram', RAM],
+            ['componentes-de-pc/procesadores', PROCESSOR],
+            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-de-pc/almacenamiento/discos-solidos',
+             SOLID_STATE_DRIVE],
+            ['componentes-de-pc/almacenamiento/discos-duros',
+             STORAGE_DRIVE],
+            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
+            ['componentes-de-pc/monitores', MONITOR],
+            ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-de-pc/refrigeracion', CPU_COOLER],
+            ['accesorios-gamer/teclados', KEYBOARD],
+            ['accesorios-gamer/headset-audifonos', HEADPHONES],
+            ['accesorios-gamer/mouse', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
