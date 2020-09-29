@@ -50,6 +50,9 @@ class MHWStore(Store):
             ['39-cooler-cpu', CPU_COOLER]
         ]
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -60,6 +63,7 @@ class MHWStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.mhwstore.cl/{}?page={}'.format(
                     url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('article',
@@ -77,4 +81,7 @@ class MHWStore(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
