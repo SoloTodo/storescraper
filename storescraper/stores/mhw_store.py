@@ -1,11 +1,13 @@
 import logging
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, PROCESSOR, RAM, MOTHERBOARD, KEYBOARD, MOUSE, \
-    KEYBOARD_MOUSE_COMBO, HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, VIDEO_CARD, \
-    CPU_COOLER
+    KEYBOARD_MOUSE_COMBO, HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, \
+    VIDEO_CARD, CPU_COOLER
+from storescraper.product import Product
 
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -63,7 +65,6 @@ class MHWStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.mhwstore.cl/{}?page={}'.format(
                     url_extension, page)
-                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('article',
@@ -85,3 +86,31 @@ class MHWStore(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'h1').text
+        sku = soup.find('input', {'id': 'product_page_product_id'})['value']
+        not_stock = soup.find('span', {'id': 'product-availability'}).text
+        if 'Fuera de stock' in not_stock:
+            stock = 0
+        else:
+            stock = int(
+                soup.find('div', 'product-quantities').find('span')[
+                    'data-stock'])
+        price = Decimal(soup.find('span', 'price')['content'])
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'images-container').findAll('img')]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls
+        )
+        return [p]
