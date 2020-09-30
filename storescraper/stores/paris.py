@@ -569,6 +569,8 @@ class Paris(Store):
                 if not image_container:
                     image_container = soup.find('div', 'slick-slider')
                 if not image_container:
+                    image_container = soup.find('div', 'slider-magazine')
+                if not image_container:
                     image_container = soup.find(
                         'section', 'horizontal-scrollable')
 
