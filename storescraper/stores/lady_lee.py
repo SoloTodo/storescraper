@@ -94,10 +94,12 @@ class LadyLee(Store):
 
         sku_container = soup.find('div', 'variant-sku')
         sku = sku_container.text.split(':')[1].strip()
-        model_name = soup.find('div', 'description-first-part').text.split(
-            ':')[1].strip()
-        title = soup.find('h1').text.strip()
-        name = '{} ({})'.format(title, model_name)
+        model_name_container = soup.find('div', 'description-first-part')
+        name = soup.find('h1').text.strip()
+
+        if model_name_container:
+            model_name = model_name_container.text.split(':')[1].strip()
+            name = '{} ({})'.format(name, model_name)
 
         brand = soup.find('div', 'product-vendor').text.split(':')[1].strip()
 

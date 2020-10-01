@@ -98,7 +98,7 @@ class TravelTienda(Store):
         else:
             stock = 0
 
-        sku = soup.find('p', 'txt-sku').text.replace('SKU', '').strip()
+        sku = soup.find('input', {'name': 'idPro'})['value']
         price = Decimal(soup.find('p', 'txt-precio').text
                         .replace('$', '').replace('.', '').strip())
 
