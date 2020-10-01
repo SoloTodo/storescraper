@@ -438,8 +438,12 @@ class Paris(Store):
         else:
             seller = None
 
-        gtm_brand = soup.find('a', {'id': 'GTM_pdp_brand'}).text
-        has_virtual_assistant = gtm_brand == 'LG'
+        gtm_brand = soup.find('a', {'id': 'GTM_pdp_brand'})
+
+        if gtm_brand and gtm_brand.text == 'LG':
+            has_virtual_assistant = True
+        else:
+            has_virtual_assistant = False
 
         p = Product(
             name,
