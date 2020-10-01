@@ -6,6 +6,8 @@ from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -13,7 +15,7 @@ from storescraper.utils import html_to_markdown, session_with_proxy, \
 from storescraper import banner_sections as bs
 
 
-class LiderGet(Store):
+class Lider(Store):
     @classmethod
     def categories(cls):
         return [
@@ -251,6 +253,11 @@ class LiderGet(Store):
                         '[file:/productos/{}{}]&sink'.format(sku, img)
                         for img in entry['imagesAvailables']]
 
+        # The preflight method verified that the LiveChat widget is being
+        # loaded, and the Google Tag Manager logic that Lider uses to trigger
+        # the wiodget makes sure that we only need to check for the brand.
+        has_virtual_assistant = entry['brand'] == 'LG'
+
         return [Product(
             name,
             cls.__name__,
@@ -266,15 +273,14 @@ class LiderGet(Store):
             ean=ean,
             part_number=part_number,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            has_virtual_assistant=has_virtual_assistant
         )]
 
     @classmethod
     def banners(cls, extra_args=None):
         base_url = 'https://buysmartstatic.lider.cl/' \
                    'landing/json/banners.json?ts={}'
-        # base_url = 'https://productionbuysmart.blob.core.windows.net/' \
-        #            'landing/json/banners.json?ts={}'
 
         destination_url_base = 'https://www.lider.cl{}'
         image_url_base = 'https://buysmartstatic.lider.cl/' \
@@ -310,3 +316,19 @@ class LiderGet(Store):
                 index += 1
 
         return banners
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        # Make sure that the script that loads the LiveChat integration for
+        # LG is loaded. If the script changes this check will cause an
+        # exception. In those cases make sure that the chat widget still works
+        # for LG products and update the script path to the current one.
+
+        session = session_with_proxy(extra_args)
+        response = session.get('https://www.lider.cl/catalogo')
+        soup = BeautifulSoup(response.text, 'html.parser')
+        script_tag = soup.find('script', {
+            'src': '/catalogo/js/4.js?ts=1601316322127'})
+        assert script_tag
+
+        return {}

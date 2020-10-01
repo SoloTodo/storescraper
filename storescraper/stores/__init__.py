@@ -123,8 +123,7 @@ from .lenovo_mexico import LenovoMexico
 from .lg_chile import LgChile
 from .lg_cac import LgCac
 from .lg_ec import LgEc
-from .lider_black_friday import LiderBlackFriday
-from .lider_get import LiderGet
+from .lider import Lider
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
 from .liverpool import Liverpool

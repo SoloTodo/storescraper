@@ -379,7 +379,6 @@ class Paris(Store):
                 'div', 'price-internet').text.split('$')[1].split('\n')[0]))
         else:
             price_text = soup.find('div', 'default-price').contents[0].strip()
-            print(price_text)
             if price_text == 'N/A':
                 return []
 
@@ -439,6 +438,9 @@ class Paris(Store):
         else:
             seller = None
 
+        gtm_brand = soup.find('a', {'id': 'GTM_pdp_brand'}).text
+        has_virtual_assistant = gtm_brand == 'LG'
+
         p = Product(
             name,
             cls.__name__,
@@ -457,7 +459,8 @@ class Paris(Store):
             flixmedia_id=flixmedia_id,
             review_count=review_count,
             review_avg_score=review_avg_score,
-            seller=seller
+            seller=seller,
+            has_virtual_assistant=has_virtual_assistant
         )
 
         return [p]
