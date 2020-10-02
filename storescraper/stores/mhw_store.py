@@ -65,7 +65,7 @@ class MHWStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.mhwstore.cl/{}?page={}'.format(
                     url_extension, page)
-                data = session.get(url_webpage).text
+                data = session.get(url_webpage, timeout=20).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('article',
                                                   'product-miniature')
@@ -85,7 +85,7 @@ class MHWStore(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        response = session.get(url)
+        response = session.get(url, timeout=20)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'h1').text
         sku = soup.find('input', {'id': 'product_page_product_id'})['value']

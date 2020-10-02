@@ -95,13 +95,12 @@ class EVision(Store):
         name = soup.find('meta', {'itemprop': 'name'})['content']
         sku = soup.find('input', {'id': 'productId'})['value']
 
-        if soup.find('a', {'id': 'addtocart'}):
-            stock = -1
-        else:
-            stock = 0
+        if not soup.find('a', {'id': 'addtocart'}):
+            # Price is zero for unavailable products so skip
+            return []
 
         price = Decimal(
-            soup.find('meta', {'property': 'product:price:amount'})['content']
+            soup.find('meta', {'itemprop': 'category'}).next.text
                 .replace('$', '').replace(',', '').strip())
 
         picture_urls = [soup.find('meta', {'itemprop': 'image'})['content']]
@@ -116,7 +115,7 @@ class EVision(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             price,
             price,
             'USD',
