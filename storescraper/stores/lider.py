@@ -1,4 +1,5 @@
 import json
+import time
 import urllib
 
 from collections import defaultdict
@@ -11,7 +12,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
-    check_ean13
+    check_ean13, HeadlessChrome
 from storescraper import banner_sections as bs
 
 
@@ -319,16 +320,22 @@ class Lider(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
-        # Make sure that the script that loads the LiveChat integration for
-        # LG is loaded. If the script changes this check will cause an
-        # exception. In those cases make sure that the chat widget still works
-        # for LG products and update the script path to the current one.
+        # 1047258 is an LG SKU in Lider, this will break when the product goes
+        # out of stock and it needs to be replaced with another
 
-        session = session_with_proxy(extra_args)
-        response = session.get('https://www.lider.cl/catalogo')
-        soup = BeautifulSoup(response.text, 'html.parser')
-        script_tag = soup.find('script', {
-            'src': '/catalogo/js/4.js?ts=1601316322127'})
-        assert script_tag
+        with HeadlessChrome() as driver:
+            driver.get('https://www.lider.cl/catalogo/product/sku/1047258')
+
+            for i in range(10):
+                print(i)
+                try:
+                    # If livechat is not loaded the command raises an exception
+                    driver.execute_script('LC_API')
+                    break
+                except Exception:
+                    # Wait a little and try again in the next iteration
+                    time.sleep(1)
+            else:
+                raise Exception('No LiveChat implementaton found')
 
         return {}
