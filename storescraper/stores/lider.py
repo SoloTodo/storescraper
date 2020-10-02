@@ -1,4 +1,5 @@
 import json
+import time
 import urllib
 
 from collections import defaultdict
@@ -6,14 +7,16 @@ from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
-    check_ean13
+    check_ean13, HeadlessChrome
 from storescraper import banner_sections as bs
 
 
-class LiderGet(Store):
+class Lider(Store):
     @classmethod
     def categories(cls):
         return [
@@ -251,6 +254,11 @@ class LiderGet(Store):
                         '[file:/productos/{}{}]&sink'.format(sku, img)
                         for img in entry['imagesAvailables']]
 
+        # The preflight method verified that the LiveChat widget is being
+        # loaded, and the Google Tag Manager logic that Lider uses to trigger
+        # the wiodget makes sure that we only need to check for the brand.
+        has_virtual_assistant = entry['brand'] == 'LG'
+
         return [Product(
             name,
             cls.__name__,
@@ -266,15 +274,14 @@ class LiderGet(Store):
             ean=ean,
             part_number=part_number,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            has_virtual_assistant=has_virtual_assistant
         )]
 
     @classmethod
     def banners(cls, extra_args=None):
         base_url = 'https://buysmartstatic.lider.cl/' \
                    'landing/json/banners.json?ts={}'
-        # base_url = 'https://productionbuysmart.blob.core.windows.net/' \
-        #            'landing/json/banners.json?ts={}'
 
         destination_url_base = 'https://www.lider.cl{}'
         image_url_base = 'https://buysmartstatic.lider.cl/' \
@@ -310,3 +317,25 @@ class LiderGet(Store):
                 index += 1
 
         return banners
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        # 1047258 is an LG SKU in Lider, this will break when the product goes
+        # out of stock and it needs to be replaced with another
+
+        with HeadlessChrome() as driver:
+            driver.get('https://www.lider.cl/catalogo/product/sku/1047258')
+
+            for i in range(10):
+                print(i)
+                try:
+                    # If livechat is not loaded the command raises an exception
+                    driver.execute_script('LC_API')
+                    break
+                except Exception:
+                    # Wait a little and try again in the next iteration
+                    time.sleep(1)
+            else:
+                raise Exception('No LiveChat implementaton found')
+
+        return {}

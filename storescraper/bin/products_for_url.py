@@ -30,13 +30,18 @@ def main():
     args = parser.parse_args()
     store = get_store_class_by_name(args.store)
 
-    products = store.products_for_url(
-        url=args.url,
-        category='Unknown',
-        extra_args=args.extra_args)
+    entries = {
+        args.url: {'category': 'Unknown', 'positions': []}
+    }
+
+    products = store.products_for_urls(
+        entries,
+        extra_args=args.extra_args,
+        use_async=False
+    )
 
     if products:
-        for product in products:
+        for product in products['products']:
             print(product, '\n')
     else:
         print('No products found')

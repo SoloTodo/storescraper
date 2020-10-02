@@ -116,16 +116,7 @@ class Wom(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
 
-        plan_prices = {
-            '40-gigas': Decimal(13990),
-            '50-gigas': Decimal(16990),
-            '65-gigas': Decimal(19990),
-            'libres-gigas': Decimal(25990),
-            '15-gigas': Decimal(9990),
-            '30-gigas': Decimal(11990),
-        }
-
-        plan_containers = soup.find('section', 'box-planes').findAll('article')
+        plan_containers = soup.findAll('div', 'item')
 
         variants = [
             'sin cuota de arriendo',
@@ -133,16 +124,9 @@ class Wom(Store):
         ]
 
         for container in plan_containers:
-            print(str(container))
-            link = container.find('a')
-
-            try:
-                link_href = link['data-c2c']
-            except Exception:
-                link_href = link['href']
-
-            plan_name = link_href.split('=')[-1]
-            plan_price = plan_prices[plan_name]
+            plan_name = container.find('span', 'w-100').text.strip()
+            plan_price = Decimal(remove_words(container.find(
+                'span', 'font-45-px').text))
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:

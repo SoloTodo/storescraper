@@ -96,11 +96,8 @@ class Travim(Store):
         else:
             stock = int(stock.text.split()[0])
 
-        images = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper').findAll('img')
-
-        picture_urls = [i.get('data-large_image') for i in images]
-        picture_urls = [i for i in picture_urls if i]
+        picture_urls = [x['src'] for x in
+                        soup.findAll('img', 'attachment-300x300')]
 
         p = Product(
             name,

@@ -1,5 +1,5 @@
+import logging
 import re
-import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -41,7 +41,7 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=77', 'Ram'],
             ['accion=hijo&plt=pc&cat=78', 'SolidStateDrive'],
             ['accion=hijo&plt=pc&cat=80', 'VideoCard'],
-            # ['especial-Master-Race-2019', 'VideoCard'],
+            ['especial-Master-Race-2019', 'VideoCard'],
             ['accion=hijo&plt=pc&cat=81', 'ComputerCase'],
             ['accion=hijo&plt=pc&cat=82', 'Notebook'],
             ['accion=hijo&plt=pc&cat=84', 'CpuCooler'],
@@ -61,7 +61,7 @@ class NewGame(Store):
             product_cells = soup.findAll('a', 'juego')
 
             if not product_cells:
-                raise Exception('Empty category: {}'.format(category_url))
+                logging.warning('Empty category: {}'.format(category_url))
 
             for product_cell in product_cells:
                 product_urls.append(product_cell['href'])
