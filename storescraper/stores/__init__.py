@@ -75,6 +75,7 @@ from .falabella_peru import FalabellaPeru
 from .fnac import Fnac
 from .fravega import Fravega
 from .garbarino import Garbarino
+from .games_legends import GamesLegends
 from .gearbest import GearBest
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
