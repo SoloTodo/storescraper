@@ -89,7 +89,12 @@ class EliteCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text
-        sku = soup.find('span', 'sku').text
+        sku = soup.find('button', 'single_add_to_cart_button')['value']
+        part_number_container = soup.find('span', {'id': '_sku'})
+        if part_number_container:
+            part_number = part_number_container.text.strip()
+        else:
+            part_number = None
         stock = int(soup.find('p', 'stock').text.split()[0])
         normal_price = Decimal(
             remove_words(
@@ -109,6 +114,7 @@ class EliteCenter(Store):
             offer_price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls
 
         )
