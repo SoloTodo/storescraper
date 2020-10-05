@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -61,35 +62,79 @@ class Sukasa(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        name = soup.find('h1', 'page-heading').text.strip()
+        variants_container = soup.find('div', 'attribute-list')
         sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
-        stock = -1
+        name = soup.find('h1', 'page-heading').text.strip()
 
-        price = Decimal(
-            soup.find('span', {'itemprop': 'price'})
-                .find('span').text.replace('$', ''))
+        if variants_container:
+            product_id = soup.find('input', {'name': 'id_product'})['value']
+            variant_ids = {x['value']: x.text for x in
+                           variants_container.findAll('option')}
+            ajax_session = session_with_proxy(extra_args)
+            ajax_session.headers['content-type'] = \
+                'application/x-www-form-urlencoded'
 
-        picture_urls = [
-            a['data-zoom-image'] for a in soup.findAll('a', 'thumb')]
+            products = []
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'collapseDescription'})))
+            for variant_id, variant_label in variant_ids.items():
+                endpoint = 'https://www.sukasa.com/index.php?controller=' \
+                           'product?id_product={}&group%5B246%5D={}'.format(
+                            product_id, variant_id)
+                res = json.loads(ajax_session.post(
+                    endpoint, 'ajax=1&action=refresh').text)
+                variant_soup = BeautifulSoup(res['product_prices'],
+                                             'html.parser')
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'USD',
-            sku=sku,
-            picture_urls=picture_urls,
-            description=description,
-        )
+                normal_price = Decimal(variant_soup.find(
+                    'span', 'product-unit-price').text.split('$')[-1])
+                offer_price = Decimal(variant_soup.find(
+                    'input', {'id': 'basepricesks'})['value'])
 
-        return [p]
+                key = '{}_{}'.format(sku, variant_id)
+                variant_name = '{} ({})'.format(name, variant_label)
+
+                products.append(Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    -1,
+                    normal_price,
+                    offer_price,
+                    'USD',
+                    sku=sku
+                ))
+
+            return products
+        else:
+            stock = -1
+
+            price = Decimal(
+                soup.find('span', {'itemprop': 'price'})
+                    .find('span').text.replace('$', ''))
+
+            picture_urls = [
+                a['data-zoom-image'] for a in soup.findAll('a', 'thumb')]
+
+            description = html_to_markdown(
+                str(soup.find('div', {'id': 'collapseDescription'})))
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description,
+            )
+
+            return [p]

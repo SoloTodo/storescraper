@@ -123,7 +123,8 @@ class MacOnline(Store):
                     picture_urls=picture_urls
                 ))
         else:
-            json_container = soup.find('script', {'type': 'application/ld+json'})
+            json_container = soup.find(
+                'script', {'type': 'application/ld+json'})
             json_data = json.loads(json_container.text)
 
             name = json_data['name']
