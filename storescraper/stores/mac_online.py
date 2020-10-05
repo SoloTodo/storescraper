@@ -123,27 +123,14 @@ class MacOnline(Store):
                     picture_urls=picture_urls
                 ))
         else:
-            name = soup.find('h1', 'product-title').text.strip()
-            sku = soup.find('em', 'sku-title').text.strip()
-            part_number = sku
+            json_container = soup.find('script', {'type': 'application/ld+json'})
+            json_data = json.loads(json_container.text)
 
-            availability = soup.find('link', {'itemprop': 'availability'})
-
-            if availability and availability['href'] == \
-                    'https://schema.org/InStock':
-                stock = -1
-            else:
-                stock = 0
-
-            price = Decimal(remove_words(
-                soup.find('span', {'itemprop': 'price'}).text.replace(
-                    '&#36;', '')))
-
-            description = html_to_markdown(
-                str(soup.find('div', {'id': 'tab-description'})))
-
-            picture_urls = [tag.find('a')['href']
-                            for tag in soup.findAll('li', 'tmb-all')]
+            name = json_data['name']
+            sku = json_data['sku']
+            price = Decimal(json_data['offers']['price'])
+            description = html_to_markdown(json_data['description'])
+            picture_urls = [x.split('?')[0] for x in json_data['image']]
 
             products.append(Product(
                 name,
@@ -152,12 +139,11 @@ class MacOnline(Store):
                 url,
                 url,
                 sku,
-                stock,
+                -1,
                 price,
                 price,
                 'CLP',
                 sku=sku,
-                part_number=part_number,
                 description=description,
                 picture_urls=picture_urls
             ))

@@ -1,5 +1,3 @@
-import re
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -7,25 +5,23 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
-
-import json
+from storescraper.categories import STOVE, OVEN
 
 
 class Hbt(Store):
     @classmethod
     def categories(cls):
         return [
-            'Stove',
-            'Oven',
-            'CellAccesory',
+            STOVE,
+            OVEN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('electrodomesticos/hornos-y-microondas/microondas', 'Oven'),
-            ('electrodomesticos/hornos-y-microondas/hornos', 'Oven'),
-            ('electrodomesticos/encimeras/vitroelectrica', 'Stove'),
+            ('electrodomesticos/hornos-y-microondas/microondas', OVEN),
+            ('electrodomesticos/hornos-y-microondas/hornos', OVEN),
+            ('electrodomesticos/encimeras/vitroelectrica', STOVE),
         ]
 
         session = session_with_proxy(extra_args)
@@ -63,9 +59,11 @@ class Hbt(Store):
         name = soup.find('h1').text.strip()
         sku = soup.find('div', 'sku').text.strip()
 
-        price_container = soup.find('p', 'special-price')
+        price_block = soup.find('div', 'product-type-data')
+
+        price_container = price_block.find('p', 'special-price')
         if not price_container:
-            price_container = soup.find('span', 'regular-price')
+            price_container = price_block.find('span', 'regular-price')
 
         price = Decimal(remove_words(price_container.find(
             'span', 'price').text))
