@@ -75,16 +75,19 @@ class Jetstereo(Store):
 
                 soup = BeautifulSoup(session.get(url, verify=False).text,
                                      'html.parser')
-                containers = soup.findAll('div', 'product-slide-entry')
+                containers = soup.findAll('div', 'product-box')
 
                 if not containers:
                     logging.warning('Empty category: ' + url)
                     break
 
                 for container in containers:
-                    product_title = container.find('a', 'title')
-                    product_url = '{}{}'\
-                        .format(cls.base_url, container.find('a')['href'])
+                    title_container = container.find('div', 'product-name')
+                    if not title_container:
+                        title_container = container.find('h2', 'product-name')
+
+                    product_title = title_container.text
+                    product_url = container.find('a')['href']
                     if (product_title, product_url) in local_urls:
                         done = True
                         break
@@ -93,47 +96,43 @@ class Jetstereo(Store):
                 page += 1
 
             for product_title, product_url in local_urls:
-                if 'LG' in product_title.text.upper():
+                if 'LG' in product_title.upper():
                     product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url, allow_redirects=False, verify=False)
+        response = session.get(url, verify=False)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        if data.status_code == 302:
-            return []
+        add_to_cart_button = soup.find(
+            'div', {'id': 'Button-storeAvailability'})
+        key = add_to_cart_button['data-product-id']
+        sku = soup.find('span', 'id').text.strip()
+        add_to_cart_button = soup.find(
+            'button', {'id': 'ButtonAddCart-fixeReference'})
 
-        soup = BeautifulSoup(data.text, 'html.parser')
-        sku_container = soup.find('div', 'star')
-
-        if not sku_container:
-            return []
-
-        sku = sku_container.find('h4').text.replace('SKU: ', '').strip()
-        name = '{} ({})'\
-            .format(soup.find('div', 'article-container').find('h1').text, sku)
-
-        if soup.find('div', 'share-box').find('a', 'add-to-cart-btn'):
+        if add_to_cart_button and \
+                add_to_cart_button['data-available'] == 'true':
             stock = -1
         else:
             stock = 0
 
-        price = Decimal(soup.find('div', 'price').find('div', 'current')
-                        .text.strip().replace('L. ', '').replace(',', ''))
+        name = soup.find('h4', 'name').text.strip()
+        price = Decimal(soup.find('div', 'sale').text.strip().replace(
+            'L. ', '').replace(',', ''))
 
         picture_urls = []
-        pictures = soup.findAll('div', 'product-zoom-image')
+        pictures = soup.findAll('a', 'zoom')
 
         for picture in pictures:
             picture_url = picture.find('img')['src'].replace(' ', '%20')
-            if 'https:' not in picture_url:
-                picture_url = '{}{}'.format(cls.base_url, picture_url)
             picture_urls.append(picture_url)
 
-        description = html_to_markdown(str(soup.find('ul', 'read-more-wrap')))
+        description = html_to_markdown(str(soup.find('div', 'tecnical-specs')))
 
         p = Product(
             name,
@@ -141,7 +140,7 @@ class Jetstereo(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

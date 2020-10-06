@@ -140,7 +140,7 @@ class Bip(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.status_code == 500:
+        if response.status_code in [404, 500]:
             return []
 
         soup = BeautifulSoup(response.text, 'html5lib')
