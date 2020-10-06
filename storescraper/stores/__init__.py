@@ -61,6 +61,7 @@ from .eglo import Eglo
 from .eight_bits import EightBits
 from .electroban import Electroban
 from .electronica_panamericana import ElectronicaPanamericana
+from .electro_ventas import ElectroVentas
 from .el_gallo_mas_gallo import ElGalloMasGallo
 from .elite_center import EliteCenter
 from .enel import Enel
@@ -134,7 +135,7 @@ from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
-from.manco_store import MancoStore
+from .manco_store import MancoStore
 from .max import Max
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
