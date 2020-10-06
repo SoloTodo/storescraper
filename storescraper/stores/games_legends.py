@@ -82,7 +82,11 @@ class GamesLegends(Store):
         sku_container = soup.find(
             'meta', property='og:image')['content']
         sku = re.search(r"/(\d+)/", sku_container).group(1)
-        if soup.find('div', 'form-group product-stock product-unavailable '
+
+        if 'VENTA' in name:
+            # Preventa, skip
+            stock = 0
+        elif soup.find('div', 'form-group product-stock product-unavailable '
                             'visible') or soup.find('div', 'form-group '
                                                            'product-stock '
                                                            'product-out-stock '
@@ -92,6 +96,7 @@ class GamesLegends(Store):
             stock = int(soup.find('span', 'product-form-stock').text)
         else:
             stock = -1
+
         price = Decimal(remove_words(
             soup.find('span', 'product-form-price form-price').text))
         picture_containers = soup.find('div', 'owl-thumbs')
