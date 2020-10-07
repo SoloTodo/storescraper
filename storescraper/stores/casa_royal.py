@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -33,9 +35,9 @@ class CasaRoyal(Store):
             ['computacion/perifericos-y-adaptadores/mouse', 'Mouse'],
             ['audio/audifonos', 'Headphones'],
             ['audio/audio-hogar', 'StereoSystem'],
-            # ['audio/audio-profesional/bafles', 'StereoSystem'],
+            ['audio/audio-profesional/bafles', 'StereoSystem'],
             ['computacion/perifericos-y-adaptadores/teclados', 'Keyboard'],
-            # ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
+            ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
             ['computacion/almacenamiento/discos-duros', 'SolidStateDrive'],
             ['computacion/almacenamiento/pendrives', 'UsbFlashDrive'],
             ['computacion/almacenamiento/tarjetas-de-memoria', 'MemoryCard'],
@@ -65,7 +67,8 @@ class CasaRoyal(Store):
 
                 if not link_containers:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_path)
+                        logging.warning('Empty category: ' + category_path)
+                    break
 
                 for link_container in link_containers:
                     product_url = link_container.find('a')['href']

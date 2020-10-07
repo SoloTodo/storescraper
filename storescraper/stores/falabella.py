@@ -281,7 +281,7 @@ class Falabella(Store):
         for i in range(3):
             response = session.get(url, timeout=30)
 
-            if response.status_code == 500:
+            if response.status_code in [404, 500]:
                 return []
 
             content = response.text.replace('&#10;', '')
