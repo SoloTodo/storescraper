@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 import json
 
@@ -34,18 +35,19 @@ class SamsungShop(Store):
             ('mobile/accesorios', 'Headphones'),
             ('mobile/smartphones', 'Cell'),
             ('mobile/tablets', 'Tablet'),
-            # ('mobile/wearables', 'Wearable'),
-            # ('tv-y-audio/accesorios-tv', 'CellAccesory'),
-            # ('tv-y-audio/audio-y-video', 'StereoSystem'),
+            ('mobile/wearables', 'Wearable'),
+            ('mobile/smartwatches', 'Wearable'),
+            ('tv-y-audio/accesorios-tv', 'CellAccesory'),
+            ('tv-y-audio/equipos-de-audio', 'StereoSystem'),
             ('tv-y-audio/tv', 'Television'),
             ('linea-blanca/accesorios', 'CellAccesory'),
-            # ('linea-blanca/aires-acondicionados', 'AirConditioner'),
-            # ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            # ('linea-blanca/empotrados', 'Oven'),
+            ('linea-blanca/soluciones-de-aire', 'AirConditioner'),
+            ('linea-blanca/aspiradoras', 'VacuumCleaner'),
+            ('linea-blanca/empotrados', 'Oven'),
             ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
-            # ('linea-blanca/microondas', 'Oven'),
+            ('linea-blanca/microondas', 'Oven'),
             ('linea-blanca/refrigeradores', 'Refrigerator'),
-            # ('linea-blanca/lavavajillas', 'DishWasher'),
+            ('linea-blanca/lavavajillas', 'DishWasher'),
         ]
 
         product_urls = []
@@ -82,7 +84,7 @@ class SamsungShop(Store):
 
             if not json_data:
                 if page == 0:
-                    raise Exception('Empty category: ' + target_url)
+                    logging.warning('Empty category: ' + target_url)
                 break
 
             for product in json_data:
