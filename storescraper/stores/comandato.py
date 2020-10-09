@@ -1,3 +1,4 @@
+import logging
 import re
 import json
 
@@ -7,35 +8,31 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import OVEN, REFRIGERATOR, WASHING_MACHINE, \
+    AIR_CONDITIONER, TELEVISION, CELL
 
 
 class Comandato(Store):
     @classmethod
     def categories(cls):
         return [
-            'Oven',
-            'Refrigerator',
-            'WashingMachine',
-            'AirConditioner',
-            'Television',
-            'Cell',
-            'Tablet',
-            'StereoSystem',
-            'CellAccesory',
-            'Headphones',
-            'Wearable',
-            'MemoryCard'
+            OVEN,
+            REFRIGERATOR,
+            WASHING_MACHINE,
+            AIR_CONDITIONER,
+            TELEVISION,
+            CELL,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['ft=cocinas', 'Oven'],
-            ['fq=C:/1000001/1000034/', 'Refrigerator'],
-            ['fq=C:/1000001/1000039/', 'WashingMachine'],
-            ['fq=C:/1000002/', 'AirConditioner'],
-            ['fq=C:/1000007/1000008/1000057/', 'Television'],
-            ['fq=C:/1000007/1000090/', 'Cell']
+            ['ft=cocinas', OVEN],
+            ['fq=C:/1000001/1000034/', REFRIGERATOR],
+            ['fq=C:/1000001/1000039/', WASHING_MACHINE],
+            ['fq=C:/1000002/', AIR_CONDITIONER],
+            ['fq=C:/1000007/1000008/1000057/', TELEVISION],
+            ['fq=C:/1000007/1000090/', CELL]
         ]
 
         session = session_with_proxy(extra_args)
@@ -56,16 +53,13 @@ class Comandato(Store):
                       'sm=0&{}&PageNumber={}'.format(
                        category_path, page)
 
-                print(url)
-
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 products = soup.findAll('div', 'producto')
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty url {}'.format(url))
-                    else:
-                        break
+                        logging.warning('Empty url {}'.format(url))
+                    break
 
                 for product in products:
                     if product.find('h3').find('strong').text != 'LG':
