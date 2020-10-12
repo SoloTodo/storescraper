@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -95,7 +96,7 @@ class EliteCenter(Store):
             part_number = part_number_container.text.strip()
         else:
             part_number = None
-        stock = int(soup.find('p', 'stock').text.split()[0])
+        stock = int(re.search(r'(\d+)', soup.find('p', 'stock').text).groups()[0])
         normal_price = Decimal(
             remove_words(
                 soup.find('div', 'product-main').findAll('bdi')[-1].text))
