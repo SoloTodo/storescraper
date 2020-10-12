@@ -96,7 +96,13 @@ class EliteCenter(Store):
             part_number = part_number_container.text.strip()
         else:
             part_number = None
-        stock = int(re.search(r'(\d+)', soup.find('p', 'stock').text).groups()[0])
+        stock_container = re.search(r'(\d+)', soup.find('p', 'stock').text)
+
+        if stock_container:
+            stock = int(stock_container.groups()[0])
+        else:
+            stock = -1
+
         normal_price = Decimal(
             remove_words(
                 soup.find('div', 'product-main').findAll('bdi')[-1].text))
