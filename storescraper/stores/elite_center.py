@@ -10,7 +10,8 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class EliteCenter(Store):
@@ -109,6 +110,9 @@ class EliteCenter(Store):
         offer_price = normal_price
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-gallery').findAll('img')]
+
+        description = html_to_markdown(str(soup.find('div', 'tabbed-content')))
+
         p = Product(
             name,
             cls.__name__,
@@ -122,7 +126,8 @@ class EliteCenter(Store):
             'CLP',
             sku=sku,
             part_number=part_number,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
 
         )
         return [p]
