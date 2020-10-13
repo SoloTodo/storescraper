@@ -87,10 +87,9 @@ class GamesLegends(Store):
             # Preventa, skip
             stock = 0
         elif soup.find('div', 'form-group product-stock product-unavailable '
-                            'visible') or soup.find('div', 'form-group '
-                                                           'product-stock '
-                                                           'product-out-stock '
-                                                           'visible'):
+                              'visible') or soup.find(
+                                'div', 'form-group product-stock '
+                                       'product-out-stock visible'):
             stock = 0
         elif soup.find('span', 'product-form-stock'):
             stock = int(soup.find('span', 'product-form-stock').text)

@@ -80,11 +80,12 @@ class SetupSpace(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_name').text
-        sku = soup.find('p', 'sku').find('span').text
+        sku = soup.find('input', {'name': 'id'})['value'].strip()
         normal_price = Decimal(remove_words(
             soup.find('span', 'current_price').find('span', 'money').text))
         offer_price = normal_price
@@ -102,10 +103,8 @@ class SetupSpace(Store):
 
         picture_urls = []
 
-        for pictures in soup.find('div', 'product_gallery_nav') \
-                .findAll('div', 'gallery-cell'):
-            picture_urls.append('https:' +
-                                pictures.find('img')['src'].split("?")[0])
+        for tag in soup.findAll('a', 'lightbox'):
+            picture_urls.append('https:' + tag['href'].split('?')[0])
 
         p = Product(
             name,
