@@ -94,7 +94,7 @@ class TopPc(Store):
 
         availability = soup.find('link', {'itemprop': 'availability'})
 
-        if soup.find('div', {'id': 'short_description_content'}):
+        if 'VENTA SOLO EN PC ARMADO' in str(soup):
             # Gabinete "VENTA SOLO EN PC ARMADO"
             stock = 0
         elif availability and availability['href'] == \
