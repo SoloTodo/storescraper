@@ -1,4 +1,3 @@
-import json
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -7,29 +6,33 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
+from storescraper.categories import VIDEO_CARD, PROCESSOR, MONITOR, RAM, \
+    SOLID_STATE_DRIVE, MOTHERBOARD, HEADPHONES
 
 
 class UltimateGamerStore(Store):
     @classmethod
     def categories(cls):
         return [
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Ram',
-            'SolidStateDrive',
-            'Motherboard',
+            VIDEO_CARD,
+            PROCESSOR,
+            MONITOR,
+            RAM,
+            SOLID_STATE_DRIVE,
+            MOTHERBOARD,
+            HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['tarjeta-de-video', 'VideoCard'],
-            ['procesadores', 'Processor'],
-            ['productos/memorias', 'Ram'],
-            ['productos/ssd', 'SolidStateDrive'],
-            ['productos/accesorios', 'Monitor'],
-            ['placas-madre', 'Motherboard'],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['procesadores', PROCESSOR],
+            ['productos/memorias', RAM],
+            ['productos/ssd', SOLID_STATE_DRIVE],
+            ['productos/accesorios', MONITOR],
+            ['placas-madre', MOTHERBOARD],
+            ['p-e-r-i-f-e-r-i-c-o-s', HEADPHONES],
         ]
 
         product_urls = []
@@ -83,10 +86,14 @@ class UltimateGamerStore(Store):
         name = soup.find('h1', 'product-info__name').text
         sku_text = soup.find('meta', {'property': 'og:image'})['content']
         sku = re.search(r'/ultimate-gamer-store/(\d+)/', sku_text).groups()[0]
-        stock = 0
-        if soup.find('meta', {'property': 'product:availability'})['content'] \
+
+        if 'PREVENTA' in name.upper():
+            stock = 0
+        elif soup.find('meta', {'property': 'product:availability'})['content'] \
                 == 'instock':
             stock = -1
+        else:
+            stock = 0
 
         price = Decimal(remove_words(
             soup.find('span', 'product-info__price-current').text).strip())
