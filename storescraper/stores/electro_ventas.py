@@ -96,8 +96,8 @@ class ElectroVentas(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = soup.find('div', 'col col-7 ficha-details')
         name = product_container.find('div', 'pc').find('h1').text
-        sku = product_container.find('div', 'pc').findAll('li')[1].text.split()
-        [1]
+        sku = product_container.find('div', 'pc').findAll(
+            'li')[1].text.split()[1]
         stock = int(
             product_container.find('table', 'table').findAll('td')[3].text)
         price = Decimal(remove_words(product_container.find('div',
