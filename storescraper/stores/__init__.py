@@ -61,6 +61,7 @@ from .eglo import Eglo
 from .eight_bits import EightBits
 from .electroban import Electroban
 from .electronica_panamericana import ElectronicaPanamericana
+from .electro_ventas import ElectroVentas
 from .el_gallo_mas_gallo import ElGalloMasGallo
 from .elite_center import EliteCenter
 from .enel import Enel
