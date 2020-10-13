@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -35,11 +37,11 @@ class TopPc(Store):
             ['24', 'VideoCard'],  # Tarjetas de video
             ['21', 'Processor'],  # Procesadores
             ['78', 'Monitor'],  # Monitores
-            # ['96', 'Notebook'],  # Notebooks
+            ['96', 'Notebook'],  # Notebooks
             ['22', 'Motherboard'],  # MB
             ['23', 'Ram'],  # RAM
             ['44', 'StorageDrive'],  # HDD PC
-            # ['45', 'StorageDrive'],  # HDD Notebook
+            ['45', 'StorageDrive'],  # HDD Notebook
             ['46', 'SolidStateDrive'],  # SSD
             ['27', 'PowerSupply'],  # Fuentes de poder
             ['26', 'ComputerCase'],  # Gabinetes
@@ -64,7 +66,8 @@ class TopPc(Store):
             containers = soup.findAll('li', 'ajax_block_product')
 
             if not containers:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
+                break
 
             for container in containers:
                 product_url = container.find('a')['href']
@@ -91,7 +94,10 @@ class TopPc(Store):
 
         availability = soup.find('link', {'itemprop': 'availability'})
 
-        if availability and availability['href'] == \
+        if soup.find('div', {'id': 'short_description_content'}):
+            # Gabinete "VENTA SOLO EN PC ARMADO"
+            stock = 0
+        elif availability and availability['href'] == \
                 'http://schema.org/InStock':
             stock = -1
         else:
