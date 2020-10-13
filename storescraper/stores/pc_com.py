@@ -7,7 +7,8 @@ from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
-    HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER
+    HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
+    MOTHERBOARD
 
 
 class PcCom(Store):
@@ -26,7 +27,8 @@ class PcCom(Store):
             MOUSE,
             KEYBOARD,
             STORAGE_DRIVE,
-            CPU_COOLER
+            CPU_COOLER,
+            MOTHERBOARD
         ]
 
     @classmethod
@@ -52,6 +54,7 @@ class PcCom(Store):
             ['zona-gamers/teclados-mecanicos', KEYBOARD],
             ['zona-gamers/teclados-membrana', KEYBOARD],
             ['enfriamiento', CPU_COOLER],
+            ['placas-madres', MOTHERBOARD],
         ]
 
         product_urls = []
