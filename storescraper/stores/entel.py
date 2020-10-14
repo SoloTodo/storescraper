@@ -1,5 +1,6 @@
 import json
 import math
+import re
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
@@ -104,7 +105,8 @@ class Entel(Store):
 
                 price_text = plan_box.find(
                     'p', 'txt-price').text.replace('/mes', '')
-
+                # Plan SD costs "24.74324743"
+                price_text = re.search(r'(\d+\.\d{3})', price_text).groups()[0]
                 price = Decimal(remove_words(price_text))
 
                 products.append(Product(
