@@ -7,7 +7,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, HEADPHONES, COMPUTER_CASE, MONITOR, \
     MOUSE, STEREO_SYSTEM, MOTHERBOARD, PROCESSOR, PROJECTOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, KEYBOARD, PRINTER, STORAGE_DRIVE
+    SOLID_STATE_DRIVE, VIDEO_CARD, KEYBOARD, PRINTER, STORAGE_DRIVE, NOTEBOOK
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -25,10 +25,10 @@ class SetupSpace(Store):
             PROCESSOR,
             PROJECTOR,
             SOLID_STATE_DRIVE,
-            VIDEO_CARD,
             KEYBOARD,
             PRINTER,
             VIDEO_CARD,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -49,6 +49,7 @@ class SetupSpace(Store):
             ['impresoras', PRINTER],
             ['ssd', STORAGE_DRIVE],
             ['gaming', VIDEO_CARD],
+            ['notebook', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
