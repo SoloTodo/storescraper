@@ -74,7 +74,6 @@ class Wei(Store):
             ['1240', 'Ram'],  # MEMORIA PC GAMER
             ['1162', 'CpuCooler'],  # VENTILADORES / FAN
             ['804', 'CpuCooler'],  # REFRIGERACION E ILUMINACION
-            ['1267', 'Notebook'],  # NOTEBOOKS
             ['784', 'Printer'],  # IMPRESORA TINTA
             ['773', 'Printer'],  # IMPRESORAS LASER
             ['775', 'Printer'],  # IMPRESORAS MULTIFUNCIONALES
@@ -146,20 +145,13 @@ class Wei(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
         name_container = soup.find('div', 'titulo')
 
-        if name_container.text == 'PRODUCTO NO DISPONIBLE':
-            return []
-
-        availability_link = soup.find('a', 'fa fa-check-circle bdg')
-
-        if availability_link:
-            if availability_link['data-tooltip'] == 'Sin Stock':
-                stock = 0
-            else:
-                stock = -1
-        else:
-            stock = 0
-
         name = name_container.contents[-1].replace('&sol;', '').strip()
+
+        if 'IMPORTACION' in name:
+            stock = 0
+        else:
+            stock = -1
+
         pricing_container = soup.find('div', 'producto-precio')
 
         if not pricing_container.find('div', 'txt18'):
