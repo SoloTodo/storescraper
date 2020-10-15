@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -56,7 +57,7 @@ class Linio(Store):
 
                     if not products_containers:
                         if page == 1:
-                            raise Exception('Empty category: ' + category_url)
+                            logging.warning('Empty category: ' + category_url)
                         break
 
                     for product_container in products_containers:
@@ -80,7 +81,7 @@ class Linio(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.status_code == 404 or response.url != url:
+        if response.status_code in [404, 500] or response.url != url:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')

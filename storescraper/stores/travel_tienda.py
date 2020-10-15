@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    remove_words
 
 
 class TravelTienda(Store):
@@ -99,8 +100,15 @@ class TravelTienda(Store):
             stock = 0
 
         sku = soup.find('input', {'name': 'idPro'})['value']
-        price = Decimal(soup.find('p', 'txt-precio').text
-                        .replace('$', '').replace('.', '').strip())
+        normal_price = Decimal(soup.find('p', 'precio-standard').text
+                               .replace('$', '').replace('.', '').strip())
+        offer_price_container = soup.find('p', 'precio-bch')
+
+        if offer_price_container:
+            offer_price = Decimal(remove_words(
+                offer_price_container.contents[0]))
+        else:
+            offer_price = normal_price
 
         images = soup.find('div', {'id': 'img-thumb'}).findAll('img')
         picture_urls = ['https://www.travelclub.cl{}'.format(image['src'])
@@ -117,8 +125,8 @@ class TravelTienda(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,

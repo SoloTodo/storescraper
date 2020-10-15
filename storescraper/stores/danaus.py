@@ -104,7 +104,7 @@ class Danaus(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         name = soup.find('h1', 'page-title').text.strip()
-        sku = soup.find('span', 'sku').text.split(':')[1].strip()
+        sku = soup.find('div', 'product-add-form').find('form')['data-product-sku'].strip()
         stock = 0
 
         if soup.find('button', {'id': 'product-addtocart-button'}):
