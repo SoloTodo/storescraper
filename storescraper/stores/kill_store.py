@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import PRINTER, MOTHERBOARD, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE
+    SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
+    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,7 +23,8 @@ class KillStore(Store):
             VIDEO_CARD,
             MONITOR,
             KEYBOARD_MOUSE_COMBO,
-            COMPUTER_CASE
+            COMPUTER_CASE,
+            EXTERNAL_STORAGE_DRIVE
         ]
 
     @classmethod
@@ -36,7 +38,8 @@ class KillStore(Store):
             ['281-tarjetas-de-video', VIDEO_CARD],
             ['283-monitores', MONITOR],
             ['286-teclado-mouse', KEYBOARD_MOUSE_COMBO],
-            ['282-gabinetes-y-fuentes', COMPUTER_CASE]
+            ['282-gabinetes-y-fuentes', COMPUTER_CASE],
+            ['285-discos-externos', EXTERNAL_STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
