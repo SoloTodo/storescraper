@@ -1,3 +1,4 @@
+import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -46,11 +47,11 @@ class Wei(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_urls = [
-            # ['752', 'Tablet'],  # Tablets
+            ['752', 'Tablet'],  # Tablets
             ['678', 'Tablet'],  # TABLETS
             ['1267', 'Notebook'],  # Notebooks
-            # ['731', 'Notebook'],  # NOTEBOOK GAMER
-            # ['755', 'Notebook'],  # MACBOOK
+            ['731', 'Notebook'],  # NOTEBOOK GAMER
+            ['755', 'Notebook'],  # MACBOOK
             ['1252', 'Mouse'],  # Mouse
             ['807', 'Mouse'],  # MOUSE GAMER
             ['1138', 'ExternalStorageDrive'],  # Discos externos
@@ -85,11 +86,11 @@ class Wei(Store):
             ['1295', 'Cell'],  # SMARTPHONES
             ['1141', 'MemoryCard'],  # Tarjetas de memoria
             ['806', 'Keyboard'],  # TECLADOS GAMER
-            # ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
-            # ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
+            ['1254', 'Keyboard'],  # TECLADOS (PS2, USB, NUMERICOS)
+            ['1253', 'KeyboardMouseCombo'],  # COMBOS TECLADO / MOUSE
             ['808', 'KeyboardMouseCombo'],  # KIT TECLADO Y MOUSE GAMER
             ['1175', 'StereoSystem'],  # PARLANTES
-            # ['793', 'StereoSystem'],  # AMPLIFICADORES
+            ['793', 'StereoSystem'],  # AMPLIFICADORES
             ['1209', 'VideoGameConsole'],  # CONSOLAS JUEGOS Y CONTROLES
             ['782', 'Ups'],  # UPS
         ]
@@ -117,7 +118,7 @@ class Wei(Store):
 
                 if not product_cells:
                     if page == 0:
-                        raise Exception('Empty category: {}'.format(
+                        logging.warning('Empty category: {}'.format(
                             category_path))
                     break
 
