@@ -27,12 +27,7 @@ class Microplay(Store):
         category_paths = [
             ['computacion', {'categorias': 'mouse'}, 'Mouse'],
             ['gamer', {'categorias': 'mouse-2'}, 'Mouse'],
-            ['juegos', {'plataformas': 'xbox-one', 'consolas': 'consola'},
-             'VideoGameConsole'],
-            ['juegos', {'plataformas': 'nintendo-3ds', 'consolas': 'consola'},
-             'VideoGameConsole'],
-            ['juegos',
-             {'plataformas': 'nintendo-switch', 'consolas': 'consola'},
+            ['juegos', {'consolas': 'consola'},
              'VideoGameConsole'],
             ['computacion', {'categorias': 'teclados-3'}, 'Keyboard'],
             ['gamer', {'categorias': 'teclados-4'}, 'Keyboard'],

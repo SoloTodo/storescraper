@@ -98,7 +98,9 @@ class MHWStore(Store):
                     'data-stock'])
         price = Decimal(soup.find('span', 'price')['content'])
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'images-container').findAll('img')]
+                        soup.find('div', 'images-container').findAll('img')
+                        if tag['src']]
+        print(picture_urls)
         p = Product(
             name,
             cls.__name__,
