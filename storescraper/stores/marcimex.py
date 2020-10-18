@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 import re
 
@@ -9,30 +10,32 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
+    REFRIGERATOR, STEREO_SYSTEM, TELEVISION
 
 
 class Marcimex(Store):
     @classmethod
     def categories(cls):
         return [
-            'AirConditioner',
-            'Oven',
-            'WashingMachine',
-            'Refrigerator',
-            'SteroSystem',
-            'Television',
+            AIR_CONDITIONER,
+            OVEN,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            STEREO_SYSTEM,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['C:/2/14/', 'AirConditioner'],
-            ['C:/2/11/', 'Oven'],
-            ['C:/2/12/', 'WashingMachine'],
-            ['C:/2/13/', 'Refrigerator'],
-            ['C:/3/28/', 'StereoSystem'],
-            ['C:/3/29/', 'Television'],
-            # ['C:/5/50/', 'Oven']
+            ['C:/2/14/', AIR_CONDITIONER],
+            ['C:/2/11/', OVEN],
+            ['C:/2/12/', WASHING_MACHINE],
+            ['C:/2/13/', REFRIGERATOR],
+            ['C:/3/28/', STEREO_SYSTEM],
+            ['C:/3/29/', TELEVISION],
+            ['C:/5/50/', OVEN]
         ]
 
         session = session_with_proxy(extra_args)
@@ -59,9 +62,8 @@ class Marcimex(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty url {}'.format(url))
-                    else:
-                        break
+                        logging.warning('Empty url {}'.format(url))
+                    break
 
                 for product in products:
                     product_url = product.find('a')['href']

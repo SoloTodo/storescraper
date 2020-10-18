@@ -5,29 +5,31 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
+from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
+    POWER_SUPPLY, SOLID_STATE_DRIVE, MOUSE
 
 
 class Alfaomega(Store):
     @classmethod
     def categories(cls):
         return [
-            'Processor',
-            'Motherboard',
-            'VideoCard',
-            'PowerSupply',
-            'SolidStateDrive',
-            'Mouse',
+            PROCESSOR,
+            MOTHERBOARD,
+            VIDEO_CARD,
+            POWER_SUPPLY,
+            SOLID_STATE_DRIVE,
+            MOUSE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['procesador-2', 'Processor'],
-            ['placa-madre', 'Motherboard'],
-            ['tarjeta-de-video', 'VideoCard'],
-            ['disco-de-estado-solido', 'SolidStateDrive'],
-            ['fuente-de-poder', 'PowerSupply'],
-            ['mouse-y-teclados-2', 'Mouse'],
+            ['procesador-2', PROCESSOR],
+            ['placa-madre', MOTHERBOARD],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['disco-de-estado-solido', SOLID_STATE_DRIVE],
+            ['fuente-de-poder', POWER_SUPPLY],
+            ['mouse-y-teclados-2', MOUSE],
         ]
 
         product_urls = []
@@ -66,7 +68,12 @@ class Alfaomega(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h2', 'product_title').text.strip()
-        sku = soup.find('span', 'sku').text.strip()
+        sku_container = soup.find('span', 'sku')
+
+        if not sku_container:
+            return []
+
+        sku = sku_container.text.strip()
 
         stock_text = soup.find('span', 'stock').text.strip()
         stock = 0

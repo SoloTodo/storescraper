@@ -6,33 +6,35 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import REFRIGERATOR, OVEN, WASHING_MACHINE, \
+    TELEVISION, STEREO_SYSTEM, CELL
 
 
 class Sukasa(Store):
     @classmethod
     def categories(cls):
         return [
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'Television',
-            'StereoSystem',
-            'Cell',
+            REFRIGERATOR,
+            OVEN,
+            WASHING_MACHINE,
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['4232-refrigeradoras', 'Refrigerator'],
-            ['72-microondas', 'Oven'],
-            ['93-lavadoras', 'WashingMachine'],
-            ['94-secadoras', 'WashingMachine'],
-            ['95-lavadoras-y-secadoras-todo-en-1', 'WashingMachine'],
-            ['309-televisores', 'Television'],
-            ['2849-parlantes', 'StereoSystem'],
-            ['4248-micro-y-mini-componentes', 'StereoSystem'],
-            ['4249-barras-de-sonido-y-teatros-en-casa', 'StereoSystem'],
-            ['4251-celulares-y-tablets', 'Cell']
+            ['4232-refrigeradoras', REFRIGERATOR],
+            ['72-microondas', OVEN],
+            ['93-lavadoras', WASHING_MACHINE],
+            ['94-secadoras', WASHING_MACHINE],
+            ['95-lavadoras-y-secadoras-todo-en-1', WASHING_MACHINE],
+            ['309-televisores', TELEVISION],
+            ['2849-parlantes', STEREO_SYSTEM],
+            ['4248-micro-y-mini-componentes', STEREO_SYSTEM],
+            ['4249-barras-de-sonido-y-teatros-en-casa', STEREO_SYSTEM],
+            ['4251-celulares-y-tablets', CELL]
         ]
 
         session = session_with_proxy(extra_args)
@@ -80,10 +82,13 @@ class Sukasa(Store):
                 endpoint = 'https://www.sukasa.com/index.php?controller=' \
                            'product?id_product={}&group%5B246%5D={}'.format(
                             product_id, variant_id)
-                res = json.loads(ajax_session.post(
-                    endpoint, 'ajax=1&action=refresh').text)
-                variant_soup = BeautifulSoup(res['product_prices'],
-                                             'html.parser')
+                res = ajax_session.post(endpoint, 'ajax=1&action=refresh')
+
+                if res.status_code == 502:
+                    continue
+
+                variant_soup = BeautifulSoup(
+                    json.loads(res.text)['product_prices'], 'html.parser')
 
                 normal_price = Decimal(variant_soup.find(
                     'span', 'product-unit-price').text.split('$')[-1])
