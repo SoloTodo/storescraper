@@ -241,6 +241,7 @@ from .tottus import Tottus
 from .ttchile import TtChile
 from .tupi import Tupi
 from .ultimate_gamer_store import UltimateGamerStore
+from .val_suministros import ValSuministros
 from .vitel import Vitel
 from .vivelo import Vivelo
 from .vtr import Vtr
