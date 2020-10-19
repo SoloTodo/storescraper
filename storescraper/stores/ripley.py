@@ -18,6 +18,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 class Ripley(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
