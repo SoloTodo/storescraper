@@ -69,7 +69,12 @@ class Omnisport(Store):
                       '&page={}'.format(category_path, sorters[0], page)
                 print(url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                res = session.get(url)
+
+                if res.status_code == 500:
+                    raise Exception('Category with 500 error')
+
+                soup = BeautifulSoup(res.text, 'html.parser')
                 containers = soup.findAll('div', 'catalog-product')
 
                 if not containers:

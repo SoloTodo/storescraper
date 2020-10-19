@@ -173,7 +173,8 @@ class Ripley(Store):
             extra_args = {}
 
         session = get_cf_session(extra_args)
-        fast_mode = extra_args.pop('fast_mode', False)
+        fast_mode = extra_args.get('fast_mode', False)
+        print('fast_mode', fast_mode)
 
         url_base = 'https://simple.ripley.cl/{}?page={}'
         product_dict = {}
@@ -257,6 +258,8 @@ class Ripley(Store):
 
                     position += 1
 
+                if fast_mode:
+                    break
                 page += 1
 
         products_list = [p for p in product_dict.values()]
@@ -631,6 +634,8 @@ class Ripley(Store):
                                         field, hcaptcha_response))
             driver.execute_script("document.getElementsByTagName('form')"
                                   "[0].submit()")
+
+            time.sleep(5)
 
             d = {
                 "proxy": proxy,
