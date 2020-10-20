@@ -96,7 +96,7 @@ class MercadoLibreChile(Store):
                     picker = x['pickers'][0]
 
             if picker:
-                assert picker['id'] == 'COLOR_SECONDARY_COLOR'
+                assert picker['id'] in ['CASE_COLOR', 'COLOR_SECONDARY_COLOR']
                 for variation in picker['products']:
                     color_name = variation['label']['text']
                     color_id = variation['attribute_id']
@@ -145,8 +145,6 @@ class MercadoLibreChile(Store):
                 ))
         else:
             name = soup.find('h1', 'item-title__primary ').text.strip()
-            description_tag = soup.find('section', 'item-description')
-            description = html_to_markdown(str(description_tag))
             seller_tag = soup.find('p', 'title')
             seller = seller_tag.text.strip()
             variations = re.search(r'meli.Variations\(({[\S\s]+?})\);',
@@ -179,7 +177,6 @@ class MercadoLibreChile(Store):
                         price,
                         'CLP',
                         sku=sku,
-                        description=description,
                         picture_urls=picture_urls,
                         seller=seller
                     ))
@@ -206,7 +203,6 @@ class MercadoLibreChile(Store):
                     price,
                     'CLP',
                     sku=sku,
-                    description=description,
                     picture_urls=picture_urls,
                     seller=seller
                 ))
