@@ -9,9 +9,8 @@ class MercadoLibreSamsung(MercadoLibreChile):
         return {'_Tienda_samsung': [
             ('electrodomesticos/pequenos', 'VacuumCleaner'),
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
-            ('electrodomesticos/lavado', 'WashingMachine'),
+            ('lavado', 'WashingMachine'),
             ('electrodomesticos/climatizacion', 'AirConditioner'),
-            ('repuestos-accesorios', 'CellAccesory'),
             ('electrodomesticos/hornos-cocinas', 'Oven'),
             ('celulares-telefonia/celulares', 'Cell'),
             ('celulares-telefonia/accesorios-celulares', 'CellAccesory'),
@@ -19,10 +18,12 @@ class MercadoLibreSamsung(MercadoLibreChile):
             ('audio', 'Headphones'),
             ('electronica/televisores', 'Television'),
             ('accesorios-tv', 'CellAccesory'),
-            ('accesorios-audio-video', 'CellAccesory'),
             ('relojes-joyas', 'Wearable'),
             ('computacion', 'Tablet'),
             ('instrumentos', 'StereoSystem'),
+            # Invalid as of 2020-10-20
+            ('repuestos-accesorios', 'CellAccesory'),
+            ('accesorios-audio-video', 'CellAccesory'),
         ]}
 
     @classmethod
