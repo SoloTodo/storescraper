@@ -71,8 +71,13 @@ class LaPolar(Store):
                 'Tecnología > Accesorios Computación > Mouse | Teclados', 0.5],
             ['pendrives', ['UsbFlashDrive'],
              'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
+
+            ['minicomponentes', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Minicomponentes', 1],
             ['parlantes-portátiles', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Parlantes Portátiles', 1],
+            ['soundbar', ['StereoSystem'],
+             'Inicio > Tecnología > Audio > Soundbar', 1],
             ['equipos-de-musica', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Equipos de música', 1],
             ['karaoke', ['StereoSystem'],
