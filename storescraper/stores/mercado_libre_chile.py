@@ -1,12 +1,12 @@
 import html
 import json
 import logging
+import urllib
 
 import demjson
 import re
 from decimal import Decimal
 
-import requests
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
@@ -74,70 +74,134 @@ class MercadoLibreChile(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
-
         products = []
 
-        name = soup.find('meta', {'name': 'twitter:title'})['content'].strip()
-        description = html_to_markdown(
-            str(soup.find('section', 'item-description')))
+        new_mode_data = re.search(
+            r'window.__PRELOADED_STATE__ = ([\S\s]+?);\n', page_source)
 
-        variations = re.search(r'meli.Variations\(\{([\S\s]+?)}\);',
-                               page_source)
-        seller = soup.find('p', 'title').text.strip()
+        if new_mode_data:
+            data = json.loads(new_mode_data.groups()[0])
+            seller = data['initialState']['components']['track'][
+                'analytics_event']['custom_dimensions'][
+                'customDimensions']['officialStore']
+            sku = data['initialState']['id']
+            base_name = data['initialState']['components'][
+                'short_description'][0]['title']
+            price = Decimal(data['initialState']['schema'][0][
+                                'offers']['price'])
 
-        if not variations:
-            pictures_data = json.loads(html.unescape(
-                soup.find('div', 'gallery-content')['data-full-images']))
-            picture_urls = [e['src'] for e in pictures_data]
-            pricing_str = re.search(
-                r'dataLayer = ([\S\s]+?);', page_source).groups()[0]
-            pricing_data = json.loads(pricing_str)[0]
-            sku = pricing_data['itemId']
-            price = Decimal(pricing_data['localItemPrice'])
-            stock = pricing_data['availableStock']
+            picker = None
+            for x in data['initialState']['components']['short_description']:
+                if x['id'] == 'variations' and 'pickers' in x:
+                    picker = x['pickers'][0]
 
-            products.append(Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                description=description,
-                picture_urls=picture_urls,
-                seller=seller
-            ))
+            if picker:
+                assert picker['id'] == 'COLOR_SECONDARY_COLOR'
+                for variation in picker['products']:
+                    color_name = variation['label']['text']
+                    color_id = variation['attribute_id']
 
-        else:
-            variations_str = variations.groups()[0]
-            variations_data = demjson.decode("{"+variations_str+"}")['model']
+                    variation_url = 'https://articulo.mercadolibre.cl/' \
+                                    'noindex/variation/choose?itemId={}&' \
+                                    'attribute=COLOR_SECONDARY_COLOR%7C{}' \
+                                    ''.format(sku,
+                                              urllib.parse.quote(color_id))
+                    res = session.get(variation_url)
+                    key = re.search(r'variation=(\d+)', res.url).groups()[0]
+                    name = '{} ({})'.format(base_name, color_name)
+                    variation_url = '{}?variation={}'.format(url, key)
 
-            for variation in variations_data:
-                key = str(variation['id'])
-                sku = soup.find('input', {'name': 'itemId'})['value']
-                v_suffix = variation[
-                    'attribute_combinations'][0]['value_name']
-                v_name = name + "({})".format(v_suffix)
-                v_url = url.split('?')[0] + "?variation={}".format(key)
-                price = Decimal(variation['price'])
-                stock = variation['available_quantity']
-                picture_url_base = 'https://mlc-s2-p.mlstatic.com/{}-F.jpg'
-                picture_urls = [picture_url_base.format(p_id)
-                                for p_id in variation['picture_ids']]
-
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        category,
+                        variation_url,
+                        url,
+                        key,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        sku=sku,
+                        seller=seller
+                    ))
+            else:
+                picture_urls = [x['data-zoom'] for x in
+                                soup.findAll('img', 'ui-pdp-image')[1::2]]
                 products.append(Product(
-                    v_name,
+                    base_name,
                     cls.__name__,
                     category,
-                    v_url,
                     url,
-                    key,
-                    stock,
+                    url,
+                    sku,
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    seller=seller,
+                    picture_urls=picture_urls
+                ))
+        else:
+            name = soup.find('h1', 'item-title__primary ').text.strip()
+            description_tag = soup.find('section', 'item-description')
+            description = html_to_markdown(str(description_tag))
+            seller_tag = soup.find('p', 'title')
+            seller = seller_tag.text.strip()
+            variations = re.search(r'meli.Variations\(({[\S\s]+?})\);',
+                                   page_source)
+            if variations:
+                variations_str = variations.groups()[0]
+                variations_data = demjson.decode(variations_str)['model']
+
+                for variation in variations_data:
+                    key = str(variation['id'])
+                    sku = soup.find('input', {'name': 'itemId'})['value']
+                    v_suffix = variation[
+                        'attribute_combinations'][0]['value_name']
+                    v_name = name + "({})".format(v_suffix)
+                    v_url = url.split('?')[0] + "?variation={}".format(key)
+                    price = Decimal(variation['price'])
+                    picture_url_base = 'https://mlc-s2-p.mlstatic.com/{}-F.jpg'
+                    picture_urls = [picture_url_base.format(p_id)
+                                    for p_id in variation['picture_ids']]
+
+                    products.append(Product(
+                        v_name,
+                        cls.__name__,
+                        category,
+                        v_url,
+                        url,
+                        key,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        sku=sku,
+                        description=description,
+                        picture_urls=picture_urls,
+                        seller=seller
+                    ))
+            else:
+                pictures_tag = soup.find('div', 'gallery-content')
+                pictures_data = json.loads(
+                    html.unescape(pictures_tag['data-full-images']))
+                picture_urls = [e['src'] for e in pictures_data]
+                pricing_str = re.search(
+                    r'dataLayer = ([\S\s]+?);', page_source).groups()[0]
+                pricing_data = json.loads(pricing_str)[0]
+                sku = pricing_data['itemId']
+                price = Decimal(pricing_data['localItemPrice'])
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    -1,
                     price,
                     price,
                     'CLP',
