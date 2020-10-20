@@ -75,10 +75,15 @@ class Alfaomega(Store):
 
         sku = sku_container.text.strip()
 
-        stock_text = soup.find('span', 'stock').text.strip()
-        stock = 0
-        if stock_text != 'Agotado':
-            stock = int(stock_text.split(' ')[0])
+        stock_container = soup.find('span', 'stock')
+
+        if stock_container:
+            stock_text = stock_container.text.strip()
+            stock = 0
+            if stock_text != 'Agotado':
+                stock = int(stock_text.split(' ')[0])
+        else:
+            stock = -1
 
         price_container = soup.find('p', 'price')
 

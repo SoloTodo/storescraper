@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -5,22 +6,25 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
+from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
+    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, \
+    OPTICAL_DISK_PLAYER, STOVE, VACUUM_CLEANER
 
 
 class Omnisport(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'OpticalDiskPlayer',
-            'Stove',
-            'VacuumCleaner',
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            REFRIGERATOR,
+            OVEN,
+            AIR_CONDITIONER,
+            WASHING_MACHINE,
+            OPTICAL_DISK_PLAYER,
+            STOVE,
+            VACUUM_CLEANER
         ]
 
     @classmethod
@@ -28,20 +32,26 @@ class Omnisport(Store):
         # KEEPS ONLY LG PRODUCTS
 
         category_filters = [
-            ('video/productos', 'Television'),
-            ('audio/productos', 'StereoSystem'),
-            ('electronica/celulares', 'Cell'),
-            ('electrodomesticos/refrigeradores', 'Refrigerator'),
-            ('electrodomesticos/hornos', 'Oven'),
-            ('electrodomesticos/microondas', 'Oven'),
-            ('electrodomesticos/aires-acondicionados/productos',
-             'AirConditioner'),
-            ('electrodomesticos/aires-acondicionados/inverter',
-             'AirConditioner'),
-            ('electrodomesticos/lavadoras', 'WashingMachine'),
-            ('electrodomesticos/secadoras', 'WashingMachine'),
-            ('electrodomesticos/cocinas', 'Stove'),
-            ('electrodomesticos/aspiradoras', 'VacuumCleaner'),
+            ('smart-tv', TELEVISION),
+            ('4k-tv', TELEVISION),
+            ('android-tv', TELEVISION),
+            ('nanocell', TELEVISION),
+            ('oled-tv', TELEVISION),
+            ('pantallas-led', TELEVISION),
+            ('dvd', OPTICAL_DISK_PLAYER),
+            ('audio', STEREO_SYSTEM),
+            ('equipos-de-sonido', STEREO_SYSTEM),
+            ('sistema-de-teatro', STEREO_SYSTEM),
+            ('mini-parlantes', STEREO_SYSTEM),
+            ('celulares', CELL),
+            ('refrigeradores', REFRIGERATOR),
+            ('cocinas', STOVE),
+            ('lavadoras', WASHING_MACHINE),
+            ('secadoras', WASHING_MACHINE),
+            ('inverter', AIR_CONDITIONER),
+            ('microondas', OVEN),
+            ('hornos', OVEN),
+            ('aspiradoras', VACUUM_CLEANER),
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -50,44 +60,27 @@ class Omnisport(Store):
             if local_category != category:
                 continue
 
-            sorters = [
-                'n_a',
-                'n_d',
-                'p_a',
-                'p_d',
-                'r_a',
-                'r_d',
-            ]
-
             page = 1
 
             while True:
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://www.omnisport.com/catalogo/{}?sort={}' \
-                      '&page={}'.format(category_path, sorters[0], page)
+                url = 'https://www.omnisport.com/categorias/{}?page={}' \
+                      ''.format(category_path, page)
                 print(url)
 
                 res = session.get(url)
-
-                if res.status_code == 500:
-                    raise Exception('Category with 500 error')
-
                 soup = BeautifulSoup(res.text, 'html.parser')
-                containers = soup.findAll('div', 'catalog-product')
+                containers = soup.findAll('div', 'lg:w-1/3')
 
                 if not containers:
                     break
 
                 for container in containers:
-                    link = container.find('a', 'dark')
-
-                    if 'lg' in link.text.strip().lower():
-                        product_url = 'https://www.omnisport.com{}'\
-                            .format(link['href'])
-
-                        product_urls.append(product_url)
+                    if 'lg' in container.find('p', 'text-black').text.lower():
+                        link = container.find('a', 'link-basic')
+                        product_urls.append(link['href'])
 
                 page += 1
 
@@ -99,47 +92,17 @@ class Omnisport(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.url != url:
-            return []
-
         soup = BeautifulSoup(response.text, 'html.parser')
+        sku = soup.find('p', 'text-gray-700').contents[1].split('|')[0].strip()
+        name = soup.find('h1').text.strip()
+        price = Decimal(soup.find('p', 'text-2xl').text.replace('$', ''))
 
-        text_info = soup.find('div', 'main-product-info-inner').find('h3')
+        pictures_tag = soup.find('product-images-gallery')
 
-        sku = soup.find('meta', {'property': 'product:retailer_item_id'}
-                        )['content']
-        model = text_info.find('span', {'id': 'cuponproduct_name'}).text
-        name = '{} ({})'.format(text_info.find('strong').text.strip(), model)
-
-        price_containers = soup.findAll('p', 'product-price')
-
-        if len(price_containers) == 1:
-            price = price_containers[0].find('span').text
-            offer_price = price
-        elif len(price_containers) == 2:
-            price = price_containers[1].find('span').text
-            offer_price = price
+        if pictures_tag:
+            picture_urls = [x['full_url'] for x in json.loads(pictures_tag[':images'])]
         else:
-            price = price_containers[1].find('span').text
-            offer_price = price_containers[2].find('span').text
-
-        price = cls.fix_price(price)
-
-        if offer_price == '$':
-            offer_price = price
-        else:
-            offer_price = cls.fix_price(offer_price)
-
-        if offer_price > price:
-            offer_price = price
-
-        picture_urls = []
-        pictures = soup.find('div', 'gallery-carrousel').findAll('div')
-
-        for picture in pictures:
-            if picture.find('a'):
-                picture_urls.append('https://www.omnisport.com{}'
-                                    .format(picture.find('a')['href']))
+            picture_urls = [soup.find('div', 'md:w-2/5').find('img')['src']]
 
         p = Product(
             name,
@@ -150,7 +113,7 @@ class Omnisport(Store):
             sku,
             -1,
             price,
-            offer_price,
+            price,
             'USD',
             sku=sku,
             picture_urls=picture_urls

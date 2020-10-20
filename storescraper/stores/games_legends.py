@@ -42,7 +42,7 @@ class GamesLegends(Store):
             ['audifonos', HEADPHONES],
             ['placasmadres', MOTHERBOARD],
             ['fuentes-de-poder', POWER_SUPPLY],
-            ['telefonos-moviles', CELL],
+            # ['telefonos-moviles', CELL],
             ['tarjetas-de-video', VIDEO_CARD],
             ['gabinetes', COMPUTER_CASE]
         ]
