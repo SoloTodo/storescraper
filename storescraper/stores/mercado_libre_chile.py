@@ -96,15 +96,15 @@ class MercadoLibreChile(Store):
                     picker = x['pickers'][0]
 
             if picker:
-                assert picker['id'] in ['CASE_COLOR', 'COLOR_SECONDARY_COLOR']
                 for variation in picker['products']:
                     color_name = variation['label']['text']
                     color_id = variation['attribute_id']
 
                     variation_url = 'https://articulo.mercadolibre.cl/' \
                                     'noindex/variation/choose?itemId={}&' \
-                                    'attribute=COLOR_SECONDARY_COLOR%7C{}' \
+                                    'attribute={}%7C{}' \
                                     ''.format(sku,
+                                              urllib.parse.quote(picker['id']),
                                               urllib.parse.quote(color_id))
                     res = session.get(variation_url)
                     key = re.search(r'variation=(\d+)', res.url).groups()[0]
