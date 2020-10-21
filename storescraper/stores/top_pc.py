@@ -103,7 +103,12 @@ class TopPc(Store):
         else:
             stock = 0
 
-        offer_price = soup.find('span', {'id': 'our_price_display'}).string
+        offer_price_tag = soup.find('span', {'id': 'our_price_display'})
+
+        if not offer_price_tag:
+            return []
+
+        offer_price = offer_price_tag.string
         offer_price = Decimal(remove_words(offer_price))
 
         normal_price = soup.find(
