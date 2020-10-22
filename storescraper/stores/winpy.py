@@ -1,3 +1,4 @@
+import logging
 import re
 import urllib
 
@@ -48,11 +49,11 @@ class Winpy(Store):
         category_paths = [
             ['portatiles/notebooks/', 'Notebook'],
             ['portatiles/mobile-workstation/', 'Notebook'],
-            # ['zona-notebook-gamers/', 'Notebook'],
-            # ['apple/macbook-air/', 'Notebook'],
-            # ['apple/macbook/', 'Notebook'],
-            # ['apple/macbook-pro/', 'Notebook'],
-            # ['apple/macbook-pro-retina/', 'Notebook'],
+            ['zona-notebook-gamers/', 'Notebook'],
+            ['apple/macbook-air/', 'Notebook'],
+            ['apple/macbook/', 'Notebook'],
+            ['apple/macbook-pro/', 'Notebook'],
+            ['apple/macbook-pro-retina/', 'Notebook'],
             ['portatiles/tablet/', 'Tablet'],
             ['apple/ipad/', 'Tablet'],
             ['monitores/', 'Monitor'],
@@ -61,17 +62,17 @@ class Winpy(Store):
             ['memorias/', 'Ram'],
             ['portatiles/celulares/', 'Cell'],
             ['almacenamiento/disco-estado-solido/', 'SolidStateDrive'],
-            # ['almacenamiento/disco-duro-notebook/', 'StorageDrive'],
+            ['almacenamiento/disco-duro-notebook/', 'StorageDrive'],
             ['almacenamiento/disco-duro-pc-s/', 'StorageDrive'],
             ['partes-y-piezas/procesadores/', 'Processor'],
             ['partes-y-piezas/placas-madres/', 'Motherboard'],
-            # ['partes-y-piezas/gabinetes/', 'ComputerCase'],
-            # ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
-            # ['partes-y-piezas/disipadores/', 'CpuCooler'],
+            ['partes-y-piezas/gabinetes/', 'ComputerCase'],
+            ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
+            ['partes-y-piezas/disipadores/', 'CpuCooler'],
             ['impresoras/', 'Printer'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
             ['accesorios/mouse-y-teclados/', 'Mouse'],
-            # ['zona-teclados-mecanicos/', 'Keyboard'],
+            ['zona-teclados-mecanicos/', 'Keyboard'],
             ['computadores/todo-en-uno/', 'AllInOne'],
             ['electronica/parlantes/', 'StereoSystem'],
             ['electronica/audifonos/', 'Headphones'],
@@ -100,7 +101,7 @@ class Winpy(Store):
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_path)
+                        logging.warning('Empty category: ' + category_path)
                     break
 
                 for container in product_containers:
