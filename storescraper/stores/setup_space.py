@@ -44,6 +44,8 @@ class SetupSpace(Store):
             ['procesadores', PROCESSOR],
             ['proyectores', PROJECTOR],
             ['ssd-1', SOLID_STATE_DRIVE],
+            ['m2-sata', SOLID_STATE_DRIVE],
+            ['m2-nvme', SOLID_STATE_DRIVE],
             ['tarjeta-de-video', VIDEO_CARD],
             ['teclados', KEYBOARD],
             ['impresoras', PRINTER],
