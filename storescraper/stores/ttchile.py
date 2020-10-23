@@ -1,10 +1,15 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
+    MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
+    CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES
 
 
 class TtChile(Store):
@@ -13,51 +18,64 @@ class TtChile(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'CpuCooler',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'StereoSystem',
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            RAM, MEMORY_CARD,
+            MONITOR,
+            MOUSE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
+            MOTHERBOARD,
+            PROCESSOR,
+            CPU_COOLER,
+            VIDEO_CARD,
+            STEREO_SYSTEM,
+            HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.ttchile.cl/'
-
         category_paths = [
-            # ['subpro.php?ic=21&isc=20', 'Notebook'],  # Notebooks
-            # ['catpro.php?ic=45', 'Notebook'],  # Apple
-            ['catpro.php?ic=31', 'VideoCard'],  # Tarjetas de video
-            ['catpro.php?ic=25', 'Processor'],  # Procesadores AMD
-            ['catpro.php?ic=26', 'Processor'],  # Procesadores Intel
-            ['catpro.php?ic=18', 'Monitor'],  # LCD
-            ['catpro.php?ic=23', 'Motherboard'],  # MB AMD
-            ['catpro.php?ic=24', 'Motherboard'],  # MB Intel
-            ['subpro.php?ic=16&isc=10', 'Ram'],  # RAM DDR4
-            ['subpro.php?ic=16&isc=13', 'Ram'],  # RAM Notebook
-            # ['subpro.php?ic=10&isc=6', 'StorageDrive'],  # HDD Notebook
-            ['subpro.php?ic=10&isc=5', 'StorageDrive'],  # HDD SATA
-            ['subpro.php?ic=10&isc=7', 'SolidStateDrive'],  # SSD
-            ['catpro.php?ic=12', 'PowerSupply'],  # Fuentes de poder
-            ['catpro.php?ic=13', 'ComputerCase'],  # Gabinetes
-            ['subpro.php?ic=28&isc=38', 'CpuCooler'],  # Cooler CPU
-            ['subpro.php?ic=28&isc=87', 'CpuCooler'],  # Ref. liquida
-            ['subpro.php?ic=19&isc=16', 'Mouse'],
-            ['subpro.php?ic=19&isc=17', 'Keyboard'],
-            ['subpro.php?ic=19&isc=18', 'KeyboardMouseCombo'],
-            ['subpro.php?ic=22&isc=22', 'Headphones'],
-            ['subpro.php?ic=22&isc=23', 'StereoSystem'],
+            ['40', STORAGE_DRIVE],  # Discos duros notebook
+            ['41', SOLID_STATE_DRIVE],  # SSD
+            ['42', EXTERNAL_STORAGE_DRIVE],  # Discos duros extenos
+            ['86', STORAGE_DRIVE],  # Discos duros NAS
+            ['87', SOLID_STATE_DRIVE],  # SSD M.2
+            ['87', STORAGE_DRIVE],  # Discos duros 3.5"
+            ['88', POWER_SUPPLY],  # Fuentes de poder ATX
+            ['89', POWER_SUPPLY],  # Fuentes de poder modulares
+            ['90', COMPUTER_CASE],  # Gabinetes Micro ATX
+            ['91', COMPUTER_CASE],  # Gabinetes ATX-E
+            ['44', RAM],  # RAM Desktop
+            ['45', RAM],  # RAM Notebook
+            ['46', MEMORY_CARD],  # Tarjetas de memoria
+            ['27', MONITOR],  # Monitores y proyectores
+            ['47', MOUSE],  # Mouses
+            ['48', KEYBOARD],  # Teclados
+            ['49', KEYBOARD_MOUSE_COMBO],  # Kits
+            ['54', MOTHERBOARD],  # Placas madre sTR4
+            ['55', MOTHERBOARD],  # Placas madre AM4
+            ['56', MOTHERBOARD],  # Placas madre AM3+
+            ['57', MOTHERBOARD],  # Placas madre FM2
+            ['58', MOTHERBOARD],  # Placas madre 1151
+            ['59', MOTHERBOARD],  # Placas madre 2066
+            ['97', MOTHERBOARD],  # Placas madre 1200
+            ['60', PROCESSOR],  # Procesadores AM4
+            ['61', PROCESSOR],  # Procesadores sTR4
+            ['62', PROCESSOR],  # Procesadores AM3+
+            ['63', PROCESSOR],  # Procesadores FM2
+            ['64', PROCESSOR],  # Procesadores 2066
+            ['65', PROCESSOR],  # Procesadores 1151
+            ['98', PROCESSOR],  # Procesadores 1200
+            ['74', CPU_COOLER],  # Cooler Procesador
+            ['77', VIDEO_CARD],  # Tarjetas de video NVIDIA
+            ['78', VIDEO_CARD],  # Tarjetas de video Profesionales
+            ['99', VIDEO_CARD],  # Tarjetas de video AMD
+            ['94', STEREO_SYSTEM],  # Parlantes
+            ['95', HEADPHONES],  # Audífonos
         ]
 
         product_urls = []
@@ -71,31 +89,29 @@ class TtChile(Store):
                 continue
 
             page = 1
-            done = False
 
-            while not done:
-                category_url = base_url + category_path + '&pagina=' + \
-                               str(page)
+            while True:
+                category_url = 'https://www.tytchilespa.cl/Home/index.php?' \
+                               'id_category={}&controller=category&page={}' \
+                               ''.format(category_path, page)
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(
-                    category_url, timeout=30).text, 'html.parser')
+                    category_url, timeout=30).text, 'html5lib')
 
-                product_description = soup.findAll(
-                    'table', 'tableEdicionProductos')[1:]
+                product_cells = soup\
+                    .find('section', 'product_show_list')\
+                    .findAll('article', 'product-miniature')
 
-                if not product_description:
+                if not product_cells:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_url)
+                        logging.warning('Empty category: ' + category_url)
                     break
 
-                for table in product_description:
-                    product_url = base_url + table.find('a')['href']
-                    if product_url in product_urls:
-                        done = True
-                        break
+                for product_cell in product_cells:
+                    product_url = product_cell.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -104,46 +120,33 @@ class TtChile(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-
         soup = BeautifulSoup(session.get(
             url, timeout=30).text, 'html.parser')
+        name = soup.find('h1', 'product_name').text.strip()
+        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        price_tags = soup.findAll('span', {'itemprop': 'price'})
+        offer_price = Decimal(price_tags[0]['content'])
+        normal_price = Decimal(price_tags[1]['content'])
 
-        containers = soup.findAll('div', 'textOtrosPrecios')
+        availability_message = soup.find(
+            'span', {'id': 'product-availability'}).contents[2].strip()
 
-        normal_price = Decimal(remove_words(containers[0].text))
-
-        stock_image = containers[1].find('img')['src']
-
-        if stock_image in ['images/imagenes/ico_normal.jpg',
-                           'images/imagenes/ico_bajo.jpg']:
-            stock = -1
-        else:
+        if availability_message in ['Producto sin Stock, solo reservas.',
+                                    'Producto fuera de stock.']:
             stock = 0
+        else:
+            stock = int(soup.find(
+                'div', 'product-quantities').find('span')['data-stock'])
 
-        sku = containers[2].text.strip()
-        name = soup.find('div', 'textTituloProducto').text.strip()
-        offer_price = Decimal(remove_words(
-            soup.find('div', 'textPrecioContado').text))
-
-        description = html_to_markdown(str(soup.find('div', 'p7TPcontent')))
-
-        main_picture = soup.findAll(
-            'table', {'id': 'table20'})[1].findAll('img')[2]['src']
-
-        picture_paths = [main_picture]
-        picture_paths.extend([tag['src'] for tag in
-                              soup.findAll('img', 'Imagen')])
-
-        picture_urls = []
-        for path in picture_paths:
-            picture_id = path.split('=')[-1]
-            picture_url = 'http://www.ttchile.cl/images/imgproductos/' \
-                          'imgImagenMarco.php?imagen=' + picture_id
-            picture_urls.append(picture_url.replace(' ', '%20'))
+        description = html_to_markdown(
+            str(soup.find('div', 'product-description')))
+        picture_urls = [x['data-image-large-src'] for x in
+                        soup.find('ul', 'product-images').findAll('img')]
 
         p = Product(
             name,

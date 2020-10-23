@@ -63,8 +63,8 @@ class BulldogPc(Store):
         sku_container = soup.find(
             'meta', property='og:image')['content']
         sku = re.search(r"/(\d+)/", sku_container).group(1)
-        unavailable_tag = soup.find('div', 'form-group product-stock '
-                                            'product-out-stock row visible')
+        unavailable_tag = soup.find(
+            'div', 'form-group product-stock product-out-stock row visible')
         if unavailable_tag:
             stock = 0
         else:

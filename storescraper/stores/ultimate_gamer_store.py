@@ -91,8 +91,8 @@ class UltimateGamerStore(Store):
 
         if 'PREVENTA' in name.upper():
             stock = 0
-        elif soup.find('meta', {'property': 'product:availability'})['content'] \
-                == 'instock':
+        elif soup.find('meta', {'property': 'product:availability'})[
+                'content'] == 'instock':
             stock = -1
         else:
             stock = 0

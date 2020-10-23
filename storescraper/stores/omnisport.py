@@ -100,7 +100,8 @@ class Omnisport(Store):
         pictures_tag = soup.find('product-images-gallery')
 
         if pictures_tag:
-            picture_urls = [x['full_url'] for x in json.loads(pictures_tag[':images'])]
+            picture_urls = [x['full_url'] for x in
+                            json.loads(pictures_tag[':images'])]
         else:
             picture_urls = [soup.find('div', 'md:w-2/5').find('img')['src']]
 
