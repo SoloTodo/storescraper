@@ -127,8 +127,14 @@ class TtChile(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         soup = BeautifulSoup(session.get(
             url, timeout=30).text, 'html.parser')
+
+        sku_tag = soup.find('span', {'itemprop': 'sku'})
+        
+        if not sku_tag:
+            return []
+
+        sku = sku_tag.text.strip()
         name = soup.find('h1', 'product_name').text.strip()
-        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
         price_tags = soup.findAll('span', {'itemprop': 'price'})
         offer_price = Decimal(price_tags[0]['content'])
         normal_price = Decimal(price_tags[1]['content'])
