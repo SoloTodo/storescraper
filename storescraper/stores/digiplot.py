@@ -120,8 +120,8 @@ class Digiplot(Store):
         name = data['descripcion'].strip()
         sku = data['idproducto'].strip()
         stock = round(float(data['stock']))
-        # offer_price = Decimal(data['precioweb1'])
-        price = Decimal(data['precioweb2'])
+        offer_price = Decimal(data['precioweb1'])
+        normal_price = Decimal(data['precioweb2'])
         description = None
         if data['long_descrip']:
             description = html_to_markdown(data['long_descrip'])
@@ -135,8 +135,8 @@ class Digiplot(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,
