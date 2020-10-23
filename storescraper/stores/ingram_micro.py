@@ -22,9 +22,9 @@ class IngramMicro(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('Computadores Servidores y Notebooks,subCategory:Computadores '
+            ('Computadores Servidores y Notebooks~subCategory:Computadores '
              'Portátiles/Tablets', 'Notebook'),
-            ('Computadores Servidores y Notebooks,subCategory:Computadores '
+            ('Computadores Servidores y Notebooks~subCategory:Computadores '
              'de Escritorio', 'AllInOne'),
         ]
 
