@@ -23,7 +23,8 @@ class TtChile(Store):
             EXTERNAL_STORAGE_DRIVE,
             POWER_SUPPLY,
             COMPUTER_CASE,
-            RAM, MEMORY_CARD,
+            RAM,
+            MEMORY_CARD,
             MONITOR,
             MOUSE,
             KEYBOARD,
@@ -129,7 +130,7 @@ class TtChile(Store):
             url, timeout=30).text, 'html.parser')
 
         sku_tag = soup.find('span', {'itemprop': 'sku'})
-        
+
         if not sku_tag:
             return []
 
@@ -150,7 +151,7 @@ class TtChile(Store):
                 'div', 'product-quantities').find('span')['data-stock'])
 
         description = html_to_markdown(
-            str(soup.find('div', 'product-description')))
+            str(soup.find('div', 'tab-content')))
         picture_urls = [x['data-image-large-src'] for x in
                         soup.find('ul', 'product-images').findAll('img')]
 
