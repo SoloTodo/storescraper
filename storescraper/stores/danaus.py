@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -19,40 +20,54 @@ class Danaus(Store):
             # 'ExternalStorageDrive'
             # 'UsbFlashDrive',
             # 'MemoryCard',
-            # 'SolidStateDrive',
+            'SolidStateDrive',
             'Projector',
             'Monitor',
             'AllInOne',
             'Mouse',
-            # 'Keyboard',
+            'Keyboard',
             'Headphones',
             'Processor',
             'PowerSupply',
             'Ram',
+            'Motherboard',
+            'VideoCard',
+            'ComputerCase',
+            'Television',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['tecnologia/pc-y-portatiles/notebook', 'Notebook'],
-            ['tecnologia/pc-y-portatiles/tablets', 'Tablet'],
-            ['tecnologia/impresion/multifuncionales-tinta', 'Printer'],
-            ['tecnologia/impresion/impresora-laser', 'Printer'],
-            ['tecnologia/audio-video-y-fotografia/parlantes', 'StereoSystem'],
-            ['tecnologia/almacenamiento/disco-duros-pc', 'StorageDrive'],
-            ['tecnologia/audio-video-y-fotografia/videoproyectores',
-             'Projector'],
-            ['tecnologia/componentes-partes-y-piezas/monitores', 'Monitor'],
-            ['tecnologia/componentes-partes-y-piezas/pantallas', 'Monitor'],
-            ['tecnologia/pc-y-portatiles/all-in-one', 'AllInOne'],
-            ['tecnologia/componentes-partes-y-piezas/mouse-teclado-y-mousepad',
-             'Mouse'],
-            ['tecnologia/audio-video-y-fotografia/audifono', 'Headphones'],
-            ['tecnologia/componentes-partes-y-piezas/procesadores',
+            ['computadores-y-tablets/tablets', 'Tablet'],
+            ['computadores-y-tablets/notebooks', 'Notebook'],
+            ['computadores-y-tablets/macbooks-imac-ipad', 'Notebook'],
+            ['computadores-y-tablets/computadoras-de-escritorio/all-in-one',
+             'AllInOne'],
+            ['computadores-y-tablets/monitores', 'Monitor'],
+            ['computadores-y-tablets/mouse-y-teclado/teclado-gamer',
+             'Keyboard'],
+            ['computadores-y-tablets/mouse-y-teclado/mouse-gamer', 'Mouse'],
+            ['computadores-y-tablets/componentes-de-computadores/procesadores',
              'Processor'],
-            ['tecnologia/componentes-partes-y-piezas/fuentes-poder',
-             'PowerSupply'],
-            ['tecnologia/componentes-partes-y-piezas/ram', 'Ram'],
+            ['computadores-y-tablets/componentes-de-computadores/'
+             'placas-madres', 'Motherboard'],
+            ['computadores-y-tablets/componentes-de-computadores/memorias',
+             'Ram'],
+            ['computadores-y-tablets/componentes-de-computadores/'
+             'tarjetas-graficas', 'VideoCard'],
+            ['computadores-y-tablets/componentes-de-computadores/'
+             'almacenamiento-interno/disco-duro-interno', 'StorageDrive'],
+            ['computadores-y-tablets/componentes-de-computadores/'
+             'almacenamiento-interno/disco-estado-solido-ssd', 'StorageDrive'],
+            ['computadores-y-tablets/componentes-de-computadores/gabinetes',
+             'ComputerCase'],
+            ['computadores-y-tablets/componentes-de-computadores/'
+             'fuentes-de-poder', 'PowerSupply'],
+            ['impresoras-y-tintas/impresoras', 'Printer'],
+            ['tv-y-video/tv-y-accesorios', 'Television'],
+            ['tv-y-video/sonido', 'StereoSystem'],
+            ['audio/audifonos', 'Headphones'],
         ]
 
         session = session_with_proxy(extra_args)
@@ -80,7 +95,7 @@ class Danaus(Store):
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty path:' + url)
+                        logging.warning('Empty path:' + url)
                     break
 
                 products = product_containers.findAll('li', 'item')

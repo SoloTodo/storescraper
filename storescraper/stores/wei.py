@@ -109,9 +109,8 @@ class Wei(Store):
 
                 page_url = 'https://www.wei.cl/categoria/{}?page={}' \
                            ''.format(category_path, page)
-                print(page_url)
-
-                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
+                soup = BeautifulSoup(
+                    session.get(page_url, verify=False).text, 'html.parser')
 
                 product_cells = soup.findAll('div', 'box-producto')
 
@@ -135,7 +134,7 @@ class Wei(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        page_source = session.get(url, verify=False).text
         sku = re.search(r"productoPrint\('(.+)'\);", page_source)
 
         if not sku:

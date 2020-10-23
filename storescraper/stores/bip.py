@@ -158,7 +158,7 @@ class Bip(Store):
         price_containers = soup.findAll('p', 'precio')
 
         offer_price = Decimal(remove_words(price_containers[0].text.strip()))
-        normal_price = Decimal(remove_words(price_containers[2].text.strip()))
+        normal_price = Decimal(remove_words(price_containers[1].text.strip()))
 
         if normal_price < offer_price:
             normal_price = offer_price
