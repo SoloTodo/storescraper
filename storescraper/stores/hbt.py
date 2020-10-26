@@ -5,34 +5,32 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
-from storescraper.categories import STOVE, OVEN
+from storescraper.categories import OVEN
 
 
 class Hbt(Store):
     @classmethod
     def categories(cls):
         return [
-            STOVE,
             OVEN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('electrodomesticos/hornos-y-microondas/microondas', OVEN),
-            ('electrodomesticos/hornos-y-microondas/hornos', OVEN),
-            ('electrodomesticos/encimeras/vitroelectrica', STOVE),
-        ]
-
+        # Only interested in Samsung products
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_filters:
-            if local_category != category:
-                continue
+        page = 1
+        done = False
 
-            url = 'https://www.hbt.cl/productos/{}'\
-                .format(category_path)
+        while not done:
+            if page > 10:
+                raise Exception('Page overflow')
+
+            url = 'https://www.hbt.cl/catalogsearch/result/index/?q=samsung&' \
+                  'p={}'.format(page)
+            print(url)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -42,7 +40,12 @@ class Hbt(Store):
 
             for item in items:
                 product_url = item.find('a')['href']
+                if product_url in product_urls:
+                    done = True
+                    break
                 product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 
