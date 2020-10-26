@@ -7,7 +7,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
-    KEYBOARD, MONITOR, HEADPHONES
+    KEYBOARD, MONITOR, HEADPHONES, UPS
 
 
 class ScGlobal(Store):
@@ -20,36 +20,27 @@ class ScGlobal(Store):
             MOUSE,
             KEYBOARD,
             MONITOR,
-            HEADPHONES
+            HEADPHONES,
+            UPS
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # Zbook
-            ['117', NOTEBOOK],
-            # Notebook
-            ['119', NOTEBOOK],
-            # Plotter
-            ['120', PRINTER],
-            # Notebook
-            ['10', NOTEBOOK],
-            # Rendimiento
-            ['84', NOTEBOOK],
-            # Hogar y Empresa
-            ['18', NOTEBOOK],
-            # Movilidad
-            ['85', NOTEBOOK],
-            # All In One
-            ['115', ALL_IN_ONE],
-            # Monitors
-            ['15', MONITOR],
-            # Impresoras
-            ['11', PRINTER],
-            # Teclados / Mouse
-            ['123', MOUSE],
-            # Audífonos
-            ['125', HEADPHONES],
+            ['117-zbook', NOTEBOOK],  # Zbook
+            ['119-notebook', NOTEBOOK],  # Notebook
+            ['120-plotter', PRINTER],  # Plotter
+            ['131-ups', UPS],  # UPS
+            ['10-notebook', NOTEBOOK],  # Notebook
+            ['84-rendimiento', NOTEBOOK],  # Notebooks Rendimiento
+            ['18-hogar-y-empresa', NOTEBOOK],  # Notebooks Hogar y Empresa
+            ['85-movilidad', NOTEBOOK],  # Notebooks Movilidad
+            ['115-all-in-one', ALL_IN_ONE],  # All In One
+            ['15-monitores', MONITOR],  # Monitores
+            ['11-impresoras', PRINTER],  # Impresoras
+            ['127-zona-gamer', NOTEBOOK],  # Zona gamer
+            ['123-teclados-mouse', KEYBOARD],  # Teclados
+            ['125-audifonos', HEADPHONES],  # Audífonos
         ]
 
         session = session_with_proxy(extra_args)
@@ -62,8 +53,7 @@ class ScGlobal(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.scglobal.cl/index.php?' \
-                               'controller=category&id_category={}&page={}' \
+                category_url = 'https://www.scglobal.cl/{}?page={}' \
                                ''.format(category_path, page)
                 print(category_url)
 

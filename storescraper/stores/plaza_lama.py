@@ -1,49 +1,49 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
-import json
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import AIR_CONDITIONER, STOVE, CELL_ACCESORY, \
+    OVEN, WASHING_MACHINE, REFRIGERATOR, STEREO_SYSTEM, OPTICAL_DISK_PLAYER, \
+    TELEVISION
 
 
 class PlazaLama(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'Stove',
-            'AirConditioner',
-            'CellAccesory'
+            AIR_CONDITIONER,
+            STOVE,
+            CELL_ACCESORY,
+            OVEN,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            STEREO_SYSTEM,
+            OPTICAL_DISK_PLAYER,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('4k', 'Television'),
-            ('televisores-smart', 'Television'),
-            ('televisores-led', 'Television'),
-            ('televisores-hd', 'Television'),
-            ('sound-bar', 'StereoSystem'),
-            ('bocina-portatil', 'StereoSystem'),
-            ('audio', 'StereoSystem'),
-            ('blu-ray', 'OpticalDiskPlayer'),
-            ('tecnologia/celular', 'Cell'),
-            ('nevera', 'Refrigerator'),
-            ('microondas', 'Oven'),
-            ('lavadora', 'WashingMachine'),
-            ('secadora', 'WashingMachine'),
-            ('lavadora-secadora', 'WashingMachine'),
-            ('estufa', 'Stove'),
-            ('estufa-de-20', 'Stove'),
-            ('aire-acondicionado', 'AirConditioner'),
-            ('extractor-de-grasa', 'CellAccesory'),
+            ('453-aires', AIR_CONDITIONER),
+            ('459-estufa', STOVE),
+            ('460-extractor', CELL_ACCESORY),
+            ('464-microondas', OVEN),
+            ('501-accesorio-para-lavadora', WASHING_MACHINE),
+            ('502-lavadora', WASHING_MACHINE),
+            ('503-lavadora-secadora', WASHING_MACHINE),
+            ('504-secadora', WASHING_MACHINE),
+            ('511-neveras', REFRIGERATOR),
+            ('514-bocinas-portatiles', STEREO_SYSTEM),
+            ('515-sound-bar', STEREO_SYSTEM),
+            ('1388-minicomponentes', STEREO_SYSTEM),
+            ('517-dvd', OPTICAL_DISK_PLAYER),
+            ('518-televisores', TELEVISION),
+            ('553-accesorios-tec', CELL_ACCESORY),
         ]
 
         session = session_with_proxy(extra_args)
@@ -57,27 +57,29 @@ class PlazaLama(Store):
             done = False
 
             while not done:
-                if page >= 10:
+                if page >= 30:
                     raise Exception('Page overflow')
 
-                url = 'https://tienda.plazalama.com.do/collections/' \
-                      '{}?page={}'.format(category_path, page)
+                url = 'https://plazalama.com.do/{}?page={}'.format(
+                    category_path, page)
+                print(url)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
+                with open('pl.html', 'w') as f:
+                    f.write(str(soup))
+                items = soup.findAll('div', 'js-product-miniature-wrapper')
 
-                container = soup.find('div', 'grid-uniform')
-                items = container.findAll('div', 'grid-item')
-
-                if len(items) == 1 and not items[0].find('a'):
+                if not items:
+                    if page == 1:
+                        logging.warning('Empty category:' + url)
                     break
 
                 for item in items:
-                    if 'LG' not in item.find('p').text.upper():
+                    product_link = item.find('h3', 'product-title').find('a')
+                    if 'LG' not in product_link.text.upper():
                         continue
-                    product_url = 'https://tienda.plazalama.com.do' \
-                                  '{}'.format(item.find('a')['href'])
-                    product_urls.append(product_url)
+                    product_urls.append(product_link['href'])
 
                 page += 1
 
@@ -88,51 +90,24 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html5lib')
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        script_data = soup.findAll(
-            'script', {'type': 'application/ld+json'})
-        product_data = None
+        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        name = soup.find('h1', 'page-title').text.strip()
+        add_to_cart_button = soup.find('button', 'add-to-cart')
 
-        for data in script_data:
-            json_data = json.loads(data.text, strict=False)
-            if json_data['@type'] == 'Product':
-                product_data = json_data
-                break
-
-        if not product_data:
-            raise Exception('No product in {}'.format(url))
-
-        name = product_data['name']
-        sku = product_data['sku']
-
-        if product_data['offers']['availability'] == 'InStock':
-            stock = -1
-        else:
+        if 'disabled' in add_to_cart_button.attrs:
             stock = 0
-
-        price = Decimal(product_data['offers']['price'])
-
-        images_container = soup.find('ul', 'product-photo-thumbs')
-
-        if images_container:
-            picture_urls = ['https:{}'.format(image['href'])
-                            for image in images_container.findAll('a')]
         else:
-            picture_containers = soup.find('div', 'product-photo-container')\
-                .findAll('img')
-            if picture_containers:
-                picture_url = soup.find('div', 'product-photo-container')\
-                    .findAll('img')[-1]['src']
-                picture_urls = ['https:{}'.format(picture_url)]
-            else:
-                picture_urls = None
+            stock = -1
+
+        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
+        picture_urls = [x['data-image-large-src']
+                        for x in soup.findAll('img')
+                        if 'data-image-large-src' in x.attrs]
 
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
-
-        if not sku:
-            return []
 
         p = Product(
             name,
