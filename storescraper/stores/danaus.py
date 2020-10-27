@@ -17,7 +17,7 @@ class Danaus(Store):
             'Printer',
             'StereoSystem',
             'StorageDrive',
-            'ExternalStorageDrive'
+            'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard',
             'SolidStateDrive',
