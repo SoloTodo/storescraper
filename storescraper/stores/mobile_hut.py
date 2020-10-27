@@ -110,7 +110,7 @@ class MobileHut(Store):
                     'http://schema.org/InStock':
                 stock = -1
 
-            price_text = soup.find('span', 'money').text.strip()\
+            price_text = soup.find('span', {'itemprop': 'price'}).text.strip()\
                 .replace('$', '').replace('.', '')
 
             if price_text == '-':

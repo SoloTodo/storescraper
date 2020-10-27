@@ -29,6 +29,7 @@ class SetupSpace(Store):
             PRINTER,
             VIDEO_CARD,
             NOTEBOOK,
+            STORAGE_DRIVE
         ]
 
     @classmethod
@@ -43,13 +44,14 @@ class SetupSpace(Store):
             ['placa-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['proyectores', PROJECTOR],
+            ['ssd', SOLID_STATE_DRIVE],
             ['ssd-1', SOLID_STATE_DRIVE],
             ['m2-sata', SOLID_STATE_DRIVE],
             ['m2-nvme', SOLID_STATE_DRIVE],
+            ['hdd', STORAGE_DRIVE],
             ['tarjeta-de-video', VIDEO_CARD],
             ['teclados', KEYBOARD],
             ['impresoras', PRINTER],
-            ['ssd', STORAGE_DRIVE],
             ['gaming', VIDEO_CARD],
             ['notebook', NOTEBOOK],
         ]
