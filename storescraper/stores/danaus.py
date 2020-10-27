@@ -17,9 +17,9 @@ class Danaus(Store):
             'Printer',
             'StereoSystem',
             'StorageDrive',
-            # 'ExternalStorageDrive'
-            # 'UsbFlashDrive',
-            # 'MemoryCard',
+            'ExternalStorageDrive'
+            'UsbFlashDrive',
+            'MemoryCard',
             'SolidStateDrive',
             'Projector',
             'Monitor',
@@ -63,6 +63,9 @@ class Danaus(Store):
             ['tv-y-video/tv-y-accesorios', 'Television'],
             ['tv-y-video/sonido', 'StereoSystem'],
             ['audio/audifonos', 'Headphones'],
+            ['almacenamiento/discos-duros-externos', 'ExternalStorageDrive'],
+            ['almacenamiento/pendrive', 'UsbFlashDrive'],
+            ['almacenamiento/tarjetas-de-memoria', 'MemoryCard'],
         ]
 
         session = session_with_proxy(extra_args)
