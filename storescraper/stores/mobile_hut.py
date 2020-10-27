@@ -34,7 +34,7 @@ class MobileHut(Store):
         category_urls = [
             ['89857884224', 'smartphones', CELL],
             ['89858244672', 'audifonos', HEADPHONES],
-            ['129582760000', 'audio-gamer', HEADPHONES],
+            # ['129582760000', 'audio-gamer', HEADPHONES],
             ['89858441280', 'parlantes', STEREO_SYSTEM],
             ['132833869888', 'mouses', MOUSE],
             ['129574076480', 'mouse-gamer', MOUSE],
@@ -56,10 +56,14 @@ class MobileHut(Store):
             page = 1
 
             while True:
-                api_url = 'https://services.mybcapps.com/bc-sf-filter/filter?'\
-                          'shop=mobilehutcl.myshopify.com&' \
-                          'page={}&limit=32&sort=best-selling&' \
-                          'collection_scope={}'.format(page, category_id)
+                api_url = 'https://filter-v6.globosoftware.net/filter?' \
+                          'filter_id=26612&shop=mobilehutcl.myshopify.com&' \
+                          'event=products&filter%5B271800%5D%5B%5D={}&page=' \
+                          '{}'.format(category_id, page)
+                print(api_url)
+
+                if page > 10:
+                    raise Exception('Page overflow: ' + api_url)
 
                 products_data = json.loads(
                     session.get(api_url).text)['products']
@@ -99,26 +103,26 @@ class MobileHut(Store):
             variant_url = '{}?variant={}'.format(url, variant_id)
             variant_url_source = session.get(variant_url).text
             soup = BeautifulSoup(variant_url_source, 'html.parser')
-            name = soup.find('h1', 'product_name').text + " ({})".format(color)
+            name = soup.find('h1', 'product_title').text + " ({})".format(color)
             stock = 0
 
             if soup.find('link', {'itemprop': 'availability'})['href'] == \
                     'http://schema.org/InStock':
                 stock = -1
 
-            price_text = soup.find('span', 'current_price').text.strip()\
+            price_text = soup.find('span', 'money').text.strip()\
                 .replace('$', '').replace('.', '')
 
             if price_text == '-':
                 continue
 
             price = Decimal(price_text)
-            image_containers = soup.findAll('div', 'image__container')
-            picture_urls = ['http:' + i.find('img')['data-src']
+            image_containers = soup.findAll('div', 'product-single__photo')
+            picture_urls = ['https:' + i['data-zoom']
                             for i in image_containers]
 
             description = html_to_markdown(
-                str(soup.find('div', {'data-et-handle': 'tabs-descripcion'})))
+                str(soup.find('div', {'itemprop': 'description'})))
 
             p = Product(
                 name,

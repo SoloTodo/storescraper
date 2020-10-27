@@ -66,8 +66,6 @@ class PlazaLama(Store):
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                with open('pl.html', 'w') as f:
-                    f.write(str(soup))
                 items = soup.findAll('div', 'js-product-miniature-wrapper')
 
                 if not items:

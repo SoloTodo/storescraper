@@ -48,22 +48,17 @@ class Danaus(Store):
             ['computadores-y-tablets/mouse-y-teclado/teclado-gamer',
              'Keyboard'],
             ['computadores-y-tablets/mouse-y-teclado/mouse-gamer', 'Mouse'],
-            ['computadores-y-tablets/componentes-de-computadores/procesadores',
+            ['componentes-de-computadores/procesadores',
              'Processor'],
-            ['computadores-y-tablets/componentes-de-computadores/'
-             'placas-madres', 'Motherboard'],
-            ['computadores-y-tablets/componentes-de-computadores/memorias',
-             'Ram'],
-            ['computadores-y-tablets/componentes-de-computadores/'
-             'tarjetas-graficas', 'VideoCard'],
-            ['computadores-y-tablets/componentes-de-computadores/'
-             'almacenamiento-interno/disco-duro-interno', 'StorageDrive'],
-            ['computadores-y-tablets/componentes-de-computadores/'
-             'almacenamiento-interno/disco-estado-solido-ssd', 'StorageDrive'],
-            ['computadores-y-tablets/componentes-de-computadores/gabinetes',
-             'ComputerCase'],
-            ['computadores-y-tablets/componentes-de-computadores/'
-             'fuentes-de-poder', 'PowerSupply'],
+            ['componentes-de-computadores/placas-madres', 'Motherboard'],
+            ['componentes-de-computadores/memorias', 'Ram'],
+            ['componentes-de-computadores/tarjetas-graficas', 'VideoCard'],
+            ['componentes-de-computadores/almacenamiento-interno/'
+             'disco-duro-interno', 'StorageDrive'],
+            ['componentes-de-computadores/almacenamiento-interno/disco-'
+             'estado-solido-ssd.html', 'SolidStateDrive'],
+            ['componentes-de-computadores/gabinetes', 'ComputerCase'],
+            ['componentes-de-computadores/fuentes-de-poder', 'PowerSupply'],
             ['impresoras-y-tintas/impresoras', 'Printer'],
             ['tv-y-video/tv-y-accesorios', 'Television'],
             ['tv-y-video/sonido', 'StereoSystem'],
