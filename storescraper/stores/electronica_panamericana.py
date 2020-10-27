@@ -13,35 +13,14 @@ class ElectronicaPanamericana(Store):
     def categories(cls):
         return [
             'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'OpticalDiskPlayer',
-            'Stove',
-            'Headphones',
-            'Monitor',
-            'Projector',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('audio-y-video/televisor/lg/', 'Television'),
-            ('audio-y-video/televisor/rca/', 'Television'),
-            ('audio-y-video/televisor/samsung/', 'Television'),
-            ('audio-y-video/reproductores/', 'OpticalDiskPlayer'),
-            ('audio-y-video/tv-audio/', 'StereoSystem'),
-            ('hogar/ambiente/', 'AirConditioner'),
-            ('hogar/coccion/', 'Stove'),
-            ('hogar/refrigeracion/', 'Refrigerator'),
-            ('hogar/lavanderia/', 'WashingMachine'),
-            ('tecnologia/proyeccion/', 'Projector'),
-            ('tecnologia/monitores/', 'Monitor'),
-            ('celulares/samsung-celulares/', 'Cell'),
-        ]
+        # Only gets LG products
+
+        if category != 'Television':
+            return []
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
@@ -49,36 +28,14 @@ class ElectronicaPanamericana(Store):
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
 
         product_urls = []
+        url = 'https://electronicapanamericana.com/marcas/lg/?' \
+              'product_count=1000&avia_extended_shop_select=yes'
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        for category_path, local_category in category_filters:
-            if local_category != category:
-                continue
-
-            page = 1
-            done = False
-
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
-
-                url = 'https://electronicapanamericana.com/' \
-                      'categoria-productos/{}page/{}/'\
-                    .format(category_path, page)
-                print(url)
-                response = session.get(url)
-
-                if response.status_code == 404:
-                    if page == 1:
-                        raise Exception('Empty category: ' + url)
-                    break
-
-                soup = BeautifulSoup(response.text, 'html.parser')
-
-                for container in soup.findAll('li', 'product'):
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+        for container in soup.findAll('li', 'product'):
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
 
         return product_urls
 
@@ -96,7 +53,6 @@ class ElectronicaPanamericana(Store):
                 'script', {'type': 'application/ld+json'}).text
             sku_json = json.loads(sku_container)
             sku = str(sku_json['@graph'][1]['sku'])
-
         else:
             sku = sku.text.strip()
 

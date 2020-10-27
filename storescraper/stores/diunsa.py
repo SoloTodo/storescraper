@@ -16,61 +16,41 @@ class Diunsa(Store):
     @classmethod
     def categories(cls):
         return [
-            'Stove',
-            'WashingMachine',
-            'Refrigerator',
-            'Oven',
-            'StereoSystem',
-            'Cell',
-            'Television',
-            'AirConditioner',
+            'Television'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # Since we only care for LG products the paths don't have to be very
-        # specific
-        category_paths = [
-            # Electrodomésticos
-            ['C:/1/73/', 'Refrigerator'],
-            # Electrónica Tecnología
-            ['C:/1/58/', 'Television'],
-        ]
+        # Only gets LG products
+
+        if category != 'Television':
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        page = 1
 
-            page = 1
+        while True:
+            if page > 30:
+                raise Exception('Page overflow')
 
-            while True:
-                if page > 30:
-                    raise Exception('Page overflow')
+            url = 'https://www.diunsa.hn/buscapagina?fq=C%3a%2f1%2f&' \
+                  'fq=H%3a284&PS=12&sl=47de5394-cc68-404f-93ee-' \
+                  'dca7e0b26b7f&cc=12&sm=0&PageNumber={}'.format(
+                   page)
 
-                url = 'https://www.diunsa.hn/buscapagina?fq={}&PS=12&' \
-                      'sl=47de5394-cc68-404f-93ee-dca7e0b26b7f&cc=12&' \
-                      'O=OrderByReleaseDateDESC&sm=0&PageNumber={}' \
-                      '&fq=B:2000683'.format(
-                       urllib.parse.quote_plus(category_path), page)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            products = soup.findAll('div', 'contentShelve')
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            if not products:
+                break
 
-                products = soup.findAll('div', 'contentShelve')
+            for product in products:
+                product_url = product.find('a')['href']
+                product_urls.append(product_url)
 
-                if not products:
-                    if page == 1:
-                        logging.warning('Empty url {}'.format(category_path))
-                    else:
-                        break
-
-                for product in products:
-                    product_url = product.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
