@@ -512,13 +512,23 @@ class Falabella(Store):
                 if key not in prices:
                     continue
                 normal_price = Decimal(remove_words(prices[key]['price'][0]))
-                break
+                if normal_price.is_finite():
+                    break
+                else:
+                    normal_price = None
 
             for key in offer_price_keys:
                 if key not in prices:
                     continue
                 offer_price = Decimal(remove_words(prices[key]['price'][0]))
-                break
+                if offer_price.is_finite():
+                    break
+                else:
+                    offer_price = None
+
+            if not normal_price and not offer_price:
+                # No valid prices found
+                continue
 
             if not offer_price:
                 offer_price = normal_price
