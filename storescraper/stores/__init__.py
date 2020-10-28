@@ -87,6 +87,7 @@ from .good_computer import GoodComputer
 from .grupo_cva import GrupoCva
 from .grupo_decme import GrupoDecme
 from .gtd import Gtd
+from .g_w_store import GWStore
 from .hard_gaming import HardGaming
 from .hbt import Hbt
 from .hiraoka import Hiraoka
