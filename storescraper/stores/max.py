@@ -118,7 +118,12 @@ class Max(Store):
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
 
-        sku = soup.find('h6', 'sku').text.strip()
+        sku_container = soup.find('h6', 'sku')
+        if sku_container:
+            sku = sku_container.text.strip()
+        else:
+            sku = soup.find('input', {'name': 'product'})['value']
+            
         name = '{} ({})'.format(soup.find('h1').text.strip(), sku)
 
         if soup.find('input', {'id': 'qty_stock'}):
