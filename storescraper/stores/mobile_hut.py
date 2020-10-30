@@ -103,12 +103,14 @@ class MobileHut(Store):
             variant_url = '{}?variant={}'.format(url, variant_id)
             variant_url_source = session.get(variant_url).text
             soup = BeautifulSoup(variant_url_source, 'html.parser')
-            name = soup.find('h1', 'product_title').text + " ({})".format(color)
-            stock = 0
+            name = '{} ({})'.format(soup.find('h1', 'product_title').text,
+                                    color)
 
             if soup.find('link', {'itemprop': 'availability'})['href'] == \
                     'http://schema.org/InStock':
                 stock = -1
+            else:
+                stock = 0
 
             price_text = soup.find('span', {'itemprop': 'price'}).text.strip()\
                 .replace('$', '').replace('.', '')

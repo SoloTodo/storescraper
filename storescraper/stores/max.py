@@ -123,7 +123,7 @@ class Max(Store):
             sku = sku_container.text.strip()
         else:
             sku = soup.find('input', {'name': 'product'})['value']
-            
+
         name = '{} ({})'.format(soup.find('h1').text.strip(), sku)
 
         if soup.find('input', {'id': 'qty_stock'}):
