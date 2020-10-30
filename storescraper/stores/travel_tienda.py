@@ -104,7 +104,8 @@ class TravelTienda(Store):
                                .replace('$', '').replace('.', '').strip())
         offer_price_container = soup.find('p', 'precio-bch')
 
-        if offer_price_container:
+        if offer_price_container and offer_price_container.contents[0].strip():
+            print(offer_price_container.contents[0])
             offer_price = Decimal(remove_words(
                 offer_price_container.contents[0]))
         else:

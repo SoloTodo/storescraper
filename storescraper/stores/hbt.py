@@ -56,6 +56,9 @@ class Hbt(Store):
         session.headers['User-Agent'] = 'curl/7.54.0'
         response = session.get(url)
 
+        if response.status_code == 500:
+            return []
+
         data = response.text
         soup = BeautifulSoup(data, 'html.parser')
 

@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
     REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, \
-    OPTICAL_DISK_PLAYER, STOVE, MONITOR, PROJECTOR
+    OPTICAL_DISK_PLAYER, STOVE, MONITOR, PROJECTOR, HEADPHONES
 
 
 class Max(Store):
@@ -26,6 +26,7 @@ class Max(Store):
             STOVE,
             MONITOR,
             PROJECTOR,
+            HEADPHONES
         ]
 
     @classmethod
@@ -60,6 +61,7 @@ class Max(Store):
             ('audio/audio-multizona', STEREO_SYSTEM),
             ('computacion/pc-gaming/monitores', MONITOR),
             ('computacion/proyectores', PROJECTOR),
+            ('audifonos', HEADPHONES),
         ]
 
         session = session_with_proxy(extra_args)
