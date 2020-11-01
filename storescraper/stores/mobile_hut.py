@@ -62,7 +62,7 @@ class MobileHut(Store):
                           '{}'.format(category_id, page)
                 print(api_url)
 
-                if page > 10:
+                if page > 20:
                     raise Exception('Page overflow: ' + api_url)
 
                 products_data = json.loads(

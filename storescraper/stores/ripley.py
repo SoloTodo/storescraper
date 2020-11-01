@@ -260,7 +260,7 @@ class Ripley(Store):
 
                     position += 1
 
-                if fast_mode:
+                if fast_mode and page >= 50:
                     break
                 page += 1
 
