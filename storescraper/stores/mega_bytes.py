@@ -51,8 +51,8 @@ class MegaBytes(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul',
-                                               'wc-block-grid__products').findAll(
-                    'a', 'wc-block-grid__product-link')
+                                               'wc-block-grid__products'). \
+                    findAll('a', 'wc-block-grid__product-link')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -76,22 +76,25 @@ class MegaBytes(Store):
         name = soup.find('h1', 'product_title').text
         sku = soup.find('button', 'single_add_to_cart_button button alt')[
             'value']
-        stock = 0
+        stock = -1
         offer_price = Decimal(remove_words(soup.find('p', 'price').text))
         price_container = soup.find('div',
-                                    'woocommerce-product-details__short-description')
+                                    'woocommerce-product-details__short'
+                                    '-description')
         if price_container and price_container.find('strong'):
-            normal_price = Decimal(remove_words(soup.find('div',
-                                                          'woocommerce-product-details__short-description').find(
-                'strong').text))
+            normal_price = Decimal(
+                remove_words(price_container.find('strong').text))
+        elif price_container and price_container.find('span'):
+            normal_price = Decimal(
+                remove_words(price_container.find('span').text))
         else:
             normal_price = offer_price
-        if offer_price > normal_price:
-            normal_price = offer_price
+        if normal_price < offer_price:
+            return []
 
-        picture_urls = [tag['data-src'] for tag in soup.find('div',
-                                                             'woocommerce-product-gallery').findAll(
-            'img')]
+        picture_urls = [tag['data-src'] for tag in
+                        soup.find('div', 'woocommerce-product-gallery')
+                            .findAll('img')]
         p = Product(
             name,
             cls.__name__,
