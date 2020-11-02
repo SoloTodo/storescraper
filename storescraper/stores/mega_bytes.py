@@ -89,8 +89,6 @@ class MegaBytes(Store):
                 remove_words(price_container.find('span').text))
         else:
             normal_price = offer_price
-        if normal_price < offer_price:
-            return []
 
         picture_urls = [tag['data-src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery')
