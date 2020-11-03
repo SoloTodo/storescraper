@@ -713,9 +713,12 @@ class Falabella(Store):
                 slides = showcase_container['components'][0]['data']['slides']
 
                 for idx, slide in enumerate(slides):
-                    # Yes, the variable is called "rigth"
-                    destination_urls = list(
-                        {slide['urlLeft'], slide['urlRigth']})
+                    main_url = slide.get('mainUrl', None)
+                    if main_url:
+                        destination_urls = [main_url]
+                    else:
+                        destination_urls = list(
+                            {slide['urlLeft'], slide['urlRight']})
                     picture_url = slide['imgBackgroundDesktopUrl']
 
                     banners.append({
