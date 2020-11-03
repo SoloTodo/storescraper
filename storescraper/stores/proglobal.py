@@ -127,11 +127,6 @@ class Proglobal(Store):
         name = soup.find('h3').text
         sku = soup.find('p', 'sku').text.replace('SKU:', '').strip()
 
-        if soup.find('a', 'notificar_stock'):
-            stock = 0
-        else:
-            stock = -1
-
         price_container = soup.find('span', 'precio-ficha')
 
         if not price_container:
@@ -156,6 +151,13 @@ class Proglobal(Store):
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'descripcion'})))
+
+        if 'preventa' in description.lower():
+            stock = 0
+        elif soup.find('a', 'notificar_stock'):
+            stock = 0
+        else:
+            stock = -1
 
         p = Product(
             name,
