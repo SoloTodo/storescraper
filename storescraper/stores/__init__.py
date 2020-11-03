@@ -26,6 +26,7 @@ from .casa_del_audio import CasaDelAudio
 from .casa_musa import CasaMusa
 from .casa_royal import CasaRoyal
 from .casas_bahia import CasasBahia
+from .cc_link import CCLink
 from .cetrogar import Cetrogar
 from .cintegral import Cintegral
 from .claro import Claro
@@ -141,6 +142,7 @@ from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
 from .manco_store import MancoStore
 from .max import Max
+from .mega_bytes import MegaBytes
 from .mega_mamute import MegaMatute
 from .megatone import Megatone
 from .mercado_tech import MercadoTech
