@@ -5,54 +5,75 @@ from bs4 import BeautifulSoup
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.categories import CELL, WEARABLE, PROJECTOR, MEMORY_CARD, \
+    USB_FLASH_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, HEADPHONES, \
+    MOUSE, KEYBOARD, COMPUTER_CASE, RAM, POWER_SUPPLY, MONITOR, \
+    STEREO_SYSTEM, MOTHERBOARD, PROCESSOR, VIDEO_CARD, CPU_COOLER
 
 
 class Proglobal(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Wearable',
-            'Projector',
-            'MemoryCard',
-            'UsbFlashDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'ExternalStorageDrive',
-            'Headphones',
-            'Mouse',
-            'Keyboard',
-            'ComputerCase',
-            'Ram',
-            'PowerSupply',
-            'Monitor',
-            'StereoSystem'
+            CELL,
+            WEARABLE,
+            PROJECTOR,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD,
+            COMPUTER_CASE,
+            RAM,
+            POWER_SUPPLY,
+            MONITOR,
+            STEREO_SYSTEM,
+            MOTHERBOARD,
+            PROCESSOR,
+            VIDEO_CARD,
+            CPU_COOLER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['celulares/smartphone', 'Cell'],
-            ['celulares/pulseras-inteligentes', 'Wearable'],
-            ['computacion-y-gamer/proyectores/proyectores-led', 'Projector'],
+            ['celulares/smartphone', CELL],
+            ['celulares/pulseras-inteligentes', WEARABLE],
+            ['computacion-y-gamer/proyectores/proyectores-led', PROJECTOR],
             ['computacion-y-gamer/almacenamiento/microsd-alta-velocidad',
-             'MemoryCard'],
-            ['computacion-y-gamer/almacenamiento/tarjetas-sd', 'MemoryCard'],
-            ['computacion-y-gamer/almacenamiento/pendrives', 'UsbFlashDrive'],
+             MEMORY_CARD],
+            ['computacion-y-gamer/almacenamiento/tarjetas-sd', MEMORY_CARD],
+            ['computacion-y-gamer/almacenamiento/pendrives', USB_FLASH_DRIVE],
             ['computacion-y-gamer/almacenamiento/discos-duros',
-             'ExternalStorageDrive'],
-            ['computacion-y-gamer/gamers/audifonos', 'Headphones'],
-            ['computacion-y-gamer/gamers/mouse', 'Mouse'],
-            ['computacion-y-gamer/gamers/teclados', 'Keyboard'],
-            ['computacion-y-gamer/gamers/gabinete-para-pc', 'ComputerCase'],
-            ['computacion-y-gamer/gamers/memoria-ram', 'Ram'],
-            ['computacion-y-gamer/gamers/fuentes-de-poder', 'PowerSupply'],
-            ['computacion-y-gamer/gamers/monitores', 'Monitor'],
+             EXTERNAL_STORAGE_DRIVE],
+            ['computacion-y-gamer/gamers/audifonos', HEADPHONES],
+            ['computacion-y-gamer/gamers/mouse', MOUSE],
+            ['computacion-y-gamer/gamers/teclados', KEYBOARD],
+            ['computacion-y-gamer/gamers/gabinete-para-pc', COMPUTER_CASE],
+            ['computacion-y-gamer/gamers/memoria-ram', RAM],
+            ['computacion-y-gamer/gamers/fuentes-de-poder', POWER_SUPPLY],
+            ['computacion-y-gamer/gamers/monitores', MONITOR],
             ['camaras-audio-video/audio/audio-alta-fidelidad',
-             'StereoSystem'],
-            ['camaras-audio-video/audio/audifonos-inalambricos', 'Headphones'],
-            ['camaras-audio-video/audio/audifonos-alambricos', 'Headphones'],
-            ['camaras-audio-video/audio/parlantes', 'StereoSystem']
+             STEREO_SYSTEM],
+            ['camaras-audio-video/audio/audifonos-inalambricos', HEADPHONES],
+            ['camaras-audio-video/audio/audifonos-alambricos', HEADPHONES],
+            ['camaras-audio-video/audio/parlantes', STEREO_SYSTEM],
+            ['computacion-y-gamer/hardware-pc-gamer/placas-madre',
+             MOTHERBOARD],
+            ['computacion-y-gamer/hardware-pc-gamer/procesadores',
+             PROCESSOR],
+            ['computacion-y-gamer/hardware-pc-gamer/tarjetas-de-video',
+             VIDEO_CARD],
+            ['computacion-y-gamer/hardware-pc-gamer/memorias-ram',
+             RAM],
+            ['computacion-y-gamer/hardware-pc-gamer/fuentes-de-poder',
+             POWER_SUPPLY],
+            ['computacion-y-gamer/hardware-pc-gamer/gabinetes-para-pc',
+             COMPUTER_CASE],
+            ['computacion-y-gamer/hardware-pc-gamer/'
+             'ventiladores-y-enfriadores', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)
