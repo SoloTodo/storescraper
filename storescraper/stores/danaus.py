@@ -53,10 +53,12 @@ class Danaus(Store):
             ['componentes-de-computadores/placas-madres', 'Motherboard'],
             ['componentes-de-computadores/memorias', 'Ram'],
             ['componentes-de-computadores/tarjetas-graficas', 'VideoCard'],
+            ['componentes-de-computadores/almacenamiento-interno',
+             'StorageDrive'],
             ['componentes-de-computadores/almacenamiento-interno/'
              'disco-duro-interno', 'StorageDrive'],
             ['componentes-de-computadores/almacenamiento-interno/disco-'
-             'estado-solido-ssd.html', 'SolidStateDrive'],
+             'estado-solido-ssd', 'SolidStateDrive'],
             ['componentes-de-computadores/gabinetes', 'ComputerCase'],
             ['componentes-de-computadores/fuentes-de-poder', 'PowerSupply'],
             ['impresoras-y-tintas/impresoras', 'Printer'],
