@@ -93,7 +93,13 @@ class MercadoLibreChile(Store):
             picker = None
             for x in data['initialState']['components']['short_description']:
                 if x['id'] == 'variations' and 'pickers' in x:
-                    picker = x['pickers'][0]
+                    if len(x['pickers']) == 1:
+                        picker = x['pickers'][0]
+                    else:
+                        # I'm not sure how to handle multiple pickers
+                        # https://articulo.mercadolibre.cl/MLC-547289939-
+                        # samartband-huawei-band-4-pro-_JM
+                        picker = None
 
             if picker:
                 for variation in picker['products']:

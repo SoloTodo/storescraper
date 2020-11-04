@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -15,71 +17,43 @@ class PlazaLama(Store):
     @classmethod
     def categories(cls):
         return [
-            AIR_CONDITIONER,
-            STOVE,
-            CELL_ACCESORY,
-            OVEN,
-            WASHING_MACHINE,
-            REFRIGERATOR,
-            STEREO_SYSTEM,
-            OPTICAL_DISK_PLAYER,
             TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('453-aires', AIR_CONDITIONER),
-            ('459-estufa', STOVE),
-            ('460-extractor', CELL_ACCESORY),
-            ('464-microondas', OVEN),
-            ('501-accesorio-para-lavadora', WASHING_MACHINE),
-            ('502-lavadora', WASHING_MACHINE),
-            ('503-lavadora-secadora', WASHING_MACHINE),
-            ('504-secadora', WASHING_MACHINE),
-            ('511-neveras', REFRIGERATOR),
-            ('514-bocinas-portatiles', STEREO_SYSTEM),
-            ('515-sound-bar', STEREO_SYSTEM),
-            ('1388-minicomponentes', STEREO_SYSTEM),
-            ('517-dvd', OPTICAL_DISK_PLAYER),
-            ('518-televisores', TELEVISION),
-            ('553-accesorios-tec', CELL_ACCESORY),
-        ]
-
+        # Only interested in LG products
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_filters:
-            if local_category != category:
-                continue
+        if category != TELEVISION:
+            return []
 
-            page = 1
-            done = False
+        page = 1
 
-            while not done:
-                if page >= 30:
-                    raise Exception('Page overflow')
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-                url = 'https://plazalama.com.do/{}?page={}'.format(
-                    category_path, page)
-                print(url)
+            url = 'https://plazalama.com.do/search?q=LG&type=product&page=' \
+                  '{}'.format(page)
+            print(url)
 
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                items = soup.findAll('div', 'js-product-miniature-wrapper')
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            items = soup.findAll('div', 'search-result')
 
-                if not items:
-                    if page == 1:
-                        logging.warning('Empty category:' + url)
-                    break
+            if not items:
+                if page == 1:
+                    logging.warning('Empty category:' + url)
+                break
 
-                for item in items:
-                    product_link = item.find('h3', 'product-title').find('a')
-                    if 'LG' not in product_link.text.upper():
-                        continue
-                    product_urls.append(product_link['href'])
+            for item in items:
+                path = item.find('a')['href'].split('?')[0]
+                product_urls.append(
+                    'https://plazalama.com.do' + path)
 
-                page += 1
+            page += 1
 
         return product_urls
 
@@ -88,39 +62,38 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        products_data = json.loads(re.search(r'var boldTempProduct =(.+);',
+                                             response.text).groups()[0])
+        description = html_to_markdown(products_data['description'])
+        picture_urls = ['https:' + x for x in products_data['images']]
+        products = []
 
-        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
-        name = soup.find('h1', 'page-title').text.strip()
-        add_to_cart_button = soup.find('button', 'add-to-cart')
+        for variant in products_data['variants']:
+            key = str(variant['id'])
+            sku = variant['sku']
+            name = variant['name']
 
-        if 'disabled' in add_to_cart_button.attrs:
-            stock = 0
-        else:
-            stock = -1
+            if variant['available']:
+                stock = -1
+            else:
+                stock = 0
 
-        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
-        picture_urls = [x['data-image-large-src']
-                        for x in soup.findAll('img')
-                        if 'data-image-large-src' in x.attrs]
+            price = Decimal(variant['price']) / Decimal(100)
 
-        description = html_to_markdown(
-            str(soup.find('div', 'product-description')))
+            products.append(Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'DOP',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description
+            ))
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'DOP',
-            sku=sku,
-            picture_urls=picture_urls,
-            description=description
-        )
-
-        return [p]
+        return products
