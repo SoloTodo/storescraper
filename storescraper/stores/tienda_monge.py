@@ -104,7 +104,7 @@ class TiendaMonge(Store):
                 logging.warning('Empty category: ' + category_id)
 
             for product in products_json:
-                if product['marca'] == 'LG':
+                if product.get('marca', None) == 'LG':
                     product_urls.append(product['url'])
 
         return product_urls

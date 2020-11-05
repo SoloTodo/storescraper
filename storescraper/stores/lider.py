@@ -411,14 +411,14 @@ class Lider(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
-        # 1047258 is an LG SKU in Lider, this will break when the product goes
+        # Query a specific LG SKU in Lider, this will break when the SKU goes
         # out of stock and it needs to be replaced with another
 
         if extra_args.get('skip_preflight', False):
             return {}
 
         with HeadlessChrome() as driver:
-            driver.get('https://www.lider.cl/catalogo/product/sku/1047258')
+            driver.get('https://www.lider.cl/catalogo/product/sku/1065323')
 
             for i in range(10):
                 print(i)

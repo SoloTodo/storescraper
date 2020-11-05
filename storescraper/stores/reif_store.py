@@ -1,4 +1,5 @@
 import json
+import logging
 
 import demjson
 import re
@@ -24,8 +25,8 @@ class ReifStore(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['88-portatil', 'Notebook'],
-            # ['85-iphone-', 'Cell'],
-            # ['207-ipad', 'Tablet'],
+            ['85-iphone-', 'Cell'],
+            ['207-ipad', 'Tablet'],
             ['127-audifonos', 'Headphones'],
         ]
 
@@ -45,7 +46,7 @@ class ReifStore(Store):
             containers = soup.findAll('div', 'product-container')
 
             if not containers:
-                raise Exception('No products found for: ' + category_url)
+                logging.warning('No products found for: ' + category_url)
 
             for container in containers:
                 product_url = container.find('a')['href']

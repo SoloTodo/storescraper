@@ -15,7 +15,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class Wom(Store):
     prepago_url = 'http://www.wom.cl/prepago/'
-    planes_url = 'https://www.wom.cl/planes/'
+    planes_url = 'https://www.wom.cl/seguro/planes/'
 
     @classmethod
     def categories(cls):
@@ -126,7 +126,7 @@ class Wom(Store):
         for container in plan_containers:
             plan_name = container.find('span', 'w-100').text.strip()
             plan_price = Decimal(remove_words(container.find(
-                'span', 'font-45-px').text))
+                'span', 'font-40-px').text))
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:

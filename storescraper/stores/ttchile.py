@@ -147,8 +147,11 @@ class TtChile(Store):
                                     'Producto fuera de stock.']:
             stock = 0
         else:
-            stock = int(soup.find(
-                'div', 'product-quantities').find('span')['data-stock'])
+            quantities_tag = soup.find('div', 'product-quantities')
+            if quantities_tag:
+                stock = int(quantities_tag.find('span')['data-stock'])
+            else:
+                stock = -1
 
         description = html_to_markdown(
             str(soup.find('div', 'tab-content')))

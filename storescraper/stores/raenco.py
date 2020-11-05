@@ -1,3 +1,4 @@
+import logging
 import re
 from decimal import Decimal
 
@@ -29,23 +30,23 @@ class Raenco(Store):
             ('tecnologia/tv.html', 'Television'),
             ('tecnologia/tv/tv-led-hd-fhd.html', 'Television'),
             ('tecnologia/tv/tv-4k.html', 'Television'),
-            # ('tecnologia/tv/tv-qled.html', 'Television'),
+            ('tecnologia/tv/tv-qled.html', 'Television'),
             ('tecnologia/audio-hogar/equipos-de-sonido.html', 'StereoSystem'),
             ('tecnologia/celulares.html', 'Cell'),
-            # ('tecnologia/celulares/8-gb.html', 'Cell'),
+            ('tecnologia/celulares/8-gb.html', 'Cell'),
             ('tecnologia/celulares/16-gb.html', 'Cell'),
             ('tecnologia/celulares/32-gb.html', 'Cell'),
             ('tecnologia/celulares/64-gb.html', 'Cell'),
             ('tecnologia/celulares/128-gb.html', 'Cell'),
-            # ('tecnologia/celulares/256-gb.html', 'Cell'),
+            ('tecnologia/celulares/256-gb.html', 'Cell'),
             ('hogar/linea-blanca/refrigeradoras.html', 'Refrigerator'),
             ('hogar/linea-blanca/refrigeradoras/puerta-horizontal.html',
              'Refrigerator'),
             ('hogar/linea-blanca/refrigeradoras/puerta-vertical.html',
              'Refrigerator'),
             ('hogar/linea-blanca/lavadoras.html', 'WashingMachine'),
-            # ('hogar/linea-blanca/lavadoras/semi-automatica.html',
-            #  'WashingMachine'),
+            ('hogar/linea-blanca/lavadoras/semi-automatica.html',
+             'WashingMachine'),
             ('hogar/linea-blanca/lavadoras/centro-de-lavado.html',
              'WashingMachine'),
             ('hogar/linea-blanca/lavadoras/automatica.html',
@@ -55,12 +56,12 @@ class Raenco(Store):
              'WashingMachine'),
             ('hogar/linea-blanca/secadoras/secadoras-electricas.html',
              'WashingMachine'),
-            # ('hogar/aires-acondicionados.html', 'AirConditioner'),
+            ('hogar/aires-acondicionados.html', 'AirConditioner'),
             ('hogar/linea-blanca/electrodomesticos/microondas.html', 'Oven'),
             ('hogar/linea-blanca/hornos-empotrables.html', 'Oven'),
             ('hogar/linea-blanca/estufas.html', 'Stove'),
-            # ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
-            # ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
+            ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
             ('hogar/linea-blanca/estufas/de-mesa-a-gas-y-electricas.html',
              'Stove'),
             ('hogar/linea-blanca/estufas/a-gas-de-20-y-24-pulgadas.html',
@@ -93,7 +94,8 @@ class Raenco(Store):
                 product_containers = soup.findAll('div', 'border-products')
 
                 if not product_containers and page == 1:
-                    raise Exception('Empty section {}'.format(category_path))
+                    logging.warning('Empty section {}'.format(category_path))
+                    break
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
