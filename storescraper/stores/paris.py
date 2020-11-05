@@ -475,10 +475,10 @@ class Paris(Store):
 
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
-            [bs.LINEA_BLANCA_PARIS, 'Línea Blanca Paris',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'linea-blanca/'],
-            [bs.ELECTRO_PARIS, 'Electro Paris',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+            # [bs.LINEA_BLANCA_PARIS, 'Línea Blanca Paris',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'linea-blanca/'],
+            # [bs.ELECTRO_PARIS, 'Electro Paris',
+            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
             [bs.TECNO_PARIS, 'Tecno Paris',
              bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecnologia/'],
             [bs.REFRIGERATION, 'Refrigeración',
