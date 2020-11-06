@@ -51,7 +51,14 @@ class Jetstereo(Store):
             ('estufas-electricas', STOVE),
             ('estufas-de-gas', STOVE),
             ('monitores', MONITOR),
-            ('audifonos', HEADPHONES),
+            ('audifonos-gaming', HEADPHONES),
+            ('in-ear', HEADPHONES),
+            ('on-ear', HEADPHONES),
+            ('over-ear', HEADPHONES),
+            ('alambricos', HEADPHONES),
+            ('bluetooth', HEADPHONES),
+            ('noise-cancelling', HEADPHONES),
+            ('true-wireless', HEADPHONES),
         ]
 
         session = session_with_proxy(extra_args)
