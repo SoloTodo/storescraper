@@ -36,8 +36,9 @@ class Siman(Store):
                 continue
 
             page = 1
+            done = False
 
-            while True:
+            while not done:
                 if page > 30:
                     raise Exception('Page overflow')
 
@@ -45,18 +46,19 @@ class Siman(Store):
                     cls.country_url, category_path, page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                products = soup.findAll(
-                    'section', 'vtex-product-summary-2-x-container')
+                page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
+                page_state = json.loads(page_state_tag.text)
 
-                if not products:
-                    if page == 1:
-                        logging.warning('Empty url {}'.format(url))
-                    else:
-                        break
+                done = True
 
-                for product in products:
-                    product_url = 'https://{}.siman.com{}'.format(
-                        cls.country_url, product.find('a')['href'])
+                for key, product in page_state.items():
+                    if 'productId' not in product:
+                        continue
+                    done = False
+                    if product['brand'].upper() != 'LG':
+                        continue
+                    product_url = 'https://{}.siman.com/{}/p'.format(
+                        cls.country_url, product['linkText'])
                     product_urls.append(product_url)
 
                 page += 1
