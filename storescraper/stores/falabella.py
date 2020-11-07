@@ -569,9 +569,10 @@ class Falabella(Store):
             else:
                 condition = 'https://schema.org/NewCondition'
 
-            seller = model['offerings'][0]['sellerId']
-            if seller == 'FALABELLA':
-                seller = None
+            seller = None
+            if model['offerings'] and \
+                    model['offerings'][0]['sellerId'] != 'FALABELLA':
+                seller = model['offerings'][0]['sellerId']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
 
