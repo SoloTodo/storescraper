@@ -46,8 +46,8 @@ class TtChile(Store):
             ['86', STORAGE_DRIVE],  # Discos duros NAS
             ['87', SOLID_STATE_DRIVE],  # SSD M.2
             ['87', STORAGE_DRIVE],  # Discos duros 3.5"
+            ['79', POWER_SUPPLY],  # Fuentes de poder
             ['88', POWER_SUPPLY],  # Fuentes de poder ATX
-            ['89', POWER_SUPPLY],  # Fuentes de poder modulares
             ['90', COMPUTER_CASE],  # Gabinetes Micro ATX
             ['91', COMPUTER_CASE],  # Gabinetes ATX-E
             ['44', RAM],  # RAM Desktop

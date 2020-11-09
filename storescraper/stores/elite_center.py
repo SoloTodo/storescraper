@@ -2,6 +2,7 @@ import logging
 import re
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
@@ -109,7 +110,9 @@ class EliteCenter(Store):
                 soup.find('div', 'product-main').findAll('bdi')[-1].text))
         offer_price = normal_price
         picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'product-gallery').findAll('img')]
+                        soup.find('div', 'product-gallery').findAll('img')
+                        if validators.url(tag['src'])
+                        ]
 
         description = html_to_markdown(str(soup.find('div', 'tabbed-content')))
 
