@@ -144,6 +144,7 @@ from .manco_store import MancoStore
 from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_mamute import MegaMatute
+from .mega_store import MegaStore
 from .megatone import Megatone
 from .mercado_tech import MercadoTech
 from .mercadolibre_argentina import MercadoLibreArgentina
