@@ -132,6 +132,7 @@ from .lg_ec import LgEc
 from .lider import Lider
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
+from .litnor_hogar import LitnorHogar
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
 from .llevatelo import Llevatelo
