@@ -60,9 +60,9 @@ class LitnorHogar(Store):
                  '{}&node_ids%5B%5D={}'.format(sku, sku),
             headers={'content-type': 'application/x-www-form-urlencoded'})
         stock = int(list(json.loads(response.content).values())[0])
-        price = Decimal(
-            soup.find('span', 'uc-price').text.strip().split()[1].replace('.',
-                                                                          ''))
+        price_container = soup.find('span', 'uc-price').text.strip().split()
+        price = Decimal(price_container[1].replace('.', ''))
+        currency = 'USD' if price_container[0] == 'U$S' else 'UYU'
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'field').findAll('img')]
         p = Product(
@@ -75,7 +75,7 @@ class LitnorHogar(Store):
             stock,
             price,
             price,
-            'USD',
+            currency,
             sku=sku,
             picture_urls=picture_urls
 

@@ -55,8 +55,9 @@ class MegaStore(Store):
             'div', 'product-name').text.strip()
         sku = soup.find('div', 'sku').find('span', 'value')['id'].split('-')[1]
         stock = -1
-        price = Decimal(
-            soup.find('span', {'itemprop': 'price'}).text.split()[1])
+        price_container = soup.find('span', {'itemprop': 'price'}).text.split()
+        price = Decimal(price_container[1].replace('.', ''))
+        currency = 'USD' if price_container[0] == 'U$S' else 'UYU'
         picture_urls = [tag['src'].split('.jpeg')[0][:-4] + '.jpeg' for tag in
                         soup.find('div', 'gallery').findAll('img')]
         p = Product(
@@ -69,7 +70,7 @@ class MegaStore(Store):
             stock,
             price,
             price,
-            'USD',
+            currency,
             sku=sku,
             picture_urls=picture_urls
 

@@ -25,6 +25,7 @@ class Currency:
             'NIO': cls('C$', ',', '.', 2),
             'CRC': cls('₡', ',', '.', 0),
             'PYG': cls('₲', '.', ',', 0),
+            'UYU': cls('$', '.', ',', 0),
         }
 
         currency = known_codes[code]
