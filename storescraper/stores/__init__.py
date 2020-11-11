@@ -132,6 +132,7 @@ from .lg_ec import LgEc
 from .lider import Lider
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
+from .litnor_hogar import LitnorHogar
 from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
 from .llevatelo import Llevatelo
@@ -144,6 +145,7 @@ from .manco_store import MancoStore
 from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_mamute import MegaMatute
+from .mega_store import MegaStore
 from .megatone import Megatone
 from .mercado_tech import MercadoTech
 from .mercadolibre_argentina import MercadoLibreArgentina
