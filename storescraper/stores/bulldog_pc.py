@@ -4,7 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD
+from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD, \
+    SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,6 +19,9 @@ class BulldogPc(Store):
             RAM,
             MOTHERBOARD,
             VIDEO_CARD,
+            SOLID_STATE_DRIVE,
+            CPU_COOLER,
+            PROCESSOR,
         ]
 
     @classmethod
@@ -26,7 +30,10 @@ class BulldogPc(Store):
             ['fuentes-de-poder', POWER_SUPPLY],
             ['memorias', RAM],
             ['productos/placas-madre', MOTHERBOARD],
-            ['productos/tarjetas-de-video', VIDEO_CARD]
+            ['productos/tarjetas-de-video', VIDEO_CARD],
+            ['productos/almacenamiento', SOLID_STATE_DRIVE],
+            ['productos/refrigeracion', CPU_COOLER],
+            ['productos/procesadores', PROCESSOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -73,9 +80,13 @@ class BulldogPc(Store):
         price = Decimal(
             remove_words(soup.find("span", "product-form-price").text))
         picture_containers = soup.find("div", "col-12 product-page-thumbs "
-                                              "space no-padding").findAll(
-            'img')
-        picture_urls = [tag['src'].split("?")[0] for tag in picture_containers]
+                                              "space no-padding")
+        if picture_containers:
+            picture_urls = [tag['src'].split("?")[0] for tag in
+                            picture_containers.findAll('img')]
+        else:
+            picture_urls = [soup.find('div', 'main-product-image')
+                                .find('img')['src']]
         p = Product(
             name,
             cls.__name__,
