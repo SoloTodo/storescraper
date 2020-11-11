@@ -16,61 +16,44 @@ class Electroban(Store):
     def categories(cls):
         return [
             'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'AirConditioner'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['15', 'Television'],
-            ['14', 'StereoSystem'],
-            ['88', 'Cell'],
-            ['32', 'Refrigerator'],
-            ['6', 'Oven'],
-            ['80', 'Oven'],
-            ['3', 'Stove'],
-            ['9', 'WashingMachine'],
-            ['12', 'WashingMachine'],
-            ['1', 'AirConditioner']
-
-        ]
+        if category != 'Television':
+            return []
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) ' \
+            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/80.0.3987.149 ' \
+            'Safari/537.36'
+
         product_urls = []
-        base_url = 'https://www.electroban.com.py/familias_paginacion/{}/{}/'
+        # Only get LG products
+        base_url = 'https://www.electroban.com.py/marca_paginacion.php?' \
+                   'id=56&page={}'
+        page = 1
 
-        for c in category_paths:
-            category_path, local_category = c
+        while True:
+            url = base_url.format(page)
+            print(url)
 
-            if category != local_category:
-                continue
+            if page >= 15:
+                raise Exception('Page overflow: ' + url)
 
-            page = 1
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
 
-            while True:
-                url = base_url.format(category_path, page)
-                print(url)
+            if not product_containers:
+                break
 
-                if page >= 15:
-                    raise Exception('Page overflow: ' + url)
+            for product in product_containers:
+                product_url = product.find('a')['href']
+                product_urls.append(product_url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-
-                if not product_containers:
-                    break
-
-                for product in product_containers:
-                    product_url = product.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
@@ -78,10 +61,14 @@ class Electroban(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) ' \
+            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/80.0.3987.149 ' \
+            'Safari/537.36'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'product_title').text.strip()
-
         sku_container = soup.find('a', 'single_add_to_cart_button')
 
         if not sku_container:

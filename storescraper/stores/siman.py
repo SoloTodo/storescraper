@@ -46,7 +46,8 @@ class Siman(Store):
                     cls.country_url, category_path, page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
+                page_state_tag = soup.find('template',
+                                           {'data-varname': '__STATE__'})
                 page_state = json.loads(page_state_tag.text)
 
                 done = True

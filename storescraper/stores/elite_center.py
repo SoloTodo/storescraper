@@ -33,7 +33,6 @@ class EliteCenter(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
-
         ]
 
     @classmethod
