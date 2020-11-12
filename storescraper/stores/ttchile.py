@@ -95,16 +95,22 @@ class TtChile(Store):
                 category_url = 'https://www.tytchilespa.cl/Home/index.php?' \
                                'id_category={}&controller=category&page={}' \
                                ''.format(category_path, page)
+                print(category_url)
 
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(
                     category_url, timeout=30).text, 'html5lib')
+                product_list_tag = soup.find('section', 'product_show_list')
 
-                product_cells = soup\
-                    .find('section', 'product_show_list')\
-                    .findAll('article', 'product-miniature')
+                if not product_list_tag:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_url)
+                    break
+
+                product_cells = product_list_tag.findAll(
+                    'article', 'product-miniature')
 
                 if not product_cells:
                     if page == 1:

@@ -101,7 +101,8 @@ class InfographicsSolutions(Store):
 
         stock_container = soup.find('p', 'stock')
 
-        if 'VENTA' in name.upper():
+        if 'VENTA' in name.upper() and 'PRE' in name.upper():
+            # Preventa
             stock = 0
         elif stock_container:
             stock_text = stock_container.text.split(' ')[0]

@@ -7,26 +7,18 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import TELEVISION
 
 
 class LaCuracaoOnline(Store):
     country = ''
     currency = ''
     currency_iso = ''
-    category_filters = []
 
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'OpticalDiskPlayer',
-            'Stove',
+            TELEVISION
         ]
 
     @classmethod
@@ -36,44 +28,39 @@ class LaCuracaoOnline(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in cls.category_filters:
-            if local_category != category:
-                continue
+        if category != TELEVISION:
+            return []
 
-            page = 1
-            local_urls = []
-            done = False
+        page = 1
+        done = False
 
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
+        while not done:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-                url = 'https://www.lacuracaonline.com/{}/productos/{}' \
-                      '?product_list_limit=36&p={}'.format(
-                        cls.country, category_path, page)
+            url = 'https://www.lacuracaonline.com/{}/catalogsearch/' \
+                  'result/index/?q=lg&p={}'.format(cls.country, page)
 
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
 
-                if not product_containers and page == 1:
-                    raise Exception('Empty section: {}'.format(url))
+            if not product_containers and page == 1:
+                raise Exception('Empty section: {}'.format(url))
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_name = container.find(
-                        'a', 'product-item-link').text
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_name = container.find(
+                    'a', 'product-item-link').text
 
-                    if product_url in local_urls:
-                        done = True
-                        break
+                if product_url in product_urls:
+                    done = True
+                    break
 
-                    local_urls.append(product_url)
+                if 'lg' in product_name.lower():
+                    product_urls.append(product_url)
 
-                    if 'lg' in product_name.lower():
-                        product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
