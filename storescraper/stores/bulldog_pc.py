@@ -4,8 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD, \
-    SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR
+from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, \
+    VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
