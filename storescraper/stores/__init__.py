@@ -28,6 +28,7 @@ from .casa_royal import CasaRoyal
 from .casas_bahia import CasasBahia
 from .cc_link import CCLink
 from .cetrogar import Cetrogar
+from .centrale import Centrale
 from .cintegral import Cintegral
 from .claro import Claro
 from .claro_up import ClaroUp
