@@ -202,6 +202,10 @@ class Paris(Store):
          ['VacuumCleaner'],
          'Línea Blanca > Electrodomésticos > Aspiradoras y Enceradoras',
          1],
+        ['electro/television/accesorios-televisores',
+         ['CellAccesory'],
+         'Electro > Televisión > Accesorios para TV',
+         1],
     ]
 
     @classmethod
@@ -237,6 +241,7 @@ class Paris(Store):
             'Headphones',
             # 'ComputerCase',
             'DishWasher',
+            'CellAccesory',
         ]
 
     @classmethod
