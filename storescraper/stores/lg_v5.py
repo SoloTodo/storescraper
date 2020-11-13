@@ -143,6 +143,12 @@ class LgV5(Store):
 
         sku = section_data['products'][0]['sales_model_code']
 
+        # If LG does not provide a full model name (model name with suffix,
+        # such as "GF22BGSK1.ASTPECL") use the base model name ("GF22BGSK1")
+        # and add a dot as some queries rely on having a dot as the separator.
+        if not sku:
+            sku = model_name + '.'
+
         return Product(
             name[:250],
             cls.__name__,
