@@ -224,6 +224,7 @@ from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
 from .solar_led import SolarLed
 from .sony_store import SonyStore
+from .spaceman import Spaceman
 from .sp_digital import SpDigital
 from .spider import Spider
 from .stylus import Stylus
