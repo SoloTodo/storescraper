@@ -48,11 +48,19 @@ class MegaBytes(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://megabytes.cl/{}/page/{}/'.format(
                     url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('ul',
-                                               'wc-block-grid__products'). \
-                    findAll('a', 'wc-block-grid__product-link')
+                product_box = soup.find('ul', 'wc-block-grid__products')
+
+                if not product_box:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                product_containers = product_box.findAll(
+                    'a', 'wc-block-grid__product-link')
+                
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)

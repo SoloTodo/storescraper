@@ -53,6 +53,7 @@ class Wom(Store):
             while True:
                 params = {
                     'action': '1',
+                    'tipo_equipo_form': 'Equipos',
                     'page_number': page
                 }
 
