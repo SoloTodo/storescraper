@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, USB_FLASH_DRIVE, POWER_SUPPLY, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, TELEVISION, \
-    MONITOR, PRINTER
+    MONITOR, PRINTER, UPS, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +29,9 @@ class Centrale(Store):
             TABLET,
             TELEVISION,
             MONITOR,
-            PRINTER
+            PRINTER,
+            UPS,
+            MOUSE
         ]
 
     @classmethod
@@ -55,7 +57,9 @@ class Centrale(Store):
             ['impresion/impresion-tinta', PRINTER],
             ['impresion/multifuncional-laser', PRINTER],
             ['impresion/multifuncional-tinta', PRINTER],
-            ['impresion/multifuncionales', PRINTER]
+            ['impresion/multifuncionales', PRINTER],
+            ['computacion/respaldo-de-energia/ups', UPS],
+            ['computacion/computadores/accesorios-computacion', MOUSE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
