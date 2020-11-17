@@ -103,7 +103,9 @@ class MercadoLibreChile(Store):
 
             if picker:
                 for variation in picker['products']:
+                    print(variation)
                     color_name = variation['label']['text']
+                    name = '{} ({})'.format(base_name, color_name)
                     color_id = variation['attribute_id']
 
                     variation_url = 'https://articulo.mercadolibre.cl/' \
@@ -113,9 +115,13 @@ class MercadoLibreChile(Store):
                                               urllib.parse.quote(picker['id']),
                                               urllib.parse.quote(color_id))
                     res = session.get(variation_url)
-                    key = re.search(r'variation=(\d+)', res.url).groups()[0]
-                    name = '{} ({})'.format(base_name, color_name)
-                    variation_url = '{}?variation={}'.format(url, key)
+                    key_match = re.search(r'variation=(\d+)', res.url)
+
+                    if key_match:
+                        key = key_match.groups()[0]
+                        variation_url = '{}?variation={}'.format(url, key)
+                    else:
+                        key = variation['id']
 
                     products.append(Product(
                         name,

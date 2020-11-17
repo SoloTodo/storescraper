@@ -87,6 +87,8 @@ class GoodComputer(Store):
         else:
             stock = int(stock_container.text.split()[0])
         price_container = soup.find('p', 'price')
+        if not price_container.text.strip():
+            return []
         if not price_container.find('ins'):
             price = Decimal(remove_words(price_container.text))
         else:
