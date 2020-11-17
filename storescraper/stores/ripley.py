@@ -559,10 +559,6 @@ class Ripley(Store):
         with HeadlessChrome(images_enabled=False, proxy=proxy,
                             headless=True) as driver:
             driver.get('https://simple.ripley.cl')
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-            hcaptcha_script_tag = soup.find('script', {'data-type': 'normal'})
-            website_key = hcaptcha_script_tag['data-sitekey']
 
             # Anti captcha request
             request_body = {
@@ -571,7 +567,7 @@ class Ripley(Store):
                     {
                         "type": "HCaptchaTask",
                         "websiteURL": "https://simple.ripley.cl/",
-                        "websiteKey": website_key,
+                        "websiteKey": '33f96e6a-38cd-421b-bb68-7806e1764460',
                         "proxyType": "http",
                         "proxyAddress": extra_args['PROXY_IP'],
                         "proxyPort": extra_args['PROXY_PORT'],
