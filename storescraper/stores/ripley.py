@@ -620,16 +620,20 @@ class Ripley(Store):
                 retries += 1
 
             print(hcaptcha_response)
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+
             for field in ['g-recaptcha-response', 'h-captcha-response']:
-                driver.execute_script("document.querySelector('[name=\""
-                                      "{0}\"]').remove(); "
-                                      "var foo = document.createElement('"
+                if soup.find('input', {'name': field}):
+                    driver.execute_script("document.querySelector('[name=\""
+                                          "{0}\"]').remove(); ")
+
+                driver.execute_script("var foo = document.createElement('"
                                       "input'); foo.setAttribute('name', "
                                       "'{0}'); "
                                       "foo.setAttribute('value','{1}'); "
                                       "document.getElementsByTagName('form')"
                                       "[0].appendChild(foo);".format(
-                                        field, hcaptcha_response))
+                    field, hcaptcha_response))
             driver.execute_script("document.getElementsByTagName('form')"
                                   "[0].submit()")
 
