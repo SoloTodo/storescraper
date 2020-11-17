@@ -83,6 +83,7 @@ from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .gearbest import GearBest
+from .generacion_gamers import GeneracionGamers
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
 from .gollo_tienda import GolloTienda
