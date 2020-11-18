@@ -50,6 +50,7 @@ from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
+from .dgital import Dgital
 from .digiplot import Digiplot
 from .digitalife import Digitalife
 from .dimercom import Dimercom
@@ -83,6 +84,7 @@ from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .gearbest import GearBest
+from .generacion_gamers import GeneracionGamers
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
 from .gollo_tienda import GolloTienda
