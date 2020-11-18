@@ -633,7 +633,7 @@ class Ripley(Store):
                                       "foo.setAttribute('value','{1}'); "
                                       "document.getElementsByTagName('form')"
                                       "[0].appendChild(foo);".format(
-                    field, hcaptcha_response))
+                                        field, hcaptcha_response))
             driver.execute_script("document.getElementsByTagName('form')"
                                   "[0].submit()")
 

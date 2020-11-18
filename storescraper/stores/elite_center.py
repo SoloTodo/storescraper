@@ -67,7 +67,6 @@ class EliteCenter(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?orderby=popularity&paged={}'.format(
                                 url_extension, page)

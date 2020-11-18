@@ -1,6 +1,9 @@
 import logging
+import re
 from decimal import Decimal
 import json
+
+from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -50,78 +53,83 @@ class SamsungShop(Store):
             ('linea-blanca/lavavajillas', 'DishWasher'),
         ]
 
+        session = session_with_proxy(extra_args)
+
         product_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
                 continue
 
-            url = 'https://shop.samsung.cl/api/catalog_system/pub/products/' \
-                  'search/{}?map=c,c,specificationFilter_226'\
-                .format(category_path)
+            page = 0
+            page_size = 50
 
-            product_urls.append(url)
+            while True:
+                url = 'https://shop.samsung.cl/api/catalog_system/pub/' \
+                      'products/search/{}?map=c,c&_from={}&_to={}'.format(
+                        category_path, page * page_size,
+                        (page + 1) * page_size - 1)
+                print(url)
+                data = session.get(url)
+
+                json_data = json.loads(data.text)
+
+                if not json_data:
+                    if page == 0:
+                        logging.warning('Empty category: ' + url)
+                    break
+
+                for entry in json_data:
+                    product_urls.append(entry['link'])
+
+                page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        # &_from=0&_to=49
         session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        page = 0
-        page_size = 50
+        base_sku = soup.find('input', {'id': '___rc-p-id'})['value']
+
+        endpoint = 'https://shop.samsung.cl/api/catalog_system/pub/' \
+                   'products/search?sc=1&fq=productId:' + base_sku
+        skus_data = json.loads(session.get(endpoint).text)[0]['items']
         products = []
 
-        while True:
-            target_url = '{}&_from={}&_to={}'.format(
-                url, page*page_size, (page + 1) * page_size - 1
+        for sku_entry in skus_data:
+            name = sku_entry['nameComplete']
+            sku = sku_entry['ean']
+            key = sku_entry['itemId']
+            stock = sku_entry['sellers'][0]['commertialOffer'][
+                'AvailableQuantity']
+
+            if not stock:
+                # Unavailable products don't have a valid price, so skip them
+                continue
+
+            price = Decimal(sku_entry['sellers'][0]['commertialOffer'][
+                                'Price'])
+            picture_urls = [x['imageUrl'] for x in sku_entry['images']]
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=sku,
+                picture_urls=picture_urls
             )
-            data = session.get(target_url)
 
-            json_data = json.loads(data.text)
-
-            if not json_data:
-                if page == 0:
-                    logging.warning('Empty category: ' + target_url)
-                break
-
-            for product in json_data:
-                name = product['productName']
-                sku = product['productReference']
-                product_url = product['link']
-                stock = product['items'][0]['sellers'][0][
-                    'commertialOffer']['AvailableQuantity']
-                price = Decimal(product['items'][0]['sellers'][0]
-                                ['commertialOffer']['Price'])
-
-                pictures = product['items'][0]['images']
-                picture_urls = []
-
-                for picture in pictures:
-                    picture_urls.append(picture['imageUrl'])
-
-                description = html_to_markdown(product['description'])
-
-                p = Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    product_url,
-                    url,
-                    sku,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    part_number=product['productReference'],
-                    description=description,
-                    picture_urls=picture_urls
-                )
-
-                products.append(p)
-            page += 1
+            products.append(p)
 
         return products

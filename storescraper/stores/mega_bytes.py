@@ -60,7 +60,7 @@ class MegaBytes(Store):
 
                 product_containers = product_box.findAll(
                     'a', 'wc-block-grid__product-link')
-                
+
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
