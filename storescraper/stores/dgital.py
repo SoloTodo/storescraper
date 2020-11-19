@@ -42,7 +42,7 @@ class Dgital(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers.findAll('div', {
-                    'itemprop': 'itemListElement'}):
+                        'itemprop': 'itemListElement'}):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1

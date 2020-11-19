@@ -5,7 +5,8 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    remove_words
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
     MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
@@ -143,7 +144,7 @@ class TtChile(Store):
         sku = sku_tag.text.strip()
         name = soup.find('h1', 'product_name').text.strip()
         price_tags = soup.findAll('span', {'itemprop': 'price'})
-        offer_price = Decimal(price_tags[0]['content'])
+        offer_price = Decimal(remove_words(price_tags[0].text.split()[0]))
         normal_price = Decimal(price_tags[1]['content'])
 
         availability_message = soup.find(
