@@ -22,20 +22,30 @@ class Geant(Store):
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
+        page_size = 30
         for local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://www.geant.com.uy/api/catalog_system/' \
-                          'pub/products/search/busca?O=OrderByScoreDESC&_' \
-                          'from=0&_to=29&fq=B:56&ft=LG'
-            data = session.get(url_webpage)
-            product_containers = data.json()
-            if not product_containers:
-                break
-            for container in product_containers:
-                product_url = container['linkText']
-                product_urls.append(
-                    'https://www.geant.com.uy/' + product_url + '/p')
+
+            page = 0
+            while True:
+                if page > 10:
+                    raise Exception('Page overflow')
+                url_webpage = 'https://www.geant.com.uy/api/catalog_system/' \
+                              'pub/products/search/busca?O=OrderByScoreDESC' \
+                              '&_from={}&_to={}&fq=B:56&ft=LG'.format(
+                                page * page_size,
+                                (page + 1) * page_size - 1)
+                data = session.get(url_webpage)
+                product_containers = data.json()
+                if not product_containers:
+                    break
+                for container in product_containers:
+                    product_url = container['linkText']
+                    product_urls.append(
+                        'https://www.geant.com.uy/' + product_url + '/p')
+
+                page += 1
         return product_urls
 
     @classmethod
