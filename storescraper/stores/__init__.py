@@ -84,6 +84,7 @@ from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .gearbest import GearBest
+from .geant import Geant
 from .generacion_gamers import GeneracionGamers
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
