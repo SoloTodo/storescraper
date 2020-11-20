@@ -12,7 +12,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
 
-class ValSuministros(Store):
+class VGamers(Store):
     @classmethod
     def categories(cls):
         return [
@@ -53,7 +53,7 @@ class ValSuministros(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.valsuministros.com/collections/' \
+                url_webpage = 'https://vgamers.cl/collections/' \
                               '{}?page={}'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
@@ -66,8 +66,7 @@ class ValSuministros(Store):
                     break
                 for container in product_containers:
                     product_url = container['href']
-                    product_urls.append(
-                        'https://www.valsuministros.com' + product_url)
+                    product_urls.append('https://vgamers.cl' + product_url)
                 page += 1
         return product_urls
 
