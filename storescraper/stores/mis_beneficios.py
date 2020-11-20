@@ -49,7 +49,12 @@ class MisBeneficios(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('div', 'price-box')['data-product-id']
-        stock = -1
+
+        if soup.find('div', 'unavailable'):
+            stock = 0
+        else:
+            stock = -1
+
         price = Decimal(soup.find('span', 'price').text.
                         split('\xa0')[1].replace('.', '').replace(',', '.'))
         picture_urls = [tag['src'] for tag in
