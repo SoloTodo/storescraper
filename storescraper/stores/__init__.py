@@ -240,6 +240,7 @@ from .tekstore import Tekstore
 from .terabyte import Terabyte
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
+from .tienda_inglesa import TiendaInglesa
 from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
