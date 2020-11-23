@@ -122,6 +122,9 @@ class InfographicsSolutions(Store):
 
         price_container = soup.find('p', 'price')
 
+        if not price_container.text.strip():
+            return []
+
         if price_container.find('ins'):
             price = Decimal(price_container.find('ins').text.replace(
                 '$', '').replace('.', ''))
