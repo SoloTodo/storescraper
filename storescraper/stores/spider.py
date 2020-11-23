@@ -1,114 +1,119 @@
-import json
-import re
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import STEREO_SYSTEM, HEADPHONES, NOTEBOOK, \
+    TABLET, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, \
+    VIDEO_CARD, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    CPU_COOLER, KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, MONITOR, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class Spider(Store):
     @classmethod
     def categories(cls):
         return [
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'ExternalStorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'CpuCooler',
-            'Mouse',
-            'Notebook',
-            'Tablet',
-            'Printer',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
+            STEREO_SYSTEM,
+            HEADPHONES,
+            NOTEBOOK,
+            TABLET,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            RAM,
+            MOTHERBOARD,
+            PROCESSOR,
+            VIDEO_CARD,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            CPU_COOLER,
+            KEYBOARD_MOUSE_COMBO,
+            MOUSE,
+            KEYBOARD,
+            MONITOR,
+            PRINTER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ('41', 'Notebook'),
-            # ('43', 'Notebook'),   # Ultrabooks
-            ('26', 'StorageDrive'),
-            ('44', 'SolidStateDrive'),
-            ('29', 'Motherboard'),
-            ('31', 'ComputerCase'),
-            ('36', 'Ram'),
-            ('235', 'ExternalStorageDrive'),
-            ('28', 'Processor'),
-            ('30', 'VideoCard'),
-            ('32', 'PowerSupply'),
-            # ('34', 'CpuCooler'),
-            ('21', 'Monitor'),
-            ('25', 'Tablet'),
-            ('49', 'Printer'),
-            ('50', 'Printer'),
-            ('48', 'Printer'),
-            ('55', 'Mouse'),
-            ('56', 'Keyboard'),
-            ('57', 'KeyboardMouseCombo'),
-            ('23', 'Headphones'),
+            ['257-parlantes', STEREO_SYSTEM],
+            ['23-audifonos', HEADPHONES],
+            ['41-notebooks-portatiles', NOTEBOOK],
+            ['25-tablets', TABLET],
+            ['32-fuentes-de-poder', POWER_SUPPLY],
+            ['31-gabinetes', COMPUTER_CASE],
+            ['36-memorias-ram', RAM],
+            ['29-placas-madre', MOTHERBOARD],
+            ['28-procesadores', PROCESSOR],
+            ['30-tarjetas-de-video', VIDEO_CARD],
+            ['26-discos-duros', STORAGE_DRIVE],
+            ['235-discos-duros-externo', EXTERNAL_STORAGE_DRIVE],
+            ['44-discos-ssd', SOLID_STATE_DRIVE],
+            ['34-refrigeracion', CPU_COOLER],
+            ['57-kits-teclados-mouse', KEYBOARD_MOUSE_COMBO],
+            ['55-mouse', MOUSE],
+            ['56-teclados', KEYBOARD],
+            ['21-monitores', MONITOR],
+            ['47-impresoras', PRINTER]
         ]
-
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
-            url_webpage = 'https://www.spider.cl/modules/blocklayered/' \
-                          'blocklayered-ajax.php?id_category_layered={}' \
-                          '&n=1000'.format(category_path)
-
-            json_data = json.loads(session.get(url_webpage).text)
-            soup = BeautifulSoup(json_data['productList'], 'html.parser')
-
-            product_containers = soup.findAll('li', 'ajax_block_product')
-
-            if not product_containers:
-                raise Exception('Empty category: ' + category_path)
-
-            for product_container in product_containers:
-                product_url = product_container.find('a')['href']
-                product_urls.append(product_url)
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('page overflow: ' + url_extension)
+                url_webpage = 'https://www.spider.cl/{}?page={}'.format(
+                    url_extension, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('article',
+                                                  'product-miniature')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+                for product_container in product_containers:
+                    product_url = product_container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'h1 product-detail-name').text
         sku = soup.find('input', {'id': 'product_page_product_id'})['value']
 
-        if soup.find('link', {'itemprop': 'availability'}):
-            stock = -1
+        if soup.find('div', 'product-quantities'):
+            stock = int(soup.find('div', 'product-quantities').find('span')[
+                            'data-stock'])
         else:
             stock = 0
 
-        price_containers = soup.findAll('span', {'id': 'our_price_display'})
-
-        offer_price = Decimal(price_containers[0]['content']).quantize(0)
-        normal_price = Decimal(remove_words(price_containers[1].text)
-                               ).quantize(0)
-        part_number = soup.find('span', {'itemprop': 'sku'}).text.strip()
-
-        description = html_to_markdown(str(soup.find(
-            'section', 'page-product-box')))
-
-        picture_urls = [tag['href'] for tag in soup.findAll('a', 'fancybox')]
+        offer_price = Decimal(
+            remove_words(soup.find('div', 'product-price').text).strip())
+        normal_price = Decimal(remove_words(
+            soup.find('div', 'methods_prices_box')
+                .find('div', 'others_methods_price').text).strip())
+        if soup.find('div', 'MagicToolboxSelectorsContainer'):
+            picture_containers = soup.find('div',
+                                           'MagicToolboxSelectorsContainer')
+        else:
+            picture_containers = soup.find('div', 'MagicToolboxMainContainer')
+        picture_urls = [tag['src'].replace('-small_default', '') for tag in
+                        picture_containers.findAll('img')]
 
         p = Product(
             name,
@@ -122,8 +127,6 @@ class Spider(Store):
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
-            description=description,
             picture_urls=picture_urls
         )
 

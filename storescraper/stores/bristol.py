@@ -1,6 +1,9 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -13,101 +16,55 @@ class Bristol(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Projector',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'AirConditioner'
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['televisores-c174', 'Television'],
-            ['audio-c48', 'StereoSystem'],
-            ['proyectores-c169', 'Projector'],
-            ['celulares-f3', 'Cell'],
-            ['refrigeracion-c7', 'Refrigerator'],
-            ['hornos-electricos-c21', 'Oven'],
-            ['microondas-c23', 'Oven'],
-            ['cocinas-c20', 'Stove'],
-            ['lavado-c9', 'WashingMachine'],
-            ['split-ecologico-c13', 'AirConditioner']
+        url_extensions = [
+            TELEVISION
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://bristol.com.py/{}.{}'
-
-        for c in category_paths:
-            category_path, local_category = c
-
-            if category != local_category:
+        for local_category in url_extensions:
+            if local_category != category:
                 continue
-
             page = 1
-
             while True:
-                url = base_url.format(category_path, page)
-
-                if page >= 15:
-                    raise Exception('Page overflow' + url)
-
-                print(url)
-
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-item-box')
-
-                if not product_containers:
+                url_webpage = 'https://bristol.opentechla.com/api/opentech' \
+                              '/martfury/products?_start={}' \
+                              '&perPage=12&brand=lg'.format(page)
+                data = session.get(url_webpage)
+                product_containers = data.json()['data']
+                if not len(product_containers):
                     if page == 1:
-                        raise Exception('Empty category', url)
+                        logging.warning('Empty category')
                     break
-
-                for product in product_containers:
-                    product_link = product.find('a')
-
-                    if 'lg' in product_link.text.lower():
-                        product_url = 'https://bristol.com.py/{}'.format(
-                            product_link['href'])
-                        product_urls.append(product_url)
-
-                page += 1
-
+                for container in product_containers:
+                    product_url = container['id']
+                    product_urls.append(
+                        'https://www.bristol.com.py/product/' + str(
+                            product_url))
+                page += 11
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
+        product_id = url.split('/')[-1]
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('div', 'product-title').text.strip()
-        sku = soup.find('div', 'product-desc').text.split('/')[
-            0].replace('Cod:', '').strip()
+        response = session.get(
+            'https://bristol.opentechla.com/api/opentech/martfury/products/' + product_id)
+        product_container = response.json()
+        name = product_container['name']
+        sku = str(product_id)
         stock = -1
-
-        if 'LG' not in name.upper().split(' '):
-            stock = 0
-
-        price_text = soup.find('div', 'product-price').find('span').text
-
-        if price_text == "Consulte precio":
-            return []
-
-        price = Decimal(price_text.replace('Gs.', '').replace('.', '').strip())
-
-        pictures = soup.find('ul', {'id': 'imageGallery'}).findAll('li')
+        price = Decimal(product_container['price'])
         picture_urls = []
+        if len(product_container['images']):
+            picture_urls.append(product_container['images'][0]['path'])
 
-        for picture in pictures:
-            picture_url = picture.find('img')['src'].replace(' ', '%20')
-            picture_urls.append(picture_url)
-
-        return [Product(
+        p = Product(
             name,
             cls.__name__,
             category,
@@ -120,4 +77,5 @@ class Bristol(Store):
             'PYG',
             sku=sku,
             picture_urls=picture_urls
-        )]
+        )
+        return [p]
