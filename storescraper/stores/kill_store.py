@@ -59,8 +59,14 @@ class KillStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.killstore.cl/{}?page={}'.format(
                     url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                res = session.get(url_webpage)
+
+                # Killstore may block connections which result en empty pages
+                # with seemingly no products, so check that the response code
+                # is OK
+                assert res.status_code == 200
+
+                soup = BeautifulSoup(res.text, 'html.parser')
                 product_containers = soup.findAll('article',
                                                   'js-product-miniature')
                 if not product_containers:
@@ -81,6 +87,11 @@ class KillStore(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
+
+        # Killstore may block connections which result en empty pages, so
+        # check the status code of the response
+        assert response.status_code == 200
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('meta', {'property': 'og:name_product'})['content']
         sku = soup.find('meta', {'property': 'og:id_product'})['content']
