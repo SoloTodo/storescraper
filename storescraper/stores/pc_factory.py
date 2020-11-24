@@ -248,26 +248,27 @@ class PcFactory(Store):
 
         full_name = '{} {}'.format(product_data['marca'],
                                    product_data['nombre'])
-
         stock = int(product_data['stock_tienda']) + \
             int(product_data['stock_web'])
         sku = product_data['id_producto']
-        description = product_data['descripcion']
+        video_urls = []
 
-        if description:
-            description = html_to_markdown(description)
+        if product_data['descripcion']:
+            soup = BeautifulSoup(product_data['descripcion'], 'html.parser')
+            for iframe in soup.findAll('iframe'):
+                match = re.match('//www.youtube.com/embed/(.+)',
+                                 iframe['src'])
+                if match:
+                    video_urls.append(
+                        'https://www.youtube.com/watch?v={}'.format(
+                            match.groups()[0]))
+            description = html_to_markdown(product_data['descripcion'])
+        else:
+            description = None
 
         picture_urls = ['https://www.pcfactory.cl/public/foto/{}/{}'.format(
             sku, path) for path in product_data['imagen']]
 
-        video_urls = []
-        soup = BeautifulSoup(product_data['descripcion'], 'html.parser')
-        for iframe in soup.findAll('iframe'):
-            match = re.match('//www.youtube.com/embed/(.+)',
-                             iframe['src'])
-            if match:
-                video_urls.append('https://www.youtube.com/watch?v={}'.format(
-                    match.groups()[0]))
 
         p = Product(
             full_name,

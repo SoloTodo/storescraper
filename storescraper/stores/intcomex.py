@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -48,7 +50,7 @@ class Intcomex(Store):
             product_containers = soup.findAll('div', 'productArea')
 
             if not product_containers:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
 
             for container in product_containers:
                 product_url = 'http://store.intcomex.com' + \

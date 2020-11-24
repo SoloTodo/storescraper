@@ -203,13 +203,20 @@ class Wom(Store):
         ]
 
         for modality in modalities:
+            print(modality)
             container = soup.find('div', {'data-tab': modality['selector']})
-            initial_prices = container.findAll('span', 'body_precio')
+
+            if modality['suffix'] == '':
+                initial_prices = container.findAll('span', 'body_precio')
+            else:
+                initial_prices = [container.find('b')]
 
             if len(initial_prices) == 1:
-                combinations = combinations[:1]
+                local_combinations = combinations[:1]
+            else:
+                local_combinations = combinations
 
-            for idx, combination in enumerate(combinations):
+            for idx, combination in enumerate(local_combinations):
                 initial_price = Decimal(remove_words(initial_prices[idx].text))
 
                 for plan_name, monthly_payment in rent_prices.items():

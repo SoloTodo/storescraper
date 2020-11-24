@@ -107,7 +107,12 @@ class InforIngen(Store):
         pricing_container = soup.find('div', {'id': 'product'}).parent
         name = pricing_container.find('h1').text.strip()
         sku = soup.find('input', {'name': 'product_id'})['value']
-        stock = int(soup.find('b', text='STOCK WEB:').next.next)
+        stock_text = soup.find('b', text='STOCK WEB:').next.next.strip()
+
+        if stock_text == 'Disponible':
+            stock = -1
+        else:
+            stock = 0
 
         price_containers = pricing_container.find(
             'img', {'align': 'absmiddle'}).parent.findAll('h2')
