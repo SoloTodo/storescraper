@@ -170,6 +170,7 @@ from .mis_beneficios import MisBeneficios
 from .mobile_hut import MobileHut
 from .movistar import Movistar
 from .movistar_one import MovistarOne
+from .multi_ahorro import MultiAhorro
 from .multimax import Multimax
 from .musimundo import Musimundo
 from .my_box import MyBox
