@@ -143,6 +143,7 @@ from .liverpool import Liverpool
 from .livrarias_curitiba import LivrariasCuritiba
 from .llevatelo import Llevatelo
 from .loi_chile import LoiChile
+from .loi_uruguay import LoiUruguay
 from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza

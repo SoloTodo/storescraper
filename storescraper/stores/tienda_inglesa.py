@@ -65,7 +65,8 @@ class TiendaInglesa(Store):
             soup.find('div', {'id': 'TXTPRICE'}).text.split()[1].replace(
                 '.', ''))
         picture_urls = [
-            soup.find('div', {'id': 'SECTION2'}).findAll('img')[1]['src'].split('?')[0]]
+            soup.find('div', {'id': 'SECTION2'}).findAll('img')[1][
+                'src'].split('?')[0]]
         p = Product(
             name,
             cls.__name__,

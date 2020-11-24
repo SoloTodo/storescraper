@@ -54,7 +54,8 @@ class Bristol(Store):
         product_id = url.split('/')[-1]
         session = session_with_proxy(extra_args)
         response = session.get(
-            'https://bristol.opentechla.com/api/opentech/martfury/products/' + product_id)
+            'https://bristol.opentechla.com/api/opentech/martfury/products/' +
+            product_id)
         product_container = response.json()
         name = product_container['name']
         sku = str(product_id)

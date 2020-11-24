@@ -11,6 +11,9 @@ from storescraper.utils import session_with_proxy, remove_words
 
 
 class LoiChile(Store):
+    CURRENCY = 'CLP'
+    IMAGE_DOMAIN = 'd660b7b9o0mxk'
+
     @classmethod
     def categories(cls):
         return [
@@ -64,11 +67,12 @@ class LoiChile(Store):
         name = soup.find('h1', 'nombre-producto-info').text.replace('\t', '') \
             .replace('\n', '')
         sku = soup.find('span', {'id': 'idProducto'}).text
-        price = Decimal(remove_words(soup.find('div', 'pv3-pv-loi').text))
+        price = Decimal(remove_words(soup.find(
+            'div', 'pv3-pv-loi').text.replace('USD', '')))
         picture_urls = [
-            'https://d660b7b9o0mxk.cloudfront.net/_img_productos/' +
-            tag['src'].split('_img_productos/')[1] for tag in
-            soup.find('div', 'swiper-wrapper').findAll('img')]
+            'https://{}.cloudfront.net/_img_productos/{}'.format(
+                cls.IMAGE_DOMAIN, tag['src'].split('_img_productos/')[1])
+            for tag in soup.find('div', 'swiper-wrapper').findAll('img')]
         p = Product(
             name,
             cls.__name__,
@@ -79,7 +83,7 @@ class LoiChile(Store):
             -1,
             price,
             price,
-            'CLP',
+            cls.CURRENCY,
             sku=sku,
             picture_urls=picture_urls
         )

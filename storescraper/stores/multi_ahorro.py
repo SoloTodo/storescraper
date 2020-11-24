@@ -36,8 +36,8 @@ class MultiAhorro(Store):
                                          .text.split()[0]) / 12)
             for i in range(page_numbers):
                 if i > 0:
-                    url_webpage = 'https://www.multiahorro.com.uy/catalogo?q=lg&' \
-                              'marca=lg&js=1&pag={}'.format(i + 1)
+                    url_webpage = 'https://www.multiahorro.com.uy/catalogo?' \
+                                  'q=lg&marca=lg&js=1&pag={}'.format(i + 1)
                     data = session.get(url_webpage).text
                     soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('div',

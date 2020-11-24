@@ -269,7 +269,6 @@ class PcFactory(Store):
         picture_urls = ['https://www.pcfactory.cl/public/foto/{}/{}'.format(
             sku, path) for path in product_data['imagen']]
 
-
         p = Product(
             full_name,
             cls.__name__,
