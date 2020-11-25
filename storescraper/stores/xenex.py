@@ -38,7 +38,7 @@ class Xenex(Store):
                     'id': 'resultado_productos'}).findAll('article')
 
                 if not product_containers:
-                    if page == 1:
+                    if page == 0:
                         logging.warning('Empty category: ' + local_category)
                     break
                 for container in product_containers:
