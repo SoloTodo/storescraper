@@ -52,11 +52,12 @@ class Xenex(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'nombre').text + ' - ' + soup.find('span',
-                                                                  'prodcod').text
+        name = soup.find('h1', 'nombre').text + ' - ' \
+               + soup.find('span', 'prodcod').text
         sku = \
-        soup.find('input', {'name': 'pagina_recomendar'})['value'].split('=')[
-            -1]
+            soup.find('input', {'name': 'pagina_recomendar'})['value'].split(
+                '=')[
+                -1]
         if soup.find('div', 'contenedor_31').find('div', 'agotado'):
             stock = 0
         else:
