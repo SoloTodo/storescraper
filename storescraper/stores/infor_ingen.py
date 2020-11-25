@@ -1,3 +1,4 @@
+import logging
 import re
 
 from bs4 import BeautifulSoup
@@ -45,14 +46,14 @@ class InforIngen(Store):
             ['78', 'VideoCard'],  # Tarjetas de video
             ['81_84', 'ComputerCase'],  # Gabinetes c/fuente
             ['81_85', 'ComputerCase'],  # Gabinetes s/fuente
-            # ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
+            ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
             ['81_83', 'PowerSupply'],  # Fuentes de poder Reales
             ['92_95', 'CpuCooler'],  # Coolers CPU Aire
             ['92_96', 'CpuCooler'],  # Coolers CPU Liquido
             ['98', 'Monitor'],  # Monitores LCD
             ['105_106', 'Mouse'],  # Teclados y mouse
-            # ['105_123', 'Notebook'],  # Notebooks
-            # ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
+            ['105_123', 'Notebook'],  # Notebooks
+            ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
             ['90_91', 'Headphones'],  # Audífonos
         ]
 
@@ -82,7 +83,7 @@ class InforIngen(Store):
 
                 if not link_containers:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_path)
+                        logging.warning('Empty category: ' + category_path)
                     break
 
                 for link_container in link_containers:
@@ -107,12 +108,7 @@ class InforIngen(Store):
         pricing_container = soup.find('div', {'id': 'product'}).parent
         name = pricing_container.find('h1').text.strip()
         sku = soup.find('input', {'name': 'product_id'})['value']
-        stock_text = soup.find('b', text='STOCK WEB:').next.next.strip()
-
-        if stock_text == 'Disponible':
-            stock = -1
-        else:
-            stock = 0
+        stock = int(soup.find('b', text='STOCK WEB:').next.next)
 
         price_containers = pricing_container.find(
             'img', {'align': 'absmiddle'}).parent.findAll('h2')
