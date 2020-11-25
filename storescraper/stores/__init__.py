@@ -251,6 +251,7 @@ from .tienda_toyotomi import TiendaToyotomi
 from .travel_tienda import TravelTienda
 from .travim import Travim
 from .todo_juegos import TodoJuegos
+from .todo_ofertas import TodoOfertas
 from .todoclick import Todoclick
 from .tomalo import Tomalo
 from .top_pc import TopPc
