@@ -52,8 +52,6 @@ class Xenex(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import pdb
-        # pdb.set_trace()
         name = soup.find('h1', 'nombre').text + ' - ' + soup.find('span',
                                                                   'prodcod').text
         sku = \
