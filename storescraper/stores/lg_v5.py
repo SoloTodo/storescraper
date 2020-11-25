@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 import demjson
@@ -43,7 +44,7 @@ class LgV5(Store):
             product_entries = json_response['data'][0]['productList']
 
             if not product_entries:
-                raise Exception('Empty category: {} - {}'.format(
+                logging.warning('Empty category: {} - {}'.format(
                     category_id, is_active))
 
             for product_entry in product_entries:
