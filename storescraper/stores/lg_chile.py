@@ -38,6 +38,18 @@ class LgChile(LgV5):
             # Equipos de música
             ('CT20106020', 'StereoSystem', True),
             ('CT20106020', 'StereoSystem', False),
+            # Minicomponentes
+            ('CT20106021', 'StereoSystem', True),
+            ('CT20106021', 'StereoSystem', False),
+            # Audio portable
+            ('CT40005301', 'StereoSystem', True),
+            ('CT40005301', 'StereoSystem', False),
+            # Sound bar
+            ('CT40005303', 'StereoSystem', True),
+            ('CT40005303', 'StereoSystem', False),
+            # Audífonos
+            ('CT30011860', 'Headphones', True),
+            ('CT30011860', 'Headphones', False),
             # Audio Hi-Fi
             ('CT30016640', 'StereoSystem', True),
             ('CT30016640', 'StereoSystem', False),
@@ -61,6 +73,7 @@ class LgChile(LgV5):
             ('CT20106054', 'Monitor', False),
             # Proyectores
             ('CT30006480', 'Projector', True),
+            ('CT30006480', 'Projector', False),
 
             # Desaparecidos de la navegacion pero aun con
             # urls validas en LG.com
