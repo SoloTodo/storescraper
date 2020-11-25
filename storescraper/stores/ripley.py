@@ -644,6 +644,9 @@ class Ripley(Store):
                 "cf_clearance": driver.get_cookie('cf_clearance')['value'],
                 "__cfduid": driver.get_cookie('__cfduid')['value']
             }
+
+            print(json.dumps(d))
+
             return d
 
     @classmethod
