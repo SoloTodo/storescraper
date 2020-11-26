@@ -266,6 +266,7 @@ from .vtr import Vtr
 from .walmart_argentina import WalmartArgentina
 from .walmart_brazil import WalmartBrazil
 from .walmart_mexico import WalmartMexico
+from .web_redes import WebRedes
 from .wei import Wei
 from .weplay import Weplay
 from .winpy import Winpy
