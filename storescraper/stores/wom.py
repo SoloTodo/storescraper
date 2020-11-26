@@ -203,13 +203,16 @@ class Wom(Store):
         ]
 
         for modality in modalities:
-            print(modality)
             container = soup.find('div', {'data-tab': modality['selector']})
 
             if modality['suffix'] == '':
                 initial_prices = container.findAll('span', 'body_precio')
             else:
-                initial_prices = [container.find('b')]
+                initial_prices = [container.find('p', 'body_cuotas-precio')]
+
+                if container.find('span', 'precio-portate'):
+                    initial_prices.append(
+                        container.find('span', 'precio-portate'))
 
             if len(initial_prices) == 1:
                 local_combinations = combinations[:1]
