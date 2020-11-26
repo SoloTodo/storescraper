@@ -135,6 +135,7 @@ from .lenovo_mexico import LenovoMexico
 from .lg_chile import LgChile
 from .lg_cac import LgCac
 from .lg_ec import LgEc
+from .lg_uruguay_store import LgUruguayStore
 from .lider import Lider
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
