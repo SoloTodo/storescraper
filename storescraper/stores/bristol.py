@@ -58,12 +58,9 @@ class Bristol(Store):
             product_id)
         product_container = response.json()
         name = product_container['name']
-        sku = str(product_id)
-        stock = -1
+        stock = product_container['stock']
         price = Decimal(product_container['price'])
-        picture_urls = []
-        if len(product_container['images']):
-            picture_urls.append(product_container['images'][0]['path'])
+        picture_urls = [x['path'] for x in product_container['images']]
 
         p = Product(
             name,
@@ -71,12 +68,12 @@ class Bristol(Store):
             category,
             url,
             url,
-            sku,
+            product_id,
             stock,
             price,
             price,
             'PYG',
-            sku=sku,
+            sku=product_id,
             picture_urls=picture_urls
         )
         return [p]
