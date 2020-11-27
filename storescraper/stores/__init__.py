@@ -102,6 +102,7 @@ from .hites import Hites
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
 from .ibyte import Ibyte
+from .igoa import Igoa
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
 from .infographics_solutions import InfographicsSolutions
