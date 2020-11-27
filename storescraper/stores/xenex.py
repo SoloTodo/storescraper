@@ -53,7 +53,7 @@ class Xenex(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'nombre').text + ' - ' \
-               + soup.find('span', 'prodcod').text
+            + soup.find('span', 'prodcod').text
         sku = \
             soup.find('input', {'name': 'pagina_recomendar'})['value'].split(
                 '=')[

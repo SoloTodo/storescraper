@@ -32,7 +32,7 @@ class TodoOfertas(Store):
                     raise Exception('page overflow ')
                 url_webpage = 'https://www.todoofertas.com.uy/productos' \
                               '/productos.php?id_marca=116&pagina={}'.format(
-                    page)
+                                page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('div', 'contenedor_22').findAll(
