@@ -150,6 +150,7 @@ from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
+from .martin_arismendi import MartinArismendi
 from .manco_store import MancoStore
 from .max import Max
 from .mega_bytes import MegaBytes
