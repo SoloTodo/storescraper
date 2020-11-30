@@ -9,7 +9,7 @@ from storescraper.categories import TABLET, NOTEBOOK, MOTHERBOARD, PROCESSOR, \
     STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MONITOR, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class WebRedes(Store):
@@ -89,7 +89,9 @@ class WebRedes(Store):
         name = json_info['reference'] + ' - ' + json_info['name']
         sku = str(json_info['id_product'])
         stock = json_info['quantity']
-        price = Decimal(json_info['price_amount'])
+        normal_price = Decimal(json_info['price_amount'])
+        offer_price = Decimal(remove_words(soup.find('span', 'price_phone').text))
+
         picture_urls = [image['bySize']['large_default']['url'] for image in
                         json_info['images']]
         p = Product(
@@ -100,8 +102,8 @@ class WebRedes(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
