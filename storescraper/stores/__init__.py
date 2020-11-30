@@ -102,6 +102,7 @@ from .hites import Hites
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
 from .ibyte import Ibyte
+from .igoa import Igoa
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
 from .infographics_solutions import InfographicsSolutions
@@ -149,6 +150,7 @@ from .lucila import Lucila
 from .mac_online import MacOnline
 from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
+from .martin_arismendi import MartinArismendi
 from .manco_store import MancoStore
 from .max import Max
 from .mega_bytes import MegaBytes
