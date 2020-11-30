@@ -77,6 +77,7 @@ from .falabella_fast import FalabellaFast
 from .falabella_cf import FalabellaCf
 from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
+from .fama import Fama
 from .fiesta_lan import FiestaLan
 from .fnac import Fnac
 from .fravega import Fravega
