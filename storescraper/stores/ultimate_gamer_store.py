@@ -1,3 +1,4 @@
+import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -61,7 +62,7 @@ class UltimateGamerStore(Store):
 
                 if not items:
                     if page == 1:
-                        raise Exception('Emtpy Path: {}'.format(url))
+                        logging.warning('Emtpy Path: {}'.format(url))
                     break
 
                 for item in items:

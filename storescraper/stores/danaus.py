@@ -68,6 +68,7 @@ class Danaus(Store):
             ['almacenamiento/discos-duros-externos', 'ExternalStorageDrive'],
             ['almacenamiento/pendrive', 'UsbFlashDrive'],
             ['almacenamiento/tarjetas-de-memoria', 'MemoryCard'],
+            ['smart-home/electrodomesticos-inteligentes', 'StereoSystem'],
         ]
 
         session = session_with_proxy(extra_args)
