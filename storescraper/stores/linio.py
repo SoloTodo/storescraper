@@ -149,7 +149,7 @@ class Linio(Store):
 
         if not availability_container:
             stock = 0
-        elif soup.find('div', 'feature-information').find(
+        elif soup.find('div', 'product-title').find(
                 'span', 'badge-pill-international-shipping'):
             stock = 0
             description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
