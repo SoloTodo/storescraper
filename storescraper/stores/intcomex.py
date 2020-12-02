@@ -1,160 +1,135 @@
-import logging
+import ssl
+import requests
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
-
-import requests
+from datetime import datetime
+from hashlib import sha256
+from urllib3 import poolmanager
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, PhantomJS
+from storescraper.utils import session_with_proxy
 
-# Disable some SSL verifications because Intcomex uses a vulnerable SSL
-# implementation
-requests.packages.urllib3.disable_warnings()
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+
+class TLSAdapter(requests.adapters.HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False):
+        """Create and initialize the urllib3 PoolManager."""
+        ctx = ssl.create_default_context()
+        ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+        self.poolmanager = poolmanager.PoolManager(
+                num_pools=connections,
+                maxsize=maxsize,
+                block=block,
+                ssl_version=ssl.PROTOCOL_TLS,
+                ssl_context=ctx)
 
 
 class Intcomex(Store):
-    SESSION_COOKIES = None
-
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'AllInOne'
+            'Notebook'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('cpt.notebook', 'Notebook'),  # Portatiles
-            ('cpt.ultrabook', 'Notebook'),  # Ultrabooks
-            ('cpt.allone', 'AllInOne'),  # all-en-uno
+            ('cpt.notebook', 'Notebook')
         ]
 
-        product_urls = []
-        session = session_with_proxy(extra_args)
+        discovered_urls = []
 
         for category_path, local_category in category_paths:
-            if local_category != category:
+            if category != local_category:
                 continue
 
-            category_url = 'http://store.intcomex.com/es-XCL/Products/' \
-                           'ByCategory/{}?rpp=1000'.format(category_path)
+            discovered_urls.append(
+                'https://store.intcomex.com/es-XCL/ProductsAjax/'
+                'ByCategory/{}?rpp=600&X-Requested-With=XMLHttpRequest'
+                ''.format(category_path))
 
-            print(category_url)
-
-            soup = cls._retrieve_page(session, category_url, extra_args)
-
-            product_containers = soup.findAll('div', 'productArea')
-
-            if not product_containers:
-                logging.warning('Empty category: ' + category_url)
-
-            for container in product_containers:
-                product_url = 'http://store.intcomex.com' + \
-                              container.find('a')['href']
-                product_urls.append(product_url)
-
-        return product_urls
+        return discovered_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        session = requests.Session()
+        session.mount('https://', TLSAdapter())
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        cells = soup.findAll('div', 'productListItemGrid')
+        skus_dict = {}
+        for cell in cells:
+            sku = cell.find('span', 'js-skuProduct').text.strip()
+            name = cell.find('div', 'product-name').text.strip()
+            url_id = cell['data-recno']
+            skus_dict[sku] = {'name': name, 'url_id': url_id}
+
+        skus = list(skus_dict.keys())
+
         session = session_with_proxy(extra_args)
-        soup = cls._retrieve_page(session, url, extra_args)
+        step_size = 100
+        currencies_dict = {
+            'us': 'USD'
+        }
 
-        pricing_area = soup.find('div', 'productArea')
+        scraper_mode = extra_args['scraper_mode']
+        products = []
 
-        if not pricing_area:
-            return []
+        for i in range((len(skus) // step_size) + 1):
+            skus_slice = skus[step_size * i:step_size * (i + 1)]
+            sku_query = ','.join(skus_slice)
 
-        name = pricing_area.find('div', 'title')['data-productname'].strip()
-        sku, part_number = [tag.text.strip() for tag in pricing_area.findAll(
-            'span', 'font-bold')]
+            res = session.get(
+                'https://intcomex-{}.apigee.net/v1/getproducts?skusList={}'
+                ''.format(scraper_mode, sku_query),
+                headers={'Authorization': extra_args['authorization_header']})
 
-        price_area = soup.find('div', 'linkArea').find('div', 'font-price')
+            for sku_entry in res.json():
+                name = skus_dict[sku_entry['Sku']]['name']
+                product_url = 'https://store.intcomex.com/es-XCL/Product/' \
+                              'Detail/' + skus_dict[sku_entry['Sku']]['url_id']
+                stock = extra_args['stock_data'][sku_entry['Sku']]
+                description = sku_entry['Description']
+                currency = currencies_dict[sku_entry['Price']['CurrencyId']]
+                price = Decimal(str(sku_entry['Price']['UnitPrice']))
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    product_url,
+                    url,
+                    sku_entry['Sku'],
+                    stock,
+                    price,
+                    price,
+                    currency,
+                    part_number=sku_entry['Mpn'],
+                    description=description
+                ))
 
-        if not price_area:
-            return []
+        return products
 
-        price = Decimal(price_area.text.split('$')[1].replace(
-            '.', '').replace(',', '.'))
+    @classmethod
+    def preflight(cls, extra_args=None):
+        api_key = extra_args['api_key']
+        access_key = extra_args['access_key']
+        timestamp = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
+        decoded_signature = ','.join([api_key, access_key, timestamp])
+        signature = sha256(decoded_signature.encode('ascii')).hexdigest()
 
-        description = ''
-
-        for panel_id in ['tabs-1', 'tabs-2']:
-            panel = soup.find('div', {'id': panel_id})
-            if panel:
-                description += html_to_markdown(str(panel)) + '\n\n'
-
-        picture_containers = soup.find(
-            'div', 'swiper-wrapper')
-
-        picture_urls = None
-
-        if picture_containers:
-            tags = picture_containers.findAll('img', 'img-thumb')
-
-            if tags:
-                picture_urls = []
-                for tag in tags:
-                    picture_url = tag['rel'].replace(' ', '%20')
-                    if 'http' not in picture_url:
-                        picture_url = 'http://store.intcomex.com' + picture_url
-                    picture_urls.append(picture_url)
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            -1,
-            price,
-            price,
-            'USD',
-            sku=sku,
-            part_number=part_number,
-            description=description,
-            picture_urls=picture_urls
+        auth = 'Bearer apiKey={}&utcTimeStamp={}&signature={}'.format(
+            api_key, timestamp, signature
         )
+        session = session_with_proxy(extra_args)
+        scraper_mode = extra_args['scraper_mode']
 
-        return [p]
+        res = session.get('https://intcomex-{}.apigee.net/v1/getinventory'
+                          ''.format(scraper_mode),
+                          headers={'Authorization': auth})
 
-    @classmethod
-    def _retrieve_page(cls, session, url, extra_args, refresh=False):
-        cookies = cls._session_cookies(extra_args, refresh)
-        response = session.get(url, cookies=cookies, verify=False)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        stock_data = {x['Sku']: x['InStock'] for x in res.json()}
 
-        if not soup.find('span', {'id': 'lblTicker'}):
-            if refresh:
-                raise Exception('Invalid username / password')
-            else:
-                return cls._retrieve_page(session, url, extra_args,
-                                          refresh=True)
-        else:
-            return soup
-
-    @classmethod
-    def _session_cookies(cls, extra_args, refresh=True):
-        if not cls.SESSION_COOKIES or refresh:
-            # We use Phantom because of a weird SSl error on Chrome
-            with PhantomJS() as driver:
-                driver.get('https://store.intcomex.com/es-XCL/Account/Login')
-
-                driver.find_element_by_id('User').send_keys(
-                    extra_args['username'])
-                password_field = driver.find_element_by_id('Password')
-                password_field.send_keys(extra_args['password'])
-                password_field.submit()
-
-                cookies = {}
-                for cookie_entry in driver.get_cookies():
-                    cookies[cookie_entry['name']] = cookie_entry['value']
-
-                cls.SESSION_COOKIES = cookies
-
-        return cls.SESSION_COOKIES
+        return {
+            'authorization_header': auth,
+            'stock_data': stock_data
+        }
