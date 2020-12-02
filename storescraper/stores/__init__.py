@@ -265,6 +265,7 @@ from .ttchile import TtChile
 from .tupi import Tupi
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
+from .ventas_albion import VentasAlbion
 from .vitel import Vitel
 from .vivelo import Vivelo
 from .vtr import Vtr
