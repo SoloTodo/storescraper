@@ -72,6 +72,7 @@ from .entel import Entel
 from .eurogen import Eurogen
 from .exito import Exito
 from .extra_brasil import ExtraBrasil
+from .eyc import Eyc
 from .falabella import Falabella
 from .falabella_fast import FalabellaFast
 from .falabella_cf import FalabellaCf
