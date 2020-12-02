@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 import json
@@ -39,11 +41,11 @@ class Multimax(Store):
             ('estufas', 'Stove'),
             ('lavadoras', 'WashingMachine'),
             ('secadoras', 'WashingMachine'),
-            # ('centro-de-lavado', 'WashingMachine'),
+            ('centro-de-lavado', 'WashingMachine'),
             ('refrigeradoras', 'Refrigerator'),
-            # ('congeladores', 'Refrigerator'),
-            # ('microondas', 'Oven'),
-            # ('hornos', 'Oven'),
+            ('congeladores', 'Refrigerator'),
+            ('microondas', 'Oven'),
+            ('hornos', 'Oven'),
             ('monitores', 'Monitor'),
         ]
 
@@ -69,11 +71,17 @@ class Multimax(Store):
                 soup = BeautifulSoup(response.text, 'html5lib')
 
                 container = soup.find('div', 'collection-products')
+
+                if not container:
+                    logging.warning('No products for category {}'
+                                    .format(category))
+                    break
+
                 items = container.findAll('article', 'item')
 
                 if not items:
                     if page == 1:
-                        raise Exception('No products for category {}'
+                        logging.warning('No products for category {}'
                                         .format(category))
                     break
 
@@ -92,7 +100,6 @@ class Multimax(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
 
         products = []
         json_data = demjson.decode(
