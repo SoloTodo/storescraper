@@ -41,9 +41,10 @@ class Linio(Store):
                 page = 1
 
                 while True:
-                    category_url = '{}/c/{}?sortBy={}&page' \
-                                   '={}'.format(cls.base_domain,
-                                                category_path, sorting, page)
+                    category_url = '{}/c/{}?is_international=0&sortBy={}' \
+                                   '&page={}'.format(
+                                    cls.base_domain, category_path, sorting,
+                                    page)
                     print(category_url)
 
                     if page >= 40:
