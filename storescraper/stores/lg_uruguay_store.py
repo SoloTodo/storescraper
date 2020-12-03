@@ -70,8 +70,11 @@ class LgUruguayStore(Store):
             stock = 0
         else:
             stock = -1
-        price = Decimal(soup.find('strong', 'precio venta').
-                        find('span', 'monto').text.replace('.', ''))
+        if soup.find('strong', 'precio venta'):
+            price = Decimal(soup.find('strong', 'precio venta')
+                            .find('span', 'monto').text.replace('.', ''))
+        else:
+            return []
         if soup.find('ul', 'lst lstThumbs'):
             picture_urls = ['https:' + tag.find('img')['src'] for tag in
                             soup.find('ul', 'lst lstThumbs').findAll('li')
