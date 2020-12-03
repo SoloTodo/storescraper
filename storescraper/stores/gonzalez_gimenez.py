@@ -7,68 +7,49 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class GonzalezGimenez(Store):
-
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'AirConditioner'
+            'Television'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['televisores-c11', 'Television'],
-            ['audio-c12', 'StereoSystem'],
-            ['celulares-c69', 'Cell'],
-            ['refrigeracion-c4', 'Refrigerator'],
-            ['hornos-c16', 'Oven'],
-            ['cocinas-c15', 'Stove'],
-            ['anafes-c17', 'Stove'],
-            ['lavarropas-c36', 'WashingMachine'],
-            ['secarropas-c37', 'WashingMachine'],
-            ['acondicionadores-de-aire-c29', 'AirConditioner']
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
         base_url = 'https://www.gonzalezgimenez.com.py/{}'
 
-        for c in category_paths:
-            category_path, local_category = c
+        if category != 'Television':
+            return []
 
-            if category != local_category:
-                continue
+        page = 1
 
-            page = 1
+        while True:
+            url = 'https://www.gonzalezgimenez.com.py/catalogo.{}?q=LG'.format(
+                page)
 
-            while True:
-                url = 'https://www.gonzalezgimenez.com.py/{}.{}'.format(
-                    category_path, page)
+            if page >= 15:
+                raise Exception('Page overflow: ' + url)
 
-                if page >= 15:
-                    raise Exception('Page overflow: ' + url)
+            print(url)
 
-                print(url)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            product_containers = soup.find(
+                'div', 'products').findAll('div', 'product')
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.find(
-                    'div', 'products').findAll('div', 'product')
+            if not product_containers:
+                break
 
-                if not product_containers:
-                    break
+            for product in product_containers:
+                product_link = product.find('a')
+                if 'LG' not in product_link['title'].upper():
+                    continue
 
-                for product in product_containers:
-                    product_url = base_url.format(product.find('a')['href'])
-                    product_urls.append(product_url)
+                product_url = 'https://www.gonzalezgimenez.com.py/' + \
+                              product_link['href']
+                product_urls.append(product_url)
 
-                page += 1
+            page += 1
 
         return product_urls
 

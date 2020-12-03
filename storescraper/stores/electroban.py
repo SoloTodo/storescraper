@@ -5,13 +5,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
-import json
-
 
 class Electroban(Store):
-    base_url = 'https://www.lg.com'
-    country_code = 'cl'
-
     @classmethod
     def categories(cls):
         return [

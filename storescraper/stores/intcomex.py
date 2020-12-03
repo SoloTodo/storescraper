@@ -18,7 +18,7 @@ class TLSAdapter(requests.adapters.HTTPAdapter):
         ctx = ssl.create_default_context()
         try:
             ctx.set_ciphers('DEFAULT@SECLEVEL=1')
-        except:
+        except Exception:
             pass
         self.poolmanager = poolmanager.PoolManager(
                 num_pools=connections,

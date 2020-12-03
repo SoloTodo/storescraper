@@ -97,8 +97,8 @@ class VirtualDrakon(Store):
             sku = str(json_info['sku'])
             if soup.find('p', 'stock in-stock'):
                 stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-            elif json_info['offers'][0][
-                'availability'] == 'http://schema.org/InStock':
+            elif json_info['offers'][0]['availability'] == \
+                    'http://schema.org/InStock':
                 stock = -1
             else:
                 stock = 0
