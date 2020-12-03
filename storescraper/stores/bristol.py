@@ -1,6 +1,5 @@
 import logging
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import TELEVISION
@@ -10,9 +9,6 @@ from storescraper.utils import session_with_proxy
 
 
 class Bristol(Store):
-    base_url = 'https://www.lg.com'
-    country_code = 'cl'
-
     @classmethod
     def categories(cls):
         return [
@@ -35,6 +31,7 @@ class Bristol(Store):
                 url_webpage = 'https://bristol.opentechla.com/api/opentech' \
                               '/martfury/products?_start={}' \
                               '&perPage=12&brand=lg'.format(page)
+                print(url_webpage)
                 data = session.get(url_webpage)
                 product_containers = data.json()['data']
                 if not len(product_containers):

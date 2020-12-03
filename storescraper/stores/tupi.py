@@ -13,72 +13,40 @@ class Tupi(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Projector',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'AirConditioner'
+            'Television'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            # Televisores
-            ['189', 'Television'],
-            # Audio
-            ['192', 'StereoSystem'],
-            # Celulares_y_Tablets
-            ['155', 'Cell'],
-            # Heladeras
-            ['158', 'Refrigerator'],
-            # Heladeras y freezers
-            ['13', 'Refrigerator'],
-            # Hornos
-            ['168', 'Oven'],
-            # Microondas
-            ['172', 'Oven'],
-            # Lavado
-            ['33', 'WashingMachine'],
-            # Climatización
-            ['12', 'AirConditioner']
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.tupi.com.py/familias_paginacion/{}/{}/'
 
-        for c in category_paths:
-            category_path, local_category = c
+        if category != 'Television':
+            return []
 
-            if category != local_category:
-                continue
+        page = 1
 
-            page = 1
+        while True:
+            url = 'https://www.tupi.com.py/buscar_paginacion.php?query=LG' \
+                  '&page=' + str(page)
 
-            while True:
-                url = base_url.format(category_path, page)
+            if page >= 15:
+                raise Exception('Page overflow: ' + url)
 
-                if page >= 15:
-                    raise Exception('Page overflow: ' + url)
+            print(url)
 
-                print(url)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+            if not product_containers:
+                break
 
-                if not product_containers:
-                    break
+            for product in product_containers:
+                product_link = product.findAll('a')[1]
+                if 'lg' in product_link.text.lower():
+                    product_urls.append(product_link['href'])
 
-                for product in product_containers:
-                    product_link = product.findAll('a')[1]
-                    if 'lg' in product_link.text.lower():
-                        product_urls.append(product_link['href'])
-
-                page += 1
+            page += 1
 
         return product_urls
 

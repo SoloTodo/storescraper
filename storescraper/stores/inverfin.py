@@ -14,66 +14,44 @@ class Inverfin(Store):
     def categories(cls):
         return [
             'Television',
-            'OpticalDiskPlayer',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'Headphones',
-            'AirConditioner'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['collections/televisores', 'Television'],
-            ['collections/equipos-de-sonido', 'StereoSystem'],
-            ['collections/smartphones', 'Cell'],
-            ['collections/hornos', 'Oven'],
-            ['collections/microondas', 'Oven'],
-            ['collections/cocinas', 'Stove'],
-            ['collections/anafes', 'Stove'],
-            ['collections/lavarropas', 'WashingMachine'],
-            ['collections/secarropas', 'WashingMacihne'],
-            ['collections/lavasecarropas', 'WashingMachine'],
-            ['collections/audifonos', 'Headphones'],
-            ['collections/acondicionadores-de-aire', 'AirConditioner']
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.inverfin.com.py/{}?page={}'
 
-        for c in category_paths:
-            category_path, local_category = c
+        if category != 'Television':
+            return []
 
-            if category != local_category:
-                continue
+        page = 1
 
-            page = 1
+        while True:
+            url = 'https://inverfin.com.py/search?type=product&q=LG*&page=' + \
+                  str(page)
 
-            while True:
-                url = base_url.format(category_path, page)
+            if page >= 15:
+                raise Exception('Page overflow' + url)
 
-                if page >= 15:
-                    raise Exception('Page overflow' + url)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-item')
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-item')
+            if not product_containers:
+                if page == 1:
+                    raise Exception('Empty category: ' + url)
+                break
 
-                if not product_containers:
-                    if page == 1:
-                        raise Exception('Empty category: ' + url)
-                    break
+            for product in product_containers:
+                product_link = product.find('a', 'product-item__title')
 
-                for product in product_containers:
-                    product_url = 'https://inverfin.com.py{}'.format(
-                        product.find('a')['href'])
-                    product_urls.append(product_url)
+                if 'LG' not in product_link.text.upper():
+                    continue
 
-                page += 1
+                product_url = 'https://inverfin.com.py{}'.format(
+                    product_link['href'])
+                product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 
