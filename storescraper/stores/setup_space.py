@@ -91,6 +91,8 @@ class SetupSpace(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_name').text
         sku = soup.find('input', {'name': 'id'})['value'].strip()
+        if not soup.find('span', 'current_price').find('span', 'money'):
+            return []
         normal_price = Decimal(remove_words(
             soup.find('span', 'current_price').find('span', 'money').text))
         offer_price = normal_price

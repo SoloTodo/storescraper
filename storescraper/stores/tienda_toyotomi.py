@@ -79,7 +79,7 @@ class TiendaToyotomi(Store):
         json_data = json_data['@graph'][1]
 
         name = json_data['name']
-        sku = json_data['sku']
+        sku = str(json_data['sku'])
 
         price = Decimal(json_data['offers'][0]['price'])
 

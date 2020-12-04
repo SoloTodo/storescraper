@@ -74,8 +74,12 @@ class VirtualDrakon(Store):
                 sku = str(product['variation_id'])
                 stock_container = BeautifulSoup(product['availability_html'],
                                                 'html.parser').text.strip()
-                stock = 0 if stock_container == 'Agotado' else int(
-                    stock_container.split()[0])
+                if stock_container == 'Agotado':
+                    stock = 0
+                elif stock_container.split()[0] == 'Disponible':
+                    stock = -1
+                else:
+                    stock = int(stock_container.split()[0])
                 p = Product(
                     variant_name,
                     cls.__name__,
