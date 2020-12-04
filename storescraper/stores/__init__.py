@@ -182,7 +182,7 @@ from .multi_ahorro import MultiAhorro
 from .multimax import Multimax
 from .musimundo import Musimundo
 from .my_box import MyBox
-from.nario_hogar import NarioHogar
+from .nario_hogar import NarioHogar
 from .new_game import NewGame
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
