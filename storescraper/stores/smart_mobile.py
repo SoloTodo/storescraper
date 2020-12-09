@@ -5,11 +5,11 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, POWER_SUPPLY, CPU_COOLER, \
-    COMPUTER_CASE, RAM, MONITOR, MOTHERBOARD, PROCESSOR, VIDEO_CARD, WEARABLE, \
-    STEREO_SYSTEM, HEADPHONES
+    COMPUTER_CASE, RAM, MONITOR, MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
+    WEARABLE, STEREO_SYSTEM, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class SmartMobile(Store):
@@ -77,32 +77,24 @@ class SmartMobile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import pdb
-        pdb.set_trace()
 
         product_container = soup.find('div', 'single-product-wrapper')
         name = product_container.find('h1', 'product_title').text
-        normal_price = Decimal(
-            product_container.find('div', 'hprice').text.split('$')[
-                1].replace(
-                '.', ''))
-        if product_container.find('ins'):
-            offer_price = Decimal(
-                remove_words(
-                    product_container.find('ins').text))
-        else:
-            offer_price = Decimal(
-                remove_words(
-                    product_container.find('span', 'electro-price').text))
         if soup.find('form', 'variations_form cart'):
             products = []
-            variations = json.loads(soup.find('form', 'variations_form cart')['data-product_variations'])
+            variations = json.loads(soup.find('form', 'variations_form cart')[
+                                        'data-product_variations'])
             for variation in variations:
-                vartion_name = name + ' - ' + variation['attributes'][
-                    'attribute_pa_color']
+                variation_attribute = list(variation['attributes'].values())
+                variation_name = name + ' (' + ' - '.join(variation_attribute) + ')'
                 sku = str(variation['variation_id'])
-                if BeautifulSoup(variation['availability_html'],
-                                 'html.parser').text.split()[0] == 'Agotado':
+                offer_price = Decimal(variation['display_price'])
+                normal_price = Decimal(
+                    round(variation['display_price'] * 1.04))
+                if variation['availability_html'] == '':
+                    stock = -1
+                elif BeautifulSoup(variation['availability_html'],
+                                   'html.parser').text.split()[0] == 'Agotado':
                     stock = 0
                 else:
                     stock = int(
@@ -110,7 +102,7 @@ class SmartMobile(Store):
                                       'html.parser').text.split()[0])
                 picture_urls = [variation['image']['url']]
                 p = Product(
-                    vartion_name,
+                    variation_name,
                     cls.__name__,
                     category,
                     url,
@@ -122,20 +114,27 @@ class SmartMobile(Store):
                     'CLP',
                     sku=sku,
                     picture_urls=picture_urls
-
                 )
                 products.append(p)
             return products
         else:
-            sku = product_container.find('a', 'add-to'
-                                              '-compare'
-                                              '-link')[
+            price_info = int(json.loads(
+                soup.find('script', {'type': 'application/ld+json'}).text)[
+                                 '@graph'][1]['offers'][0][
+                                 'priceSpecification']['price'])
+            normal_price = Decimal(round(price_info * 1.04))
+            offer_price = Decimal(price_info)
+            sku = product_container.find('a', 'add-to-compare-link')[
                 'data-product_id']
-            stock_container = product_container.find('p', 'stock').text.split()
-            if stock_container[0] == 'Agotado':
-                stock = 0
+            if not product_container.find('p', 'stock'):
+                stock = -1
             else:
-                stock = int(stock_container[0])
+                stock_container = product_container.find(
+                    'p', 'stock').text.split()
+                if stock_container[0] == 'Agotado':
+                    stock = 0
+                else:
+                    stock = int(stock_container[0])
 
             picture_urls = [tag['src'] for tag in
                             soup.find('div',
