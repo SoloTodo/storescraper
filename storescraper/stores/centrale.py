@@ -91,8 +91,12 @@ class Centrale(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('span', {'id': 'solotodo'}).text.split()[
-                   1] + ' - ' + soup.find('h1', 'product-title').text.strip()
+        if len(soup.find('span', {'id': 'solotodo'}).text.split()) == 1:
+            name = soup.find('h1', 'product-title').text.strip()
+        else:
+            name = soup.find('span', {'id': 'solotodo'}).text.split()[
+                       1] + ' - ' + soup.find('h1',
+                                              'product-title').text.strip()
         sku = soup.find('button', 'single_add_to_cart_button')['value']
         stock = int(
             soup.find('div', 'add-to-cart-container').find('p').text.split()[
