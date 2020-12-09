@@ -168,6 +168,7 @@ from .mercadolibre_argentina_seagate import MercadoLibreArgentinaSeagate
 from .mercadolibre_argentina_western_digital import \
     MercadoLibreArgentinaWesternDigital
 from .mercado_libre_chile import MercadoLibreChile
+from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_samsung import MercadoLibreSamsung
 from .meroli import Meroli
 from .mhw_store import MHWStore
@@ -181,7 +182,7 @@ from .multi_ahorro import MultiAhorro
 from .multimax import Multimax
 from .musimundo import Musimundo
 from .my_box import MyBox
-from.nario_hogar import NarioHogar
+from .nario_hogar import NarioHogar
 from .new_game import NewGame
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore

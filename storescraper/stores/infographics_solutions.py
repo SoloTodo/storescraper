@@ -7,7 +7,8 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
-    COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL
+    COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL, \
+    WEARABLE, STEREO_SYSTEM
 
 
 class InfographicsSolutions(Store):
@@ -29,16 +30,18 @@ class InfographicsSolutions(Store):
             STORAGE_DRIVE,
             POWER_SUPPLY,
             CPU_COOLER,
-            CELL
+            CELL,
+            WEARABLE,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['equipos/portatiles', NOTEBOOK],
-            ['tecnologia/smarthphone', CELL],
-            ['tecnologia/tablet', TABLET],
-            ['componentes-de-pc/placa-madre', MOTHERBOARD],
+            ['portatiles-notebook', NOTEBOOK],
+            ['celulares-smarthphones', CELL],
+            # ['tecnologia/tablet', TABLET],
+            ['componentes-de-pc/placas-madres', MOTHERBOARD],
             ['componentes-de-pc/memorias-ram', RAM],
             ['componentes-de-pc/procesadores', PROCESSOR],
             ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
@@ -47,12 +50,14 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/almacenamiento/discos-duros',
              STORAGE_DRIVE],
             ['componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-de-pc/monitores', MONITOR],
+            ['pantallas-monitores', MONITOR],
             ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/refrigeracion', CPU_COOLER],
-            ['accesorios-gamer/teclados', KEYBOARD],
-            ['accesorios-gamer/headset-audifonos', HEADPHONES],
-            ['accesorios-gamer/mouse', MOUSE],
+            # ['componentes-de-pc/refrigeracion', CPU_COOLER],
+            ['accesorios/teclados', KEYBOARD],
+            ['accesorios/audifonos-headset', HEADPHONES],
+            ['accesorios/mouse', MOUSE],
+            ['reloj-inteligente-smartwatch', WEARABLE],
+            ['accesorios/parlantes', STEREO_SYSTEM],
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,8 +70,9 @@ class InfographicsSolutions(Store):
             page = 1
 
             while True:
-                url = 'https://infograsolutions.cl/categoria-producto/{}/' \
+                url = 'https://infographicssolutions.cl/categoria-producto/{}/' \
                       'page/{}/'.format(category_path, page)
+                print(url)
                 print(url)
 
                 if page > 10:
