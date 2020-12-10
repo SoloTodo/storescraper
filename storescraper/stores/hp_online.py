@@ -72,11 +72,11 @@ class HpOnline(Store):
         if not soup.find('span', 'product-available'):
             stock = 0
 
-        if not soup.find('span', {'data-price-type': 'finalPrice'})\
+        if not soup.find('span', {'data-price-type': 'finalPrice'}) \
                 .find('span', 'price'):
             return []
 
-        price = soup.find('span', {'data-price-type': 'finalPrice'})\
+        price = soup.find('span', {'data-price-type': 'finalPrice'}) \
             .find('span', 'price').text.strip()
         price = Decimal(price.replace('$', '').replace('.', ''))
 
@@ -94,7 +94,8 @@ class HpOnline(Store):
 
         picture_urls = []
 
-        if images_json:
+        if images_json and 'mage/gallery/gallery' in images_json[
+            '[data-gallery-role=gallery-placeholder]']:
             images_data = images_json[
                 '[data-gallery-role=gallery-placeholder]'][
                 'mage/gallery/gallery']['data']

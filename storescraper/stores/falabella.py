@@ -320,7 +320,7 @@ class Falabella(Store):
             res = session.get(pag_url, timeout=None)
             res = json.loads(res.content.decode('utf-8'))['data']
 
-            if 'results' not in res:
+            if 'results' not in res or not res['results']:
                 if page == 1:
                     logging.warning('Empty category: {}'.format(category_id))
                 break
