@@ -69,8 +69,8 @@ class VirtualDrakon(Store):
             json_info = json.loads(soup.find('form', 'variations_form')[
                                        'data-product_variations'])
             for product in json_info:
-                variant_name = name + ' - ' + product['attributes'][
-                    'attribute_pa_color']
+                variant_name = name + ' - (' + ' '.join(
+                    product['attributes'].values())+')'
                 sku = str(product['variation_id'])
                 stock_container = BeautifulSoup(product['availability_html'],
                                                 'html.parser').text.strip()
