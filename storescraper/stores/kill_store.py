@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import PRINTER, MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
-    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES
+    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
+    CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,6 +28,7 @@ class KillStore(Store):
             EXTERNAL_STORAGE_DRIVE,
             POWER_SUPPLY,
             HEADPHONES,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -44,6 +46,7 @@ class KillStore(Store):
             ['370-gabinetes', COMPUTER_CASE],
             ['285-discos-externos', EXTERNAL_STORAGE_DRIVE],
             ['104-audifonos', HEADPHONES],
+            ['369-refrigeracion-y-ventiladores', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
