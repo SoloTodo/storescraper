@@ -91,7 +91,7 @@ class Intcomex(Store):
                 name = skus_dict[sku_entry['Sku']]['name']
                 product_url = 'https://store.intcomex.com/es-XCL/Product/' \
                               'Detail/' + skus_dict[sku_entry['Sku']]['url_id']
-                stock = extra_args['stock_data'][sku_entry['Sku']]
+                stock = extra_args['stock_data'].get(sku_entry['Sku'], 0)
                 description = sku_entry['Description']
                 currency = currencies_dict[sku_entry['Price']['CurrencyId']]
                 price = Decimal(str(sku_entry['Price']['UnitPrice']))
