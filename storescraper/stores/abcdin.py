@@ -563,11 +563,17 @@ class AbcDin(Store):
 
                     for index, element in enumerate(elements):
                         modal_button = driver \
-                            .find_elements_by_class_name('close-modal')
+                            .find_elements_by_class_name('btn-close-pop-up')
 
                         if modal_button:
-                            modal_button[0].click()
-                            time.sleep(2)
+                            try:
+                                modal_button[0].click()
+                                time.sleep(2)
+                            except Exception:
+                                # Most likely button not interactable
+                                continue
+
+                        print('wut')
 
                         control = controls[index]
                         control.click()

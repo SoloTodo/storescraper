@@ -62,6 +62,9 @@ class Hbt(Store):
         data = response.text
         soup = BeautifulSoup(data, 'html.parser')
 
+        if not soup.find('h1'):
+            return []
+
         name = soup.find('h1').text.strip()
         sku = soup.find('div', 'sku').text.strip()
 
