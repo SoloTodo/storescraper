@@ -546,7 +546,8 @@ class AbcDin(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
+                with HeadlessChrome(images_enabled=True,
+                                    headless=True) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -563,7 +564,7 @@ class AbcDin(Store):
 
                     for index, element in enumerate(elements):
                         modal_button = driver \
-                            .find_elements_by_class_name('btn-close-pop-up')
+                            .find_elements_by_class_name('btn-cerrar-pop-up')
 
                         if modal_button:
                             try:
