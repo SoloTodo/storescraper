@@ -46,6 +46,7 @@ from .cyber_puerta import CyberPuerta
 from .daewoo import Daewoo
 from .danaus import Danaus
 from .david_and_joseph import DavidAndJoseph
+from .dazbog_store import DazbogStore
 from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
