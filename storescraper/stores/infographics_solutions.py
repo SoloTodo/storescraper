@@ -1,3 +1,4 @@
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -52,7 +53,7 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/gabinetes', COMPUTER_CASE],
             ['pantallas-monitores', MONITOR],
             ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            # ['componentes-de-pc/refrigeracion', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion', CPU_COOLER],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/audifonos-headset', HEADPHONES],
             ['accesorios/mouse', MOUSE],
@@ -72,8 +73,6 @@ class InfographicsSolutions(Store):
             while True:
                 url = 'https://infographicssolutions.cl/categoria-producto/{}/' \
                       'page/{}/'.format(category_path, page)
-                print(url)
-                print(url)
 
                 if page > 10:
                     raise Exception('Page overflow: ' + page)
@@ -81,7 +80,7 @@ class InfographicsSolutions(Store):
                 res = session.get(url)
                 if res.status_code == 404:
                     if page == 1:
-                        raise Exception('Invalid category: ' + url)
+                        logging.warning('Invalid category: ' + url)
                     break
 
                 soup = BeautifulSoup(res.text, 'html.parser')
