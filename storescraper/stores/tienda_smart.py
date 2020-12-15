@@ -1,4 +1,5 @@
 import json
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -44,7 +45,7 @@ class TiendaSmart(Store):
                     raise Exception('Page overflow')
 
                 category_url = 'https://tiendasmart.cl/{}?' \
-                               'p={}&product_list_limit=30'\
+                               'p={}&product_list_limit=30' \
                     .format(category_path, page)
                 print(category_url)
 
@@ -57,7 +58,9 @@ class TiendaSmart(Store):
                 done = False
 
                 if not product_containers:
-                    raise Exception('Empty category: ' + category_url)
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_url)
+                    break
 
                 for container in product_containers:
                     product_url = container.find(
