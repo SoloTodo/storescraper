@@ -51,8 +51,8 @@ class Zmart(Store):
                     '{}/scripts/prodList.asp?sinstock=0&idCategory={}' \
                     ''.format(base_url, category_path)
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(session.get(
+                    category_url, verify=False).text, 'html.parser')
 
                 link_containers = soup.findAll('div', 'ProdBox146')
 
@@ -67,8 +67,8 @@ class Zmart(Store):
             else:
                 category_url = base_url + '/' + category_path
 
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
+                soup = BeautifulSoup(session.get(
+                    category_url, verify=False).text, 'html.parser')
 
                 link_containers = soup.findAll('div', 'BoxProductoS2')
                 link_containers += soup.findAll('div', 'ProdBox240Media')
@@ -87,7 +87,7 @@ class Zmart(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url, verify=False).text, 'html.parser')
 
         if soup.find('img', {'src': '/productos/upload/2015/09/23/'
                                     '20150922-errorpage.jpg'}):

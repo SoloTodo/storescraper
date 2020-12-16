@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, MOUSE, KEYBOARD, TELEVISION, MONITOR, \
-    MEMORY_CARD, RAM, HEADPHONES
+    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,7 +32,9 @@ class CCLink(Store):
             MONITOR,
             MEMORY_CARD,
             RAM,
-            HEADPHONES
+            HEADPHONES,
+            CPU_COOLER,
+            UPS,
         ]
 
     @classmethod
@@ -55,13 +57,18 @@ class CCLink(Store):
             ['partes-y-piezas/componentes/tarjetas-de-video', VIDEO_CARD],
             ['partes-y-piezas/componentes/mouse', MOUSE],
             ['partes-y-piezas/componentes/teclado', KEYBOARD],
+            ['partes-y-piezas/componentes/ventiladores', CPU_COOLER],
             ['partes-y-piezas/tv-y-proyeccion/televisores', TELEVISION],
             ['partes-y-piezas/tv-y-proyeccion/monitores', MONITOR],
             ['partes-y-piezas/memorias/flash', MEMORY_CARD],
             ['partes-y-piezas/memorias/ram', RAM],
             ['partes-y-piezas/componentes/gabinetes-gamer', COMPUTER_CASE],
             ['partes-y-piezas/componentes/tarjeta-de-video', VIDEO_CARD],
-            ['gamer/juegos-y-consolas/audifonos', HEADPHONES]
+            ['gamer/juegos-y-consolas/audifonos', HEADPHONES],
+            ['energia/ups', UPS],
+            ['gamer/comodidad-gamer', HEADPHONES],
+            ['gamer/juegos-y-consolas/consolas-xbox', EXTERNAL_STORAGE_DRIVE],
+            ['gamer/componentes-rgb', MOTHERBOARD],
         ]
 
         session = session_with_proxy(extra_args)
