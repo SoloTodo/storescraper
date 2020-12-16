@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from collections import defaultdict
 from decimal import Decimal
@@ -22,11 +23,6 @@ class Paris(Store):
          'Electro > Televisión > Televisores LED', 1],
         ['television/televisores-oled-qled', ['Television'],
          'Electro > Televisión > Oled y Qled', 1],
-        # Also contains other accesories
-        # ['electro/accesorios-tv/bluray-dvd', ['OpticalDiskPlayer'],
-        #  'Otras categorias > Bluray y DVD', 1],
-        # ['electro/accesorios-tv/proyectores', ['Projector'],
-        #  'Otras categorias > Proyectores', 1],
         # Also contains other audio products
         ['electro/audio', ['StereoSystem', 'Headphones'],
          'Electro > Audio', 0],
@@ -51,22 +47,6 @@ class Paris(Store):
          'Electro > HiFi > Combos HIFI', 1],
         ['electro/elige-tu-pulgada', ['Television'],
          'Electro > Elige tu pulgada', 1],
-        ['electro/elige-tu-pulgada/hasta-29-pulgadas', ['Television'],
-         'Electro > Elige tu pulgada > Hasta 29"', 1],
-        ['electro/elige-tu-pulgada/30-a-39-pulgadas', ['Television'],
-         'Electro > Elige tu pulgada > 30" a 39"', 1],
-        ['electro/elige-tu-pulgada/40-a-49-pulgadas', ['Television'],
-         'Electro > Elige tu pulgada > 40" a 49"', 1],
-        ['electro/elige-tu-pulgada/50-a-59-pulgadas', ['Television'],
-         'Electro > Elige tu pulgada > 50" a 59"', 1],
-        ['electro/elige-tu-pulgada/60-o-mas-pulgadas', ['Television'],
-         'Electro > Elige tu pulgada > 60" o más', 1],
-        # ['electro/ofertas', ['Television', 'StereoSystem'],
-        #  'Electro > Ofertas', 0.5],
-        # ['electro/ofertas/television', ['Television'],
-        #  'Electro > Ofertas > Ofertas TV', 1],
-        # ['electro/ofertas/audio', ['StereoSystem'],
-        #  'Electro > Ofertas > Ofertas Audio', 1],
         ['tecnologia/computadores', ['Notebook', 'Tablet', 'AllInOne'],
          'Tecno > Computadores', 0.5],
         ['tecnologia/computadores/notebooks', ['Notebook'],
@@ -75,8 +55,8 @@ class Paris(Store):
          'Tecno > Computadores > PC Gamers', 1],
         ['tecnologia/computadores/desktop-all-in-one', ['AllInOne'],
          'Tecno > Computadores > Desktop y All InOne', 1],
-        # ['tecnologia/computadores/convertibles-2-en-1', ['Notebook'],
-        #  'Tecno > Computadores > Convertibles 2 en 1', 1],
+        ['tecnologia/computadores/convertibles-2-en-1', ['Notebook'],
+         'Tecno > Computadores > Convertibles 2 en 1', 1],
         ['tecnologia/computadores/ipad-tablet', ['Tablet'],
          'Tecno > Computadores > iPad y Tablet', 1],
         # Also includes accesories
@@ -93,24 +73,24 @@ class Paris(Store):
          'Tecno > Gamers', 0.5],
         ['tecnologia/gamer/teclados', ['Keyboard'],
          'Tecno > Gamers > Teclados y Mouse', 1],
-        # ['tecnologia/gamer/headset', ['Headphones'],
-        #  'Tecno > Gamers > Headset', 1],
+        ['tecnologia/gamer/headset', ['Headphones'],
+         'Tecno > Gamers > Headset', 1],
         # Also includes videogames
         ['tecnologia/consolas-videojuegos', ['VideoGameConsole'],
          'Tecno > Consolas VideoJuegos', 0],
-        # ['tecnologia/consolas-videojuegos/playstation',
-        # ['VideoGameConsole'],
-        #  'Tecno > Consolas VideoJuegos > Consolas PlayStation', 1],
-        # ['tecnologia/consolas-videojuegos/xbox', ['VideoGameConsole'],
-        #  'Tecno > Consolas VideoJuegos > Consolas Xbox', 1],
-        # ['tecnologia/consolas-videojuegos/nintendo',
-        # ['VideoGameConsole'],
-        #  'Tecno > Consolas VideoJuegos > Consolas Nintendo', 1],
+        ['tecnologia/consolas-videojuegos/playstation',
+        ['VideoGameConsole'],
+         'Tecno > Consolas VideoJuegos > Consolas PlayStation', 1],
+        ['tecnologia/consolas-videojuegos/xbox', ['VideoGameConsole'],
+         'Tecno > Consolas VideoJuegos > Consolas Xbox', 1],
+        ['tecnologia/consolas-videojuegos/nintendo',
+        ['VideoGameConsole'],
+         'Tecno > Consolas VideoJuegos > Consolas Nintendo', 1],
         ['tecnologia/impresoras', ['Printer'], 'Tecno > Impresoras', 0],
         ['tecnologia/impresoras/multifuncionales', ['Printer'],
          'Tecno > Impresión > Multifuncionales', 1],
-        # ['tecnologia/impresion/laser', ['Printer'],
-        #  'Tecno > Impresión > Impresoras Láser', 1],
+        ['tecnologia/impresoras/laser', ['Printer'],
+         'Tecno > Impresión > Impresoras Láser', 1],
         # Also includes other accesories
         ['tecnologia/accesorios-fotografia',
          ['MemoryCard'], 'Tecno > Accesorios Fotografía', 0],
@@ -121,8 +101,8 @@ class Paris(Store):
         ['tecnologia/accesorios-computacion',
          ['Projector', 'Monitor', 'Mouse', 'ExternalStorageDrive',
           'UsbFlashDrive'], 'Tecno > Accesorios Computación', 0],
-        # ['tecnologia/accesorios-computacion/monitor-gamer', ['Monitor'],
-        #  'Tecno > Accesorios Computación > Monitores Gamer', 1],
+        ['tecnologia/accesorios-computacion/monitor-gamer', ['Monitor'],
+         'Tecno > Accesorios Computación > Monitores Gamer', 1],
         ['tecnologia/accesorios-computacion/discos-duros',
          ['ExternalStorageDrive'],
          'Tecno > Accesorios Computación > Discos Duros', 1],
@@ -136,9 +116,9 @@ class Paris(Store):
          'Línea Blanca > Refrigeración', 1],
         ['linea-blanca/refrigeracion/refrigeradores/', ['Refrigerator'],
          'Línea Blanca > Refrigeración > Refrigeradores', 1],
-        # ['linea-blanca/refrigeracion/refrigeradores/no-frost/',
-        #  ['Refrigerator'],
-        #  'Línea Blanca > Refrigeración > No Frost', 1],
+        ['linea-blanca/refrigeracion/refrigeradores/no-frost/',
+         ['Refrigerator'],
+         'Línea Blanca > Refrigeración > No Frost', 1],
         ['linea-blanca/refrigeracion/refrigeradores/'
          'refrigerador-top-mount/',
          ['Refrigerator'],
@@ -147,11 +127,11 @@ class Paris(Store):
          'refrigerador-bottom-freezer//',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Bottom Freezer', 1],
-        # ['linea-blanca/refrigeracion/side-by-side/',
-        #  ['Refrigerator'],
-        #  'Línea Blanca > Refrigeración > Side by Side', 1],
-        # ['linea-blanca/refrigeracion/frio-directo', ['Refrigerator'],
-        #  'Línea Blanca > Refrigeración > Frío Directo', 1],
+        ['linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side',
+         ['Refrigerator'],
+         'Línea Blanca > Refrigeración > Side by Side', 1],
+        ['linea-blanca/refrigeracion/frio-directo', ['Refrigerator'],
+         'Línea Blanca > Refrigeración > Frío Directo', 1],
         ['linea-blanca/refrigeracion/freezer', ['Refrigerator'],
          'Línea Blanca > Refrigeración > Freezer', 1],
         ['linea-blanca/refrigeracion/frigobar-cavas', ['Refrigerator'],
@@ -188,8 +168,6 @@ class Paris(Store):
         ['linea-blanca/climatizacion/aires-acondicionado',
          ['AirConditioner'],
          'Línea Blanca > Climatización > Aire Acondicionado', 1],
-        # ['linea-blanca/climatizacion/calefont', ['WaterHeater'],
-        #  'Línea Blanca > Climatización > Calefont', 1],
         ['linea-blanca/estufas', ['SpaceHeater'],
          'Línea Blanca > Estufas', 1],
         ['linea-blanca/estufas/electricas', ['SpaceHeater'],
@@ -220,26 +198,26 @@ class Paris(Store):
             'VacuumCleaner',
             'WashingMachine',
             'Cell',
-            # 'Camera',
+            'Camera',
             'StereoSystem',
-            # 'OpticalDiskPlayer',
+            'OpticalDiskPlayer',
             'ExternalStorageDrive',
             'UsbFlashDrive',
             'MemoryCard',
             'Projector',
             'VideoGameConsole',
-            # 'Monitor',
+            'Monitor',
             'AllInOne',
             'AirConditioner',
-            # 'WaterHeater',
-            # 'SolidStateDrive',
+            'WaterHeater',
+            'SolidStateDrive',
             'SpaceHeater',
             'Wearable',
             'Mouse',
             'Keyboard',
-            # 'KeyboardMouseCombo',
+            'KeyboardMouseCombo',
             'Headphones',
-            # 'ComputerCase',
+            'ComputerCase',
             'DishWasher',
             'CellAccesory',
         ]
@@ -279,7 +257,7 @@ class Paris(Store):
 
                 if not containers:
                     if page == 0:
-                        raise Exception('Empty category: ' + category_url)
+                        logging.warning('Empty category: ' + category_url)
                     break
 
                 for idx, container in enumerate(containers):
@@ -296,6 +274,7 @@ class Paris(Store):
                     })
 
                 page += 1
+                break
 
         return product_entries
 
