@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -53,7 +54,42 @@ class Spaceman(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        # import ipdb
+        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
+        if soup.find('form', 'variations_form'):
+            product_variants = json.loads(soup.find('form', 'variations_form')[
+                                              'data-product_variations'])
+            products = []
+            for variant in product_variants:
+                variant_name = name + ' - ' + ' '.join(
+                    variant['attributes'].values())
+                sku = str(variant['variation_id'])
+                stock_container = BeautifulSoup(variant['availability_html'],
+                                                'html.parser').find('span',
+                                                                    'stock')
+                if stock_container:
+                    stock = int(stock_container.text.split()[0])
+                else:
+                    stock = 0
+                price = Decimal(variant['display_price'])
+                picture_urls = [variant['image']['url']]
+                p = Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
         sku = soup.find('button', {'name': 'add-to-cart'})['value']
         stock = int(soup.find('span', 'stock').text.split()[0])
         price = Decimal(remove_words(soup.findAll('bdi')[-1].text))
