@@ -54,9 +54,8 @@ class Spaceman(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
+
         if soup.find('form', 'variations_form'):
             product_variants = json.loads(soup.find('form', 'variations_form')[
                                               'data-product_variations'])
@@ -90,8 +89,15 @@ class Spaceman(Store):
                 )
                 products.append(p)
             return products
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
-        stock = int(soup.find('span', 'stock').text.split()[0])
+
+        add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
+        sku = soup.find('input', {'name': 'comment_post_ID'})['value']
+
+        if add_to_cart_button:
+            stock = int(soup.find('span', 'stock').text.split()[0])
+        else:
+            stock = 0
+
         price = Decimal(remove_words(soup.findAll('bdi')[-1].text))
         picture_urls = []
         for tag in soup.find('div', 'woocommerce-product-gallery').findAll(
