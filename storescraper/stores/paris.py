@@ -23,6 +23,8 @@ class Paris(Store):
          'Electro > Televisión > Televisores LED', 1],
         ['television/televisores-oled-qled', ['Television'],
          'Electro > Televisión > Oled y Qled', 1],
+        ['electro/television/soundbar-home-theater', ['StereoSystem'],
+         'Electro > Televisión > Soundbar y Home Theater', 1],
         # Also contains other audio products
         ['electro/audio', ['StereoSystem', 'Headphones'],
          'Electro > Audio', 0],
