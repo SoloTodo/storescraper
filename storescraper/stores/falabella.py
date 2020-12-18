@@ -445,9 +445,13 @@ class Falabella(Store):
     def _old_products_for_url(
             cls, url, content, session,  category=None, extra_args=None):
         soup = BeautifulSoup(content, 'html.parser')
+        next_container = soup.find('script', {'id': '__NEXT_DATA__'})
+
+        if not next_container:
+            return []
 
         product_data = json.loads(
-            soup.find('script', {'id': '__NEXT_DATA__'}).text)[
+            next_container.text)[
             'props']['pageProps']['productData']
 
         description = ''
