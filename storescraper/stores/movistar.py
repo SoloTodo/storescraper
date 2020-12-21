@@ -105,7 +105,6 @@ class Movistar(Store):
         plan_containers = soup.findAll('div', 'mb-parrilla_col')
 
         for plan_container in plan_containers:
-            print(plan_container)
             plan_link = plan_container.find('a')
             plan_url = plan_link['href']
 

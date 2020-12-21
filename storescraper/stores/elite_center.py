@@ -70,9 +70,8 @@ class EliteCenter(Store):
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?orderby=popularity&paged={}'.format(
                                 url_extension, page)
-                print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-small')
                 if not product_containers:
                     if page == 1:
