@@ -116,9 +116,15 @@ class GrupoDecme(Store):
         for container in potential_stock_containers:
             if 'EXISTENCIA' in container.text:
                 stock_container = container.parent.find('div').contents
+        if soup.findAll('div', 'gf_row gf_row-gap-2')[1].find(
+                'strong') and not stock_container:
+            stock_container = [
+                soup.findAll('div', 'gf_row gf_row-gap-2')[1].find(
+                    'strong').text]
 
         if not stock_container:
             stock = 0
+
         else:
             for item in stock_container:
                 if 'pzas.' in item:

@@ -56,9 +56,7 @@ class LaCuracaoOnline(Store):
                 if product_url in product_urls:
                     done = True
                     break
-
-                if 'lg' in product_name.lower():
-                    product_urls.append(product_url)
+                product_urls.append(product_url)
 
             page += 1
 
