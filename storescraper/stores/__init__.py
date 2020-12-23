@@ -86,6 +86,7 @@ from .fravega import Fravega
 from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
+from .gaming_store import GamingStore
 from .gearbest import GearBest
 from .geant import Geant
 from .generacion_gamers import GeneracionGamers
