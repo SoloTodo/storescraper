@@ -345,8 +345,7 @@ class Paris(Store):
         if not name:
             return []
 
-        name = name.text.strip()
-
+        name = ' '.join(name.text.strip().split())
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
         offer_price_container = soup.find('div', 'cencosud-price-2')
 
