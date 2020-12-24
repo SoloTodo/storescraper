@@ -84,6 +84,8 @@ class GoodComputer(Store):
         stock_container = soup.find('p', 'stock')
         if not stock_container:
             stock = -1
+        elif stock_container.text.split()[0] == 'Agotado':
+            stock = 0
         else:
             stock = int(stock_container.text.split()[0])
         price_container = soup.find('p', 'price')
