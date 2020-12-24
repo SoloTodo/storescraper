@@ -1,118 +1,68 @@
-import re
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
+    SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, \
+    MOUSE, HEADPHONES, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class PcGamer(Store):
     @classmethod
     def categories(cls):
         return [
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'CpuCooler',
-            'Television',
-            'Mouse',
-            'Notebook',
-            'Printer',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'ExternalStorageDrive',
-            'Headphones',
-            'MemoryCard',
-            'UsbFlashDrive',
-            'StereoSystem',
+            PROCESSOR,
+            MOTHERBOARD,
+            RAM,
+            SOLID_STATE_DRIVE,
+            VIDEO_CARD,
+            COMPUTER_CASE,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            MOUSE,
+            HEADPHONES,
+            MONITOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['62', 'Processor'],  # Procesadores
-            ['33', 'Motherboard'],  # MB
-            ['70', 'Ram'],  # RAM Notebook
-            ['75', 'StorageDrive'],  # Almacenamiento
-            ['87', 'VideoCard'],  # Tarjetas de video
-            ['81', 'ComputerCase'],  # Gabinetes s/fuente
-            ['84', 'PowerSupply'],  # Fuentes de poder
-            ['17_69', 'CpuCooler'],  # Coolers
-            ['108', 'CpuCooler'],  # Refrigeracion
-            ['106', 'Mouse'],  # Mouse y teclados
-            ['92', 'Keyboard'],  # accesorios gamer
-            ['105', 'Headphones'],  # Audio
-            ['98', 'Monitor'],  # Monitores
+            ['11', PROCESSOR],  # Procesadores
+            ['10', MOTHERBOARD],  # MB
+            ['12', RAM],  # RAM Notebook
+            ['13', SOLID_STATE_DRIVE],  # Almacenamiento
+            ['16', VIDEO_CARD],  # Tarjetas de video
+            ['14', COMPUTER_CASE],  # Gabinetes s/fuente
+            ['15', POWER_SUPPLY],  # Fuentes de poder
+            ['8', CPU_COOLER],  # Refrigeracion
+            ['9', MOUSE],  # Mouse y teclados
+            ['1', HEADPHONES],  # Audio
+            ['6', MONITOR],  # Monitores
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.54.0'
 
         product_urls = []
 
-        for category_path, local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
-            subcategory_urls = []
-
-            url_webpage = 'https://www.pc-gamer.cl/index.php?' \
-                          'route=product/category&path={}'.format(
-                            category_path)
-
-            soup = BeautifulSoup(session.get(url_webpage).text,
-                                 'html.parser')
-
-            subcategory_containers = soup.findAll('li', {'data-depth': 1})
-
-            for container in subcategory_containers:
-                link = container.find('a')
-                if not link or '(0)' in link.text:
-                    continue
-                url = link['href']
-                if 'page' in url:
-                    continue
-                subcategory_urls.append(url)
-
-            if not subcategory_urls:
-                subcategory_urls.append(url_webpage)
-
-            for subcategory_url in subcategory_urls:
-                page = 1
-
-                while True:
-                    if page >= 5:
-                        raise Exception('Page overflow: ' + category_path)
-
-                    url_webpage = '{}&page={}'.format(subcategory_url, page)
-                    soup = BeautifulSoup(session.get(url_webpage).text,
-                                         'html.parser')
-
-                    link_containers = soup.findAll('article', 'item')
-
-                    if not link_containers:
-                        break
-
-                    for link_container in link_containers:
-                        original_product_url = link_container.find('a')['href']
-                        product_id = re.search(
-                            r'product_id=(\d+)',
-                            original_product_url).groups()[0]
-                        product_url = 'https://www.pc-gamer.cl/' \
-                                      'index.php?route=product/product&' \
-                                      'product_id=' + product_id
-                        product_urls.append(product_url)
-
-                    page += 1
+            url_webpage = 'https://tienda.pc-gamer.cl/categories.php?' \
+                          'search_cat={}'.format(url_extension)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', 'product_item')
+            if not product_containers:
+                logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(
+                    'https://tienda.pc-gamer.cl/' + product_url)
 
         return product_urls
 
@@ -120,35 +70,23 @@ class PcGamer(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.54.0'
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h5', 'ttvproduct-title').text.strip()
-        sku = soup.find('input', {'name': 'product_id'})['value']
-
-        stock = int(soup.find(
-            'span', 'ttvproduct-stock-status').text.strip())
-
-        price_containers = soup.find('ul', 'product-price-and-shipping')\
-            .findAll('h3')
-        normal_price = Decimal(remove_words(price_containers[0].text))
-
-        if len(price_containers) > 1:
-            offer_price = Decimal(remove_words(price_containers[1].text))
-        else:
-            offer_price = normal_price
-
-        if normal_price < offer_price:
-            offer_price = normal_price
-
-        description = html_to_markdown(str(soup.find(
-            'div', {'id': 'tab-description'})))
-
-        picture_container = soup.find('img', {'id': 'img_zoom'})
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('div', 'product_name').text
+        sku = url.split('?id=')[1]
+        stock_container = soup.find('div', 'product_description').text.strip()
+        pos_stock = stock_container.find('stock')
+        stock = int(
+            stock_container[pos_stock:pos_stock + 10].split(':')[1].strip())
+        normal_price = Decimal(
+            soup.find('div', 'price-normal').find('h3').text.split()[1].replace('.',''))
+        offer_price = Decimal(
+            soup.find('div', 'price-oferta').find('h2').text.split()[1].replace('.',''))
         picture_urls = []
-
-        if picture_container:
-            picture_urls.append(picture_container['data-zoom-image'])
+        for tag in soup.find('ul', 'image_list').findAll('img'):
+            if 'sinimagen' in tag['src']:
+                continue
+            picture_urls.append('https://tienda.pc-gamer.cl/' + tag['src'])
 
         p = Product(
             name,
@@ -162,7 +100,6 @@ class PcGamer(Store):
             offer_price,
             'CLP',
             sku=sku,
-            description=description,
             picture_urls=picture_urls
         )
 
