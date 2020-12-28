@@ -63,8 +63,8 @@ class VirtualDrakon(Store):
         json_info = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_info['name']
-        price = Decimal(json_info['offers'][0]['price'])
         if soup.find('form', 'variations_form'):
+
             products = []
             json_info = json.loads(soup.find('form', 'variations_form')[
                                        'data-product_variations'])
@@ -72,6 +72,7 @@ class VirtualDrakon(Store):
                 variant_name = name + ' - (' + ' '.join(
                     product['attributes'].values())+')'
                 sku = str(product['variation_id'])
+                v_price = Decimal(product['display_price'])
                 stock_container = BeautifulSoup(product['availability_html'],
                                                 'html.parser').text.strip()
                 if stock_container == 'Agotado':
@@ -88,8 +89,8 @@ class VirtualDrakon(Store):
                     url,
                     sku,
                     stock,
-                    price,
-                    price,
+                    v_price,
+                    v_price,
                     'CLP',
                     sku=sku,
                     picture_urls=[product['image']['url']]
@@ -98,6 +99,8 @@ class VirtualDrakon(Store):
             return products
 
         else:
+            price = Decimal(json_info['offers'][0]['price'])
+
             sku = str(json_info['sku'])
             if soup.find('p', 'stock in-stock'):
                 stock = int(soup.find('p', 'stock in-stock').text.split()[0])

@@ -1,16 +1,12 @@
-import json
 import logging
-import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
-from storescraper.categories import AIR_CONDITIONER, STOVE, CELL_ACCESORY, \
-    OVEN, WASHING_MACHINE, REFRIGERATOR, STEREO_SYSTEM, OPTICAL_DISK_PLAYER, \
-    TELEVISION
+from storescraper.utils import session_with_proxy
+from storescraper.categories import TELEVISION
 
 
 class PlazaLama(Store):
@@ -35,13 +31,13 @@ class PlazaLama(Store):
             if page >= 10:
                 raise Exception('Page overflow')
 
-            url = 'https://plazalama.com.do/search?q=LG&type=product&page=' \
-                  '{}'.format(page)
+            url = 'https://plazalama.com.do/450-electrodomesticos?q=Marca-LG' \
+                  '&page={}'.format(page)
             print(url)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            items = soup.findAll('div', 'search-result')
+            items = soup.findAll('div', 'js-product-miniature-wrapper')
 
             if not items:
                 if page == 1:
@@ -50,8 +46,7 @@ class PlazaLama(Store):
 
             for item in items:
                 path = item.find('a')['href'].split('?')[0]
-                product_urls.append(
-                    'https://plazalama.com.do' + path)
+                product_urls.append(path)
 
             page += 1
 
@@ -62,38 +57,44 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        products_data = json.loads(re.search(r'var boldTempProduct =(.+);',
-                                             response.text).groups()[0])
-        description = html_to_markdown(products_data['description'])
-        picture_urls = ['https:' + x for x in products_data['images']]
-        products = []
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_container = soup.find('div', {'id': 'main-product-wrapper'})
+        name = product_container.find('h1', 'h1 page-title').text
+        sku = \
+            product_container.find('input', {'id': 'product_page_product_id'})[
+                'value']
+        if product_container.find('span', {'id': 'product-availability'}):
+            stock = 0
+        else:
+            stock = -1
+        price = Decimal(
+            product_container.find('span', 'product-price')['content'])
+        if product_container.find('div', 'product-images'):
+            picture_urls = [tag['src'] for tag in
+                            product_container.find('div',
+                                                   'product-images').findAll(
+                                'img')]
+        else:
+            picture_urls = [tag['src']
+                            for tag in product_container.find('div',
+                                                              'product'
+                                                              '-images-large'
+                                                              '').findAll(
+                    'img')]
 
-        for variant in products_data['variants']:
-            key = str(variant['id'])
-            sku = variant['sku']
-            name = variant['name']
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'DOP',
+            sku=sku,
+            picture_urls=picture_urls,
+        )
 
-            if variant['available']:
-                stock = -1
-            else:
-                stock = 0
-
-            price = Decimal(variant['price']) / Decimal(100)
-
-            products.append(Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'DOP',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description
-            ))
-
-        return products
+        return [p]
