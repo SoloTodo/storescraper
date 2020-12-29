@@ -57,10 +57,13 @@ class Fama(Store):
         stock = -1
         price = Decimal(soup.find('span', {'itemprop': 'price'}).text.strip()
                         .split()[1].replace('.', '').replace(',', '.'))
-
-        picture_urls = [tag['src'].replace('_100.jpeg', '.jpeg') for tag in
-                        soup.find('div', 'picture-thumbs').findAll('img')
-                        ]
+        if soup.find('div', 'picture-thumbs'):
+            picture_urls = [tag['src'].replace('_100.jpeg', '.jpeg') for tag in
+                            soup.find('div', 'picture-thumbs').findAll('img')
+                            ]
+        else:
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
