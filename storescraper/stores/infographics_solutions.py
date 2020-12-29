@@ -71,8 +71,8 @@ class InfographicsSolutions(Store):
             page = 1
 
             while True:
-                url = 'https://infographicssolutions.cl/categoria-producto/{}/' \
-                      'page/{}/'.format(category_path, page)
+                url = 'https://infographicssolutions.cl/categoria-producto/' \
+                      '{}/page/{}/'.format(category_path, page)
 
                 if page > 10:
                     raise Exception('Page overflow: ' + page)

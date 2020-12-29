@@ -79,9 +79,11 @@ class PcGamer(Store):
         stock = int(
             stock_container[pos_stock:pos_stock + 10].split(':')[1].strip())
         normal_price = Decimal(
-            soup.find('div', 'price-normal').find('h3').text.split()[1].replace('.',''))
+            soup.find('div', 'price-normal').find('h3').text.split()[1]
+                .replace('.', ''))
         offer_price = Decimal(
-            soup.find('div', 'price-oferta').find('h2').text.split()[1].replace('.',''))
+            soup.find('div', 'price-oferta').find('h2').text.split()[1]
+                .replace('.', ''))
         picture_urls = []
         for tag in soup.find('ul', 'image_list').findAll('img'):
             if 'sinimagen' in tag['src']:

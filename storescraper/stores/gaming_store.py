@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, KEYBOARD, MOUSE, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, CPU_COOLER, HEADPHONES
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, CPU_COOLER, HEADPHONES, PROCESSOR, \
+    MOTHERBOARD, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,12 +21,22 @@ class GamingStore(Store):
             MOUSE,
             KEYBOARD_MOUSE_COMBO,
             STEREO_SYSTEM,
-            HEADPHONES
+            HEADPHONES,
+            PROCESSOR,
+            MOTHERBOARD,
+            RAM,
+            COMPUTER_CASE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes-pc/procesadores', PROCESSOR],
+            ['componentes-pc/placa-base', MOTHERBOARD],
+            ['componentes-pc/memorias-ram', RAM],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
+            ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['accesorios-gaming/teclado-mouse/teclados', KEYBOARD],

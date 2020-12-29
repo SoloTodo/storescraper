@@ -95,7 +95,7 @@ class HpOnline(Store):
         picture_urls = []
 
         if images_json and 'mage/gallery/gallery' in images_json[
-            '[data-gallery-role=gallery-placeholder]']:
+                '[data-gallery-role=gallery-placeholder]']:
             images_data = images_json[
                 '[data-gallery-role=gallery-placeholder]'][
                 'mage/gallery/gallery']['data']

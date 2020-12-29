@@ -86,7 +86,8 @@ class SmartMobile(Store):
                                         'data-product_variations'])
             for variation in variations:
                 variation_attribute = list(variation['attributes'].values())
-                variation_name = name + ' (' + ' - '.join(variation_attribute) + ')'
+                variation_name = name + ' (' + ' - '.join(
+                    variation_attribute) + ')'
                 sku = str(variation['variation_id'])
                 offer_price = Decimal(variation['display_price'])
                 normal_price = Decimal(
