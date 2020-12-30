@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, MONITOR, PROCESSOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD
+    SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,7 +18,8 @@ class DazbogStore(Store):
             MONITOR,
             PROCESSOR,
             SOLID_STATE_DRIVE,
-            VIDEO_CARD
+            VIDEO_CARD,
+            MOTHERBOARD,
         ]
 
     @classmethod
@@ -26,6 +27,7 @@ class DazbogStore(Store):
         url_extensions = [
             ['psu', POWER_SUPPLY],
             ['monitores', MONITOR],
+            ['placas-madre', MOTHERBOARD],
             ['cpu', PROCESSOR],
             ['ssd', SOLID_STATE_DRIVE],
             ['gpus', VIDEO_CARD]
