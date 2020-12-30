@@ -56,6 +56,7 @@ class VentasAlbion(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
@@ -68,7 +69,10 @@ class VentasAlbion(Store):
         sku = str(json_info['sku'])
         stock = -1
         price = Decimal(json_info['offers'][0]['price'])
-        picture_urls = [json_info['image']]
+        if 'image' in json_info:
+            picture_urls = [json_info['image']]
+        else:
+            picture_urls = []
         p = Product(
             name,
             cls.__name__,
