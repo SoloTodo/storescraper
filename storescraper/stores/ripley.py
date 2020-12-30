@@ -720,8 +720,6 @@ class Ripley(Store):
              'tecno/audio-y-musica/accesorios-audio'],
             [bs.CELLS, 'Telefonía',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
-            [bs.CELLS, 'Android',
-             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/android'],
             [bs.CELLS, 'iPhone',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
         ]
