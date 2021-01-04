@@ -63,13 +63,13 @@ class GoodComputer(Store):
                     .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-grid-item')
+                product_containers = soup.findAll('li', 'product-warp-item')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('a', 'name')['href']
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -80,7 +80,7 @@ class GoodComputer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('div', 'single-product-page')['id'].split("-")[1]
+        sku = soup.find('input', {'name': 'data-product_id'})['value']
         stock_container = soup.find('p', 'stock')
         if not stock_container:
             stock = -1
@@ -96,7 +96,7 @@ class GoodComputer(Store):
         else:
             price = Decimal(remove_words(price_container.find('ins').text))
         picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'product-images-inner').findAll(
+                        soup.find('div', 'product-thumbnails').findAll(
                             'img')
                         ]
         p = Product(
