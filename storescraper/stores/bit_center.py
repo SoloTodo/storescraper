@@ -4,8 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, STEREO_SYSTEM, \
-    VIDEO_CARD, COMPUTER_CASE
+from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
+    STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -71,8 +71,8 @@ class BitCenter(Store):
             soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_container['name']
         sku = json_container['sku']
-        if json_container['Offers'][
-            'Availability'] == 'https://schema.org/OutOfStock':
+        if json_container['Offers']['Availability'] == 'https://schema.org/' \
+                                                       'OutOfStock':
             stock = 0
         else:
             stock = -1
