@@ -45,42 +45,20 @@ class Wom(Store):
             session = session_with_proxy(extra_args)
             session.headers[
                 'Content-Type'] = 'application/x-www-form-urlencoded'
-            equipos_url = 'http://www.wom.cl/equipos/inc/func.savedata.php'
+            equipos_url = 'https://store-srv.wom.cl/rest/V1/content/getList?searchCriteria[filterGroups][1][filters][0][field]=type_id&searchCriteria[filterGroups][1][filters][0][value]=configurable&searchCriteria[filterGroups][10][filters][0][field]=status&searchCriteria[filterGroups][10][filters][0][value]=1'
+            response = session.get(equipos_url)
 
-            page = 1
-            current_position = 1
+            json_response = json.loads(response.text)
 
-            while True:
-                params = {
-                    'action': '1',
-                    'tipo_equipo_form': 'Equipos',
-                    'page_number': page
-                }
+            for idx, cell_entry in enumerate(json_response['items']):
+                cell_url = 'https://store.wom.cl/equipos/' + \
+                           str(cell_entry['sku'])
+                discovered_entries[cell_url].append({
+                    'category_weight': 1,
+                    'section_name': 'Equipos',
+                    'value': idx + 1
+                })
 
-                data = urllib.parse.urlencode(params)
-                response = session.post(equipos_url, data=data)
-
-                json_response = json.loads(response.text)
-                soup = BeautifulSoup(json_response['html1'], 'html.parser')
-
-                cell_containers = soup.findAll('article')
-
-                if not cell_containers:
-                    if page == 1:
-                        raise Exception('No cell found')
-                    break
-
-                for cell_container in cell_containers:
-                    cell_url = 'http://www.wom.cl/equipos/' + \
-                               cell_container.find('a')['href']
-                    discovered_entries[cell_url].append({
-                        'category_weight': 1,
-                        'section_name': 'Equipos',
-                        'value': current_position
-                    })
-                    current_position += 1
-
-                page += 1
         return discovered_entries
 
     @classmethod

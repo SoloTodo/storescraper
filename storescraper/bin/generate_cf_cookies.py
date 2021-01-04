@@ -6,7 +6,8 @@ import time
 import sys
 sys.path.append('../..')
 
-from storescraper.utils import get_store_class_by_name, HeadlessChrome  # noqa
+from storescraper.utils import get_store_class_by_name, HeadlessChrome, \
+    HeadlessFirefox  # noqa
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
     args = parser.parse_args()
     proxy = args.proxy
 
-    with HeadlessChrome(proxy=proxy, headless=False, images_enabled=True) \
+    with HeadlessFirefox(proxy=proxy, headless=False, images_enabled=True) \
             as driver:
         driver.get('https://simple.ripley.cl')
         input('Please complete the CAPTCHA, then press ENTER')

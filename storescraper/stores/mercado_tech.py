@@ -1,4 +1,5 @@
 import json
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -85,10 +86,10 @@ class MercadoTech(Store):
                 product_content = soup.find(
                     'div', {'data-hook': 'homepage_products'})
 
-                if page == 1 and not product_content:
-                    raise Exception('No products for url {}'.format(page_url))
-
                 if not product_content:
+                    if page == 1:
+                        logging.warning(
+                            'No products for url {}'.format(page_url))
                     break
 
                 product_containers = product_content.find('div', 'row')\
