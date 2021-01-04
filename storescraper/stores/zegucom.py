@@ -1,4 +1,4 @@
-import json
+import logging
 import re
 
 from bs4 import BeautifulSoup
@@ -100,13 +100,13 @@ class Zegucom(Store):
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 product_container = soup.find('div', 'search-results')
+                if not product_container or not \
+                        product_container.findAll('div', 'result-description'):
+                    if page == 0:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
                 products = product_container.findAll(
                     'div', 'result-description')
-
-                if not products:
-                    if page == 0:
-                        raise Exception('Empty category: ' + url)
-                    break
 
                 for product in products:
                     product_urls.append('https://www.zegucom.com.mx{}'.format(
