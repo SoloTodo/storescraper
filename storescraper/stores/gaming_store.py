@@ -74,11 +74,15 @@ class GamingStore(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', 'single_add_to_cart_button')['value']
+        if soup.find('button', 'single_add_to_cart_button'):
+            sku = soup.find('button', 'single_add_to_cart_button')['value']
+        else:
+            sku = soup.find('input', 'cwg-product-id')['value']
         stock = -1
         price = Decimal(
             remove_words(soup.find('div', 'summary-inner').find('bdi').text))
