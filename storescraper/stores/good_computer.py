@@ -76,13 +76,10 @@ class GoodComputer(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        # import ipdb
-        # ipdb.set_trace()
         sku = soup.find('input', {'name': 'data-product_id'})['value']
         stock_container = soup.find('p', 'stock')
         if not stock_container:
