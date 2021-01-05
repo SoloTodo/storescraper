@@ -25,7 +25,7 @@ def main():
     args = parser.parse_args()
     proxy = args.proxy
 
-    with HeadlessFirefox(proxy=proxy, headless=False, images_enabled=True) \
+    with HeadlessChrome(proxy=proxy, headless=False, images_enabled=True) \
             as driver:
         driver.get('https://simple.ripley.cl')
         input('Please complete the CAPTCHA, then press ENTER')
