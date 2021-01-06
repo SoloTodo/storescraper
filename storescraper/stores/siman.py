@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -12,40 +13,34 @@ from storescraper.utils import session_with_proxy
 class Siman(Store):
     country_url = ''
     currency_iso = ''
-    category_filters = []
 
     @classmethod
     def categories(cls):
         return [
-            'AirConditioner',
-            'WashingMachine',
-            'Refrigerator',
-            'StereoSystem',
-            'Television',
-            'Stove',
-            'Oven'
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        url_extensions = [
+            TELEVISION
+        ]
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in cls.category_filters:
+        for local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
             done = False
-
             while not done:
                 if page > 30:
                     raise Exception('Page overflow')
 
-                url = 'https://{}.siman.com/{}?page={}'.format(
-                    cls.country_url, category_path, page)
-
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                url_webpage = 'https://{}.siman.com/lg?page={}'.format(
+                    cls.country_url, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
                 page_state_tag = soup.find('template',
                                            {'data-varname': '__STATE__'})
                 page_state = json.loads(page_state_tag.text)
