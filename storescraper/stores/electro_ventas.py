@@ -97,8 +97,6 @@ class ElectroVentas(Store):
         product_container = soup.find('div', 'col col-7 ficha-details')
 
         if not product_container:
-            with open('electroventas.html', 'w') as f:
-                f.write(str(soup))
             return []
         
         name = product_container.find('div', 'pc').find('h1').text
