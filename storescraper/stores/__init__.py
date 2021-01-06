@@ -12,6 +12,7 @@ from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
 from .artefacta import Artefacta
+from .bbcc import BookComputer
 from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
 from .bip import Bip
