@@ -95,6 +95,12 @@ class ElectroVentas(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = soup.find('div', 'col col-7 ficha-details')
+
+        if not product_container:
+            with open('electroventas.html', 'w') as f:
+                f.write(str(soup))
+            return []
+        
         name = product_container.find('div', 'pc').find('h1').text
         sku_container = next(filter(lambda x: x.text.startswith('ID'),
                                     product_container.find('div',
