@@ -238,7 +238,6 @@ class Lider(Store):
             session.headers['content-type'] = 'application/json'
             response = session.post(query_url, json.dumps(query_params))
             data = json.loads(response.text)
-            print(json.dumps(data, indent=2))
 
             if not data['products']:
                 logging.warning('Empty category: ' + category_id)
