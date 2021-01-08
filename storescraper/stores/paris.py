@@ -46,7 +46,7 @@ class Paris(Store):
          'Electro > HiFi > Audio HiFi', 1],
         ['electro/audio-hifi/parlantes', ['StereoSystem'],
          'Electro > HiFi > Parlantes HIFI', 1],
-        ['electro/audio-hifi/combos', ['StereoSystem'],
+        ['electro/audio-hifi/', ['StereoSystem'],
          'Electro > HiFi > Combos HIFI', 1],
         ['electro/elige-tu-pulgada', ['Television'],
          'Electro > Elige tu pulgada', 1],
