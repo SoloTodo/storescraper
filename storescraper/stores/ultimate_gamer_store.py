@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MONITOR, RAM, \
-    SOLID_STATE_DRIVE, MOTHERBOARD, HEADPHONES, STORAGE_DRIVE
+    SOLID_STATE_DRIVE, MOTHERBOARD, HEADPHONES, STORAGE_DRIVE, POWER_SUPPLY
 
 
 class UltimateGamerStore(Store):
@@ -23,6 +23,7 @@ class UltimateGamerStore(Store):
             MOTHERBOARD,
             HEADPHONES,
             STORAGE_DRIVE,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -36,6 +37,7 @@ class UltimateGamerStore(Store):
             ['placas-madre', MOTHERBOARD],
             ['p-e-r-i-f-e-r-i-c-o-s', HEADPHONES],
             ['d-i-s-c-o-d-u-r-o-1', STORAGE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
         ]
 
         product_urls = []
