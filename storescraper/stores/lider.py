@@ -2,14 +2,11 @@ import json
 import logging
 
 import time
-import urllib
 
 from collections import defaultdict
 from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -228,29 +225,25 @@ class Lider(Store):
             if category not in local_categories:
                 continue
 
-            query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
-                        'queries?x-algolia-application-id=529CV9H7MW&x-' \
-                        'algolia-api-key=c6ab9bc3e19c260e6bad42abe143d5f4'
+            query_url = 'https://buysmart-bff-production.lider.cl/buysmart-bff/category'
 
             query_params = {
-                "requests": [
-                    {
-                        "indexName": "campaigns_production",
-                        "params": "hitsPerPage=1000&facetFilters=%5B%22"
-                                  "categorias%3A{}%22%5D".format(
-                                    urllib.parse.quote(
-                                        category_id.replace('_', ' ')))
-                    }
-                ]
+                "categories": category_id,
+                "page": 1,
+                "facets": [],
+                "sortBy": "",
+                "hitsPerPage": 1000
             }
 
+            session.headers['content-type'] = 'application/json'
             response = session.post(query_url, json.dumps(query_params))
             data = json.loads(response.text)
+            print(json.dumps(data, indent=2))
 
-            if not data['results'][0]['hits']:
+            if not data['products']:
                 logging.warning('Empty category: ' + category_id)
 
-            for idx, entry in enumerate(data['results'][0]['hits']):
+            for idx, entry in enumerate(data['products']):
                 product_url = 'https://www.lider.cl/product/sku/{}'\
                     .format(entry['sku'])
                 product_entries[product_url].append({
