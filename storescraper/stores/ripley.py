@@ -2,16 +2,21 @@ import logging
 import re
 import time
 import json
+from datetime import datetime
+
 import requests
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from dateutil.parser import parse
+
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.utils import get_cf_session, HeadlessChrome, \
-    load_driver_cf_cookies, html_to_markdown, CF_REQUEST_HEADERS
+    load_driver_cf_cookies, html_to_markdown, CF_REQUEST_HEADERS, \
+    session_with_proxy
 from storescraper import banner_sections as bs
 
 from selenium.common.exceptions import NoSuchElementException
@@ -859,5 +864,38 @@ class Ripley(Store):
             return banners
 
     @classmethod
-    def get_headless_chrome(cls):
-        pass
+    def reviews_for_sku(cls, sku):
+        print(sku)
+        session = session_with_proxy(None)
+        reviews = []
+        page = 1
+
+        while True:
+            print(page)
+            reviews_endpoint = 'https://display.powerreviews.com/m/303286/l/' \
+                               'es_ES/product/{}/reviews?' \
+                               'apikey=71f6caaa-ea4f-43b9-a19e-46eccb73bcbb' \
+                               '&paging.size=25&paging.from={}'.format(
+                                sku, page)
+            response = session.get(reviews_endpoint).json()
+
+            if response['paging']['current_page_number'] != page:
+                break
+
+            for entry in response['results'][0]['reviews']:
+                review_date = datetime.fromtimestamp(
+                    entry['details']['created_date'] / 1000)
+
+                review = {
+                    'store': 'Ripley',
+                    'sku': sku,
+                    'rating': float(entry['metrics']['rating']),
+                    'text': entry['details']['comments'],
+                    'date': review_date.isoformat()
+                }
+
+                reviews.append(review)
+
+            page += 1
+
+        return reviews
