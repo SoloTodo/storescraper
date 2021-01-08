@@ -5,6 +5,7 @@ from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
+from dateutil.parser import parse
 
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -595,3 +596,30 @@ class Paris(Store):
                     })
 
         return banners
+
+    @classmethod
+    def reviews_for_sku(cls, sku):
+        print(sku)
+        session = session_with_proxy(None)
+        reviews = []
+
+        reviews_endpoint = 'https://api.bazaarvoice.com/data/batch.json?pass' \
+                           'key=caKNy0lDYfGnjpRhD27b7ZtxiSbxdwBcuuIEwXCyc9Zr' \
+                           'M&apiversion=5.5&resource.q0=reviews&filter.q0=p' \
+                           'roductid%3Aeq%3A{}&limit.q0=100'.format(sku)
+        review_data = json.loads(session.get(reviews_endpoint).text)
+
+        for entry in review_data['BatchedResults']['q0']['Results']:
+            review_date = parse(entry['SubmissionTime'])
+
+            review = {
+                'store': 'Paris',
+                'sku': sku,
+                'rating': float(entry['Rating']),
+                'text': entry['ReviewText'],
+                'date': review_date.isoformat()
+            }
+
+            reviews.append(review)
+
+        return reviews
