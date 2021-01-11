@@ -1,91 +1,72 @@
+import json
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class GonzalezGimenez(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television'
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        url_extensions = [
+            TELEVISION
+        ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        base_url = 'https://www.gonzalezgimenez.com.py/{}'
-
-        if category != 'Television':
-            return []
+        for local_category in url_extensions:
+            if local_category != category:
+                continue
 
         page = 1
 
         while True:
-            url = 'https://www.gonzalezgimenez.com.py/catalogo.{}?q=LG'.format(
-                page)
-
             if page >= 15:
-                raise Exception('Page overflow: ' + url)
+                raise Exception('Page overflow: ')
+            url_webpage = 'https://www.gonzalezgimenez.com.py/get-productos?' \
+                          'page={}&marca=8'.format(page)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = json.loads(soup.text)
 
-            print(url)
-
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            product_containers = soup.find(
-                'div', 'products').findAll('div', 'product')
-
-            if not product_containers:
+            if not product_containers['paginacion']['data']:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_webpage)
                 break
 
-            for product in product_containers:
-                product_link = product.find('a')
-                if 'LG' not in product_link['title'].upper():
-                    continue
-
-                product_url = 'https://www.gonzalezgimenez.com.py/' + \
-                              product_link['href']
+            for product in product_containers['paginacion']['data']:
+                product_url = product['url_ver']
                 product_urls.append(product_url)
-
             page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find('span', 'sku').text.strip()
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'product-title').text
+        sku = soup.find('div', 'product-details').find('span').text.split()[-1]
         stock = -1
+        price = Decimal(soup.find('div', 'product-price').text.strip()
+                        .replace('Gs', '').replace('*', '').replace('.', '')
+                        .strip())
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'product-image-gallery').findAll(
+                            'img')]
 
-        if 'LG' not in name.upper().split(' '):
-            stock = 0
-
-        price_containers = soup.findAll('p', 'price')
-        price_container = price_containers[0].find('ins')
-
-        if not price_container:
-            price_container = price_containers[1].find('ins')
-
-        price = Decimal(
-            price_container.find('span', 'amount').text
-            .replace('₲.', '').replace('*', '').replace('.', '').strip())
-
-        description = html_to_markdown(str(soup.find('div', 'tab-pane')))
-
-        pictures = soup.findAll('div', 'woocommerce-product-gallery__image')
-        picture_urls = []
-
-        for picture in pictures:
-            picture_url = picture.find('a')['data-src']
-            picture_urls.append(picture_url)
-
-        return [Product(
+        p = Product(
             name,
             cls.__name__,
             category,
@@ -97,6 +78,6 @@ class GonzalezGimenez(Store):
             price,
             'PYG',
             sku=sku,
-            description=description,
             picture_urls=picture_urls
-        )]
+        )
+        return [p]
