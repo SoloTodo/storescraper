@@ -10,7 +10,7 @@ from storescraper.store import Store
 from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
-    PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE
+    PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
@@ -33,6 +33,7 @@ class EliteCenter(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -54,7 +55,7 @@ class EliteCenter(Store):
             ['tarjeta-de-video', VIDEO_CARD],
             ['tarjetas-de-video', VIDEO_CARD],
             ['teclados-2', KEYBOARD],
-
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)
