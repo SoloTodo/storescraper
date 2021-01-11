@@ -128,8 +128,14 @@ class Entel(Store):
         session = session_with_proxy(extra_args)
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        raw_json = soup.find(
-            'div', {'id': 'productDetail'}).find('script').string
+        product_detail_container = soup.find('div', {'id': 'productDetail'})
+
+        if not product_detail_container:
+            # For the case of https://miportal.entel.cl/personas/producto/
+            # prod1410051 that displays a blank page
+            return []
+
+        raw_json = product_detail_container.find('script').string
 
         try:
             json_data = json.loads(raw_json)

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, KEYBOARD, MOUSE, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, CPU_COOLER, HEADPHONES, PROCESSOR, \
-    MOTHERBOARD, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE
+    MOTHERBOARD, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,7 +25,9 @@ class GamingStore(Store):
             PROCESSOR,
             MOTHERBOARD,
             RAM,
-            COMPUTER_CASE
+            COMPUTER_CASE,
+            SOLID_STATE_DRIVE,
+            MONITOR,
         ]
 
     @classmethod
@@ -44,7 +46,8 @@ class GamingStore(Store):
             ['accesorios-gaming/teclado-mouse/kit-teclado-mouse',
              KEYBOARD_MOUSE_COMBO],
             ['accesorios-gaming/parlantes', STEREO_SYSTEM],
-            ['accesorios-gaming/audifonos', HEADPHONES]
+            ['accesorios-gaming/audifonos', HEADPHONES],
+            ['monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -83,7 +86,13 @@ class GamingStore(Store):
             sku = soup.find('button', 'single_add_to_cart_button')['value']
         else:
             sku = soup.find('input', 'cwg-product-id')['value']
-        stock = -1
+
+        add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
+        if not add_to_cart_button or 'pre' in add_to_cart_button.text.lower():
+            stock = 0
+        else:
+            stock = -1
+
         price = Decimal(
             remove_words(soup.find('div', 'summary-inner').find('bdi').text))
         picture_urls = [tag['data-src'].split('?')[0] for tag in
