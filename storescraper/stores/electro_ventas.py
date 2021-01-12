@@ -98,7 +98,7 @@ class ElectroVentas(Store):
 
         if not product_container:
             return []
-        
+
         name = product_container.find('div', 'pc').find('h1').text
         sku_container = next(filter(lambda x: x.text.startswith('ID'),
                                     product_container.find('div',

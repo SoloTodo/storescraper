@@ -264,7 +264,10 @@ class Paris(Store):
                     break
 
                 for idx, container in enumerate(containers):
-                    product_url = container.find('a')['href'].split('?')[0]
+                    product_link = container.find('a')
+                    if not product_link:
+                        continue
+                    product_url = product_link['href'].split('?')[0]
                     if product_url == "null":
                         continue
                     if 'https' not in product_url:

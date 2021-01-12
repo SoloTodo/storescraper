@@ -225,7 +225,8 @@ class Lider(Store):
             if category not in local_categories:
                 continue
 
-            query_url = 'https://buysmart-bff-production.lider.cl/buysmart-bff/category'
+            query_url = 'https://buysmart-bff-production.lider.cl/' \
+                        'buysmart-bff/category'
 
             query_params = {
                 "categories": category_id,

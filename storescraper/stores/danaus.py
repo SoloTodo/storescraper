@@ -41,6 +41,8 @@ class Danaus(Store):
         category_paths = [
             ['computadores-y-tablets/tablets', 'Tablet'],
             ['computadores-y-tablets/notebooks', 'Notebook'],
+            ['computadores-y-tablets/workstation/workstation-notebook.html',
+             'Notebook'],
             ['computadores-y-tablets/macbooks-imac-ipad', 'Notebook'],
             ['computadores-y-tablets/computadoras-de-escritorio/all-in-one',
              'AllInOne'],
