@@ -73,6 +73,7 @@ class TtChile(Store):
             ['65', PROCESSOR],  # Procesadores 1151
             ['98', PROCESSOR],  # Procesadores 1200
             ['74', CPU_COOLER],  # Cooler Procesador
+            ['76', CPU_COOLER],  # Refrigeración Líquida
             ['77', VIDEO_CARD],  # Tarjetas de video NVIDIA
             ['78', VIDEO_CARD],  # Tarjetas de video Profesionales
             ['99', VIDEO_CARD],  # Tarjetas de video AMD
