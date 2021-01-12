@@ -142,6 +142,9 @@ class Entel(Store):
         except json.decoder.JSONDecodeError:
             return []
 
+        if json_data['isAccessory']:
+            return []
+
         products = []
 
         for variant in json_data['renderSkusBean']['skus']:

@@ -862,13 +862,12 @@ class Falabella(Store):
 
         while True:
             print(offset)
-            reviews_endpoint = 'https://api.bazaarvoice.com/data/batch.json?' \
-                               'passkey=m8bzx1s49996pkz12xvk6gh2e&apiversion=' \
-                               '5.5&resource.q0=reviews&filter.q0=isratings' \
-                               'only%3Aeq%3Afalse&filter.q0=productid%3Aeq' \
-                               '%3A{}&limit.q0=100&offset.q0={}'.format(
-                                sku, offset)
-            response = session.get(reviews_endpoint).json()[
+            endpoint = 'https://api.bazaarvoice.com/data/batch.json?' \
+                       'passkey=m8bzx1s49996pkz12xvk6gh2e&apiversion=' \
+                       '5.5&resource.q0=reviews&filter.q0=isratings' \
+                       'only%3Aeq%3Afalse&filter.q0=productid%3Aeq' \
+                       '%3A{}&limit.q0=100&offset.q0={}'.format(sku, offset)
+            response = session.get(endpoint).json()[
                 'BatchedResults']['q0']['Results']
 
             if not response:
