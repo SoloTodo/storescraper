@@ -10,7 +10,7 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import CELL, HEADPHONES, MOUSE, KEYBOARD, \
     WEARABLE, USB_FLASH_DRIVE, MEMORY_CARD, VIDEO_GAME_CONSOLE, MONITOR, \
-    STEREO_SYSTEM
+    STEREO_SYSTEM, TABLET
 
 
 class MobileHut(Store):
@@ -21,66 +21,52 @@ class MobileHut(Store):
             HEADPHONES,
             STEREO_SYSTEM,
             MOUSE,
-            KEYBOARD,
+            # KEYBOARD,
             WEARABLE,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            VIDEO_GAME_CONSOLE,
-            MONITOR,
+            # USB_FLASH_DRIVE,
+            # MEMORY_CARD,
+            # VIDEO_GAME_CONSOLE,
+            # MONITOR,
+            TABLET
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_urls = [
-            ['89857884224', 'smartphones', CELL],
-            ['89858244672', 'audifonos', HEADPHONES],
-            # ['129582760000', 'audio-gamer', HEADPHONES],
-            ['89858441280', 'parlantes', STEREO_SYSTEM],
-            ['132833869888', 'mouses', MOUSE],
-            ['129574076480', 'mouse-gamer', MOUSE],
-            ['132834033728', 'teclados-1', KEYBOARD],
-            ['133205065792', 'smartwatch', WEARABLE],
-            ['132830560320', 'pendrives', USB_FLASH_DRIVE],
-            ['132830593088', 'tarjetas-de-memoria', MEMORY_CARD],
-            ['129583054912', 'consolas', VIDEO_GAME_CONSOLE],
-            ['206952595607', 'monitores', MONITOR],
+        url_extensions = [
+            ['smartphones', CELL],
+            ['audifonos', HEADPHONES],
+            ['parlantes', STEREO_SYSTEM],
+            ['mouses', MOUSE],
+            ['tablets', TABLET],
+            ['wearables', WEARABLE],
+            # ['', KEYBOARD],
+            # ['', USB_FLASH_DRIVE],
+            # ['', MEMORY_CARD],
+            # ['', VIDEO_GAME_CONSOLE],
+            # ['', MONITOR],
         ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-
-        for category_id, category_name, local_category in category_urls:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
-
             while True:
-                api_url = 'https://filter-v6.globosoftware.net/filter?' \
-                          'filter_id=26612&shop=mobilehutcl.myshopify.com&' \
-                          'event=products&filter%5B271800%5D%5B%5D={}&page=' \
-                          '{}'.format(category_id, page)
-                print(api_url)
-
-                if page > 20:
-                    raise Exception('Page overflow: ' + api_url)
-
-                products_data = json.loads(
-                    session.get(api_url).text)['products']
-
-                if not products_data:
+                if page > 10:
+                    raise Exception('page overflow: ' + url_extension)
+                url_webpage = 'https://mobilehut.cl/collections/{}?page={}' \
+                    .format(url_extension, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('div', 'product')
+                if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category: ' + category_id)
+                        logging.warning('Empty cagtegory: ' + url_extension)
                     break
-
-                for product in products_data:
-                    product_url = 'https://mobilehut.cl/collections' \
-                                  '/{}/products/{}'\
-                        .format(category_name, product['handle'])
-                    product_urls.append(product_url)
-
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append('https://mobilehut.cl' + product_url)
                 page += 1
-
         return product_urls
 
     @classmethod
@@ -112,7 +98,7 @@ class MobileHut(Store):
             else:
                 stock = 0
 
-            price_text = soup.find('span', {'itemprop': 'price'}).text.strip()\
+            price_text = soup.find('span', {'itemprop': 'price'}).text.strip() \
                 .replace('$', '').replace('.', '')
 
             if price_text == '-':

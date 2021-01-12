@@ -68,7 +68,7 @@ class Jumbo(Store):
                     raise Exception('Page overflow: ' + url_extension)
 
                 api_url = 'https://api.smdigital.cl:8443/v0/cl/jumbo/vtex/' \
-                          'front/prod/proxy/api/v2/products/search/{}?page={}'\
+                          'front/prod/proxy/api/v2/products/search/{}?page={}' \
                     .format(url_extension, page)
 
                 json_data = json.loads(session.get(api_url).text)
@@ -77,13 +77,13 @@ class Jumbo(Store):
                     break
 
                 for idx, product in enumerate(json_data):
-                    product_url = 'https://www.jumbo.cl/{}/p'\
+                    product_url = 'https://www.jumbo.cl/{}/p' \
                         .format(product['linkText'])
 
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
-                        'value': 40 * (page-1) + idx + 1
+                        'value': 40 * (page - 1) + idx + 1
                     })
 
                 page += 1
@@ -93,32 +93,20 @@ class Jumbo(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_container = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[1].text)
+        name = product_container['name']
+        sku = soup.find('span', 'product-code').text.split()[1]
+        price = Decimal(product_container['offers']['price'])
+        picture_urls = [tag['src'].split('?')[0] for tag in
+                        soup.find('ul', 'product-image-thumbs-list').findAll(
+                            'img')]
 
-        raw_data = re.search(
-            r'renderData = ([\S\s]+?);</script>',
-            page_source).groups()[0]
-
-        data = json.loads(json.loads(raw_data))
-        product_data = data['pdp']['product'][0]['items'][0]
-
-        sku = product_data['referenceId'][0]['Value']
-        name = product_data['name']
-        price = Decimal(product_data['sellers'][0]['commertialOffer']['Price'])
-
-        images = product_data['images']
-        picture_urls = []
-
-        for image in images:
-            picture_urls.append(image['imageUrl'])
-
-        description = data['pdp']['product'][0]['description']
-
-        soup = BeautifulSoup(page_source, 'html.parser')
         if soup.find('meta', {'property': 'product:availability'})[
-                'content'] == 'out of stock':
+            'content'] == 'out of stock':
             stock = 0
         else:
             stock = -1
@@ -136,8 +124,6 @@ class Jumbo(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
-
         )
 
         return [p]

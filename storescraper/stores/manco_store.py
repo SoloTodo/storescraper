@@ -31,16 +31,13 @@ class MancoStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['3-gabinetes', COMPUTER_CASE],
-            ['6-tarjetas-de-video', VIDEO_CARD],
-            ['9-procesadores', PROCESSOR],
-            ['10-placas-madre', MOTHERBOARD],
-            ['11-memorias', RAM],
-            ['12-almacenamiento', SOLID_STATE_DRIVE],
-            ['13-fuentes-de-poder', POWER_SUPPLY],
-            ['14-refrigeracion-cpu-', CPU_COOLER],
-            ['20-teclados', KEYBOARD],
-            ['23-mouse-y-mousepad', MOUSE]
+            ['10-gabinetes', COMPUTER_CASE],
+            ['16-tarjetas-de-video', VIDEO_CARD],
+            ['12-procesadores', PROCESSOR],
+            ['15-placas-madre', MOTHERBOARD],
+            ['13-memorias', RAM],
+            ['11-almacenamiento', SOLID_STATE_DRIVE],
+            ['14-fuentes-de-poder', POWER_SUPPLY],
         ]
 
         session = session_with_proxy(extra_args)
