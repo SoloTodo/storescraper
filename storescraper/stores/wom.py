@@ -1,16 +1,11 @@
 import json
-import urllib
 
 from collections import defaultdict
-from collections import OrderedDict
-
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Wom(Store):
@@ -45,14 +40,21 @@ class Wom(Store):
             session = session_with_proxy(extra_args)
             session.headers[
                 'Content-Type'] = 'application/x-www-form-urlencoded'
-            equipos_url = 'https://store-srv.wom.cl/rest/V1/content/getList?searchCriteria[filterGroups][1][filters][0][field]=type_id&searchCriteria[filterGroups][1][filters][0][value]=configurable&searchCriteria[filterGroups][10][filters][0][field]=status&searchCriteria[filterGroups][10][filters][0][value]=1'
+            equipos_url = 'https://store-srv.wom.cl/rest/V1/content/getList?' \
+                          'searchCriteria[filterGroups][1][filters][0]' \
+                          '[field]=type_id&searchCriteria[filterGroups][1]' \
+                          '[filters][0][value]=configurable&searchCriteria' \
+                          '[filterGroups][10][filters][0][field]=status&' \
+                          'searchCriteria[filterGroups][10][filters][0]' \
+                          '[value]=1'
             response = session.get(equipos_url)
 
             json_response = json.loads(response.text)
 
             for idx, cell_entry in enumerate(json_response['items']):
                 cell_url = 'https://store.wom.cl/equipos/' + \
-                           str(cell_entry['sku'])
+                           str(cell_entry['sku']) + '/' + cell_entry[
+                               'name'].replace(' ', '-')
                 discovered_entries[cell_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',
@@ -92,20 +94,26 @@ class Wom(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        json_data = session.get('https://store.wom.cl/page-data/planes/'
+                                'page-data.json').json()
         products = []
-
-        plan_containers = soup.findAll('div', 'item')
 
         variants = [
             'sin cuota de arriendo',
             'con cuota de arriendo',
         ]
 
-        for container in plan_containers:
-            plan_name = container.find('span', 'w-100').text.strip()
-            plan_price = Decimal(remove_words(container.find(
-                'span', 'font-40-px').text))
+        for entry in json_data['result']['data'][
+                'allContentfulProduct']['nodes']:
+            plan_name = entry['name']
+
+            # Skip planes "Solo Voz" or "Solo Datos"
+            # Also skip "Grupal" plans
+            if 'Solo' in plan_name or 'Grupal' in plan_name:
+                continue
+
+            context = json.loads(entry['context']['context'])
+            plan_price = Decimal(context['price'])
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:
@@ -131,122 +139,112 @@ class Wom(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('div', 'name_phone').text.replace('\n', ' ').strip()
-        description = html_to_markdown(
-            str(soup.find('div', 'box_detalles_tecnicos')))
-
-        picture_urls = []
-        for tag in soup.findAll('span', 'vista-minuatura'):
-            image_url = 'http://www.wom.cl' + tag.find('img')['data-img']
-            picture_urls.append(image_url.replace(' ', '%20'))
-
+        path = url.split('/', 3)[-1]
+        endpoint = 'https://store.wom.cl/page-data/{}/' \
+                   'page-data.json'.format(path)
+        json_data = session.get(endpoint).json()
         products = []
-
-        rent_prices = OrderedDict()
-        rent_prices_container = soup.find(
-            'section', {'data-modal': 'plan_arriendalo'})
-
-        for plan_container in rent_prices_container.findAll(
-                'div', 'bolsa_modal'):
-            plan_name = plan_container.find(
-                'p', 'bolsa_modal-title').text.strip()
-            plan_price = Decimal(remove_words(plan_container.findAll(
-                'span', 'precio')[1].text))
-            rent_prices[plan_name] = plan_price
-
-        # Plan con número nuevo
-
-        modalities = [
-            {
-                'suffix': '',
-                'selector': 'plannumero'
-            },
-            {
-                'suffix': ' Portabilidad',
-                'selector': 'portate'
-            }
+        plans = [
+            'Plan WOM 10 Gigas',
+            'Plan Womers 20 GB',
+            'Plan Acumula 40 GB',
+            'Plan Acumula 60 GB',
+            'Plan Acumula 80 GB',
+            'Plan Acumula 100 GB',
+            'Plan Womers Libre'
         ]
 
-        combinations = [
-            {
-                'suffix': '',
-                'use_monthly_payment': False
-            },
-            {
-                'suffix': ' Cuotas',
-                'use_monthly_payment': True
-            }
-        ]
+        for entry in json_data['result']['data']['contentfulProduct'][
+                'productVariations']:
+            name = entry['name']
+            context = json.loads(entry['context']['context'])
+            graphql_data = json.loads(context['graphql_data'])
 
-        for modality in modalities:
-            container = soup.find('div', {'data-tab': modality['selector']})
+            portability_choices = [
+                ('', 'newConnection'),
+                (' Portabilidad', 'portIn'),
+            ]
 
-            if modality['suffix'] == '':
-                initial_prices = container.findAll('span', 'body_precio')
-            else:
-                initial_prices = [container.find('p', 'body_cuotas-precio')]
+            for portability_name_suffix, portability_json_field in \
+                    portability_choices:
+                price_without_installments = None
+                initial_price_with_installments = None
+                installment_price = None
 
-                if container.find('span', 'precio-portate'):
-                    initial_prices.append(
-                        container.find('span', 'precio-portate'))
+                for related_price in graphql_data['productOfferingPrice'][
+                        portability_json_field]['relatedPrice']:
+                    if related_price['priceType'] == 'price':
+                        price_without_installments = Decimal(
+                            related_price['price']['value'])
+                    elif related_price['priceType'] == 'initialPrice':
+                        initial_price_with_installments = Decimal(
+                            related_price['price']['value'])
+                    elif related_price['priceType'] == 'installmentPrice':
+                        installment_price = Decimal(
+                            related_price['price']['value'])
 
-            if len(initial_prices) == 1:
-                local_combinations = combinations[:1]
-            else:
-                local_combinations = combinations
+                assert price_without_installments is not None
+                assert initial_price_with_installments is not None
+                assert installment_price is not None
 
-            for idx, combination in enumerate(local_combinations):
-                initial_price = Decimal(remove_words(initial_prices[idx].text))
-
-                for plan_name, monthly_payment in rent_prices.items():
-                    if combination['use_monthly_payment']:
-                        cell_monthly_payment = monthly_payment
-                    else:
-                        cell_monthly_payment = Decimal(0)
-
+                for plan in plans:
+                    # Without installments
                     products.append(Product(
                         name,
                         cls.__name__,
                         'Cell',
                         url,
                         url,
-                        '{} {}{}{}'.format(name, plan_name,
-                                           modality['suffix'],
-                                           combination['suffix']),
+                        '{} {}{}'.format(name, plan, portability_name_suffix),
                         -1,
-                        initial_price,
-                        initial_price,
+                        price_without_installments,
+                        price_without_installments,
                         'CLP',
-                        cell_plan_name='WOM {}{}{}'.format(
-                            plan_name,
-                            modality['suffix'],
-                            combination['suffix']
+                        cell_plan_name='{}{}'.format(
+                            plan,
+                            portability_name_suffix,
                         ),
-                        picture_urls=picture_urls,
-                        description=description,
-                        cell_monthly_payment=cell_monthly_payment
+                        cell_monthly_payment=Decimal(0)
                     ))
 
-        prepago_container = soup.find('div', {'data-tab': 'equipoprepago'})
-        prepago_price = Decimal(remove_words(prepago_container.find(
-            'span', 'body_precio').text))
+                    # With installments
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} {}{}'.format(name, plan, portability_name_suffix),
+                        -1,
+                        initial_price_with_installments,
+                        initial_price_with_installments,
+                        'CLP',
+                        cell_plan_name='{}{} Cuotas'.format(
+                            plan,
+                            portability_name_suffix,
+                        ),
+                        cell_monthly_payment=installment_price
+                    ))
 
-        products.append(Product(
-            name,
-            cls.__name__,
-            'Cell',
-            url,
-            url,
-            '{} WOM Prepago'.format(name),
-            -1,
-            prepago_price,
-            prepago_price,
-            'CLP',
-            cell_plan_name='WOM Prepago',
-            picture_urls=picture_urls,
-            description=description
-        ))
+            # Prepaid
+            prepaid_price = Decimal(
+                graphql_data['productOfferingPrice']['standard'][
+                    'relatedPrice'][0]['price']['value'])
+
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} Prepago'.format(name),
+                -1,
+                prepaid_price,
+                prepaid_price,
+                'CLP',
+                cell_plan_name='WOM Prepago',
+                cell_monthly_payment=Decimal(0)
+            ))
 
         return products
