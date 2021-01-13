@@ -122,13 +122,13 @@ class TiendaMonge(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name_container = soup.find('span', {'itemprop': 'name'})
+        name_container = soup.find('span', {'data-ui-id': 'page-title-wrapper'})
 
         if not name_container:
             return []
 
         name = name_container.text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        sku = soup.find('div', 'value').text.strip()
 
         if soup.find('button', {'id': 'product-addtocart-button'}):
             stock = -1
