@@ -122,7 +122,8 @@ class TiendaMonge(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name_container = soup.find('span', {'data-ui-id': 'page-title-wrapper'})
+        name_container = soup.find(
+            'span', {'data-ui-id': 'page-title-wrapper'})
 
         if not name_container:
             return []

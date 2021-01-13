@@ -98,8 +98,8 @@ class MobileHut(Store):
             else:
                 stock = 0
 
-            price_text = soup.find('span', {'itemprop': 'price'}).text.strip() \
-                .replace('$', '').replace('.', '')
+            price_text = soup.find('span', {'itemprop': 'price'}).text\
+                .strip().replace('$', '').replace('.', '')
 
             if price_text == '-':
                 continue

@@ -68,8 +68,8 @@ class Jumbo(Store):
                     raise Exception('Page overflow: ' + url_extension)
 
                 api_url = 'https://api.smdigital.cl:8443/v0/cl/jumbo/vtex/' \
-                          'front/prod/proxy/api/v2/products/search/{}?page={}' \
-                    .format(url_extension, page)
+                          'front/prod/proxy/api/v2/products/search/{}?page=' \
+                          '{}'.format(url_extension, page)
 
                 json_data = json.loads(session.get(api_url).text)
 
@@ -111,7 +111,7 @@ class Jumbo(Store):
             picture_urls = None
 
         if soup.find('meta', {'property': 'product:availability'})[
-            'content'] == 'out of stock':
+                'content'] == 'out of stock':
             stock = 0
         else:
             stock = -1
