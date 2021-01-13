@@ -101,9 +101,14 @@ class Jumbo(Store):
         name = product_container['name']
         sku = soup.find('span', 'product-code').text.split()[1]
         price = Decimal(product_container['offers']['price'])
-        picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('ul', 'product-image-thumbs-list').findAll(
-                            'img')]
+
+        pictures_tag = soup.find('ul', 'product-image-thumbs-list')
+
+        if pictures_tag:
+            picture_urls = [tag['src'].split('?')[0] for tag in
+                            pictures_tag.findAll('img')]
+        else:
+            picture_urls = None
 
         if soup.find('meta', {'property': 'product:availability'})[
             'content'] == 'out of stock':

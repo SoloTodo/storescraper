@@ -39,7 +39,8 @@ class Dimercom(Store):
             ['componentes-6/componentes-ram-para-desktop-118', RAM],
             # Ram Notebook
             ['componentes-6/componentes-ram-para-laptop-163', RAM],
-            ['componentes-6/componentes-tarjetas-de-video-115', VIDEO_CARD],
+            # Overflows on nvidia cards
+            # ['componentes-6/componentes-tarjetas-de-video-115', VIDEO_CARD],
             ['energia-10/energia-fuentes-de-poder-137', POWER_SUPPLY],
             ['gabinetes-y-enfriamiento-26/gabinetes-y-enfriamiento'
              '-gabinetes-149', COMPUTER_CASE],
