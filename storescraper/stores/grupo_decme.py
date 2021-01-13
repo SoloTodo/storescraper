@@ -106,31 +106,12 @@ class GrupoDecme(Store):
         name = soup.find('h1', {'itemprop': 'name'})
         if not name:
             name = soup.find('p', {'itemprop': 'name'})
-
         name = name.text
         sku = soup.find('span', 'variant-sku').text
-
-        potential_stock_containers = soup.findAll('h6')
-        stock_container = None
-
-        for container in potential_stock_containers:
-            if 'EXISTENCIA' in container.text:
-                stock_container = container.parent.find('div').contents
-        if soup.findAll('div', 'gf_row gf_row-gap-2')[1].find(
-                'strong') and not stock_container:
-            stock_container = [
-                soup.findAll('div', 'gf_row gf_row-gap-2')[1].find(
-                    'strong').text]
-
-        if not stock_container:
-            stock = 0
-
+        if int(soup.find('div', 'gf-variants-quantity no-render').text) > 0:
+            stock = -1
         else:
-            for item in stock_container:
-                if 'pzas.' in item:
-                    stock = int(item.replace('pzas.', ''))
-                    break
-
+            stock = 0
         price = soup.find('span', 'gf_product-price money').text
 
         price = Decimal(price.replace('$', '').replace(',', ''))
