@@ -78,6 +78,7 @@ class LgUruguayStore(Store):
         if soup.find('ul', 'lst lstThumbs'):
             picture_urls = ['https:' + tag.find('img')['src'] for tag in
                             soup.find('ul', 'lst lstThumbs').findAll('li')
+                            if tag.find('img')
                             ]
         else:
             picture_urls = ['https:' +

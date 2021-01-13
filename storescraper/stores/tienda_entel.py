@@ -51,8 +51,13 @@ class TiendaEntel(Store):
         products = []
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        raw_json = soup.find(
-            'div', {'id': 'productDetail'}).find('script').string
+        product_detail_container = soup.find('div', {'id': 'productDetail'})
+
+        if not product_detail_container:
+            # For the case of https://miportal.entel.cl/personas/producto/
+            # prod1410051 that displays a blank page
+            return []
+        raw_json = product_detail_container.find('script').string
 
         if not raw_json:
             if retries:
@@ -64,6 +69,9 @@ class TiendaEntel(Store):
         try:
             json_data = json.loads(raw_json)
         except json.decoder.JSONDecodeError:
+            return []
+
+        if json_data['isAccessory']:
             return []
 
         for sku in json_data['renderSkusBean']['skus']:
