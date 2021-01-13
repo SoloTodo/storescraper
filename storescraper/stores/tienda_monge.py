@@ -122,8 +122,12 @@ class TiendaMonge(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        name_container = soup.find('span', {'itemprop': 'name'})
 
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        if not name_container:
+            return []
+
+        name = name_container.text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
         if soup.find('button', {'id': 'product-addtocart-button'}):

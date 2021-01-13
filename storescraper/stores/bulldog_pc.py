@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, \
-    VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR
+    VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,6 +22,7 @@ class BulldogPc(Store):
             SOLID_STATE_DRIVE,
             CPU_COOLER,
             PROCESSOR,
+            MONITOR,
         ]
 
     @classmethod
@@ -34,6 +35,7 @@ class BulldogPc(Store):
             ['productos/almacenamiento', SOLID_STATE_DRIVE],
             ['productos/refrigeracion', CPU_COOLER],
             ['productos/procesadores', PROCESSOR],
+            ['productos/monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
