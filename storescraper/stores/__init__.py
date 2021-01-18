@@ -87,6 +87,7 @@ from .fama import Fama
 from .fiesta_lan import FiestaLan
 from .fnac import Fnac
 from .fravega import Fravega
+from .fullcolor_spa import FullcolorSpa
 from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
