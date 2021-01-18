@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, COMPUTER_CASE, HEADPHONES, \
-    MONITOR, KEYBOARD
+    MONITOR, KEYBOARD, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -19,7 +19,8 @@ class GeneracionGamers(Store):
             COMPUTER_CASE,
             HEADPHONES,
             KEYBOARD,
-            MONITOR
+            MONITOR,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -29,7 +30,8 @@ class GeneracionGamers(Store):
             ['gabinetes', COMPUTER_CASE],
             ['audifonos', HEADPHONES],
             ['teclados', KEYBOARD],
-            ['monitores', MONITOR]
+            ['monitores', MONITOR],
+            ['fuente-de-poder', POWER_SUPPLY],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

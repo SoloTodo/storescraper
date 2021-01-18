@@ -83,12 +83,20 @@ class Todoclick(Store):
                     raise Exception('Page overflow')
 
                 if page == 1:
-                    page_url = 'https://todoclick.cl/{}/'.format(category_path)
+                    page_url = 'https://www.todoclick.cl/categoria/{}/'.format(
+                        category_path)
                 else:
-                    page_url = 'https://todoclick.cl/{}/page/{}/'\
-                        .format(category_path, page)
+                    page_url = 'https://www.todoclick.cl/categoria/{}/page/' \
+                               '{}/'.format(category_path, page)
 
-                soup = BeautifulSoup(session.get(page_url).text, 'html.parser')
+                print(page_url)
+                response = session.get(page_url)
+
+                if response.url == page_url:
+                    raise Exception('Mismatch: ' + response.url + ' ' +
+                                    page_url)
+
+                soup = BeautifulSoup(response.text, 'html.parser')
                 products = soup.findAll('li', 'product')
 
                 if not products:
