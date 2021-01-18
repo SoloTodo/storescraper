@@ -280,6 +280,7 @@ from .ventas_albion import VentasAlbion
 from .virtual_drakon import VirtualDrakon
 from .vitel import Vitel
 from .vivelo import Vivelo
+from .v_store import VStore
 from .vtr import Vtr
 from .v2 import V2
 from .walmart_argentina import WalmartArgentina

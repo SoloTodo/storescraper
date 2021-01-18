@@ -1,79 +1,48 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import WASHING_MACHINE
 from storescraper.store import Store
 from storescraper.product import Product
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class EVision(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'AirConditioner',
-            'Refrigerator',
-            'WashingMachine',
-            'Oven',
-            'Stove',
-            'Monitor'
+            WASHING_MACHINE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('410', 'Television'),
-            ('321', 'StereoSystem'),
-            ('340', 'StereoSystem'),
-            ('810', 'Cell'),
-            ('911', 'AirConditioner'),
-            ('912', 'AirConditioner'),
-            # "Para empezar la decada", contains other categories too
-            # ('1400', 'AirConditioner'),
-            ('913', 'AirConditioner'),
-            ('921', 'Refrigerator'),
-            ('922', 'Refrigerator'),
-            ('923', 'Refrigerator'),
-            ('931', 'WashingMachine'),
-            ('932', 'WashingMachine'),
-            ('933', 'WashingMachine'),
-            ('934', 'WashingMachine'),
-            ('935', 'WashingMachine'),
-            ('970', 'Oven'),
-            # ('980', 'Oven'),
-            ('990', 'Oven'),
-            ('950', 'Stove'),
-            ('620', 'Monitor'),
+        url_extensions = [
+            WASHING_MACHINE
         ]
-
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         product_urls = []
 
-        for section_id, local_category in category_filters:
+        for local_category in url_extensions:
             if local_category != category:
                 continue
 
-            url = 'https://www.evisionstore.com/?ipp=All' \
-                  '&categoria=catalogo&codfamilia={}'.format(section_id)
-
-            soup = BeautifulSoup(session.get(url, timeout=30).text,
-                                 'html.parser')
-
-            product_containers = soup.findAll('div', 'product-items')
-
+            url_webpage = 'https://www.evisionstore.com/api/product/search.php'
+            data = json.dumps({'keyword': 'LG'})
+            product_containers = json.loads(
+                session.post(url_webpage, data=data).text)['search_data']
             if not product_containers:
-                raise Exception('Empty section {}'.format(section_id))
+                raise Exception('Empty')
 
             for container in product_containers:
-                if 'LG' not in container.find('h4').text.upper():
+                if 'LG' not in container['product_name'].upper():
                     continue
-                product_url = 'https://www.evisionstore.com/{}'\
-                    .format(container.find('a')['href'])
+                product_url = 'https://www.evisionstore.com/product/' + \
+                              container['modelo']
                 product_urls.append(product_url)
 
         return product_urls
@@ -85,28 +54,19 @@ class EVision(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
-        response = session.get(url, timeout=30)
+        url_request = 'https://www.evisionstore.com/api/product/view-react.php'
+        data = json.dumps({'model_number': url.split('product/')[1]})
+        json_container = json.loads(session.post(url_request, data=data).text)
+        name = json_container['product_view'][0]['product_name']
+        sku = json_container['product_view'][0]['product_id']
 
-        soup = BeautifulSoup(response.text, 'html5lib')
+        price = Decimal(json_container['product_view'][0]['price']
+                        .replace('$', '').replace(',', '').strip())
 
-        if not soup.find('section', 'product-details'):
-            return []
+        picture_urls = [json_container['product_view'][0]['product_image']]
 
-        name = soup.find('meta', {'itemprop': 'name'})['content']
-        sku = soup.find('input', {'id': 'productId'})['value']
-
-        if not soup.find('a', {'id': 'addtocart'}):
-            # Price is zero for unavailable products so skip
-            return []
-
-        price = Decimal(
-            soup.find('meta', {'itemprop': 'category'}).next.text
-                .replace('$', '').replace(',', '').strip())
-
-        picture_urls = [soup.find('meta', {'itemprop': 'image'})['content']]
-
-        description = html_to_markdown(
-            str(soup.find('div', 'pro-description')))
+        description = json_container['product_view'][0][
+            'short_description'].strip()
 
         p = Product(
             name,
