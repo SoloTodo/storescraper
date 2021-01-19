@@ -6,9 +6,7 @@ import time
 import sys
 sys.path.append('../..')
 
-from storescraper.utils import get_store_class_by_name, HeadlessChrome, \
-    HeadlessFirefox  # noqa
-
+from storescraper.utils import HeadlessChrome
 
 def main():
     logging.basicConfig(level=logging.INFO,

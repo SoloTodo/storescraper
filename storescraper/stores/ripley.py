@@ -563,7 +563,7 @@ class Ripley(Store):
                 'password': extra_args['PROXY_PASSWORD']
             }
 
-            browser = p.firefox.launch(proxy=proxy, headless=True)
+            browser = p.chromium.launch(proxy=proxy, headless=False)
             context = browser.newContext(
                 userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0'
             )
@@ -634,9 +634,9 @@ class Ripley(Store):
             print(hcaptcha_response)
 
             for field in ['h-captcha-response']:
-                foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
-                print(foo)
-                page.evaluate(foo)
+                #foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
+                #print(foo)
+                #page.evaluate(foo)
 
                 foo = (f"() => {{var foo = document.createElement('input');"
                        f"foo.setAttribute('name', '{field}');"

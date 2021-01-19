@@ -10,7 +10,6 @@ import math
 import requests
 from seleniumwire import webdriver
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.firefox.options import Options
 
 
 CLP_BLACKLIST = ['CLP$', 'CLP', 'precio', 'internet', 'normal',
@@ -179,35 +178,6 @@ class HeadlessChrome:
 
         self.driver = webdriver.Chrome(
             chrome_options=options, seleniumwire_options=seleniumwire_options)
-        self.driver.set_page_load_timeout(timeout)
-        self.driver.header_overrides = CF_REQUEST_HEADERS
-
-    def __enter__(self):
-        return self.driver
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.driver.close()
-
-
-class HeadlessFirefox:
-    def __init__(self, images_enabled=False, proxy=None, headless=True,
-                 timeout=30):
-        options = Options()
-        if headless:
-            options.headless = True
-
-        if not images_enabled:
-            pass
-
-        seleniumwire_options = {}
-        if proxy:
-            seleniumwire_options['proxy'] = {
-                'http': proxy,
-                'https': proxy
-            }
-
-        self.driver = webdriver.Firefox(
-            options=options, seleniumwire_options=seleniumwire_options)
         self.driver.set_page_load_timeout(timeout)
         self.driver.header_overrides = CF_REQUEST_HEADERS
 
