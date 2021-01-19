@@ -57,14 +57,17 @@ class SmartMobile(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://smartmobile.cl/categoria-producto/' \
                               '{}/page/{}/'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('main', 'site-main') \
                     .find('ul', 'products')
-                if soup.find('div', 'info-404'):
+
+                if soup.find('div', 'info-404') or not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
                 for container in product_containers.findAll('li', 'product'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)

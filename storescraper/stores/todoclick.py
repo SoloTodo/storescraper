@@ -92,7 +92,7 @@ class Todoclick(Store):
                 print(page_url)
                 response = session.get(page_url)
 
-                if response.url == page_url:
+                if response.url != page_url:
                     raise Exception('Mismatch: ' + response.url + ' ' +
                                     page_url)
 
