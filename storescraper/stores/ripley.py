@@ -563,7 +563,7 @@ class Ripley(Store):
                 'password': extra_args['PROXY_PASSWORD']
             }
 
-            browser = p.chromium.launch(proxy=proxy, headless=False)
+            browser = p.chromium.launch(proxy=proxy, headless=True)
             context = browser.newContext(
                 userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0'
             )
