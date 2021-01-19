@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from dateutil.parser import parse
+from playwright import sync_playwright
 
 from storescraper.store import Store
 from storescraper.product import Product
@@ -555,15 +555,22 @@ class Ripley(Store):
         if 'PROXY_USERNAME' not in extra_args:
             return {}
 
-        proxy = 'http://{}:{}@{}:{}'.format(
-            extra_args['PROXY_USERNAME'],
-            extra_args['PROXY_PASSWORD'],
-            extra_args['PROXY_IP'],
-            extra_args['PROXY_PORT'],
-        )
-        with HeadlessChrome(images_enabled=False, proxy=proxy,
-                            headless=True) as driver:
-            driver.get('https://simple.ripley.cl')
+        with sync_playwright() as p:
+            proxy = {
+                'server': 'http://{}:{}'.format(extra_args['PROXY_IP'],
+                                                extra_args['PROXY_PORT']),
+                'username': extra_args['PROXY_USERNAME'],
+                'password': extra_args['PROXY_PASSWORD']
+            }
+
+            browser = p.firefox.launch(proxy=proxy, headless=True)
+            context = browser.newContext(
+                userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0'
+            )
+
+            page = context.newPage()
+            page.goto('https://simple.ripley.cl/')
+            time.sleep(10)
 
             # Anti captcha request
             request_body = {
@@ -585,16 +592,16 @@ class Ripley(Store):
             print(json.dumps(request_body, indent=2))
             anticaptcha_session = requests.Session()
             anticaptcha_session.headers['Content-Type'] = 'application/json'
-            response = json.loads(anticaptcha_session.post(
+            json_response = json.loads(anticaptcha_session.post(
                 'http://api.anti-captcha.com/createTask',
                 json=request_body).text)
 
             print('Anti-captcha task request response')
-            print(json.dumps(response, indent=2))
+            print(json.dumps(json_response, indent=2))
 
-            assert response['errorId'] == 0
+            assert json_response['errorId'] == 0
 
-            task_id = response['taskId']
+            task_id = json_response['taskId']
             print('TaskId', task_id)
 
             # Wait until the task is ready...
@@ -625,29 +632,48 @@ class Ripley(Store):
                 retries += 1
 
             print(hcaptcha_response)
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-            for field in ['g-recaptcha-response', 'h-captcha-response']:
-                if soup.find('input', {'name': field}):
-                    driver.execute_script("document.querySelector('[name=\""
-                                          "{0}\"]').remove(); ")
+            for field in ['h-captcha-response']:
+                foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
+                print(foo)
+                page.evaluate(foo)
 
-                driver.execute_script("var foo = document.createElement('"
-                                      "input'); foo.setAttribute('name', "
-                                      "'{0}'); "
-                                      "foo.setAttribute('value','{1}'); "
-                                      "document.getElementsByTagName('form')"
-                                      "[0].appendChild(foo);".format(
-                                        field, hcaptcha_response))
-            driver.execute_script("document.getElementsByTagName('form')"
-                                  "[0].submit()")
+                foo = (f"() => {{var foo = document.createElement('input');"
+                       f"foo.setAttribute('name', '{field}');"
+                       f"foo.setAttribute('value','{hcaptcha_response}'); "
+                       f"document.getElementsByTagName('form')"
+                       f"[0].appendChild(foo);}}")
+                print(foo)
+                page.evaluate(foo)
+
+            page.evaluate("() => {document.getElementsByTagName('form')"
+                          "[0].submit()}")
 
             time.sleep(5)
 
+            cfduid_cookie = None
+            cf_clearance_cookie = None
+
+            for cookie in context.cookies():
+                if cookie['name'] == '__cfduid':
+                    print(cookie)
+                    cfduid_cookie = cookie['value']
+                    print('__cfduid', cookie)
+                if cookie['name'] == 'cf_clearance':
+                    print(cookie)
+                    cf_clearance_cookie = cookie['value']
+
+            assert cfduid_cookie and cf_clearance_cookie
+
+            proxy_string = 'http://{}:{}@{}:{}'.format(
+                extra_args['PROXY_USERNAME'], extra_args['PROXY_PASSWORD'],
+                extra_args['PROXY_IP'], extra_args['PROXY_PORT']
+            )
+
             d = {
-                "proxy": proxy,
-                "cf_clearance": driver.get_cookie('cf_clearance')['value'],
-                "__cfduid": driver.get_cookie('__cfduid')['value']
+                "proxy": proxy_string,
+                "cf_clearance": cf_clearance_cookie,
+                "__cfduid": cfduid_cookie
             }
 
             print(json.dumps(d))

@@ -137,9 +137,7 @@ class InvalidSessionCookieException(Exception):
 
 
 CF_REQUEST_HEADERS = {
-    'Accept-Language': 'en-US',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, '
-                  'like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0'
 }
 
 
@@ -158,8 +156,7 @@ def get_cf_session(extra_args):
             continue
 
         cookie = requests.cookies.create_cookie(name=cookie_name,
-                                                value=extra_args[cookie_name],
-                                                expires=1609419599)
+                                                value=extra_args[cookie_name])
         session.cookies.set_cookie(cookie)
     return session
 
@@ -223,16 +220,16 @@ class HeadlessFirefox:
 
 def load_driver_cf_cookies(driver, extra_args, domain):
     driver.add_cookie({
-        'domain': domain,
         'name': 'cf_clearance',
         'value': extra_args['cf_clearance'],
-        'expires': 1609419599
+        'domain': domain,
+        'path': '/'
     })
     driver.add_cookie({
-        'domain': domain,
         'name': '__cfduid',
         'value': extra_args['__cfduid'],
-        'expires': 1609419599
+        'domain': domain,
+        'path': '/'
     })
 
 
