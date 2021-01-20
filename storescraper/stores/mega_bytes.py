@@ -85,7 +85,8 @@ class MegaBytes(Store):
         sku = soup.find('button', 'single_add_to_cart_button button alt')[
             'value']
         stock = -1
-        offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+        offer_price = Decimal(
+            remove_words(soup.find('p', 'price').text).split()[-1])
         price_container = soup.find('div',
                                     'woocommerce-product-details__short'
                                     '-description')
