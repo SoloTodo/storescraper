@@ -1,93 +1,86 @@
-import json
-import re
-
-from collections import defaultdict
-from datetime import datetime
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
+    POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
+    TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, USB_FLASH_DRIVE, \
+    STEREO_SYSTEM, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    remove_words
 
 
 class Todoclick(Store):
     @classmethod
     def categories(cls):
         return [
-            'AllInOne',
-            'Notebook',
-            'StorageDrive',
-            'SolidStateDrive',
-            'ExternalStorageDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'Motherboard',
-            'Processor',
-            'VideoCard',
-            'Ram',
-            'Tablet',
-            'Headphones',
-            'Mouse',
-            'Keyboard',
-            'Monitor',
-            'Printer',
-            'UsbFlashDrive',
-            'StereoSystem',
-            'Wearable',
+            ALL_IN_ONE,
+            NOTEBOOK,
+            STORAGE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            MOTHERBOARD,
+            PROCESSOR,
+            VIDEO_CARD,
+            RAM,
+            TABLET,
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD,
+            MONITOR,
+            PRINTER,
+            USB_FLASH_DRIVE,
+            STEREO_SYSTEM,
+            WEARABLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['notebooks', 'Notebook'],
-            ['all-in-one', 'AllInOne'],
-            ['disco-duro', 'StorageDrive'],
-            ['fuentes-de-poder', 'PowerSupply'],
-            ['gabinetes', 'ComputerCase'],
-            ['placa-madre', 'Motherboard'],
-            ['procesadores', 'Processor'],
-            ['tarjetas-de-video', 'VideoCard'],
-            ['memoria-ram', 'Ram'],
-            ['tablet', 'Tablet'],
-            ['audifonos', 'Headphones'],
-            ['audifonos-gamer', 'Headphones'],
-            ['mouse-accesorios', 'Mouse'],
-            ['mouse-gamer', 'Mouse'],
-            ['teclados', 'Keyboard'],
-            ['teclado-gamer', 'Keyboard'],
-            ['monitores', 'Monitor'],
-            ['impresoras-laser-impresoras', 'Printer'],
-            ['impresoras-ink-jet-impresoras', 'Printer'],
-            ['multifuncional-laser', 'Printer'],
-            ['multifuncional-ink-jet', 'Printer'],
-            ['pendrive', 'UsbFlashDrive'],
-            ['parlantes', 'StereoSystem'],
-            ['soundbar', 'StereoSystem'],
-            ['smartwatch', 'Wearable']
+        url_extensions = [
+            ['notebooks', NOTEBOOK],
+            ['all-in-one', ALL_IN_ONE],
+            ['disco-duro', STORAGE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['placa-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['memoria-ram', RAM],
+            ['tablet', TABLET],
+            ['audifonos', HEADPHONES],
+            ['audifonos-gamer', HEADPHONES],
+            ['mouse-accesorios', MOUSE],
+            ['mouse-gamer', MOUSE],
+            ['teclados', KEYBOARD],
+            ['teclado-gamer', KEYBOARD],
+            ['monitores', MONITOR],
+            ['impresoras-laser-impresoras', PRINTER],
+            ['impresoras-ink-jet-impresoras', PRINTER],
+            ['multifuncional-laser', PRINTER],
+            ['multifuncional-ink-jet', PRINTER],
+            ['pendrive', USB_FLASH_DRIVE],
+            ['parlantes', STEREO_SYSTEM],
+            ['soundbar', STEREO_SYSTEM],
+            ['smartwatch', WEARABLE]
         ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-
-        for category_path, local_category in category_paths:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
-
             while True:
                 if page >= 15:
                     raise Exception('Page overflow')
 
                 if page == 1:
                     page_url = 'https://www.todoclick.cl/categoria/{}/'.format(
-                        category_path)
+                        url_extension)
                 else:
                     page_url = 'https://www.todoclick.cl/categoria/{}/page/' \
-                               '{}/'.format(category_path, page)
+                               '{}/'.format(url_extension, page)
 
                 print(page_url)
                 response = session.get(page_url)
@@ -115,31 +108,18 @@ class Todoclick(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('div', 'ct-code-block').text.split(':')[1].strip()
-
+        sku = soup.find('span', 'sku_wrapper').text.split()[-1]
         stock = 0
         stock_container = soup.find('p', 'stock in-stock')
         if stock_container:
             stock = int(stock_container.text.split(' ')[0])
-
-        offer_price_container = soup.find('p', 'price')
-
-        if offer_price_container.find('ins'):
-            offer_price_container = offer_price_container.find('ins')
-
-        offer_price = Decimal(offer_price_container.find('span', 'amount')
-                              .text.replace('$', '').replace('.', ''))
-        normal_price = Decimal(soup.find('div', {'id': 'Webpay'})
-                               .text.split('$')[1].replace('.', ''))
-
+        price = Decimal(remove_words(
+            soup.find('span', 'woocommerce-Price-amount amount').text))
         images = soup.findAll('img', 'wp-post-image')
         picture_urls = [i['src'] for i in images]
-
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
-
         p = Product(
             name,
             cls.__name__,
@@ -148,8 +128,8 @@ class Todoclick(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             part_number=sku,
