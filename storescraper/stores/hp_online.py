@@ -1,7 +1,10 @@
 import json
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import NOTEBOOK, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -11,47 +14,44 @@ class HpOnline(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Printer',
+            NOTEBOOK,
+            PRINTER,
             'AllInOne',
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['notebooks', 'Notebook'],
-            ['impresoras', 'Printer'],
+            ['notebooks', NOTEBOOK],
+            ['impresoras', PRINTER],
             # ['desktops/desktops-all-in-one', 'AllInOne'],
         ]
-
         session = session_with_proxy(extra_args)
-
         product_urls = []
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
-
             page = 1
-
-            while True:
+            do = True
+            while do:
+                if page > 13:
+                    raise Exception('page overflow: ' + category_path)
                 category_url = 'https://store.hp.com/cl-es/default' \
                                '/{}.html?p={}'.format(category_path, page)
-
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
                 product_cells = soup.findAll('div', 'product-item-info')
-
                 if not product_cells:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_url)
+                        logging.warning('Empty category: ' + category_url)
                     break
-
                 for cell in product_cells:
                     product_url = cell.find('a')['href']
+                    if product_url in product_urls:
+                        do = False
+                        break
                     product_urls.append(product_url)
-
                 page += 1
-
         return product_urls
 
     @classmethod
@@ -95,7 +95,7 @@ class HpOnline(Store):
         picture_urls = []
 
         if images_json and 'mage/gallery/gallery' in images_json[
-                '[data-gallery-role=gallery-placeholder]']:
+            '[data-gallery-role=gallery-placeholder]']:
             images_data = images_json[
                 '[data-gallery-role=gallery-placeholder]'][
                 'mage/gallery/gallery']['data']
