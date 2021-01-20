@@ -67,6 +67,9 @@ class TravelTienda(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
 
         for category_path, local_category in category_filters:
@@ -75,9 +78,7 @@ class TravelTienda(Store):
 
             url = base_url.format(category_path)
             print(url)
-
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
             items = soup.findAll('div', 'contenedor-productos')
 
             for item in items:

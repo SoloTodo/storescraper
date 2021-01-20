@@ -44,7 +44,8 @@ class Dimercom(Store):
             ['energia-10/energia-fuentes-de-poder-137', POWER_SUPPLY],
             ['gabinetes-y-enfriamiento-26/gabinetes-y-enfriamiento'
              '-gabinetes-149', COMPUTER_CASE],
-            ['teclados-mouses-1/teclados-mouses-mouse-33', MOUSE],
+            # Overflows on nvidia cards
+            # ['teclados-mouses-1/teclados-mouses-mouse-33', MOUSE],
             ['teclados-mouses-1/teclados-mouses-teclados-32', KEYBOARD],
             ['monitores-15', MONITOR],
             ['gabinetes-y-enfriamiento-26/gabinetes-y-enfriamiento'
