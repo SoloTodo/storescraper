@@ -90,9 +90,11 @@ class TravelTienda(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
         name = soup.find('p', 'txt-nombre-producto').text
 
         if 'samsung' in name.lower() or 'galaxy' in name.lower():
@@ -106,7 +108,7 @@ class TravelTienda(Store):
         offer_price_container = soup.find('p', 'precio-bch')
 
         if offer_price_container and offer_price_container.contents[0].strip():
-            print(offer_price_container.contents[0])
+            # print(offer_price_container.contents[0])
             offer_price = Decimal(remove_words(
                 offer_price_container.contents[0]))
         else:
