@@ -11,6 +11,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
+from storescraper.categories import GAMING_CHAIR
 
 
 class SpDigital(Store):
@@ -46,6 +47,7 @@ class SpDigital(Store):
             'Headphones',
             'VideoGameConsole',
             'Ups',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -137,6 +139,8 @@ class SpDigital(Store):
             ['463', ['Ups'],
              'Home > UPS y protección de poder > UPS y respaldo de energía',
              1],
+            ['554', [GAMING_CHAIR],
+             'Home > Componentes para PC > Sillas Gamer', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
