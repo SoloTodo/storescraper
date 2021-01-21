@@ -219,6 +219,13 @@ class SpDigital(Store):
         # Remove \x9d character for this case
         # https://www.spdigital.cl/products/view/55577
         name = soup.find('h1').text.strip().replace('\x9d', '')
+
+        # Catch both "SELECCION" and "SELECCIÓN"
+        if 'SEGUNDA SELECCI' in name:
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         sku = [x for x in url.split('/') if x][-1]
 
         if soup.find('a', 'stock-amount-cero') or \
@@ -308,6 +315,7 @@ class SpDigital(Store):
             'CLP',
             sku=sku,
             part_number=part_number,
+            condition=condition,
             description=description,
             picture_urls=picture_urls,
             review_count=review_count,
