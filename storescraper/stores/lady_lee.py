@@ -2,85 +2,51 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class LadyLee(Store):
-    base_url = 'https://ladylee.net'
 
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'Stove'
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('television', 'Television'),
-            ('parlantes-portatiles', 'StereoSystem'),
-            ('equipos-de-sonido', 'StereoSystem'),
-            ('teatros-en-casa', 'StereoSystem'),
-            ('equipo-para-auto', 'StereoSystem'),
-            ('celulares-1', 'Cell'),
-            ('refrigeradoras-1-puerta', 'Refrigerator'),
-            ('refrigeradoras-top-freezer', 'Refrigerator'),
-            ('refrigeradoras-side-by-side', 'Refrigerator'),
-            ('refrigeradoras-frech-door', 'Refrigerator'),
-            ('freezers', 'Refrigerator'),
-            ('estufas-electricas', 'Stove'),
-            ('estufas-de-gas', 'Stove'),
-            ('cooktop', 'Stove'),
-            ('lavadoras-twinwash', 'WashingMachine'),
-            ('lavadoras-carga-frontal', 'WashingMachine'),
-            ('lavadoras-carga-superior', 'WashingMachine'),
-            ('centro-de-lavado', 'WashingMachine'),
-            ('secadoras', 'WashingMachine'),
-            ('microondas', 'Oven'),
-            ('hornos', 'Oven'),
+        url_extensions = [
+            TELEVISION
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_filters:
+        for local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
-
             while True:
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url = '{}/collections/{}?page={}'.format(
-                    cls.base_url, category_path, page)
+                url_webpage = 'https://ladylee.net/collections/all/' \
+                              'marca_lg?page={}'.format(page)
 
-                response = session.get(url)
-                data = response.text
-
+                data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                products = soup.findAll('div', 'main_box')
+                product_containers = soup.findAll('div', 'main_box')
 
-                if not products:
+                if not product_containers:
                     if page == 1:
-                        raise Exception('Empty category: ' + url)
+                        raise Exception('Empty category: ' + url_webpage)
                     break
-
-                for container in products:
-                    product_link = container.find('a')
-                    product_url = '{}{}'\
-                        .format(cls.base_url, product_link['href'])
-                    product_urls.append(product_url)
-
+                for container in product_containers:
+                    product_url = container.find('a')['href'].split('/')[-1]
+                    product_urls.append('https://ladylee.net/products/' + product_url)
                 page += 1
 
         return product_urls
@@ -91,7 +57,6 @@ class LadyLee(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, allow_redirects=False)
         soup = BeautifulSoup(response.text, 'html.parser')
-
         sku_container = soup.find('div', 'variant-sku')
         sku = sku_container.text.split(':')[1].strip()
         model_name_container = soup.find('div', 'description-first-part')
