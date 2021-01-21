@@ -1,14 +1,12 @@
 import json
-import re
 from collections import defaultdict
-import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, check_ean13
+from storescraper.utils import session_with_proxy
 
 
 class Jumbo(Store):
@@ -99,7 +97,12 @@ class Jumbo(Store):
         product_container = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[1].text)
         name = product_container['name']
-        sku = soup.find('span', 'product-code').text.split()[1]
+        api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v1' \
+                  '/catalog_system/pub/products/search/{}/p?sc=11'. \
+            format(url.split('/')[3])
+        session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
+        api_request = session.get(api_url)
+        sku = api_request.json()[0]['productReference']
         price = Decimal(product_container['offers']['price'])
 
         pictures_tag = soup.find('ul', 'product-image-thumbs-list')
@@ -110,8 +113,8 @@ class Jumbo(Store):
         else:
             picture_urls = None
 
-        if soup.find('meta', {'property': 'product:availability'})[
-                'content'] == 'out of stock':
+        if soup.find('meta', {'property': 'product:availability'})['content'] \
+                == 'out of stock':
             stock = 0
         else:
             stock = -1
