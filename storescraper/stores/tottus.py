@@ -30,7 +30,7 @@ class Tottus(Store):
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
-        url_base = 'http://www.tottus.cl'
+        url_base = 'https://www.tottus.cl'
 
         category_paths = [
             ['televisores-cat070301', ['Television'], 'Televisores', 1],
