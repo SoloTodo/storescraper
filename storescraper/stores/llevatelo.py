@@ -38,6 +38,7 @@ class Llevatelo(Store):
             ('linea-blanca/refrigeradores', REFRIGERATOR),
             ('linea-blanca/microondas/', OVEN),
             ('climatizacion/equipos-de-climatizacion/', AIR_CONDITIONER),
+            ('climatizacion/purificadores-de-aire/', AIR_CONDITIONER),
         ]
 
         session = session_with_proxy(extra_args)

@@ -37,7 +37,7 @@ def main():
 
         print(proxy)
 
-        browser = p.chromium.launch(proxy=proxy, headless=False)
+        browser = p.firefox.launch(proxy=proxy, headless=False)
         context = browser.newContext(
             userAgent=CF_REQUEST_HEADERS['User-Agent']
         )
