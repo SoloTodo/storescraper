@@ -124,7 +124,7 @@ class Paris(Store):
          'refrigerador-bottom-freezer//',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Bottom Freezer', 1],
-        ['linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side',
+        ['linea-blanca/refrigeracion/refrigerador-side-by-side',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Side by Side', 1],
         ['linea-blanca/refrigeracion/frio-directo', ['Refrigerator'],
