@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
@@ -138,7 +139,12 @@ class InfographicsSolutions(Store):
                 '$', '').replace('.', ''))
 
         picture_containers = soup.findAll('div', 'product-image-wrap')
-        picture_urls = [p.find('a')['href'] for p in picture_containers]
+        picture_urls = [
+            p.find('a')['href'] for p in picture_containers
+            if validators.url(p.find('a')['href'])
+        ]
+
+        print(picture_urls)
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
