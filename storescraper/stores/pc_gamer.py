@@ -74,10 +74,8 @@ class PcGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product_name').text
         sku = url.split('?id=')[1]
-        stock_container = soup.find('div', 'product_description').text.strip()
-        pos_stock = stock_container.find('stock')
-        stock = int(
-            stock_container[pos_stock:pos_stock + 10].split(':')[1].strip())
+        stock = int(soup.find('div', 'product_description')
+                    .find('table', 'table').findAll('td')[-1].text)
         normal_price = Decimal(
             soup.find('div', 'price-normal').find('h3').text.split()[1]
                 .replace('.', ''))
