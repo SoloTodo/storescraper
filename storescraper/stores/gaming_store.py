@@ -28,6 +28,7 @@ class GamingStore(Store):
             COMPUTER_CASE,
             SOLID_STATE_DRIVE,
             MONITOR,
+            VIDEO_CARD,
         ]
 
     @classmethod
