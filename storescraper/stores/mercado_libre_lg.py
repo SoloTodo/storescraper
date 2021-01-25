@@ -13,6 +13,8 @@ class MercadoLibreLg(MercadoLibreChile):
             ('electronica/televisores', 'Television'),
             ('electrodomesticos/refrigeracion', 'Refrigerator'),
             ('lavado', 'WashingMachine'),
+            ('celulares-telefonia', 'Cell'),
+            ('computacion', 'Monitor'),
         ]}
 
     @classmethod
@@ -25,6 +27,8 @@ class MercadoLibreLg(MercadoLibreChile):
             'Television': 'Televisores',
             'Refrigerator': 'Refrigeración',
             'WashingMachine': 'Lavado',
+            'Cell': 'Celulares y Telefonía',
+            'Monitor': 'Computación',
         }
 
         section_name = sections_dict[category]
