@@ -4,6 +4,7 @@ import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -32,6 +33,7 @@ class AllTec(Store):
             'Headphones',
             'StereoSystem',
             'Notebook',
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -60,6 +62,7 @@ class AllTec(Store):
             ['25-auriculares', 'Headphones'],
             ['26-parlantes', 'StereoSystem'],
             ['65-notebook-tablet', 'Notebook'],
+            ['96-sillas', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

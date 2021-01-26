@@ -9,7 +9,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import HEADPHONES, MOUSE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, NOTEBOOK, TELEVISION, MONITOR, \
-    VIDEO_GAME_CONSOLE
+    VIDEO_GAME_CONSOLE, GAMING_CHAIR
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -25,7 +25,8 @@ class AllGamersChile(Store):
             NOTEBOOK,
             TELEVISION,
             MONITOR,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -41,7 +42,8 @@ class AllGamersChile(Store):
             ['electronica/monitores', MONITOR],
             ['consolas/nintendo-switch', VIDEO_GAME_CONSOLE],
             ['consolas/playstation', VIDEO_GAME_CONSOLE],
-            ['consolas/xbox-one', VIDEO_GAME_CONSOLE]
+            ['consolas/xbox-one', VIDEO_GAME_CONSOLE],
+            ['accesorios-gamer/sillas-gamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

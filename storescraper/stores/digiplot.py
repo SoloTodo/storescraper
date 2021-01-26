@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -33,7 +34,8 @@ class Digiplot(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Ups',
-            'VideoCard'
+            'VideoCard',
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -72,7 +74,8 @@ class Digiplot(Store):
             ['teclado-y-mouse/teclado', 'Keyboard'],
             ['teclado-y-mouse/teclado-y-mouse', 'KeyboardMouseCombo'],
             ['ups-y-alargador-elec/ups-hasta-900va', 'Ups'],
-            ['video/tarjetas-video', 'VideoCard']
+            ['video/tarjetas-video', 'VideoCard'],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, MOUSE, KEYBOARD, TELEVISION, MONITOR, \
-    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS
+    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,6 +35,7 @@ class CCLink(Store):
             HEADPHONES,
             CPU_COOLER,
             UPS,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -69,6 +70,7 @@ class CCLink(Store):
             ['gamer/comodidad-gamer', HEADPHONES],
             ['gamer/juegos-y-consolas/consolas-xbox', EXTERNAL_STORAGE_DRIVE],
             ['gamer/componentes-rgb', MOTHERBOARD],
+            ['gamer/comodidad-gamer/sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

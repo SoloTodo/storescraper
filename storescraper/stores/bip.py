@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -36,6 +37,7 @@ class Bip(Store):
             'Headphones',
             'StereoSystem',
             'Ups',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -97,6 +99,8 @@ class Bip(Store):
             ['13', 'StereoSystem'],
             # UPS
             ['31', 'Ups'],
+            # Sillas
+            ['591', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
