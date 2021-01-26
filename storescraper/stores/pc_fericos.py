@@ -59,39 +59,36 @@ class PcFericos(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
-        ipdb.set_trace()
         name = soup.find('h1', 'product-title').text
-        sku = soup.find('div', 'productoptions').find('input', {'name': 'id'})[
-            'value']
-        json_container = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
-        if json_container['offers'][0][
-            'availability'] == 'http://schema.org/OutOfStock':
-            stock = 0
-        else:
-            stock = -1
-        price = Decimal(json_container['offers'][0]['price'])
-        picture_urls = []
-        for tag in soup.find('div', 'gallery-thumbs').findAll('img'):
-            if tag.get('src'):
-                picture_urls.append('https:' + tag['src'])
+        json_container = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+        products = []
+        if soup.find('select'):
+            variation_names = soup.find('select').findAll('option')
+        for pos, product in enumerate(json_container['offers']):
+            if len(json_container['offers']) > 2:
+                var_name = name + ' - ' + variation_names[pos]['value']
             else:
-                picture_urls.append('https:' +
-                                    tag['data-src'].replace('_{width}x',
-                                                            '').split('?')[0])
+                var_name = name
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-        )
-        return [p]
+            stock = 0 if product['availability'] == \
+                         'http://schema.org/OutOfStock' else -1
+            price = Decimal(product['price'])
+            sku = product['url'].split('variant=')[-1]
+            picture_urls = [json_container['image'][0]]
+            p = Product(
+                var_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+        return products
