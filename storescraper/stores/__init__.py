@@ -208,6 +208,7 @@ from .pc_com import PcCom
 from .pc_digital import PcDigital
 from .pc_express import PcExpress
 from .pc_factory import PcFactory
+from .pc_fericos import PcFericos
 from .pc_gamer import PcGamer
 from .pc_ofertas import PcOfertas
 from .pcel import Pcel
