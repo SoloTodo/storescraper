@@ -5,9 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.categories import RAM, HEADPHONES, COMPUTER_CASE, MONITOR, \
-    MOUSE, STEREO_SYSTEM, MOTHERBOARD, PROCESSOR, PROJECTOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, KEYBOARD, PRINTER, STORAGE_DRIVE, NOTEBOOK
+from storescraper.categories import RAM, MONITOR, MOTHERBOARD, PROCESSOR, \
+    SOLID_STATE_DRIVE, VIDEO_CARD, STORAGE_DRIVE, NOTEBOOK, WEARABLE
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -16,44 +15,30 @@ class SetupSpace(Store):
     def categories(cls):
         return [
             RAM,
-            HEADPHONES,
-            COMPUTER_CASE,
             MONITOR,
-            MOUSE,
-            STEREO_SYSTEM,
             MOTHERBOARD,
             PROCESSOR,
-            PROJECTOR,
             SOLID_STATE_DRIVE,
-            KEYBOARD,
-            PRINTER,
             VIDEO_CARD,
             NOTEBOOK,
-            STORAGE_DRIVE
+            STORAGE_DRIVE,
+            WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['ram', RAM],
-            ['audifonos', HEADPHONES],
-            ['gabinetes', COMPUTER_CASE],
             ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['parlantes', STEREO_SYSTEM],
-            ['placa-madre', MOTHERBOARD],
+            ['tarjeta-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
-            ['proyectores', PROJECTOR],
             ['ssd', SOLID_STATE_DRIVE],
-            ['ssd-1', SOLID_STATE_DRIVE],
             ['m2-sata', SOLID_STATE_DRIVE],
             ['m2-nvme', SOLID_STATE_DRIVE],
             ['hdd', STORAGE_DRIVE],
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['teclados', KEYBOARD],
-            ['impresoras', PRINTER],
-            ['gaming', VIDEO_CARD],
-            ['notebook', NOTEBOOK],
+            ['tarjetas-graficas', VIDEO_CARD],
+            ['notebooks', NOTEBOOK],
+            ['apple-watch-1', WEARABLE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,12 +50,11 @@ class SetupSpace(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://setupspace.cl/collections/{}?page={}' \
+                url_webpage = 'https://setupspace.cl/{}?page={}' \
                     .format(url_extension, page)
-
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-wrap')
+                product_containers = soup.findAll('div', 'product-block')
 
                 if not product_containers:
                     if page == 1:
@@ -89,30 +73,21 @@ class SetupSpace(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_name').text
-        sku = soup.find('input', {'name': 'id'})['value'].strip()
-        if not soup.find('span', 'current_price').find('span', 'money'):
-            return []
-        normal_price = Decimal(remove_words(
-            soup.find('span', 'current_price').find('span', 'money').text))
-        offer_price = normal_price
-
-        stock_container = soup.find(
-            'form', 'shopify-product-form').find('div', 'items_left')
-
-        if not stock_container:
-            return []
-
-        if stock_container.text == '':
-            stock = -1
+        name = soup.find('h1', 'page-header').text
+        sku = soup.find('span', 'sku_elem').text
+        price = Decimal(
+            remove_words(soup.find('span', {'id': 'product-form-price'}).text))
+        if not soup.find('span', 'product-form-stock'):
+            stock = 0
         else:
-            stock = int(stock_container.text.split()[0])
-
-        picture_urls = []
-
-        for tag in soup.findAll('a', 'lightbox'):
-            picture_urls.append('https:' + tag['href'].split('?')[0])
-
+            stock = int(soup.find('span', 'product-form-stock').text)
+        if soup.find('div', 'owl-thumbs mt-2 mr-n2'):
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'owl-thumbs mt-2 mr-n2').findAll(
+                                'img')]
+        else:
+            picture_urls = [
+                soup.find('div', 'product-images').find('img')['src']]
         p = Product(
             name,
             cls.__name__,
@@ -121,8 +96,8 @@ class SetupSpace(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
