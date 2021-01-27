@@ -6,7 +6,8 @@ from decimal import Decimal
 from storescraper.categories import STEREO_SYSTEM, HEADPHONES, NOTEBOOK, \
     TABLET, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    CPU_COOLER, KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, MONITOR, PRINTER
+    CPU_COOLER, KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, MONITOR, PRINTER, \
+    GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -34,7 +35,8 @@ class Spider(Store):
             MOUSE,
             KEYBOARD,
             MONITOR,
-            PRINTER
+            PRINTER,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -58,7 +60,8 @@ class Spider(Store):
             ['55-mouse', MOUSE],
             ['56-teclados', KEYBOARD],
             ['21-monitores', MONITOR],
-            ['47-impresoras', PRINTER]
+            ['47-impresoras', PRINTER],
+            ['59-sillas-gamer', GAMING_CHAIR]
         ]
         product_urls = []
         session = session_with_proxy(extra_args)
