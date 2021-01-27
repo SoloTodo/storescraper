@@ -1,11 +1,10 @@
 import logging
-import re
 import urllib
 
-import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -40,6 +39,7 @@ class Winpy(Store):
             'StereoSystem',
             'Headphones',
             'Ups',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -77,6 +77,7 @@ class Winpy(Store):
             ['electronica/parlantes/', 'StereoSystem'],
             ['electronica/audifonos/', 'Headphones'],
             ['ups/ups/', 'Ups'],
+            ['accesorios/para-juegos/', GAMING_CHAIR]
         ]
 
         product_urls = []
