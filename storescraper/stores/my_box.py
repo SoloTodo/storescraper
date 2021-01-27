@@ -2,6 +2,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -27,6 +28,7 @@ class MyBox(Store):
             'Mouse',
             'KeyboardMouseCombo',
             'Ups',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -46,6 +48,7 @@ class MyBox(Store):
             ['77-teclado-keyboard', 'Keyboard'],
             ['55-teclado-y-mouse', 'Mouse'],
             ['57-ups', 'Ups'],
+            ['133-sillas-gamer-gaming-chair', GAMING_CHAIR]
         ]
 
         product_urls = []
