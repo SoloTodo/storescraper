@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
     TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, USB_FLASH_DRIVE, \
-    STEREO_SYSTEM, WEARABLE
+    STEREO_SYSTEM, WEARABLE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -34,6 +34,7 @@ class Todoclick(Store):
             USB_FLASH_DRIVE,
             STEREO_SYSTEM,
             WEARABLE,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -63,7 +64,8 @@ class Todoclick(Store):
             ['pendrive', USB_FLASH_DRIVE],
             ['parlantes', STEREO_SYSTEM],
             ['soundbar', STEREO_SYSTEM],
-            ['smartwatch', WEARABLE]
+            ['smartwatch', WEARABLE],
+            ['gamer/sillas-gaming', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
