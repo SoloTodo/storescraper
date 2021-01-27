@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -23,6 +24,7 @@ class Weplay(Store):
             # 'UsbFlashDrive',
             # 'MemoryCard',
             # 'StereoSystem',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -38,7 +40,8 @@ class Weplay(Store):
             ['computacion/mouse.html', 'Mouse'],
             ['computacion/pendrives.html', 'UsbFlashDrive'],
             ['computacion/tarjetasdememoria.html', 'MemoryCard'],
-            ['computacion/parlantescomputacion.html', 'StereoSystem']
+            ['computacion/parlantescomputacion.html', 'StereoSystem'],
+            ['computacion/sillasgamer.html', GAMING_CHAIR]
         ]
 
         product_urls = []
