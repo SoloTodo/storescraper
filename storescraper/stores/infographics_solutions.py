@@ -10,7 +10,7 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
     COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL, \
-    WEARABLE, STEREO_SYSTEM
+    WEARABLE, STEREO_SYSTEM, GAMING_CHAIR
 
 
 class InfographicsSolutions(Store):
@@ -35,6 +35,7 @@ class InfographicsSolutions(Store):
             CELL,
             WEARABLE,
             STEREO_SYSTEM,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -60,6 +61,7 @@ class InfographicsSolutions(Store):
             ['accesorios/mouse', MOUSE],
             ['reloj-inteligente-smartwatch', WEARABLE],
             ['accesorios/parlantes', STEREO_SYSTEM],
+            ['accesorios/sillas', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
