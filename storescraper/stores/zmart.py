@@ -3,6 +3,7 @@ import urllib
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -19,7 +20,8 @@ class Zmart(Store):
             'KeyboardMouseCombo',
             'StereoSystem',
             'Headphones',
-            'Notebook'
+            'Notebook',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -37,6 +39,7 @@ class Zmart(Store):
             [37, 'Mouse'],
             [38, 'Keyboard'],
             [45, 'StereoSystem'],
+            [532, GAMING_CHAIR]
         ]
 
         product_urls = []
