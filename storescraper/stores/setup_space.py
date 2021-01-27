@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, MONITOR, MOTHERBOARD, PROCESSOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, STORAGE_DRIVE, NOTEBOOK, WEARABLE
+    SOLID_STATE_DRIVE, VIDEO_CARD, STORAGE_DRIVE, NOTEBOOK, WEARABLE, KEYBOARD
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -22,7 +22,8 @@ class SetupSpace(Store):
             VIDEO_CARD,
             NOTEBOOK,
             STORAGE_DRIVE,
-            WEARABLE
+            WEARABLE,
+            KEYBOARD,
         ]
 
     @classmethod
@@ -38,7 +39,8 @@ class SetupSpace(Store):
             ['hdd', STORAGE_DRIVE],
             ['tarjetas-graficas', VIDEO_CARD],
             ['notebooks', NOTEBOOK],
-            ['apple-watch-1', WEARABLE]
+            ['apple-watch-1', WEARABLE],
+            ['apple-watch', KEYBOARD],
         ]
 
         session = session_with_proxy(extra_args)
@@ -74,7 +76,7 @@ class SetupSpace(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'page-header').text
-        sku = soup.find('span', 'sku_elem').text
+        sku = soup.find('span', 'sku_elem').text.strip()
         price = Decimal(
             remove_words(soup.find('span', {'id': 'product-form-price'}).text))
         if not soup.find('span', 'product-form-stock'):
@@ -88,6 +90,7 @@ class SetupSpace(Store):
         else:
             picture_urls = [
                 soup.find('div', 'product-images').find('img')['src']]
+
         p = Product(
             name,
             cls.__name__,
