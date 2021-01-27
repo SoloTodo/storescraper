@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, POWER_SUPPLY, \
     RAM, MONITOR, MOUSE, VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
-    KEYBOARD, CPU_COOLER, SOLID_STATE_DRIVE
+    KEYBOARD, CPU_COOLER, SOLID_STATE_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,6 +29,7 @@ class HardGaming(Store):
             MOTHERBOARD,
             KEYBOARD,
             CPU_COOLER,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -45,7 +46,8 @@ class HardGaming(Store):
             ['procesadores', PROCESSOR],
             ['placas-madres', MOTHERBOARD],
             ['teclados', KEYBOARD],
-            ['refrigeracion', CPU_COOLER]
+            ['refrigeracion', CPU_COOLER],
+            ['sillas-gamer', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
@@ -129,8 +131,8 @@ class HardGaming(Store):
             sku_container = soup.find(
                 'meta', property='og:image')['content']
             sku = re.search(r"/(\d+)/", sku_container).group(1)
-            stock_container = soup\
-                .find('form', 'product-form form-horizontal')\
+            stock_container = soup \
+                .find('form', 'product-form form-horizontal') \
                 .find('div',
                       'form-group product-stock product-out-stock text-center '
                       'hidden')

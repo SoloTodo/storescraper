@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, \
-    COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD
+    COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,7 +21,8 @@ class GWStore(Store):
             RAM,
             PROCESSOR,
             VIDEO_CARD,
-            MOTHERBOARD
+            MOTHERBOARD,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -33,7 +34,8 @@ class GWStore(Store):
             ['memorias', RAM],
             ['proce', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['placas-madres', MOTHERBOARD]
+            ['placas-madres', MOTHERBOARD],
+            ['accesorios/sillas-gamer', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
