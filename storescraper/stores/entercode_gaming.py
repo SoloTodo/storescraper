@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, MONITOR, \
-    MOUSE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, KEYBOARD
+    MOUSE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, KEYBOARD, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -22,7 +22,8 @@ class EntercodeGaming(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
-            KEYBOARD
+            KEYBOARD,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -35,7 +36,8 @@ class EntercodeGaming(Store):
             ['placa-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['teclados', KEYBOARD]
+            ['teclados', KEYBOARD],
+            ['sillas-gamer', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
