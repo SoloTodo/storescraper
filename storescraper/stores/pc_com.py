@@ -8,7 +8,7 @@ from storescraper.utils import session_with_proxy, remove_words, \
 from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
-    MOTHERBOARD
+    MOTHERBOARD, GAMING_CHAIR
 
 
 class PcCom(Store):
@@ -28,7 +28,8 @@ class PcCom(Store):
             KEYBOARD,
             STORAGE_DRIVE,
             CPU_COOLER,
-            MOTHERBOARD
+            MOTHERBOARD,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -55,6 +56,7 @@ class PcCom(Store):
             ['zona-gamers/teclados-membrana', KEYBOARD],
             ['enfriamiento', CPU_COOLER],
             ['placas-madres', MOTHERBOARD],
+            ['zona-gamers/sillas-gamers', GAMING_CHAIR]
         ]
 
         product_urls = []
@@ -74,7 +76,7 @@ class PcCom(Store):
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url = 'https://pccom.cl/categoria-producto/{}/page/{}/'\
+                url = 'https://pccom.cl/categoria-producto/{}/page/{}/' \
                     .format(category_path, page)
                 response = session.get(url)
 

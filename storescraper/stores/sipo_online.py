@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
-    KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE
+    KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
+    GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +30,8 @@ class SipoOnline(Store):
             KEYBOARD_MOUSE_COMBO,
             COMPUTER_CASE,
             MONITOR,
-            WEARABLE
+            WEARABLE,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -55,7 +57,8 @@ class SipoOnline(Store):
             ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/monitores', MONITOR],
-            ['smartwatch', WEARABLE]
+            ['smartwatch', WEARABLE],
+            ['zona-gamer/silla-gamer', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)

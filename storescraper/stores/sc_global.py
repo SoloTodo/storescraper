@@ -7,7 +7,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
-    KEYBOARD, MONITOR, HEADPHONES, UPS
+    KEYBOARD, MONITOR, HEADPHONES, UPS, GAMING_CHAIR
 
 
 class ScGlobal(Store):
@@ -21,7 +21,8 @@ class ScGlobal(Store):
             KEYBOARD,
             MONITOR,
             HEADPHONES,
-            UPS
+            UPS,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -41,6 +42,7 @@ class ScGlobal(Store):
             ['127-zona-gamer', NOTEBOOK],  # Zona gamer
             ['123-teclados-mouse', KEYBOARD],  # Teclados
             ['125-audifonos', HEADPHONES],  # Audífonos
+            ['121-silla-gamer', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)

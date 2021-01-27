@@ -10,7 +10,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
     MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
-    CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES
+    CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES, GAMING_CHAIR
 
 
 class TtChile(Store):
@@ -35,7 +35,8 @@ class TtChile(Store):
             CPU_COOLER,
             VIDEO_CARD,
             STEREO_SYSTEM,
-            HEADPHONES
+            HEADPHONES,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -79,6 +80,7 @@ class TtChile(Store):
             ['99', VIDEO_CARD],  # Tarjetas de video AMD
             ['94', STEREO_SYSTEM],  # Parlantes
             ['95', HEADPHONES],  # Audífonos
+            ['100', GAMING_CHAIR]
         ]
 
         product_urls = []

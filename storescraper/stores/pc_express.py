@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -36,6 +37,7 @@ class PcExpress(Store):
             'Headphones',
             'StereoSystem',
             'Ups',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -72,7 +74,8 @@ class PcExpress(Store):
             ['282', 'Headphones'],            # Audifonos Microfono Bluetooth
             ['282', 'Headphones'],            # Microfonos y Manos Libres
             ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
-            ['154', 'Ups']                    # Ups
+            ['154', 'Ups'],                    # Ups
+            ['313_576', GAMING_CHAIR]
         ]
 
         product_urls = []

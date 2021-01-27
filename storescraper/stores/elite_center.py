@@ -10,7 +10,8 @@ from storescraper.store import Store
 from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
-    PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE
+    PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
+    GAMING_CHAIR
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
@@ -34,6 +35,7 @@ class EliteCenter(Store):
             PROCESSOR,
             VIDEO_CARD,
             VIDEO_GAME_CONSOLE,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -56,6 +58,7 @@ class EliteCenter(Store):
             ['tarjetas-de-video', VIDEO_CARD],
             ['teclados-2', KEYBOARD],
             ['consolas', VIDEO_GAME_CONSOLE],
+            ['sillas-gamer', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
@@ -70,7 +73,7 @@ class EliteCenter(Store):
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?orderby=popularity&paged={}'.format(
-                                url_extension, page)
+                    url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-small')

@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
-    MOUSE, NOTEBOOK, TABLET
+    MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,7 +22,8 @@ class LoiChile(Store):
             STEREO_SYSTEM,
             MOUSE,
             NOTEBOOK,
-            TABLET
+            TABLET,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -33,7 +34,8 @@ class LoiChile(Store):
             ['parlantes-y-microfonos', STEREO_SYSTEM],
             ['teclados-mouses', MOUSE],
             ['notebooks-y-cumputadoras', NOTEBOOK],
-            ['tablets-accesorios', TABLET]
+            ['tablets-accesorios', TABLET],
+            ['sillas-sillones', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         products_urls = []

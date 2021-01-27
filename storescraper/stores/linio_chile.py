@@ -1,4 +1,5 @@
 from .linio import Linio
+from ..categories import GAMING_CHAIR
 
 
 class LinioChile(Linio):
@@ -37,4 +38,5 @@ class LinioChile(Linio):
             ['componentes-de-computadoras/tarjetas-de-video/', 'VideoCard'],
             ['componentes-de-computadoras/memoria-interna/',
              'SolidStateDrive'],
+            ['accesorios-gamers/sillas-gamer', GAMING_CHAIR]
         ]

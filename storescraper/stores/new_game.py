@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -28,6 +29,7 @@ class NewGame(Store):
             'CpuCooler',
             'PowerSupply',
             'Processor',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -47,6 +49,7 @@ class NewGame(Store):
             ['accion=hijo&plt=pc&cat=84', 'CpuCooler'],
             ['accion=hijo&plt=pc&cat=85', 'PowerSupply'],
             ['accion=hijo&plt=pc&cat=86', 'Processor'],
+            ['accion=hijo&plt=pc&cat=70', GAMING_CHAIR]
         ]
 
         product_urls = []

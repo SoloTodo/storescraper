@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     SOLID_STATE_DRIVE, NOTEBOOK, COMPUTER_CASE, CPU_COOLER, MONITOR, \
     VIDEO_CARD, STEREO_SYSTEM, MOUSE, KEYBOARD, HEADPHONES, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,6 +34,7 @@ class FiestaLan(Store):
             MOUSE,
             KEYBOARD,
             HEADPHONES,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -56,6 +57,7 @@ class FiestaLan(Store):
             ['accesorios-computacion/teclados-y-mouse-accesorios-computacion',
              KEYBOARD],
             ['accesorios-computacion/audifonos', HEADPHONES],
+            ['accesorios-computacion/sillas-gamer', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

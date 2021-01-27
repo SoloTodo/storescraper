@@ -8,7 +8,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, PROCESSOR, MOUSE, SOLID_STATE_DRIVE, \
     MONITOR, KEYBOARD, HEADPHONES, MOTHERBOARD, POWER_SUPPLY, CELL, \
-    VIDEO_CARD, COMPUTER_CASE
+    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -27,7 +27,8 @@ class GamesLegends(Store):
             POWER_SUPPLY,
             CELL,
             VIDEO_CARD,
-            COMPUTER_CASE
+            COMPUTER_CASE,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -44,7 +45,8 @@ class GamesLegends(Store):
             ['fuentes-de-poder', POWER_SUPPLY],
             # ['telefonos-moviles', CELL],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['gabinetes', COMPUTER_CASE]
+            ['gabinetes', COMPUTER_CASE],
+            ['sillasgamergl', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -88,8 +90,8 @@ class GamesLegends(Store):
             stock = 0
         elif soup.find('div', 'form-group product-stock product-unavailable '
                               'visible') or soup.find(
-                                'div', 'form-group product-stock '
-                                       'product-out-stock visible'):
+            'div', 'form-group product-stock '
+                   'product-out-stock visible'):
             stock = 0
         elif soup.find('span', 'product-form-stock'):
             stock = int(soup.find('span', 'product-form-stock').text)
