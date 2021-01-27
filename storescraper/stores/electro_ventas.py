@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     MEMORY_CARD, CELL, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, PROCESSOR, USB_FLASH_DRIVE, STEREO_SYSTEM, \
-    TELEVISION, PRINTER
+    TELEVISION, PRINTER, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,42 +32,44 @@ class ElectroVentas(Store):
             USB_FLASH_DRIVE,
             PRINTER,
             STEREO_SYSTEM,
-            TELEVISION
+            TELEVISION,
+            GAMING_CHAIR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             # Mouse Gamer
-            ["nivel3/mouse-gaming-751", MOUSE],
+            ['nivel3/mouse-gaming-751', MOUSE],
             # Teclado Gamer
-            ["nivel3/teclado-gamer-759", KEYBOARD],
+            ['nivel3/teclado-gamer-759', KEYBOARD],
             # Monitor Gamer
-            ["nivel2/monitores-gamer-261", MONITOR],
+            ['nivel2/monitores-gamer-261', MONITOR],
             # Headphones Gamer
-            ["nivel2/audifonos-gamer-262", HEADPHONES],
+            ['nivel2/audifonos-gamer-262', HEADPHONES],
             # Normal Headphones
-            ["nivel2/audifonos-158", HEADPHONES],
-            ["nivel2/parlantes-180", STEREO_SYSTEM],
-            ["nivel2/televisores-250", TELEVISION],
-            ["nivel2/impresora-278", PRINTER],
+            ['nivel2/audifonos-158', HEADPHONES],
+            ['nivel2/parlantes-180', STEREO_SYSTEM],
+            ['nivel2/televisores-250', TELEVISION],
+            ['nivel2/impresora-278', PRINTER],
             # NORMAL MOUSE
-            ["nivel3/mouse-605", MOUSE],
+            ['nivel3/mouse-605', MOUSE],
             # NORMAL KEYBOARD
-            ["nivel3/teclado-standard-612", KEYBOARD],
-            ["nivel3/tarjetas-de-memoria-783", MEMORY_CARD],
-            ["nivel3/monitores-670", MONITOR],
+            ['nivel3/teclado-standard-612', KEYBOARD],
+            ['nivel3/tarjetas-de-memoria-783', MEMORY_CARD],
+            ['nivel3/monitores-670', MONITOR],
             # TOUCH MONITOR
-            ["nivel3/monitores-touch-profesionales-728", MONITOR],
-            ["nivel2/celulares-161", CELL],
-            ["nivel2/unidades-de-almacenamiento-283", SOLID_STATE_DRIVE],
-            ["nivel2/fuentes-de-poder-284", POWER_SUPPLY],
-            ["nivel2/gabinetes-285", COMPUTER_CASE],
-            ["nivel2/tarjetas-de-video-286", VIDEO_CARD],
-            ["nivel2/placas-madre-282", MOTHERBOARD],
-            ["nivel2/memorias-295", RAM],
-            ["nivel2/procesadores-281", PROCESSOR],
-            ["nivel3/pendrives-784", USB_FLASH_DRIVE]
+            ['nivel3/monitores-touch-profesionales-728', MONITOR],
+            ['nivel2/celulares-161', CELL],
+            ['nivel2/unidades-de-almacenamiento-283', SOLID_STATE_DRIVE],
+            ['nivel2/fuentes-de-poder-284', POWER_SUPPLY],
+            ['nivel2/gabinetes-285', COMPUTER_CASE],
+            ['nivel2/tarjetas-de-video-286', VIDEO_CARD],
+            ['nivel2/placas-madre-282', MOTHERBOARD],
+            ['nivel2/memorias-295', RAM],
+            ['nivel2/procesadores-281', PROCESSOR],
+            ['nivel3/pendrives-784', USB_FLASH_DRIVE],
+            ['nivel2/sillas-gamer-263', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
