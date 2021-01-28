@@ -7,6 +7,7 @@ from collections import defaultdict
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -42,6 +43,7 @@ class LaPolar(Store):
             'SpaceHeater',
             'AirConditioner',
             'Wearable',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -66,9 +68,11 @@ class LaPolar(Store):
             ['todo-impresoras', ['Printer'],
              'Inicio > Tecnología > Computadores > Impresoras', 1],
             ['disco-duro-externo', ['ExternalStorageDrive'], 'Inicio > '
-             'Tecnología > Accesorios Computación > Disco Duro Externo', 1],
+                                                             'Tecnología > Accesorios Computación > Disco Duro Externo',
+             1],
             ['mouse-i-teclados', ['Mouse', 'Keyboard'], 'Inicio > '
-                'Tecnología > Accesorios Computación > Mouse | Teclados', 0.5],
+                                                        'Tecnología > Accesorios Computación > Mouse | Teclados',
+             0.5],
             ['pendrives', ['UsbFlashDrive'],
              'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
 
@@ -130,7 +134,9 @@ class LaPolar(Store):
             ['enfriadores', ['AirConditioner'],
              'Inicio > Línea Blanca > Climatización > Enfriadores', 1],
             ['accesorios-telefonos', ['Wearable'],
-             'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 0]
+             'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 0],
+            ['sillas-gamer', [GAMING_CHAIR],
+             'Inicio > Tecnología > Mundo Gamer > Sillas Gamer', 1]
         ]
 
         session = session_with_proxy(extra_args)
@@ -158,12 +164,12 @@ class LaPolar(Store):
                     category, category_path))
 
             for idx, container in enumerate(products):
-                product_url = 'https://www.lapolar.cl{}'\
+                product_url = 'https://www.lapolar.cl{}' \
                     .format(container.find('a')['href'])
                 product_entries[product_url].append({
-                  'category_weight': category_weight,
-                  'section_name': section_name,
-                  'value': idx + 1
+                    'category_weight': category_weight,
+                    'section_name': section_name,
+                    'value': idx + 1
                 })
 
         return product_entries
@@ -359,8 +365,8 @@ class LaPolar(Store):
                     banner_container = driver.find_element_by_class_name(
                         'slick-list')
 
-                    controls = driver\
-                        .find_element_by_class_name('slick-dots')\
+                    controls = driver \
+                        .find_element_by_class_name('slick-dots') \
                         .find_elements_by_tag_name('li')
 
                     for control in controls:
@@ -370,7 +376,7 @@ class LaPolar(Store):
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-                    images = soup.find('div', 'slick-track')\
+                    images = soup.find('div', 'slick-track') \
                         .findAll('div', 'slick-slide')
 
                     images = [a for a in images if
