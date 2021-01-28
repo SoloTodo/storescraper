@@ -8,7 +8,7 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import CELL, WEARABLE, PROJECTOR, MEMORY_CARD, \
     USB_FLASH_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, HEADPHONES, \
     MOUSE, KEYBOARD, COMPUTER_CASE, RAM, POWER_SUPPLY, MONITOR, \
-    STEREO_SYSTEM, MOTHERBOARD, PROCESSOR, VIDEO_CARD, CPU_COOLER
+    STEREO_SYSTEM, MOTHERBOARD, PROCESSOR, VIDEO_CARD, CPU_COOLER, GAMING_CHAIR
 
 
 class Proglobal(Store):
@@ -33,7 +33,8 @@ class Proglobal(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
-            CPU_COOLER
+            CPU_COOLER,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -74,6 +75,8 @@ class Proglobal(Store):
              COMPUTER_CASE],
             ['computacion-y-gamer/hardware-pc-gamer/'
              'ventiladores-y-enfriadores', CPU_COOLER],
+            ['computacion-y-gamer/gamers/sillas-y-alfombras-gamer',
+             GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
@@ -90,7 +93,7 @@ class Proglobal(Store):
                 if page > 30:
                     raise Exception('Page overflow')
 
-                url = 'https://proglobal.cl/c/{}/pagina-{}'\
+                url = 'https://proglobal.cl/c/{}/pagina-{}' \
                     .format(category_path, page)
                 print(url)
 
