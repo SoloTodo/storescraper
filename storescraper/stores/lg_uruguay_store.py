@@ -38,7 +38,7 @@ class LgUruguayStore(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.lguruguay.com.uy/{}?' \
+                url_webpage = 'https://www.ltienda.com.uy/{}?' \
                               'js=1&ord=new&pag={}'.format(url_extension, page)
                 res = session.get(url_webpage)
 

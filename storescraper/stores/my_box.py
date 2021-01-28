@@ -1,12 +1,12 @@
 import re
+import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class MyBox(Store):
@@ -67,12 +67,14 @@ class MyBox(Store):
             prod_list = soup.find('ul', {'id': 'product_list'})
 
             if not prod_list:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
+                continue
 
             prod_cells = prod_list.findAll('li')
 
             if not prod_cells:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
+                continue
 
             for cell in prod_cells:
                 product_urls.append(

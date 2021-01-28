@@ -1,15 +1,10 @@
-import json
-import urllib
-
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Weplay(Store):
@@ -17,13 +12,13 @@ class Weplay(Store):
     def categories(cls):
         return [
             'VideoGameConsole',
-            # 'Headphones',
-            # 'Mouse',
-            # 'Keyboard',
-            # 'ExternalStorageDrive',
-            # 'UsbFlashDrive',
-            # 'MemoryCard',
-            # 'StereoSystem',
+            'Headphones',
+            'Mouse',
+            'Keyboard',
+            'ExternalStorageDrive',
+            'UsbFlashDrive',
+            'MemoryCard',
+            'StereoSystem',
             GAMING_CHAIR
         ]
 
@@ -62,11 +57,15 @@ class Weplay(Store):
 
                 url = 'https://www.weplay.cl/{}?p={}'.format(
                     category_path, page)
+                print(url)
 
                 response = session.get(url).text
                 soup = BeautifulSoup(response, 'html.parser')
 
                 products = soup.findAll('li', 'item')
+
+                if not products:
+                    break
 
                 for product in products:
                     product_url = product.find('a')['href']
