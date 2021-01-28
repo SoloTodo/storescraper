@@ -108,7 +108,7 @@ class LgV5(Store):
         else:
             name = '{} - {}'.format(model_name, short_description)
 
-        picture_urls = [cls.base_url + x['largeImageAddr']
+        picture_urls = [cls.base_url + x['largeImageAddr'].replace(' ', '%20')
                         for x in model_data['galleryImages']]
         picture_urls = [x for x in picture_urls if validators.url(x)]
         if not picture_urls:

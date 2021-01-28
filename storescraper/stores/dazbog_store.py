@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, MONITOR, PROCESSOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD
+    SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD, CPU_COOLER, NOTEBOOK, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,17 +20,23 @@ class DazbogStore(Store):
             SOLID_STATE_DRIVE,
             VIDEO_CARD,
             MOTHERBOARD,
+            CPU_COOLER,
+            NOTEBOOK,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['cooler-cpu', CPU_COOLER],
             ['psu', POWER_SUPPLY],
             ['monitores', MONITOR],
+            ['notebooks-gamer', NOTEBOOK],
             ['placas-madre', MOTHERBOARD],
             ['cpu', PROCESSOR],
+            ['ram', RAM],
             ['ssd', SOLID_STATE_DRIVE],
-            ['gpus', VIDEO_CARD]
+            ['gpus', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
