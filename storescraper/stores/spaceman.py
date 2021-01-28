@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, MONITOR
+from storescraper.categories import MOUSE, KEYBOARD, MONITOR, COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,15 +16,17 @@ class Spaceman(Store):
         return [
             MOUSE,
             KEYBOARD,
-            MONITOR
+            MONITOR,
+            COMPUTER_CASE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['gabinetes', COMPUTER_CASE],
+            ['monitores', MONITOR],
             ['mouse', MOUSE],
             ['teclados', KEYBOARD],
-            ['monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
