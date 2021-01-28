@@ -168,6 +168,7 @@ from .mega_bytes import MegaBytes
 from .mega_mamute import MegaMatute
 from .mega_store import MegaStore
 from .megatone import Megatone
+from .mega_drive_store import MegaDriveStore
 from .mercado_tech import MercadoTech
 from .mercadolibre_argentina import MercadoLibreArgentina
 from .mercadolibre_argentina_adata import MercadoLibreArgentinaAdata

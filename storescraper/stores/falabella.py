@@ -14,6 +14,7 @@ from html import unescape
 from dateutil.parser import parse
 from selenium.common.exceptions import NoSuchElementException
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -169,6 +170,9 @@ class Falabella(Store):
          'Audífonos', 1],
         ['cat4061', ['DishWasher'],
          'Home > Lavado-Lavavajillas', 1],
+        ['cat12084890', [GAMING_CHAIR],
+         'Home > Tecnología-Computadores > Accesorios Computación > Sillas '
+         'Gamer', 1]
     ]
 
     @classmethod
@@ -203,7 +207,8 @@ class Falabella(Store):
             'KeyboardMouseCombo',
             'Wearable',
             'Headphones',
-            'DishWasher'
+            'DishWasher',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -394,7 +399,7 @@ class Falabella(Store):
             # REVIEWS
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
+                          'Filter=ProductId:{}&Include=Products&Stats=Reviews' \
                 .format(sku)
 
             review_data = json.loads(session.get(reviews_url).text)
@@ -444,7 +449,7 @@ class Falabella(Store):
 
     @classmethod
     def _old_products_for_url(
-            cls, url, content, session,  category=None, extra_args=None):
+            cls, url, content, session, category=None, extra_args=None):
         soup = BeautifulSoup(content, 'html.parser')
         next_container = soup.find('script', {'id': '__NEXT_DATA__'})
 
@@ -550,7 +555,7 @@ class Falabella(Store):
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews'\
+                          'Filter=ProductId:{}&Include=Products&Stats=Reviews' \
                 .format(sku)
 
             review_data = json.loads(session.get(reviews_url).text)
@@ -749,7 +754,7 @@ class Falabella(Store):
                         "arguments[0].setAttribute('style', "
                         "'display:block !important;');", pips_container)
                     elements = driver.find_element_by_class_name(
-                        'fb-hero-carousel__pips')\
+                        'fb-hero-carousel__pips') \
                         .find_elements_by_class_name(
                         'fb-hero-carousel__pips__pip')
 
@@ -848,7 +853,7 @@ class Falabella(Store):
         for picture_entry in picture_entries:
             picture_url = 'https://falabella.scene7.com/is/image/{}?' \
                           'wid=1500&hei=1500&qlt=70'.format(
-                              picture_entry['i']['n'])
+                picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
         return picture_urls

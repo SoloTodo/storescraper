@@ -37,10 +37,11 @@ class Woow(Store):
                               'related_search=1&with_product_attributes=1'. \
                     format(page)
                 data = session.get(url_webpage).text
-                product_containers = json.loads(data)['items']
-                if not product_containers:
+                product_containers = json.loads(data)
+                if not product_containers or product_containers[
+                        'total_results'] == 0:
                     break
-                for container in product_containers:
+                for container in product_containers['items']:
                     product_url = container['u']
                     product_urls.append(product_url)
                 page += 1
