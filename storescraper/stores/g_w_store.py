@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, \
-    COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD, GAMING_CHAIR
+    COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD, GAMING_CHAIR, \
+    KEYBOARD, POWER_SUPPLY, CPU_COOLER, MONITOR, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,20 +23,34 @@ class GWStore(Store):
             PROCESSOR,
             VIDEO_CARD,
             MOTHERBOARD,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            KEYBOARD,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            MONITOR,
+            MOUSE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['Almacenamiento', SOLID_STATE_DRIVE],
-            ['audio-y-video/audifonos', HEADPHONES],
+            ['audio-y-video', HEADPHONES],
             ['gabinete', COMPUTER_CASE],
             ['memorias', RAM],
             ['proce', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['placas-madres', MOTHERBOARD],
-            ['accesorios/sillas-gamer', GAMING_CHAIR]
+            ['accesorios/sillas-gamer', GAMING_CHAIR],
+            ['accesorios/teclados-gamer', KEYBOARD],
+            ['cougar', POWER_SUPPLY],
+            ['enfriamiento/cpu-cooler', CPU_COOLER],
+            ['enfriamiento/enfriamiento-liquido', CPU_COOLER],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['monitores', MONITOR],
+            ['perifericos/audifonos-perifericos', HEADPHONES],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/teclados', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
