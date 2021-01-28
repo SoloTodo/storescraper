@@ -122,10 +122,12 @@ class Cintegral(Store):
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
-        if soup.find('i', 'product-available'):
-            stock = -1
-        else:
+        add_to_cart_button = soup.find('button', 'add-to-cart')
+
+        if 'disabled' in add_to_cart_button.attrs:
             stock = 0
+        else:
+            stock = -1
 
         price = Decimal(soup.find('div', 'current-price')
                         .find('span', {'itemprop': 'price'})['content'])
