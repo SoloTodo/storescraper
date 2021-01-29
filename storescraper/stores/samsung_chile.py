@@ -35,7 +35,7 @@ class SamsungChile(Store):
 
         urls = []
 
-        for category_id, category_filters, category_path, local_category \
+        for category_id, category_path, local_category \
                 in category_info:
             if local_category != category:
                 continue
@@ -50,22 +50,19 @@ class SamsungChile(Store):
         category_info = cls._category_info()
         session = session_with_proxy(extra_args)
 
-        api_url = 'https://searchapi.samsung.com/productfinderGlobal?' \
-                  'siteCd=cl&' \
+        api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/finder/global?' \
+                  'siteCode=cl&' \
                   'start=0&' \
                   'num=1000&' \
-                  'stage=live&' \
                   'onlyFilterInfoYN=N'
 
         products = []
 
-        for category_id, category_filters, category_path, category_name \
-                in category_info:
+        for category_id, category_path, category_name in category_info:
             if category_name != category:
                 continue
 
-            category_endpoint = api_url + '&type={}{}'.format(
-                category_id, category_filters)
+            category_endpoint = api_url + '&type=' + category_id
 
             json_data = json.loads(
                 session.get(category_endpoint).text)['response']
@@ -80,17 +77,13 @@ class SamsungChile(Store):
                         model_url = 'https://www.samsung.com{}'\
                             .format(model['pdpUrl'])
                     key = model['modelCode']
-                    picture_urls = ['https://images.samsung.com/'
-                                    'is/image/samsung/{}'
-                                    .format(model['thumbUrl'])]
+                    picture_urls = ['https:' + model['thumbUrl']]
 
-                    for picture in model['galleryImage']:
-                        picture_urls.append(
-                            'https://images.samsung.com/is/image/samsung/{}'
-                            .format(picture))
+                    for picture in model['galleryImage'] or []:
+                        picture_urls.append('https:' + picture)
 
-                    if model['price1Display']:
-                        price = Decimal(remove_words(model['price1Display']))
+                    if model['priceDisplay']:
+                        price = Decimal(remove_words(model['priceDisplay']))
                     else:
                         price = Decimal(0)
 
@@ -114,45 +107,23 @@ class SamsungChile(Store):
     @classmethod
     def _category_info(cls):
         return [
-            ('19010000', '', 'tvs/all-tvs', 'Television'),
-            ('19020000', '',
-             'audio-video/all-audio-video', 'StereoSystem'),
-            ('18010000', '', 'smartphones/all-smartphones', 'Cell'),
-            ('18020000', '', 'tablets/all-tablets', 'Tablet'),
-            ('18070000', '', 'windows-tablets/all-windows-tablets', 'Tablet'),
-            ('07010000', '', 'refrigerators/all-refrigerators',
-             'Refrigerator'),
-            ('07180000', '&filter1=01z01',
-             'cooking-appliances/microwave-ovens', 'Oven'),
-            ('07170000', '', 'washing-machines/all-washing-machines',
+            ('01010000', 'smartphones/all-smartphones', 'Cell'),
+            ('01020000', 'tablets/all-tablets', 'Tablet'),
+            ('01030000', 'watches/all-watches', 'Wearable'),
+            ('01040000', 'audio-sound', 'Headphones'),
+            ('01050000', 'mobile-accessories/all-mobile-accessories/',
+             'CellAccesory'),
+            ('04010000', 'tvs/all-tvs', 'Television'),
+            ('05010000', 'audio-devices/all-audio-devices', 'StereoSystem'),
+            ('08030000', 'refrigerators/all-refrigerators', 'Refrigerator'),
+            ('08010000', 'washers-and-dryers/all-washers-and-dryers',
              'WashingMachine'),
-            ('07070000', '', 'vacuum-cleaners/all-vacuum-cleaners',
+            ('08110000', 'microwave-ovens/all-microwave-ovens', 'Oven'),
+            ('08090000', 'dishwashers/all-dishwashers', 'DishWasher'),
+            ('08070000', 'vacuum-cleaners/all-vacuum-cleaners',
              'VacuumCleaner'),
-            ('21030000', '', 'monitors/all-monitors', 'Monitor'),
-            ('18060000', '&filter1=01z07', 'mobile-accessories/others',
-             'CellAccesory'),
-            ('18060000', '&filter1=01z01',
-             'mobile-accessories/all-mobile-accessories/?cases',
-             'CellAccesory'),
-            ('18060000', '&filter1=01z04', 'mobile-accessories/power',
-             'CellAccesory'),
-            ('18080000', '', 'mobile-iot/all-mobile-iot', 'CellAccesory'),
-            ('18030000', '&filter1=01z04%2B01z05',
-             'wearables/all-wearables/?gear-vr+camera', 'CellAccesory'),
-            ('18060000', '&filter1=01z02', 'mobile-accessories/audio',
-             'Headphones'),
-            ('18030000', '&filter1=01z06', 'wearables/all-wearables/?earables',
-             'Headphones'),
-            ('18030000', '&filter1=01z02%2B01z03',
-             'wearables/all-wearables/?smartwatch+sport-band', 'Wearable'),
-            ('07190000', '', 'air-conditioners/all-air-conditioners',
+            ('08050000', 'air-conditioners/all-air-conditioners',
              'AirConditioner'),
-            ('07180000', '&filter1=01z02', 'cooking-appliances/dishwashers',
-             'DishWasher'),
-            ('07180000', '&filter1=01z03', 'cooking-appliances',
-             'Stove'),
-            ('07180000', '&filter1=01z04', 'cooking-appliances',
-             'Stove'),
-            ('07180000', '&filter1=01z05', 'cooking-appliances',
-             'Stove'),
+            ('08080000', 'cooking-appliances/all-cooking-appliances', 'Oven'),
+            ('07010000', 'monitors/all-monitors', 'Monitor'),
         ]
