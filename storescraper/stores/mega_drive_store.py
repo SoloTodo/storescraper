@@ -8,7 +8,7 @@ from storescraper.categories import VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
     HEADPHONES, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class MegaDriveStore(Store):
@@ -85,8 +85,10 @@ class MegaDriveStore(Store):
         product_container = soup.find('div', 'row product_container')
         name = product_container.find('h1', 'product_name').text
         sku = product_container.find('input', {'name': 'id_product'})['value']
-        price = Decimal(product_container.find('span', 'price')
-                        ['content']).quantize(0, ROUND_HALF_UP)
+        normal_price = Decimal(remove_words(product_container.find(
+            'span', 'regular-price').text.split('&')[0]))
+        offer_price = Decimal(product_container.find(
+            'span', 'price')['content']).quantize(0, ROUND_HALF_UP)
         stock_container = product_container.find('span', {
             'id': 'product-availability'}).text.strip().split('\n')[-1].strip()
         if stock_container == 'Producto en Stock' or stock_container == \
@@ -104,8 +106,8 @@ class MegaDriveStore(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
