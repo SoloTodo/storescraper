@@ -77,14 +77,10 @@ class SamsungChile(Store):
                         model_url = 'https://www.samsung.com{}'\
                             .format(model['pdpUrl'])
                     key = model['modelCode']
-                    picture_urls = ['https://images.samsung.com/'
-                                    'is/image/samsung/{}'
-                                    .format(model['thumbUrl'])]
+                    picture_urls = ['https:' + model['thumbUrl']]
 
                     for picture in model['galleryImage'] or []:
-                        picture_urls.append(
-                            'https://images.samsung.com/is/image/samsung/{}'
-                            .format(picture))
+                        picture_urls.append('https:' + picture)
 
                     if model['priceDisplay']:
                         price = Decimal(remove_words(model['priceDisplay']))
