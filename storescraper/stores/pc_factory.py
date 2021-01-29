@@ -8,6 +8,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -49,6 +50,7 @@ class PcFactory(Store):
             'Wearable',
             'Ups',
             'AirConditioner',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -164,7 +166,9 @@ class PcFactory(Store):
             ['748', ['StereoSystem'],
              'Inicio > Smart Home (Domótica)', 1],
             ['1026', ['AirConditioner'],
-             'Inicio > Aires Acondicionados', 1]
+             'Inicio > Aires Acondicionados', 1],
+            ['1007', [GAMING_CHAIR],
+             'Inicio > Componentes > Partes y Piezas > Sillas Gamer', 1]
         ]
 
         session = session_with_proxy(extra_args)
@@ -249,7 +253,7 @@ class PcFactory(Store):
         full_name = '{} {}'.format(product_data['marca'],
                                    product_data['nombre'])
         stock = int(product_data['stock_tienda']) + \
-            int(product_data['stock_web'])
+                int(product_data['stock_web'])
         sku = product_data['id_producto']
         video_urls = []
 

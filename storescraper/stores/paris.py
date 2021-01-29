@@ -7,6 +7,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -181,6 +182,8 @@ class Paris(Store):
          ['CellAccesory'],
          'Electro > Televisión > Accesorios para TV',
          1],
+        ['muebles/oficina/sillas/sillas-gamer', [GAMING_CHAIR],
+         'Muebles > Oficina > Sillas de Escritorio', 1]
     ]
 
     @classmethod
@@ -217,6 +220,7 @@ class Paris(Store):
             'ComputerCase',
             'DishWasher',
             'CellAccesory',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -248,8 +252,8 @@ class Paris(Store):
                         response.url, category_url))
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                containers = soup\
-                    .find('ul', {'id': 'search-result-items'})\
+                containers = soup \
+                    .find('ul', {'id': 'search-result-items'}) \
                     .findAll('li', recursive=False)
 
                 if not containers:
@@ -289,8 +293,8 @@ class Paris(Store):
             if page > 40:
                 raise Exception('Page overflow')
 
-            search_url = 'https://www.paris.cl/search?q={}&sz=40&start={}'\
-                .format(keyword, page*40)
+            search_url = 'https://www.paris.cl/search?q={}&sz=40&start={}' \
+                .format(keyword, page * 40)
 
             soup = BeautifulSoup(session.get(search_url).text, 'html.parser')
             containers = soup.findAll('li', 'flex-item-products')
@@ -323,7 +327,7 @@ class Paris(Store):
         except Exception:
             if retries:
                 return cls._products_for_url(url, category, extra_args,
-                                             retries=retries-1)
+                                             retries=retries - 1)
             else:
                 raise
 
@@ -518,7 +522,7 @@ class Paris(Store):
                 image = soup.find('div', 'desktop-plp-2')
 
                 if not image:
-                    image = soup.find('div', {'id': 'primary'})\
+                    image = soup.find('div', {'id': 'primary'}) \
                         .find('div', 'slot-grid-header')
 
                 if not image:

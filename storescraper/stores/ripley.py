@@ -11,6 +11,7 @@ from decimal import Decimal
 
 from playwright import sync_playwright
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
@@ -58,7 +59,8 @@ class Ripley(Store):
             # 'Keyboard',
             # 'KeyboardMouseCombo',
             'Headphones',
-            'Ram'
+            'Ram',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -174,6 +176,8 @@ class Ripley(Store):
              'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
             ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
+            ['tecno/computacion-gamer/sillas-gamer', [GAMING_CHAIR],
+             'Tecno > Computación Gamer > Sillas Gamer', 1]
         ]
 
         if extra_args is None:
@@ -300,7 +304,7 @@ class Ripley(Store):
         if not product_data:
             if retries:
                 return cls._assemble_full_product(url, category, extra_args,
-                                                  retries=retries-1)
+                                                  retries=retries - 1)
             else:
                 return []
 
@@ -474,7 +478,7 @@ class Ripley(Store):
         if normal_price_container:
             normal_price = Decimal(
                 element.find('li', 'catalog-prices__offer-price')
-                .text.replace('$', '').replace('.', ''))
+                    .text.replace('$', '').replace('.', ''))
         else:
             normal_price = offer_price
 
@@ -519,7 +523,7 @@ class Ripley(Store):
             if page > 40:
                 raise Exception('Page overflow')
 
-            search_url = 'https://simple.ripley.cl/search/{}?page={}'\
+            search_url = 'https://simple.ripley.cl/search/{}?page={}' \
                 .format(keyword, page)
             response = session.get(search_url, allow_redirects=False)
 
@@ -634,9 +638,9 @@ class Ripley(Store):
             print(hcaptcha_response)
 
             for field in ['h-captcha-response']:
-                #foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
-                #print(foo)
-                #page.evaluate(foo)
+                # foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
+                # print(foo)
+                # page.evaluate(foo)
 
                 foo = (f"() => {{var foo = document.createElement('input');"
                        f"foo.setAttribute('name', '{field}');"
@@ -797,10 +801,10 @@ class Ripley(Store):
                 banners.append({
                     'url': url,
                     'picture_url': picture_url.get('src') or
-                    picture_url.get('data-src'),
+                                   picture_url.get('data-src'),
                     'destination_urls': destination_urls,
                     'key': picture_url.get('src') or
-                    picture_url.get('data-src'),
+                           picture_url.get('data-src'),
                     'position': 1,
                     'section': section,
                     'subsection': subsection,
@@ -902,7 +906,7 @@ class Ripley(Store):
                                'es_ES/product/{}/reviews?' \
                                'apikey=71f6caaa-ea4f-43b9-a19e-46eccb73bcbb' \
                                '&paging.size=25&paging.from={}'.format(
-                                sku, page)
+                sku, page)
             response = session.get(reviews_endpoint).json()
 
             if response['paging']['current_page_number'] != page:
