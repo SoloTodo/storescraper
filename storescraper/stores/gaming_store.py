@@ -86,10 +86,14 @@ class GamingStore(Store):
         if soup.find('button', 'single_add_to_cart_button'):
             sku = soup.find('button', 'single_add_to_cart_button')['value']
         else:
-            sku = soup.find('input', 'cwg-product-id')['value']
+            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[
+                -1]
 
         add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
-        if not add_to_cart_button or 'pre' in add_to_cart_button.text.lower():
+        if soup.find('div', 'ddwcpo-preorder-details'):
+            stock = 0
+        elif not add_to_cart_button or 'pre' in add_to_cart_button.text\
+                .lower():
             stock = 0
         else:
             stock = -1
