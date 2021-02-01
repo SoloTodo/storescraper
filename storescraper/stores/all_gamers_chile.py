@@ -58,7 +58,7 @@ class AllGamersChile(Store):
                               '/{}/page/{}/ '.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'ast-col-sm-12')
+                product_containers = soup.findAll('article')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -71,11 +71,13 @@ class AllGamersChile(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        stock = -1
+        # import ipdb
+        # ipdb.set_trace()
+        name = soup.find('h1', 'w-post-elm').text
         variants = soup.find('form', 'variations_form')
         if not variants:
             variants = soup.find('div', 'variations_form')
@@ -87,6 +89,7 @@ class AllGamersChile(Store):
             for product in container_products:
                 variant_name = name + " - " + next(
                     iter(product['attributes'].values()))
+                stock = product['max_qty']
                 sku = str(product['variation_id'])
                 price = Decimal(product['display_price'])
                 picture_urls = [product['image']['src']]
@@ -108,12 +111,23 @@ class AllGamersChile(Store):
                 products.append(p)
             return products
         else:
-            sku = soup.find('button', 'single_add_to_cart_button')['value']
-            price_container = soup.find('p', 'price')
-            if price_container.find('ins'):
-                price = Decimal(remove_words(price_container.find('ins').text))
+            stock_container = soup.find('p', 'stock')
+            if stock_container.text == 'Agotado':
+                stock = 0
             else:
-                price = Decimal(remove_words(price_container.text))
+                stock = int(stock_container.text.split()[0])
+            if soup.find('button', 'single_add_to_cart_button'):
+                sku = soup.find('button', 'single_add_to_cart_button')['value']
+            else:
+                sku = soup.find('div', 'woosb-wrap')['data-id']
+            if soup.find('ins'):
+                price = Decimal(remove_words(
+                    soup.find('ins').
+                    find('span', 'woocommerce-Price-amount amount').text))
+            else:
+                price = Decimal(remove_words(
+                    soup.find('span', 'woocommerce-Price-amount amount').text))
+
             picture_urls = [tag['src'] for tag in
                             soup.find('div',
                                       'woocommerce-product-gallery').findAll(
