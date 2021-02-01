@@ -75,9 +75,10 @@ class AllGamersChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
-        name = soup.find('h1', 'w-post-elm').text
+        if soup.find('h1', 'product_title'):
+            name = soup.find('h1', 'product_title').text
+        else:
+            name = soup.find('h1', 'w-post-elm').text
         variants = soup.find('form', 'variations_form')
         if not variants:
             variants = soup.find('div', 'variations_form')
@@ -86,13 +87,23 @@ class AllGamersChile(Store):
             products = []
             container_products = json.loads(
                 html.unescape(variants['data-product_variations']))
+
             for product in container_products:
                 variant_name = name + " - " + next(
                     iter(product['attributes'].values()))
-                stock = product['max_qty']
+                if product['is_in_stock']:
+                    stock = int(product['max_qty'])
+                else:
+                    stock = 0
                 sku = str(product['variation_id'])
                 price = Decimal(product['display_price'])
-                picture_urls = [product['image']['src']]
+                if product['image']['src'] == '':
+                    picture_urls = [tag['src'] for tag in
+                                    soup.find('div', 'woocommerce-product'
+                                                     '-gallery').findAll(
+                                        'img')]
+                else:
+                    picture_urls = [product['image']['src']]
                 p = Product(
                     variant_name,
                     cls.__name__,
@@ -119,7 +130,9 @@ class AllGamersChile(Store):
             if soup.find('button', 'single_add_to_cart_button'):
                 sku = soup.find('button', 'single_add_to_cart_button')['value']
             else:
-                sku = soup.find('div', 'woosb-wrap')['data-id']
+                sku = \
+                    soup.find('link', {'rel': 'shortlink'})['href'].split('=')[
+                        -1]
             if soup.find('ins'):
                 price = Decimal(remove_words(
                     soup.find('ins').
@@ -129,9 +142,8 @@ class AllGamersChile(Store):
                     soup.find('span', 'woocommerce-Price-amount amount').text))
 
             picture_urls = [tag['src'] for tag in
-                            soup.find('div',
-                                      'woocommerce-product-gallery').findAll(
-                                'img')]
+                            soup.find('div', 'woocommerce-product-gallery')
+                                .findAll('img')]
             p = Product(
                 name,
                 cls.__name__,
