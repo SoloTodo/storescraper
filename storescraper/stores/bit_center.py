@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
-    STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE
+    STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,7 +20,9 @@ class BitCenter(Store):
             HEADPHONES,
             STEREO_SYSTEM,
             VIDEO_CARD,
-            COMPUTER_CASE
+            COMPUTER_CASE,
+            POWER_SUPPLY,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -31,7 +33,9 @@ class BitCenter(Store):
             ['headsets', HEADPHONES],
             ['parlantes', STEREO_SYSTEM],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['gabinetes-pc', COMPUTER_CASE]
+            ['gabinetes-pc', COMPUTER_CASE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -64,6 +68,7 @@ class BitCenter(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
