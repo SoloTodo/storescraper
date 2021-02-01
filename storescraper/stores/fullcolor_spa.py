@@ -89,8 +89,14 @@ class FullcolorSpa(Store):
                     .replace(')', '').split()[-1])
         price = Decimal(
             remove_words(soup.find('span', 'price').text.strip().split()[1]))
-        picture_urls = ['https://www.fullcolorspa.com' +
-                        soup.find('div', 'product-image').find('img')['src']]
+
+        picture_container = soup.find('div', 'product-image').find('img')
+
+        if picture_container:
+            picture_urls = ['https://www.fullcolorspa.com' + picture_container['src']]
+        else:
+            picture_urls = None
+
         p = Product(
             name,
             cls.__name__,

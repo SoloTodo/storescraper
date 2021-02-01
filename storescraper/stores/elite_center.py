@@ -41,27 +41,23 @@ class EliteCenter(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-gamer', STEREO_SYSTEM],
-            ['almacenamiento', STORAGE_DRIVE],
-            ['audifonos-2', HEADPHONES],
-            ['disco-duro-pcs', STORAGE_DRIVE],
-            ['disco-estado-solido', SOLID_STATE_DRIVE],
-            ['disipadores', CPU_COOLER],
-            ['fuente-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['memorias-ram', RAM],
-            ['monitores', MONITOR],
-            ['mouse-2', MOUSE],
-            ['placas-madres', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['teclados-2', KEYBOARD],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['sillas-gamer', GAMING_CHAIR]
+            ['componentes-pc/placas-madres', MOTHERBOARD],
+            ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
+            ['componentes-pc/disipadores', CPU_COOLER],
+            ['componentes-pc/gabinetes', COMPUTER_CASE],
+            ['accesorios-gamer/audifonos', HEADPHONES],
+            ['accesorios-gamer/teclados', KEYBOARD],
+            ['accesorios-gamer/mouse', MOUSE],
+            ['accesorios-gamer/parlantes', STEREO_SYSTEM],
+            ['almacenamiento/disco-estado-solido/parlantes', SOLID_STATE_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -71,9 +67,9 @@ class EliteCenter(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://elitecenter.cl/product-category/{}/' \
-                              '?orderby=popularity&paged={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://elitecenter.cl/product-category/{}/page/{}' \
+                              ''.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-small')
