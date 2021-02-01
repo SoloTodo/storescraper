@@ -11,6 +11,7 @@ from .almacenes_la_ganga import AlmacenesLaGanga
 from .ama_hogar import AmaHogar
 from .amazon_print import AmazonPrint
 from .americanas import Americanas
+from .ampera import Ampera
 from .artefacta import Artefacta
 from .bbcc import BookComputer
 from .belight import Belight
