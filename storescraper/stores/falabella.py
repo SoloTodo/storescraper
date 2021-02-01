@@ -746,10 +746,24 @@ class Falabella(Store):
                 with HeadlessChrome(images_enabled=True, proxy=proxy,
                                     timeout=99, headless=True) as driver:
                     driver.set_window_size(1920, 1080)
-                    driver.get(url)
+
+                    pips_container = None
+
+                    for i in range(20):
+                        endpoint_url = url + '&v=' + str(i)
+                        print(endpoint_url)
+                        driver.get(endpoint_url)
+                        pips_container = driver.find_elements_by_class_name(
+                            'fb-hero-carousel__pips')
+                        if pips_container:
+                            pips_container = pips_container[0]
+                            break
+
+                    if not pips_container:
+                        raise Exception('Invalid category page: ' + url)
+
                     pictures = []
-                    pips_container = driver.find_element_by_class_name(
-                        'fb-hero-carousel__pips')
+
                     driver.execute_script(
                         "arguments[0].setAttribute('style', "
                         "'display:block !important;');", pips_container)
