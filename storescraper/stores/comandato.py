@@ -8,66 +8,34 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
-from storescraper.categories import OVEN, REFRIGERATOR, WASHING_MACHINE, \
-    AIR_CONDITIONER, TELEVISION, CELL
+from storescraper.categories import WASHING_MACHINE
 
 
 class Comandato(Store):
     @classmethod
     def categories(cls):
         return [
-            OVEN,
-            REFRIGERATOR,
             WASHING_MACHINE,
-            AIR_CONDITIONER,
-            TELEVISION,
-            CELL,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['ft=cocinas', OVEN],
-            ['fq=C:/1000001/1000034/', REFRIGERATOR],
-            ['fq=C:/1000001/1000039/', WASHING_MACHINE],
-            ['fq=C:/1000002/', AIR_CONDITIONER],
-            ['fq=C:/1000007/1000008/1000057/', TELEVISION],
-            ['fq=C:/1000007/1000090/', CELL]
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        if category != WASHING_MACHINE:
+            return []
 
-            page = 1
+        url = 'https://www.comandato.com/lg?PS=200'
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        products = soup.findAll('div', 'producto')
 
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow')
+        if not products:
+            logging.warning('Empty url {}'.format(url))
 
-                url = 'https://www.comandato.com/buscapagina?PS=24&' \
-                      'sl=5fd2e9cb-dc33-4655-95e2-fc62e15a859a&cc=4&' \
-                      'sm=0&{}&PageNumber={}'.format(
-                       category_path, page)
-
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                products = soup.findAll('div', 'producto')
-
-                if not products:
-                    if page == 1:
-                        logging.warning('Empty url {}'.format(url))
-                    break
-
-                for product in products:
-                    if product.find('h3').find('strong').text != 'LG':
-                        continue
-                    product_url = product.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+        for product in products:
+            product_url = product.find('a')['href']
+            product_urls.append(product_url)
 
         return product_urls
 
@@ -83,7 +51,12 @@ class Comandato(Store):
         data = response.text
         soup = BeautifulSoup(data, 'html.parser')
 
-        name = soup.find('div', 'productDescriptionShort').text
+        name_container = soup.find('div', 'productDescriptionShort')
+
+        if not name_container:
+            return []
+
+        name = name_container.text
         sku = soup.find('div', 'skuReference').text
         stock = 0
         if soup.find('link', {'itemprop': 'availability'})['href'] == \
