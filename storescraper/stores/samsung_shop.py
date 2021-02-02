@@ -87,6 +87,11 @@ class SamsungShop(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) ' \
+            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/80.0.3987.149 ' \
+            'Safari/537.36'
         res = session.get(url)
 
         if res.status_code == 404:
