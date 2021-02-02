@@ -73,16 +73,9 @@ class Tupi(Store):
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
-        normal_price = Decimal(
-            soup.find('p', 'price').find('span', 'amount').text
+        price = Decimal(
+            soup.find('p','monto_precio_contado').text.strip()
                 .replace('Gs.', '').replace('.', '').strip())
-        offer_price = Decimal(
-            soup.find('p', 'price')
-                .find('span', {'id': 'elpreciocentralPorta'}).text
-                .split('Gs.')[-1].replace('.', '').replace('!', '').strip())
-
-        if normal_price < offer_price:
-            offer_price = normal_price
 
         description = html_to_markdown(
             str(soup.find('div', {'itemprop': 'description'})))
@@ -102,8 +95,8 @@ class Tupi(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'PYG',
             sku=sku,
             description=description,
