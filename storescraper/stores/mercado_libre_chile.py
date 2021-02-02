@@ -139,7 +139,8 @@ class MercadoLibreChile(Store):
                     ))
             else:
                 picture_urls = [x['data-zoom'] for x in
-                                soup.findAll('img', 'ui-pdp-image')[1::2]]
+                                soup.findAll('img', 'ui-pdp-image')[1::2]
+                                if 'data-zoom' in x.attrs]
                 products.append(Product(
                     base_name,
                     cls.__name__,

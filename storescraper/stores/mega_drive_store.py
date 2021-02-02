@@ -60,9 +60,11 @@ class MegaDriveStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://megadrivestore.cl/es/{}?page={}'.format(
                     url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('article')
+                product_containers = soup.find(
+                    'section', {'id': 'products'}).findAll('article')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)

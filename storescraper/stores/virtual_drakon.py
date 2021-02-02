@@ -60,8 +60,12 @@ class VirtualDrakon(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_info = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+        json_container = soup.find('script', {'type': 'application/ld+json'})
+
+        if not json_container:
+            return []
+
+        json_info = json.loads(json_container.text)
         name = json_info['name']
         if soup.find('form', 'variations_form'):
 
