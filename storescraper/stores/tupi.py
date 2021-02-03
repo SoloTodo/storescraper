@@ -7,9 +7,6 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Tupi(Store):
-    base_url = 'https://www.lg.com'
-    country_code = 'cl'
-
     @classmethod
     def categories(cls):
         return [
@@ -57,8 +54,13 @@ class Tupi(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find(
-            'meta', {'property': 'product:retailer_item_id'})['content']
+        sku_container = soup.find(
+            'meta', {'property': 'product:retailer_item_id'})
+
+        if not sku_container:
+            return []
+
+        sku = sku_container['content']
 
         if not soup.find('input', {'id': 'the-cantidad-selector'}):
             return []

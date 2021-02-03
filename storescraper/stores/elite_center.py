@@ -50,7 +50,7 @@ class EliteCenter(Store):
             ['accesorios-gamer/teclados', KEYBOARD],
             ['accesorios-gamer/mouse', MOUSE],
             ['accesorios-gamer/parlantes', STEREO_SYSTEM],
-            ['almacenamiento/disco-estado-solido/parlantes', SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
