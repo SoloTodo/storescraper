@@ -222,6 +222,7 @@ from .pcx import Pcx
 from .peta import Peta
 from .pichau import Pichau
 from .plaza_lama import PlazaLama
+from .play_factory import PlayFactory
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
 from .pro_movil import ProMovil
