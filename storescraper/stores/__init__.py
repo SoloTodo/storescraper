@@ -262,6 +262,7 @@ from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
 from .tekstore import Tekstore
 from .terabyte import Terabyte
+from .tecno_master import TecnoMaster
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_inglesa import TiendaInglesa
