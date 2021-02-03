@@ -113,7 +113,8 @@ class Weplay(Store):
             soup.find('span', 'price')
                 .text.replace('$', '').replace('.', ''))
 
-        picture_urls = [tag['src'] for tag in soup.findAll('img','gallery-placeholder__image')]
+        picture_urls = [tag['src'] for tag in
+                        soup.findAll('img', 'gallery-placeholder__image')]
         description = html_to_markdown(
             str(soup.find('div', 'short-description')))
 

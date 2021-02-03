@@ -92,7 +92,7 @@ class Todoclick(Store):
                                     page_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('li','product')
+                products = soup.findAll('li', 'product')
 
                 if not products:
                     break

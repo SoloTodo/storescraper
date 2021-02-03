@@ -2,11 +2,10 @@ import argparse
 import json
 import logging
 import time
-
 import sys
 sys.path.append('../..')
+from storescraper.utils import HeadlessChrome  # noqa
 
-from storescraper.utils import HeadlessChrome
 
 def main():
     logging.basicConfig(level=logging.INFO,

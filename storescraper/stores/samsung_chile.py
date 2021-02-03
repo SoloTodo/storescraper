@@ -50,11 +50,9 @@ class SamsungChile(Store):
         category_info = cls._category_info()
         session = session_with_proxy(extra_args)
 
-        api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/finder/global?' \
-                  'siteCode=cl&' \
-                  'start=0&' \
-                  'num=1000&' \
-                  'onlyFilterInfoYN=N'
+        api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/' \
+                  'finder/global?siteCode=cl&start=0&num=1000' \
+                  '&onlyFilterInfoYN=N'
 
         products = []
 

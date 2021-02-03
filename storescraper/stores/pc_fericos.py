@@ -72,7 +72,7 @@ class PcFericos(Store):
                 var_name = name
 
             stock = 0 if product['availability'] == \
-                         'http://schema.org/OutOfStock' else -1
+                'http://schema.org/OutOfStock' else -1
             price = Decimal(product['price'])
             sku = product['url'].split('variant=')[-1]
             picture_urls = [json_container['image'][0]]

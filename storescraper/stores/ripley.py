@@ -478,7 +478,7 @@ class Ripley(Store):
         if normal_price_container:
             normal_price = Decimal(
                 element.find('li', 'catalog-prices__offer-price')
-                    .text.replace('$', '').replace('.', ''))
+                .text.replace('$', '').replace('.', ''))
         else:
             normal_price = offer_price
 
@@ -569,7 +569,8 @@ class Ripley(Store):
 
             browser = p.chromium.launch(proxy=proxy, headless=True)
             context = browser.newContext(
-                userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0'
+                userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) '
+                          'Gecko/20100101 Firefox/84.0'
             )
 
             page = context.newPage()
@@ -638,10 +639,6 @@ class Ripley(Store):
             print(hcaptcha_response)
 
             for field in ['h-captcha-response']:
-                # foo = f"() => {{document.querySelector('[name=\"{field}\"]').remove();}}"
-                # print(foo)
-                # page.evaluate(foo)
-
                 foo = (f"() => {{var foo = document.createElement('input');"
                        f"foo.setAttribute('name', '{field}');"
                        f"foo.setAttribute('value','{hcaptcha_response}'); "
@@ -801,10 +798,10 @@ class Ripley(Store):
                 banners.append({
                     'url': url,
                     'picture_url': picture_url.get('src') or
-                                   picture_url.get('data-src'),
+                    picture_url.get('data-src'),
                     'destination_urls': destination_urls,
                     'key': picture_url.get('src') or
-                           picture_url.get('data-src'),
+                    picture_url.get('data-src'),
                     'position': 1,
                     'section': section,
                     'subsection': subsection,
@@ -906,7 +903,7 @@ class Ripley(Store):
                                'es_ES/product/{}/reviews?' \
                                'apikey=71f6caaa-ea4f-43b9-a19e-46eccb73bcbb' \
                                '&paging.size=25&paging.from={}'.format(
-                sku, page)
+                                    sku, page)
             response = session.get(reviews_endpoint).json()
 
             if response['paging']['current_page_number'] != page:

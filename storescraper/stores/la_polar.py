@@ -67,11 +67,12 @@ class LaPolar(Store):
              'Inicio > Tecnología > Celulares > Teléfonos Básicos', 1],
             ['todo-impresoras', ['Printer'],
              'Inicio > Tecnología > Computadores > Impresoras', 1],
-            ['disco-duro-externo', ['ExternalStorageDrive'], 'Inicio > '
-                                                             'Tecnología > Accesorios Computación > Disco Duro Externo',
+            ['disco-duro-externo', ['ExternalStorageDrive'],
+             'Inicio > Tecnología > Accesorios Computación > '
+             'Disco Duro Externo',
              1],
-            ['mouse-i-teclados', ['Mouse', 'Keyboard'], 'Inicio > '
-                                                        'Tecnología > Accesorios Computación > Mouse | Teclados',
+            ['mouse-i-teclados', ['Mouse', 'Keyboard'],
+             'Inicio > Tecnología > Accesorios Computación > Mouse | Teclados',
              0.5],
             ['pendrives', ['UsbFlashDrive'],
              'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],

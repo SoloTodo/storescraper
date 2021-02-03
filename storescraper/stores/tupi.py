@@ -76,7 +76,7 @@ class Tupi(Store):
             stock = 0
 
         price = Decimal(
-            soup.find('p','monto_precio_contado').text.strip()
+            soup.find('p', 'monto_precio_contado').text.strip()
                 .replace('Gs.', '').replace('.', '').strip())
 
         description = html_to_markdown(

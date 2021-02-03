@@ -253,7 +253,7 @@ class PcFactory(Store):
         full_name = '{} {}'.format(product_data['marca'],
                                    product_data['nombre'])
         stock = int(product_data['stock_tienda']) + \
-                int(product_data['stock_web'])
+            int(product_data['stock_web'])
         sku = product_data['id_producto']
         video_urls = []
 

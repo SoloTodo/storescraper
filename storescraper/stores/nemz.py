@@ -66,8 +66,18 @@ class Nemz(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
+        pn_container = soup.find('span', 'sku')
+
+        if pn_container:
+            name += ' ({})'.format(pn_container.text.strip())
+
         sku = soup.find('input', {'name': 'queried_id'})['value']
-        if soup.find('p', 'stock'):
+        description_tag = soup.find(
+            'div', 'woocommerce-product-details__short-description')
+
+        if description_tag and 'PREVENTA' in description_tag.text.upper():
+            stock = 0
+        elif soup.find('p', 'stock'):
             stock = 0
         elif soup.find('span', 'stock'):
             stock = int(soup.find('span', 'stock').text.split()[0])
@@ -77,9 +87,11 @@ class Nemz(Store):
         if price_container.find('ins'):
             price = Decimal(remove_words(price_container.find('ins').text
                                          .strip()))
-        else:
+        elif price_container.find('bdi'):
             price = Decimal(remove_words(price_container.find('bdi').text
                                          .strip()))
+        else:
+            return []
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery')
                             .findAll('img')]

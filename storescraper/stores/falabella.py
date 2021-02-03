@@ -399,8 +399,8 @@ class Falabella(Store):
             # REVIEWS
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews' \
-                .format(sku)
+                          'Filter=ProductId:{}&Include=Products&Stats=' \
+                          'Reviews'.format(sku)
 
             review_data = json.loads(session.get(reviews_url).text)
             review_count = review_data['TotalResults']
@@ -555,8 +555,8 @@ class Falabella(Store):
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=Reviews' \
-                .format(sku)
+                          'Filter=ProductId:{}&Include=Products&Stats=' \
+                          'Reviews'.format(sku)
 
             review_data = json.loads(session.get(reviews_url).text)
             review_count = review_data['TotalResults']
@@ -867,7 +867,7 @@ class Falabella(Store):
         for picture_entry in picture_entries:
             picture_url = 'https://falabella.scene7.com/is/image/{}?' \
                           'wid=1500&hei=1500&qlt=70'.format(
-                picture_entry['i']['n'])
+                            picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
         return picture_urls

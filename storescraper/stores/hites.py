@@ -55,11 +55,14 @@ class Hites(Store):
         category_paths = [
             ['electro-hogar/refrigeradores', ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores', 1],
-            ['electro-hogar/refrigeradores/refrigerador-frio-directo', ['Refrigerator'],
+            ['electro-hogar/refrigeradores/refrigerador-frio-directo',
+             ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > Frío Directo', 1],
-            ['electro-hogar/refrigeradores/refrigerador-no-frost', ['Refrigerator'],
+            ['electro-hogar/refrigeradores/refrigerador-no-frost',
+             ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > No Frost', 1],
-            ['electro-hogar/refrigeradores/refrigerador-side-by-side', ['Refrigerator'],
+            ['electro-hogar/refrigeradores/refrigerador-side-by-side',
+             ['Refrigerator'],
              'Inicio > Electro Hogar > Refrigeradores > Side by Side', 1],
             ['electro-hogar/refrigeradores/freezer-y-frigobar',
              ['Refrigerator'],
@@ -69,7 +72,8 @@ class Hites(Store):
              'Inicio > Electro Hogar > Lavado y Secado', 0.5],
             ['electro-hogar/lavado-y-secado/lavadoras', ['WashingMachine'],
              'Inicio > Electro Hogar > Lavado y Secado > Lavadoras', 1],
-            ['electro-hogar/lavado-y-secado/secadoras-y-centrifugas', ['WashingMachine'],
+            ['electro-hogar/lavado-y-secado/secadoras-y-centrifugas',
+             ['WashingMachine'],
              'Inicio > Electro Hogar > Lavado y Secado > Secadoras', 1],
             ['electro-hogar/lavado-y-secado/lavadoras-secadoras',
              ['WashingMachine'],
@@ -210,7 +214,8 @@ class Hites(Store):
                 response = session.get(category_url, timeout=60)
 
                 if response.url != category_url:
-                    raise Exception('Page mismatch. Expencting {} Got {}'.format(category_url, response.url))
+                    raise Exception('Page mismatch. Expencting {} Got {}'
+                                    ''.format(category_url, response.url))
 
                 if response.status_code in [404, 500]:
                     break

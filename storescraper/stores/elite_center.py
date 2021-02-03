@@ -67,8 +67,8 @@ class EliteCenter(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://elitecenter.cl/product-category/{}/page/{}' \
-                              ''.format(url_extension, page)
+                url_webpage = 'https://elitecenter.cl/product-category/{}/' \
+                              'page/{}'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html5lib')

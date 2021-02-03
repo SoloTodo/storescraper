@@ -93,7 +93,8 @@ class FullcolorSpa(Store):
         picture_container = soup.find('div', 'product-image').find('img')
 
         if picture_container:
-            picture_urls = ['https://www.fullcolorspa.com' + picture_container['src']]
+            picture_urls = ['https://www.fullcolorspa.com' +
+                            picture_container['src']]
         else:
             picture_urls = None
 

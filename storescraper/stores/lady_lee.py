@@ -46,7 +46,8 @@ class LadyLee(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href'].split('/')[-1]
-                    product_urls.append('https://ladylee.net/products/' + product_url)
+                    product_urls.append('https://ladylee.net/products/' +
+                                        product_url)
                 page += 1
 
         return product_urls
