@@ -66,7 +66,7 @@ class Nemz(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('input', {'name': 'post_id'})['value']
+        sku = soup.find('input', {'name': 'queried_id'})['value']
         if soup.find('p', 'stock'):
             stock = 0
         elif soup.find('span', 'stock'):
