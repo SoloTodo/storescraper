@@ -65,7 +65,6 @@ class JeanfigPc(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock out-of-stock'):
@@ -75,10 +74,8 @@ class JeanfigPc(Store):
         normal_price = Decimal(remove_words(soup.find('p', 'price').text))
         offer_price = Decimal(
             remove_words(soup.find('span', 'woocommerce-Price-amount').text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery')
-                        .findAll('img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
 
         p = Product(
             name,
