@@ -238,7 +238,7 @@ class Claro(Store):
                     response = session.post(
                         'https://equipos.clarochile.cl/servicio/detalle/'
                         'planes_equipo',
-                        data=data)
+                        data=data, verify=False)
                     plan_data = json.loads(response.text)
                     base_plan_name = plan_data['cat04_plan_nombre']
 
