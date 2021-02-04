@@ -74,7 +74,6 @@ class PlayFactory(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
         name = soup.find('h1', 'product_title').text
         sku = soup.find('button', {'name': 'add-to-cart'})['value']
         if soup.find('span',
