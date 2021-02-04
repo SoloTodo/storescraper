@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, HEADPHONES, MOUSE
+from storescraper.categories import GAMING_CHAIR, HEADPHONES, MOUSE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,7 +15,8 @@ class Sevenwin(Store):
         return [
             GAMING_CHAIR,
             HEADPHONES,
-            MOUSE
+            MOUSE,
+            MONITOR,
         ]
 
     @classmethod
@@ -23,7 +24,8 @@ class Sevenwin(Store):
         url_extensions = [
             ['seven-win-sillas-gamers', GAMING_CHAIR],
             ['seven-win-audifonos-gamer', HEADPHONES],
-            ['seven-win-mouse-gamer', MOUSE]
+            ['seven-win-mouse-gamer', MOUSE],
+            ['seven-win-monitor-gamer', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
