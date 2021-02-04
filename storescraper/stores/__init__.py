@@ -122,6 +122,7 @@ from .intcomex import Intcomex
 from .inverfin import Inverfin
 from .iprotech import Iprotech
 from .isi_book import IsiBook
+from .jeanfig_pc import JeanfigPc
 from .jetstereo import Jetstereo
 from .johnson import Johnson
 from .jumbo import Jumbo
