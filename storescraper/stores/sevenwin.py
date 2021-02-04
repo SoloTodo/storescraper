@@ -60,10 +60,12 @@ class Sevenwin(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
         name = soup.find('h1', 'page-header').text
         sku = soup.find('form', 'form-horizontal')['action'].split('/')[-1]
-        stock = -1
+        if soup.find('span',' product-stock product-out-stock visible'):
+            stock = 0
+        else:
+            stock = -1
         price = Decimal(remove_words(soup.find('span', 'product-form-price').text))
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'col-md-3 '
