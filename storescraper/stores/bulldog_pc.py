@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, RAM, POWER_SUPPLY, \
-    VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR, MONITOR
+    VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, PROCESSOR, MONITOR, \
+    COMPUTER_CASE, HEADPHONES, MOUSE, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -23,19 +24,27 @@ class BulldogPc(Store):
             CPU_COOLER,
             PROCESSOR,
             MONITOR,
+            COMPUTER_CASE,
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['memorias', RAM],
-            ['productos/placas-madre', MOTHERBOARD],
-            ['productos/tarjetas-de-video', VIDEO_CARD],
             ['productos/almacenamiento', SOLID_STATE_DRIVE],
-            ['productos/refrigeracion', CPU_COOLER],
-            ['productos/procesadores', PROCESSOR],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['productos/gabinetes', COMPUTER_CASE],
+            ['memorias', RAM],
             ['productos/monitores', MONITOR],
+            ['productos/placas-madre', MOTHERBOARD],
+            ['productos/refrigeracion', CPU_COOLER],
+            ['productos/perifericos/audifonos', HEADPHONES],
+            ['productos/perifericos/ratones', MOUSE],
+            ['productos/perifericos/teclados', KEYBOARD],
+            ['productos/procesadores', PROCESSOR],
+            ['productos/tarjetas-de-video', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
