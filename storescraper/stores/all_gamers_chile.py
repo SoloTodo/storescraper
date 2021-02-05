@@ -122,6 +122,7 @@ class AllGamersChile(Store):
                 products.append(p)
             return products
         else:
+            product_container = soup.find('div', 'summary entry-summary')
             stock_container = soup.find('p', 'stock')
             if stock_container.text == 'Agotado':
                 stock = 0
@@ -133,13 +134,15 @@ class AllGamersChile(Store):
                 sku = \
                     soup.find('link', {'rel': 'shortlink'})['href'].split('=')[
                         -1]
-            if soup.find('ins'):
+            if product_container.find('ins'):
                 price = Decimal(remove_words(
-                    soup.find('ins').
+                    product_container.find('ins').
                     find('span', 'woocommerce-Price-amount amount').text))
             else:
                 price = Decimal(remove_words(
-                    soup.find('span', 'woocommerce-Price-amount amount').text))
+                    product_container.find('span',
+                                           'woocommerce-Price-amount '
+                                           'amount').text))
 
             picture_urls = [tag['src'] for tag in
                             soup.find('div', 'woocommerce-product-gallery')
