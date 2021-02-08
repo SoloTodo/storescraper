@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -74,13 +75,16 @@ class Nemz(Store):
         sku = soup.find('input', {'name': 'queried_id'})['value']
         description_tag = soup.find(
             'div', 'woocommerce-product-details__short-description')
-
         if description_tag and 'PREVENTA' in description_tag.text.upper():
             stock = 0
         elif soup.find('p', 'stock'):
             stock = 0
-        elif soup.find('span', 'stock'):
-            stock = int(soup.find('span', 'stock').text.split()[0])
+        elif soup.find('span', 'stock') and re.search(r'(\d+)', soup.find(
+                'span', 'stock').text):
+            stock = int(re.search(r'(\d+)', soup.find('span', 'stock').text)
+                        .groups()[0])
+        elif soup.find('span', 'stock') and '✅En Stock!':
+            stock = -1
         else:
             return []
         price_container = soup.find('p', 'price')
