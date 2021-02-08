@@ -73,6 +73,8 @@ class Spaceman(Store):
                                                                     'stock')
                 if stock_container:
                     stock = int(stock_container.text.split()[0])
+                elif variant['is_in_stock']:
+                    stock = -1
                 else:
                     stock = 0
                 price = Decimal(variant['display_price'])
