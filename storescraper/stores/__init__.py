@@ -44,6 +44,7 @@ from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
 from .costco_mexico import CostcoMexico
+from .crazy_games_en_chile import CrazyGamesenChile
 from .creditos_economicos import CreditosEconomicos
 from .creditos_mundiales import CreditosMundiales
 from .cyber_puerta import CyberPuerta
