@@ -44,6 +44,7 @@ from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
 from .costco_mexico import CostcoMexico
+from .crazy_games_en_chile import CrazyGamesenChile
 from .creditos_economicos import CreditosEconomicos
 from .creditos_mundiales import CreditosMundiales
 from .cyber_puerta import CyberPuerta
@@ -198,6 +199,7 @@ from .new_game import NewGame
 from .nemz import Nemz
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
+from .notetop import Notetop
 from .olier import Olier
 from .omnisport import Omnisport
 from .orbital_store import OrbitalStore
