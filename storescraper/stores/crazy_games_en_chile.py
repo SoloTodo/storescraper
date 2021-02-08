@@ -1,10 +1,12 @@
 import json
 import logging
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, \
-    SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, KEYBOARD
+    SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, KEYBOARD, \
+    POWER_SUPPLY, MOTHERBOARD, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -21,7 +23,10 @@ class CrazyGamesenChile(Store):
             MONITOR,
             MOUSE,
             GAMING_CHAIR,
-            KEYBOARD
+            KEYBOARD,
+            POWER_SUPPLY,
+            MOTHERBOARD,
+            PROCESSOR,
         ]
 
     @classmethod
@@ -29,6 +34,8 @@ class CrazyGamesenChile(Store):
         url_extensions = [
             ['audifonos', HEADPHONES],
             ['audifonos-ps4-xbox-one-y-switch', HEADPHONES],
+            ['audifonos-home-oficce', HEADPHONES],
+            ['accesorios-para-pc-pc-gamer', HEADPHONES],
             ['gabinetes-gamer', COMPUTER_CASE],
             ['gabinetes-pc', COMPUTER_CASE],
             ['memorias-pendrives-disco-duro', SOLID_STATE_DRIVE],
@@ -38,7 +45,10 @@ class CrazyGamesenChile(Store):
             ['mouse-ps4-xbox-one', MOUSE],
             ['sillas-gamer', GAMING_CHAIR],
             ['teclados', KEYBOARD],
-            ['teclados-ps4-y-xbox-one', KEYBOARD]
+            ['teclados-ps4-y-xbox-one', KEYBOARD],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['placas-madres', MOTHERBOARD],
+            ['procesadores-de-pc', PROCESSOR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -75,20 +85,25 @@ class CrazyGamesenChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
-        ipdb.set_trace()
         json_container = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_container['name']
-        sku = soup.find()
+        sku_container = json.loads(
+            soup.find('script', {'id': 'wix-warmup-data'}).text)
+        sku_key_1 = list(sku_container['appsWarmupData'].keys())[0]
+        sku_key_2 = list(sku_container['appsWarmupData'][sku_key_1].keys())[0]
+        sku = sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
+            'product']['id']
         if json_container['Offers'][
                 'Availability'] == 'https://schema.org/OutOfStock':
             stock = 0
         else:
             stock = -1
-        price = json_container['Offers']['price']
+        price = Decimal(json_container['Offers']['price'])
         picture_urls = [tag['src'] for tag in
                         soup.findAll('img', {'data-hook': 'thumbnail-image'})]
+        if not picture_urls:
+            picture_urls = [json_container['image']['contentUrl']]
         p = Product(
             name,
             cls.__name__,
