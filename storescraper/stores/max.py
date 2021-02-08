@@ -6,9 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
-from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
-    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, \
-    OPTICAL_DISK_PLAYER, STOVE, MONITOR, PROJECTOR, HEADPHONES
+from storescraper.categories import TELEVISION
 
 
 class Max(Store):
@@ -16,100 +14,41 @@ class Max(Store):
     def categories(cls):
         return [
             TELEVISION,
-            STEREO_SYSTEM,
-            CELL,
-            REFRIGERATOR,
-            OVEN,
-            AIR_CONDITIONER,
-            WASHING_MACHINE,
-            OPTICAL_DISK_PLAYER,
-            STOVE,
-            MONITOR,
-            PROJECTOR,
-            HEADPHONES
+
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('video/televisores', TELEVISION),
-            ('video/cine-en-casa', STEREO_SYSTEM),
-            ('video/reproductores-dvd', OPTICAL_DISK_PLAYER),
-            ('celulares/prepago', CELL),
-            ('celulares/prepago/tigo', CELL),
-            ('celulares/prepago/claro', CELL),
-            ('celulares/prepago/movistar', CELL),
-            ('celulares/liberados', CELL),
-            ('lineablanca/combos-lavadora-y-secadora', WASHING_MACHINE),
-            ('lineablanca/secadoras', WASHING_MACHINE),
-            ('lineablanca/lavadoras', WASHING_MACHINE),
-            ('lineablanca/empotrables', OVEN),
-            ('lineablanca/estufas/hornos-empotrables', OVEN),
-            ('electrodomesticos/microondas', OVEN),
-            ('lineablanca/refrigeradoras/refrigeradoras', REFRIGERATOR),
-            ('lineablanca/refrigeradoras/congeladores', REFRIGERATOR),
-            ('lineablanca/estufas/estufas-a-gas', STOVE),
-            ('lineablanca/estufas/estufas-electricas', STOVE),
-            ('lineablanca/estufas/cooktops-a-gas', STOVE),
-            ('lineablanca/estufas/cooktops-electricos', STOVE),
-            ('computacion/proyectores', PROJECTOR),
-            ('audio', STEREO_SYSTEM),
-            ('audio/audio-para-casa/micro-componente', STEREO_SYSTEM),
-            ('audio/audio-para-casa/mini-componente', STEREO_SYSTEM),
-            ('audio/audio-para-casa/audio-vertical', STEREO_SYSTEM),
-            ('audio/audio-portatil', STEREO_SYSTEM),
-            ('audio/audio-multizona', STEREO_SYSTEM),
-            ('computacion/pc-gaming/monitores', MONITOR),
-            ('computacion/proyectores', PROJECTOR),
-            ('audifonos', HEADPHONES),
+        url_extenisons = [
+            TELEVISION
         ]
 
         session = session_with_proxy(extra_args)
-
         product_urls = []
-        lg_product_urls = []
-
-        for category_path, local_category in category_filters:
+        for local_category in url_extenisons:
             if local_category != category:
                 continue
-
             page = 1
-            done = False
-            local_urls = []
-
-            while not done:
+            while True:
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://www.max.com.gt/{}?limit=30&p={}'.format(
-                    category_path, page)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-                items = soup.findAll('div', 'item')
-
-                if not items:
+                url_webpage = 'https://www.max.com.gt/catalogsearch/result/' \
+                              'index/?category=&marca=7&p={}&q=LG'.format(page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('div', 'item')
+                if not product_containers:
                     if page == 1:
-                        logging.warning('No products for url {}'.format(url))
+                        logging.warning('Empty category')
                     break
-
-                for container in items:
-                    logo = container.find('div', 'brand').find('img')
+                for container in product_containers:
                     product_url = container.find('a')['href']
-
-                    if product_url in local_urls:
-                        done = True
-                        break
-
-                    if logo and logo['src'] == \
-                            'https://www.max.com.gt/media/marcas/lg.jpg':
-                        lg_product_urls.append(product_url)
-                    local_urls.append(container.find('a')['href'])
-
+                    if product_url in product_urls:
+                        return product_urls
+                    product_urls.append(product_url)
                 page += 1
-
-            product_urls.extend(local_urls)
-
-        return list(set(lg_product_urls))
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
