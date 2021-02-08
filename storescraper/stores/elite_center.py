@@ -41,8 +41,10 @@ class EliteCenter(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/placas-madres', MOTHERBOARD],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-pc/memorias-ram/', RAM],
             ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
             ['componentes-pc/disipadores', CPU_COOLER],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
@@ -50,7 +52,10 @@ class EliteCenter(Store):
             ['accesorios-gamer/teclados', KEYBOARD],
             ['accesorios-gamer/mouse', MOUSE],
             ['accesorios-gamer/parlantes', STEREO_SYSTEM],
+            ['almacenamiento/disco-duro-pcs', STORAGE_DRIVE],
             ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
+            ['monitores', MONITOR],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
