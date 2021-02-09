@@ -32,10 +32,9 @@ class TiendaInglesa(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
-                url_webpage = 'https://www.tiendainglesa.com.uy/Categoria/' \
-                              'Electro%20y%20Tecnolog%C3%ADa/busqueda?0,0,' \
-                              '*:*,302,0,0,rel,%5B%22Lg%22%5D,true,%5B%5D,' \
-                              '%5B%5D,,{}'.format(page)
+                url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?' \
+                              '0,0,LG,0,0,0,,%5B%5D,false,%5B%5D,%5B%5D,,' \
+                              '{}'.format(page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll(

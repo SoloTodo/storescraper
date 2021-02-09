@@ -65,12 +65,12 @@ class GWStore(Store):
                               'page/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'shop-products')
+                product_containers = soup.find('ul', 'products')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('div', 'item-col'):
+                for container in product_containers.findAll('li', 'type-product'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1

@@ -72,6 +72,9 @@ class LgCac(LgV5):
             # Aire acondicionado residencial
             ('CT30014140', 'AirConditioner', True),
             ('CT30014140', 'AirConditioner', False),
+            # SOLUCIONES DE CUIDADO DEL AIRE
+            ('CT40005165', 'AirConditioner', True),
+            ('CT40005165', 'AirConditioner', False),
             # Deshumidificador
             # ('CT32021782', 'AirConditioner', True),
             # Monitores
