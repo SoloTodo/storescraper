@@ -70,7 +70,8 @@ class GWStore(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('li', 'type-product'):
+                for container in product_containers.findAll(
+                        'li', 'type-product'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
