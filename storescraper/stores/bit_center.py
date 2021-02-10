@@ -49,7 +49,7 @@ class BitCenter(Store):
                 url_webpage = 'https://www.bitcenter.cl/{}?page={}'.format(
                     url_extension, page)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('ul', {
                     'data-hook': 'product-list-wrapper'})
                 if not product_containers:

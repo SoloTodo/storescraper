@@ -52,9 +52,9 @@ class MobileHut(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://mobilehut.cl/collections/{}?page={}' \
+                url_webpage = 'https://mobilehut.cl/collections/{}?q=pg_:{}' \
                     .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
