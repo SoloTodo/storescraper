@@ -79,17 +79,17 @@ class GWStore(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = str(json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)[
-                      '@graph'][1]['sku'])
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
+
         stock_container = soup.find('p', 'stock')
         if stock_container:
-            stock = 0 if stock_container.text.split()[0] == 'Agotado' else int(
-                stock_container.text.split()[0])
+            stock = 0 if 'Agotado' in stock_container.text else int(
+                stock_container.contents[1].split()[0])
         else:
             stock = -1
         price = Decimal(remove_words(soup.findAll('bdi')[-1].text))

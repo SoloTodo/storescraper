@@ -74,8 +74,13 @@ class BitCenter(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
-        name = json_container['name']
+
+        if 'sku' not in json_container:
+            return []
+
         sku = json_container['sku']
+        name = json_container['name']
+
         if json_container['Offers']['Availability'] == 'https://schema.org/' \
                                                        'OutOfStock':
             stock = 0
