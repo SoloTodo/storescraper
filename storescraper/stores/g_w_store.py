@@ -92,7 +92,8 @@ class GWStore(Store):
                 stock_container.contents[1].split()[0])
         else:
             stock = -1
-        price = Decimal(remove_words(soup.findAll('bdi')[-1].text))
+        price = Decimal(remove_words(soup.find(
+            'span', 'woocommerce-Price-amount').find('bdi').contents[1]))
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'woocommerce-tabs').findAll('img')]
         p = Product(
