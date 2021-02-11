@@ -4,26 +4,27 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.categories import CELL, MONITOR, PROJECTOR
 
 
 class Yoytec(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Monitor',
-            'Projector',
+            CELL,
+            MONITOR,
+            PROJECTOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('monitores-proyectores-monitores-lcd-c-212_27_49.html',
-             'Monitor'),
+             MONITOR),
             ('monitores-proyectores-proyectores-c-212_27_113.html',
-             'Projector'),
+             PROJECTOR),
             ('celulares-tablets-celulares-smartphones-c-198_166.html',
-             'Cell')
+             CELL)
         ]
 
         session = session_with_proxy(extra_args)
@@ -77,27 +78,20 @@ class Yoytec(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         name = soup.find('h1', 'name').text.strip()
-        info_table = soup.find('div', 'listing')
-        rows = info_table.findAll('tr')
-
-        sku = rows[0].find('td', 'td_right').text.strip()
+        sku = soup.find('div', 'listing').find('td', 'td_right').text.strip()
+        stock_cells = soup.find('div', 'listing').findAll(
+            'table')[1].findAll('td', 'td_right')[1::2]
 
         stock = 0
 
-        for i in range(0, len(rows)-1):
-            left_text = rows[i].find('td', 'td_left').text
-            if 'Cantidad' not in left_text:
+        for stock_cell in stock_cells:
+            if 'Agotado' in stock_cell.text:
                 continue
-            right_text = rows[i].find('td', 'td_right').text
-            if '+' in right_text:
-                stock = -1
-                break
-            if 'Agotado' not in right_text:
-                stock += int(right_text)
 
-        price = Decimal(rows[-1].find('td', 'td_right').text.split('$')[-1]
-                        .replace(',', ''))
+            stock += int(stock_cell.text.split()[0])
 
+        price = Decimal(soup.find('span', 'productSpecialPrice').text
+                        .replace(',', '').replace('$', ''))
         description = html_to_markdown(str(soup.find('div', 'description')))
 
         image_containers = soup.findAll('li', 'wrapper_pic_div')
