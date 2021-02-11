@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import KEYBOARD, CELL, MONITOR, MOTHERBOARD, \
     HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, GAMING_CHAIR, RAM
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, GAMING_CHAIR, RAM, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,7 +27,8 @@ class Ampera(Store):
             EXTERNAL_STORAGE_DRIVE,
             STORAGE_DRIVE,
             GAMING_CHAIR,
-            RAM
+            RAM,
+            VIDEO_CARD,
         }
 
     @classmethod
@@ -44,7 +45,8 @@ class Ampera(Store):
             ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['discos-duros-internos', STORAGE_DRIVE],
             ['otros', GAMING_CHAIR],
-            ['almacenamiento', RAM]
+            ['almacenamiento', RAM],
+            ['gpus', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
