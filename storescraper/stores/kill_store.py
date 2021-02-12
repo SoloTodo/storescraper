@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import PRINTER, MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
-    CPU_COOLER, GAMING_CHAIR, KEYBOARD
+    CPU_COOLER, GAMING_CHAIR, KEYBOARD, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -31,6 +31,7 @@ class KillStore(Store):
             CPU_COOLER,
             GAMING_CHAIR,
             KEYBOARD,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -51,6 +52,7 @@ class KillStore(Store):
             ['369-refrigeracion-y-ventiladores', CPU_COOLER],
             ['335-sillas', GAMING_CHAIR],
             ['389-teclados', KEYBOARD],
+            ['388-notebooks', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
