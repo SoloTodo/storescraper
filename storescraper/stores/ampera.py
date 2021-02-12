@@ -44,7 +44,7 @@ class Ampera(Store):
             ['ssd', SOLID_STATE_DRIVE],
             ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['discos-duros-internos', STORAGE_DRIVE],
-            ['otros', GAMING_CHAIR],
+            ['sillas', GAMING_CHAIR],
             ['almacenamiento', RAM],
             ['gpus', VIDEO_CARD],
         ]
