@@ -8,7 +8,7 @@ from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
     STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class BitCenter(Store):
@@ -72,24 +72,21 @@ class BitCenter(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+        json_tag = soup.find('script', {'id': 'wix-warmup-data'})
+        json_container = json.loads(json_tag.text)
+        json_data = next(iter(next(iter(
+            json_container['appsWarmupData'].values())).values()))[
+            'catalog']['product']
+        sku = json_data['id']
+        name = json_data['name']
 
-        if 'sku' not in json_container:
-            return []
-
-        sku = json_container['sku']
-        name = json_container['name']
-
-        if json_container['Offers']['Availability'] == 'https://schema.org/' \
-                                                       'OutOfStock':
-            stock = 0
-        else:
+        if json_data['isInStock']:
             stock = -1
-        normal_price = Decimal(
-            int(json_container['Offers']['price']) * 1.038 // 1)
-        offer_price = Decimal(json_container['Offers']['price'])
-        picture_urls = [json_container['image']['contentUrl']]
+        else:
+            stock = 0
+        price = Decimal(json_data['discountedPrice'])
+        picture_urls = [x['fullUrl'] for x in json_data['media']]
+        description = html_to_markdown(json_data['description'])
         p = Product(
             name,
             cls.__name__,
@@ -98,10 +95,11 @@ class BitCenter(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]

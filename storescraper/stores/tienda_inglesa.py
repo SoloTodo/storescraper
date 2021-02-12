@@ -57,7 +57,8 @@ class TiendaInglesa(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-        json_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_data['name']
         description = json_data['description']
         sku = json_data['offers']['sku']
