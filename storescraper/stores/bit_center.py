@@ -30,14 +30,17 @@ class BitCenter(Store):
         url_extensions = [
             ['mouse', MOUSE],
             ['teclados', KEYBOARD],
-            ['headsets', HEADPHONES],
+            ['headset', HEADPHONES],
             ['parlantes', STEREO_SYSTEM],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['gabinetes-pc', COMPUTER_CASE],
-            ['fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-pc/gabinetes', COMPUTER_CASE],
+            ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['sillas-gamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -46,12 +49,12 @@ class BitCenter(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.bitcenter.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://www.bitcenter.cl/categoria/{}?page={}' \
+                    .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('ul', {
-                    'data-hook': 'product-list-wrapper'})
+                product_containers = soup.find('main', 'site-main'). \
+                    find('ul', 'products')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -70,21 +73,26 @@ class BitCenter(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+        json_container = \
+            json.loads(
+                soup.find('script', {'type': 'application/ld+json'}).text)[
+                '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']
-        if json_container['Offers']['Availability'] == 'https://schema.org/' \
-                                                       'OutOfStock':
+        if json_container['offers'][0][
+             'availability'] == 'https://schema.org/OutOfStock':
             stock = 0
         else:
             stock = -1
         normal_price = Decimal(
-            int(json_container['Offers']['price']) * 1.038 // 1)
-        offer_price = Decimal(json_container['Offers']['price'])
-        picture_urls = [json_container['image']['contentUrl']]
+            int(json_container['offers'][0]['price']) * 1.038 // 1)
+        offer_price = Decimal(json_container['offers'][0]['price'])
+        picture_urls = [json_container['image']]
         p = Product(
             name,
             cls.__name__,
