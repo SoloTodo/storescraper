@@ -32,7 +32,7 @@ class LitnorHogar(Store):
             while True:
                 url_webpage = 'https://www.litnorhogar.com.uy/buscador?b={}' \
                               '&page={}'.format(url_extension, page)
-                data = session.get(url_webpage).text
+                data = session.get(url_webpage, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'views-row')
                 if not product_containers:
@@ -50,7 +50,7 @@ class LitnorHogar(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'title').text.strip()
         sku = soup.find('div', 'node')['id'].split("-")[-1]
@@ -58,7 +58,9 @@ class LitnorHogar(Store):
             'https://www.litnorhogar.com.uy/uc_out_of_stock/query',
             data='form_ids%5B%5D=uc-product-add-to-cart-form-'
                  '{}&node_ids%5B%5D={}'.format(sku, sku),
-            headers={'content-type': 'application/x-www-form-urlencoded'})
+            headers={'content-type': 'application/x-www-form-urlencoded'},
+            verify=False
+        )
         stock = int(list(json.loads(response.content).values())[0])
         price_container = soup.find('span', 'uc-price').text.strip().split()
         price = Decimal(price_container[1].replace('.', ''))
