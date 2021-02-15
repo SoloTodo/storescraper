@@ -52,13 +52,13 @@ class MobileHut(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://mobilehut.cl/collections/{}?page={}' \
+                url_webpage = 'https://mobilehut.cl/collections/{}?q=pg_:{}' \
                     .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product')
+                product_containers = soup.findAll('div', 'product-collection')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty cagtegory: ' + url_extension)
@@ -71,46 +71,28 @@ class MobileHut(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
-        response_text = session.get(url).text
-
-        variants_raw_data = re.search(
-            r'var meta = ([\S\s]+?);\n', response_text).groups()[0]
-        variants_data = json.loads(variants_raw_data)['product']['variants']
-
+        json_endpoint = url + '?view=get_json'
+        json_data = json.loads(session.get(json_endpoint).text)
         products = []
 
-        for variant in variants_data:
-            variant_id = variant['id']
-            sku = variant['sku']
-            color = variant['public_title']
+        for variant in json_data['variants']:
+            sku = str(variant['id'])
+            name = variant['name']
+            variant_url = '{}?variant={}'.format(url, sku)
+            price = Decimal(variant['price'] / 100)
 
-            variant_url = '{}?variant={}'.format(url, variant_id)
-            variant_url_source = session.get(variant_url).text
-            soup = BeautifulSoup(variant_url_source, 'html.parser')
-            name = '{} ({})'.format(soup.find('h1', 'product_title').text,
-                                    color)
+            if 'featured_media' in variant:
+                picture_urls = [variant['featured_media'][
+                                    'preview_image']['src']]
+            else:
+                picture_urls = ['https:' + x['src']
+                                for x in json_data['images']]
 
-            if soup.find('link', {'itemprop': 'availability'})['href'] == \
-                    'http://schema.org/InStock':
+            if variant['available']:
                 stock = -1
             else:
                 stock = 0
-
-            price_text = soup.find('span', {'itemprop': 'price'}).text\
-                .strip().replace('$', '').replace('.', '')
-
-            if price_text == '-':
-                continue
-
-            price = Decimal(price_text)
-            image_containers = soup.findAll('div', 'product-single__photo')
-            picture_urls = ['https:' + i['data-zoom']
-                            for i in image_containers]
-
-            description = html_to_markdown(
-                str(soup.find('div', {'itemprop': 'description'})))
 
             p = Product(
                 name,
@@ -124,9 +106,8 @@ class MobileHut(Store):
                 price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls,
-                description=description)
-
+                picture_urls=picture_urls
+            )
             products.append(p)
 
         return products

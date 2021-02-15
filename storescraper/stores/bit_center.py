@@ -55,6 +55,7 @@ class BitCenter(Store):
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('main', 'site-main'). \
                     find('ul', 'products')
+
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -84,15 +85,15 @@ class BitCenter(Store):
                 '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']
-        if json_container['offers'][0][
-             'availability'] == 'https://schema.org/OutOfStock':
+        if soup.find('p', 'stock').text == 'Agotado':
             stock = 0
         else:
-            stock = -1
+            stock = int(soup.find('p', 'stock').text.split()[0])
         normal_price = Decimal(
             int(json_container['offers'][0]['price']) * 1.038 // 1)
         offer_price = Decimal(json_container['offers'][0]['price'])
         picture_urls = [json_container['image']]
+
         p = Product(
             name,
             cls.__name__,
@@ -105,6 +106,6 @@ class BitCenter(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
         return [p]

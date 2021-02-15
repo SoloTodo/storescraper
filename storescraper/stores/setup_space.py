@@ -79,10 +79,8 @@ class SetupSpace(Store):
         sku = soup.find('span', 'sku_elem').text.strip()
         price = Decimal(
             remove_words(soup.find('span', {'id': 'product-form-price'}).text))
-        if not soup.find('span', 'product-form-stock'):
-            stock = 0
-        else:
-            stock = int(soup.find('span', 'product-form-stock').text)
+        stock = int(soup.find('input', {'id': 'input-qty'})['max'])
+
         if soup.find('div', 'owl-thumbs mt-2 mr-n2'):
             picture_urls = [tag['src'] for tag in
                             soup.find('div', 'owl-thumbs mt-2 mr-n2').findAll(
