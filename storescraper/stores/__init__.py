@@ -247,6 +247,7 @@ from .sears_mexico import SearsMexico
 from .sepuls import Sepuls
 from .setup_space import SetupSpace
 from .sevenwin import Sevenwin
+from .seven_gamer import SevenGamer
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
 from .sindelen import Sindelen
