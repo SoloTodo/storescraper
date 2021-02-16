@@ -71,7 +71,11 @@ class JeanfigPc(Store):
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-        normal_price = Decimal(remove_words(soup.find('p', 'price').text))
+        if soup.find('p', 'price').find('ins'):
+            normal_price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text))
+        else:
+            normal_price = Decimal(remove_words(soup.find('p', 'price').text))
         offer_price = Decimal(
             remove_words(soup.find('span', 'woocommerce-Price-amount').text))
         picture_urls = [tag['src'] for tag in soup.find(
