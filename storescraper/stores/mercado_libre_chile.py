@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class MercadoLibreChile(Store):
@@ -74,151 +74,223 @@ class MercadoLibreChile(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
-        products = []
 
         new_mode_data = re.search(
-            r'window.__PRELOADED_STATE__ = ([\S\s]+?);\n', page_source)
+            r'window.__PRELOADED_STATE__ =([\S\s]+?);\n', page_source)
 
         if new_mode_data:
             data = json.loads(new_mode_data.groups()[0])
-            seller = data['initialState']['components']['track'][
-                'analytics_event']['custom_dimensions'][
-                'customDimensions']['officialStore']
-            sku = data['initialState']['id']
-            base_name = data['initialState']['components'][
-                'short_description'][0]['title']
-            price = Decimal(data['initialState']['schema'][0][
-                                'offers']['price'])
-
-            picker = None
-            for x in data['initialState']['components']['short_description']:
-                if x['id'] == 'variations' and 'pickers' in x:
-                    if len(x['pickers']) == 1:
-                        picker = x['pickers'][0]
-                    else:
-                        # I'm not sure how to handle multiple pickers
-                        # https://articulo.mercadolibre.cl/MLC-547289939-
-                        # samartband-huawei-band-4-pro-_JM
-                        picker = None
-
-            if picker:
-                for variation in picker['products']:
-                    print(variation)
-                    color_name = variation['label']['text']
-                    name = '{} ({})'.format(base_name, color_name)
-                    color_id = variation['attribute_id']
-
-                    variation_url = 'https://articulo.mercadolibre.cl/' \
-                                    'noindex/variation/choose?itemId={}&' \
-                                    'attribute={}%7C{}' \
-                                    ''.format(sku,
-                                              urllib.parse.quote(picker['id']),
-                                              urllib.parse.quote(color_id))
-                    res = session.get(variation_url)
-                    key_match = re.search(r'variation=(\d+)', res.url)
-
-                    if key_match:
-                        key = key_match.groups()[0]
-                        variation_url = '{}?variation={}'.format(url, key)
-                    else:
-                        key = variation['id']
-
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        category,
-                        variation_url,
-                        url,
-                        key,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        sku=sku,
-                        seller=seller
-                    ))
+            if 'component_id' in data['initialState']['components'][
+                    'variations']:
+                return cls.retrieve_type2_products(session, url, soup,
+                                                   category, data)
             else:
-                picture_urls = [x['data-zoom'] for x in
-                                soup.findAll('img', 'ui-pdp-image')[1::2]
-                                if 'data-zoom' in x.attrs]
+                return cls.retrieve_type3_products(data, session, category)
+        else:
+            return cls.retrieve_type1_products(page_source, url, soup, category)
+
+    @classmethod
+    def retrieve_type3_products(cls, data, session, category):
+        variations = set()
+
+        for picker in data['initialState']['components']['variations'][
+                'pickers']:
+            for product in picker['products']:
+                variations.add(product['id'])
+
+        products = []
+
+        for variation in variations:
+            sku = variation
+            endpoint = 'https://www.mercadolibre.cl/p/api/products/' + \
+                       variation
+            variation_data = json.loads(session.get(endpoint).text)
+
+            if variation_data['schema'][0]['offers']['availability'] == \
+                    'https://schema.org/OutOfStock':
+                # No price information in this case, so skip it
+                continue
+
+            name = variation_data['components']['header']['title']
+            seller = variation_data['components']['seller']['title_value']
+            url = variation_data['components']['metadata']['url_canonical']
+            price = Decimal(variation_data['components']['price']['price']
+                            ['value'])
+            picture_template = variation_data['components']['gallery'][
+                'picture_config']['template']
+            picture_urls = []
+            for picture in variation_data['components']['gallery']['pictures']:
+                picture_urls.append(picture_template.format(id=picture['id']))
+
+            products.append(Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                seller=seller,
+                picture_urls=picture_urls,
+                description='Type3'
+            ))
+
+        return products
+
+    @classmethod
+    def retrieve_type2_products(cls, session, url, soup, category, data):
+        seller = data['initialState']['components']['track'][
+            'analytics_event']['custom_dimensions'][
+            'customDimensions']['officialStore']
+        sku = data['initialState']['id']
+        base_name = data['initialState']['components'][
+            'short_description'][0]['title']
+        price = Decimal(data['initialState']['schema'][0][
+                            'offers']['price'])
+
+        picker = None
+        for x in data['initialState']['components']['short_description']:
+            if x['id'] == 'variations' and 'pickers' in x:
+                if len(x['pickers']) == 1:
+                    picker = x['pickers'][0]
+                else:
+                    # I'm not sure how to handle multiple pickers
+                    # https://articulo.mercadolibre.cl/MLC-547289939-
+                    # samartband-huawei-band-4-pro-_JM
+                    picker = None
+
+        products = []
+
+        if picker:
+            for variation in picker['products']:
+                color_name = variation['label']['text']
+                name = '{} ({})'.format(base_name, color_name)
+                color_id = variation['attribute_id']
+
+                variation_url = 'https://articulo.mercadolibre.cl/' \
+                                'noindex/variation/choose?itemId={}&' \
+                                'attribute={}%7C{}' \
+                                ''.format(sku,
+                                          urllib.parse.quote(picker['id']),
+                                          urllib.parse.quote(color_id))
+                res = session.get(variation_url)
+                key_match = re.search(r'variation=(\d+)', res.url)
+
+                if key_match:
+                    key = key_match.groups()[0]
+                    variation_url = '{}?variation={}'.format(url, key)
+                else:
+                    key = variation['id']
+
                 products.append(Product(
-                    base_name,
+                    name,
                     cls.__name__,
                     category,
+                    variation_url,
                     url,
-                    url,
-                    sku,
+                    key,
                     -1,
                     price,
                     price,
                     'CLP',
                     sku=sku,
                     seller=seller,
-                    picture_urls=picture_urls
+                    description='Type2'
                 ))
         else:
-            name = soup.find('h1', 'item-title__primary ').text.strip()
-            seller_tag = soup.find('p', 'title')
-            seller = seller_tag.text.strip()
-            variations = re.search(r'meli.Variations\(({[\S\s]+?})\);',
-                                   page_source)
-            if variations:
-                variations_str = variations.groups()[0]
-                variations_data = demjson.decode(variations_str)['model']
+            picture_urls = [x['data-zoom'] for x in
+                            soup.findAll('img', 'ui-pdp-image')[1::2]
+                            if 'data-zoom' in x.attrs]
+            products.append(Product(
+                base_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                seller=seller,
+                picture_urls=picture_urls,
+                description='Type2'
+            ))
+        return products
 
-                for variation in variations_data:
-                    key = str(variation['id'])
-                    sku = soup.find('input', {'name': 'itemId'})['value']
-                    v_suffix = variation[
-                        'attribute_combinations'][0]['value_name']
-                    v_name = name + "({})".format(v_suffix)
-                    v_url = url.split('?')[0] + "?variation={}".format(key)
-                    price = Decimal(variation['price'])
-                    picture_url_base = 'https://mlc-s2-p.mlstatic.com/{}-F.jpg'
-                    picture_urls = [picture_url_base.format(p_id)
-                                    for p_id in variation['picture_ids']]
+    @classmethod
+    def retrieve_type1_products(cls, page_source, url, soup, category):
+        name = soup.find('h1', 'item-title__primary ').text.strip()
+        seller_tag = soup.find('p', 'title')
+        seller = seller_tag.text.strip()
+        variations = re.search(r'meli.Variations\(({[\S\s]+?})\);',
+                               page_source)
+        products = []
 
-                    products.append(Product(
-                        v_name,
-                        cls.__name__,
-                        category,
-                        v_url,
-                        url,
-                        key,
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        sku=sku,
-                        picture_urls=picture_urls,
-                        seller=seller
-                    ))
-            else:
-                pictures_tag = soup.find('div', 'gallery-content')
-                pictures_data = json.loads(
-                    html.unescape(pictures_tag['data-full-images']))
-                picture_urls = [e['src'] for e in pictures_data]
-                pricing_str = re.search(
-                    r'dataLayer = ([\S\s]+?);', page_source).groups()[0]
-                pricing_data = json.loads(pricing_str)[0]
-                sku = pricing_data['itemId']
-                price = Decimal(pricing_data['localItemPrice'])
+        if variations:
+            variations_str = variations.groups()[0]
+            variations_data = demjson.decode(variations_str)['model']
+
+            for variation in variations_data:
+                key = str(variation['id'])
+                sku = soup.find('input', {'name': 'itemId'})['value']
+                v_suffix = variation[
+                    'attribute_combinations'][0]['value_name']
+                v_name = name + "({})".format(v_suffix)
+                v_url = url.split('?')[0] + "?variation={}".format(key)
+                price = Decimal(variation['price'])
+                picture_url_base = 'https://mlc-s2-p.mlstatic.com/{}-F.jpg'
+                picture_urls = [picture_url_base.format(p_id)
+                                for p_id in variation['picture_ids']]
 
                 products.append(Product(
-                    name,
+                    v_name,
                     cls.__name__,
                     category,
+                    v_url,
                     url,
-                    url,
-                    sku,
+                    key,
                     -1,
                     price,
                     price,
                     'CLP',
                     sku=sku,
                     picture_urls=picture_urls,
-                    seller=seller
+                    seller=seller,
+                    description='Type1'
                 ))
+        else:
+            pictures_tag = soup.find('div', 'gallery-content')
+            pictures_data = json.loads(
+                html.unescape(pictures_tag['data-full-images']))
+            picture_urls = [e['src'] for e in pictures_data]
+            pricing_str = re.search(
+                r'dataLayer = ([\S\s]+?);', page_source).groups()[0]
+            pricing_data = json.loads(pricing_str)[0]
+            sku = pricing_data['itemId']
+            price = Decimal(pricing_data['localItemPrice'])
+
+            products.append(Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                seller=seller,
+                description='Type1'
+            ))
 
         return products
 
