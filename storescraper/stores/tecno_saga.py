@@ -42,7 +42,7 @@ class TecnoSaga(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['discos-duro-notebook-48-4', STORAGE_DRIVE],
+            ['discos-duro-interno-48-4', STORAGE_DRIVE],
             ['discos-duro-notebook-49-4', STORAGE_DRIVE],
             ['disco-duro-externo-50-4', EXTERNAL_STORAGE_DRIVE],
             ['unidad-de-estado-solido-ssd-51-4', SOLID_STATE_DRIVE],
@@ -77,6 +77,9 @@ class TecnoSaga(Store):
                 continue
             page = 1
             while True:
+                if page > 10:
+                    raise Exception('Page overflow: ' + url_extension)
+
                 url_webpage = 'https://tecnosaga.cl/productos/listadoajax'
                 categories = url_extension.split('-')
                 body = {'mostrar': 16, 'id_categoria': categories[-1],
