@@ -267,6 +267,7 @@ from .supermex_digital import SupermexDigital
 from .syd import Syd
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
+from .tecno_saga import TecnoSaga
 from .tekstore import Tekstore
 from .terabyte import Terabyte
 from .tecno_master import TecnoMaster
