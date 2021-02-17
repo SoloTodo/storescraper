@@ -35,7 +35,19 @@ class MercadoLibreSamsung(MercadoLibreChile):
         products = super().products_for_url(
             url, category=category, extra_args=extra_args)
 
-        for product in products:
-            product.seller = None
+        filtered_products = []
 
-        return products
+        for product in products:
+            assert product.seller
+
+            # For some reason other SKUs may get mingled with official stores,
+            # so skip those
+            if 'SAMSUNG' in product.seller.upper():
+                product.seller = None
+                filtered_products.append(product)
+            else:
+                import ipdb
+                ipdb.set_trace()
+                a = 5
+
+        return filtered_products

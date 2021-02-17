@@ -1,4 +1,5 @@
 import json
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -24,6 +25,7 @@ class Syd(Store):
         url_base = 'https://syd.cl'
 
         category_paths = [
+            ['/collection/macbook-pro-13-m1-de-apple', 'Notebook'],
             ['/collection/macbook-pro-13', 'Notebook'],
             ['/collection/macbook-pro-16', 'Notebook'],
             ['/collection/macbook-air', 'Notebook'],
@@ -49,7 +51,8 @@ class Syd(Store):
             titles = soup.findAll('div', 'bs-product')
 
             if not titles:
-                raise Exception('Empty category: ' + category_url)
+                logging.warning('Empty category: ' + category_url)
+                continue
 
             for title in titles:
                 product_link = title.find('a')

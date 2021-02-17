@@ -105,7 +105,9 @@ class HardGaming(Store):
                 name = '{} ({})'.format(base_name, values)
                 sku = str(variant['variant']['id'])
 
-                if variant['variant']['stock']:
+                if 'PREVENTA' in base_name.upper():
+                    stock = 0
+                elif variant['variant']['stock']:
                     stock = -1
                 else:
                     stock = 0
@@ -136,7 +138,10 @@ class HardGaming(Store):
                 .find('div',
                       'form-group product-stock product-out-stock text-center '
                       'hidden')
-            if not stock_container:
+
+            if 'PREVENTA' in base_name.upper():
+                stock = 0
+            elif not stock_container:
                 stock = 0
             else:
                 stock = -1
