@@ -1,5 +1,7 @@
 import json
 import logging
+import re
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
@@ -98,24 +100,25 @@ class TecnoSaga(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('h4', 'product_title').text
-        sku = soup.find('div', 'cart_btn').find('button', 'btn')['onclick'].split('(')[1].replace(')', '')
+        sku_container = soup.find('div', 'cart_btn').find('button',
+                                                          'btn')['onclick']
+        sku = re.search(r'agregar_producto\((\d+)\)', sku_container).groups()[
+            0]
         stock = 0
-        for products_stock in soup.find('div', 'pr_detail').findAll('div', 'col-lg-3'):
+        for products_stock in soup.find('div', 'pr_detail'). \
+                findAll('div', 'col-lg-3'):
             if products_stock.text.strip().split()[-1].isnumeric():
-                stock += products_stock[-1]
+                stock += int(products_stock.text.strip().split()[-1])
 
-        normal_price = \
-            soup.find('ul',
-                      'product-meta producto-tarjeta').text.strip().split()[
-                1]
-        offer_price = \
-            soup.find('ul',
-                      'product-meta producto-normal').text.strip().split()[1]
+        normal_price = Decimal(soup.find('ul', 'product-meta producto-tarjeta')
+                               .text.strip().split()[1].replace('.', ''))
+        offer_price = Decimal(soup.find('ul', 'product-meta producto-normal')
+                              .text.strip().split()[1].replace('.', ''))
+        if normal_price < offer_price:
+            offer_price = normal_price
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'row mt-3').findAll('img')]
+                        soup.find('div', 'col-lg-6').findAll('img')]
         p = Product(
             name,
             cls.__name__,
