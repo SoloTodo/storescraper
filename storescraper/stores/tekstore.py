@@ -1,11 +1,9 @@
+import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
-
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
-
-import json
 
 
 class Tekstore(Store):
@@ -20,7 +18,7 @@ class Tekstore(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
+        url_extensions = [
             ('smartphones', 'Cell'),
             ('tablets', 'Tablet'),
             ('accesorios', 'Headphones')
@@ -32,34 +30,34 @@ class Tekstore(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
 
-        for category_path, local_category in category_filters:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
             done = False
-
             while not done:
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url = 'https://tekstore.cl/{}?p={}'.format(category_path, page)
-                response = session.get(url)
-
-                if response.status_code == 500:
+                url_webpage = 'https://tekstore.cl/collections/{}?p={}'.format(
+                    url_extension, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('div',
+                                                  'grid-product__wrapper')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
                     break
-
-                soup = BeautifulSoup(response.text, 'html.parser')
-
-                for container in soup.findAll('div', 'product-item-info'):
-                    product_url = container.find(
-                        'a', 'product-item-photo')['href']
-
-                    if product_url in product_urls:
+                for container in product_containers:
+                    if container.find('div', 'grid-product__sold-out'):
+                        continue
+                    product_url = container.find('a', 'grid-product__meta')[
+                        'href']
+                    if 'https://tekstore.cl' + product_url in product_urls:
                         done = True
                         break
-
-                    product_urls.append(product_url)
+                    product_urls.append('https://tekstore.cl' + product_url)
                 page += 1
 
         return product_urls
@@ -73,98 +71,29 @@ class Tekstore(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 
         response = session.get(url)
-
         if response.status_code == 404:
             return []
-
         data = response.text
         soup = BeautifulSoup(data, 'html.parser')
+        name = soup.find('h1', "product-single__title").text.strip()
+        sku = soup.find('option')['value']
+        stock = -1
+        price = Decimal(soup.find('span', {'id': 'ProductPrice'})['content'])
+        picture_urls = ['http:' + tag.find('img')['src'] for tag in
+                        soup.findAll('li', 'grid__item')]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls
+        )
 
-        name = soup.find('span', "base").text.strip()
-        available = soup.find('div', 'stock available')
-        stock = -1 if available else 0
-        price = Decimal(soup.find(
-            'span', 'price-final_price').find('span', 'price')
-                        .text.replace('$', '').replace('.', '').split(',')[0])
-
-        products = []
-
-        json_containers = soup.findAll(
-            "script", {"type": "text/x-magento-init"})
-
-        reference_part_number = soup.find('div', 'product-add-form').find(
-            'form')['data-product-sku']
-
-        for json_container in json_containers:
-            if "spConfig" in json_container.text:
-                products = []
-                product_info = json.loads(json_container.text)[
-                    '#product_addtocart_form']['configurable']['spConfig']
-
-                key = list(product_info['attributes'])[0]
-                variant_ids_containers = product_info[
-                    'attributes'][key]['options']
-
-                for variant_id_container in variant_ids_containers:
-                    variant_id = variant_id_container['products'][0]
-                    variant_label = variant_id_container['label']
-                    variant_images = product_info['images'][variant_id]
-                    picture_urls = []
-                    for image_container in variant_images:
-                        picture_urls.append(image_container['full'])
-
-                    description = \
-                        'SOLO COMO REFERENCIA, PROBABLEMENTE CORRESPONDE A ' \
-                        'LA VARIANTE DE OTRO COLOR: {}'.format(
-                            reference_part_number)
-
-                    products.append(
-                        Product(
-                            '{} - {}'.format(name, variant_label),
-                            cls.__name__,
-                            category,
-                            url,
-                            url,
-                            variant_id,
-                            stock,
-                            price,
-                            price,
-                            'CLP',
-                            sku=variant_id,
-                            picture_urls=picture_urls,
-                            description=description
-                        )
-                    )
-
-                return products
-            if "Magento_Catalog/js/product/view/provider" \
-                    in json_container.text:
-                product_info = json.loads(json_container.text)
-                product_id = soup.find('div', 'product-add-form').find(
-                    'input', {'name': 'product'})['value']
-                product_images = product_info['*'][
-                    'Magento_Catalog/js/product/view/provider']['data'][
-                    'items'][product_id]['images']
-                picture_urls = []
-                for image_container in product_images:
-                    picture_urls.append(image_container['url'])
-
-                products.append(
-                    Product(
-                        '{} ({})'.format(name, reference_part_number),
-                        cls.__name__,
-                        category,
-                        url,
-                        url,
-                        product_id,
-                        stock,
-                        price,
-                        price,
-                        'CLP',
-                        sku=product_id,
-                        part_number=reference_part_number,
-                        picture_urls=picture_urls
-                    )
-                )
-
-        return products
+        return [p]
