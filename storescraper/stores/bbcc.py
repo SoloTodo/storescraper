@@ -1,6 +1,7 @@
 import html
 import json
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -96,29 +97,60 @@ class BookComputer(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_info = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-        name = json_info['sku']+' - '+html.unescape(json_info['name'])
-        sku = soup.find('form', 'product-form form-horizontal')[
-            'action'].split('/')[-1]
-        if json_info['offers']['availability'] == "http://schema.org/InStock":
-            stock = int(soup.find('span', 'product-form-stock').text)
+        if soup.find('select', 'form-control'):
+            products = []
+            variations = json.loads(
+                re.search(r"var productInfo = (.*);", response.text).groups()[
+                    0])
+            for product in variations:
+                name = soup.find('h1', 'product-form_title page-title').text
+                sku = str(product['values'][0]['value']['id'])
+                price = Decimal(product['variant']['price'])
+                stock = product['variant']['stock']
+                picture_urls = [tag['src'] for tag in
+                                soup.find('div', 'product-images').findAll(
+                                    'img')]
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
         else:
-            stock = 0
-        price = Decimal(json_info['offers']['price'])
-        picture_urls = [json_info['image'].split('?')[0]]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+            json_info = json.loads(
+                soup.find('script', {'type': 'application/ld+json'}).text)
+            name = json_info['sku'] + ' - ' + html.unescape(json_info['name'])
+            sku = soup.find('form', 'product-form form-horizontal')[
+                'action'].split('/')[-1]
+            if json_info['offers'][
+                    'availability'] == "http://schema.org/InStock":
+                stock = int(soup.find('span', 'product-form-stock').text)
+            else:
+                stock = 0
+            price = Decimal(json_info['offers']['price'])
+            picture_urls = [json_info['image'].split('?')[0]]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
