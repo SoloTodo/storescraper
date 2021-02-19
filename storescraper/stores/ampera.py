@@ -80,33 +80,64 @@ class Ampera(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        # import ipdb
+        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
-        sku = str(json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)['sku'])
-        if soup.find('p', 'stock').text == 'Agotado':
-            stock = 0
+        if soup.find('form', 'variations_form'):
+            products = []
+            variations = json.loads(soup.find('form', 'variations_form')[
+                                        'data-product_variations'])
+            for product in variations:
+                variation_name = name + ' - ' + product['attributes'][
+                    'attribute_pa_color']
+                sku = str(product['variation_id'])
+                stock = product['max_qty']
+                price = Decimal(product['display_price'])
+                picture_urls = [product['image']['url']]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
         else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [
-            soup.find('div', 'woocommerce-product-gallery__image').find('img')[
-                'src']]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+            sku = str(json.loads(
+                soup.find('script', {'type': 'application/ld+json'})
+                    .text)['sku'])
+            if soup.find('p', 'stock').text == 'Agotado':
+                stock = 0
+            else:
+                stock = int(soup.find('p', 'stock').text.split()[0])
+            if soup.find('p', 'price').find('ins'):
+                price = Decimal(
+                    remove_words(soup.find('p', 'price').find('ins').text))
+            else:
+                price = Decimal(remove_words(soup.find('p', 'price').text))
+            picture_urls = [
+                soup.find('div', 'woocommerce-product-gallery__image')
+                    .find('img')['src']]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
