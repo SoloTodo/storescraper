@@ -63,16 +63,17 @@ class VentasAlbion(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_info = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-        name = json_info['name']
-        sku = str(json_info['sku'])
+        name = soup.find('h1', 'product_title').text
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         stock = -1
-        price = Decimal(json_info['offers'][0]['price'])
-        if 'image' in json_info:
-            picture_urls = [json_info['image']]
-        else:
-            picture_urls = []
+        price = Decimal(
+            soup.find('p', 'price').text.replace(u'USD\xa0', '').replace('.',
+                                                                         ''))
+        picture_urls = [tag['src'] for tag in soup.find('div',
+                                                        'woocommerce-product'
+                                                        '-gallery').findAll(
+            'img')]
+
         p = Product(
             name,
             cls.__name__,
