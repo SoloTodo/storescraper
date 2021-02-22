@@ -79,7 +79,8 @@ class Notetop(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = json.loads(
-            soup.find('script', {'id': 'product-ld-json-data'}).text)
+            soup.find('script', {'id': 'product-ld-json-data'}).text,
+            strict=False)
         name = product_container['name']
         sku = product_container['productID']
         if product_container['offers']['availability'] == 'http://schema.org' \
