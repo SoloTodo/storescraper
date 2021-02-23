@@ -278,7 +278,6 @@ class Paris(Store):
                     })
 
                 page += 1
-                break
 
         return product_entries
 
