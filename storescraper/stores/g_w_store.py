@@ -87,11 +87,12 @@ class GWStore(Store):
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
 
         stock_container = soup.find('p', 'stock')
-        if stock_container:
-            stock = 0 if 'Agotado' in stock_container.text else int(
-                stock_container.contents[1].split()[0])
-        else:
+        if stock_container and 'Agotado' in stock_container.text:
+            stock = 0
+        elif stock_container and 'In stock' in stock_container.text:
             stock = -1
+        else:
+            stock = int(stock_container.contents[1].split()[0])
         price = Decimal(remove_words(soup.find(
             'span', 'woocommerce-Price-amount').find('bdi').contents[1]))
         picture_urls = [tag['src'] for tag in
