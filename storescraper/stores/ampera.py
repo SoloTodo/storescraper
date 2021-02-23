@@ -73,6 +73,7 @@ class Ampera(Store):
                 for container in product_containers:
                     product_url = container.find('a', 'woocommerce-Loop'
                                                       'Product-link')['href']
+                    product_url = product_url.replace('/producto/', '/tienda/')
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -82,9 +83,15 @@ class Ampera(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        
+        if response.url != url:
+            print(response.url)
+            print(url)
+            return []
+
+        print('pass')
+        
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
         if soup.find('form', 'variations_form'):
             products = []
