@@ -30,7 +30,7 @@ class CentralGamer(Store):
         url_extensions = [
             ['placas-madre-pc', MOTHERBOARD],
             ['gabinetes-gamer', COMPUTER_CASE],
-            ['gigabyte-aorus-cooler-refrigeracion-cpu-1', CPU_COOLER],
+            ['cooler-refrigeracion-cpu', CPU_COOLER],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['monitores-gamers', MONITOR],
             ['audifonos-gamer', HEADPHONES],
