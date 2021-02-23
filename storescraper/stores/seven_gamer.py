@@ -79,7 +79,9 @@ class SevenGamer(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        # Append a parameter because the site tends to cache aggresively and
+        # keep products "in stock" even if they are actually not available
+        response = session.get(url + '?v=2')
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('a', 'add-to-compare-link')['data-product_id']
