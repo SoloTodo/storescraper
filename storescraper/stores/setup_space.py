@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, MONITOR, MOTHERBOARD, PROCESSOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD, STORAGE_DRIVE, NOTEBOOK, WEARABLE, KEYBOARD
+    SOLID_STATE_DRIVE, VIDEO_CARD, STORAGE_DRIVE, NOTEBOOK, WEARABLE, KEYBOARD, \
+    COMPUTER_CASE
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -24,6 +25,7 @@ class SetupSpace(Store):
             STORAGE_DRIVE,
             WEARABLE,
             KEYBOARD,
+            COMPUTER_CASE,
         ]
 
     @classmethod
@@ -41,6 +43,7 @@ class SetupSpace(Store):
             ['notebooks', NOTEBOOK],
             ['apple-watch-1', WEARABLE],
             ['apple-watch', KEYBOARD],
+            ['gabinetes', COMPUTER_CASE],
         ]
 
         session = session_with_proxy(extra_args)
