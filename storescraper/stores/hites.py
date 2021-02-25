@@ -357,7 +357,8 @@ class Hites(Store):
         images = soup.find('div', 'primary-images')\
             .findAll('div', 'carousel-item')
 
-        picture_urls = [i.find('img')['src'] for i in images]
+        picture_urls = [i.find('img')['src'].replace(' ', '%20')
+                        for i in images]
 
         p = Product(
             name,
