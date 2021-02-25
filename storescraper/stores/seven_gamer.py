@@ -91,7 +91,11 @@ class SevenGamer(Store):
             stock = -1
         if soup.find('p', 'price').text == '':
             return []
-        price = Decimal(remove_words(soup.find('p', 'price').text))
+        if soup.find('p', 'price').find('ins'):
+            price = Decimal(remove_words(soup.find('p', 'price').find('ins')
+                                         .text))
+        else:
+            price = Decimal(remove_words(soup.find('p', 'price').text))
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'product-images-wrapper').findAll(
                             'img')]
