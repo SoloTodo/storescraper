@@ -27,14 +27,13 @@ class PcNexus(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computadores/gamer', COMPUTER_CASE],
-            ['componentes/gabinetes-gamer', COMPUTER_CASE],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['componentes/placas-madre', MOTHERBOARD],
             ['componentes/memorias-ram', RAM],
             ['componentes/discos-duros', STORAGE_DRIVE],
             ['componentes/ssd', SOLID_STATE_DRIVE],
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes/gabinetes-gamer', COMPUTER_CASE],
             ['audio', HEADPHONES]
         ]
 
@@ -52,8 +51,8 @@ class PcNexus(Store):
                               '/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('a',
-                                                  'woocommerce-LoopProduct-link')
+                product_containers = soup.findAll(
+                    'a', 'woocommerce-LoopProduct-link')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -77,10 +76,8 @@ class PcNexus(Store):
         else:
             stock = 0
         price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
