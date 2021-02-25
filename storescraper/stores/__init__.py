@@ -4,6 +4,7 @@ from .agencias_way_online import AgenciasWayOnline
 from .aire_center import AireCenter
 from .al_kosto import AlKosto
 from .alfaomega import Alfaomega
+from .allink_gamer import AllinkGamer
 from .all_gamers_chile import AllGamersChile
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
