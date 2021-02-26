@@ -4,9 +4,9 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, USB_FLASH_DRIVE, POWER_SUPPLY, RAM, \
-    MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, TELEVISION, \
-    MONITOR, PRINTER, UPS, MOUSE
+    EXTERNAL_STORAGE_DRIVE,  USB_FLASH_DRIVE, POWER_SUPPLY, RAM, \
+    MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, \
+    MONITOR, PRINTER, UPS, MOUSE, COMPUTER_CASE, HEADPHONES, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,7 +18,6 @@ class Centrale(Store):
         return [
             EXTERNAL_STORAGE_DRIVE,
             SOLID_STATE_DRIVE,
-            MEMORY_CARD,
             USB_FLASH_DRIVE,
             POWER_SUPPLY,
             RAM,
@@ -27,39 +26,40 @@ class Centrale(Store):
             VIDEO_CARD,
             NOTEBOOK,
             TABLET,
-            TELEVISION,
             MONITOR,
             PRINTER,
             UPS,
-            MOUSE
+            MOUSE,
+            COMPUTER_CASE,
+            HEADPHONES,
+            STEREO_SYSTEM
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnologia/almacenamiento-externo/disco-externo',
+            ['tecnologia/computación/almacenamiento-externo',
              EXTERNAL_STORAGE_DRIVE],
-            ['tecnologia/partes-y-piezas/discos-duros',
+            ['tecnologia/partes-y-piezas/almacenamiento',
              SOLID_STATE_DRIVE],
-            ['tecnologia/almacenamiento-externo/tarjetas-de-memoria',
-             MEMORY_CARD],
-            ['tecnologia/almacenamiento-externo/pendrives', USB_FLASH_DRIVE],
-            ['computacion/componentes-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['computacion/componentes-pc/memorias-ram', RAM],
+            ['tecnologia/partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
+            ['tecnologia/partes-y-piezas/memorias-ram', RAM],
             ['tecnologia/partes-y-piezas/placas-madres', MOTHERBOARD],
             ['tecnologia/partes-y-piezas/procesadores-pc', PROCESSOR],
-            ['computacion/componentes-pc/tarjetas-de-video', VIDEO_CARD],
-            ['tecnologia/computacion/notebooks', NOTEBOOK],
-            ['computacion/computadores/tablets', TABLET],
-            ['computacion/monitor-tv-y-proyectores/televisores', TELEVISION],
+            ['tecnologia/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+            ['tecnologia/computación/notebooks', NOTEBOOK],
+            ['tecnologia/computación/tablets/', TABLET],
             ['tecnologia/monitores-proyectores-y-audio/monitores', MONITOR],
-            ['tecnologia/impresion-y-oficina/impresoras-laser', PRINTER],
-            ['tecnologia/impresion-y-oficina/multifuncionales-laser', PRINTER],
-            ['tecnologia/impresion-y-oficina/multifuncionales-tinta', PRINTER],
-            ['tecnologia/impresion-y-oficina/plotters', PRINTER],
-            ['tecnologia/impresion-y-oficina/impresoras-tinta', PRINTER],
+            ['tecnologia/impresión-y-oficina/impresoras-laser', PRINTER],
+            ['tecnologia/impresión-y-oficina/impresoras-tinta', PRINTER],
+            ['tecnologia/impresión-y-oficina/multifuncionales-laser', PRINTER],
+            ['tecnologia/impresión-y-oficina/multifuncionales-tinta', PRINTER],
+            ['tecnologia/impresión-y-oficina/plotters', PRINTER],
             ['tecnologia/computacion/ups-y-reguladores', UPS],
-            ['tecnologia/computacion/teclados-y-mouses', MOUSE],
+            ['tecnologia/computación/teclados-y-mouses', MOUSE],
+            ['tecnologia/partes-y-piezas/gabinetes-desktop', COMPUTER_CASE],
+            ['tecnologia/partes-y-piezas/tarjetas-de-video', HEADPHONES],
+            ['tecnologia/partes-y-piezas/tarjetas-de-video', STEREO_SYSTEM]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
