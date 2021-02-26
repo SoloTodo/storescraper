@@ -20,6 +20,7 @@ class SipoOnline(Store):
         return [
             STEREO_SYSTEM,
             MEMORY_CARD,
+            PROCESSOR,
             USB_FLASH_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
             STORAGE_DRIVE,
@@ -35,6 +36,7 @@ class SipoOnline(Store):
             CPU_COOLER,
             MOTHERBOARD,
             VIDEO_CARD,
+            POWER_SUPPLY,
         ]
 
     @classmethod
