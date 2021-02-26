@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
     KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
-    GAMING_CHAIR
+    GAMING_CHAIR, CPU_COOLER, MOTHERBOARD, VIDEO_CARD, PROCESSOR, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -31,34 +31,40 @@ class SipoOnline(Store):
             COMPUTER_CASE,
             MONITOR,
             WEARABLE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            CPU_COOLER,
+            MOTHERBOARD,
+            VIDEO_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes-pc/disipadores-cooler', CPU_COOLER],
+            ['componentes-pc/placa_madres', MOTHERBOARD],
+            ['componentes-pc/tarjeta_de_video', VIDEO_CARD],
+            ['componentes-pc/procesadores', PROCESSOR],
+            ['componentes-pc/fuente_poder', POWER_SUPPLY],
+            ['componentes-pc/monitores', MONITOR],
+            ['componentes-pc/gabinetes', COMPUTER_CASE],
+            ['componentes-pc/memoria-ram', RAM],
             ['parlante-musica', STEREO_SYSTEM],
             ['almacenamiento/memorias', MEMORY_CARD],
             ['almacenamiento/pendrives', USB_FLASH_DRIVE],
             ['almacenamiento/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento/disco-duro-interno', STORAGE_DRIVE],
-            ['almacenamiento/memoria-ram', RAM],
+            ['audifonos', HEADPHONES],
+            ['computacion/parlantes-pc', STEREO_SYSTEM],
             ['computacion/audifono-pc', HEADPHONES],
-            # Gamer Headphones
-            ['zona-gamer/audifono-gamer', HEADPHONES],
             ['computacion/teclado', KEYBOARD],
-            # Gamer Keyboard
-            ['zona-gamer/teclado-gamer', KEYBOARD],
             ['computacion/mouse', MOUSE],
-            # Gamer Mouse
-            ['zona-gamer/mouse-gamer', MOUSE],
             ['computacion/combo-computacion', KEYBOARD_MOUSE_COMBO],
-            # Gamer Combo
+            ['zona-gamer/silla-gamer', GAMING_CHAIR],
+            ['zona-gamer/audifono-gamer', HEADPHONES],
+            ['zona-gamer/teclado-gamer', KEYBOARD],
+            ['zona-gamer/mouse-gamer', MOUSE],
             ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
-            ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-pc/monitores', MONITOR],
             ['smartwatch', WEARABLE],
-            ['zona-gamer/silla-gamer', GAMING_CHAIR]
         ]
 
         session = session_with_proxy(extra_args)
