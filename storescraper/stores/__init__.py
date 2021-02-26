@@ -311,6 +311,7 @@ from .wom import Wom
 from .xenex import Xenex
 from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
+from .you_tech import YouTech
 from .yoytec import Yoytec
 from .zegucom import Zegucom
 from .zmart import Zmart
