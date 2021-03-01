@@ -59,6 +59,7 @@ class CCLink(Store):
             ['partes-y-piezas/componentes/mouse', MOUSE],
             ['partes-y-piezas/componentes/teclado', KEYBOARD],
             ['partes-y-piezas/componentes/ventiladores', CPU_COOLER],
+            ['partes-y-piezas/componentes/cooler-cpu', CPU_COOLER],
             ['partes-y-piezas/tv-y-proyeccion/televisores', TELEVISION],
             ['partes-y-piezas/tv-y-proyeccion/monitores', MONITOR],
             ['partes-y-piezas/memorias/flash', MEMORY_CARD],
