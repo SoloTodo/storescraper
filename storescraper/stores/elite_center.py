@@ -46,7 +46,7 @@ class EliteCenter(Store):
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
             ['componentes-pc/memorias-ram/', RAM],
             ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
-            ['componentes-pc/disipadores', CPU_COOLER],
+            ['componentes-pc/refrigeracion', CPU_COOLER],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['accesorios-gamer/audifonos', HEADPHONES],
             ['accesorios-gamer/teclados', KEYBOARD],
