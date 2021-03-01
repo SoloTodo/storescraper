@@ -19,6 +19,7 @@ from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
 from .bip import Bip
 from .bit_center import BitCenter
+from .bgod_gaming import BgodGaming
 from .bristol import Bristol
 from .bulldog_pc import BulldogPc
 from .byp import Byp
