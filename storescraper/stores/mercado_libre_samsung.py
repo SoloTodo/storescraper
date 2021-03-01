@@ -1,4 +1,7 @@
 from .mercado_libre_chile import MercadoLibreChile
+from storescraper.categories import STEREO_SYSTEM, TELEVISION, CELL_ACCESORY, \
+    CELL, WEARABLE, VACUUM_CLEANER, REFRIGERATOR, AIR_CONDITIONER, STOVE, OVEN, \
+    WASHING_MACHINE, TABLET
 
 
 class MercadoLibreSamsung(MercadoLibreChile):
@@ -7,23 +10,27 @@ class MercadoLibreSamsung(MercadoLibreChile):
     @classmethod
     def _category_paths(cls):
         return {'_Tienda_samsung': [
-            ('electrodomesticos/pequenos', 'VacuumCleaner'),
-            ('electrodomesticos/refrigeracion', 'Refrigerator'),
-            ('lavado', 'WashingMachine'),
-            ('electrodomesticos/climatizacion', 'AirConditioner'),
-            ('electrodomesticos/hornos-cocinas', 'Oven'),
-            ('celulares-telefonia/celulares', 'Cell'),
-            ('celulares-telefonia/accesorios-celulares', 'CellAccesory'),
-            ('smartwatches-accesorios', 'Wearable'),
-            ('audio', 'Headphones'),
-            ('electronica/televisores', 'Television'),
-            ('accesorios-tv', 'CellAccesory'),
-            ('relojes-joyas', 'Wearable'),
-            ('computacion', 'Tablet'),
-            ('instrumentos', 'StereoSystem'),
-            # Invalid as of 2020-10-20
-            ('repuestos-accesorios', 'CellAccesory'),
-            ('accesorios-audio-video', 'CellAccesory'),
+            ('audio', STEREO_SYSTEM),
+            ('electronica/televisores', TELEVISION),
+            ('accesorios-tv', CELL_ACCESORY),
+            ('celulares-telefonia/accesorios-celulares', CELL_ACCESORY),
+            ('celulares-telefonia/celulares', CELL),
+            ('smartwatches-accesorios', WEARABLE),
+            ('handies-radiofrecuencia', STEREO_SYSTEM),
+            ('electrodomesticos/pequenos', VACUUM_CLEANER),
+            ('electrodomesticos/refrigeracion', REFRIGERATOR),
+            ('electrodomesticos/climatizacion/aires-acondicionados',
+             AIR_CONDITIONER),
+            ('climatizacion-repuestos-accesorios', CELL_ACCESORY),
+            ('electrodomesticos/hornos-cocinas/encimeras', STOVE),
+            ('electrodomesticos/hornos-cocinas/microondas', OVEN),
+            ('electrodomesticos/hornos-cocinas/extractores-purificadores',
+             CELL_ACCESORY),
+            ('lavado', WASHING_MACHINE),
+            ('computacion/tablets', TABLET),
+            ('computacion/tablets/accesorios', CELL_ACCESORY),
+            ('salud-equipamiento-medico', AIR_CONDITIONER),
+            ('fotografia', CELL_ACCESORY),
         ]}
 
     @classmethod
