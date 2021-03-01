@@ -1,4 +1,3 @@
-
 import logging
 
 from bs4 import BeautifulSoup
@@ -69,23 +68,34 @@ class Globalbox(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
+
+            local_product_urls = []
+            done = False
             page = 1
             while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://globalbox.cl/{}?p={}'.format(
                     url_extension, page)
-                data = session.get(url_webpage,verify=False).text
+
+                if page > 10:
+                    raise Exception('page overflow: ' + url_webpage)
+
+                data = session.get(url_webpage, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
-                import ipdb
-                ipdb.set_trace()
-                product_containers = soup.findAll('li','item isotope-item')
+                product_containers = soup.findAll('li', 'item isotope-item')
                 if not product_containers:
                     if page == 1:
-                        logging.warning('Empty cageory: ' + url_extension)
+                        logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+                    if product_url in local_product_urls:
+                        done = True
+                        break
+                    local_product_urls.append(product_url)
+
+                if done:
+                    product_urls.extend(local_product_urls)
+                    break
+
                 page += 1
         return product_urls
