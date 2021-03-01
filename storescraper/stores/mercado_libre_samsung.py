@@ -45,9 +45,5 @@ class MercadoLibreSamsung(MercadoLibreChile):
             if 'SAMSUNG' in product.seller.upper():
                 product.seller = None
                 filtered_products.append(product)
-            else:
-                import ipdb
-                ipdb.set_trace()
-                a = 5
 
         return filtered_products
