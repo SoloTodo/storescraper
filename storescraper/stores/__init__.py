@@ -99,6 +99,7 @@ from .gaming_store import GamingStore
 from .gearbest import GearBest
 from .geant import Geant
 from .generacion_gamers import GeneracionGamers
+from .global_box import Globalbox
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
 from .gollo_tienda import GolloTienda
