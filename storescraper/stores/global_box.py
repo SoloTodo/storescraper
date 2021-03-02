@@ -112,13 +112,16 @@ class Globalbox(Store):
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('th', text='SKU').next.next.next.text
-        part_number = soup.find('th', text='Part Number').next.next.next.text
+        sku = soup.find('th', text='SKU').next.next.next.text.strip()
+        part_number = soup.find('th', text='Part Number').next.next.next\
+            .text.strip()
+
         if soup.find('link', {'itemprop': 'availability'})[
              'href'] == 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
+
         price = Decimal(
             remove_words(soup.find('span', 'regular-price').text.strip()))
         picture_urls = [tag['src'] for tag in
