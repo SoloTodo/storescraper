@@ -88,6 +88,10 @@ class Yoytec(Store):
             if 'Agotado' in stock_cell.text:
                 continue
 
+            if stock_cell.text == '10+':
+                stock = -1
+                break
+
             stock += int(stock_cell.text.split()[0])
 
         price = Decimal(soup.find('span', 'productSpecialPrice').text
