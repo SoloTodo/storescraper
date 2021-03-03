@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, PROCESSOR, RAM, MOTHERBOARD, KEYBOARD, MOUSE, \
     KEYBOARD_MOUSE_COMBO, HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, \
-    VIDEO_CARD, CPU_COOLER
+    VIDEO_CARD, CPU_COOLER, MONITOR, GAMING_CHAIR, POWER_SUPPLY
 from storescraper.product import Product
 
 from storescraper.store import Store
@@ -30,7 +30,10 @@ class MHWStore(Store):
             STEREO_SYSTEM,
             COMPUTER_CASE,
             VIDEO_CARD,
-            CPU_COOLER
+            CPU_COOLER,
+            MONITOR,
+            GAMING_CHAIR,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -47,9 +50,12 @@ class MHWStore(Store):
             ['17-combos-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
             ['19-auriculares', HEADPHONES],
             ['20-parlantes', STEREO_SYSTEM],
+            ['46-sillas-gamer', GAMING_CHAIR],
             ['24-gabinetes', COMPUTER_CASE],
             ['36-tarjetas-de-video', VIDEO_CARD],
-            ['39-cooler-cpu', CPU_COOLER]
+            ['39-cooler-cpu', CPU_COOLER],
+            ['44-fuentes-de-poder', POWER_SUPPLY],
+            ['47-monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
