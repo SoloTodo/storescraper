@@ -35,24 +35,25 @@ class PcMasterGames(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['mouse', MOUSE],
+            ['teclados', KEYBOARD],
+            ['audio', HEADPHONES],
+            ['celulares', CELL],
             ['am4', MOTHERBOARD],
-            ['placas-madres-intel', MOTHERBOARD],
-            ['sam4', MOTHERBOARD],
-            ['discos-ssd', SOLID_STATE_DRIVE],
-            ['equipos', NOTEBOOK],
-            ['memorias', RAM],
             ['disco-duro', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
+            ['memoria-ram', RAM],
+            ['placas-madres-intel', MOTHERBOARD],
             ['procesadores-amd', PROCESSOR],
             ['procesadores-intel', PROCESSOR],
+            ['sam4', MOTHERBOARD],
             ['monitores', MONITOR],
+            ['discos-ssd', SOLID_STATE_DRIVE],
+            ['equipos', NOTEBOOK],
+            ['memorias', RAM],
             ['sillas-gamer', GAMING_CHAIR],
             ['smartwatch', WEARABLE],
-            ['celulares', CELL],
-            ['audio', HEADPHONES],
-            ['mouse', MOUSE],
-            ['teclados', KEYBOARD]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -73,9 +74,8 @@ class PcMasterGames(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('div',
-                                                            'product-grid-'
-                                                            'item'):
+                for container in product_containers.findAll(
+                        'div', 'product-grid-item'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -101,11 +101,8 @@ class PcMasterGames(Store):
             price = Decimal(remove_words(soup.find('p').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p').text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
@@ -121,4 +118,5 @@ class PcMasterGames(Store):
             picture_urls=picture_urls,
 
         )
+
         return [p]
