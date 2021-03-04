@@ -38,6 +38,8 @@ class MisBeneficios(Store):
                     break
                 for container in product_containers.findAll('li'):
                     product_url = container.find('a')['href']
+                    if product_url in product_urls:
+                        return product_urls
                     product_urls.append(product_url)
                 page += 1
         return product_urls
