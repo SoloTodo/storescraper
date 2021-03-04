@@ -198,6 +198,7 @@ from .multimax import Multimax
 from .musimundo import Musimundo
 from .my_box import MyBox
 from .nario_hogar import NarioHogar
+from .next_pc import NextPc
 from .new_game import NewGame
 from .nemz import Nemz
 from .nice_one import NiceOne
