@@ -8,7 +8,7 @@ from storescraper.categories import COMPUTER_CASE, HEADPHONES, MOUSE, \
     KEYBOARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class VirtualDrakon(Store):
@@ -27,7 +27,7 @@ class VirtualDrakon(Store):
         url_extensions = [
             ['gabinetes', COMPUTER_CASE],
             ['headphones', HEADPHONES],
-            ['mouses', MOUSE],
+            ['mouse', MOUSE],
             ['teclados-mecanicos', KEYBOARD],
             ['ventiladores-rgb', CPU_COOLER]
         ]
@@ -40,11 +40,11 @@ class VirtualDrakon(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://virtualdrakon.cl/product-category/{}/' \
+                url_webpage = 'https://virtualdrakon.cl/categoria/{}/' \
                               'page/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product-item')
+                product_containers = soup.findAll('div', 'product-grid-item')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -60,13 +60,7 @@ class VirtualDrakon(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = soup.find('script', {'type': 'application/ld+json'})
-
-        if not json_container:
-            return []
-
-        json_info = json.loads(json_container.text)
-        name = json_info['name']
+        name = soup.find('h1', 'product_title').text
         if soup.find('form', 'variations_form'):
 
             products = []
@@ -74,7 +68,7 @@ class VirtualDrakon(Store):
                                        'data-product_variations'])
             for product in json_info:
                 variant_name = name + ' - (' + ' '.join(
-                    product['attributes'].values())+')'
+                    product['attributes'].values()) + ')'
                 sku = str(product['variation_id'])
                 v_price = Decimal(product['display_price'])
                 stock_container = BeautifulSoup(product['availability_html'],
@@ -103,14 +97,15 @@ class VirtualDrakon(Store):
             return products
 
         else:
-            price = Decimal(json_info['offers'][0]['price'])
-
-            sku = str(json_info['sku'])
+            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+                1]
+            if soup.find('p', 'price').find('ins'):
+                price = Decimal(
+                    remove_words(soup.find('p', 'price').find('ins').text))
+            else:
+                price = Decimal(remove_words(soup.find('p', 'price').text))
             if soup.find('p', 'stock in-stock'):
                 stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-            elif json_info['offers'][0]['availability'] == \
-                    'http://schema.org/InStock':
-                stock = -1
             else:
                 stock = 0
 
