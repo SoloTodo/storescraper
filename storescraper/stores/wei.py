@@ -162,7 +162,7 @@ class Wei(Store):
         offer_price = Decimal(remove_words(pricing_container.find(
             'div', 'txt18').contents[0].split('$')[1]))
         normal_price = pricing_container.findAll(
-            'div', 'txt14')[2].contents[0].split('$')[1]
+            'div', 'txt14')[1].contents[0].split('$')[1]
         normal_price = Decimal(remove_words(normal_price))
 
         if 'reacondicionado' in name.lower():
