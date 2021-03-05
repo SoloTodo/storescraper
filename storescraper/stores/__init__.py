@@ -120,6 +120,7 @@ from .igoa import Igoa
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
 from .infographics_solutions import InfographicsSolutions
+from .infosep import Infosep
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
