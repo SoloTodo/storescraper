@@ -104,10 +104,10 @@ class EliteCenter(Store):
             part_number = part_number_container.text.strip()
         else:
             part_number = None
-        stock_container = re.search(r'(\d+)', soup.find('p', 'stock').text)
 
-        if stock_container:
-            stock = int(stock_container.groups()[0])
+        if soup.find('p', 'stock'):
+            stock = int(
+                re.search(r'(\d+)', soup.find('p', 'stock').text).groups()[0])
         else:
             stock = -1
 
