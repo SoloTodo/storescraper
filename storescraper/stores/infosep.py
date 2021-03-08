@@ -7,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, CELL, WEARABLE, \
     TABLET, MONITOR, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, RAM, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, VIDEO_CARD, \
     KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, POWER_SUPPLY, HEADPHONES, \
-    GAMING_CHAIR, VIDEO_GAME_CONSOLE
+    GAMING_CHAIR, VIDEO_GAME_CONSOLE, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,43 +38,49 @@ class Infosep(Store):
             HEADPHONES,
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
+            PRINTER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['todo-en-uno', ALL_IN_ONE],
-            ['todo-en-uno', NOTEBOOK],
-            ['notebook-gaming', NOTEBOOK],
+            ['notebooks', NOTEBOOK],
             ['celulares', CELL],
             ['reloj-inteligente', WEARABLE],
             ['tablet', TABLET],
             ['monitores', MONITOR],
-            ['monitor-gamer', MONITOR],
+            ['impresoras-laser', PRINTER],
+            ['multifuncionales-laser', PRINTER],
+            ['impresoras-de-tinta', PRINTER],
+            ['multifuncionales', PRINTER],
+            ['plotter', PRINTER],
             ['gabinetes', COMPUTER_CASE],
-            ['gabinetes-gamer', COMPUTER_CASE],
             ['placas-madres', MOTHERBOARD],
-            ['motherboard', MOTHERBOARD],
             ['procesadores-intel', PROCESSOR],
             ['procesadores-amd', PROCESSOR],
             ['memorias-pc-notebook', RAM],
-            ['memoria-hyperx', RAM],
             ['disco-hdd', STORAGE_DRIVE],
             ['discos-ssd-externos', EXTERNAL_STORAGE_DRIVE],
-            ['discos-externos-25', EXTERNAL_STORAGE_DRIVE],
             ['discos-ssd-internos', SOLID_STATE_DRIVE],
+            ['discos-externos-25', EXTERNAL_STORAGE_DRIVE],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['tarjetas-de-video-gamer', VIDEO_CARD],
             ['kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
-            ['teclado-y-mouse-gamer', KEYBOARD_MOUSE_COMBO],
             ['mouse', MOUSE],
-            ['mouse-gamer', MOUSE],
             ['teclado', KEYBOARD],
-            ['teclado-gamer', KEYBOARD],
             ['fuente-de-poder-pc', POWER_SUPPLY],
-            ['fuentes-gamer', POWER_SUPPLY],
             ['audifonos-gamer', HEADPHONES],
+            ['fuentes-gamer', POWER_SUPPLY],
+            ['gabinetes-gamer', COMPUTER_CASE],
+            ['memoria-hyperx', RAM],
+            ['motherboard', MOTHERBOARD],
+            ['monitor-gamer', MONITOR],
+            ['notebook-gaming', NOTEBOOK],
+            ['mouse-gamer', MOUSE],
             ['sillas-gamer', GAMING_CHAIR],
+            ['teclado-y-mouse-gamer', KEYBOARD_MOUSE_COMBO],
+            ['teclado-gamer', KEYBOARD],
+            ['tarjetas-de-video-gamer', VIDEO_CARD],
             ['consolas-y-video-juegos', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
@@ -119,11 +125,8 @@ class Infosep(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
