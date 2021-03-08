@@ -97,7 +97,8 @@ class GamingStore(Store):
             stock = 0
         else:
             stock = -1
-
+        if not soup.find('div', 'summary-inner').find('bdi'):
+            return []
         price = Decimal(
             remove_words(soup.find('div', 'summary-inner').find('bdi').text))
         picture_urls = [tag['data-src'].split('?')[0] for tag in
