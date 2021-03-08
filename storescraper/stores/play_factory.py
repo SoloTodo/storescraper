@@ -25,7 +25,7 @@ class PlayFactory(Store):
             COMPUTER_CASE,
             KEYBOARD_MOUSE_COMBO,
             MOUSE,
-            KEYBOARD
+            KEYBOARD,
         ]
 
     @classmethod
@@ -34,6 +34,7 @@ class PlayFactory(Store):
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/placa-madre-componentes', MOTHERBOARD],
             ['componentes/refrigeracion', CPU_COOLER],
+            ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['monitor', MONITOR],
             ['sillas-y-escritorios', GAMING_CHAIR],
             ['tarjeta-de-video', VIDEO_CARD],

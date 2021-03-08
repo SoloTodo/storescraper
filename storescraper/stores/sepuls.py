@@ -72,7 +72,7 @@ class Sepuls(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'alternate'})['href'].split('/')[-1]
+        sku = soup.find('div', 'single-product-page')['id'].split('-')[1]
         if soup.find('p', 'stock').text == 'SIN STOCK':
             stock = 0
         else:
