@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, POWER_SUPPLY, PROCESSOR, \
     VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES
+    KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
+    GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,18 +36,24 @@ class Globalbox(Store):
             CELL,
             STEREO_SYSTEM,
             HEADPHONES,
+            GAMING_CHAIR,
+            COMPUTER_CASE,
+            KEYBOARD,
+            MOUSE,
+            UPS,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['computacion/notebooks', NOTEBOOK],
+            ['computacion/ipad-tablets', TABLET],
+            ['computacion/all-in-one', ALL_IN_ONE],
+            ['componentes/gabinetes', COMPUTER_CASE],
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['computacion/notebooks', NOTEBOOK],
-            ['computacion/ipad-tablets', TABLET],
-            ['computacion/all-in-one', ALL_IN_ONE],
             ['componentes/memorias-ram', RAM],
             ['componentes/pendrive', USB_FLASH_DRIVE],
             ['componentes/almacenamiento/discos-externos',
@@ -56,9 +63,20 @@ class Globalbox(Store):
             ['perifericos/kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
             ['perifericos/monitores', MONITOR],
             ['perifericos/impresion-y-scanners', PRINTER],
+            ['perifericos/proteccion-electrica/ups', UPS],
+            ['electronica/relojes-inteligentes', WEARABLE],
             ['electronica/celulares', CELL],
             ['electronica/parlantes', STEREO_SYSTEM],
             ['electronica/audifonos', HEADPHONES],
+            ['gamer/notebook-gamer', NOTEBOOK],
+            ['gamer/monitor-gamer', MONITOR],
+            ['gamer/gabinetes-gamer', COMPUTER_CASE],
+            ['gamer/memorias-gamer', RAM],
+            ['gamer/fuentes-de-poder-gamer', POWER_SUPPLY],
+            ['gamer/teclados-gamer', KEYBOARD],
+            ['gamer/mouse-gamer', MOUSE],
+            ['gamer/audifonos-gamer', HEADPHONES],
+            ['gamer/sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
