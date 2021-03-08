@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import KEYBOARD, CELL, MONITOR, MOTHERBOARD, \
     HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, GAMING_CHAIR, RAM, VIDEO_CARD, \
-    PROCESSOR
+    PROCESSOR, MOUSE, POWER_SUPPLY, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -31,12 +31,16 @@ class Ampera(Store):
             RAM,
             VIDEO_CARD,
             PROCESSOR,
+            MOUSE,
+            POWER_SUPPLY,
+            CPU_COOLER,
         }
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['mouse-y-teclados', KEYBOARD],
+            ['teclados', KEYBOARD],
+            ['mouse', MOUSE],
             ['celulares-y-tablets', CELL],
             ['monitores', MONITOR],
             ['placas-madre', MOTHERBOARD],
@@ -47,9 +51,11 @@ class Ampera(Store):
             ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['discos-duros-internos', STORAGE_DRIVE],
             ['sillas', GAMING_CHAIR],
-            ['almacenamiento', RAM],
+            ['ram', RAM],
             ['gpus', VIDEO_CARD],
             ['procesadores', PROCESSOR],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['refrigeracion', CPU_COOLER]
         ]
 
         session = session_with_proxy(extra_args)
@@ -83,14 +89,14 @@ class Ampera(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        
+
         if response.url != url:
             print(response.url)
             print(url)
             return []
 
         print('pass')
-        
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         if soup.find('form', 'variations_form'):
@@ -101,7 +107,10 @@ class Ampera(Store):
                 variation_name = name + ' - ' + product['attributes'][
                     'attribute_pa_color']
                 sku = str(product['variation_id'])
-                stock = product['max_qty']
+                if product['max_qty'] == '':
+                    stock = 0
+                else:
+                    stock = product['max_qty']
                 price = Decimal(product['display_price'])
                 picture_urls = [product['image']['url']]
                 p = Product(
