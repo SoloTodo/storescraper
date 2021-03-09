@@ -98,7 +98,10 @@ class EliteCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text
+        if not soup.find('button', 'single_add_to_cart_button'):
+            return []
         sku = soup.find('button', 'single_add_to_cart_button')['value']
+
         part_number_container = soup.find('span', {'id': '_sku'})
         if part_number_container:
             part_number = part_number_container.text.strip()
