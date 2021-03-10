@@ -76,9 +76,12 @@ class AllinkGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
-        stock = int(
-            soup.find('div', 'more-infor-product product-quantities').find(
-                'span')['data-stock'])
+        if not soup.find('div', 'more-infor-product product-quantities'):
+            stock = 0
+        else:
+            stock = int(
+                soup.find('div', 'more-infor-product product-quantities').find(
+                    'span')['data-stock'])
         price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'images-container').findAll('img')]
