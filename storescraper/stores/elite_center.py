@@ -11,7 +11,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR
+    GAMING_CHAIR, NOTEBOOK
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
@@ -35,7 +35,8 @@ class EliteCenter(Store):
             PROCESSOR,
             VIDEO_CARD,
             VIDEO_GAME_CONSOLE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -56,6 +57,7 @@ class EliteCenter(Store):
             ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
+            ['notebooks', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)

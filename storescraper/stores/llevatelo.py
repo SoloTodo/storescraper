@@ -32,7 +32,7 @@ class Llevatelo(Store):
             ('electronica/audio', STEREO_SYSTEM),
             ('electronica/home-theater', STEREO_SYSTEM),
             ('electronica/video', OPTICAL_DISK_PLAYER),
-            ('telefonia/celular', CELL),
+            ('telefonia', CELL),
             ('linea-blanca/lavadoras', WASHING_MACHINE),
             ('linea-blanca/secadoras-de-ropa', WASHING_MACHINE),
             ('linea-blanca/refrigeradores', REFRIGERATOR),
