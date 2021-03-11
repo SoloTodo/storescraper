@@ -1,6 +1,9 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import MONITOR, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -13,13 +16,19 @@ class Lenovo(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook'
+            NOTEBOOK,
+            # TABLET,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        nb_path = cls.base_domain + "laptops/c/LAPTOPS/" \
-                  "asyncProductListPage?q=%3Aprice-asc&page={}"
+        category_paths = [
+            ('ch=-488288442&categories=LAPTOPS', NOTEBOOK),
+            # ('tablets/c/TABLETS', TABLET),
+            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY',
+             MONITOR),
+        ]
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
@@ -28,26 +37,36 @@ class Lenovo(Store):
 
         products_urls = []
 
-        if category != 'Notebook':
-            return []
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
 
-        page = 0
+            nb_path = cls.base_domain + '/search/facet/query/v3?' + \
+                category_path + \
+                '&page={}&pageSize=20&sort=sortBy&currency=CLP'
+            page = 0
 
-        while True:
-            url = nb_path.format(page)
-            response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'facetedResults-item')
+            while True:
+                if page >= 10:
+                    raise Exception('Page overflow')
 
-            if not product_containers:
-                break
+                url = nb_path.format(page)
+                print(url)
+                response = session.get(url)
 
-            for container in product_containers:
-                product_url = 'https://www.lenovo.com{}'\
-                    .format(container.find('a')['href'])
-                products_urls.append(product_url)
+                if response.status_code == 500:
+                    break
 
-            page += 1
+                data = json.loads(response.text)
+
+                if 'results' not in data:
+                    break
+
+                for product_entry in data['results']:
+                    product_url = cls.base_domain + product_entry['url']
+                    products_urls.append(product_url)
+
+                page += 1
 
         return products_urls
 
@@ -113,7 +132,6 @@ class Lenovo(Store):
                     description=description,
                     picture_urls=picture_urls
                 ))
-
         elif soup.find('div', 'singleModelView'):
             name = soup.find('h2', 'tabbedBrowse-title singleModelTitle')\
                 .text.strip()
@@ -157,6 +175,46 @@ class Lenovo(Store):
                 url,
                 sku,
                 stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=sku,
+                description=description,
+                picture_urls=picture_urls
+            )
+
+            products.append(p)
+        else:
+            name_tag = soup.find('div', 'titleSection')
+
+            if not name_tag:
+                return []
+
+            name = name_tag.text.strip()
+            sku = soup.find('input', {'name': 'productCode'})['value'].strip()
+            price_tag = soup.find('meta', {'name': 'productsaleprice'})
+
+            if not price_tag:
+                price_tag = soup.find('meta', {'name': 'productprice'})
+
+            price = Decimal(remove_words(price_tag['content']))
+            description = html_to_markdown(str(soup.find(
+                'div', 'tabbed-browse-content-wrapper')))
+
+            picture_urls = [
+                'https://www.lenovo.com' +
+                soup.find('meta', {'name': 'thumbnail'})['content']
+            ]
+
+            p = Product(
+                '{} ({})'.format(name, sku),
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                -1,
                 price,
                 price,
                 'CLP',

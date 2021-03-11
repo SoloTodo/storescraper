@@ -74,8 +74,9 @@ class CrazyGamesenChile(Store):
                     break
                 if len(product_containers) == len(local_product_urls):
                     break
-                product_containers = product_containers[len(local_product_urls):len(
-                    product_containers) + 1]
+                product_containers = product_containers[
+                                     len(local_product_urls):
+                                     len(product_containers) + 1]
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)

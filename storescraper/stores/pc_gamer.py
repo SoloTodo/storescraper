@@ -83,7 +83,8 @@ class PcGamer(Store):
 
         stock = 0
 
-        for row in soup.find('div', 'product_description').find('table', 'table').findAll('tr')[1:]:
+        for row in soup.find('div', 'product_description').find(
+                'table', 'table').findAll('tr')[1:]:
             stock += int(row.findAll('td')[-1].text)
 
         normal_price = Decimal(

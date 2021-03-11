@@ -3,10 +3,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, HEADPHONES, KEYBOARD_MOUSE_COMBO, \
-    MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, CPU_COOLER, \
-    SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, MEMORY_CARD, \
-    USB_FLASH_DRIVE, CELL, WEARABLE, PRINTER, UPS
+from storescraper.categories import NOTEBOOK, HEADPHONES, \
+    KEYBOARD_MOUSE_COMBO, MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, \
+    MOTHERBOARD, CPU_COOLER, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
+    STORAGE_DRIVE, RAM, MEMORY_CARD, USB_FLASH_DRIVE, CELL, WEARABLE, \
+    PRINTER, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words

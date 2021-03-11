@@ -87,7 +87,8 @@ class MercadoLibreChile(Store):
             else:
                 return cls.retrieve_type3_products(data, session, category)
         else:
-            return cls.retrieve_type1_products(page_source, url, soup, category)
+            return cls.retrieve_type1_products(
+                page_source, url, soup, category)
 
     @classmethod
     def retrieve_type3_products(cls, data, session, category):

@@ -1,7 +1,7 @@
 from .mercado_libre_chile import MercadoLibreChile
 from storescraper.categories import STEREO_SYSTEM, TELEVISION, CELL_ACCESORY, \
-    CELL, WEARABLE, VACUUM_CLEANER, REFRIGERATOR, AIR_CONDITIONER, STOVE, OVEN, \
-    WASHING_MACHINE, TABLET
+    CELL, WEARABLE, VACUUM_CLEANER, REFRIGERATOR, AIR_CONDITIONER, STOVE, \
+    OVEN, WASHING_MACHINE, TABLET
 
 
 class MercadoLibreSamsung(MercadoLibreChile):
