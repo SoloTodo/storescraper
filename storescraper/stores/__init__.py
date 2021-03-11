@@ -216,6 +216,7 @@ from .panamericana import Panamericana
 from .paris import Paris
 from .paris_fast import ParisFast
 from .pc_com import PcCom
+from .pc_compu import PcCompu
 from .pc_digital import PcDigital
 from .pc_express import PcExpress
 from .pc_factory import PcFactory
@@ -288,7 +289,6 @@ from .tienda_toyotomi import TiendaToyotomi
 from .travel_tienda import TravelTienda
 from .travim import Travim
 from .todo_juegos import TodoJuegos
-from .todo_ofertas import TodoOfertas
 from .todoclick import Todoclick
 from .tomalo import Tomalo
 from .top_pc import TopPc

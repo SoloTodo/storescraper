@@ -9,7 +9,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
 
-class TodoOfertas(Store):
+class PcCompu(Store):
     @classmethod
     def categories(cls):
         return [
@@ -30,13 +30,12 @@ class TodoOfertas(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow ')
-                url_webpage = 'https://www.todoofertas.com.uy/productos' \
-                              '/productos.php?id_marca=116&pagina={}'.format(
-                                page)
+                url_webpage = 'https://www.pccompu.com.uy/productos' \
+                              '/?id_representacion=116&secc=productos_marcas' \
+                              '&order=2&mo=0&ps=16&pagina={}'.format(page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'contenedor_22').findAll(
-                    'div', 'prod_item')
+                product_containers = soup.findAll('article', 'prod_item')
                 if not product_containers:
                     if page == 0:
                         logging.warning('Empty category: ' + local_category)
@@ -44,7 +43,7 @@ class TodoOfertas(Store):
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(
-                        'https://www.todoofertas.com.uy' + product_url)
+                        'https://www.pccompu.com.uy' + product_url)
                 page += 1
         return product_urls
 
@@ -55,10 +54,7 @@ class TodoOfertas(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'nombre').text
         sku = soup.find('input', {'name': 'ids[]'})['value']
-        if soup.find('div', 'opcionescarrito').find('input', 'submit2'):
-            stock = -1
-        else:
-            stock = 0
+        stock = -1
         price = Decimal(soup.find('div', 'precios_cont').find('span', {
             'id': 'precio_ent_actual'}).text)
         picture_urls = [tag['src'] for tag in
