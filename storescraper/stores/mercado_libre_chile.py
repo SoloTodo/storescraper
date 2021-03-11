@@ -111,6 +111,9 @@ class MercadoLibreChile(Store):
                 # No price information in this case, so skip it
                 continue
 
+            if variation_data['components']['seller']['state'] == 'HIDDEN':
+                continue
+
             name = variation_data['components']['header']['title']
             seller = variation_data['components']['seller']['title_value']
             url = variation_data['components']['metadata']['url_canonical']
