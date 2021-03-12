@@ -7,7 +7,7 @@ from storescraper.categories import NOTEBOOK, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, \
     MOTHERBOARD, CPU_COOLER, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     STORAGE_DRIVE, RAM, MEMORY_CARD, USB_FLASH_DRIVE, CELL, WEARABLE, \
-    PRINTER, UPS
+    PRINTER, UPS, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -37,6 +37,7 @@ class YouTech(Store):
             WEARABLE,
             PRINTER,
             UPS,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -65,6 +66,7 @@ class YouTech(Store):
             ['67833_67966', WEARABLE],
             ['67851', PRINTER],
             ['67822_67857', UPS],
+            ['67844', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.52.1'
