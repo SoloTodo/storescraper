@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, TABLET, MOUSE, NOTEBOOK, \
     WEARABLE, HEADPHONES, STEREO_SYSTEM, ALL_IN_ONE, RAM, VIDEO_GAME_CONSOLE, \
-    PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION
+    PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,7 +33,8 @@ class Soluservi(Store):
             MEMORY_CARD,
             USB_FLASH_DRIVE,
             MONITOR,
-            TELEVISION
+            TELEVISION,
+            CELL
         ]
 
     @classmethod
@@ -58,11 +59,12 @@ class Soluservi(Store):
             ['impresoras-y-escaneres/impresora-laser', PRINTER],
             ['impresoras-y-escaneres/multifuncional', PRINTER],
             ['impresoras-y-escaneres/impresora-tinta', PRINTER],
-            ['memorias/memorias-ram-pc/', RAM],
+            ['memorias/memorias-ram-pc', RAM],
             ['memorias/memoria-flash', MEMORY_CARD],
             ['memorias/pendrive', USB_FLASH_DRIVE],
             ['monitores-y-proyectores/monitor', MONITOR],
-            ['smart-tv', TELEVISION]
+            ['smart-tv', TELEVISION],
+            ['smartphone', CELL]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -97,12 +99,17 @@ class Soluservi(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        stock = int(soup.find('p', 'stock').text.split()[0])
+        if not soup.find('p', 'stock'):
+            stock = -1
+        else:
+            stock = int(soup.find('p', 'stock').text.split()[0])
         offer_price = Decimal(remove_words(soup.find('p', 'price').text))
         normal_price = Decimal(
             remove_words(soup.find('table').findAll('tr')[0].text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product-gallery').findAll(
+        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
+                                                               '-product'
+                                                               '-gallery'
+                                                               '').findAll(
             'img')]
         p = Product(
             name,
