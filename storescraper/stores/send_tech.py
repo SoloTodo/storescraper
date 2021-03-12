@@ -53,22 +53,28 @@ class SendTech(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock in-stock'):
-            stock = -1
-        else:
-            stock = 0
+
         if soup.find('p', 'price').text == '':
             return []
-        elif soup.find('p', 'price').find('ins'):
+
+        if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
+
+        add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
+
+        if add_to_cart_button:
+            stock = -1
+        else:
+            stock = 0
+
+        part_number = soup.find('span', 'sku').text.strip()
+
         p = Product(
             name,
             cls.__name__,
@@ -81,6 +87,7 @@ class SendTech(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
         return [p]
