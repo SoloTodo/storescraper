@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
@@ -6,8 +7,9 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, TABLET, MOUSE, NOTEBOOK, \
     WEARABLE, HEADPHONES, STEREO_SYSTEM, ALL_IN_ONE, RAM, VIDEO_GAME_CONSOLE, \
     PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION
+from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Soluservi(Store):
@@ -86,3 +88,34 @@ class Soluservi(Store):
                     product_urls.append(product_url)
                 page += 1
         return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'product_title').text
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        stock = int(soup.find('p', 'stock').text.split()[0])
+        offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+        normal_price = Decimal(
+            remove_words(soup.find('table').findAll('tr')[0].text))
+        picture_urls = [tag['src'] for tag in soup.find('div',
+                                                        'woocommerce-product-gallery').findAll(
+            'img')]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+        )
+        return [p]
