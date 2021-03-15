@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, VIDEO_CARD, MOTHERBOARD, \
-    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, HEADPHONES
+    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, HEADPHONES, PROCESSOR, \
+    MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,20 +22,28 @@ class PcNexus(Store):
             STORAGE_DRIVE,
             SOLID_STATE_DRIVE,
             POWER_SUPPLY,
-            HEADPHONES
+            HEADPHONES,
+            PROCESSOR,
+            MOUSE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['componentes/tarjetas-de-video', VIDEO_CARD],
+            ['componentes/procesadores', PROCESSOR],
             ['componentes/placas-madre', MOTHERBOARD],
             ['componentes/memorias-ram', RAM],
             ['componentes/discos-duros', STORAGE_DRIVE],
             ['componentes/ssd', SOLID_STATE_DRIVE],
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/gabinetes-gamer', COMPUTER_CASE],
-            ['audio', HEADPHONES]
+            ['accesorios-y-perifericos/mouse', MOUSE],
+            ['accesorios-y-perifericos/teclados', KEYBOARD],
+            ['accesorios-y-perifericos/combo-mouse-y-teclado', KEYBOARD],
+            ['audio', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
