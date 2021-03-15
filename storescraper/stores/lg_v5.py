@@ -108,6 +108,7 @@ class LgV5(Store):
         else:
             name = '{} - {}'.format(model_name, short_description)
 
+        price = Decimal(model_data['obsSellingPrice'])
         picture_urls = [cls.base_url + x['largeImageAddr'].replace(' ', '%20')
                         for x in model_data['galleryImages']]
         picture_urls = [x for x in picture_urls if validators.url(x)]
@@ -158,8 +159,8 @@ class LgV5(Store):
             url,
             model_id,
             -1,
-            Decimal(0),
-            Decimal(0),
+            price,
+            price,
             'USD',
             sku=sku,
             picture_urls=picture_urls,
