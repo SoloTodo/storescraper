@@ -93,12 +93,6 @@ class CrazyGamesenChile(Store):
         json_container = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_container['name']
-        sku_container = json.loads(
-            soup.find('script', {'id': 'wix-warmup-data'}).text)
-        sku_key_1 = list(sku_container['appsWarmupData'].keys())[0]
-        sku_key_2 = list(sku_container['appsWarmupData'][sku_key_1].keys())[0]
-        sku = sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
-            'product']['id']
         if json_container['Offers'][
                 'Availability'] == 'https://schema.org/OutOfStock':
             stock = 0
@@ -106,21 +100,61 @@ class CrazyGamesenChile(Store):
             stock = -1
         price = Decimal(json_container['Offers']['price'])
         picture_urls = [tag['src'] for tag in
-                        soup.findAll('img', {'data-hook': 'thumbnail-image'})]
+                        soup.findAll('img',
+                                     {'data-hook': 'thumbnail-image'})]
         if not picture_urls:
             picture_urls = [json_container['image']['contentUrl']]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+        sku_container = json.loads(
+            soup.find('script', {'id': 'wix-warmup-data'}).text)
+        sku_key_1 = list(sku_container['appsWarmupData'].keys())[0]
+        sku_key_2 = list(sku_container['appsWarmupData'][sku_key_1].keys())[0]
+        sku = sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
+            'product']['id']
+        if sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
+                'product']['options']:
+            options = sku_container['appsWarmupData'][sku_key_1][sku_key_2][
+                'catalog']['product']['options'][0]['selections']
+            products = []
+            for option in options:
+                sku_var = sku + ' - ' + str(option['id'])
+                name_var = name + ' - ' + '(' + option['description'] + ')'
+
+                price = Decimal(json_container['Offers']['price'])
+                picture_urls = [tag['src'] for tag in
+                                soup.findAll('img',
+                                             {'data-hook': 'thumbnail-image'})]
+                if not picture_urls:
+                    picture_urls = [json_container['image']['contentUrl']]
+                p = Product(
+                    name_var,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku_var,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
+
+        else:
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
