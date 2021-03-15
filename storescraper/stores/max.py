@@ -30,7 +30,7 @@ class Max(Store):
                 continue
             page = 1
             while True:
-                if page >= 10:
+                if page >= 16:
                     raise Exception('Page overflow')
 
                 url_webpage = 'https://www.max.com.gt/catalogsearch/result/' \
