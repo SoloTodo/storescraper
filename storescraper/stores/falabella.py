@@ -257,7 +257,7 @@ class Falabella(Store):
                 raise Exception('Page overflow ' + keyword)
 
             search_url = base_url.format(keyword, page)
-            res = session.get(search_url, timeout=None)
+            res = session.get(search_url, timeout=30)
 
             if res.status_code == 500:
                 break
@@ -323,7 +323,7 @@ class Falabella(Store):
             if extra_query_params:
                 pag_url += '&' + extra_query_params
 
-            res = session.get(pag_url, timeout=None)
+            res = session.get(pag_url, timeout=30)
             res = json.loads(res.content.decode('utf-8'))['data']
 
             if 'results' not in res or not res['results']:
@@ -402,7 +402,7 @@ class Falabella(Store):
                           'Filter=ProductId:{}&Include=Products&Stats=' \
                           'Reviews'.format(sku)
 
-            review_data = json.loads(session.get(reviews_url).text)
+            review_data = json.loads(session.get(reviews_url, timeout=30).text)
             review_count = review_data['TotalResults']
 
             review_stats = review_data['Includes']
@@ -558,7 +558,7 @@ class Falabella(Store):
                           'Filter=ProductId:{}&Include=Products&Stats=' \
                           'Reviews'.format(sku)
 
-            review_data = json.loads(session.get(reviews_url).text)
+            review_data = json.loads(session.get(reviews_url, timeout=30).text)
             review_count = review_data['TotalResults']
 
             review_stats = review_data['Includes']
@@ -709,7 +709,8 @@ class Falabella(Store):
                 session = session_with_proxy(extra_args)
                 session.headers['User-Agent'] = CF_REQUEST_HEADERS[
                     'User-Agent']
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(url, timeout=30).text,
+                                     'html.parser')
                 next_data = json.loads(soup.find(
                     'script', {'id': '__NEXT_DATA__'}).text)
 
