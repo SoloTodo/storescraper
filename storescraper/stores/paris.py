@@ -36,6 +36,8 @@ class Paris(Store):
          'Electro > Audio > Micro y Minicomponentes', 1],
         ['electro/audio/audifonos', ['Headphones'],
          'Electro > Audio > Audífonos', 1],
+        ['electro/audio/audifonos-inalambricos', ['Headphones'],
+         'Electro > Audio > Audífonos Inalámbricos', 1],
         # Also contains other audio products
         ['electro/audio-hifi', ['Headphones', 'StereoSystem'],
          'Electro > HiFi', 0],
