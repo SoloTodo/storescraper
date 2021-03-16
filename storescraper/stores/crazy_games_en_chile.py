@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, \
     SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, KEYBOARD, \
-    POWER_SUPPLY, MOTHERBOARD, PROCESSOR
+    POWER_SUPPLY, MOTHERBOARD, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,6 +27,7 @@ class CrazyGamesenChile(Store):
             POWER_SUPPLY,
             MOTHERBOARD,
             PROCESSOR,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -48,7 +49,8 @@ class CrazyGamesenChile(Store):
             ['teclados-ps4-y-xbox-one', KEYBOARD],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['placas-madres', MOTHERBOARD],
-            ['procesadores-de-pc', PROCESSOR]
+            ['procesadores-de-pc', PROCESSOR],
+            ['tarjetas-de-video', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
