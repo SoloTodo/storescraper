@@ -35,6 +35,7 @@ class GameShark(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['26-consolas', VIDEO_GAME_CONSOLE],
+            ['75-consolas', VIDEO_GAME_CONSOLE],
             ['29-consolas-x1', VIDEO_GAME_CONSOLE],
             ['46-consolas-nsw', VIDEO_GAME_CONSOLE],
             ['32-consolas-ps3', VIDEO_GAME_CONSOLE],
