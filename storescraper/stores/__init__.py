@@ -267,6 +267,7 @@ from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
 from .solar_led import SolarLed
+from .soluservi import Soluservi
 from .sony_store import SonyStore
 from .spaceman import Spaceman
 from .sp_digital import SpDigital
