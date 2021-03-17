@@ -54,7 +54,7 @@ class Soluservi(Store):
             ['apple/ipad', TABLET],
             ['apple/mac', NOTEBOOK],
             ['apple/watch', WEARABLE],
-            ['audio-y-video/audifonos', HEADPHONES],
+            # ['audio-y-video/audifonos', HEADPHONES],
             ['audio-y-video/parlantes-audio-y-video', STEREO_SYSTEM],
             ['escritorio/all-in-one', ALL_IN_ONE],
             ['memorias/memoria-ram-notebok', RAM],
@@ -116,6 +116,13 @@ class Soluservi(Store):
             remove_words(soup.find('table').findAll('tr')[0].text))
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
+
+        sku_container = soup.find('span', 'sku')
+        if sku_container:
+            part_number = sku_container.text.strip()
+        else:
+            part_number = None
+
         p = Product(
             name,
             cls.__name__,
@@ -129,5 +136,6 @@ class Soluservi(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            part_number=part_number
         )
         return [p]
