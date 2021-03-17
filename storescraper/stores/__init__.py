@@ -95,6 +95,7 @@ from .fullcolor_spa import FullcolorSpa
 from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
+from .game_shark import GameShark
 from .gaming_store import GamingStore
 from .gearbest import GearBest
 from .geant import Geant
@@ -266,6 +267,7 @@ from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
 from .solar_led import SolarLed
+from .soluservi import Soluservi
 from .sony_store import SonyStore
 from .spaceman import Spaceman
 from .sp_digital import SpDigital
