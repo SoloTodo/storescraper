@@ -73,7 +73,12 @@ class SendTech(Store):
         else:
             stock = 0
 
-        part_number = soup.find('span', 'sku').text.strip()
+        part_number_container = soup.find('span', 'sku')
+
+        if part_number_container:
+            part_number = part_number_container.text.strip()
+        else:
+            part_number = None
 
         p = Product(
             name,
