@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, TABLET, MOUSE, NOTEBOOK, \
     WEARABLE, HEADPHONES, STEREO_SYSTEM, ALL_IN_ONE, RAM, VIDEO_GAME_CONSOLE, \
-    PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION, CELL
+    PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION, CELL, \
+    POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,7 +35,9 @@ class Soluservi(Store):
             USB_FLASH_DRIVE,
             MONITOR,
             TELEVISION,
-            CELL
+            CELL,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
         ]
 
     @classmethod
@@ -64,7 +67,12 @@ class Soluservi(Store):
             ['memorias/pendrive', USB_FLASH_DRIVE],
             ['monitores-y-proyectores/monitor', MONITOR],
             ['smart-tv', TELEVISION],
-            ['smartphone', CELL]
+            ['smartphone', CELL],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinete', COMPUTER_CASE],
+            ['placas-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['tarjeta-de-video', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -106,11 +114,8 @@ class Soluservi(Store):
         offer_price = Decimal(remove_words(soup.find('p', 'price').text))
         normal_price = Decimal(
             remove_words(soup.find('table').findAll('tr')[0].text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
