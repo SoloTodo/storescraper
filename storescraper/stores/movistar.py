@@ -224,7 +224,7 @@ class Movistar(Store):
                             re.search(r'\$([\d+.]+)',
                                       price_container_text
                                       ).groups()[0].replace('.', ''))
-                        price = 18 * monthly_price
+                        price = 24 * monthly_price
 
                         for container in json_soup.findAll('article'):
                             cell_plan_name = container['data-id']
@@ -314,7 +314,7 @@ class Movistar(Store):
                                       price_container_text
                                       ).groups()[0].replace('.', '')
                         )
-                        price = 18 * monthly_price
+                        price = 24 * monthly_price
 
                         for container in json_soup.findAll('article'):
                             # break
