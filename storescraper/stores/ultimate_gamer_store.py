@@ -40,7 +40,7 @@ class UltimateGamerStore(Store):
             ['p-e-r-i-f-e-r-i-c-o-s', HEADPHONES],
             ['d-i-s-c-o-d-u-r-o-1', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
-            ['refrigeracion', CPU_COOLER],
+            ['productos/refrigeracion', CPU_COOLER],
         ]
 
         product_urls = []
@@ -59,6 +59,7 @@ class UltimateGamerStore(Store):
 
                 url = 'https://www.ugstore.cl/{}?page={}'.format(
                     category_path, page)
+                print(url)
 
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
