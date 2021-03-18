@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -6,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     MEMORY_CARD, CELL, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, PROCESSOR, USB_FLASH_DRIVE, STEREO_SYSTEM, \
-    TELEVISION, PRINTER, GAMING_CHAIR
+    TELEVISION, PRINTER, GAMING_CHAIR, STORAGE_DRIVE, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,99 +31,92 @@ class ElectroVentas(Store):
             RAM,
             PROCESSOR,
             USB_FLASH_DRIVE,
-            PRINTER,
             STEREO_SYSTEM,
             TELEVISION,
-            GAMING_CHAIR
+            PRINTER,
+            GAMING_CHAIR,
+            STORAGE_DRIVE,
+            TABLET,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            # Mouse Gamer
-            ['nivel3/mouse-gaming-751', MOUSE],
-            # Teclado Gamer
-            ['nivel3/teclado-gamer-759', KEYBOARD],
-            # Monitor Gamer
-            ['nivel2/monitores-gamer-261', MONITOR],
-            # Headphones Gamer
-            ['nivel2/audifonos-gamer-262', HEADPHONES],
-            # Normal Headphones
-            ['nivel2/audifonos-158', HEADPHONES],
-            ['nivel2/parlantes-180', STEREO_SYSTEM],
-            ['nivel2/televisores-250', TELEVISION],
-            ['nivel2/impresora-278', PRINTER],
-            # NORMAL MOUSE
-            ['nivel3/mouse-605', MOUSE],
-            # NORMAL KEYBOARD
-            ['nivel3/teclado-standard-612', KEYBOARD],
-            ['nivel3/tarjetas-de-memoria-783', MEMORY_CARD],
-            ['nivel3/monitores-670', MONITOR],
-            # TOUCH MONITOR
-            ['nivel3/monitores-touch-profesionales-728', MONITOR],
-            ['nivel2/celulares-161', CELL],
-            ['nivel2/unidades-de-almacenamiento-283', SOLID_STATE_DRIVE],
-            ['nivel2/fuentes-de-poder-284', POWER_SUPPLY],
-            ['nivel2/gabinetes-285', COMPUTER_CASE],
-            ['nivel2/tarjetas-de-video-286', VIDEO_CARD],
-            ['nivel2/placas-madre-282', MOTHERBOARD],
-            ['nivel2/memorias-295', RAM],
-            ['nivel2/procesadores-281', PROCESSOR],
-            ['nivel3/pendrives-784', USB_FLASH_DRIVE],
-            ['nivel2/sillas-gamer-263', GAMING_CHAIR]
+            ['televisores', TELEVISION],
+            ['parlantes', STEREO_SYSTEM],
+            ['audifonos', HEADPHONES],
+            ['monitores', MONITOR],
+            ['mouse', MOUSE],
+            ['teclado-standard', KEYBOARD],
+            ['sillas', GAMING_CHAIR],
+            ['placas-madre', MOTHERBOARD],
+            ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinete', COMPUTER_CASE],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['tarjetas-de-memoria', MEMORY_CARD],
+            ['discos-duros', STORAGE_DRIVE],
+            ['pendrives', USB_FLASH_DRIVE],
+            ['tablets', TABLET],
+            ['impresoras', PRINTER],
+            ['celulares', CELL],
+            ['mouse-gamer', MOUSE],
+            ['teclado-gamer', KEYBOARD],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
+
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://www.electroventas.cl/nivel/{}'.format(
-                url_extension)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.find('ul', 'cuatro'). \
-                findAll('li', attrs={'class': ''})
-            if not product_containers:
-                logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+
+            page = 1
+
+            while True:
+                if page >= 10:
+                    raise Exception('Page overflow')
+
+                url_webpage = 'https://electroventas.cl/{}/?page={}'.format(
+                    url_extension, page)
+                print(url_webpage)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.find('div', {'id': 'js-product-list'}).findAll(
+                    'article', 'product-miniature')
+
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_container = soup.find('div', 'col col-7 ficha-details')
+        product_data_tag = soup.findAll('script', {'type': 'application/ld+json'})[2]
+        product_data = json.loads(product_data_tag.text)
+        name = product_data['name']
+        sku = product_data['mpn']
+        price = Decimal(product_data['offers']['price'])
+        picture_urls = product_data['offers'].get('image', None)
+        stock_container = soup.find('div', 'product-quantities')
 
-        if not product_container:
-            return []
-
-        name = product_container.find('div', 'pc').find('h1').text
-        sku_container = next(filter(lambda x: x.text.startswith('ID'),
-                                    product_container.find('div',
-                                                           'pc').findAll(
-                                        'li')))
-        sku = sku_container.text.split()[1]
-        stock = int(
-            product_container.find('table', 'table').findAll('td')[3].text)
-        price = Decimal(remove_words(product_container.find('div',
-                                                            'price-n gray '
-                                                            'precio-web-dest '
-                                                            'center-content')
-                                     .find('span').text.strip()))
-        picture_containers = soup.find('div', 'col col-5 img ')
-        if picture_containers:
-            picture_urls = [tag['src'] for tag in
-                            picture_containers.findAll('img')]
+        if stock_container:
+            stock = int(stock_container.find('span')['data-stock'])
         else:
-            picture_urls = [tag['src'] for tag in
-                            soup.find('div', 'ficha').find('div',
-                                                           'sp-wrap').findAll(
-                                'img')]
+            stock = 0
+
         p = Product(
             name,
             cls.__name__,
