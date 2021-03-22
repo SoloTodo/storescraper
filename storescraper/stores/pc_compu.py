@@ -53,7 +53,7 @@ class PcCompu(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'nombre').text
-        sku = soup.find('input', {'name': 'ids[]'})['value']
+        sku = soup.find('div', {'itemprop': 'sku'}).text
         stock = -1
         price = Decimal(soup.find('div', 'precios_cont').find('span', {
             'id': 'precio_ent_actual'}).text)
