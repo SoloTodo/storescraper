@@ -83,7 +83,7 @@ class SevenGamer(Store):
         # keep products "in stock" even if they are actually not available
         response = session.get(url + '?v=2')
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h1', 'product_title').text[0:250]
         sku = soup.find('a', 'add-to-compare-link')['data-product_id']
         if soup.find('div', 'availability'):
             stock = 0

@@ -113,9 +113,10 @@ class Centrale(Store):
                        1] + ' - ' + soup.find('h1',
                                               'product-title').text.strip()
         sku = soup.find('button', 'single_add_to_cart_button')['value']
-        stock = int(
-            soup.find('div', 'add-to-cart-container').find('p').text.split()[
-                0])
+        if soup.find('p', 'stock in-stock'):
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        else:
+            stock = 0
         offer_price = Decimal(remove_words(
             soup.find('div', {'style': 'margin-bottom: -12px;'}).text.split()[
                 0]))
