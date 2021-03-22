@@ -22,10 +22,10 @@ class PcFericos(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['gabinetes', COMPUTER_CASE],
-            ['refrigeracion', CPU_COOLER],
-            ['refrigeracion-por-aire', CPU_COOLER],
-            ['teclados', KEYBOARD]
+            ['gabinetes-2', COMPUTER_CASE],
+            ['disipadores', CPU_COOLER],
+            ['refrigeracion-2', CPU_COOLER],
+            ['teclados-1', KEYBOARD]
         ]
 
         session = session_with_proxy(extra_args)
