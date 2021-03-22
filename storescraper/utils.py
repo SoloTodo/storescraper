@@ -170,6 +170,11 @@ class HeadlessChrome:
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
 
+        options.add_argument("start-maximized")
+        options.add_experimental_option("excludeSwitches",
+                                        ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+
         seleniumwire_options = {}
         if proxy:
             seleniumwire_options['proxy'] = {

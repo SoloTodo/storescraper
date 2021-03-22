@@ -53,6 +53,8 @@ class LaPolar(Store):
              'Inicio > Tecnología > Computadores > Notebooks', 1],
             ['tablet', ['Tablet'],
              'Inicio > Tecnología > Computadores > Tablet', 1],
+            ['televisores', ['Television', 'StereoSystem'],
+             'Inicio > Tecnología > Televisores', 0.5],
             ['led', ['Television'],
              'Inicio > Tecnología > Televisores > LED', 1],
             ['smart-tv', ['Television'],
@@ -76,7 +78,8 @@ class LaPolar(Store):
              0.5],
             ['pendrives', ['UsbFlashDrive'],
              'Inicio > Tecnología > Accesorios Computación > Pendrives', 1],
-
+            ['audio', ['StereoSystem'],
+             'Inicio > Tecnología > Audio', 0],
             ['minicomponentes', ['StereoSystem'],
              'Inicio > Tecnología > Audio > Minicomponentes', 1],
             ['parlantes-portátiles', ['StereoSystem'],

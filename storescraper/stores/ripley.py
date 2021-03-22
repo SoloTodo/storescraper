@@ -21,6 +21,7 @@ from storescraper.utils import get_cf_session, HeadlessChrome, \
 from storescraper import banner_sections as bs
 
 from selenium.common.exceptions import NoSuchElementException
+from seleniumwire import webdriver
 
 
 class Ripley(Store):
@@ -142,6 +143,8 @@ class Ripley(Store):
              'Tecno > Fotografía y Video > Camaras reflex', 1],
             ['tecno/fotografia-y-video/semi-profesionales', ['Camera'],
              'Tecno > Fotografía y Video > Semi profesionales', 1],
+            ['tecno/audio-y-musica', ['StereoSystem'],
+             'Tecno > Audio y Música', 0],
             ['tecno/audio-y-musica/equipos-de-musica', ['StereoSystem'],
              'Tecno > Audio y Música > Equipos de música', 1],
             ['tecno/audio-y-musica/parlantes-portables', ['StereoSystem'],
@@ -559,23 +562,19 @@ class Ripley(Store):
         if 'PROXY_USERNAME' not in extra_args:
             return {}
 
-        with sync_playwright() as p:
-            proxy = {
-                'server': 'http://{}:{}'.format(extra_args['PROXY_IP'],
-                                                extra_args['PROXY_PORT']),
-                'username': extra_args['PROXY_USERNAME'],
-                'password': extra_args['PROXY_PASSWORD']
-            }
+        proxy = 'http://{}:{}@{}:{}'.format(
+            extra_args['PROXY_USERNAME'],
+            extra_args['PROXY_PASSWORD'],
+            extra_args['PROXY_IP'],
+            extra_args['PROXY_PORT'],
+        )
 
-            browser = p.chromium.launch(proxy=proxy, headless=True)
-            context = browser.newContext(
-                userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) '
-                          'Gecko/20100101 Firefox/84.0'
-            )
+        with HeadlessChrome(images_enabled=True, proxy=proxy,
+                            headless=False) as driver:
+            driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134	'})
 
-            page = context.newPage()
-            page.goto('https://simple.ripley.cl/')
-            time.sleep(10)
+            driver.get('https://simple.ripley.cl')
+            time.sleep(20)
 
             # Anti captcha request
             request_body = {
@@ -597,16 +596,16 @@ class Ripley(Store):
             print(json.dumps(request_body, indent=2))
             anticaptcha_session = requests.Session()
             anticaptcha_session.headers['Content-Type'] = 'application/json'
-            json_response = json.loads(anticaptcha_session.post(
+            response = json.loads(anticaptcha_session.post(
                 'http://api.anti-captcha.com/createTask',
                 json=request_body).text)
 
             print('Anti-captcha task request response')
-            print(json.dumps(json_response, indent=2))
+            print(json.dumps(response, indent=2))
 
-            assert json_response['errorId'] == 0
+            assert response['errorId'] == 0
 
-            task_id = json_response['taskId']
+            task_id = response['taskId']
             print('TaskId', task_id)
 
             # Wait until the task is ready...
@@ -632,49 +631,35 @@ class Ripley(Store):
                 assert res['status'] in ['processing', 'ready'], res
                 if res['status'] == 'ready':
                     print('Solution found')
+                    print(json.dumps(res, indent=2))
                     hcaptcha_response = res['solution']['gRecaptchaResponse']
                     break
                 retries += 1
 
             print(hcaptcha_response)
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-            for field in ['h-captcha-response']:
-                foo = (f"() => {{var foo = document.createElement('input');"
-                       f"foo.setAttribute('name', '{field}');"
-                       f"foo.setAttribute('value','{hcaptcha_response}'); "
-                       f"document.getElementsByTagName('form')"
-                       f"[0].appendChild(foo);}}")
-                print(foo)
-                page.evaluate(foo)
+            for field in ['g-recaptcha-response']:
+                if soup.find('input', {'name': field}):
+                    driver.execute_script("document.querySelector('[name=\""
+                                          "{0}\"]').remove(); ")
 
-            page.evaluate("() => {document.getElementsByTagName('form')"
-                          "[0].submit()}")
+                driver.execute_script("var foo = document.createElement('"
+                                      "input'); foo.setAttribute('name', "
+                                      "'{0}'); "
+                                      "foo.setAttribute('value','{1}'); "
+                                      "document.getElementsByTagName('form')"
+                                      "[0].appendChild(foo);".format(
+                                        field, hcaptcha_response))
+            driver.execute_script("document.getElementsByTagName('form')"
+                                  "[0].submit()")
 
             time.sleep(5)
 
-            cfduid_cookie = None
-            cf_clearance_cookie = None
-
-            for cookie in context.cookies():
-                if cookie['name'] == '__cfduid':
-                    print(cookie)
-                    cfduid_cookie = cookie['value']
-                    print('__cfduid', cookie)
-                if cookie['name'] == 'cf_clearance':
-                    print(cookie)
-                    cf_clearance_cookie = cookie['value']
-
-            assert cfduid_cookie and cf_clearance_cookie
-
-            proxy_string = 'http://{}:{}@{}:{}'.format(
-                extra_args['PROXY_USERNAME'], extra_args['PROXY_PASSWORD'],
-                extra_args['PROXY_IP'], extra_args['PROXY_PORT']
-            )
-
             d = {
-                "proxy": proxy_string,
-                "cf_clearance": cf_clearance_cookie,
-                "__cfduid": cfduid_cookie
+                "proxy": proxy,
+                "cf_clearance": driver.get_cookie('cf_clearance')['value'],
+                "__cfduid": driver.get_cookie('__cfduid')['value']
             }
 
             print(json.dumps(d))

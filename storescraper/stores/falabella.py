@@ -107,6 +107,8 @@ class Falabella(Store):
          'Home > Fotografía-Cámaras Compactas', 1],
         ['cat70029', ['Camera'],
          'Home > Fotografía-Cámaras Semiprofesionales', 1],
+        ['cat2005', ['StereoSystem'],
+         'Home > Tecnología-Audio', 0],
         ['cat3091', ['StereoSystem'],
          'Home > Audio-Equipos de Música y Karaokes', 1],
         ['cat3171', ['StereoSystem'],
@@ -166,8 +168,7 @@ class Falabella(Store):
          'Home > Computación- Accesorios Tecnología > Accesorios TV > '
          'Teclados Smart', 1],
         ['cat1640002', ['Headphones'],
-         'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-         'Audífonos', 1],
+         'Home > Tecnología-Audio > Audífonos', 1],
         ['cat4061', ['DishWasher'],
          'Home > Lavado-Lavavajillas', 1],
         ['cat12084890', [GAMING_CHAIR],
