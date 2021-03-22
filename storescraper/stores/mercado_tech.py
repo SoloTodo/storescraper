@@ -73,7 +73,7 @@ class MercadoTech(Store):
             page = 1
 
             while True:
-                if page >= 15:
+                if page >= 20:
                     raise Exception('Page overflow')
 
                 page_url = 'https://www.mercadotech.cl/t/{}?page={}'\
