@@ -8,7 +8,8 @@ from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     CPU_COOLER, MOUSE, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class Enarix(Store):
@@ -77,8 +78,6 @@ class Enarix(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
@@ -92,6 +91,7 @@ class Enarix(Store):
             offer_price = remove_words(price_container.find('bdi').text)
         normal_price = Decimal(int(offer_price) * 1.04)
         picture_urls = []
+        description = html_to_markdown(str(soup.find('div', 'woocommerce-Tabs-panel--description')))
         p = Product(
             name,
             cls.__name__,
@@ -105,5 +105,6 @@ class Enarix(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            description=description
         )
         return [p]
