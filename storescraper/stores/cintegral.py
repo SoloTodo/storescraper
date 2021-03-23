@@ -9,7 +9,8 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import NOTEBOOK, ALL_IN_ONE, TABLET, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
     USB_FLASH_DRIVE, PROCESSOR, COMPUTER_CASE, POWER_SUPPLY, MOTHERBOARD, \
-    RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR
+    RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR, \
+    KEYBOARD_MOUSE_COMBO, KEYBOARD
 
 
 class Cintegral(Store):
@@ -35,7 +36,9 @@ class Cintegral(Store):
             HEADPHONES,
             STEREO_SYSTEM,
             UPS,
-            MONITOR
+            MONITOR,
+            KEYBOARD_MOUSE_COMBO,
+            KEYBOARD,
         ]
 
     @classmethod
@@ -44,30 +47,26 @@ class Cintegral(Store):
                    'id_category={}&controller=category&page={}'
 
         url_extensions = [
-            ['17', NOTEBOOK],
-            ['84', ALL_IN_ONE],
-            ['85', TABLET],
-            ['101', STORAGE_DRIVE],
-            ['102', EXTERNAL_STORAGE_DRIVE],
-            ['103', SOLID_STATE_DRIVE],
-            ['104', MEMORY_CARD],
-            ['105', USB_FLASH_DRIVE],
-            ['94', PROCESSOR],
-            ['95', COMPUTER_CASE],
-            ['96', POWER_SUPPLY],
-            ['97', MOTHERBOARD],
-            ['98', RAM],
-            ['99', VIDEO_CARD],
-            ['113', MOUSE],
+            ['4', NOTEBOOK],
+            ['5', ALL_IN_ONE],
+            ['59', STORAGE_DRIVE],
+            ['60', EXTERNAL_STORAGE_DRIVE],
+            ['61', SOLID_STATE_DRIVE],
+            ['62', MEMORY_CARD],
+            ['63', USB_FLASH_DRIVE],
+            ['13', PROCESSOR],
+            ['14', COMPUTER_CASE],
+            ['15', POWER_SUPPLY],
+            ['16', MOTHERBOARD],
+            ['17', RAM],
+            ['18', VIDEO_CARD],
+            ['22', KEYBOARD_MOUSE_COMBO],
+            ['23', MOUSE],
+            ['21', KEYBOARD],
             ['29', PRINTER],
-            ['23', PRINTER],
-            ['24', PRINTER],
-            ['25', PRINTER],
-            ['26', PRINTER],
-            ['34', HEADPHONES],
-            ['35', STEREO_SYSTEM],
-            ['37', UPS],
-            ['15', MONITOR],
+            ['48', HEADPHONES],
+            ['49', STEREO_SYSTEM],
+            ['46', MONITOR],
         ]
 
         product_urls = []
