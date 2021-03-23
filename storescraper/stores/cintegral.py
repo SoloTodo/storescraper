@@ -59,6 +59,7 @@ class Cintegral(Store):
             ['98', RAM],
             ['99', VIDEO_CARD],
             ['113', MOUSE],
+            ['29', PRINTER],
             ['23', PRINTER],
             ['24', PRINTER],
             ['25', PRINTER],
