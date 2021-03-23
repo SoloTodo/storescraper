@@ -115,11 +115,14 @@ class EliteCenter(Store):
                 re.search(r'(\d+)', soup.find('p', 'stock').text).groups()[0])
         else:
             stock = -1
-
         normal_price = Decimal(
-            remove_words(
-                soup.find('div', 'product-main').findAll('bdi')[-1].text))
-        offer_price = normal_price
+            remove_words(soup.find('p', 'precio-webpay').text))
+        if soup.find('p', 'precio-oferta'):
+            offer_price = Decimal(soup.find('p', 'precio-oferta').text.
+                                  split('$')[1].replace('.', ''))
+        else:
+            offer_price = Decimal(
+                remove_words(soup.find('p', 'precio-normal').text))
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-gallery').findAll('img')
                         if validators.url(tag['src'])
