@@ -548,11 +548,13 @@ class Falabella(Store):
                 normal_price = offer_price
 
             stock = 0
-            availabilities = model['availability']
 
-            for availability in availabilities:
-                if availability['shippingOptionType'] == 'All':
-                    stock = availability['quantity']
+            if model['isPurchaseable']:
+                availabilities = model['availability']
+
+                for availability in availabilities:
+                    if availability['shippingOptionType'] == 'All':
+                        stock = availability['quantity']
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
                           'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
