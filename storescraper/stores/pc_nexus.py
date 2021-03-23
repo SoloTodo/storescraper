@@ -4,8 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, VIDEO_CARD, MOTHERBOARD, \
-    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, HEADPHONES, PROCESSOR, \
-    MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO
+    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, HEADPHONES, \
+    PROCESSOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -84,7 +84,11 @@ class PcNexus(Store):
             stock = int(soup.find('span', 'stock').text.split()[0])
         else:
             stock = 0
-        price = Decimal(remove_words(soup.find('p', 'price').text))
+        if soup.find('p', 'price').find('ins'):
+            price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text))
+        else:
+            price = Decimal(remove_words(soup.find('p', 'price').text))
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
