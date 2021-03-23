@@ -254,7 +254,7 @@ class Falabella(Store):
         discovered_urls = []
         page = 1
         while True:
-            if page > 60:
+            if page > 150:
                 raise Exception('Page overflow ' + keyword)
 
             search_url = base_url.format(keyword, page)
