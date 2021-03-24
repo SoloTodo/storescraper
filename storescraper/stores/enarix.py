@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, RAM, COMPUTER_CASE, MONITOR, MOTHERBOARD, PROCESSOR, \
-    CPU_COOLER, MOUSE, KEYBOARD
+    CPU_COOLER, MOUSE, KEYBOARD, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -27,6 +27,7 @@ class Enarix(Store):
             CPU_COOLER,
             MOUSE,
             KEYBOARD,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -42,6 +43,7 @@ class Enarix(Store):
             ['componentes-pc/placas-madres', MOTHERBOARD],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/refrigeracion-y-ventiladores', CPU_COOLER],
+            ['componentes-pc/tarjeta-de-video', VIDEO_CARD],
             ['accessorios/mouse', MOUSE],
             ['accessorios/teclados', KEYBOARD],
         ]
