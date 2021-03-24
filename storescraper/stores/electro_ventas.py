@@ -78,7 +78,7 @@ class ElectroVentas(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url_webpage = 'https://electroventas.cl/{}/?page={}'.format(
+                url_webpage = 'https://electroventas.cl/{}?page={}'.format(
                     url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
