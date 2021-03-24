@@ -105,7 +105,7 @@ class Soluservi(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h1', 'product_title').text[:200]
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if not soup.find('p', 'stock'):
             stock = -1
