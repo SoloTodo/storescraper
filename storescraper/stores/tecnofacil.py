@@ -47,7 +47,7 @@ class Tecnofacil(Store):
                 if page >= 25:
                     raise Exception('Page overflow')
 
-                url = 'https://www.tecnofacil.com.gt/{}?limit=30&p={}'\
+                url = 'https://www.tecnofacil.com.gt/{}?limit=30&p={}' \
                     .format(category_path, page)
                 print(url)
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
@@ -61,7 +61,7 @@ class Tecnofacil(Store):
                         done = True
                         break
 
-                    if logo and logo['src'] == 'https://www.tecnofacil.com.gt'\
+                    if logo and logo['src'] == 'https://www.tecnofacil.com.gt' \
                                                '/media/marcas/lg.jpg':
                         lg_product_urls.append(product_url)
                     product_urls.append(product_url)
@@ -75,6 +75,7 @@ class Tecnofacil(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
@@ -86,7 +87,10 @@ class Tecnofacil(Store):
         sku = sku_container.text.strip()
         name = "{} ({})".format(soup.find('div', 'product-name')
                                 .find('h1').text.strip(), sku)
-        if soup.find('p', 'availability').find('span').text == '✔':
+        if soup.find('p', 'availability') and soup.find('p',
+                                                        'availability').find(
+                'span').text == '✔' or soup.find('div',
+                                                 'availability-in-store'):
             stock = -1
         else:
             stock = 0
