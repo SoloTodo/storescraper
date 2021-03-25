@@ -22,13 +22,13 @@ class Artefacta(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['linea-blanca/cocinas.html', 'Stove'],
-            ['linea-blanca/refrigeracion.html', 'Refrigerator'],
-            ['linea-blanca/lavadoras-y-secadoras.html', 'WashingMachine'],
-            ['climatizacion/aires-acondicionados.html', 'AirConditioner'],
-            ['audio/minicomponentes.html', 'StereoSystem'],
-            ['televisores/hd.html', 'Television'],
-            ['televisores/4k.html', 'Television'],
+            ['linea-blanca/cocinas', 'Stove'],
+            ['linea-blanca/refrigeracion', 'Refrigerator'],
+            ['linea-blanca/lavadoras-y-secadoras', 'WashingMachine'],
+            ['climatizacion/aires-acondicionados', 'AirConditioner'],
+            ['audio/minicomponentes', 'StereoSystem'],
+            ['televisores/hd', 'Television'],
+            ['televisores/4k', 'Television'],
         ]
 
         session = session_with_proxy(extra_args)
