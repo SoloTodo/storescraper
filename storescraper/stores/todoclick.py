@@ -110,8 +110,8 @@ class Todoclick(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('span', 'sku_wrapper').text.split()[-1]
+        name = soup.find('h1', 'w-post-elm').text
+        sku = soup.find('span', 'sku').text
         stock = 0
         stock_container = soup.find('p', 'stock in-stock')
         if stock_container:
