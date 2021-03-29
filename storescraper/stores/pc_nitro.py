@@ -1,8 +1,9 @@
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -21,7 +22,7 @@ class PcNitro(Store):
             'PowerSupply',
             'Processor',
             'VideoCard',
-            # 'Ups',
+            'Ups',
             'MemoryCard',
             'Ram',
             'UsbFlashDrive',
@@ -31,22 +32,22 @@ class PcNitro(Store):
             'Mouse',
             'StereoSystem',
             'Monitor',
-            # 'Projector',
             'Television',
             'ExternalStorageDrive',
             'StorageDrive',
             'SolidStateDrive',
             'Cell',
             'Printer',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['27-todo-en-uno', 'AllInOne'],
-            # ['29-portátiles', 'Notebook'],
-            # ['216-notebook-gaming', 'Notebook'],
+            ['29-portátiles', 'Notebook'],
+            ['216-notebook-gaming', 'Notebook'],
             ['31-tablet', 'Tablet'],
             ['40-cajas-gabinetes', 'ComputerCase'],
             ['41-ventiladores-y-sist-de-enfriamiento', 'CpuCooler'],
@@ -57,7 +58,7 @@ class PcNitro(Store):
             ['36-ups-respaldo-energía', 'Ups'],
             ['46-tarjetas-de-memoria-flash', 'MemoryCard'],
             ['48-memorias-ram', 'Ram'],
-            # ['49-unidades-flash-usb', 'UsbFlashDrive'],
+            ['49-unidades-flash-usb', 'UsbFlashDrive'],
             ['60-auriculares-y-manos-libres', 'Headphones'],
             ['120-auriculares', 'Headphones'],
             ['61-teclados-teclado-numéricos', 'Keyboard'],
@@ -66,7 +67,6 @@ class PcNitro(Store):
             ['64-parlantes-bocinas-cornetas', 'StereoSystem'],
             ['123-parlantes-bocinas-cornetas', 'StereoSystem'],
             ['67-monitores', 'Monitor'],
-            ['69-proyectores', 'Projector'],
             ['70-televisores', 'Television'],
             ['52-disco-duros-externos', 'ExternalStorageDrive'],
             ['54-disco-duros-internos', 'StorageDrive'],
@@ -76,7 +76,8 @@ class PcNitro(Store):
             ['158-impresoras-laser', 'Printer'],
             ['159-impresoras-multifunción', 'Printer'],
             ['160-impresoras-fotográficas', 'Printer'],
-            ['174-sillas-gaming', GAMING_CHAIR]
+            ['174-sillas-gaming', GAMING_CHAIR],
+            ['315-consolas-de-juegos', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -99,10 +100,9 @@ class PcNitro(Store):
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
                 products = soup.findAll('div', 'product-description')
 
-                if not products and page == 1:
-                    raise Exception('Empty path ' + url)
-
                 if not products:
+                    if page == 1:
+                        logging.warning('Empty path ' + url)
                     break
 
                 for product in products:

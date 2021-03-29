@@ -93,11 +93,14 @@ class MercadoLibreChile(Store):
     @classmethod
     def retrieve_type3_products(cls, data, session, category):
         variations = set()
+        pickers = data['initialState']['components']['variations'].get('pickers', None)
 
-        for picker in data['initialState']['components']['variations'][
-                'pickers']:
-            for product in picker['products']:
-                variations.add(product['id'])
+        if pickers:
+            for picker in pickers:
+                for product in picker['products']:
+                    variations.add(product['id'])
+        else:
+            variations.add(data['initialState']['id'])
 
         products = []
 
