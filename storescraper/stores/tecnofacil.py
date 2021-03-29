@@ -61,8 +61,8 @@ class Tecnofacil(Store):
                         done = True
                         break
 
-                    if logo and logo['src'] == 'https://www.tecnofacil.com.gt' \
-                                               '/media/marcas/lg.jpg':
+                    if logo and logo['src'] == 'https://www.tecnofacil.com' \
+                                               '.gt/media/marcas/lg.jpg':
                         lg_product_urls.append(product_url)
                     product_urls.append(product_url)
 

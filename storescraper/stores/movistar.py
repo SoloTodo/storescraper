@@ -174,18 +174,19 @@ class Movistar(Store):
         base_url = url.split('?')[0]
 
         def get_json_response(_payload):
+            print(_payload)
             _response = ajax_session.post(
                 'https://catalogo.movistar.cl/equipomasplan/'
                 'emp_detalle/planes',
-                data=payload)
+                data=_payload)
 
             return json.loads(_response.text)
 
         if is_movistar_one:
-            payload_params = 'current%5Bpayment%5D=3&current%5BhasMovistar1' \
-                             '%5D=1&current%5Bmovistar1%5D=1'
+            payload_params = 'current%5BhasMovistar1%5D=1&' \
+                             'current%5Bmovistar1%5D=1'
         else:
-            payload_params = 'current%5Bpayment%5D=1'
+            payload_params = ''
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
@@ -196,16 +197,17 @@ class Movistar(Store):
                 if portability_type_id == 1:
                     # Portabilidad
                     # Sin arriendo
+                    print('porta sin arriendo')
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
-                              'current%5Bplan%5D=Plus+S+Cod_OAQ_Porta' \
+                              'current%5Bpayment%5D=1&' \
+                              'current%5Bplan%5D=Plus+Libre+Cod_0J3_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
                     json_response = get_json_response(payload)
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print('porta sin arriendo')
                     print(cell_url)
 
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
@@ -250,9 +252,20 @@ class Movistar(Store):
                     has_arriendo_option = cell_soup.find(
                         'li', {'id': 'metodo2'})
 
-                    plan_containers = cell_soup.findAll('article')
-
                     if has_arriendo_option:
+                        print('Porta con arriendo')
+                        payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
+                                  'current%5Bpayment%5D=2&' \
+                                  'current%5Bplan%5D=' \
+                                  'Plus+Libre+Cod_0J3_Porta' \
+                                  '&{}&current%5Bcode%5D=' \
+                                  ''.format(sku, payload_params)
+                        json_response = get_json_response(payload)
+                        json_soup = BeautifulSoup(
+                            json_response['planes']['html'],
+                            'html5lib')
+                        plan_containers = json_soup.findAll('article')
+
                         for container in plan_containers:
                             cell_plan_name = container['data-id']
                             price = Decimal(remove_words(container.find(
@@ -285,8 +298,10 @@ class Movistar(Store):
                 elif portability_type_id == 3:
                     # Nuevo
                     # Sin arriendo
+                    print('nuevo')
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
+                              'current%5Bpayment%5D=1&' \
                               'current%5Bplan%5D=&current%5Bmovistar1%5D=0&' \
                               '{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
@@ -294,7 +309,6 @@ class Movistar(Store):
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print('nuevo')
                     print(cell_url)
 
                     cell_soup = BeautifulSoup(session.get(cell_url).text,

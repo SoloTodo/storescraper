@@ -577,7 +577,12 @@ class Ripley(Store):
 
         with HeadlessChrome(images_enabled=True, proxy=proxy,
                             headless=False) as driver:
-            driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134	'})
+            driver.execute_cdp_cmd('Network.setUserAgentOverride', {
+                "userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                             'AppleWebKit/537.36 (KHTML, like Gecko) '
+                             'Chrome/64.0.3282.140 '
+                             'Safari/537.36 '
+                             'Edge/17.17134	'})
 
             driver.get('https://simple.ripley.cl')
             time.sleep(20)

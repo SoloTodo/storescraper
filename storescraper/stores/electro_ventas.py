@@ -83,7 +83,8 @@ class ElectroVentas(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', {'id': 'js-product-list'}).findAll(
+                product_containers = soup.find(
+                    'div', {'id': 'js-product-list'}).findAll(
                     'article', 'product-miniature')
 
                 if not product_containers:
@@ -104,7 +105,8 @@ class ElectroVentas(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data_tag = soup.findAll('script', {'type': 'application/ld+json'})[2]
+        product_data_tag = soup.findAll(
+            'script', {'type': 'application/ld+json'})[2]
         product_data = json.loads(product_data_tag.text)
         name = product_data['name']
         sku = product_data['mpn']
