@@ -104,6 +104,7 @@ from .generacion_gamers import GeneracionGamers
 from .global_box import Globalbox
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
+from .golden_gamers import GoldenGamers
 from .gollo_tienda import GolloTienda
 from .gonzalez_gimenez import GonzalezGimenez
 from .good_computer import GoodComputer
