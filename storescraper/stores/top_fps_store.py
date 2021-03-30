@@ -4,8 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, STORAGE_DRIVE, POWER_SUPPLY, \
-    CPU_COOLER, COMPUTER_CASE, MOUSE, USB_FLASH_DRIVE, MOTHERBOARD, PROCESSOR, \
-    RAM, SOLID_STATE_DRIVE, MEMORY_CARD
+    CPU_COOLER, COMPUTER_CASE, MOUSE, USB_FLASH_DRIVE, MOTHERBOARD, \
+    PROCESSOR, RAM, SOLID_STATE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,7 +43,7 @@ class TopFpsStore(Store):
             ['procesadores', PROCESSOR],
             ['ram', RAM],
             ['ssd', SOLID_STATE_DRIVE],
-            ['tarjetas-sd/', MEMORY_CARD],
+            ['tarjetas-sd', MEMORY_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -77,8 +77,6 @@ class TopFpsStore(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        #import ipdb
-        #ipdb.set_trace()
         name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if soup.find('p', 'stock in-stock'):
