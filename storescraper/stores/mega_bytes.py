@@ -82,9 +82,11 @@ class MegaBytes(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', 'single_add_to_cart_button button alt')[
-            'value']
-        stock = -1
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        if soup.find('p', 'stock out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
         offer_price = Decimal(
             remove_words(soup.find('p', 'price').text).split()[-1])
         price_container = soup.find('div',
