@@ -296,6 +296,7 @@ from .travim import Travim
 from .todo_juegos import TodoJuegos
 from .todoclick import Todoclick
 from .tomalo import Tomalo
+from .top_fps_store import TopFpsStore
 from .top_pc import TopPc
 from .tottus import Tottus
 from .ttchile import TtChile
