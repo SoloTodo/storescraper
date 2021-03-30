@@ -277,6 +277,7 @@ from .stylus import Stylus
 from .sukasa import Sukasa
 from .supermex_digital import SupermexDigital
 from .syd import Syd
+from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
 from .tecno_saga import TecnoSaga
