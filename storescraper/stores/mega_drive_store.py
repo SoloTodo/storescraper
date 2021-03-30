@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
     STORAGE_DRIVE, RAM, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, KEYBOARD, \
-    HEADPHONES, PRINTER
+    HEADPHONES, PRINTER, NOTEBOOK, MONITOR, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,7 +25,10 @@ class MegaDriveStore(Store):
             COMPUTER_CASE,
             KEYBOARD,
             HEADPHONES,
-            PRINTER
+            PRINTER,
+            NOTEBOOK,
+            MONITOR,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -42,8 +45,11 @@ class MegaDriveStore(Store):
             ['19-refrigeracion', CPU_COOLER],
             ['20-gabinetes', COMPUTER_CASE],
             ['22-mouse-y-teclados', KEYBOARD],
-            ['25-audio-sonido', HEADPHONES],
-            ['26-impresoras', PRINTER]
+            ['74-audifonos', HEADPHONES],
+            ['26-impresoras', PRINTER],
+            ['54-notebook', PRINTER],
+            ['70-monitores', MONITOR],
+            ['73-parlantes', STEREO_SYSTEM],
         ]
 
         session = session_with_proxy(extra_args)

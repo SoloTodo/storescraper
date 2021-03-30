@@ -434,7 +434,7 @@ class Paris(Store):
             has_virtual_assistant = False
 
         p = Product(
-            name,
+            name[:200],
             cls.__name__,
             category,
             url,
