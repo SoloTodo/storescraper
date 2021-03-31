@@ -38,23 +38,29 @@ class Wom(Store):
 
         elif category == 'Cell':
             session = session_with_proxy(extra_args)
-            session.headers[
-                'Content-Type'] = 'application/x-www-form-urlencoded'
             equipos_url = 'https://store-srv.wom.cl/rest/V1/content/getList?' \
+                          'searchCriteria[filterGroups][0][filters][0]' \
+                          '[field]=attribute_set_id&searchCriteria' \
+                          '[filterGroups][0][filters][0][value]=11&' \
                           'searchCriteria[filterGroups][1][filters][0]' \
                           '[field]=type_id&searchCriteria[filterGroups][1]' \
                           '[filters][0][value]=configurable&searchCriteria' \
-                          '[filterGroups][10][filters][0][field]=status&' \
+                          '[pageSize]=200&searchCriteria[currentPage]=1&' \
                           'searchCriteria[filterGroups][10][filters][0]' \
-                          '[value]=1'
+                          '[field]=status&searchCriteria[filterGroups][10]' \
+                          '[filters][0][value]=1'
             response = session.get(equipos_url)
 
             json_response = json.loads(response.text)
 
             for idx, cell_entry in enumerate(json_response['items']):
+                # if cell_entry['sku'] == '20210322':
+                #     import ipdb
+                #     ipdb.set_trace()
                 cell_url = 'https://store.wom.cl/equipos/' + \
                            str(cell_entry['sku']) + '/' + cell_entry[
-                               'name'].replace(' ', '-')
+                               'name'].replace('+', 'plus').replace(
+                                '.', '-').replace(' ', '-')
                 discovered_entries[cell_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',
@@ -147,11 +153,11 @@ class Wom(Store):
         products = []
         plans = [
             'Plan WOM 10 Gigas',
-            'Plan Womers 20 GB',
-            'Plan Acumula 40 GB',
-            'Plan Acumula 60 GB',
-            'Plan Acumula 80 GB',
+            'Plan Womers 25 GB',
+            'Plan Acumula 50 GB',
+            'Plan Acumula 75 GB',
             'Plan Acumula 100 GB',
+            'Plan Acumula 125 GB',
             'Plan Womers Libre'
         ]
 
