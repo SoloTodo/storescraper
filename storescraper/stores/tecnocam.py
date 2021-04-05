@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, COMPUTER_CASE, PROCESSOR, RAM, MONITOR, \
-    HEADPHONES, PRINTER,NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM
+    HEADPHONES, PRINTER, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -90,10 +90,8 @@ class Tecnocam(Store):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(price_container.text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
