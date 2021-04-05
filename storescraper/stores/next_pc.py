@@ -74,7 +74,7 @@ class NextPc(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(
-                remove_words(soup.find('p', 'price').text))
+                remove_words(soup.find('p', 'price').text.split()[0]))
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
                                                                '-gallery')

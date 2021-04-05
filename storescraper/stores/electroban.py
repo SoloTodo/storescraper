@@ -26,19 +26,18 @@ class Electroban(Store):
             'Safari/537.36'
 
         product_urls = []
-        # Only get LG products
-        base_url = 'https://www.electroban.com.py/marca_paginacion.php?' \
-                   'id=56&page={}'
         page = 1
 
         while True:
-            url = base_url.format(page)
-            print(url)
-
             if page >= 15:
-                raise Exception('Page overflow: ' + url)
+                raise Exception('Page overflow')
+            # Only get LG products
+            url_webpage = 'https://www.electroban.com.py/buscar_' \
+                          'paginacion.php?query=LG&page={}'.format(page)
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('li', 'product')
 
             if not product_containers:
@@ -46,7 +45,8 @@ class Electroban(Store):
 
             for product in product_containers:
                 product_url = product.find('a')['href']
-                product_urls.append(product_url)
+                if 'LG' in product_url:
+                    product_urls.append(product_url)
 
             page += 1
 
@@ -74,7 +74,7 @@ class Electroban(Store):
         stock_container = soup.find('div', 'availability')
 
         if not stock_container:
-            stock = 0
+            stock = -1
         else:
             stock = stock_container.find('span').text.split(' ')[0]
             if stock == 'Sin':
@@ -87,10 +87,10 @@ class Electroban(Store):
 
         post_data = 'plazo=CONTADO&cod_articulo={}'.format(sku)
 
-        session.headers['Content-Type'] = 'application/x-www-form-urlencoded;'\
-                                          ' charset=UTF-8'
+        session.headers['Content-Type'] = 'application/x-www-form' \
+                                          '-urlencoded; charset=UTF-8'
 
-        price = soup.find('span', {'id': 'elpreciocentral'})\
+        price = soup.find('span', {'id': 'elpreciocentral'}) \
             .text.replace('Gs.', '').replace('.', '').strip()
 
         if not price:
