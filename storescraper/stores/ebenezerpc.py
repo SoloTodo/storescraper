@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import PROCESSOR, VIDEO_CARD, MOTHERBOARD, RAM, \
-    POWER_SUPPLY, STORAGE_DRIVE, SOLID_STATE_DRIVE
+    POWER_SUPPLY, STORAGE_DRIVE, SOLID_STATE_DRIVE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,7 +20,8 @@ class Ebenezerpc(Store):
             RAM,
             POWER_SUPPLY,
             STORAGE_DRIVE,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
+            MOUSE
         ]
 
     @classmethod
@@ -32,7 +33,8 @@ class Ebenezerpc(Store):
             ['memorias-ram', RAM],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['discos-duros', STORAGE_DRIVE],
-            ['ssd', SOLID_STATE_DRIVE]
+            ['ssd', SOLID_STATE_DRIVE],
+            ['perifericos', MOUSE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -80,10 +82,8 @@ class Ebenezerpc(Store):
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
 
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
