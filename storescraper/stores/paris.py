@@ -355,7 +355,11 @@ class Paris(Store):
         if soup.find('div', 'out-of-stock') or \
                 soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
                                          'dwdbab8891/marketing/home/promotext/'
-                                         'promotext-plp-event3-SF.png'}):
+                                         'promotext-plp-event3-SF.png'}) or \
+                soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
+                                         'dw69d02840/marketing/home/promotext/'
+                                         'promotext_temporalmente_no_'
+                                         'disponible.png'}):
             stock = 0
         else:
             stock = -1
