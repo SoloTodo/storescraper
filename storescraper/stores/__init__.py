@@ -67,6 +67,7 @@ from .do_it_center import DoItCenter
 from .e_vision import EVision
 from .easy import Easy
 from .easy_argentina import EasyArgentina
+from .ebenezerpc import Ebenezerpc
 from .efe import Efe
 from .eglo import Eglo
 from .eight_bits import EightBits
