@@ -69,7 +69,11 @@ class Sepuls(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, allow_redirects=False)
+
+        if response.status_code == 301:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('div', 'single-product-page')['id'].split('-')[1]
