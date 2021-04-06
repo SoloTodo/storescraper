@@ -537,7 +537,7 @@ class Falabella(Store):
 
             stock = 0
 
-            if model['isPurchaseable']:
+            if model.get('isPurchaseable', False):
                 availabilities = model['availability']
 
                 for availability in availabilities:
