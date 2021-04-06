@@ -256,6 +256,9 @@ class Falabella(Store):
             script = soup.find('script', {'id': '__NEXT_DATA__'})
             json_data = json.loads(script.text)
 
+            if 'results' not in json_data['props']['pageProps']:
+                break
+
             for product_data in json_data['props']['pageProps']['results']:
                 product_url = product_data['url']
                 discovered_urls.append(product_url)
