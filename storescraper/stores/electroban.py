@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -32,21 +34,19 @@ class Electroban(Store):
             if page >= 15:
                 raise Exception('Page overflow')
             # Only get LG products
-            url_webpage = 'https://www.electroban.com.py/buscar_' \
-                          'paginacion.php?query=LG&page={}'.format(page)
+            url_webpage = 'https://www.electroban.com.py/get-productos?' \
+                          'page={}&marcas=30'.format(page)
 
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+            product_containers = json.loads(data)['paginacion']['data']
 
             if not product_containers:
                 break
 
             for product in product_containers:
-                product_url = product.find('a')['href']
-                if 'LG' in product_url:
-                    product_urls.append(product_url)
+                product_url = product['url_ver']
+                product_urls.append(product_url)
 
             page += 1
 
@@ -62,46 +62,19 @@ class Electroban(Store):
             'Chrome/80.0.3987.149 ' \
             'Safari/537.36'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        name = soup.find('div', 'product-details').find('h1',
+                                                        'product-title').text
+        sku = soup.find('span', 'product-cod').text.split(':')[1].strip()
+        stock = -1
 
-        name = soup.find('h1', 'product_title').text.strip()
-        sku_container = soup.find('a', 'single_add_to_cart_button')
+        price = Decimal(
+            soup.find('div', 'product-price').text.strip().replace('Gs.',
+                                                                   '').replace(
+                '.', '').replace('*', '').strip())
 
-        if not sku_container:
-            sku = soup.find('input', {'id': 'aux_cod_articulo'})['value']
-        else:
-            sku = sku_container['href']
-
-        stock_container = soup.find('div', 'availability')
-
-        if not stock_container:
-            stock = -1
-        else:
-            stock = stock_container.find('span').text.split(' ')[0]
-            if stock == 'Sin':
-                stock = 0
-            else:
-                stock = int(stock)
-
-        if 'LG' not in name.upper().split(' '):
-            stock = 0
-
-        post_data = 'plazo=CONTADO&cod_articulo={}'.format(sku)
-
-        session.headers['Content-Type'] = 'application/x-www-form' \
-                                          '-urlencoded; charset=UTF-8'
-
-        price = soup.find('span', {'id': 'elpreciocentral'}) \
-            .text.replace('Gs.', '').replace('.', '').strip()
-
-        if not price:
-            price = Decimal(session.post(
-                'https://www.electroban.com.py/ajax/calculo_plazo.php',
-                data=post_data).text)
-        else:
-            price = Decimal(price)
-
-        picture_urls = [soup.find(
-            'div', 'thumbnails-single owl-carousel').find('a')['href']]
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'product-image-gallery').findAll(
+                            'img')]
 
         return [Product(
             name,
