@@ -403,6 +403,8 @@ class LaPolar(Store):
                             break
 
                         if not key:
+                            if not destination_urls:
+                                continue
                             key = destination_urls[0]
 
                         banners.append({
