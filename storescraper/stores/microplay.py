@@ -36,7 +36,7 @@ class Microplay(Store):
             ['juegos', {'plataformas': 'pc',
                         'accesorios': 'mouse-teclados'},
              'Keyboard'],
-            ['computacion', {'categorias': 'audifonos-microfonos-12'},
+            ['computacion', {'categorias': 'audifonos-14'},
              'Headphones'],
             ['gamer', {'categorias': 'audifonos-2'}, 'Headphones'],
             ['gamer', {'categorias': 'sillas-gamer-2'}, GAMING_CHAIR]
@@ -53,6 +53,7 @@ class Microplay(Store):
 
             while True:
                 if p > 20:
+                    print(catalogo_name, filters)
                     raise Exception('Page overflow')
 
                 request_pars = {

@@ -273,6 +273,10 @@ class Easy(Store):
 
         prod_response = session.post(prod_url, data=json.dumps(prod_data))
         prod_json = json.loads(prod_response.text)
+
+        if not prod_json['hits']['hits']:
+            return []
+
         prod_hit = prod_json['hits']['hits'][0]
 
         name = prod_hit['_source']['name'].strip()
