@@ -96,8 +96,6 @@ class Spaceman(Store):
                 )
                 products.append(p)
             return products
-        #import ipdb
-        #ipdb.set_trace()
         add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
         sku = soup.find('input', {'name': 'comment_post_ID'})['value']
 
