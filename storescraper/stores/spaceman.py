@@ -55,6 +55,7 @@ class Spaceman(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -95,12 +96,13 @@ class Spaceman(Store):
                 )
                 products.append(p)
             return products
-
         add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
         sku = soup.find('input', {'name': 'comment_post_ID'})['value']
 
-        if add_to_cart_button:
+        if add_to_cart_button and soup.find('span', 'stock'):
             stock = int(soup.find('span', 'stock').text.split()[0])
+        elif add_to_cart_button:
+            stock = -1
         else:
             stock = 0
 
