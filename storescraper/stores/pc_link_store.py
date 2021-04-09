@@ -102,7 +102,7 @@ class PcLinkStore(Store):
             stock = int(soup.find('span', 'product-form-stock').text)
         price = Decimal(
             remove_words(soup.find('span', 'product-form_price').text))
-        picture_urls = [tag['src'] for tag in
+        picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
         p = Product(
             name,
