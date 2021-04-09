@@ -34,13 +34,13 @@ class GWStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['Almacenamiento', SOLID_STATE_DRIVE],
+            ['almacenamiento', SOLID_STATE_DRIVE],
             ['audio-y-video', HEADPHONES],
-            ['gabinete', COMPUTER_CASE],
+            ['gabinetes', COMPUTER_CASE],
             ['memorias', RAM],
-            ['proce', PROCESSOR],
+            ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['placas-madres', MOTHERBOARD],
+            ['tarjeta-madres', MOTHERBOARD],
             ['accesorios/sillas-gamer', GAMING_CHAIR],
             ['accesorios/teclados-gamer', KEYBOARD],
             ['cougar', POWER_SUPPLY],
