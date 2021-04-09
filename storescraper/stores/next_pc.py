@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD_MOUSE_COMBO, \
-    COMPUTER_CASE, MOUSE, VIDEO_CARD, KEYBOARD
+    COMPUTER_CASE, MOUSE, VIDEO_CARD, KEYBOARD, SOLID_STATE_DRIVE, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,6 +20,8 @@ class NextPc(Store):
             MOUSE,
             VIDEO_CARD,
             KEYBOARD,
+            SOLID_STATE_DRIVE,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -29,8 +31,11 @@ class NextPc(Store):
             ['combos', KEYBOARD_MOUSE_COMBO],
             ['gabinetes', COMPUTER_CASE],
             ['mouse', MOUSE],
-            ['tarjetas-de-video', VIDEO_CARD],
+            ['perifericos', MOUSE],
+            ['hardware/tarjetas-de-video', VIDEO_CARD],
             ['teclado', KEYBOARD],
+            ['hardware/almacenamiento', SOLID_STATE_DRIVE],
+            ['hardware/fuentes-de-poder', POWER_SUPPLY],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
