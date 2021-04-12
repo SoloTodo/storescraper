@@ -46,9 +46,14 @@ class Wom(Store):
                           '[field]=type_id&searchCriteria[filterGroups][1]' \
                           '[filters][0][value]=configurable&searchCriteria' \
                           '[pageSize]=200&searchCriteria[currentPage]=1&' \
-                          'searchCriteria[filterGroups][10][filters][0]' \
-                          '[field]=status&searchCriteria[filterGroups][10]' \
-                          '[filters][0][value]=1'
+                          'searchCriteria[filterGroups][2][filters][0]' \
+                          '[field]=name&searchCriteria[filterGroups][2]' \
+                          '[filters][0][value]=%25%25&searchCriteria' \
+                          '[filterGroups][2][filters][0]' \
+                          '[condition_type]=like&searchCriteria[sortOrders]' \
+                          '[0][field]=&searchCriteria[filterGroups][10]' \
+                          '[filters][0][field]=status&searchCriteria' \
+                          '[filterGroups][10][filters][0][value]=1'
             response = session.get(equipos_url)
 
             json_response = json.loads(response.text)
