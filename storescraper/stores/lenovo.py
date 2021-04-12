@@ -31,9 +31,11 @@ class Lenovo(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        session.headers['User-Agent'] = 'curl/7.68.0'
+        session.headers['Accept'] = 'text/html,application/xhtml+xml,' \
+                                    'application/xml;q=0.9,image/avif,' \
+                                    'image/webp,image/apng,*/*;q=0.8,' \
+                                    'application/signed-exchange;v=b3;q=0.9'
 
         products_urls = []
 

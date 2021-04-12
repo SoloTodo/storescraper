@@ -38,6 +38,9 @@ class Soluservi(Store):
             CELL,
             POWER_SUPPLY,
             COMPUTER_CASE,
+            VIDEO_CARD,
+            MOTHERBOARD,
+            PROCESSOR,
         ]
 
     @classmethod
