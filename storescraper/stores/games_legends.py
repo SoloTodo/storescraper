@@ -8,7 +8,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, PROCESSOR, MOUSE, SOLID_STATE_DRIVE, \
     MONITOR, KEYBOARD, HEADPHONES, MOTHERBOARD, POWER_SUPPLY, CELL, \
-    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR
+    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR, VIDEO_GAME_CONSOLE
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -28,7 +28,8 @@ class GamesLegends(Store):
             CELL,
             VIDEO_CARD,
             COMPUTER_CASE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -46,7 +47,9 @@ class GamesLegends(Store):
             # ['telefonos-moviles', CELL],
             ['tarjetas-de-video', VIDEO_CARD],
             ['gabinetes', COMPUTER_CASE],
-            ['sillasgamergl', GAMING_CHAIR]
+            ['sillasgamergl', GAMING_CHAIR],
+            ['nintendo', VIDEO_GAME_CONSOLE],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
