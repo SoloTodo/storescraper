@@ -35,6 +35,7 @@ class ElectronicaBudini(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['auriculares-gamer', HEADPHONES],
             ['discos-de-estado-solido-ssd', SOLID_STATE_DRIVE],
             ['discos-duros-hdd', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
@@ -42,15 +43,14 @@ class ElectronicaBudini(Store):
             ['memoria-ram-pc', RAM],
             ['monitores', MONITOR],
             ['mouse-gamer', MOUSE],
-            ['placas-madre-intel', MOTHERBOARD],
-            ['placas-madre-amd-ryzen', MOTHERBOARD],
             ['notebooks', NOTEBOOK],
+            ['placas-madre-amd-ryzen', MOTHERBOARD],
+            ['placas-madre-intel', MOTHERBOARD],
             ['procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
             ['silla-gamer', GAMING_CHAIR],
-            ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
+            ['tarjetas-de-video', VIDEO_CARD],
             ['todo-en-uno-aio', ALL_IN_ONE],
-            ['auriculares-gamer', HEADPHONES]
+            ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)
@@ -105,11 +105,9 @@ class ElectronicaBudini(Store):
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
 
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce'
-                                                        '-product-'
-                                                        'gallery').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
+
         p = Product(
             name,
             cls.__name__,
