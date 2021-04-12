@@ -72,6 +72,7 @@ from .efe import Efe
 from .eglo import Eglo
 from .eight_bits import EightBits
 from .electroban import Electroban
+from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
 from .electro_ventas import ElectroVentas
 from .el_gallo_mas_gallo import ElGalloMasGallo
