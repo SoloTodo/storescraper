@@ -319,6 +319,7 @@ from .walmart_mexico import WalmartMexico
 from .web_redes import WebRedes
 from .wei import Wei
 from .weplay import Weplay
+from .wisdomts import Wisdomts
 from .winpy import Winpy
 from .woow import Woow
 from .wom import Wom
