@@ -1,4 +1,3 @@
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -30,7 +29,6 @@ class Wisdomts(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
 
             url_webpage = 'https://wisdomts.cl/tienda/?yith_wcan=1' \
                           '&product_cat={}'.format(url_extension)
@@ -38,14 +36,12 @@ class Wisdomts(Store):
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('ul', 'products')[-1]
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers.findAll('li', 'product-'
-                                                              'grid-view'):
+
+            for container in product_containers.findAll(
+                    'li', 'product-grid-view'):
                 product_url = container.find('a')['href']
                 product_urls.append(product_url)
+
         return product_urls
 
     @classmethod
@@ -66,10 +62,8 @@ class Wisdomts(Store):
         else:
             price = Decimal(remove_words(
                 soup.find('p', 'price').text.replace('.', '')))
-        picture_urls = [tag['data-src'] for tag in
-                        soup.find('div',
-                                  'woocommerce-product-gallery').findAll(
-                            'img')]
+        picture_urls = [tag['data-src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
