@@ -411,7 +411,7 @@ class Lider(Store):
             return {}
 
         with HeadlessChrome() as driver:
-            driver.get('https://www.lider.cl/catalogo/product/sku/845824')
+            driver.get('https://www.lider.cl/catalogo/product/sku/971994')
 
             for i in range(10):
                 print(i)
