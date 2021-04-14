@@ -7,7 +7,7 @@ from storescraper.categories import NOTEBOOK, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, \
     MOTHERBOARD, CPU_COOLER, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     STORAGE_DRIVE, RAM, MEMORY_CARD, USB_FLASH_DRIVE, CELL, WEARABLE, \
-    PRINTER, UPS, GAMING_CHAIR
+    PRINTER, UPS, GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,6 +38,9 @@ class YouTech(Store):
             PRINTER,
             UPS,
             GAMING_CHAIR,
+            COMPUTER_CASE,
+            VIDEO_CARD,
+            TABLET,
         ]
 
     @classmethod
@@ -50,8 +53,10 @@ class YouTech(Store):
             ['67824_28', MONITOR],
             ['67824_67846', MOUSE],
             ['67824_67890', KEYBOARD],
+            ['67861_67930', COMPUTER_CASE],
             ['67861_67869', POWER_SUPPLY],
             ['67861_67929', PROCESSOR],
+            ['67861_67919', VIDEO_CARD],
             ['67861_67955', MOTHERBOARD],
             ['67861_67949', CPU_COOLER],
             ['67829_67931', SOLID_STATE_DRIVE],
@@ -62,6 +67,7 @@ class YouTech(Store):
             ['67863_67928', MEMORY_CARD],
             ['67863_67864', USB_FLASH_DRIVE],
             ['67833_67927', CELL],
+            ['67833_67982', TABLET],
             ['67833_67951', WEARABLE],
             ['67833_67966', WEARABLE],
             ['67851', PRINTER],

@@ -66,7 +66,8 @@ class FullcolorSpa(Store):
                 continue
             url_webpage = 'https://www.fullcolorspa.com/{}'.format(
                 url_extension)
-            data = session.get(url_webpage).text
+            print(url_webpage)
+            data = session.get(url_webpage, timeout=30).text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('a', 'product-image')
             if not product_containers:
@@ -81,7 +82,7 @@ class FullcolorSpa(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-name').text.strip()
         sku = soup.find('input', {'id': 'id'})['value']
