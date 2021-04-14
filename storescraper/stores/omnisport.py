@@ -32,31 +32,12 @@ class Omnisport(Store):
         # KEEPS ONLY LG PRODUCTS
 
         category_filters = [
-            ('smart-tv', TELEVISION),
-            ('4k-tv', TELEVISION),
-            ('android-tv', TELEVISION),
-            ('nanocell', TELEVISION),
-            ('oled-tv', TELEVISION),
-            ('pantallas-led', TELEVISION),
-            ('dvd', OPTICAL_DISK_PLAYER),
-            ('audio', STEREO_SYSTEM),
-            ('equipos-de-sonido', STEREO_SYSTEM),
-            ('sistema-de-teatro', STEREO_SYSTEM),
-            ('mini-parlantes', STEREO_SYSTEM),
-            ('celulares', CELL),
-            ('refrigeradores', REFRIGERATOR),
-            ('cocinas', STOVE),
-            ('lavadoras', WASHING_MACHINE),
-            ('secadoras', WASHING_MACHINE),
-            ('inverter', AIR_CONDITIONER),
-            ('microondas', OVEN),
-            ('hornos', OVEN),
-            ('aspiradoras', VACUUM_CLEANER),
+            TELEVISION
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_filters:
+        for local_category in category_filters:
             if local_category != category:
                 continue
 
@@ -66,8 +47,8 @@ class Omnisport(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url = 'https://www.omnisport.com/categorias/{}?page={}' \
-                      ''.format(category_path, page)
+                url = 'https://www.omnisport.com/marcas/lg?page={}' \
+                      ''.format(page)
                 print(url)
 
                 res = session.get(url)
@@ -131,5 +112,5 @@ class Omnisport(Store):
         fixed_price = price
         if price.count('.') > 1:
             split_price = price.split('.')
-            fixed_price = split_price[0]+'.'+split_price[1]
+            fixed_price = split_price[0] + '.' + split_price[1]
         return Decimal(fixed_price.replace('$', '').replace(',', ''))
