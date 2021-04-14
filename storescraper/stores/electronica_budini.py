@@ -100,10 +100,15 @@ class ElectronicaBudini(Store):
         else:
             stock = 0
         if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
+            container_price = int(
+                soup.find('p', 'price').find('ins').text.replace('$',
+                                                                 '').replace(
+                    '.', ''))
         else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
+            container_price = int(
+                soup.find('p', 'price').text.replace('$', '').replace('.', ''))
+        offer_price = Decimal(container_price)
+        normal_price = Decimal(container_price * 1.05)
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
@@ -116,8 +121,8 @@ class ElectronicaBudini(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
