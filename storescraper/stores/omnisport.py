@@ -71,6 +71,10 @@ class Omnisport(Store):
                 print(url)
 
                 res = session.get(url)
+
+                if res.url != url:
+                    break
+
                 soup = BeautifulSoup(res.text, 'html.parser')
                 containers = soup.findAll('div', 'lg:w-1/3')
 
