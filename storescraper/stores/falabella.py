@@ -452,8 +452,6 @@ class Falabella(Store):
             next_container.text)[
             'props']['pageProps']['productData']
 
-        description = ''
-
         specification = soup.find('div', 'productInfoContainer')
         long_description = product_data['longDescription']
 
@@ -470,8 +468,6 @@ class Falabella(Store):
             if not panel:
                 continue
 
-            description += html_to_markdown(str(panel))
-
             for iframe in panel.findAll('iframe'):
                 match = re.search(
                     r'//www.youtube.com/embed/(.+)\?', iframe['src'])
@@ -484,8 +480,6 @@ class Falabella(Store):
 
         slug = product_data['slug']
         publication_id = product_data['id']
-        global_id = product_data['id']
-
         brand = product_data['brandName'] or 'Genérico'
         base_name = '{} {}'.format(brand, product_data['name'])
 
@@ -575,7 +569,7 @@ class Falabella(Store):
 
             seller = None
             if model['offerings'] and \
-                    model['offerings'][0]['sellerId'] != 'FALABELLA':
+                    'FALABELLA' not in model['offerings'][0]['sellerId']:
                 seller = model['offerings'][0]['sellerId']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
@@ -592,7 +586,6 @@ class Falabella(Store):
                 offer_price,
                 'CLP',
                 sku=sku,
-                description=description,
                 picture_urls=picture_urls,
                 video_urls=video_urls,
                 review_count=review_count,
