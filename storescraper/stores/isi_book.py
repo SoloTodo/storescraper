@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -31,6 +32,7 @@ class IsiBook(Store):
             'PowerSupply',
             'Ram',
             'VideoCard',
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -52,6 +54,7 @@ class IsiBook(Store):
             ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
             ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
+            ['sillas', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

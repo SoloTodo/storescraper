@@ -1,26 +1,23 @@
-import demjson
-import re
 from bs4 import BeautifulSoup
-from decimal import Decimal
 
-from storescraper.product import Product
+from storescraper.categories import AIR_CONDITIONER, SPACE_HEATER
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Enel(Store):
     @classmethod
     def categories(cls):
         return [
-            'Lamp',
-            'AirConditioner',
+            AIR_CONDITIONER,
+            SPACE_HEATER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['55-aire-acondicionado', 'AirConditioner'],
-            ['292-purificadores-de-aire', 'AirConditioner'],
+            ['electrodomesticos/climatizacion/aires-acondicionados', AIR_CONDITIONER],
+            ['climatizacion-estufas-calefactores-electricos', SPACE_HEATER],
         ]
 
         product_urls = []
@@ -30,64 +27,37 @@ class Enel(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.tiendaenel.cl/' + category_path
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            product_containers = soup.findAll('section', 'cs-product')
+            offset = 1
+            done = False
 
-            if not product_containers:
-                raise Exception('Empty category: ' + category_url)
+            while not done:
+                if offset >= 200:
+                    raise Exception('Page overflow')
 
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+                category_url = 'https://enelxchile.mercadoshops.cl/listado/' \
+                               '{}/_Desde_{}'.format(category_path, offset)
+                print(category_url)
+                soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+                product_containers = soup.findAll('li', 'ui-search-layout__item')
+
+                if not product_containers:
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href'].split('#')[0].split('?')[0]
+                    product_urls.append(product_url)
+
+                offset += 50
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
-        soup = BeautifulSoup(page_source, 'html.parser')
-        name = soup.find('h1').text.strip()
+        from . import MercadoLibreChile
+        products = MercadoLibreChile.products_for_url(url, category,
+                                                      extra_args)
+        for product in products:
+            product.seller = None
+            product.store = cls.__name__
 
-        sku = soup.find('input', {'name': 'id_product'})['value'].strip()
-
-        price = Decimal(soup.find(
-            'meta', {'property': 'product:price:amount'})['content'])
-        price = price.quantize(0)
-
-        stock = int(re.search(r'quantityAvailable = (-?\d+?);',
-                              page_source).groups()[0])
-
-        if stock == -1:
-            stock = 0
-
-        description = html_to_markdown(str(soup.find('div', 'product-tab')))
-
-        picture_tags = soup.findAll('img', {'itemprop': 'image'})[1:]
-        picture_urls = []
-
-        for tag in picture_tags:
-            picture_url = demjson.decode(
-                re.search(r'rel="(.+?)"',
-                          str(tag.parent)).groups()[0])['largeimage']
-            picture_urls.append(picture_url)
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls
-        )
-
-        return [p]
+        return products
