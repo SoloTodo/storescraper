@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     SOLID_STATE_DRIVE, NOTEBOOK, COMPUTER_CASE, CPU_COOLER, MONITOR, \
     VIDEO_CARD, STEREO_SYSTEM, MOUSE, KEYBOARD, HEADPHONES, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, GAMING_CHAIR
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, GAMING_CHAIR, \
+    PRINTER, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,30 +35,35 @@ class FiestaLan(Store):
             MOUSE,
             KEYBOARD,
             HEADPHONES,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            PRINTER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['procesadores', PROCESSOR],
+            ['notebooks', NOTEBOOK],
+            ['impresoras', PRINTER],
             ['motherboard', MOTHERBOARD],
             ['ram', RAM],
             ['almacenamiento/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/hdd-almacenamiento', STORAGE_DRIVE],
-            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
             ['almacenamiento/ssd', SOLID_STATE_DRIVE],
-            ['notebooks', NOTEBOOK],
-            ['gabinetes', COMPUTER_CASE],
+            ['almacenamiento/hdd-almacenamiento', STORAGE_DRIVE],
+            ['almacenamiento/m2', SOLID_STATE_DRIVE],
+            ['almacenamiento/nvme', SOLID_STATE_DRIVE],
+            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
+            ['procesadores', PROCESSOR],
+            ['gabinetes/gabinetes-gabinetes', COMPUTER_CASE],
+            ['gabinetes/fuentes-de-poder', POWER_SUPPLY],
             ['refrigeracion', CPU_COOLER],
             ['monitores', MONITOR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['accesorios-computacion/parlantes', STEREO_SYSTEM],
             ['accesorios-computacion/ratones', MOUSE],
+            ['accesorios-computacion/audifonos', HEADPHONES],
             ['accesorios-computacion/teclados-y-mouse-accesorios-computacion',
              KEYBOARD],
-            ['accesorios-computacion/audifonos', HEADPHONES],
-            ['accesorios-computacion/sillas-gamer', GAMING_CHAIR]
+            ['accesorios-computacion/sillas-gamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
