@@ -41,6 +41,7 @@ class MiMallVirtual(Store):
             ['32-relojes', WEARABLE],
             ['40-fuentes-de-poder-psu', POWER_SUPPLY],
             ['41-fuentes-de-poder-psu', POWER_SUPPLY],
+            ['43-enfriador-liquido-cpu', CPU_COOLER],
             ['44-enfriador-liquido-cpu', CPU_COOLER],
             ['36-gabinetes', COMPUTER_CASE],
             ['38-memorias', RAM],
@@ -79,7 +80,7 @@ class MiMallVirtual(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'itemprop': 'name'})
+        name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('meta', {'property': 'product:item_group_id'})[
             'content']
         if 'Disponible' in soup.find('span',
