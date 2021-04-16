@@ -74,11 +74,10 @@ class CentralGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
-        if soup.find('div', 'form-group product-stock product-unavailable '
-                            'text-center visible'):
-            stock = 0
-        else:
+        if soup.find('div', {'id': 'stock'}):
             stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
+        else:
+            stock = 0
         price = Decimal(
             remove_words(soup.find('span', {'id': 'product-form-price'}).text))
         picture_urls = [tag['src'].split('?')[0] for tag in
