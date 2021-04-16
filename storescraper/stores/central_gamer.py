@@ -74,7 +74,7 @@ class CentralGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
-        if soup.find('div', 'form-group product-stock product-out-stock '
+        if soup.find('div', 'form-group product-stock product-unavailable '
                             'text-center visible'):
             stock = 0
         else:
