@@ -83,8 +83,7 @@ class MiMallVirtual(Store):
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('meta', {'property': 'product:item_group_id'})[
             'content']
-        if 'Disponible' in soup.find('span',
-                                     {'id': 'product-availability'}).text:
+        if soup.find('button', 'add-to-cart'):
             stock = -1
         else:
             stock = 0
