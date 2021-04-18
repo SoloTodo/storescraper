@@ -58,23 +58,31 @@ class TecnoMaster(Store):
             if local_category != category:
                 continue
             page = 1
-            while True:
+            local_urls = []
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://tecno-master.cl/{}/page/{}'.format(
                     url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'thunk-content-wrap')
+                product_containers = soup.find('ul', 'wc-block-grid__products')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('li'):
+                for container in product_containers.findAll('li', 'wc-block-grid__product'):
                     product_url = container.find('a')['href']
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
                     product_urls.append(product_url)
                 page += 1
-                return product_urls
+
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

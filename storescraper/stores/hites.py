@@ -125,10 +125,10 @@ class Hites(Store):
              'Inicio > Tecnología > Tv Video > Smart TV Entre 50 y 55', 1],
             ['tecnologia/tv-video/smart-tv-desde-58', ['Television'],
              'Inicio > Tecnología > Tv Video > Smart TV Desde 58', 1],
-            ['tecnologia/tv-video/led-samsung', ['Television'],
-             'Inicio > Tecnología > Tv Video > Led Samsung', 1],
-            ['tecnologia/tv-video/led-lg', ['Television'],
-             'Inicio > Tecnología > Tv Video > Led LG', 1],
+            ['tecnologia/tv-video/smart-tv-samsung', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart Tv Samsung', 1],
+            ['tecnologia/tv-video/smart-tv-lg', ['Television'],
+             'Inicio > Tecnología > Tv Video > Smart Tv LG', 1],
             ['tecnologia/computacion',
              ['Notebook', 'Tablet', 'Printer', 'Monitor', 'Projector',
               'Pendrive', 'ExternalStorageDrive'],
@@ -205,6 +205,7 @@ class Hites(Store):
                 category_url = 'https://www.hites.com/{}/?sz=24&start={}&' \
                                'srule=best-matches'.format(
                                 category_path, start)
+
 
                 print(category_url)
 

@@ -71,12 +71,12 @@ class ElectronicaBudini(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('ul', 'products').findAll('li')
+                product_containers = soup.find('ul', 'products')
                 if not product_containers or soup.find('div', 'error-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers:
+                for container in product_containers.findAll('li'):
                     product_url = container.find('a')['href']
                     if 'categoria-producto' in product_url:
                         continue
