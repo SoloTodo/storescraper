@@ -94,6 +94,7 @@ class BookComputer(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -129,7 +130,12 @@ class BookComputer(Store):
         else:
             json_info = json.loads(
                 soup.find('script', {'type': 'application/ld+json'}).text)
-            name = json_info['sku'] + ' - ' + html.unescape(json_info['name'])
+            if 'sku' not in json_info:
+                sku = soup.find('form', 'product-form')['id'].split('-')[-1]
+            else:
+                sku = json_info['sku']
+            name = sku + ' - ' + html.unescape(json_info['name'])
+
             sku = soup.find('form', 'product-form form-horizontal')[
                 'action'].split('/')[-1]
             if json_info['offers'][
