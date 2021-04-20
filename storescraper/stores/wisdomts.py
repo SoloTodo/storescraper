@@ -40,7 +40,8 @@ class Wisdomts(Store):
             for container in product_containers.findAll(
                     'li', 'product-grid-view'):
                 product_url = container.find('a')['href']
-                product_urls.append(product_url)
+                if '2021-dell-gold-partner' not in product_url:
+                    product_urls.append(product_url)
 
         return product_urls
 

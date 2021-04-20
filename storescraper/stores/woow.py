@@ -52,6 +52,8 @@ class Woow(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        if not response.ok:
+            return []
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('div', 'price-box')['data-product-id']
