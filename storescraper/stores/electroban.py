@@ -66,11 +66,15 @@ class Electroban(Store):
                                                         'product-title').text
         sku = soup.find('span', 'product-cod').text.split(':')[1].strip()
         stock = -1
-
-        price = Decimal(
-            soup.find('div', 'product-price').text.strip().replace('Gs.',
-                                                                   '').replace(
-                '.', '').replace('*', '').strip())
+        if soup.find('div', 'product-price').find('span', 'old-price'):
+            price = Decimal(
+                soup.find('div', 'product-price').text.strip().split(' *')[
+                    0].replace('Gs.', '').replace('.', '').replace('*',
+                                                                   '').strip())
+        else:
+            price = Decimal(soup.find('div', 'product-price').text.strip().
+                            replace('Gs.', '').replace('.', '').replace('*',
+                            '').strip())
 
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'product-image-gallery').findAll(
