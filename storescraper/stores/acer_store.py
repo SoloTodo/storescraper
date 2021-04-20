@@ -32,8 +32,8 @@ class AcerStore(Store):
             ['31', 'Notebook'],  # Convertibles
             ['34', 'Notebook'],  # 2 en 1
             ['38', 'AllInOne'],  # All in One
-            ['36', 'Monitor'],   # Monitors
-            ['47', 'Tablet'],    # Tablets
+            ['36', 'Monitor'],  # Monitors
+            ['47', 'Tablet'],  # Tablets
         ]
 
         product_urls = []
@@ -73,8 +73,11 @@ class AcerStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        page_source = session.get(url)
+        if len(page_source.history) and page_source.history[
+                0].status_code == 301:
+            return []
+        soup = BeautifulSoup(page_source.text, 'html.parser')
 
         sku = re.search(r'/p/(\d+)/', url).groups()[0]
         model = soup.find('h1', 'producto-nombre').text.strip()
