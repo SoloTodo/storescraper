@@ -4,6 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -33,6 +34,7 @@ class MercadoTech(Store):
             'AllInOne',
             'Keyboard',
             'Headphones',
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -60,7 +62,8 @@ class MercadoTech(Store):
             ['tecnologia/partes-y-piezas/proyectores', 'Projector'],
             ['tecnologia/equipos/all-in-one', 'AllInOne'],
             ['tecnologia/accesorios/teclados', 'Keyboard'],
-            ['audio-y-video/audifonos', 'Headphones']
+            ['audio-y-video/audifonos', 'Headphones'],
+            ['tecnologia/accesorios/ergonomia/sillas', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

@@ -26,20 +26,21 @@ class MancoStore(Store):
             CPU_COOLER,
             KEYBOARD,
             MOUSE,
-            GAMING_CHAIR
+            # GAMING_CHAIR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['10-gabinetes', COMPUTER_CASE],
-            ['16-tarjetas-de-video', VIDEO_CARD],
-            ['12-procesadores', PROCESSOR],
-            ['15-placas-madre', MOTHERBOARD],
-            ['13-memorias', RAM],
             ['11-almacenamiento', SOLID_STATE_DRIVE],
+            ['12-procesadores', PROCESSOR],
+            ['13-memorias', RAM],
             ['14-fuentes-de-poder', POWER_SUPPLY],
-            ['17-sillas-gamer', GAMING_CHAIR]
+            ['15-placas-madre', MOTHERBOARD],
+            ['16-tarjetas-de-video', VIDEO_CARD],
+            ['18-refrigeracion', CPU_COOLER],
+            ['19-perifericos', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -56,6 +57,7 @@ class MancoStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://mancostore.cl/{}?page={}'.format(
                     url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('section',
