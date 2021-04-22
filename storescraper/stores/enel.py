@@ -16,7 +16,8 @@ class Enel(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['electrodomesticos/climatizacion/aires-acondicionados', AIR_CONDITIONER],
+            ['electrodomesticos/climatizacion/aires-acondicionados',
+             AIR_CONDITIONER],
             ['climatizacion-estufas-calefactores-electricos', SPACE_HEATER],
         ]
 
@@ -37,14 +38,17 @@ class Enel(Store):
                 category_url = 'https://enelxchile.mercadoshops.cl/listado/' \
                                '{}/_Desde_{}'.format(category_path, offset)
                 print(category_url)
-                soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-                product_containers = soup.findAll('li', 'ui-search-layout__item')
+                soup = BeautifulSoup(session.get(category_url).text,
+                                     'html.parser')
+                product_containers = soup.findAll(
+                    'li', 'ui-search-layout__item')
 
                 if not product_containers:
                     break
 
                 for container in product_containers:
-                    product_url = container.find('a')['href'].split('#')[0].split('?')[0]
+                    product_url = container.find('a')['href'].split(
+                        '#')[0].split('?')[0]
                     product_urls.append(product_url)
 
                 offset += 50

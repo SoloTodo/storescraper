@@ -133,12 +133,13 @@ class Globalbox(Store):
         sku = soup.find('th', text='SKU').next.next.next.text.strip()
         part_number = soup.find('th', text='Part Number').next.next.next\
             .text.strip()
+        availability_tag = soup.find('link', {'itemprop': 'availability'})
 
-        if soup.find('link', {'itemprop': 'availability'})[
-             'href'] == 'http://schema.org/InStock':
-            stock = -1
-        else:
+        if not availability_tag or availability_tag['href'] != \
+                'http://schema.org/InStock':
             stock = 0
+        else:
+            stock = -1
 
         price = Decimal(
             remove_words(soup.find('span', 'regular-price').text.strip()))
