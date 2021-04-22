@@ -73,7 +73,8 @@ class TecnoMaster(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('li', 'wc-block-grid__product'):
+                for container in product_containers.findAll(
+                        'li', 'wc-block-grid__product'):
                     product_url = container.find('a')['href']
                     if product_url in local_urls:
                         done = True

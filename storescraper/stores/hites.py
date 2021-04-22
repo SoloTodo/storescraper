@@ -205,8 +205,6 @@ class Hites(Store):
                 category_url = 'https://www.hites.com/{}/?sz=24&start={}&' \
                                'srule=best-matches'.format(
                                 category_path, start)
-
-
                 print(category_url)
 
                 if start >= 360:
