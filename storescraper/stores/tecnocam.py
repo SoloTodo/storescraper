@@ -68,7 +68,8 @@ class Tecnocam(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    products_url = container.find('a')['href']
+                    products_url = \
+                    container.find('h4', 'product-title').find('a')['href']
                     products_urls.append(products_url)
                 page += 1
         return products_urls
