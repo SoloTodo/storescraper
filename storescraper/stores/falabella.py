@@ -760,9 +760,9 @@ class Falabella(Store):
                         .find_elements_by_class_name(
                         'fb-hero-carousel__pips__pip')
 
-                    for element in elements:
-                        element.click()
-                        time.sleep(2)
+                    # TV page has empty banners for some reaseon with
+
+                    if not elements[0].is_displayed():
                         image_url = Image.open(
                             BytesIO(driver.get_screenshot_as_png()))
                         image_url = image_url.crop((0, 187, 1920, 769))
@@ -770,6 +770,17 @@ class Falabella(Store):
                         image_url.save(buffered, format='PNG')
                         pictures.append(
                             base64.b64encode(buffered.getvalue()))
+                    else:
+                        for element in elements:
+                            element.click()
+                            time.sleep(2)
+                            image_url = Image.open(
+                                BytesIO(driver.get_screenshot_as_png()))
+                            image_url = image_url.crop((0, 187, 1920, 769))
+                            buffered = BytesIO()
+                            image_url.save(buffered, format='PNG')
+                            pictures.append(
+                                base64.b64encode(buffered.getvalue()))
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     images_div = soup.findAll('div', 'fb-hero-carousel-slide')
@@ -779,11 +790,13 @@ class Falabella(Store):
                                                  'hero fb-module-wrapper')
 
                     images = images_div + images_article + images_module
+                    images = filter(lambda x: x.find('picture'), images)
 
                     if not images:
                         continue
 
-                    assert len(images) == len(pictures)
+                    # if elements[0].is_displayed():
+                    #     assert len(images) == len(pictures)
 
                     for index, image_url in enumerate(images):
                         picture_array = image_url.findAll(
