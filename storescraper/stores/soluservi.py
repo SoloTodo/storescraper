@@ -112,6 +112,8 @@ class Soluservi(Store):
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if not soup.find('p', 'stock'):
             stock = -1
+        elif soup.find('p', 'stock').text == 'Agotado':
+            stock = 0
         else:
             stock = int(soup.find('p', 'stock').text.split()[0])
         offer_price = Decimal(remove_words(soup.find('p', 'price').text))
