@@ -105,7 +105,7 @@ class BookComputer(Store):
                     0])
             for product in variations:
                 name = soup.find('h1', 'product-form_title page-title').text
-                sku = str(product['values'][0]['value']['id'])
+                sku = str(product['variant']['id'])
                 price = Decimal(product['variant']['price'])
                 stock = product['variant']['stock']
                 picture_urls = [tag['src'] for tag in
