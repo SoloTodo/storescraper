@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, \
-    PROCESSOR, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES
+    PROCESSOR, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, \
+    EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,13 +30,15 @@ class ElectronicaBudini(Store):
             GAMING_CHAIR,
             CPU_COOLER,
             ALL_IN_ONE,
-            HEADPHONES
+            HEADPHONES,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['auriculares-gamer', HEADPHONES],
+            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['discos-de-estado-solido-ssd', SOLID_STATE_DRIVE],
             ['discos-duros-hdd', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
@@ -70,8 +73,9 @@ class ElectronicaBudini(Store):
                               'ucto/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('ul', 'products')
+
                 if not product_containers or soup.find('div', 'error-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
