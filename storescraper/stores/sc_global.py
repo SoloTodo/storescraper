@@ -28,24 +28,21 @@ class ScGlobal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['117-zbook', NOTEBOOK],  # Zbook
-            ['119-notebook', NOTEBOOK],  # Notebook
-            ['120-plotter', PRINTER],  # Plotter
-            ['131-ups', UPS],  # UPS
-            ['10-notebook', NOTEBOOK],  # Notebook
-            ['84-rendimiento', NOTEBOOK],  # Notebooks Rendimiento
-            ['18-hogar-y-empresa', NOTEBOOK],  # Notebooks Hogar y Empresa
-            ['85-movilidad', NOTEBOOK],  # Notebooks Movilidad
-            ['115-all-in-one', ALL_IN_ONE],  # All In One
-            ['15-monitores', MONITOR],  # Monitores
-            ['11-impresoras', PRINTER],  # Impresoras
-            ['127-zona-gamer', NOTEBOOK],  # Zona gamer
-            ['123-teclados-mouse', KEYBOARD],  # Teclados
-            ['125-audifonos', HEADPHONES],  # Audífonos
-            ['121-silla-gamer', GAMING_CHAIR]
+            ['81', NOTEBOOK],  # Zbook
+            ['83', NOTEBOOK],  # Notebook
+            ['84', PRINTER],  # Plotter
+            ['85', UPS],  # UPS
+            ['10', NOTEBOOK],  # Notebook
+            ['32', NOTEBOOK],  # Notebooks Rendimiento
+            ['33', NOTEBOOK],  # Notebooks Hogar y Empresa
+            ['34', NOTEBOOK],  # Notebooks Movilidad
+            ['22', ALL_IN_ONE],  # All In One
+            ['17', MONITOR],  # Monitores
+            ['24', MOUSE],  # Zona gamer
         ]
 
         session = session_with_proxy(extra_args)
+
 
         product_urls = []
         for category_path, local_category in category_paths:
@@ -55,7 +52,8 @@ class ScGlobal(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.scglobal.cl/{}?page={}' \
+                category_url = 'https://www.scglobal.cl/index.php?' \
+                               'id_category={}&controller=category&page={}' \
                                ''.format(category_path, page)
                 print(category_url)
 
