@@ -55,7 +55,7 @@ class SetupSpace(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://setupspace.cl/{}?page={}' \
+                url_webpage = 'https://www.setupspace.cl/{}?page={}' \
                     .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
@@ -67,7 +67,7 @@ class SetupSpace(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    products_urls.append('https://setupspace.cl' + product_url)
+                    products_urls.append('https://www.setupspace.cl' + product_url)
                 page += 1
 
         return products_urls

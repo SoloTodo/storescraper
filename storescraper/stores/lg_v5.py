@@ -108,7 +108,14 @@ class LgV5(Store):
         else:
             name = '{} - {}'.format(model_name, short_description)
 
-        price = Decimal(model_data['obsSellingPrice'])
+        # This scraper is used by LG's WTB service, and its entities are
+        # mapped to WtbEntity instances. These instances do not have a stock
+        # field so if the price is "0" we assume they are not available.
+        if model_data['obsInventoryFlag'] == 'Y':
+            price = Decimal(model_data['obsSellingPrice'])
+        else:
+            price = Decimal(0)
+
         picture_urls = [cls.base_url + x['largeImageAddr'].replace(' ', '%20')
                         for x in model_data['galleryImages']]
         picture_urls = [x for x in picture_urls if validators.url(x)]
