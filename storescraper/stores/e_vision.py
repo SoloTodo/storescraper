@@ -1,6 +1,5 @@
 import json
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import WASHING_MACHINE
@@ -59,6 +58,10 @@ class EVision(Store):
         json_container = json.loads(session.post(url_request, data=data).text)
         name = json_container['product_view'][0]['product_name']
         sku = json_container['product_view'][0]['product_id']
+        if json_container['product_view'][0]['allow_purchase'] == '0':
+            stock = 0
+        else:
+            stock = -1
 
         price = Decimal(json_container['product_view'][0]['price']
                         .replace('$', '').replace(',', '').strip())
@@ -75,7 +78,7 @@ class EVision(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             price,
             price,
             'USD',
