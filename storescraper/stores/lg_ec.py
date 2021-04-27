@@ -58,6 +58,8 @@ class LgEc(LgV5):
             # Aire acondicionado residencial
             ('CT30006200', 'AirConditioner', True),
             ('CT30006200', 'AirConditioner', False),
+            # Purificadores de aire
+            ('CT40006995', 'AirConditioner', True),
             # Monitores
             ('CT20281024', 'Monitor', True),
             ('CT20281024', 'Monitor', False),

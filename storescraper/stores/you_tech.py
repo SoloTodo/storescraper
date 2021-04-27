@@ -50,7 +50,7 @@ class YouTech(Store):
             ['67906_67979', NOTEBOOK],
             ['67824_67897', HEADPHONES],
             ['67824_67850', KEYBOARD_MOUSE_COMBO],
-            ['67824_28', MONITOR],
+            ['68001', MONITOR],
             ['67824_67846', MOUSE],
             ['67824_67890', KEYBOARD],
             ['67861_67930', COMPUTER_CASE],
