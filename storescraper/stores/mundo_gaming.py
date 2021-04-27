@@ -45,7 +45,6 @@ class MundoGaming(Store):
                                                             'product-col'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
-                break
                 page += 1
         return product_urls
 
@@ -64,7 +63,7 @@ class MundoGaming(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'].replace('-150x150','') for tag in
+        picture_urls = [tag['src'].replace('-150x150', '') for tag in
                         soup.find('div', 'product-thumbnails').findAll('img')]
         p = Product(
             name,

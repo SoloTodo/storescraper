@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import STEREO_SYSTEM, AIR_CONDITIONER, OVEN, \
-    WASHING_MACHINE, CELL, TELEVISION, REFRIGERATOR
+    WASHING_MACHINE, CELL, TELEVISION, REFRIGERATOR, CELL_ACCESORY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -21,6 +21,7 @@ class AlmacenesJapon(Store):
             CELL,
             TELEVISION,
             REFRIGERATOR,
+            CELL_ACCESORY,
         ]
 
     @classmethod
@@ -32,7 +33,8 @@ class AlmacenesJapon(Store):
             ['30-lavado-y-secado', WASHING_MACHINE],
             ['51-celulares', CELL],
             ['55-tv-y-video', TELEVISION],
-            ['62-refrigeración', REFRIGERATOR]
+            ['62-refrigeración', REFRIGERATOR],
+            ['79-cuidado-personal', CELL_ACCESORY],
         ]
 
         session = session_with_proxy(extra_args)
