@@ -37,7 +37,7 @@ class VGamers(Store):
             ['parlantes', STEREO_SYSTEM],
             ['almacenamiento', USB_FLASH_DRIVE],
             ['teclados-y-mouse', KEYBOARD],
-            ['gamer', MONITOR],
+            ['monitores-gamer', MONITOR],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinete-gamer', COMPUTER_CASE],
             ['mouse-gamer', MOUSE],
