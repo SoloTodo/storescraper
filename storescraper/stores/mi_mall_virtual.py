@@ -81,8 +81,7 @@ class MiMallVirtual(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('meta', {'property': 'product:item_group_id'})[
-            'content']
+        sku = soup.find('input', {'name': 'id_product'})['value']
         if soup.find('button', 'add-to-cart'):
             stock = -1
         else:
