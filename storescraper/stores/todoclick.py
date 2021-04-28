@@ -92,7 +92,7 @@ class Todoclick(Store):
                                     page_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('li', 'product')
+                products = soup.findAll('article', 'w-grid-item')
 
                 if not products:
                     break
@@ -110,7 +110,7 @@ class Todoclick(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-        name = soup.find('h1', 'w-post-elm').text
+        name = soup.find('h1', 'product_title').text
         sku = soup.find('span', 'sku').text
         stock = 0
         stock_container = soup.find('p', 'stock in-stock')
