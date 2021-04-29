@@ -3,7 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MONITOR, NOTEBOOK
+from storescraper.categories import MONITOR, NOTEBOOK, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -17,17 +17,19 @@ class Lenovo(Store):
     def categories(cls):
         return [
             NOTEBOOK,
-            # TABLET,
+            TABLET,
             MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # Yes, each category has its own required parameters
         category_paths = [
-            ('ch=-488288442&categories=LAPTOPS', NOTEBOOK),
-            # ('tablets/c/TABLETS', TABLET),
-            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY',
-             MONITOR),
+            ('ch=-488288442&categories=LAPTOPS&sort=sortBy&currency=CLP',
+             NOTEBOOK),
+            ('categories=TABLETS', TABLET),
+            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY'
+             '&sort=sortBy&currency=CLP', MONITOR),
         ]
 
         session = session_with_proxy(extra_args)
@@ -45,7 +47,7 @@ class Lenovo(Store):
 
             nb_path = cls.base_domain + '/search/facet/query/v3?' + \
                 category_path + \
-                '&page={}&pageSize=20&sort=sortBy&currency=CLP'
+                '&page={}&pageSize=20'
             page = 0
 
             while True:
