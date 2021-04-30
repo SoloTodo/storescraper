@@ -25,11 +25,21 @@ class Lenovo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         # Yes, each category has its own required parameters
         category_paths = [
-            ('ch=-488288442&categories=LAPTOPS&sort=sortBy&currency=CLP',
+            ('ch=-488288442&categories=LAPTOPS&pageSize=20&sort=price-asc&'
+             'currency=CLP&cmsFacets=facet_Processor,facet_OperatingSystem,'
+             'facet_Series,facet_Graphics,facet_Price,facet_ScreenSize,'
+             'facet_Brand,facet_HardDriveSize,facet_Memory,facet_leadTime,'
+             'facet_Category,facet_ProductType',
              NOTEBOOK),
-            ('categories=TABLETS', TABLET),
-            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY'
-             '&sort=sortBy&currency=CLP', MONITOR),
+            ('ch=-76155580&categories=TABLETS&pageSize=20&sort=price-asc&'
+             'currency=CLP&cmsFacets=facet_OperatingSystem,facet_Price,'
+             'facet_Color,facet_leadTime,facet_ScreenSize,facet_Software,'
+             'facet_ScreenResolution,facet_HardDriveSize', TABLET),
+            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY&'
+             'pageSize=20&sort=price-asc&currency=CLP&cmsFacets=facet_Price,'
+             'facet_Type,facet_ScreenSize,facet_PanelType,facet_Group,'
+             'facet_Resolution',
+             MONITOR),
         ]
 
         session = session_with_proxy(extra_args)
@@ -47,7 +57,7 @@ class Lenovo(Store):
 
             nb_path = cls.base_domain + '/search/facet/query/v3?' + \
                 category_path + \
-                '&page={}&pageSize=20'
+                '&page={}'
             page = 0
 
             while True:
