@@ -92,7 +92,9 @@ class Todoclick(Store):
                                     page_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('article', 'w-grid-item')
+                #import ipdb
+                #ipdb.set_trace()
+                products = soup.findAll('li', 'product')
 
                 if not products:
                     break
