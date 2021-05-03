@@ -50,6 +50,7 @@ class GamesLegends(Store):
             ['sillasgamergl', GAMING_CHAIR],
             ['nintendo', VIDEO_GAME_CONSOLE],
             ['consolas', VIDEO_GAME_CONSOLE],
+            ['zona-xbox', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
