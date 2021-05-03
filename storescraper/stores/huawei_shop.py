@@ -88,6 +88,10 @@ class HuaweiShop(Store):
             name = html.unescape(product['name'])
             sku = product['sbomCode']
             stock = int(stock_info[sku])
+
+            if stock < 0:
+                stock = 0
+
             picture_urls = [picture_base_url.format(product['gbomCode'],
                                                     picture['photoName'])
                             for picture in product['groupPhotoList']]
