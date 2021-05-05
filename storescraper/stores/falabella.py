@@ -538,7 +538,8 @@ class Falabella(Store):
                 availabilities = model['availability']
 
                 for availability in availabilities:
-                    if availability['shippingOptionType'] == 'All':
+                    if availability['shippingOptionType'] in \
+                            ['All', 'HomeDelivery']:
                         stock = availability['quantity']
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
@@ -568,8 +569,8 @@ class Falabella(Store):
                 condition = 'https://schema.org/NewCondition'
 
             seller = None
-            if model['offerings'] and \
-                    'FALABELLA' not in model['offerings'][0]['sellerId']:
+            if model['offerings'] and 'falabella' not in \
+                    model['offerings'][0]['sellerId'].lower():
                 seller = model['offerings'][0]['sellerId']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
