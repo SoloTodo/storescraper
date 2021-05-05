@@ -43,7 +43,6 @@ class ScGlobal(Store):
 
         session = session_with_proxy(extra_args)
 
-
         product_urls = []
         for category_path, local_category in category_paths:
             if local_category != category:

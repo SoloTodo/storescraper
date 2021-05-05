@@ -67,7 +67,8 @@ class SetupSpace(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    products_urls.append('https://www.setupspace.cl' + product_url)
+                    products_urls.append('https://www.setupspace.cl' +
+                                         product_url)
                 page += 1
 
         return products_urls

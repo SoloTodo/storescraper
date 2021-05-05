@@ -25,22 +25,24 @@ class Lenovo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         # Yes, each category has its own required parameters
         category_paths = [
-            ('ch=-488288442&categories=LAPTOPS&pageSize=20&sort=price-asc&'
+            ('ch=-488288442&categories=LAPTOPS&pageSize=20&sort={}&'
              'currency=CLP&cmsFacets=facet_Processor,facet_OperatingSystem,'
              'facet_Series,facet_Graphics,facet_Price,facet_ScreenSize,'
              'facet_Brand,facet_HardDriveSize,facet_Memory,facet_leadTime,'
              'facet_Category,facet_ProductType',
              NOTEBOOK),
-            ('ch=-76155580&categories=TABLETS&pageSize=20&sort=price-asc&'
+            ('ch=-76155580&categories=TABLETS&pageSize=20&sort={}&'
              'currency=CLP&cmsFacets=facet_OperatingSystem,facet_Price,'
              'facet_Color,facet_leadTime,facet_ScreenSize,facet_Software,'
              'facet_ScreenResolution,facet_HardDriveSize', TABLET),
             ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY&'
-             'pageSize=20&sort=price-asc&currency=CLP&cmsFacets=facet_Price,'
+             'pageSize=20&sort={}&currency=CLP&cmsFacets=facet_Price,'
              'facet_Type,facet_ScreenSize,facet_PanelType,facet_Group,'
              'facet_Resolution',
              MONITOR),
         ]
+
+        sorters = ['sortBy', 'price-asc', 'price-desc', 'selling-desc']
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.68.0'
@@ -55,32 +57,34 @@ class Lenovo(Store):
             if local_category != category:
                 continue
 
-            nb_path = cls.base_domain + '/search/facet/query/v3?' + \
-                category_path + \
-                '&page={}'
-            page = 0
+            for sorter in sorters:
+                nb_path = cls.base_domain + '/search/facet/query/v3?' + \
+                    category_path.format(sorter) + \
+                    '&page={}'
+                page = 0
 
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow')
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
 
-                url = nb_path.format(page)
-                print(url)
-                response = session.get(url)
+                    url = nb_path.format(page)
+                    print(url)
+                    response = session.get(url)
 
-                if response.status_code == 500:
-                    break
+                    if response.status_code == 500:
+                        break
 
-                data = json.loads(response.text)
+                    data = json.loads(response.text)
 
-                if 'results' not in data:
-                    break
+                    if 'results' not in data:
+                        break
 
-                for product_entry in data['results']:
-                    product_url = cls.base_domain + product_entry['url']
-                    products_urls.append(product_url)
+                    for product_entry in data['results']:
+                        product_url = cls.base_domain + product_entry['url']
+                        if product_url not in products_urls:
+                            products_urls.append(product_url)
 
-                page += 1
+                    page += 1
 
         return products_urls
 
