@@ -83,6 +83,7 @@ class TiendaMovistar(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
         response = session.get(url)
@@ -111,7 +112,7 @@ class TiendaMovistar(Store):
             'sku=' + sku
         ).text)
 
-        stock = stock_data['respuesta']['cantidad']
+        stock = int(stock_data['respuesta']['cantidad'])
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))

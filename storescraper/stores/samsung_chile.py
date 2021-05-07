@@ -69,6 +69,14 @@ class SamsungChile(Store):
             for product in product_list:
                 for model in product['modelList']:
                     name = model['displayName']
+                    variant_specs = []
+
+                    for spec_entry in model['fmyChipList']:
+                        variant_specs.append(spec_entry['fmyChipName'].strip())
+
+                    if variant_specs:
+                        name += ' ({})'.format(' / '.join(variant_specs))
+
                     if 'www.samsung.com' in model['pdpUrl']:
                         model_url = 'https:{}'.format(model['pdpUrl'])
                     else:
