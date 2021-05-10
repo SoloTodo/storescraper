@@ -161,9 +161,15 @@ class Wei(Store):
 
         offer_price = Decimal(remove_words(pricing_container.find(
             'div', 'txt18').contents[0].split('$')[1]))
-        normal_price = pricing_container.findAll(
-            'div', 'txt14')[1].contents[0].split('$')[1]
-        normal_price = Decimal(remove_words(normal_price))
+        normal_price = None
+
+        for price_tag in pricing_container.findAll('div', 'txt14'):
+            if 'Precio Oferta' in price_tag.text:
+                normal_price = price_tag.contents[0].split('$')[1]
+                normal_price = Decimal(remove_words(normal_price))
+                break
+
+        assert normal_price
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
