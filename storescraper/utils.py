@@ -147,7 +147,7 @@ def get_cf_session(extra_args):
     for header_name, header_value in CF_REQUEST_HEADERS.items():
         session.headers[header_name] = header_value
 
-    cookie_names = ['cf_clearance', '__cfduid']
+    cookie_names = ['cf_clearance']
 
     for cookie_name in cookie_names:
         if cookie_name not in extra_args:
@@ -198,12 +198,6 @@ def load_driver_cf_cookies(driver, extra_args, domain):
     driver.add_cookie({
         'name': 'cf_clearance',
         'value': extra_args['cf_clearance'],
-        'domain': domain,
-        'path': '/'
-    })
-    driver.add_cookie({
-        'name': '__cfduid',
-        'value': extra_args['__cfduid'],
         'domain': domain,
         'path': '/'
     })

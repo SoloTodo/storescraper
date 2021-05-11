@@ -665,8 +665,7 @@ class Ripley(Store):
 
             d = {
                 "proxy": proxy,
-                "cf_clearance": driver.get_cookie('cf_clearance')['value'],
-                "__cfduid": driver.get_cookie('__cfduid')['value']
+                "cf_clearance": driver.get_cookie('cf_clearance')['value']
             }
 
             print(json.dumps(d))

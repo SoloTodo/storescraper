@@ -27,19 +27,15 @@ def main():
         driver.get('https://simple.ripley.cl')
         input('Please complete the CAPTCHA, then press ENTER')
 
-        cfduid_cookie = None
         cf_clearance_cookie = None
         cf_clearance_expiration = None
 
         for cookie in driver.get_cookies():
-            if cookie['name'] == '__cfduid':
-                cfduid_cookie = cookie['value']
-                print('__cfduid', cookie)
             if cookie['name'] == 'cf_clearance':
                 cf_clearance_cookie = cookie['value']
                 cf_clearance_expiration = cookie['expiry']
 
-        assert cfduid_cookie and cf_clearance_cookie
+        assert cf_clearance_cookie
 
         print('Use the following parameters as "extra args" for scraping')
         print('Cookie expires on:',
@@ -49,7 +45,6 @@ def main():
         d = {
             "proxy": proxy,
             "cf_clearance": cf_clearance_cookie,
-            "__cfduid": cfduid_cookie
         }
         print(json.dumps(d))
 
