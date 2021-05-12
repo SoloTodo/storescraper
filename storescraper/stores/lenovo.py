@@ -29,7 +29,7 @@ class Lenovo(Store):
              'currency=CLP&cmsFacets=facet_Processor,facet_OperatingSystem,'
              'facet_Series,facet_Graphics,facet_Price,facet_ScreenSize,'
              'facet_Brand,facet_HardDriveSize,facet_Memory,facet_leadTime,'
-             'facet_Category,facet_ProductType',
+             'facet_Category,facet_ProductType,facet_Software',
              NOTEBOOK),
             ('ch=-76155580&categories=TABLETS&pageSize=20&sort={}&'
              'currency=CLP&cmsFacets=facet_OperatingSystem,facet_Price,'
