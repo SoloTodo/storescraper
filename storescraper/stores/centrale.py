@@ -103,6 +103,7 @@ class Centrale(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -112,7 +113,7 @@ class Centrale(Store):
             name = soup.find('span', {'id': 'solotodo'}).text.split()[
                        1] + ' - ' + soup.find('h1',
                                               'product-title').text.strip()
-        sku = soup.find('button', 'single_add_to_cart_button')['value']
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('=p')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
