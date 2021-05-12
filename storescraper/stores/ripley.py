@@ -133,17 +133,17 @@ class Ripley(Store):
              'Electro > Lavandería > Lavadora-secadora', 1],
             ['electro/lavanderia/doble-carga', ['WashingMachine'],
              'Electro > Lavandería > Doble carga', 1],
-            ['tecno/telefonia/iphone', ['Cell'],
+            ['tecno/celulares/iphone', ['Cell'],
              'Tecno > Telefonía > iPhone', 1],
-            ['tecno/telefonia/samsung', ['Cell'],
+            ['tecno/celulares/samsung', ['Cell'],
              'Tecno > Telefonía > Samsung', 1],
-            ['tecno/telefonia/huawei', ['Cell'],
+            ['tecno/celulares/huawei', ['Cell'],
              'Tecno > Telefonía > Huawei', 1],
-            ['tecno/telefonia/xiaomi', ['Cell'],
+            ['tecno/celulares/xiaomi', ['Cell'],
              'Tecno > Telefonía > Xiaomi', 1],
-            ['tecno/telefonia/motorola', ['Cell'],
+            ['tecno/celulares/motorola', ['Cell'],
              'Tecno > Telefonía > Motorola', 1],
-            ['tecno/telefonia/basicos', ['Cell'],
+            ['tecno/celulares/celulares-basicos', ['Cell'],
              'Tecno > Telefonía > Básicos', 1],
             ['tecno/audio-y-musica', ['StereoSystem'],
              'Tecno > Audio y Música', 0],
@@ -169,15 +169,15 @@ class Ripley(Store):
             ['electro/climatizacion/estufas-y-calefactores',
              ['SpaceHeater'],
              'Electro > Climatización > Estufas y calefactores', 1],
-            ['tecno/corner-smartwatch/garmin', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/garmin', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables > Garmin', 1],
-            ['tecno/corner-smartwatch/polar', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/polar', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables > Polar', 1],
-            ['tecno/corner-smartwatch/apple-watch', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/apple', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables > Apple Watch', 1],
-            ['tecno/corner-smartwatch/samsung', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/samsung', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables > Samsung', 1],
-            ['tecno/corner-smartwatch/huawei', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/huawei', ['Wearable'],
              'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
             ['tecno/especial-audifonos', ['Headphones'],
              'Tecno > Audio y Música > Audífonos', 1],
@@ -276,6 +276,7 @@ class Ripley(Store):
 
                 if fast_mode and page >= 50:
                     break
+
                 page += 1
 
         products_list = [p for p in product_dict.values()]
@@ -581,7 +582,7 @@ class Ripley(Store):
                              'Edge/17.17134	'})
 
             driver.get('https://simple.ripley.cl')
-            time.sleep(20)
+            time.sleep(10)
 
             # Anti captcha request
             request_body = {
@@ -692,9 +693,9 @@ class Ripley(Store):
             [bs.REFRIGERATION, 'Freezers y congeladores',
              bs.SUBSECTION_TYPE_MOSAIC,
              'electro/refrigeracion/freezers-y-congeladores/'],
-            # [bs.REFRIGERATION, 'Door In Door',
-            #  bs.SUBSECTION_TYPE_MOSAIC,
-            #  'electro/refrigeracion/door-in-door/'],
+            [bs.REFRIGERATION, 'Door In Door',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'electro/refrigeracion/door-in-door/'],
             [bs.REFRIGERATION, 'Frigobar',
              bs.SUBSECTION_TYPE_MOSAIC,
              'electro/refrigeracion/frigobar/'],
@@ -719,16 +720,16 @@ class Ripley(Store):
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/smart-tv'],
             [bs.TELEVISIONS, 'Ultra HD 4K',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/ultra-hd-4k'],
-            # [bs.TELEVISIONS, 'Premium y 8K',
-            #  bs.SUBSECTION_TYPE_MOSAIC,
-            #  'tecno/television/premium-tv-y-8k'],
+            [bs.TELEVISIONS, 'Premium y 8K',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/television/premium-tv-y-8k'],
             [bs.TELEVISIONS, 'HD y Full HD',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/television/hd-y-full-hd'],
             [bs.AUDIO, 'Audio y Música',
              bs.SUBSECTION_TYPE_MOSAIC, 'tecno/audio-y-musica'],
-            # [bs.AUDIO, 'Parlantes Portables',
-            #  bs.SUBSECTION_TYPE_MOSAIC,
-            #  'tecno/audio-y-musica/parlantes-portables'],
+            [bs.AUDIO, 'Parlantes Portables',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecno/audio-y-musica/parlantes-portables'],
             [bs.AUDIO, 'Soundbar y Home theater',
              bs.SUBSECTION_TYPE_MOSAIC,
              'tecno/audio-y-musica/soundbar-y-home-theater'],
@@ -741,10 +742,10 @@ class Ripley(Store):
             [bs.AUDIO, 'Accesorios',
              bs.SUBSECTION_TYPE_MOSAIC,
              'tecno/audio-y-musica/accesorios-audio'],
-            # [bs.CELLS, 'Telefonía',
-            #  bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia'],
-            # [bs.CELLS, 'iPhone',
-            #  bs.SUBSECTION_TYPE_MOSAIC, 'tecno/telefonia/iphone']
+            [bs.CELLS, 'Telefonía',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/celulares'],
+            [bs.CELLS, 'iPhone',
+             bs.SUBSECTION_TYPE_MOSAIC, 'tecno/celulares/iphone']
         ]
 
         banners = []
@@ -772,7 +773,8 @@ class Ripley(Store):
                 picture_container = soup.find('section', 'catalog-top-banner')
 
                 if not picture_container:
-                    raise Exception('No banners for: ' + url)
+                    print('No banners for: ' + url)
+                    continue
 
                 picture_url = picture_container.find('img')
 
