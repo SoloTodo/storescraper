@@ -88,9 +88,11 @@ class Linio(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         key = re.search(r'-([a-zA-Z0-9]+)$', url).groups()[0]
         page_source = response.text
-        pricing_str = re.search(r'dataLayer = ([\S\s]+?);\n',
+        # import ipdb
+        # ipdb.set_trace()
+        pricing_str = re.search(r'window.dataLayer.push\(([\S\s]+?)\);\n',
                                 page_source).groups()[0]
-        pricing_data = json.loads(pricing_str)[0]
+        pricing_data = json.loads(pricing_str)
 
         name = pricing_data['product_name'][0:254]
         sku = pricing_data['sku_config']
