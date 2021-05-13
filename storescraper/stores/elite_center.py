@@ -11,7 +11,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR, NOTEBOOK
+    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
@@ -37,6 +37,7 @@ class EliteCenter(Store):
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
             NOTEBOOK,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
@@ -55,6 +56,7 @@ class EliteCenter(Store):
             ['accesorios-gamer/parlantes', STEREO_SYSTEM],
             ['almacenamiento/disco-duro-pcs', STORAGE_DRIVE],
             ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
