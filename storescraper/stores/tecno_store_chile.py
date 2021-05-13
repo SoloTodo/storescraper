@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, GAMING_CHAIR
+    SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
+    GAMING_CHAIR, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,6 +23,7 @@ class TecnoStoreChile(Store):
             KEYBOARD,
             MOUSE,
             GAMING_CHAIR,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
@@ -36,8 +38,13 @@ class TecnoStoreChile(Store):
             ['389-equipos-de-audio', STEREO_SYSTEM],
             ['401-audifonos-gamer', STEREO_SYSTEM],
             ['399-teclados', KEYBOARD],
+            ['396-teclados', KEYBOARD],
             ['398-mouse', MOUSE],
+            ['395-mouse', MOUSE],
             ['403-sillas', GAMING_CHAIR],
+            ['397-conjuntos', KEYBOARD_MOUSE_COMBO],
+            ['400-conjuntos', KEYBOARD_MOUSE_COMBO],
+            ['397-conjuntos', KEYBOARD_MOUSE_COMBO],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
