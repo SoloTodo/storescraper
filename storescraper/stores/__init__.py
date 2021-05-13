@@ -17,6 +17,7 @@ from .artefacta import Artefacta
 from .bbcc import BookComputer
 from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
+from .best_store import BestStore
 from .bip import Bip
 from .bit_center import BitCenter
 from .bgod_gaming import BgodGaming
