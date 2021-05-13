@@ -214,6 +214,7 @@ from .nemz import Nemz
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notetop import Notetop
+from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
 from .orbital_store import OrbitalStore
