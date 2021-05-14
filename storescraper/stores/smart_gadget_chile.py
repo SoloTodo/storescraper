@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MONITOR, RAM, VIDEO_CARD, \
     PROCESSOR, COMPUTER_CASE, KEYBOARD_MOUSE_COMBO, SOLID_STATE_DRIVE, \
-    TABLET, HEADPHONES
+    TABLET, HEADPHONES, VIDEO_GAME_CONSOLE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -24,7 +24,9 @@ class SmartGadgetChile(Store):
             KEYBOARD_MOUSE_COMBO,
             SOLID_STATE_DRIVE,
             TABLET,
-            HEADPHONES
+            HEADPHONES,
+            VIDEO_GAME_CONSOLE,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -32,6 +34,7 @@ class SmartGadgetChile(Store):
         url_extensions = [
             ['notebook/nuevos', NOTEBOOK],
             ['notebook/reacondicionados', NOTEBOOK],
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['gadget', MONITOR],
             ['ram', RAM],
             ['tarjetas-de-video', VIDEO_CARD],
@@ -40,7 +43,8 @@ class SmartGadgetChile(Store):
             ['teclados-y-mouse', KEYBOARD_MOUSE_COMBO],
             ['almacenamiento', SOLID_STATE_DRIVE],
             ['tablet', TABLET],
-            ['audifonos', HEADPHONES]
+            ['accesorios-gamer', GAMING_CHAIR],
+            ['audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
 
