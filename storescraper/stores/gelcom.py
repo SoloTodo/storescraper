@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MONITOR, CPU_COOLER, PRINTER, MOUSE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, \
-    MEMORY_CARD
+    MEMORY_CARD, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -30,33 +30,40 @@ class Gelcom(Store):
             MOUSE,
             HEADPHONES,
             STEREO_SYSTEM,
-            KEYBOARD
+            KEYBOARD,
+            GAMING_CHAIR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['74-discos-duros-internos', STORAGE_DRIVE],
+            # AUDIO
+            ['12-audifonos', HEADPHONES],
+            ['20-parlantes-bluetooth', STEREO_SYSTEM],
+            ['21-parlantes-karaoke', STEREO_SYSTEM],
+            # COMPUTACION
+            ['63-mouse', MOUSE],
+            ['65-parlantes-pc', STEREO_SYSTEM],
+            ['64-teclados', KEYBOARD],
             ['73-discos-duros-externo', EXTERNAL_STORAGE_DRIVE],
+            ['74-discos-duros-internos', STORAGE_DRIVE],
             ['75-discos-ssd', SOLID_STATE_DRIVE],
             ['72-pendrive', USB_FLASH_DRIVE],
             ['76-tarjetas-de-memoria', MEMORY_CARD],
+            ['78-impresoras', PRINTER],
             ['188-fuentes-de-poder', POWER_SUPPLY],
-            ['233-fuentes-de-poder-gamer', POWER_SUPPLY],
             ['189-gabinetes', COMPUTER_CASE],
-            ['47-gabinetes-gamers', COMPUTER_CASE],
             ['67-monitores', MONITOR],
             ['190-refrigeracion-y-ventiladores', CPU_COOLER],
-            ['232-refrigeracion-gamer', CPU_COOLER],
-            ['78-impresoras', PRINTER],
-            ['63-mouse', MOUSE],
-            ['41-mouse-gamers', MOUSE],
+            # GAMING
             ['43-audifonos-gamers', HEADPHONES],
-            ['12-audifonos', HEADPHONES],
-            ['65-parlantes-pc', STEREO_SYSTEM],
+            ['41-mouse-gamers', MOUSE],
             ['46-parlantes-gamers', STEREO_SYSTEM],
-            ['64-teclados', KEYBOARD],
             ['42-teclados-gamers', KEYBOARD],
+            ['52-sillas-gamers', GAMING_CHAIR],
+            ['233-fuentes-de-poder-gamer', POWER_SUPPLY],
+            ['47-gabinetes-gamers', COMPUTER_CASE],
+            ['232-refrigeracion-gamer', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

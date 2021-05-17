@@ -42,7 +42,6 @@ class BestStore(Store):
             CELL,
             STORAGE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
             SOLID_STATE_DRIVE
         ]
 
@@ -95,7 +94,7 @@ class BestStore(Store):
                     url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('div',
                                                {'id': 'js-product-list'})
                 if not product_containers:
