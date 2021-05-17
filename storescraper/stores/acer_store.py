@@ -26,14 +26,15 @@ class AcerStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['25', 'Notebook'],  # Notebooks gamer
-            ['28', 'Notebook'],  # Notebooks
-            ['35', 'Notebook'],  # Ultradelgados
-            ['31', 'Notebook'],  # Convertibles
-            ['34', 'Notebook'],  # 2 en 1
-            ['38', 'AllInOne'],  # All in One
-            ['36', 'Monitor'],  # Monitors
-            ['47', 'Tablet'],  # Tablets
+            ['25/notebooks-gamer', 'Notebook'],
+            ['28/notebook', 'Notebook'],
+            ['89/chromebooks-chile', 'Notebook'],
+            ['35/notebooks-ultralivianos', 'Notebook'],
+            ['31/notebooks-convertible', 'Notebook'],
+            ['34/notebooks-tablets-2-en-1', 'Notebook'],
+            ['38/all-in-one', 'AllInOne'],
+            ['36/monitores', 'Monitor'],
+            ['47/tablets', 'Tablet'],
         ]
 
         product_urls = []
@@ -49,10 +50,13 @@ class AcerStore(Store):
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                category_url = 'https://www.acerstore.cl/site/c/{}/foo/' \
-                               'productos?page={}'.format(category_id, page)
+                category_url = 'https://www.acerstore.cl/site/c/{}/' \
+                               'productos?&page={}&orden=2'.format(category_id, page)
                 print(category_url)
                 json_data = json.loads(session.get(category_url).text)
+
+                if 'items' not in json_data['categorias'][0]:
+                    break
 
                 if 'categorias' not in json_data:
                     if page == 1:
