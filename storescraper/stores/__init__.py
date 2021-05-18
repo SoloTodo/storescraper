@@ -322,6 +322,7 @@ from .volans import Volans
 from .v_store import VStore
 from .vtr import Vtr
 from .v2 import V2
+from .waren_house import WarenHouse
 from .walmart_argentina import WalmartArgentina
 from .walmart_brazil import WalmartBrazil
 from .walmart_mexico import WalmartMexico
