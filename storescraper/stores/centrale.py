@@ -107,13 +107,13 @@ class Centrale(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if len(soup.find('span', {'id': 'solotodo'}).text.split()) == 1:
-            name = soup.find('h1', 'product-title').text.strip()
-        else:
-            name = soup.find('span', {'id': 'solotodo'}).text.split()[
-                       1] + ' - ' + soup.find('h1',
-                                              'product-title').text.strip()
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('=p')[-1]
+        part_number = soup.find('span', {'id': 'solotodo'}).contents[1].strip()
+
+        if not part_number:
+            part_number = None
+
+        name = soup.find('h1', 'product-title').text.strip()
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
@@ -150,6 +150,7 @@ class Centrale(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
         return [p]
