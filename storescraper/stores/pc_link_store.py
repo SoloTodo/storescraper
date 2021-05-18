@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, MOUSE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, CPU_COOLER, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, RAM, MOTHERBOARD, VIDEO_CARD, COMPUTER_CASE, \
-    NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, VIDEO_GAME_CONSOLE
+    NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, VIDEO_GAME_CONSOLE, \
+    PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,7 +34,8 @@ class PcLinkStore(Store):
             MONITOR,
             STEREO_SYSTEM,
             GAMING_CHAIR,
-            TABLET
+            TABLET,
+            PROCESSOR,
         ]
 
     @classmethod
@@ -49,6 +51,7 @@ class PcLinkStore(Store):
             ['componentes/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['memorias-ram', RAM],
             ['placas-madres', MOTHERBOARD],
+            ['componentes/procesador', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['componentes/gabinete', COMPUTER_CASE],
             ['consolas', VIDEO_GAME_CONSOLE],
