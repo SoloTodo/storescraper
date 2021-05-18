@@ -29,13 +29,13 @@ class Entel(Store):
         if category == 'Cell':
             # Contrato
 
-            json_url = 'https://miportal.entel.cl/lista-productos?' \
-                       'No=0&Nrpp=1000&subPath=main%5B1%5D&format=json-rest'
-            session.headers['Content-Type'] = 'application/json; charset=UTF-8'
+            json_url = 'https://miportal.entel.cl/catalogo/equipo-plan?' \
+                       'No=0&Nrpp=1000&subPath=main%5B1%5D'
+            session.headers['Accept'] = 'application/json'
             response = session.get(json_url)
 
             json_product_list = json.loads(
-                response.text)['response']['records']
+                response.text)['records']
 
             for idx, device in enumerate(json_product_list):
                 product_url = 'https://miportal.entel.cl/personas/producto{}'\
