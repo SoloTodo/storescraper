@@ -158,6 +158,11 @@ class Entel(Store):
             variant_name = variant['skuName']
             variant_sku = variant['skuId']
 
+            if 'seminuevo' in variant_name.lower():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
+
             plans_url = 'https://miportal.entel.cl/' \
                         'restpp/equipments/prices/{}'.format(variant_sku)
 
@@ -199,6 +204,7 @@ class Entel(Store):
                     sku=variant_sku,
                     cell_monthly_payment=Decimal(0),
                     cell_plan_name=plan_name,
+                    condition=condition
                 ))
 
             # Prepago
@@ -221,7 +227,8 @@ class Entel(Store):
                 'CLP',
                 sku=variant_sku,
                 cell_monthly_payment=Decimal(0),
-                cell_plan_name='Entel Prepago'
+                cell_plan_name='Entel Prepago',
+                condition=condition
             )
             products.append(product)
 
