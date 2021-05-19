@@ -62,10 +62,10 @@ class Sevenwin(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'page-header').text
         sku = soup.find('form', 'form-horizontal')['action'].split('/')[-1]
-        if soup.find('span', ' product-stock product-out-stock visible'):
-            stock = 0
-        else:
+        if soup.find('input', 'adc'):
             stock = -1
+        else:
+            stock = 0
         price = Decimal(remove_words(
             soup.find('span', 'product-form-price').text))
         picture_urls = [tag['src'] for tag in soup.find('div',
