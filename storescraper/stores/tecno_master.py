@@ -105,14 +105,16 @@ class TecnoMaster(Store):
         else:
             stock = -1
         price_container = soup.find('p', 'price')
-        if price_container.find('ins'):
+        if not price_container.text:
+            return []
+        elif price_container.find('ins'):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'woocommerce-product'
                                                         '-gallery')
-                        .findAll('img')]
+            .findAll('img')]
         p = Product(
             name,
             cls.__name__,
