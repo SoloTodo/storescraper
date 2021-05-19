@@ -70,13 +70,17 @@ class Ofimania(Store):
         if response.status_code == 301:
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
+        # import ipdb
+        # ipdb.set_trace()
         if soup.find('form', 'variations_form'):
             json_container = json.loads(soup.find('form', 'variations_form')[
                                             'data-product_variations'])
             stock = int(BeautifulSoup(json_container[0]['availability_html'],
                                       'html.parser').text.split()[0])
-        else:
+        elif soup.find('p', 'stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        else:
+            stock = -1
 
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
