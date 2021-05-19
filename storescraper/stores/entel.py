@@ -24,28 +24,35 @@ class Entel(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['Accept'] = 'application/json'
         product_entries = defaultdict(lambda: [])
 
         if category == 'Cell':
             # Contrato
 
-            json_url = 'https://miportal.entel.cl/catalogo/equipo-plan?' \
-                       'No=0&Nrpp=1000&subPath=main%5B1%5D'
-            session.headers['Accept'] = 'application/json'
-            response = session.get(json_url)
+            endpoints = ['equipo-plan', 'celulares']
 
-            json_product_list = json.loads(
-                response.text)['records']
+            for endpoint in endpoints:
+                json_url = 'https://miportal.entel.cl/catalogo/{}?' \
+                           'No=0&Nrpp=1000&subPath=main%5B1%5D'.format(
+                            endpoint)
+                response = session.get(json_url)
 
-            for idx, device in enumerate(json_product_list):
-                product_url = 'https://miportal.entel.cl/personas/producto{}'\
-                    .format(device['detailsAction']['recordState'])
+                json_product_list = json.loads(
+                    response.text)['records']
 
-                product_entries[product_url].append({
-                    'category_weight': 1,
-                    'section_name': 'Equipos',
-                    'value': idx + 1
-                })
+                for idx, device in enumerate(json_product_list):
+                    product_url = 'https://miportal.entel.cl/personas/' \
+                                  'producto{}'.format(
+                                    device['detailsAction']['recordState'])
+
+                    # We mostly don't care about the exact position, just
+                    # merge the endpoints data
+                    product_entries[product_url].append({
+                        'category_weight': 1,
+                        'section_name': 'Equipos',
+                        'value': idx + 1
+                    })
 
         if category == 'CellPlan':
             product_entries[cls.prepago_url].append({
