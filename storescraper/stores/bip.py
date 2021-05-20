@@ -142,16 +142,16 @@ class Bip(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
         response = session.get(url)
 
         if response.status_code in [404, 500]:
             return []
 
         soup = BeautifulSoup(response.text, 'html5lib')
-
         name = soup.find('h2', 'title-product').text.strip()
         sku = soup.find('span', 'text-stock').text.strip()
-
         stocks_container = soup.find('div', 'sucursales-stock')
 
         if stocks_container and stocks_container.find('i', 'fa-check-circle'):
@@ -159,13 +159,9 @@ class Bip(Store):
         else:
             stock = 0
 
-        price_containers = soup.findAll('p', 'precio')
-
-        offer_price = Decimal(remove_words(price_containers[0].text.strip()))
-        normal_price = Decimal(remove_words(price_containers[1].text.strip()))
-
-        if normal_price < offer_price:
-            normal_price = offer_price
+        price_data = ajax_session.post('https://bip.cl/home/viewProductAjax',
+                                       'idProd=' + sku).json()
+        price = Decimal(price_data['internet_price'].replace('.', ''))
 
         description = html_to_markdown(
                 str(soup.find('div', {'id': 'description'})))
@@ -181,8 +177,8 @@ class Bip(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             description=description,
