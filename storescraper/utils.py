@@ -163,12 +163,14 @@ def get_cf_session(extra_args):
 
 class HeadlessChrome:
     def __init__(self, images_enabled=False, proxy=None, headless=True,
-                 timeout=30):
+                 timeout=30, user_agent=None):
         options = webdriver.ChromeOptions()
         if headless:
             options.add_argument('headless')
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
+        if user_agent:
+            options.add_argument('--user-agent="' + user_agent + '"')
 
         options.add_argument("start-maximized")
         options.add_experimental_option("excludeSwitches",

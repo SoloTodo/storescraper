@@ -4,24 +4,18 @@ import time
 import json
 from datetime import datetime
 
-import requests
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
-
-from playwright import sync_playwright
 
 from storescraper.categories import GAMING_CHAIR
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
-from storescraper.utils import get_cf_session, HeadlessChrome, \
-    load_driver_cf_cookies, html_to_markdown, CF_REQUEST_HEADERS, \
+from storescraper.utils import HeadlessChrome, html_to_markdown, \
     session_with_proxy
 from storescraper import banner_sections as bs
 
 from selenium.common.exceptions import NoSuchElementException
-from seleniumwire import webdriver
 
 
 class Ripley(Store):
@@ -185,10 +179,11 @@ class Ripley(Store):
              'Tecno > Computación Gamer > Sillas Gamer', 1]
         ]
 
-        if extra_args is None:
-            extra_args = {}
+        session = session_with_proxy(extra_args)
 
-        session = get_cf_session(extra_args)
+        if extra_args and 'user-agent' in extra_args:
+            session.headers['user-agent'] = extra_args['user-agent']
+
         fast_mode = extra_args.get('fast_mode', False)
         print('fast_mode', fast_mode)
 
@@ -296,7 +291,10 @@ class Ripley(Store):
 
     @classmethod
     def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        session = get_cf_session(extra_args)
+        session = session_with_proxy(extra_args)
+        if extra_args and 'user-agent' in extra_args:
+            session.headers['user-agent'] = extra_args['user-agent']
+
         print(url)
         page_source = session.get(url).text
 
@@ -520,7 +518,10 @@ class Ripley(Store):
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        session = get_cf_session(extra_args)
+        session = session_with_proxy(extra_args)
+        if extra_args and 'user-agent' in extra_args:
+            session.headers['user-agent'] = extra_args['user-agent']
+
         product_urls = []
 
         page = 1
@@ -554,124 +555,6 @@ class Ripley(Store):
             page += 1
 
         return product_urls
-
-    @classmethod
-    def preflight(cls, extra_args=None):
-        # Obtain Cloudflare bypass cookie
-        if extra_args is None:
-            raise Exception("extra_args should contain the parameters to "
-                            "obtain the Cloudflare session cookie or the "
-                            "'debug' flag if testing locally")
-        if 'PROXY_USERNAME' not in extra_args:
-            return {}
-
-        proxy = 'http://{}:{}@{}:{}'.format(
-            extra_args['PROXY_USERNAME'],
-            extra_args['PROXY_PASSWORD'],
-            extra_args['PROXY_IP'],
-            extra_args['PROXY_PORT'],
-        )
-
-        with HeadlessChrome(images_enabled=True, proxy=proxy,
-                            headless=False) as driver:
-            driver.execute_cdp_cmd('Network.setUserAgentOverride', {
-                "userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                             'AppleWebKit/537.36 (KHTML, like Gecko) '
-                             'Chrome/64.0.3282.140 '
-                             'Safari/537.36 '
-                             'Edge/17.17134	'})
-
-            driver.get('https://simple.ripley.cl')
-            time.sleep(10)
-
-            # Anti captcha request
-            request_body = {
-                "clientKey": extra_args['KEY'],
-                "task":
-                    {
-                        "type": "HCaptchaTask",
-                        "websiteURL": "https://simple.ripley.cl/",
-                        "websiteKey": '33f96e6a-38cd-421b-bb68-7806e1764460',
-                        "proxyType": "http",
-                        "proxyAddress": extra_args['PROXY_IP'],
-                        "proxyPort": extra_args['PROXY_PORT'],
-                        "proxyLogin": extra_args['PROXY_USERNAME'],
-                        "proxyPassword": extra_args['PROXY_PASSWORD'],
-                        "userAgent": CF_REQUEST_HEADERS['User-Agent']
-                    }
-            }
-            print('Sending anti-captcha task')
-            print(json.dumps(request_body, indent=2))
-            anticaptcha_session = requests.Session()
-            anticaptcha_session.headers['Content-Type'] = 'application/json'
-            response = json.loads(anticaptcha_session.post(
-                'http://api.anti-captcha.com/createTask',
-                json=request_body).text)
-
-            print('Anti-captcha task request response')
-            print(json.dumps(response, indent=2))
-
-            assert response['errorId'] == 0
-
-            task_id = response['taskId']
-            print('TaskId', task_id)
-
-            # Wait until the task is ready...
-            get_task_result_params = {
-                "clientKey": extra_args['KEY'],
-                "taskId": task_id
-            }
-            print(
-                'Querying for anti-captcha response (wait 10 secs per retry)')
-            print(json.dumps(get_task_result_params, indent=4))
-            retries = 1
-            hcaptcha_response = None
-            while not hcaptcha_response:
-                if retries > 60:
-                    raise Exception('Failed to get a token in time')
-                print('Retry #{}'.format(retries))
-                time.sleep(10)
-                res = json.loads(anticaptcha_session.post(
-                    'https://api.anti-captcha.com/getTaskResult',
-                    json=get_task_result_params).text)
-
-                assert res['errorId'] == 0, res
-                assert res['status'] in ['processing', 'ready'], res
-                if res['status'] == 'ready':
-                    print('Solution found')
-                    print(json.dumps(res, indent=2))
-                    hcaptcha_response = res['solution']['gRecaptchaResponse']
-                    break
-                retries += 1
-
-            print(hcaptcha_response)
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-            for field in ['g-recaptcha-response']:
-                if soup.find('input', {'name': field}):
-                    driver.execute_script("document.querySelector('[name=\""
-                                          "{0}\"]').remove(); ")
-
-                driver.execute_script("var foo = document.createElement('"
-                                      "input'); foo.setAttribute('name', "
-                                      "'{0}'); "
-                                      "foo.setAttribute('value','{1}'); "
-                                      "document.getElementsByTagName('form')"
-                                      "[0].appendChild(foo);".format(
-                                        field, hcaptcha_response))
-            driver.execute_script("document.getElementsByTagName('form')"
-                                  "[0].submit()")
-
-            time.sleep(5)
-
-            d = {
-                "proxy": proxy,
-                "cf_clearance": driver.get_cookie('cf_clearance')['value']
-            }
-
-            print(json.dumps(d))
-
-            return d
 
     @classmethod
     def banners(cls, extra_args=None):
@@ -762,7 +645,11 @@ class Ripley(Store):
                 banners = banners + cls.get_owl_banners(
                     url, section, subsection, subsection_type, extra_args)
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                session = get_cf_session(extra_args)
+                session = session_with_proxy(extra_args)
+
+                if extra_args and 'user-agent' in extra_args:
+                    session.headers['user-agent'] = extra_args['user-agent']
+
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -810,22 +697,14 @@ class Ripley(Store):
                         extra_args):
         extra_args = extra_args or {}
         proxy = extra_args.get('proxy', None)
+        user_agent = extra_args.get('user-agent', None)
         with HeadlessChrome(images_enabled=True, timeout=240,
-                            proxy=proxy, headless=True) as driver:
+                            proxy=proxy, headless=True,
+                            user_agent=user_agent) as driver:
             banners = []
             driver.set_window_size(1920, 1080)
-            # Open the page first so that the CF cookies can be loaded in
-            # this domain
-            # Then set the sesion cookies
-            if 'cf_clearance' in extra_args:
-                driver.get(url)
-                load_driver_cf_cookies(driver, extra_args, '.ripley.cl')
-                driver.get(url)
-            else:
-                driver.get(url)
-
+            driver.get(url)
             driver.execute_script("scrollTo(0, 0);")
-
             pictures = []
 
             banner_container = driver \
