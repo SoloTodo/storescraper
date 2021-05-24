@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD
+    STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,7 +30,8 @@ class TecnoMaster(Store):
             MONITOR,
             MOUSE,
             STEREO_SYSTEM,
-            KEYBOARD
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
@@ -50,7 +51,8 @@ class TecnoMaster(Store):
             ['monitores', MONITOR],
             ['mouse', MOUSE],
             ['parlantes', STEREO_SYSTEM],
-            ['teclados', KEYBOARD]
+            ['teclados', KEYBOARD],
+            ['kit-tecladomouse', KEYBOARD_MOUSE_COMBO],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
