@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, MOUSE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, CPU_COOLER, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, RAM, MOTHERBOARD, VIDEO_CARD, COMPUTER_CASE, \
-    NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, VIDEO_GAME_CONSOLE, \
-    PROCESSOR
+    NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, \
+    VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,6 +36,8 @@ class PcLinkStore(Store):
             GAMING_CHAIR,
             TABLET,
             PROCESSOR,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
         ]
 
     @classmethod
@@ -59,7 +61,9 @@ class PcLinkStore(Store):
             ['monitores', MONITOR],
             ['parlantes', STEREO_SYSTEM],
             ['sillas-gamers', GAMING_CHAIR],
-            ['tablet', TABLET]
+            ['tablet', TABLET],
+            ['accesorios/tarjetas-de-memoria', MEMORY_CARD],
+            ['accesorios/pendrive', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -96,6 +100,7 @@ class PcLinkStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
+        part_number = soup.find('span', 'sku_elem').text.strip()
         sku = \
             soup.find('form', {'enctype': 'multipart/form-data'})[
                 'action'].split('/')[-1]
@@ -119,6 +124,7 @@ class PcLinkStore(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls
         )
         return [p]

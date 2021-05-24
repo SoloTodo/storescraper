@@ -50,6 +50,7 @@ class PcMasterGames(Store):
             ['sam4', MOTHERBOARD],
             ['monitores', MONITOR],
             ['discos-ssd', SOLID_STATE_DRIVE],
+            ['disco-ssd', SOLID_STATE_DRIVE],
             ['equipos', NOTEBOOK],
             ['memorias', RAM],
             ['sillas-gamer', GAMING_CHAIR],

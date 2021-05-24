@@ -80,8 +80,8 @@ class BitCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = \
-            json.loads(
-                soup.find('script', {'type': 'application/ld+json'}).text)[
+            json.loads(soup.findAll(
+                'script', {'type': 'application/ld+json'})[1].text)[
                 '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']

@@ -55,7 +55,7 @@ class Ofimania(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers[1].findAll(
+                for container in product_containers[0].findAll(
                         'div', 'product-grid-item'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)

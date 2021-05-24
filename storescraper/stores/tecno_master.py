@@ -91,7 +91,7 @@ class TecnoMaster(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name_tag = soup.find('h1', 'product_title')
+        name_tag = soup.find('h1')
 
         if not name_tag:
             return []
@@ -111,10 +111,8 @@ class TecnoMaster(Store):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery')
-            .findAll('img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,

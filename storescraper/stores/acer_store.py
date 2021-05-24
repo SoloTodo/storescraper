@@ -51,7 +51,8 @@ class AcerStore(Store):
                     raise Exception('Page overflow')
 
                 category_url = 'https://www.acerstore.cl/site/c/{}/' \
-                               'productos?&page={}&orden=2'.format(category_id, page)
+                               'productos?&page={}&orden=2'.format(
+                                category_id, page)
                 print(category_url)
                 json_data = json.loads(session.get(category_url).text)
 

@@ -143,7 +143,8 @@ class Bip(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         ajax_session = session_with_proxy(extra_args)
-        ajax_session.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        ajax_session.headers['Content-Type'] = \
+            'application/x-www-form-urlencoded; charset=UTF-8'
         response = session.get(url)
 
         if response.status_code in [404, 500]:

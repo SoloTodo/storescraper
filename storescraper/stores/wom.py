@@ -3,9 +3,11 @@ import json
 from collections import defaultdict
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Wom(Store):
@@ -105,8 +107,10 @@ class Wom(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        json_data = session.get('https://store.wom.cl/page-data/planes/'
-                                'page-data.json').json()
+        soup = BeautifulSoup(session.get(
+            'https://store.wom.cl/planes/').text, 'html.parser')
+        plan_containers = soup.findAll(
+            'div', 'index-module--planItemWrapper--1QwM8')
         products = []
 
         variants = [
@@ -114,17 +118,11 @@ class Wom(Store):
             'con cuota de arriendo',
         ]
 
-        for entry in json_data['result']['data'][
-                'allContentfulProduct']['nodes']:
-            plan_name = entry['name']
-
-            # Skip planes "Solo Voz" or "Solo Datos"
-            # Also skip "Grupal" plans
-            if 'Solo' in plan_name or 'Grupal' in plan_name:
-                continue
-
-            context = json.loads(entry['context']['context'])
-            plan_price = Decimal(context['price'])
+        for container in plan_containers:
+            plan_name = container.findAll(
+                'div', 'index-module--value--3xbFh')[-1].text
+            plan_price = Decimal(remove_words(
+                soup.find('span', 'index-module--price--1k_ac').text))
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:
