@@ -32,6 +32,7 @@ class TecnoMaster(Store):
             STEREO_SYSTEM,
             KEYBOARD,
             KEYBOARD_MOUSE_COMBO,
+            PRINTER,
         ]
 
     @classmethod
@@ -53,6 +54,7 @@ class TecnoMaster(Store):
             ['parlantes', STEREO_SYSTEM],
             ['teclados', KEYBOARD],
             ['kit-tecladomouse', KEYBOARD_MOUSE_COMBO],
+            ['impresoras', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
