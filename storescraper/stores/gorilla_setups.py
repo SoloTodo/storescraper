@@ -63,7 +63,14 @@ class GorillaSetups(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
-        stock = -1
+
+        availability_tag = soup.find('link', {'itemprop': 'availability'})
+
+        if availability_tag['href'] == 'https://schema.org/InStock':
+            stock = -1
+        else:
+            stock = 0
+
         price = Decimal(
             soup.find('div', 'current-price').find('span')['content'])
         picture_urls = [tag['src'] for tag in
