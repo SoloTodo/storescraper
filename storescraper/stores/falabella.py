@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 import re
 import time
 import base64
@@ -737,45 +738,27 @@ class Falabella(Store):
                                     timeout=99, headless=True) as driver:
                     driver.set_window_size(1920, 1080)
 
-                    pips_container = None
-
-                    for i in range(20):
-                        endpoint_url = url + '&v=' + str(i)
-                        print(endpoint_url)
-                        driver.get(endpoint_url)
-                        pips_container = driver.find_elements_by_class_name(
-                            'fb-hero-carousel__pips')
-                        if pips_container:
-                            pips_container = pips_container[0]
-                            break
-
-                    if not pips_container:
-                        raise Exception('Invalid category page: ' + url)
+                    endpoint_url = url + '&v=' + str(random.randint(1, 1000))
+                    print(endpoint_url)
+                    driver.get(endpoint_url)
+                    pips_container = driver.find_elements_by_class_name(
+                        'fb-hero-carousel__pips')
 
                     pictures = []
 
-                    driver.execute_script(
-                        "arguments[0].setAttribute('style', "
-                        "'display:block !important;');", pips_container)
-                    elements = driver.find_element_by_class_name(
-                        'fb-hero-carousel__pips') \
-                        .find_elements_by_class_name(
-                        'fb-hero-carousel__pips__pip')
+                    if pips_container:
+                        pips_container = pips_container[0]
+                        driver.execute_script(
+                            "arguments[0].setAttribute('style', "
+                            "'display:block !important;');", pips_container)
+                        elements = driver.find_element_by_class_name(
+                            'fb-hero-carousel__pips') \
+                            .find_elements_by_class_name(
+                            'fb-hero-carousel__pips__pip')
 
-                    # TV page has empty banners for some reaseon with
+                        # TV page has empty banners for some reaseon with
 
-                    if not elements[0].is_displayed():
-                        image_url = Image.open(
-                            BytesIO(driver.get_screenshot_as_png()))
-                        image_url = image_url.crop((0, 187, 1920, 769))
-                        buffered = BytesIO()
-                        image_url.save(buffered, format='PNG')
-                        pictures.append(
-                            base64.b64encode(buffered.getvalue()))
-                    else:
-                        for element in elements:
-                            element.click()
-                            time.sleep(2)
+                        if not elements[0].is_displayed():
                             image_url = Image.open(
                                 BytesIO(driver.get_screenshot_as_png()))
                             image_url = image_url.crop((0, 187, 1920, 769))
@@ -783,6 +766,27 @@ class Falabella(Store):
                             image_url.save(buffered, format='PNG')
                             pictures.append(
                                 base64.b64encode(buffered.getvalue()))
+                        else:
+                            for element in elements:
+                                element.click()
+                                time.sleep(2)
+                                image_url = Image.open(
+                                    BytesIO(driver.get_screenshot_as_png()))
+                                image_url = image_url.crop((0, 187, 1920, 769))
+                                buffered = BytesIO()
+                                image_url.save(buffered, format='PNG')
+                                pictures.append(
+                                    base64.b64encode(buffered.getvalue()))
+                    else:
+                        # The page only has one banner slide
+
+                        image_url = Image.open(
+                            BytesIO(driver.get_screenshot_as_png()))
+                        image_url = image_url.crop((0, 187, 1920, 769))
+                        buffered = BytesIO()
+                        image_url.save(buffered, format='PNG')
+                        pictures.append(
+                            base64.b64encode(buffered.getvalue()))
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     images_div = soup.findAll('div', 'fb-hero-carousel-slide')
