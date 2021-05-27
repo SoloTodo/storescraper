@@ -170,7 +170,7 @@ class HeadlessChrome:
         if not images_enabled:
             options.add_argument('--blink-settings=imagesEnabled=false')
         if user_agent:
-            options.add_argument('--user-agent="' + user_agent + '"')
+            options.add_argument('--user-agent=' + user_agent)
 
         options.add_argument("start-maximized")
         options.add_experimental_option("excludeSwitches",

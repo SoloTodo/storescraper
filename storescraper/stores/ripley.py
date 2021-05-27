@@ -1,8 +1,9 @@
+import base64
 import logging
 import re
-import time
 import json
 from datetime import datetime
+from io import BytesIO
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -11,11 +12,10 @@ from storescraper.categories import GAMING_CHAIR
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
-from storescraper.utils import HeadlessChrome, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper import banner_sections as bs
 
-from selenium.common.exceptions import NoSuchElementException
+from PIL import Image
 
 
 class Ripley(Store):
@@ -564,9 +564,9 @@ class Ripley(Store):
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.ELECTRO_RIPLEY, 'Electro Ripley',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro'],
             [bs.TECNO_RIPLEY, 'Tecno Ripley',
-             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno/'],
+             bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'tecno'],
             [bs.REFRIGERATION, 'Refrigeración',
              bs.SUBSECTION_TYPE_MOSAIC, 'electro/refrigeracion/'],
             [bs.REFRIGERATION, 'Side by Side',
@@ -695,72 +695,82 @@ class Ripley(Store):
     @classmethod
     def get_owl_banners(cls, url, section, subsection, subsection_type,
                         extra_args):
-        extra_args = extra_args or {}
-        proxy = extra_args.get('proxy', None)
-        user_agent = extra_args.get('user-agent', None)
-        with HeadlessChrome(images_enabled=True, timeout=240,
-                            proxy=proxy, headless=True,
-                            user_agent=user_agent) as driver:
-            banners = []
-            driver.set_window_size(1920, 1080)
-            driver.get(url)
-            driver.execute_script("scrollTo(0, 0);")
-            pictures = []
+        session = session_with_proxy(extra_args)
 
-            banner_container = driver \
-                .find_element_by_class_name('owl-carousel')
+        if extra_args and 'user-agent' in extra_args:
+            session.headers['user-agent'] = extra_args['user-agent']
 
-            retries = 10
+        response = session.get(url + '?v=2')
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-            for i in range(retries):
-                print('Retry {} for owl banner'.format(i + 1))
-                time.sleep(10)
-                controls = banner_container \
-                    .find_elements_by_class_name('owl-page')
-                if controls:
-                    break
-            else:
-                raise Exception('Timeout waiting for owl banners: ' + url)
+        carousel_tag = soup.find('div', 'home-carousel')
 
-            for control in controls:
-                control.click()
-                time.sleep(1)
-                pictures.append(
-                    banner_container.screenshot_as_base64)
+        if carousel_tag:
+            carousel_tag = carousel_tag.find('div')
+        else:
+            carousel_tag = soup.find('div', 'owl-carousel')
 
-            images = banner_container.find_elements_by_class_name('owl-item')
+        banners = []
 
-            assert len(images) == len(pictures)
-
-            for index, image in enumerate(images):
-                try:
-                    image_style = image.find_element_by_tag_name(
-                        'span').get_attribute('style')
-                    key = re.search(r'url\((.*?)\)', image_style) \
-                        .group(1)
-                except NoSuchElementException:
-                    key = image.find_element_by_tag_name(
-                        'source').get_attribute('srcset')
-
-                destinations = image.find_elements_by_tag_name('a')
-                destination_urls = [a.get_attribute('href')
-                                    for a in destinations]
-                destination_urls = list(set(destination_urls))
-
-                destination_urls = list(set(destination_urls))
+        for idx, banner_tag in enumerate(carousel_tag.findAll(recursive=False)):
+            if banner_tag.name == 'a':
+                destination_urls = [banner_tag['href']]
+                if banner_tag.find('img'):
+                    picture_url = banner_tag.find('img')['src']
+                else:
+                    picture_style = banner_tag.find('span')['style']
+                    picture_url = re.search(r'url\((.+)\)', picture_style).groups()[0]
 
                 banners.append({
                     'url': url,
-                    'picture': pictures[index],
+                    'picture_url': picture_url,
+                    'destination_urls': destination_urls,
+                    'key': picture_url,
+                    'position': idx + 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type
+                })
+            else:
+                # Collage
+                cell_tags = banner_tag.findAll('a')
+                destination_urls = [tag['href'] for tag in cell_tags]
+                picture_urls = [re.search(r'url\((.+)\)', tag.find('span')['style']).groups()[0] for tag in cell_tags]
+
+                assert len(destination_urls) == 3
+                assert len(picture_urls) == 3
+                key = ', '.join(picture_urls)[:250]
+
+                im1 = Image.open(BytesIO(session.get(picture_urls[0]).content))
+                im2 = Image.open(BytesIO(session.get(picture_urls[1]).content))
+                im3 = Image.open(BytesIO(session.get(picture_urls[2]).content))
+
+                dst = Image.new('RGB', (im1.width + im2.width + 9, im1.height))
+                dst.paste(im1, (0, 0))
+                dst.paste(im2, (im1.width + 9, 0))
+                dst.paste(im3, (im1.width + 9, im2.height + 9))
+
+                in_mem_file = BytesIO()
+                dst.save(in_mem_file, format="PNG")
+                in_mem_file.seek(0)
+                img_bytes = in_mem_file.read()
+
+                base64_encoded_result_bytes = base64.b64encode(img_bytes)
+                base64_encoded_result_str = base64_encoded_result_bytes.decode(
+                    'ascii')
+
+                banners.append({
+                    'url': url,
+                    'picture': base64_encoded_result_str,
                     'destination_urls': destination_urls,
                     'key': key,
-                    'position': index + 1,
+                    'position': idx + 1,
                     'section': section,
                     'subsection': subsection,
                     'type': subsection_type
                 })
 
-            return banners
+        return banners
 
     @classmethod
     def reviews_for_sku(cls, sku):
