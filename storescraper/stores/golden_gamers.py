@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, COMPUTER_CASE, STORAGE_DRIVE, RAM, GAMING_CHAIR, MOUSE, \
-    KEYBOARD, MONITOR
+    KEYBOARD, MONITOR, NOTEBOOK, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,22 +26,26 @@ class GoldenGamers(Store):
             MOUSE,
             KEYBOARD,
             MONITOR,
+            NOTEBOOK,
+            CPU_COOLER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audifonos', HEADPHONES],
-            ['componentes/Tipo_Placa-Madre', MOTHERBOARD],
-            ['componentes/Tipo_CPU', PROCESSOR],
-            ['componentes/Tipo_Tarjeta-de-Video', VIDEO_CARD],
-            ['componentes/Tipo_Gabinete', COMPUTER_CASE],
-            ['componentes/Tipo_Disco-Duro', STORAGE_DRIVE],
-            ['componentes/Tipo_Memoria-RAM', RAM],
+            ['notebooks', NOTEBOOK],
             ['silla-gamer', GAMING_CHAIR],
-            ['mouse-gamer', MOUSE],
             ['teclados', KEYBOARD],
+            ['mouse-gamer', MOUSE],
+            ['audifonos', HEADPHONES],
             ['monitores', MONITOR],
+            ['componentes/tipo-de-producto_cpu', PROCESSOR],
+            ['componentes/tipo-de-producto_gabinete', COMPUTER_CASE],
+            ['componentes/tipo-de-producto_memoria-ram', RAM],
+            ['componentes/tipo-de-producto_placa-madre', MOTHERBOARD],
+            ['componentes/tipo-de-producto_refrigeracion', CPU_COOLER],
+            ['componentes/tipo-de-producto_tarjeta-de-video', VIDEO_CARD],
+            ['componentes/Tipo-de-Producto_disco-duro', STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
