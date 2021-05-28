@@ -43,30 +43,31 @@ class EliteCenter(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes-pc/disco-estado-solido', SOLID_STATE_DRIVE],
+            ['componentes-pc/disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['componentes-pc/discos-duros-pcs', STORAGE_DRIVE],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/placas-madres', MOTHERBOARD],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-pc/memorias-ram/', RAM],
+            ['componentes-pc/memorias-ram', RAM],
             ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['accesorios-gamer/audifonos', HEADPHONES],
-            ['accesorios-gamer/teclados', KEYBOARD],
-            ['accesorios-gamer/mouse', MOUSE],
-            ['accesorios-gamer/parlantes', STEREO_SYSTEM],
+            ['accesorios/audifonos', HEADPHONES],
+            ['accesorios/teclados', KEYBOARD],
+            ['accesorios/mouse', MOUSE],
+            ['accesorios/parlantes', STEREO_SYSTEM],
             ['almacenamiento/disco-duro-pcs', STORAGE_DRIVE],
             ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-estado-solido-almacenamiento', SOLID_STATE_DRIVE],
             ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/disco-externo-almacenamiento', EXTERNAL_STORAGE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -79,13 +80,17 @@ class EliteCenter(Store):
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               'page/{}'.format(url_extension, page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_containers = soup.findAll('div', 'product-small')
-                if not product_containers:
+                response = session.get(url_webpage)
+
+                if response.status_code == 404:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
+                data = response.text
+                soup = BeautifulSoup(data, 'html5lib')
+                product_containers = soup.findAll('div', 'product-grid-item')
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
@@ -96,14 +101,11 @@ class EliteCenter(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text
-        if not soup.find('button', 'single_add_to_cart_button'):
-            return []
+        name = soup.find('h1', 'product_title').text
+        # if not soup.find('button', 'single_add_to_cart_button'):
+        #     return []
         sku = soup.find('button', 'single_add_to_cart_button')['value']
 
         part_number_container = soup.find('span', {'id': '_sku'})
@@ -125,9 +127,9 @@ class EliteCenter(Store):
         else:
             offer_price = Decimal(
                 remove_words(soup.find('p', 'precio-normal').text))
-        picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'product-gallery').findAll('img')
-                        if validators.url(tag['src'])
+        picture_urls = [tag['href'].split('?')[0] for tag in
+                        soup.find('figure', 'woocommerce-product-gallery__wrapper').findAll('a')
+                        if validators.url(tag['href'])
                         ]
 
         description = html_to_markdown(str(soup.find('div', 'tabbed-content')))
