@@ -296,8 +296,7 @@ class Falabella(Store):
                     url, content, session,
                     category=category, extra_args=extra_args)
             else:
-                print('Invalid product type')
-                return []
+                raise Exception('Invalid product type')
 
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_query_params):
