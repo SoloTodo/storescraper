@@ -4,7 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, MEMORY_CARD, \
+    TELEVISION, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -35,6 +36,10 @@ class MercadoTech(Store):
             'Keyboard',
             'Headphones',
             GAMING_CHAIR,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            TELEVISION,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -44,19 +49,23 @@ class MercadoTech(Store):
             ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
              'discos-externos', 'ExternalStorageDrive'],
             ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
-             'discos-internos', 'StorageDrive'],
+             'discos-internos/mecanicos', 'StorageDrive'],
             ['tecnologia/partes-y-piezas/almacenamiento/discos-duros/'
              'ssd', 'SolidStateDrive'],
             ['tecnologia/equipos/notebooks', 'Notebook'],
             ['audio-y-video/parlantes', 'StereoSystem'],
-            # ['tecnologia/componentes-pc/fuente-de-poder', 'PowerSupply'],
-            # ['tecnologia/componentes-pc/gabinetes', 'ComputerCase'],
+            ['tecnologia/componentes-pc/fuente-de-poder', 'PowerSupply'],
+            ['tecnologia/componentes-pc/gabinetes/gabinetes', 'ComputerCase'],
             ['tecnologia/componentes-pc/placas-madres', 'Motherboard'],
-            ['tecnologia/componentes-pc/procesadores', 'Processor'],
+            ['tecnologia/componentes-pc/procesadores/amd', 'Processor'],
+            ['tecnologia/componentes-pc/procesadores/intel', 'Processor'],
+            ['tecnologia/componentes-pc/procesadores/accesorios-cpu', CPU_COOLER],
+            ['tecnologia/componentes-pc/gabinetes/accesorios', CPU_COOLER],
             ['tecnologia/componentes-pc/tarjetas-de-video', 'VideoCard'],
             ['tecnologia/partes-y-piezas/impresoras', 'Printer'],
             ['tecnologia/partes-y-piezas/memorias-ram', 'Ram'],
-            ['tecnologia/partes-y-piezas/monitores', 'Monitor'],
+            ['tecnologia/partes-y-piezas/monitores/monitores', 'Monitor'],
+            ['tecnologia/partes-y-piezas/monitores/televisores', TELEVISION],
             ['tecnologia/accesorios/mouse', 'Mouse'],
             ['movil/celulares', 'Cell'],
             ['tecnologia/partes-y-piezas/proyectores', 'Projector'],
@@ -64,6 +73,10 @@ class MercadoTech(Store):
             ['tecnologia/accesorios/teclados', 'Keyboard'],
             ['audio-y-video/audifonos', 'Headphones'],
             ['tecnologia/accesorios/ergonomia/sillas', GAMING_CHAIR],
+            ['tecnologia/partes-y-piezas/almacenamiento/pendrives',
+             USB_FLASH_DRIVE],
+            ['tecnologia/partes-y-piezas/almacenamiento/memorias-sd',
+             MEMORY_CARD],
         ]
 
         session = session_with_proxy(extra_args)
@@ -101,7 +114,7 @@ class MercadoTech(Store):
                 for product_container in product_containers:
                     product_url = 'https://www.mercadotech.cl{}'.format(
                         product_container.find('a')['href'])
-                    product_urls.append(product_url)
+                    product_urls.append(product_url.split('?')[0])
 
                 page += 1
 

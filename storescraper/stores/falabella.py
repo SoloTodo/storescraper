@@ -540,7 +540,8 @@ class Falabella(Store):
 
                 for availability in availabilities:
                     if availability['shippingOptionType'] in \
-                            ['All', 'HomeDelivery']:
+                            ['All', 'HomeDelivery', 'SiteToStore',
+                             'PickupInStore']:
                         stock = availability['quantity']
 
             reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \

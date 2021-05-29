@@ -98,12 +98,9 @@ class Paris(Store):
          ['MemoryCard'],
          'Tecno > Accesorios Fotografía > Tarjetas de Memoria', 1],
         # Also includes other accesories
-        ['tecnologia/accesorios-computacion',
-         ['Projector', 'Monitor', 'Mouse', 'ExternalStorageDrive',
-          'UsbFlashDrive'], 'Tecno > Accesorios Computación', 0],
         ['tecnologia/accesorios-computacion/monitor-gamer', ['Monitor'],
          'Tecno > Accesorios Computación > Monitores Gamer', 1],
-        ['tecnologia/accesorios-computacion/discos-duros',
+        ['tecnologia/accesorios-computacion/disco-duro',
          ['ExternalStorageDrive'],
          'Tecno > Accesorios Computación > Discos Duros', 1],
         ['tecnologia/accesorios-computacion/proyectores', ['Projector'],
@@ -241,7 +238,7 @@ class Paris(Store):
             page = 0
 
             while True:
-                if page > 80:
+                if page > 100:
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \

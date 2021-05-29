@@ -94,7 +94,7 @@ class FalabellaFast(Store):
     def _get_products_data(cls, session, category_id, extra_query_params):
         products_data = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zone=13&categoryId={}&page={}'
+                   'categoryId={}&zones=LOSC%2C130617%2C13&page={}'
 
         page = 1
 
@@ -109,6 +109,12 @@ class FalabellaFast(Store):
                 pag_url += '&' + extra_query_params
 
             res = session.get(pag_url, timeout=None)
+
+            if res.status_code == 409:
+                if page == 1:
+                    logging.warning('Empty category: {}'.format(category_id))
+                break
+
             res = json.loads(res.content.decode('utf-8'))['data']
 
             if 'results' not in res:
