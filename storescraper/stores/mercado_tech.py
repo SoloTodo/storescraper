@@ -137,12 +137,12 @@ class MercadoTech(Store):
         name = json_data['name']
         sku = json_data['sku']
 
-        potential_pns = soup.findAll('li', 'extended d-none')
+        potential_pns = soup.findAll(
+            'div', 'add-to-cart-form-general-availability')
         part_number = None
         for ppn in potential_pns:
-            contents = [a for a in ppn.contents if a not in ['\n']]
-            if contents[0].text == 'part_number:':
-                part_number = contents[1].text
+            if 'PN: ' in ppn.text:
+                part_number = ppn.text.split('PN: ')[1].strip()
 
         stock = 0
 
