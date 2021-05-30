@@ -108,7 +108,7 @@ class FalabellaFast(Store):
             if extra_query_params:
                 pag_url += '&' + extra_query_params
 
-            res = session.get(pag_url, timeout=None)
+            res = session.get(pag_url, timeout=30)
 
             if res.status_code == 409:
                 if page == 1:
