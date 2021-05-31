@@ -59,9 +59,11 @@ class EliteCenter(Store):
             ['accesorios/parlantes', STEREO_SYSTEM],
             ['almacenamiento/disco-duro-pcs', STORAGE_DRIVE],
             ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
-            ['almacenamiento/disco-estado-solido-almacenamiento', SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-estado-solido-almacenamiento',
+             SOLID_STATE_DRIVE],
             ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/disco-externo-almacenamiento', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/disco-externo-almacenamiento',
+             EXTERNAL_STORAGE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
@@ -128,7 +130,9 @@ class EliteCenter(Store):
             offer_price = Decimal(
                 remove_words(soup.find('p', 'precio-normal').text))
         picture_urls = [tag['href'].split('?')[0] for tag in
-                        soup.find('figure', 'woocommerce-product-gallery__wrapper').findAll('a')
+                        soup.find(
+                            'figure', 'woocommerce-product-gallery__wrapper')
+                        .findAll('a')
                         if validators.url(tag['href'])
                         ]
 

@@ -712,14 +712,16 @@ class Ripley(Store):
 
         banners = []
 
-        for idx, banner_tag in enumerate(carousel_tag.findAll(recursive=False)):
+        for idx, banner_tag in enumerate(carousel_tag.findAll(
+                recursive=False)):
             if banner_tag.name == 'a':
                 destination_urls = [banner_tag['href']]
                 if banner_tag.find('img'):
                     picture_url = banner_tag.find('img')['src']
                 else:
                     picture_style = banner_tag.find('span')['style']
-                    picture_url = re.search(r'url\((.+)\)', picture_style).groups()[0]
+                    picture_url = re.search(r'url\((.+)\)',
+                                            picture_style).groups()[0]
 
                 banners.append({
                     'url': url,
@@ -735,7 +737,11 @@ class Ripley(Store):
                 # Collage
                 cell_tags = banner_tag.findAll('a')
                 destination_urls = [tag['href'] for tag in cell_tags]
-                picture_urls = [re.search(r'url\((.+)\)', tag.find('span')['style']).groups()[0] for tag in cell_tags]
+                picture_urls = [
+                    re.search(r'url\((.+)\)',
+                              tag.find('span')['style']).groups()[0]
+                    for tag in cell_tags
+                ]
 
                 assert len(destination_urls) == 3
                 assert len(picture_urls) == 3

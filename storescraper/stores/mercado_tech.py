@@ -4,8 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, MEMORY_CARD, \
-    TELEVISION, CPU_COOLER
+from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, \
+    MEMORY_CARD, TELEVISION, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -59,7 +59,8 @@ class MercadoTech(Store):
             ['tecnologia/componentes-pc/placas-madres', 'Motherboard'],
             ['tecnologia/componentes-pc/procesadores/amd', 'Processor'],
             ['tecnologia/componentes-pc/procesadores/intel', 'Processor'],
-            ['tecnologia/componentes-pc/procesadores/accesorios-cpu', CPU_COOLER],
+            ['tecnologia/componentes-pc/procesadores/accesorios-cpu',
+             CPU_COOLER],
             ['tecnologia/componentes-pc/gabinetes/accesorios', CPU_COOLER],
             ['tecnologia/componentes-pc/tarjetas-de-video', 'VideoCard'],
             ['tecnologia/partes-y-piezas/impresoras', 'Printer'],
