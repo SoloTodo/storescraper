@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
@@ -131,7 +132,9 @@ class BestStore(Store):
         offer_price = Decimal(remove_words(price_container[0].find('span', {
             'itemprop': 'price'}).text.strip()))
         picture_url = [tag['src'] for tag in
-                       soup.find('div', 'images-container').findAll('img')]
+                       soup.find('div', 'images-container').findAll('img')
+                       if validators.url(tag['src'])
+                       ]
         p = Product(
             name,
             cls.__name__,
