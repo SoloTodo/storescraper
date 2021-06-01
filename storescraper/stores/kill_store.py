@@ -91,7 +91,7 @@ class KillStore(Store):
         response = session.get(url)
         page_state_text = re.search(r'__STATE__ = (.+)', response.text)
         page_state = json.loads(page_state_text.groups()[0])
-        name = sku = price = stock = picture_urls = None
+        name = sku = price = stock = picture_urls = part_number = None
 
         for value in page_state.values():
             if 'productId' in value:
@@ -102,6 +102,8 @@ class KillStore(Store):
                 price = Decimal(value['Price'])
             if 'AvailableQuantity' in value:
                 stock = value['AvailableQuantity']
+            if 'productReference' in value:
+                part_number = value['productReference']
             if 'images' in value:
                 picture_urls = []
                 for image_entry in value['images']:
@@ -129,6 +131,7 @@ class KillStore(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls
         )
         return [p]
