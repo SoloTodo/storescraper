@@ -93,12 +93,16 @@ class KillStore(Store):
         page_state = json.loads(page_state_text.groups()[0])
         name = sku = price = stock = picture_urls = part_number = None
 
-        for value in page_state.values():
+        for state_key, value in page_state.items():
             if 'productId' in value:
                 sku = value['productId']
             if 'productName' in value:
                 name = value['productName']
-            if 'Price' in value:
+            if 'Price' in value and '.kit' not in state_key:
+                # print(foo)
+                # print(json.dumps(value, indent=2))
+                if price:
+                    raise Exception('Repeated price entry')
                 price = Decimal(value['Price'])
             if 'AvailableQuantity' in value:
                 stock = value['AvailableQuantity']
