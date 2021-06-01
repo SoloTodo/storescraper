@@ -9,7 +9,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MONITOR, RAM, \
     SOLID_STATE_DRIVE, MOTHERBOARD, HEADPHONES, STORAGE_DRIVE, POWER_SUPPLY, \
-    CPU_COOLER, COMPUTER_CASE, GAMING_CHAIR
+    CPU_COOLER, COMPUTER_CASE, GAMING_CHAIR, NOTEBOOK
 
 
 class UltimateGamerStore(Store):
@@ -28,6 +28,7 @@ class UltimateGamerStore(Store):
             CPU_COOLER,
             COMPUTER_CASE,
             GAMING_CHAIR,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class UltimateGamerStore(Store):
             ['productos/refrigeracion', CPU_COOLER],
             ['productos/gabinetes', COMPUTER_CASE],
             ['productos/sillas', GAMING_CHAIR],
+            ['productos/notebook', NOTEBOOK],
         ]
 
         product_urls = []

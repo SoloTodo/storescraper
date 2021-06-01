@@ -1,12 +1,13 @@
-import logging
+import json
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import PRINTER, MOTHERBOARD, PROCESSOR, RAM, \
+from storescraper.categories import MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
-    CPU_COOLER, GAMING_CHAIR, KEYBOARD, NOTEBOOK, VIDEO_GAME_CONSOLE
+    CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,7 +17,6 @@ class KillStore(Store):
     @classmethod
     def categories(cls):
         return [
-            PRINTER,
             MOTHERBOARD,
             PROCESSOR,
             RAM,
@@ -30,7 +30,6 @@ class KillStore(Store):
             HEADPHONES,
             CPU_COOLER,
             GAMING_CHAIR,
-            KEYBOARD,
             NOTEBOOK,
             VIDEO_GAME_CONSOLE,
         ]
@@ -38,55 +37,50 @@ class KillStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['230-impresion', PRINTER],
-            ['280-placas-madre', MOTHERBOARD],
-            ['279-procesadores', PROCESSOR],
-            ['277-memorias-ram', RAM],
-            ['278-discos-internos', SOLID_STATE_DRIVE],
-            ['281-tarjetas-de-video', VIDEO_CARD],
-            ['283-monitores', MONITOR],
-            ['286-teclado-mouse', KEYBOARD_MOUSE_COMBO],
-            ['282-fuentes', POWER_SUPPLY],
-            ['370-gabinetes', COMPUTER_CASE],
-            ['285-discos-externos', EXTERNAL_STORAGE_DRIVE],
-            ['104-audifonos', HEADPHONES],
-            ['369-refrigeracion-y-ventiladores', CPU_COOLER],
-            ['335-sillas', GAMING_CHAIR],
-            ['389-teclados', KEYBOARD],
-            ['388-notebooks', NOTEBOOK],
-            ['401-consolas', VIDEO_GAME_CONSOLE],
+            ['computacion/componentes/placas-madre', MOTHERBOARD],
+            ['computacion/componentes/procesadores', PROCESSOR],
+            ['computacion/componentes/memoria-ram', RAM],
+            ['computacion/componentes/discos-internos', SOLID_STATE_DRIVE],
+            ['computacion/componentes/tarjetas-de-video', VIDEO_CARD],
+            ['computacion/monitores', MONITOR],
+            ['computacion/mouse-y-teclado', KEYBOARD_MOUSE_COMBO],
+            ['componentes/fuentes', POWER_SUPPLY],
+            ['componentes/gabinetes', COMPUTER_CASE],
+            ['computacion/almacenamiento/discos-externos',
+             EXTERNAL_STORAGE_DRIVE],
+            ['audio/audifonos', HEADPHONES],
+            ['computacion/componentes/refrigeracion-y-ventiladores',
+             CPU_COOLER],
+            ['Computacion/Sillas', GAMING_CHAIR],
+            ['computacion/notebooks', NOTEBOOK],
+            ['Gaming', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.killstore.cl/{}?page={}'.format(
                     url_extension, page)
-                res = session.get(url_webpage)
+                print(url_webpage)
 
-                # Killstore may block connections which result en empty pages
-                # with seemingly no products, so check that the response code
-                # is OK
-                assert res.status_code == 200
+                data = session.get(url_webpage).text
+                page_state_text = re.search(r'__STATE__ = (.+)', data)
+                page_state = json.loads(page_state_text.groups()[0])
+                done = True
 
-                soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.findAll('article',
-                                                  'js-product-miniature')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                for key, value in page_state.items():
+                    if key.startswith('Product:') and 'linkText' in value:
+                        product_urls.append('https://www.killstore.cl/' +
+                                            value['linkText'] + '/p')
+                        done = False
+
+                if done:
                     break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -94,33 +88,34 @@ class KillStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
+        page_state_text = re.search(r'__STATE__ = (.+)', response.text)
+        page_state = json.loads(page_state_text.groups()[0])
+        name = sku = price = stock = picture_urls = None
 
-        # Killstore may block connections which result en empty pages, so
-        # check the status code of the response
-        assert response.status_code == 200
+        for value in page_state.values():
+            if 'productId' in value:
+                sku = value['productId']
+            if 'productName' in value:
+                name = value['productName']
+            if 'Price' in value:
+                price = Decimal(value['Price'])
+            if 'AvailableQuantity' in value:
+                stock = value['AvailableQuantity']
+            if 'images' in value:
+                picture_urls = []
+                for image_entry in value['images']:
+                    image_id = image_entry['id'].split(':')[1]
+                    picture_url = 'https://killstorecl.vtexassets.com/' \
+                                  'arquivos/ids/' + image_id
+                    picture_urls.append(picture_url)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('meta', {'property': 'og:name_product'})['content']
-        sku = soup.find('meta', {'property': 'og:id_product'})['content']
-        price_container = list(map(lambda x: Decimal(remove_words(x.text)),
-                                   soup.find('div', 'current-price').findAll(
-                                       'span', 'price')))
-        normal_price = max(price_container)
-        offer_price = min(price_container)
-        stock_container = soup.find('div', 'available-stock-list')
-        if stock_container and len(
-                stock_container.findAll('span', 'fa fa-check')):
-            stock = -1
-        else:
-            stock = 0
+        if price is None:
+            return []
 
-        picture_urls = [tag['src'] for tag in
-                        soup.find('ul', 'product-images').findAll('img') if
-                        tag['src'].startswith('http')]
+        assert name
+        assert sku
+        assert stock is not None
 
         p = Product(
             name,
@@ -130,8 +125,8 @@ class KillStore(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls

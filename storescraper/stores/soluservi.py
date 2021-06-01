@@ -116,9 +116,11 @@ class Soluservi(Store):
             stock = 0
         else:
             stock = int(soup.find('p', 'stock').text.split()[0])
-        offer_price = Decimal(remove_words(soup.find('p', 'price').text))
-        normal_price = Decimal(
-            remove_words(soup.find('table').findAll('tr')[0].text))
+
+        price_tags = soup.find('p', 'price').findAll('b')
+        prices = [Decimal(remove_words(tag.text)) for tag in price_tags]
+        offer_price = min(prices)
+        normal_price = max(prices)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
 
