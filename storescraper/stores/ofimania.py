@@ -27,7 +27,7 @@ class Ofimania(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['computacion/almacenamiento', SOLID_STATE_DRIVE],
-            ['Computacion/audifonos', HEADPHONES],
+            ['computacion/audifonos', HEADPHONES],
             ['computacion/mouse-y-teclado', KEYBOARD],
             ['computacion/notebooks', NOTEBOOK],
             ['computacion/tablets', TABLET],
@@ -44,18 +44,19 @@ class Ofimania(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://ofimania.cl/index.php/product-' \
-                              'category/{}/page/{}/'.format(url_extension,
-                                                            page)
+                url_webpage = 'https://ofimania.cl/categoria-producto/' \
+                              '{}/page/{}/?per_page=36' \
+                              '&_pjax=.main-page-wrapper'.format(
+                                url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'products')
+                product_containers = soup.find('div', 'products')
                 if not product_containers or soup.find('h3', 'title'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers[0].findAll(
+                for container in product_containers.findAll(
                         'div', 'product-grid-item'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
