@@ -55,6 +55,12 @@ class ParisFast(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        from .paris import Paris
+
+        if extra_args and extra_args['source'] == 'keyword_search':
+            return Paris.products_for_url(
+                url, category, extra_args)
+
         category_paths = Paris.category_paths
 
         session = session_with_proxy(extra_args)
@@ -156,3 +162,9 @@ class ParisFast(Store):
     def banners(cls, extra_args=None):
         from .paris import Paris
         return Paris.banners(extra_args=extra_args)
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        from .paris import Paris
+        return Paris.discover_urls_for_keyword(
+            keyword=keyword, threshold=threshold, extra_args=extra_args)

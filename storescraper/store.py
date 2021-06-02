@@ -90,6 +90,11 @@ class Store:
                 'category': None,
             }
 
+        if extra_args is None:
+            extra_args = {}
+
+        extra_args['source'] = 'keyword_search'
+
         return cls.products_for_urls(
             product_entries,
             extra_args=extra_args,

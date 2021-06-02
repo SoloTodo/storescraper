@@ -74,7 +74,8 @@ class Ofimania(Store):
         if soup.find('form', 'variations_form'):
             json_container = json.loads(soup.find('form', 'variations_form')[
                                             'data-product_variations'])
-            stock_tag = BeautifulSoup(json_container[0]['availability_html'], 'html.parser')
+            stock_tag = BeautifulSoup(json_container[0]['availability_html'],
+                                      'html.parser')
             print(stock_tag.text)
 
             if stock_tag.text.strip() == 'Agotado':

@@ -64,6 +64,18 @@ class Ripley(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        # This implementation of products_for_url is botched to obtain the
+        # products directly from the PLP page of Ripley because we can't
+        # make too many requests to the Ripley website. Therefore "url" is
+        # just the name of the category and ignored
+
+        # This method may be called as part of the keyword search functionality
+        # of the library. We patch it by detecting this call and calling
+        # a function that actually uses the URL PDP page of the product.
+        if extra_args and extra_args['source'] == 'keyword_search':
+            return [cls._assemble_full_product(
+                url, category, extra_args)]
+
         category_paths = [
             ['tecno/computacion/notebooks', ['Notebook'],
              'Tecno > Computación > Notebooks', 1],
@@ -530,26 +542,24 @@ class Ripley(Store):
             if page > 40:
                 raise Exception('Page overflow')
 
-            search_url = 'https://simple.ripley.cl/search/{}?page={}' \
-                .format(keyword, page)
-            response = session.get(search_url, allow_redirects=False)
+            search_url = 'https://simple.ripley.cl/api/v2/search'
+            search_body = {
+                "filters": [],
+                "term": keyword,
+                "perpage": 24,
+                "page": page,
+                "sessionkey": "",
+                "sort": "score"
+            }
+            response = session.post(search_url, json=search_body)
+            search_results = json.loads(response.text)
 
-            if response.status_code != 200:
-                raise Exception('Invalid search: ' + keyword)
-
-            soup = BeautifulSoup(response.text, 'html.parser')
-
-            products_container = soup.find('div', 'catalog-container')
-
-            if not products_container:
+            if 'products' not in search_results:
                 break
 
-            products = products_container.findAll('a', 'catalog-product-item')
-
-            for product in products:
-                product_url = 'https://simple.ripley.cl' + product['href']
-                product_urls.append(product_url)
-                if len(product_urls) == threshold:
+            for product in search_results['products']:
+                product_urls.append(product['url'])
+                if len(product_urls) >= threshold:
                     return product_urls
 
             page += 1

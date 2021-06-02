@@ -54,6 +54,12 @@ class FalabellaFast(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        from .falabella import Falabella
+
+        if extra_args and extra_args['source'] == 'keyword_search':
+            return Falabella.products_for_url(
+                url, category, extra_args)
+
         category_paths = Falabella.category_paths
 
         session = session_with_proxy(extra_args)
@@ -203,3 +209,9 @@ class FalabellaFast(Store):
     def banners(cls, extra_args=None):
         from .falabella import Falabella
         return Falabella.banners(extra_args=extra_args)
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        from .falabella import Falabella
+        return Falabella.discover_urls_for_keyword(
+            keyword=keyword, threshold=threshold, extra_args=extra_args)
