@@ -71,8 +71,10 @@ class LoiChile(Store):
         name = soup.find('h1', 'nombre-producto-info').text.replace('\t', '') \
             .replace('\n', '')
         sku = soup.find('span', {'id': 'idProducto'}).text
-        price = Decimal(remove_words(soup.find(
-            'div', 'pv3-pv-loi').text.replace('USD', '')))
+
+        price = Decimal(soup.find(
+            'div', {'id': 'contenedor_precio_detalle_producto'})
+                        ['data-precio'].replace(',', '.')).quantize(0)
         picture_urls = [
             'https://{}.cloudfront.net/_img_productos/{}'.format(
                 cls.IMAGE_DOMAIN, tag['src'].split('_img_productos/')[1])
