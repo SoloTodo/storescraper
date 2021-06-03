@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, RAM, \
-    SOLID_STATE_DRIVE, COMPUTER_CASE, MONITOR, KEYBOARD
+    SOLID_STATE_DRIVE, COMPUTER_CASE, MONITOR, NOTEBOOK, MOUSE, \
+    POWER_SUPPLY, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,20 +22,25 @@ class MegaBytes(Store):
             SOLID_STATE_DRIVE,
             COMPUTER_CASE,
             MONITOR,
-            KEYBOARD
+            # NOTEBOOK,
+            MOUSE,
+            POWER_SUPPLY,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['procesadores-cpu', PROCESSOR],
-            ['placa-madre', MOTHERBOARD],
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['memorias-ram', RAM],
+            ['accesorios/mas-accesorios', MOUSE],
             ['almacenamiento', SOLID_STATE_DRIVE],
-            ['hardware', COMPUTER_CASE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['memorias', RAM],
+            ['placa-madre', MOTHERBOARD],
+            ['procesador', PROCESSOR],
+            ['tarjetas-graficas', VIDEO_CARD],
+            ['ventilacion', CPU_COOLER],
             ['monitores', MONITOR],
-            ['accesorios', KEYBOARD]
+            ['notebooks', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -42,35 +48,23 @@ class MegaBytes(Store):
             if local_category != category:
                 continue
             page = 1
-            done = False
-            while not done:
+            while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://megabytes.cl/{}/page/{}/'.format(
-                    url_extension, page)
+                url_webpage = 'https://megabytes.cl/categoria-producto/{}/' \
+                              'page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_box = soup.find('ul', 'wc-block-grid__products')
+                data = session.get(url_webpage)
 
-                if not product_box:
+                if data.status_code == 404:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-
-                product_containers = product_box.findAll(
-                    'a', 'wc-block-grid__product-link')
-
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
+                soup = BeautifulSoup(data.text, 'html.parser')
+                product_containers = soup.findAll('div', 'product-wrapper')
 
                 for container in product_containers:
-                    product_url = container['href']
-                    if product_url in product_urls:
-                        done = True
-                        break
+                    product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -99,6 +93,9 @@ class MegaBytes(Store):
             normal_price = Decimal(
                 remove_words(price_container.find('span').text))
         else:
+            normal_price = offer_price
+
+        if normal_price < offer_price:
             normal_price = offer_price
 
         picture_urls = [tag['data-src'] for tag in
