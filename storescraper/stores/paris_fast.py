@@ -57,7 +57,7 @@ class ParisFast(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         from .paris import Paris
 
-        if extra_args and extra_args['source'] == 'keyword_search':
+        if extra_args and extra_args.get('source', None) == 'keyword_search':
             return Paris.products_for_url(
                 url, category, extra_args)
 

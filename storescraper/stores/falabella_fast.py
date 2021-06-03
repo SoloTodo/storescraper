@@ -56,7 +56,7 @@ class FalabellaFast(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         from .falabella import Falabella
 
-        if extra_args and extra_args['source'] == 'keyword_search':
+        if extra_args and extra_args.get('source', None) == 'keyword_search':
             return Falabella.products_for_url(
                 url, category, extra_args)
 

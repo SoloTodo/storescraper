@@ -7,10 +7,10 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     MEMORY_CARD, CELL, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, PROCESSOR, USB_FLASH_DRIVE, STEREO_SYSTEM, \
-    TELEVISION, PRINTER, GAMING_CHAIR, STORAGE_DRIVE, TABLET
+    TELEVISION, PRINTER, GAMING_CHAIR, STORAGE_DRIVE, TABLET, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class ElectroVentas(Store):
@@ -37,6 +37,7 @@ class ElectroVentas(Store):
             GAMING_CHAIR,
             STORAGE_DRIVE,
             TABLET,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -46,13 +47,13 @@ class ElectroVentas(Store):
             ['parlantes', STEREO_SYSTEM],
             ['audifonos', HEADPHONES],
             ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['teclado-standard', KEYBOARD],
-            ['sillas', GAMING_CHAIR],
+            ['mouses-y-accesorios-gaming', MOUSE],
+            ['teclados-y-accesorios', KEYBOARD],
+            ['sillas-gaming', GAMING_CHAIR],
             ['placas-madre', MOTHERBOARD],
             ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinete', COMPUTER_CASE],
+            ['gabinetes-gaming', COMPUTER_CASE],
             ['tarjetas-de-video', VIDEO_CARD],
             ['tarjetas-de-memoria', MEMORY_CARD],
             ['discos-duros', STORAGE_DRIVE],
@@ -60,9 +61,8 @@ class ElectroVentas(Store):
             ['tablets', TABLET],
             ['impresoras', PRINTER],
             ['celulares', CELL],
-            ['mouse-gamer', MOUSE],
-            ['teclado-gamer', KEYBOARD],
-            ['sillas-gamer', GAMING_CHAIR],
+            ['teclados-gaming', KEYBOARD],
+            ['notebooks', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
@@ -75,7 +75,7 @@ class ElectroVentas(Store):
             page = 1
 
             while True:
-                if page >= 10:
+                if page >= 20:
                     raise Exception('Page overflow')
 
                 url_webpage = 'https://electroventas.cl/{}?page={}'.format(
@@ -84,15 +84,16 @@ class ElectroVentas(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find(
-                    'div', {'id': 'js-product-list'}).findAll(
-                    'article', 'product-miniature')
+                    'div', {'id': 'js-product-list'})
 
-                if not product_containers:
+                if not product_containers or not product_containers.findAll(
+                        'article', 'product-miniature'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
 
-                for container in product_containers:
+                for container in product_containers.findAll(
+                        'article', 'product-miniature'):
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
 

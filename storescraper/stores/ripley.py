@@ -72,7 +72,7 @@ class Ripley(Store):
         # This method may be called as part of the keyword search functionality
         # of the library. We patch it by detecting this call and calling
         # a function that actually uses the URL PDP page of the product.
-        if extra_args and extra_args['source'] == 'keyword_search':
+        if extra_args and extra_args.get('source', None) == 'keyword_search':
             return [cls._assemble_full_product(
                 url, category, extra_args)]
 
