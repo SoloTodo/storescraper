@@ -404,14 +404,19 @@ class Lider(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
-        # Query a specific LG SKU in Lider, this will break when the SKU goes
+        # Query a specific LG SKU in Lider to verify that the LiveChat
+        # implementation is up, this will break when the SKU goes
         # out of stock and it needs to be replaced with another
 
-        if extra_args.get('skip_preflight', False):
+        livechat_sku = extra_args and extra_args.get('livechat_sku', None)
+
+        if not livechat_sku:
+            # If no SKU is given, skip validation
             return {}
 
         with HeadlessChrome() as driver:
-            driver.get('https://www.lider.cl/catalogo/product/sku/1079704')
+            driver.get('https://www.lider.cl/catalogo/product/sku/' +
+                       livechat_sku)
 
             for i in range(10):
                 print(i)

@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
@@ -75,10 +76,15 @@ class LoiChile(Store):
         price = Decimal(soup.find(
             'div', {'id': 'contenedor_precio_detalle_producto'})
                         ['data-precio'].replace(',', '.')).quantize(0)
-        picture_urls = [
-            'https://{}.cloudfront.net/_img_productos/{}'.format(
+
+        picture_urls = []
+
+        for tag in soup.find('div', 'swiper-wrapper').findAll('img'):
+            picture_url = 'https://{}.cloudfront.net/_img_productos/{}'.format(
                 cls.IMAGE_DOMAIN, tag['src'].split('_img_productos/')[1])
-            for tag in soup.find('div', 'swiper-wrapper').findAll('img')]
+            if validators.url(picture_url):
+                picture_urls.append(picture_url)
+
         p = Product(
             name,
             cls.__name__,

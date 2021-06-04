@@ -1,4 +1,5 @@
 import json
+import logging
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -43,6 +44,7 @@ class TiendaToyotomi(Store):
 
                 category_url = 'https://toyotomi.cl/product-category/{}/' \
                                'page/{}'.format(category_path, page)
+                print(category_url)
 
                 soup = BeautifulSoup(
                     session.get(category_url, verify=False).text,
@@ -52,7 +54,7 @@ class TiendaToyotomi(Store):
 
                 if not product_containers:
                     if page == 1:
-                        raise Exception('Empty path: {}'.format(category_url))
+                        logging.warning('Empty path: {}'.format(category_url))
                     break
 
                 for container in product_containers:

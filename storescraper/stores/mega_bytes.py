@@ -22,7 +22,7 @@ class MegaBytes(Store):
             SOLID_STATE_DRIVE,
             COMPUTER_CASE,
             MONITOR,
-            # NOTEBOOK,
+            NOTEBOOK,
             MOUSE,
             POWER_SUPPLY,
         ]
