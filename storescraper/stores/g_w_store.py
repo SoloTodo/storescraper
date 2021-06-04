@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, \
@@ -87,37 +88,37 @@ class GWStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
+        json_data = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[2]
+                .text.replace('\n', ' '))
+        name = json_data['name']
+        key = soup.find('input', {'name': 'id_product'})['value']
+        sku = json_data.get('sku', None)
 
-        stock_container = soup.find('p', 'stock')
-        if stock_container and 'Agotado' in stock_container.text:
-            stock = 0
-        elif stock_container and 'In stock' in stock_container.text:
+        if json_data['offers']['availability'] == 'http://schema.org/InStock':
             stock = -1
         else:
-            stock = int(stock_container.contents[1].split()[0])
-        price = Decimal(remove_words(soup.find(
-            'span', 'woocommerce-Price-amount').find('bdi').contents[1]))
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'woocommerce-tabs').findAll('img')]
+            stock = 0
+        price = Decimal(json_data['offers']['price'])
+        description = json_data.get('description', None)
+        part_number = json_data.get('mpn', None)
+        picture_urls = json_data['offers']['image']
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description,
+            part_number=part_number
         )
         return [p]
