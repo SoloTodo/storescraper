@@ -83,7 +83,7 @@ class GoodComputer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('input', {'name': 'data-product_id'})['value']
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
         stock_container = soup.find('p', 'stock')
         if not stock_container:
             stock = -1

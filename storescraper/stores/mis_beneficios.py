@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -17,35 +18,33 @@ class MisBeneficios(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            TELEVISION
-        ]
+        if category != TELEVISION:
+            return []
+
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + local_category)
-                url_webpage = 'https://www.misbeneficios.com.uy/lg?p={}'. \
-                    format(page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('ol', 'products')
-                if not product_containers:
-                    break
-                for container in product_containers.findAll('li'):
-                    product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow')
+            url_webpage = 'https://ultimate-dot-acp-magento.appspot.com/' \
+                          'full_text_search?q=lg&page_num={}&store_id=8' \
+                          '&UUID=3a30338d-e35f-42e8-b98c-9ea16cca9012'. \
+                format(page)
+            data = session.get(url_webpage).text
+            produts_data = json.loads(data)
+            product_entries = produts_data['items']
+            for entry in product_entries:
+                product_url = entry['u']
+                product_urls.append(product_url)
+            if page >= produts_data['p']:
+                break
+            page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
