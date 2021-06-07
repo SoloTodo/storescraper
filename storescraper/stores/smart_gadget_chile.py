@@ -79,16 +79,17 @@ class SmartGadgetChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text
-        sku = soup.find('form', {'id': 'addtocart'})['action'].split('/')[-1]
+        name = soup.find('h1', 'product-form_title').text
+        sku = soup.find('form', 'product-form')['action'].split('/')[-1]
         if soup.find('meta', {'content': 'instock'}):
             stock = -1
         else:
             stock = 0
 
         price = Decimal(
-            remove_words(soup.find('div', {'id': 'current'}).text.split()[0]))
-        picture_urls = [tag['src'] for tag in
+            remove_words(
+                soup.find('span', 'product-form_price').text.split()[0]))
+        picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'owl-carousel').findAll('img')]
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
