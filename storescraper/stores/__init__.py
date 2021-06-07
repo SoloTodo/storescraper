@@ -118,6 +118,7 @@ from .grupo_decme import GrupoDecme
 from .gtd import Gtd
 from .g_w_store import GWStore
 from .hard_gaming import HardGaming
+from .hardware_x import HardwareX
 from .hbt import Hbt
 from .hiraoka import Hiraoka
 from .hites import Hites
