@@ -132,6 +132,7 @@ from .infosep import Infosep
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
 from .intcomex import Intcomex
+from .invasion_gamer import InvasionGamer
 from .inverfin import Inverfin
 from .iprotech import Iprotech
 from .isi_book import IsiBook
