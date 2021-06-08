@@ -10,7 +10,7 @@ from storescraper.categories import NOTEBOOK, ALL_IN_ONE, TABLET, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
     USB_FLASH_DRIVE, PROCESSOR, COMPUTER_CASE, POWER_SUPPLY, MOTHERBOARD, \
     RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, KEYBOARD
+    KEYBOARD_MOUSE_COMBO, KEYBOARD, PROJECTOR
 
 
 class Cintegral(Store):
@@ -39,6 +39,7 @@ class Cintegral(Store):
             MONITOR,
             KEYBOARD_MOUSE_COMBO,
             KEYBOARD,
+            PROJECTOR,
         ]
 
     @classmethod
@@ -47,26 +48,33 @@ class Cintegral(Store):
                    'id_category={}&controller=category&page={}'
 
         url_extensions = [
-            ['4', NOTEBOOK],
-            ['5', ALL_IN_ONE],
-            ['59', STORAGE_DRIVE],
-            ['60', EXTERNAL_STORAGE_DRIVE],
-            ['61', SOLID_STATE_DRIVE],
-            ['62', MEMORY_CARD],
-            ['63', USB_FLASH_DRIVE],
-            ['13', PROCESSOR],
-            ['14', COMPUTER_CASE],
-            ['15', POWER_SUPPLY],
-            ['16', MOTHERBOARD],
-            ['17', RAM],
-            ['18', VIDEO_CARD],
-            ['22', KEYBOARD_MOUSE_COMBO],
-            ['23', MOUSE],
-            ['21', KEYBOARD],
-            ['29', PRINTER],
-            ['48', HEADPHONES],
-            ['49', STEREO_SYSTEM],
-            ['46', MONITOR],
+            ['24', NOTEBOOK],  # Notebooks
+            ['25', ALL_IN_ONE],  # All in One
+            ['27', TABLET],  # Tablet
+            ['66', STORAGE_DRIVE],  # Discos duros PC
+            ['67', EXTERNAL_STORAGE_DRIVE],  # Discos duros externos
+            ['68', SOLID_STATE_DRIVE],  # Unidades de estado sólido
+            ['69', MEMORY_CARD],  # Memorias Flash
+            ['70', USB_FLASH_DRIVE],  # Pendrive
+            ['31', PROCESSOR],  # Procesadores
+            ['32', COMPUTER_CASE],  # Gabinetes
+            ['33', POWER_SUPPLY],  # Fuentes de poder
+            ['34', MOTHERBOARD],  # Placas madre
+            ['71', RAM],  # Memorias PC
+            ['72', RAM],  # Memorias Notebook
+            ['36', VIDEO_CARD],  # Tarjetas de video
+            ['39', KEYBOARD_MOUSE_COMBO],  # Combos teclado mouse
+            ['40', MOUSE],  # Mouse
+            ['38', KEYBOARD],  # Teclados
+            ['45', PRINTER],  # Impresoras tinta
+            ['46', PRINTER],  # Impresoras láser
+            ['47', PRINTER],  # Multifuncionales tinta
+            ['48', PRINTER],  # Multifuncionales láser
+            ['59', HEADPHONES],  # Audífonos / Micrófonos
+            ['60', STEREO_SYSTEM],  # Parlantes
+            ['61', UPS],  # UPS
+            ['18', MONITOR],  # Monitores
+            ['56', PROJECTOR],  # Proyectores
         ]
 
         product_urls = []
