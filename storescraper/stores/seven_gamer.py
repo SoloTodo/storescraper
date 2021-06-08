@@ -85,7 +85,8 @@ class SevenGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text[0:250]
         sku = soup.find('a', 'add-to-compare-link')['data-product_id']
-        if soup.find('div', 'availability'):
+        if soup.find('p', 'out-of-stock') or \
+                soup.find('p', 'available-on-backorder'):
             stock = 0
         else:
             stock = -1
