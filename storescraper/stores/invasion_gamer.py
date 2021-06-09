@@ -71,7 +71,7 @@ class InvasionGamer(Store):
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(
-                        'https://invasiongamer.com/' + product_url)
+                        'https://invasiongamer.com' + product_url)
                 page += 1
         return product_urls
 
@@ -94,8 +94,9 @@ class InvasionGamer(Store):
                         split('?')[0] for tag in soup
                         .find('div', 'product-gallery__thumbnail-list')
                         .findAll('img')]
+
+        products = []
         if variants:
-            products = []
             for variant in variants.find('select').findAll('option'):
                 variant_name = name + ' ' + variant.text
                 variant_sku = variant['value']
@@ -114,22 +115,23 @@ class InvasionGamer(Store):
                     picture_urls=picture_urls,
                 )
                 products.append(p)
-            return products
         else:
             sku = soup.find('input', {'name': 'id'})['value']
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-        )
-        return [p]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+
+        return products
