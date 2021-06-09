@@ -41,7 +41,7 @@ class SmartDeal(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://smartdeal.cl/tienda/?wpf=filtro_' \
                               'smartdeal&wpf_modelos={}&wpf_page={}'.format(
-                    url_extension, page)
+                                url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 data = response.text
@@ -88,36 +88,23 @@ class SmartDeal(Store):
                                                                   'sku'):
             part_number = soup.find('div', 'et_pb_row et_pb_row_3_tb_body'). \
                 find('span', 'sku').text
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                condition=condition,
-                part_number=part_number,
-                picture_urls=picture_url
-            )
         else:
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                condition=condition,
-                picture_urls=picture_url
+            part_number = None
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            condition=condition,
+            part_number=part_number,
+            picture_urls=picture_url
             )
         return [p]
