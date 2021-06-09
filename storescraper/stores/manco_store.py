@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, VIDEO_CARD, PROCESSOR, \
     MOTHERBOARD, RAM, SOLID_STATE_DRIVE, POWER_SUPPLY, CPU_COOLER, KEYBOARD, \
-    MOUSE, GAMING_CHAIR
+    MOUSE, GAMING_CHAIR, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,7 +26,7 @@ class MancoStore(Store):
             CPU_COOLER,
             KEYBOARD,
             MOUSE,
-            # GAMING_CHAIR
+            MONITOR,
         ]
 
     @classmethod
@@ -41,6 +41,7 @@ class MancoStore(Store):
             ['16-tarjetas-de-video', VIDEO_CARD],
             ['18-refrigeracion', CPU_COOLER],
             ['19-perifericos', MOUSE],
+            ['21-monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)

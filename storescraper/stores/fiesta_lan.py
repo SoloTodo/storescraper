@@ -37,6 +37,7 @@ class FiestaLan(Store):
             HEADPHONES,
             GAMING_CHAIR,
             PRINTER,
+            POWER_SUPPLY
         ]
 
     @classmethod

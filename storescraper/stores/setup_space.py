@@ -84,7 +84,7 @@ class SetupSpace(Store):
         price = Decimal(
             remove_words(soup.find('span', {'id': 'product-form-price'}).text))
 
-        if soup.findAll(True, {'class': ['product-unavailable', 'visible']}):
+        if soup.find('meta', {'property': 'product:availability'})['content'] != 'instock':
             stock = 0
         else:
             stock = int(soup.find('input', {'id': 'input-qty'})['max'])
