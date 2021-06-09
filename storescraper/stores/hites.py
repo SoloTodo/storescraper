@@ -139,10 +139,10 @@ class Hites(Store):
              'Inicio > Tecnología > Computación > Tablets', 1],
             ['tecnologia/computacion/all-in-one', ['AllInOne'],
              'Inicio > Tecnología > Computacioń > All in One', 1],
-            ['tecnologia/computacion/monitores-y-proyectores',
-             ['Monitor', 'Projector'],
+            ['tecnologia/computacion/monitores',
+             ['Monitor'],
              'Inicio > Tecnología > Computación > Monitores y Proyectores',
-             0.5],
+             1],
             ['tecnologia/computacion/impresoras-y-multifuncionales',
              ['Printer'],
              'Inicio > Tecnología > Computación > '

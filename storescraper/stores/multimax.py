@@ -1,6 +1,5 @@
 import logging
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
 import demjson
 import re
@@ -26,38 +25,51 @@ class Multimax(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
         product_urls = []
 
         for local_category in category_filters:
             if local_category != category:
                 continue
-            page = 1
+            page = 0
             while True:
                 if page >= 10:
                     raise Exception('Page overflow')
 
-                url_webpage = 'https://www.multimax.net/search?page={}&q=lg' \
-                    .format(page)
+                request_payload = {
+                    "requests": [
+                        {
+                            "indexName": "shopify_products",
+                            "params": "query=lg&page={}&"
+                                      "filters=inventory_quantity%20%3E%200"
+                                      .format(page)
+                        }
+                    ]
+                }
 
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'search-results '
-                                                      'column-narrow').findAll(
-                    'div', 'search-result search-result-product table')
-                if not product_containers:
+                response = session.post(
+                    'https://xzpkbvohi2-dsn.algolia.net/1/indexes/*/'
+                    'queries?x-algolia-application-id=XZPKBVOHI2&'
+                    'x-algolia-api-key=fc38d95d175774c9f8aa348ea65f9722',
+                    json=request_payload)
+
+                products_data = response.json()['results'][0]['hits']
+
+                if not products_data:
                     if page == 1:
                         logging.warning('Empty category')
                     break
-                for container in product_containers:
-                    product_url = container.find('a', 'result-title')['href']
+                for product_entry in products_data:
                     product_urls.append(
-                        'https://www.multimax.net' + product_url)
+                        'https://www.multimax.net/products/' +
+                        product_entry['handle'])
                 page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
