@@ -1,6 +1,9 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -27,6 +30,7 @@ class NiceOne(Store):
             'PowerSupply',
             'Monitor',
             'CpuCooler',
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -34,17 +38,18 @@ class NiceOne(Store):
         category_urls = [
             ['22-discos-duros', 'StorageDrive'],
             ['24-gabinetes', 'ComputerCase'],
-            # ['26-computadores-armados', 'AllInOne'],
+            ['26-computadores-armados', 'AllInOne'],
             ['29-mouse-teclados', 'Keyboard'],
-            # ['32-parlantes-audio', 'Headphones'],
+            ['32-parlantes-audio', 'Headphones'],
             ['33-placas-madre', 'Motherboard'],
-            # ['28-monitores', 'Monitor'],
+            ['28-monitores', 'Monitor'],
             ['34-procesadores', 'Processor'],
             ['39-tarjetas-graficas', 'VideoCard'],
             ['27-memorias', 'Ram'],
             ['23-fuentes-de-poder', 'PowerSupply'],
             ['28-monitores', 'Monitor'],
             ['35-refrigeracion', 'CpuCooler'],
+            ['30-notebooks', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
@@ -74,7 +79,7 @@ class NiceOne(Store):
 
                 if not product_cells:
                     if page == 1:
-                        raise Exception('Empty category: {}'.format(
+                        logging.warning('Empty category: {}'.format(
                             category_path))
 
                     break
