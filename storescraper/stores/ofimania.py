@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, KEYBOARD, \
@@ -96,7 +97,8 @@ class Ofimania(Store):
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div',
                                   'woocommerce-product-gallery').findAll(
-                            'img')]
+                            'img')
+                        if validators.url(tag['src'])]
         p = Product(
             name,
             cls.__name__,

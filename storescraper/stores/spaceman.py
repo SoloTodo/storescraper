@@ -41,8 +41,9 @@ class Spaceman(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webapge = 'https://www.spaceman.cl/product-category/' \
+                url_webapge = 'https://www.spaceman.cl/catergoria-producto/' \
                               '{}/page/{}'.format(url_extension, page)
+                print(url_webapge)
                 data = session.get(url_webapge).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', 'products')
