@@ -53,16 +53,6 @@ class Wisdomts(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # price_titles = [tag for tag in soup.findAll('h4')
-        #                 if tag.find('strong')]
-        #
-        # assert len(price_titles) == 2
-        #
-        # price_tags = [tag.find('strong') for tag in price_titles]
-        # offer_price = Decimal(
-        #     remove_words(price_tags[0].text.replace('-', '')))
-        # normal_price = Decimal(
-        #     remove_words(price_tags[1].text.replace('-', '')))
         json_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[1].text)
         product_data = json_data['@graph'][1]
@@ -77,8 +67,8 @@ class Wisdomts(Store):
         sku = str(product_data['sku'])
         name = product_data['name']
         description = product_data['description']
-        price = Decimal(product_data['offers'][0]['price'])
-        normal_price = offer_price = price
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
         p = Product(
             name,

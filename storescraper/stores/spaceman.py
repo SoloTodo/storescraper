@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, COMPUTER_CASE, \
-    GAMING_CHAIR
+    GAMING_CHAIR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,6 +20,7 @@ class Spaceman(Store):
             MONITOR,
             COMPUTER_CASE,
             GAMING_CHAIR,
+            HEADPHONES,
         ]
 
     @classmethod
@@ -30,6 +31,7 @@ class Spaceman(Store):
             ['mouse', MOUSE],
             ['teclados', KEYBOARD],
             ['sillas', GAMING_CHAIR],
+            ['audifonos', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
