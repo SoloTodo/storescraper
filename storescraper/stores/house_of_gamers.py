@@ -11,7 +11,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class HouseofGamers(Store):
+class HouseOfGamers(Store):
     @classmethod
     def categories(cls):
         return [
