@@ -123,6 +123,7 @@ from .hardware_x import HardwareX
 from .hbt import Hbt
 from .hiraoka import Hiraoka
 from .hites import Hites
+from .house_of_gamers import HouseOfGamers
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
 from .ibyte import Ibyte
