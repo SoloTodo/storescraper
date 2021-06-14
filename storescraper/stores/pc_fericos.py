@@ -4,7 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import COMPUTER_CASE, CPU_COOLER, KEYBOARD
+from storescraper.categories import COMPUTER_CASE, CPU_COOLER, KEYBOARD, \
+    VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -16,7 +17,8 @@ class PcFericos(Store):
         return [
             COMPUTER_CASE,
             CPU_COOLER,
-            KEYBOARD
+            KEYBOARD,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -25,7 +27,8 @@ class PcFericos(Store):
             ['gabinetes-2', COMPUTER_CASE],
             ['disipadores', CPU_COOLER],
             ['refrigeracion-2', CPU_COOLER],
-            ['teclados-1', KEYBOARD]
+            ['teclados-1', KEYBOARD],
+            ['tarjetas-de-video', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
