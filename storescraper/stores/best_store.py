@@ -8,7 +8,7 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     VIDEO_CARD, CPU_COOLER, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE
+    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,7 +43,8 @@ class BestStore(Store):
             CELL,
             STORAGE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
+            UPS,
         ]
 
     @classmethod
@@ -79,7 +80,8 @@ class BestStore(Store):
             ['123-almacenamiento-discos-duros-externos',
              EXTERNAL_STORAGE_DRIVE],
             ['124-almacenamiento-discos-duros-internos', STORAGE_DRIVE],
-            ['146-almacenamiento-discos-de-estado-solido', SOLID_STATE_DRIVE]
+            ['146-almacenamiento-discos-de-estado-solido', SOLID_STATE_DRIVE],
+            ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
         ]
 
         session = session_with_proxy(extra_args)

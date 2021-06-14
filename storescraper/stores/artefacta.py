@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -11,47 +12,40 @@ class Artefacta(Store):
     @classmethod
     def categories(cls):
         return [
-            'Stove',
-            'Refrigerator',
-            'WashingMachine',
-            'AirConditioner',
-            'StereoSystem',
-            'Television'
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['linea-blanca/cocinas', 'Stove'],
-            ['linea-blanca/refrigeracion', 'Refrigerator'],
-            ['linea-blanca/lavadoras-y-secadoras', 'WashingMachine'],
-            ['climatizacion/aires-acondicionados', 'AirConditioner'],
-            ['audio/minicomponentes', 'StereoSystem'],
-            ['televisores/hd', 'Television'],
-            ['televisores/4k', 'Television'],
-        ]
-
         session = session_with_proxy(extra_args)
-        base_url = 'https://www.artefacta.com/productos/{}?at_marca=LG'
+
+        if category != TELEVISION:
+            return []
+
+        page = 1
         product_urls = []
+        done = False
 
-        for url_extension, local_category in category_paths:
-            if category != local_category:
-                continue
-
-            url = base_url.format(url_extension)
+        while not done:
+            url = 'https://www.artefacta.com/productos?at_marca=LG&p={}&' \
+                  'product_list_limit=36'.format(page)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('a', 'product-item-link')
+            products = soup.findAll('li', 'product-item')
 
             if not products:
                 raise Exception('Empty path: ' + url)
 
             for product in products:
                 try:
-                    product_url = product['href']
-                    product_urls.append(product_url)
+                    product_url = product.find('a')['href']
                 except KeyError:
+                    # Skip the template tag
                     continue
+
+                if product_url in product_urls:
+                    done = True
+                    break
+                product_urls.append(product_url)
 
         return product_urls
 
