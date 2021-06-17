@@ -82,7 +82,7 @@ class HardwareX(Store):
         name = soup.find('h1', 'product-meta__title').text
         sku = soup.find('input', {'name': 'id'})['value']
         if soup.find('span',
-                     'product-form__inventory').text == 'Producto en stock':
+                     'product-form__inventory').text == 'En Stock':
             stock = -1
         else:
             stock = 0
