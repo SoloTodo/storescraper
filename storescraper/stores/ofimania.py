@@ -48,7 +48,7 @@ class Ofimania(Store):
                 url_webpage = 'https://ofimania.cl/categoria-producto/' \
                               '{}/page/{}/?per_page=36' \
                               '&_pjax=.main-page-wrapper'.format(
-                                url_extension, page)
+                    url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
@@ -84,6 +84,8 @@ class Ofimania(Store):
             else:
                 stock = int(stock_tag.text.split()[0])
         elif soup.find('p', 'available-on-backorder'):
+            stock = 0
+        elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
