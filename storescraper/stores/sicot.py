@@ -76,7 +76,8 @@ class Sicot(Store):
         name = json_container['product']['title']
         picture_urls = [tag['data-lazy'] for tag in
                         soup.find('section', 'col-12 relative').findAll('img')]
-        description = html_to_markdown(json_container['product']['description'])
+        description = html_to_markdown(
+            json_container['product']['description'])
 
         products = []
 
