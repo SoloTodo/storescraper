@@ -4,6 +4,9 @@ from decimal import Decimal
 import demjson
 import re
 
+from bs4 import BeautifulSoup
+
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -15,55 +18,39 @@ class Multimax(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television'
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            'Television'
-        ]
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
         product_urls = []
+        page = 1
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-        for local_category in category_filters:
-            if local_category != category:
-                continue
-            page = 0
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow')
+            url_webpage = 'https://www.multimax.net/search?page={}&q=lg' \
+                .format(page)
 
-                request_payload = {
-                    "requests": [
-                        {
-                            "indexName": "shopify_products",
-                            "params": "query=lg&page={}&"
-                                      "filters=inventory_quantity%20%3E%200"
-                                      .format(page)
-                        }
-                    ]
-                }
-
-                response = session.post(
-                    'https://xzpkbvohi2-dsn.algolia.net/1/indexes/*/'
-                    'queries?x-algolia-application-id=XZPKBVOHI2&'
-                    'x-algolia-api-key=fc38d95d175774c9f8aa348ea65f9722',
-                    json=request_payload)
-
-                products_data = response.json()['results'][0]['hits']
-
-                if not products_data:
-                    if page == 1:
-                        logging.warning('Empty category')
-                    break
-                for product_entry in products_data:
-                    product_urls.append(
-                        'https://www.multimax.net/products/' +
-                        product_entry['handle'])
-                page += 1
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.find('div', 'search-results '
+                                                  'column-narrow').findAll(
+                'div', 'search-result search-result-product table')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category')
+                break
+            for container in product_containers:
+                product_url = container.find(
+                    'a', 'result-title')['href'].split('?')[0]
+                product_urls.append(
+                    'https://www.multimax.net' + product_url)
+            page += 1
 
         return product_urls
 
