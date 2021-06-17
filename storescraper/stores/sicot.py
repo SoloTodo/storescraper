@@ -6,10 +6,10 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MONITOR, TABLET, GAMING_CHAIR, \
-    PRINTER
+    PRINTER, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Sicot(Store):
@@ -20,7 +20,8 @@ class Sicot(Store):
             MONITOR,
             TABLET,
             GAMING_CHAIR,
-            PRINTER
+            PRINTER,
+            ALL_IN_ONE,
         ]
 
     @classmethod
@@ -28,6 +29,7 @@ class Sicot(Store):
         url_extensions = [
             ['notebook', NOTEBOOK],
             ['chromebook', NOTEBOOK],
+            ['aio', ALL_IN_ONE],
             ['monitores', MONITOR],
             ['tablets', TABLET],
             ['gamer', GAMING_CHAIR],
@@ -72,26 +74,34 @@ class Sicot(Store):
             re.search(r"window.INIT.products.push\(([\s\S]+)\);",
                       json_container).groups()[0])
         name = json_container['product']['title']
-        part_number = json_container['variants'][0]['sku']
-        sku = str(json_container['variants'][0]['id'])
-        stock = int(
-            json_container['variants'][0]['stock'][0]['quantityAvailable'])
-        price = Decimal(json_container['variants'][0]['finalPrice'])
         picture_urls = [tag['data-lazy'] for tag in
                         soup.find('section', 'col-12 relative').findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=part_number,
-            picture_urls=picture_urls
-        )
-        return [p]
+        description = html_to_markdown(json_container['product']['description'])
+
+        products = []
+
+        for variant in json_container['variants']:
+            variant_name = '{} {}'.format(name, variant['title']).strip()
+            part_number = variant['sku']
+            sku = str(variant['id'])
+            stock = int(
+                variant['stock'][0]['quantityAvailable'])
+            price = Decimal(variant['finalPrice'])
+            p = Product(
+                variant_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=part_number,
+                picture_urls=picture_urls,
+                description=description
+            )
+            products.append(p)
+        return products
