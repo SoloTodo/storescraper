@@ -48,7 +48,7 @@ class Ofimania(Store):
                 url_webpage = 'https://ofimania.cl/categoria-producto/' \
                               '{}/page/{}/?per_page=36' \
                               '&_pjax=.main-page-wrapper'.format(
-                    url_extension, page)
+                                url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
