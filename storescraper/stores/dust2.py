@@ -124,7 +124,15 @@ class Dust2(Store):
             products = []
             json_variants = json.loads(variants['data-product_variations'])
             for variant in json_variants:
-                variant_name = name + '-' + variant['sku']
+                variant_suffix = ''
+
+                if isinstance(variant['attributes'], dict):
+                    for key, value in variant['attributes'].items():
+                        variant_suffix += '{} {}'.format(key, value)
+                else:
+                    variant_suffix = 'variante invalida'
+
+                variant_name = name + ' - ' + variant_suffix
                 variant_sku = str(variant['variation_id'])
                 variant_stock = 0 if variant['max_qty'] == '' else variant[
                     'max_qty']
@@ -142,7 +150,7 @@ class Dust2(Store):
                     variant_normal_price,
                     variant_offer_price,
                     'CLP',
-                    sku=variant_sku,
+                    sku=variant['sku'],
                     picture_urls=picture_urls,
 
                 )

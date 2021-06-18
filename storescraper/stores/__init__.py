@@ -252,6 +252,7 @@ from .plaza_lama import PlazaLama
 from .play_factory import PlayFactory
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
+from .pro_gamer_afta import ProGamerAfta
 from .pro_movil import ProMovil
 from .proglobal import Proglobal
 from .raenco import Raenco
@@ -273,6 +274,7 @@ from .sepuls import Sepuls
 from .setup_space import SetupSpace
 from .sevenwin import Sevenwin
 from .seven_gamer import SevenGamer
+from .sicot import Sicot
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
 from .sindelen import Sindelen
