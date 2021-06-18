@@ -262,6 +262,7 @@ from .ribeiro import Ribeiro
 from .ripley import Ripley
 from .ripley_peru import RipleyPeru
 from .rodo import Rodo
+from .r_s_tech import RSTech
 from .sams import Sams
 from .samsung_chile import SamsungChile
 from .samsung_shop import SamsungShop
