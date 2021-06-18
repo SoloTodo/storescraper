@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, MONITOR, KEYBOARD, \
-    COMPUTER_CASE, MOUSE, KEYBOARD_MOUSE_COMBO, GAMING_CHAIR
+    COMPUTER_CASE, MOUSE, KEYBOARD_MOUSE_COMBO, GAMING_CHAIR, CPU_COOLER, \
+    MOTHERBOARD, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,7 +22,10 @@ class Nemz(Store):
             COMPUTER_CASE,
             MOUSE,
             KEYBOARD_MOUSE_COMBO,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            CPU_COOLER,
+            MOTHERBOARD,
+            POWER_SUPPLY,
         }
 
     @classmethod
@@ -33,7 +37,10 @@ class Nemz(Store):
             ['gabinetes', COMPUTER_CASE],
             ['mouse', MOUSE],
             ['combos-gamer', KEYBOARD_MOUSE_COMBO],
-            ['sillas-gamer', GAMING_CHAIR]
+            ['sillas-gamer', GAMING_CHAIR],
+            ['refrigeracion', CPU_COOLER],
+            ['placas-madre', MOTHERBOARD],
+            ['fuentes', POWER_SUPPLY],
         ]
 
         session = session_with_proxy(extra_args)
