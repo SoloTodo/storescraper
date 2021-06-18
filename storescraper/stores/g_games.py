@@ -84,33 +84,38 @@ class GGames(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = json.loads(soup.find('script', {
-            'id': 'ProductJson-product-template'}).text.strip())
-        name = json_container['variants'][0]['name']
-        sku = str(json_container['variants'][0]['id'])
-        part_number = json_container['variants'][0]['sku']
-        if 'AGOTADO' in soup.find('dl', 'price').text.strip():
-            stock = 0
-        else:
-            stock = -1
-        price = Decimal(json_container['variants'][0]['price']/100)
         picture_urls = ['http:' + tag['src'].split('?v')[0] for tag in
                         soup.find('div', 'product-single').
                         find('div', 'grid__item').findAll('img')
                         if tag.has_attr('src')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=part_number,
-            picture_urls=picture_urls
-        )
-        return [p]
+        if 'AGOTADO' in soup.find('dl', 'price').text.strip():
+            stock = 0
+        else:
+            stock = -1
+        json_container = json.loads(soup.find('script', {
+            'id': 'ProductJson-product-template'}).text.strip())
+        products = []
+        name = json_container['title']
+
+        for variant in json_container['variants']:
+            variant_name = '{} {}'.format(name, variant['title']).strip()
+            part_number = variant['sku']
+            sku = str(variant['id'])
+            price = Decimal(variant['price'] / 100)
+            p = Product(
+                variant_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=part_number,
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+        return products

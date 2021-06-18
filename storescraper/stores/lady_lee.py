@@ -64,8 +64,8 @@ class LadyLee(Store):
         name = soup.find('h1').text.strip()
 
         if model_name_container:
-            model_name = model_name_container.find('p').text.split(':')[1].strip()
-            print(model_name)
+            model_name = model_name_container.find('p').text.split(
+                ':')[1].strip()
             name = '{} ({})'.format(name, model_name)
 
         brand = soup.find('div', 'product-vendor').text.split(':')[1].strip()
