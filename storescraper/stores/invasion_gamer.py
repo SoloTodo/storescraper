@@ -83,7 +83,10 @@ class InvasionGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         variants = soup.find('div', 'product-form__variants')
         name = soup.find('h1', 'product-meta__title').text
-        if soup.find('button', {'class': 'product-form__add-button'}).text == \
+
+        if 'PREVENTA' in name.upper():
+            stock = 0
+        elif soup.find('button', {'class': 'product-form__add-button'}).text == \
                 'Agotado':
             stock = 0
         else:
