@@ -4,8 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
-    MONITOR, MOUSE, STEREO_SYSTEM, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, \
-    VIDEO_CARD
+    MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,31 +14,29 @@ class Sepuls(Store):
     @classmethod
     def categories(cls):
         return [
+            POWER_SUPPLY,
             GAMING_CHAIR,
             KEYBOARD,
             HEADPHONES,
             MONITOR,
             MOUSE,
-            STEREO_SYSTEM,
             COMPUTER_CASE,
             MOTHERBOARD,
-            PROCESSOR,
-            VIDEO_CARD
+            CPU_COOLER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['fuentes-de-poder', POWER_SUPPLY],
             ['sillas', GAMING_CHAIR],
             ['teclados', KEYBOARD],
-            ['audifonos', HEADPHONES],
+            ['audifono', HEADPHONES],
             ['monitores', MONITOR],
             ['mouse', MOUSE],
-            ['parlantes', STEREO_SYSTEM],
-            ['gabinetes', COMPUTER_CASE],
+            ['gabinete', COMPUTER_CASE],
             ['placa-madre', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD]
+            ['refrigeracion', CPU_COOLER]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -50,11 +47,11 @@ class Sepuls(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.sepuls.cl/{}/page/{}/'.format(
-                    url_extension, page)
+                url_webpage = 'https://www.sepuls.cl/{}/?product-page={}' \
+                    .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-grid-item')
+                product_containers = soup.findAll('li', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -76,18 +73,19 @@ class Sepuls(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('div', 'single-product-page')['id'].split('-')[1]
-        if soup.find('p', 'stock').text == 'SIN STOCK':
-            stock = 0
-        else:
-            stock = -1
-        if soup.find('p', 'price').text == '':
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        if not soup.find('p', 'price') or soup.find('p', 'price').text == '':
             return []
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
+        if soup.find('p', 'stock').text == 'SIN STOCK':
+            stock = 0
+        else:
+            stock = int(soup.find('p', 'stock').text.split()[0])
+
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
                                                                '-gallery'

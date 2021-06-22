@@ -44,7 +44,7 @@ class ElectronicaPanamericana(Store):
         print(url)
         session = session_with_proxy(extra_args)
         data = session.get(url).text
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, 'html5lib')
 
         sku = soup.find('span', 'sku')
 
