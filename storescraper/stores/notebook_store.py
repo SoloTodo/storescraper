@@ -130,8 +130,6 @@ class NotebookStore(Store):
                     break
 
                 for product in products:
-                    print('asdf')
-                    print(str(product))
                     product_url = product.find('a')['href']
                     if product_url in product_urls:
                         done = True
