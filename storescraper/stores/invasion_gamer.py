@@ -86,8 +86,8 @@ class InvasionGamer(Store):
 
         if 'PREVENTA' in name.upper():
             stock = 0
-        elif soup.find('button', {'class': 'product-form__add-button'}).text == \
-                'Agotado':
+        elif soup.find('button', {'class': 'product-form__add-button'})\
+                .text == 'Agotado':
             stock = 0
         else:
             stock = -1

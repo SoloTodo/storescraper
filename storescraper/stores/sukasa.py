@@ -87,8 +87,10 @@ class Sukasa(Store):
                 if res.status_code == 502:
                     continue
 
+                variant_data = json.loads(res.text)
                 variant_soup = BeautifulSoup(
-                    json.loads(res.text)['product_prices'], 'html.parser')
+                    variant_data['product_prices'], 'html.parser')
+                variant_url = variant_data['product_url']
 
                 normal_price = Decimal(variant_soup.find(
                     'span', 'product-unit-price').text.split('$')[-1])
@@ -102,8 +104,8 @@ class Sukasa(Store):
                     variant_name,
                     cls.__name__,
                     category,
-                    url,
-                    url,
+                    variant_url,
+                    variant_url,
                     key,
                     -1,
                     normal_price,

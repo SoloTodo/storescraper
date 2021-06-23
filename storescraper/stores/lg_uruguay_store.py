@@ -25,8 +25,7 @@ class LgUruguayStore(Store):
         url_extensions = [
             ['televisores', TELEVISION],
             ['electrodomesticos/refrigeradores', REFRIGERATOR],
-            ['electrodomesticos/lavarropas', WASHING_MACHINE],
-            ['electrodomesticos/lavasecarropas', WASHING_MACHINE],
+            ['electrodomesticos/lavado', WASHING_MACHINE],
             ['audio', STEREO_SYSTEM]
         ]
         session = session_with_proxy(extra_args)
@@ -40,6 +39,7 @@ class LgUruguayStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.ltienda.com.uy/{}?' \
                               'js=1&ord=new&pag={}'.format(url_extension, page)
+                print(url_webpage)
                 res = session.get(url_webpage)
 
                 if res.url != url_webpage:
