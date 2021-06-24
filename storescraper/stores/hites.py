@@ -89,11 +89,12 @@ class Hites(Store):
              'Inicio > Electro Hogar > Cocina > Encimeras', 1],
             ['electro-hogar/cocina/hornos-empotrados', ['Oven'],
              'Inicio > Electro Hogar > Cocina > Hornos Empotrados', 1],
-            ['electro-hogar/cocina/hornos-electricos-y-microondas', ['Oven'],
+            ['electro-hogar/cocina/hornos-electricos', ['Oven'],
              'Inicio > Electro Hogar > Cocina > '
-             'Hornos Eléctricos y Microondas', 1],
-            ['electro-hogar/cocina/microondas', ['Oven'],
-             'Inicio > Electro Hogar > Cocina > Microondas', 1],
+             'Hornos Eléctricos', 1],
+            ['electro-hogar/electrodomesticos-cocina/microondas', ['Oven'],
+             'Inicio > Electro Hogar > Electrodomesticos Cocina > Microondas',
+             1],
             ['electro-hogar/climatizacion',
              ['AirConditioner', 'SpaceHeater', 'WaterHeater'],
              'Inicio > Electro Hogar > Climatización', 0],
@@ -147,8 +148,10 @@ class Hites(Store):
              ['Printer'],
              'Inicio > Tecnología > Computación > '
              'Impresoras y Multifuncionales', 1],
-            ['tecnologia/computacion/pendrive', ['UsbFlashDrive'],
-             'Inicio > Tecnología > Computación > Pendrive', 1],
+            ['tecnologia/accesorios-y-otros/pendrives-y-tarjetas-de-memoria',
+             ['UsbFlashDrive', 'MemoryCard'],
+             'Inicio > Tecnología > Accesorios y Otros > Pendrives y '
+             'Tarjetas de Memoria', 1],
             ['tecnologia/computacion/disco-duro', ['ExternalStorageDrive'],
              'Inicio > Tecnología > Computación > Disco Duro', 1],
             ['tecnologia/video-juego/consolas', ['VideoGameConsole'],
@@ -224,6 +227,8 @@ class Hites(Store):
                 products = soup.findAll('div', 'product-tile')
 
                 if not products:
+                    # if start == 0:
+                    #     raise Exception(category_url)
                     break
 
                 for product_entry in products:
@@ -388,21 +393,28 @@ class Hites(Store):
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.TELEVISIONS, 'TV Video', bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video'],
-            [bs.TELEVISIONS, 'Todos los Led', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/todos-los-led'],
-            [bs.TELEVISIONS, 'Smart TV Hasta 50', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/smart-tv-hasta-50'],
-            [bs.TELEVISIONS, 'Smart TV Entre 55 y 60',
+            [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv'],
+            [bs.TELEVISIONS, 'Smart TV LG', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-lg'],
+            [bs.TELEVISIONS, 'Smart TV Samsung', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-samsung'],
+            [bs.TELEVISIONS, 'Smart TV Premium', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-premium'],
+            [bs.TELEVISIONS, 'Smart TV Hasta 49', bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-hasta-49'],
+            [bs.TELEVISIONS, 'Smart TV Entre 50 y 55',
              bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/smart-tv-entre-55-y-60'],
-            [bs.TELEVISIONS, 'Smart TV Desde 65', bs.SUBSECTION_TYPE_MOSAIC,
-             'tecnologia/tv-video/smart-tv-desde-65'],
+             'tecnologia/tv-video/smart-tv-entre-50-y-55'],
+            [bs.TELEVISIONS, 'Smart TV Desde 58',
+             bs.SUBSECTION_TYPE_MOSAIC,
+             'tecnologia/tv-video/smart-tv-desde-58'],
             [bs.CELLS, 'Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
-             'celulares/smartphone'],
+             'celulares/smartphones'],
             [bs.CELLS, 'Smartphone-Smartphone', bs.SUBSECTION_TYPE_MOSAIC,
-             'celulares/smartphone/smartphone'],
+             'celulares/smartphones/smartphone'],
             [bs.CELLS, 'Smartphone Liberados', bs.SUBSECTION_TYPE_MOSAIC,
-             'celulares/smartphone/smartphone-liberados'],
+             'celulares/smartphones/celulares-liberados'],
             [bs.REFRIGERATION, 'Refrigeradores', bs.SUBSECTION_TYPE_MOSAIC,
              'electro-hogar/refrigeradores'],
             [bs.REFRIGERATION, 'No Frost', bs.SUBSECTION_TYPE_MOSAIC,
