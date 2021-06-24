@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
-    CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE
+    CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE, KEYBOARD, MOUSE, \
+    MEMORY_CARD, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,28 +33,34 @@ class KillStore(Store):
             GAMING_CHAIR,
             NOTEBOOK,
             VIDEO_GAME_CONSOLE,
+            KEYBOARD,
+            MOUSE,
+            MEMORY_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['audio/audifonos', HEADPHONES],
+            ['computacion/notebooks', NOTEBOOK],
+            ['computacion/componentes/discos-internos', SOLID_STATE_DRIVE],
+            ['computacion/componentes/fuentes', POWER_SUPPLY],
+            ['computacion/componentes/gabinetes', COMPUTER_CASE],
+            ['computacion/componentes/memoria-ram', RAM],
             ['computacion/componentes/placas-madre', MOTHERBOARD],
             ['computacion/componentes/procesadores', PROCESSOR],
-            ['computacion/componentes/memoria-ram', RAM],
-            ['computacion/componentes/discos-internos', SOLID_STATE_DRIVE],
-            ['computacion/componentes/tarjetas-de-video', VIDEO_CARD],
-            ['computacion/monitores', MONITOR],
-            ['computacion/mouse-y-teclado', KEYBOARD_MOUSE_COMBO],
-            ['componentes/fuentes', POWER_SUPPLY],
-            ['componentes/gabinetes', COMPUTER_CASE],
-            ['computacion/almacenamiento/discos-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['audio/audifonos', HEADPHONES],
             ['computacion/componentes/refrigeracion-y-ventiladores',
              CPU_COOLER],
-            ['Computacion/Sillas', GAMING_CHAIR],
-            ['computacion/notebooks', NOTEBOOK],
-            ['Gaming', VIDEO_GAME_CONSOLE],
+            ['computacion/componentes/tarjetas-de-video', VIDEO_CARD],
+            ['computacion/mouse-y-teclado/teclados', KEYBOARD],
+            ['computacion/mouse-y-teclado/mouse', MOUSE],
+            ['computacion/monitores', MONITOR],
+            ['250', EXTERNAL_STORAGE_DRIVE],
+            ['256', MEMORY_CARD],
+            ['257', MEMORY_CARD],
+            ['258', PRINTER],
+            ['computacion/sillas', GAMING_CHAIR],
+            ['gaming', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -80,6 +87,8 @@ class KillStore(Store):
                         done = False
 
                 if done:
+                    # if page == 0:
+                    #     raise Exception(url_webpage)
                     break
                 page += 1
         return product_urls
