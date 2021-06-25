@@ -233,9 +233,16 @@ class Hites(Store):
 
                 for product_entry in products:
                     path = product_entry.find('a')['href']
-                    if path == '/':
+
+                    if 'hites.com' in path:
+                        product_url = path
+                    else:
+                        product_url = 'https://www.hites.com' + path
+
+                    if product_url == 'https://www.hites.com/':
                         logging.warning('Invalid URL: ' + category_url)
-                    product_url = 'https://www.hites.com' + path
+                        continue
+
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,

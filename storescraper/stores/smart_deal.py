@@ -75,8 +75,7 @@ class SmartDeal(Store):
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
         if soup.find('div', 'et_pb_row et_pb_row_3_tb_body').findAll(
-                'div', 'et_pb_text_inner')[1].text in ['Factory Refurbished',
-                                                       'Nuevo Open Box']:
+                'div', 'et_pb_text_inner')[1].text in ['Factory Refurbished']:
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
