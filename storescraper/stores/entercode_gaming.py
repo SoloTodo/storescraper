@@ -109,7 +109,9 @@ class EntercodeGaming(Store):
             round(int(json_container['offers'][0]['price']) * 1.04))
         offer_price = Decimal(int(json_container['offers'][0]['price']))
         stock_tag = soup.find('div', 'product-information-inner')\
-            .find('p', 'step-1')
+            .find('p', 'step-1') or \
+            soup.find('div', 'product-information-inner')\
+            .find('p', 'step-2')
 
         if stock_tag:
             stock = int(stock_tag.text.split()[0])
