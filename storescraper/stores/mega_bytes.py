@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, RAM, \
     SOLID_STATE_DRIVE, COMPUTER_CASE, MONITOR, NOTEBOOK, MOUSE, \
-    POWER_SUPPLY, CPU_COOLER
+    POWER_SUPPLY, CPU_COOLER, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,22 +25,25 @@ class MegaBytes(Store):
             NOTEBOOK,
             MOUSE,
             POWER_SUPPLY,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['accesorios/mas-accesorios', MOUSE],
-            ['almacenamiento', SOLID_STATE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['memorias', RAM],
-            ['placa-madre', MOTHERBOARD],
-            ['procesador', PROCESSOR],
-            ['tarjetas-graficas', VIDEO_CARD],
-            ['ventilacion', CPU_COOLER],
+            ['accesorios/mouse-teclados', MOUSE],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
+            ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-pc/gabinetes', COMPUTER_CASE],
+            ['componentes-pc/memorias', RAM],
+            ['componentes-pc/placa-madre', MOTHERBOARD],
+            ['componentes-pc/procesador', PROCESSOR],
+            ['componentes-pc/tarjetas-graficas', VIDEO_CARD],
+            ['componentes-pc/ventilacion', CPU_COOLER],
             ['monitores', MONITOR],
             ['notebooks', NOTEBOOK],
+            ['accesorios/audifonos-headsets', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -58,6 +61,7 @@ class MegaBytes(Store):
 
                 if data.status_code == 404:
                     if page == 1:
+                        # raise Exception(url_webpage)
                         logging.warning('Empty category: ' + url_extension)
                     break
                 soup = BeautifulSoup(data.text, 'html.parser')

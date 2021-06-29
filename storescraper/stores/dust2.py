@@ -158,8 +158,9 @@ class Dust2(Store):
 
             return products
         else:
-            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
                 1]
+            sku = soup.find('span', 'sku').text.strip()
             if soup.find('p', 'stock out-of-stock'):
                 stock = 0
             else:
@@ -176,7 +177,7 @@ class Dust2(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 normal_price,
                 offer_price,
