@@ -64,8 +64,8 @@ class Paris(Store):
         ['tecnologia/computadores/ipad-tablet', ['Tablet'],
          'Tecno > Computadores > iPad y Tablet', 1],
         # Also includes accesories
-        ['tecnologia/celulares', ['Cell', 'Wearables'],
-         'Tecno > Celulares', 0],
+        # ['tecnologia/celulares', ['Cell', 'Wearables'],
+        #  'Tecno > Celulares', 0],
         ['tecnologia/celulares/smartphones', ['Cell'],
          'Tecno > Celulares > Smartphones', 1],
         ['tecnologia/celulares/basicos', ['Cell'],

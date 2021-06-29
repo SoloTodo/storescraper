@@ -45,7 +45,7 @@ class JeanfigPc(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://jeanfigpc.cl/categoria-producto/{}/' \
                               'page/{}/'.format(url_extension, page)
-                data = session.get(url_webpage).text
+                data = session.get(url_webpage, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('div', 'row list-product-row')
                 if not product_containers:
@@ -63,7 +63,7 @@ class JeanfigPc(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]

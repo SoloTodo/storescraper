@@ -61,8 +61,7 @@ class EntercodeGaming(Store):
                                                              page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('a', 'woocommerce'
-                                                       '-LoopProduct-link')
+                product_containers = soup.findAll('a', 'product-content-image')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -89,25 +88,36 @@ class EntercodeGaming(Store):
 
         if not soup.find('script', {'type': 'application/ld+json'}):
             return []
+
         json_container = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            soup.find('script',
+                      {'type': 'application/ld+json'}).text)
+
+        if '@graph' not in json_container:
+            return []
+
+        json_container = json_container['@graph'][1]
         name = json_container['name']
+
         if type(json_container['sku']) == str:
             part_number = json_container['sku']
             name += ' - ' + part_number
+
         sku = str(json.loads(soup.find('div', 'yith-wcwl-add-to-wishlist')[
                                  'data-fragment-options'])['product_id'])
-
         normal_price = Decimal(
-            round(int(json_container['offers'][0]['price']) * 1.05))
+            round(int(json_container['offers'][0]['price']) * 1.04))
         offer_price = Decimal(int(json_container['offers'][0]['price']))
-        if soup.find('p', 'stock out-of-stock'):
-            stock = 0
+        stock_tag = soup.find('div', 'product-information-inner')\
+            .find('p', 'step-1')
+
+        if stock_tag:
+            stock = int(stock_tag.text.split()[0])
         else:
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-        picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'woocommerce-product-gallery')
-                            .findAll('img')]
+            stock = 0
+
+        picture_urls = [tag['href'].split('?')[0] for tag in
+                        soup.findAll('a', 'woocommerce-main-image')]
         p = Product(
             name,
             cls.__name__,

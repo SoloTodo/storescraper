@@ -79,7 +79,8 @@ class Ofimania(Store):
                                       'html.parser')
             print(stock_tag.text)
 
-            if stock_tag.text.strip() == 'Agotado':
+            if stock_tag.text.strip() == 'Agotado' or \
+                    not stock_tag.text.strip():
                 stock = 0
             else:
                 stock = int(stock_tag.text.split()[0])
