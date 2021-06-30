@@ -57,16 +57,15 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        if response.status_code == 404 or response.url != url:
+            return []
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = soup.find('div', {'id': 'main-product-wrapper'})
         name = product_container.find('h1', 'h1 page-title').text
         sku = \
             product_container.find('input', {'id': 'product_page_product_id'})[
                 'value']
-        if product_container.find('span', {'id': 'product-availability'}):
-            stock = 0
-        else:
-            stock = -1
+        stock = -1
         price = Decimal(
             product_container.find('span', 'product-price')['content'])
         if product_container.find('div', 'product-images'):
