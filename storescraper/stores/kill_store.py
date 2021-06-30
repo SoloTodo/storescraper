@@ -76,8 +76,9 @@ class KillStore(Store):
                 print(url_webpage)
 
                 data = session.get(url_webpage).text
-                page_state_text = re.search(r'__STATE__ = (.+)', data)
-                page_state = json.loads(page_state_text.groups()[0])
+                soup = BeautifulSoup(data, 'html.parser')
+                page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
+                page_state = json.loads(page_state_tag.text)
                 done = True
 
                 for key, value in page_state.items():
