@@ -152,6 +152,10 @@ class Movistar(Store):
         ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
         page = session.get(url)
 
+        if page.url == 'https://catalogo.movistar.cl/equipomasplan/' \
+                       'catalogo.html':
+            return []
+
         if page.status_code == 404:
             return []
 
