@@ -101,8 +101,9 @@ class KillStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        page_state_text = re.search(r'__STATE__ = (.+)', response.text)
-        page_state = json.loads(page_state_text.groups()[0])
+        soup = BeautifulSoup(response.text, 'html.parser')
+        page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
+        page_state = json.loads(page_state_tag.text)
         name = sku = price = stock = picture_urls = part_number = None
 
         for state_key, value in page_state.items():
