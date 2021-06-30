@@ -8,7 +8,7 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
     CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE, KEYBOARD, MOUSE, \
-    MEMORY_CARD, PRINTER
+    MEMORY_CARD, PRINTER, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,12 +36,14 @@ class KillStore(Store):
             KEYBOARD,
             MOUSE,
             MEMORY_CARD,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['audio/audifonos', HEADPHONES],
+            ['audio/monitores/activos', STEREO_SYSTEM],
             ['computacion/notebooks', NOTEBOOK],
             ['computacion/componentes/discos-internos', SOLID_STATE_DRIVE],
             ['computacion/componentes/fuentes', POWER_SUPPLY],
