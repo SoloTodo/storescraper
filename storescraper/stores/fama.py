@@ -19,22 +19,23 @@ class Fama(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            WASHING_MACHINE
+            ['40', WASHING_MACHINE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
+            page = 0
             while True:
                 if page > 10:
                     raise Exception('page overflow')
-                url_webpage = 'https://www.fama.com.uy/lg?pagenumber={}' \
-                    .format(page)
+                url_webpage = 'https://www.fama.com.uy/productos/productos' \
+                              '.php?id_marca={}&pagina={}'.format(
+                                url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'item-box')
+                product_containers = soup.findAll('article', 'prod_item')
 
                 if not product_containers:
                     if page == 1:
@@ -53,17 +54,11 @@ class Fama(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('div', {'id': 'product-ribbon-info'})['data-productid']
+        sku = soup.find('input', {'name': 'ids[]'})['value']
         stock = -1
-        price = Decimal(soup.find('span', {'itemprop': 'price'}).text.strip()
-                        .split()[1].replace('.', '').replace(',', '.'))
-        if soup.find('div', 'picture-thumbs'):
-            picture_urls = [tag['src'].replace('_100.jpeg', '.jpeg') for tag in
-                            soup.find('div', 'picture-thumbs').findAll('img')
-                            ]
-        else:
-            picture_urls = [tag['src'] for tag in
-                            soup.find('div', 'gallery').findAll('img')]
+        price = Decimal(soup.find('span', {'itemprop': 'price'}).text.strip())
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'galeria').findAll('img')]
         p = Product(
             name,
             cls.__name__,
