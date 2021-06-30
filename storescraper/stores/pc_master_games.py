@@ -4,8 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, SOLID_STATE_DRIVE, NOTEBOOK, \
-    RAM, STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
-    WEARABLE, CELL, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR
+    RAM, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
+    WEARABLE, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,13 +19,11 @@ class PcMasterGames(Store):
             SOLID_STATE_DRIVE,
             NOTEBOOK,
             RAM,
-            STORAGE_DRIVE,
             POWER_SUPPLY,
             COMPUTER_CASE,
             MONITOR,
             GAMING_CHAIR,
             WEARABLE,
-            CELL,
             HEADPHONES,
             MOUSE,
             KEYBOARD,
@@ -38,21 +36,17 @@ class PcMasterGames(Store):
             ['mouse', MOUSE],
             ['teclados', KEYBOARD],
             ['audio', HEADPHONES],
-            ['celulares', CELL],
-            ['am4', MOTHERBOARD],
-            ['disco-duro', STORAGE_DRIVE],
+            ['placas-madres-amd', MOTHERBOARD],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
             ['memoria-ram', RAM],
             ['placas-madres-intel', MOTHERBOARD],
             ['procesadores-amd', PROCESSOR],
             ['procesadores-intel', PROCESSOR],
-            ['sam4', MOTHERBOARD],
             ['monitores', MONITOR],
-            ['discos-ssd', SOLID_STATE_DRIVE],
             ['disco-ssd', SOLID_STATE_DRIVE],
             ['equipos', NOTEBOOK],
-            ['memorias', RAM],
+            ['memoria-ram', RAM],
             ['sillas-gamer', GAMING_CHAIR],
             ['smartwatch', WEARABLE],
         ]
