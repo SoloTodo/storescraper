@@ -27,23 +27,37 @@ class Wisdomts(Store):
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
+
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
 
-            url_webpage = 'https://wisdomts.cl/tienda/?yith_wcan=1' \
-                          '&product_cat={}'.format(url_extension)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('ul', 'products')[-1]
+            page = 1
 
-            for container in product_containers.findAll(
-                    'li', 'product-grid-view'):
-                product_url = container.find('a')['href']
-                if '2021-dell-gold-partner' in product_url:
-                    continue
-                product_urls.append(product_url)
+            while True:
+                if page >= 10:
+                    raise Exception('Page overflow')
+
+                url_webpage = 'https://wisdomts.cl/tienda/page/{}/?' \
+                              'yith_wcan=1&product_cat={}'.format(
+                                page, url_extension)
+                print(url_webpage)
+                res = session.get(url_webpage)
+
+                if res.status_code == 404:
+                    break
+
+                soup = BeautifulSoup(res.text, 'html.parser')
+                product_containers = soup.findAll('ul', 'products')[-1]
+
+                for container in product_containers.findAll(
+                        'li', 'product-grid-view'):
+                    product_url = container.find('a')['href']
+                    if '2021-dell-gold-partner' in product_url:
+                        continue
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
