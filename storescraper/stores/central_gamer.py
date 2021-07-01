@@ -79,7 +79,7 @@ class CentralGamer(Store):
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
 
         stock_tag = soup.find('span', 'product-form_brand')
-        if 'INMEDIATA' not in stock_tag.text.upper():
+        if stock_tag and 'INMEDIATA' not in stock_tag.text.upper():
             stock = 0
         elif soup.find('div', {'id': 'stock'}):
             stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
