@@ -77,7 +77,11 @@ class CentralGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
-        if soup.find('div', {'id': 'stock'}):
+
+        stock_tag = soup.find('span', 'product-form_brand')
+        if 'INMEDIATA' not in stock_tag.text.upper():
+            stock = 0
+        elif soup.find('div', {'id': 'stock'}):
             stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
         else:
             stock = 0
