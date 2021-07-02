@@ -57,7 +57,7 @@ class KillStore(Store):
             ['computacion/mouse-y-teclado/teclados', KEYBOARD],
             ['computacion/mouse-y-teclado/mouse', MOUSE],
             ['computacion/monitores', MONITOR],
-            ['250', EXTERNAL_STORAGE_DRIVE],
+            ['Computacion/Almacenamiento/Discos-Externos', EXTERNAL_STORAGE_DRIVE],
             ['256', MEMORY_CARD],
             ['257', MEMORY_CARD],
             ['258', PRINTER],
