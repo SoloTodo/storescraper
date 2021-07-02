@@ -1,46 +1,28 @@
-import re
-
 from bs4 import BeautifulSoup
-from decimal import Decimal
 
-from storescraper.product import Product
+from storescraper.categories import KEYBOARD, MOUSE, SOLID_STATE_DRIVE, RAM
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class GlobalMac(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'StorageDrive',
-            'ExternalStorageDrive',
-            'SolidStateDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Ram',
+            KEYBOARD,
+            MOUSE,
+            SOLID_STATE_DRIVE,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['lacie-chile/discos-externos', 'ExternalStorageDrive'],
-            ['lacie-chile/discos-portatiles', 'ExternalStorageDrive'],
-            ['lacie-chile/discos-thunderbolt', 'ExternalStorageDrive'],
-            ['accesorios-mac-pc/discos-duros-externos',
-             'ExternalStorageDrive'],
-            ['accesorios-mac-pc/discos-duros-portatiles',
-             'ExternalStorageDrive'],
-            ['hardware-mac-pc/discos-duros-notebook-sata-2.5',
-             'SolidStateDrive'],
-            ['hardware-mac-pc/discos-duros-ssd-sata-2.5', 'SolidStateDrive'],
-            ['hardware-mac-pc/SSD-M2-PCIe-NVMe', 'SolidStateDrive'],
-            ['hardware-mac-pc/SSD-M2-SATA', 'SolidStateDrive'],
-            ['hardware-mac-pc/SSD-mSATA', 'SolidStateDrive'],
-            ['hardware-mac-pc/memorias-ram', 'Ram'],
-            ['hardware-mac-pc/Tarjetas-Expansion-Flashdrive-SDCard-y-SSD-'
-             'para-Apple-Mac', 'MemoryCard'],
+            ['computacion/perifericos-accesorios/teclados', KEYBOARD],
+            ['computacion/perifericos-accesorios/mouses', MOUSE],
+            ['componentes-pc-discos-accesorios-duros-ssds', SOLID_STATE_DRIVE],
+            ['almacenamiento-discos-accesorios-duros-ssds', SOLID_STATE_DRIVE],
+            ['componentes-pc-memorias-ram', RAM],
         ]
 
         product_urls = []
@@ -50,71 +32,40 @@ class GlobalMac(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.globalmac.cl/' + category_path
-            print(category_url)
-            soup = BeautifulSoup(session.get(category_url).text,
-                                 'html.parser')
+            offset = 1
+            done = False
 
-            items = soup.findAll('div', 'product-layout')
+            while not done:
+                if offset >= 200:
+                    raise Exception('Page overflow')
 
-            for item in items:
-                product_urls.append(item.find('a')['href'])
+                category_url = 'https://globalmac.mercadoshops.cl/listado/' \
+                               '{}/_Desde_{}'.format(category_path, offset)
+                print(category_url)
+                soup = BeautifulSoup(session.get(category_url).text,
+                                     'html.parser')
+                product_containers = soup.findAll('li',
+                                                  'ui-search-layout__item')
+
+                if not product_containers:
+                    break
+
+                for container in product_containers:
+                    product_url = \
+                    container.find('a')['href'].split('#')[0].split('?')[0]
+                    product_urls.append(product_url)
+
+                offset += 50
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
-        session.headers['Accept-Encoding'] = 'deflate'
-        response = session.get(url)
+        from . import MercadoLibreChile
+        products = MercadoLibreChile.products_for_url(url, category,
+                                                      extra_args)
+        for product in products:
+            product.seller = None
+            product.store = cls.__name__
 
-        if response.status_code == 500:
-            return []
-
-        soup = BeautifulSoup(response.text,
-                             'html.parser')
-
-        name = soup.find('title').text.strip()
-        sku = soup.find('input', {'name': 'product_id'})['value']
-
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
-        pictures_container = soup.find('ul', 'thumbnails')
-
-        if pictures_container:
-            picture_urls = [tag['href'] for tag in pictures_container.findAll(
-                'a', 'thumbnail') if tag['href']]
-        else:
-            picture_urls = None
-
-        if soup.find('button', {'id': 'button-cart'}):
-            stock = -1
-        else:
-            stock = 0
-
-        price_text = soup.findAll('h2')[-1].text.replace('.', '')
-
-        normal_price = re.search(r'Webpay: \$(\d+)', price_text)
-        normal_price = Decimal(normal_price.groups()[0])
-
-        offer_price = re.search(r'Transferencia: \$(\d+)', price_text)
-        offer_price = Decimal(offer_price.groups()[0])
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            part_number=sku,
-            description=description,
-            picture_urls=picture_urls
-        )
-
-        return [p]
+        return products
