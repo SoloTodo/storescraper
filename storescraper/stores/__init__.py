@@ -60,6 +60,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .dgital import Dgital
+from .digi_planet import DigiPlanet
 from .digiplot import Digiplot
 from .digitalife import Digitalife
 from .dimercom import Dimercom
