@@ -85,6 +85,5 @@ class DigiPlanet(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-
         )
         return [p]
