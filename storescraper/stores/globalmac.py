@@ -52,7 +52,7 @@ class GlobalMac(Store):
 
                 for container in product_containers:
                     product_url = \
-                    container.find('a')['href'].split('#')[0].split('?')[0]
+                        container.find('a')['href'].split('#')[0].split('?')[0]
                     product_urls.append(product_url)
 
                 offset += 50

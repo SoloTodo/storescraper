@@ -2,6 +2,8 @@ import logging
 
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
@@ -39,7 +41,7 @@ class Bristol(Store):
                         logging.warning('Empty category')
                     break
                 for container in product_containers:
-                    product_url = container['id']
+                    product_url = container['slug']
                     product_urls.append(
                         'https://www.bristol.com.py/product/' + str(
                             product_url))
@@ -48,12 +50,20 @@ class Bristol(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        product_id = url.split('/')[-1]
+        print(url)
         session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        product_id = soup.find(
+            'meta', {'property': 'product:retailer_item_id'})['content']
+
         response = session.get(
             'https://bristol.opentechla.com/api/opentech/martfury/products/' +
             product_id)
         product_container = response.json()
+
+        if not product_container['price']:
+            return []
+
         name = product_container['name']
         stock = product_container['stock']
         price = Decimal(product_container['price'])

@@ -47,7 +47,7 @@ class GamesLegends(Store):
             # ['telefonos-moviles', CELL],
             ['tarjetas-de-video', VIDEO_CARD],
             ['gabinetes', COMPUTER_CASE],
-            ['sillasgamergl', GAMING_CHAIR],
+            ['sillasgamer', GAMING_CHAIR],
             ['nintendo', VIDEO_GAME_CONSOLE],
             ['consolas', VIDEO_GAME_CONSOLE],
             ['zona-xbox', VIDEO_GAME_CONSOLE],
@@ -61,8 +61,9 @@ class GamesLegends(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.gameslegends.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://www.gameslegends.cl/en/{}?page=' \
+                              '{}'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find(
@@ -81,6 +82,7 @@ class GamesLegends(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
