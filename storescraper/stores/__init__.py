@@ -36,6 +36,7 @@ from .cc_link import CCLink
 from .cetrogar import Cetrogar
 from .centrale import Centrale
 from .central_gamer import CentralGamer
+from .chile_gamerr import ChileGamerr
 from .cintegral import Cintegral
 from .claro import Claro
 from .claro_up import ClaroUp
