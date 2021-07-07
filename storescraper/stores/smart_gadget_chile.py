@@ -8,7 +8,8 @@ from storescraper.categories import NOTEBOOK, MONITOR, RAM, VIDEO_CARD, \
     TABLET, HEADPHONES, VIDEO_GAME_CONSOLE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class SmartGadgetChile(Store):
@@ -81,7 +82,14 @@ class SmartGadgetChile(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
-        if soup.find('meta', {'content': 'instock'}):
+
+        description_tag = soup.find('div', {'id': 'product-tabs_content'})
+        description = html_to_markdown(str(description_tag))
+
+        if 'LLEGADA' in description.upper():
+            # Preventa
+            stock = 0
+        elif soup.find('meta', {'content': 'instock'}):
             stock = -1
         else:
             stock = 0
@@ -95,6 +103,7 @@ class SmartGadgetChile(Store):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -109,5 +118,6 @@ class SmartGadgetChile(Store):
             condition=condition,
             sku=sku,
             picture_urls=picture_urls,
+            description=description
         )
         return [p]
