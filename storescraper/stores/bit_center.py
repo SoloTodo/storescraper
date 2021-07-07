@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
     STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR, \
-    MOTHERBOARD
+    MOTHERBOARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -25,6 +25,7 @@ class BitCenter(Store):
             POWER_SUPPLY,
             GAMING_CHAIR,
             MOTHERBOARD,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -38,6 +39,7 @@ class BitCenter(Store):
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-pc/refrigeracion', CPU_COOLER],
             ['sillas-gamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
