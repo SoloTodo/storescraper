@@ -1,4 +1,5 @@
 import json
+import time
 
 from collections import defaultdict
 from decimal import Decimal
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, HeadlessChrome
 
 
 class Wom(Store):
@@ -61,9 +62,6 @@ class Wom(Store):
             json_response = json.loads(response.text)
 
             for idx, cell_entry in enumerate(json_response['items']):
-                # if cell_entry['sku'] == '20210322':
-                #     import ipdb
-                #     ipdb.set_trace()
                 cell_url = 'https://store.wom.cl/equipos/' + \
                            str(cell_entry['sku']) + '/' + cell_entry[
                                'name'].replace('+', 'plus').replace(
@@ -106,11 +104,27 @@ class Wom(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(
-            'https://store.wom.cl/planes/').text, 'html.parser')
-        plan_containers = soup.findAll(
-            'div', 'index-module--planItemWrapper--1QwM8')
+        with HeadlessChrome() as driver:
+            driver.get('https://store.wom.cl/planes/')
+            retries = 5
+            plan_containers = None
+
+            while retries:
+                plan_containers = driver.find_elements_by_class_name(
+                    'index-module--listWrapperContainer--14sTQ')
+                if plan_containers:
+                    break
+                time.sleep(2)
+                retries -= 1
+
+            if not plan_containers:
+                raise Exception('No plan tags found')
+
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+        plan_containers = soup.find(
+            'div', 'index-module--listWrapperContainer--14sTQ').findAll(
+            'div', 'swiper-slide')
         products = []
 
         variants = [
@@ -119,8 +133,9 @@ class Wom(Store):
         ]
 
         for container in plan_containers:
-            plan_name = container.findAll(
-                'div', 'index-module--value--3xbFh')[-1].text
+            print(container)
+            plan_name = container.find(
+                'div', 'index-module--value--3xbFh').text
             plan_price = Decimal(remove_words(
                 soup.find('span', 'index-module--price--1k_ac').text))
 
