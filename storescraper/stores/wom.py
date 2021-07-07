@@ -133,11 +133,10 @@ class Wom(Store):
         ]
 
         for container in plan_containers:
-            print(container)
             plan_name = container.find(
                 'div', 'index-module--value--3xbFh').text
             plan_price = Decimal(remove_words(
-                soup.find('span', 'index-module--price--1k_ac').text))
+                container.find('span', 'index-module--price--1k_ac').text))
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:
