@@ -69,11 +69,15 @@ class ChileGamerr(Store):
                 'product']['id']
         name = soup.find('h1', {'data-hook': 'product-title'}).text
         sku = product_id
-        stock = \
-            product_container['appsWarmupData'][first_key][second_key][
-                'catalog']['product']['inventory']['quantity']
-        if stock == 500:
+
+        if 'RESERVA' in name.upper():
             stock = 0
+        else:
+            stock = \
+                product_container['appsWarmupData'][first_key][second_key][
+                    'catalog']['product']['inventory']['quantity']
+            if stock == 500:
+                stock = 0
         price = Decimal(remove_words(soup.find('span', {
             'data-hook': 'formatted-primary-price'}).text.split(',')[0]))
         picture_urls = ['https://static.wixstatic.com/media/' +
