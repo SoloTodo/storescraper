@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TABLET, SOLID_STATE_DRIVE, PROCESSOR, \
     COMPUTER_CASE, VIDEO_CARD, RAM, STORAGE_DRIVE, POWER_SUPPLY, MOTHERBOARD, \
     EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MOUSE, \
-    KEYBOARD_MOUSE_COMBO
+    KEYBOARD_MOUSE_COMBO, NOTEBOOK, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,6 +16,7 @@ class Updatech(Store):
     @classmethod
     def categories(cls):
         return [
+            NOTEBOOK,
             TABLET,
             SOLID_STATE_DRIVE,
             PROCESSOR,
@@ -29,16 +30,20 @@ class Updatech(Store):
             HEADPHONES,
             KEYBOARD,
             MOUSE,
-            KEYBOARD_MOUSE_COMBO
+            KEYBOARD_MOUSE_COMBO,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['portatiles', NOTEBOOK],
             ['tableta', TABLET],
             ['perifericos-2/tabletas-digitales', TABLET],
             ['componentes-pc/discos-de-estado-solido-componentes-pc',
              SOLID_STATE_DRIVE],
+            ['componentes-portatil/portatil-ram', RAM],
+            ['monitores', MONITOR],
             ['componentes-pc/procesadores-componentes-pc', PROCESSOR],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
@@ -95,15 +100,14 @@ class Updatech(Store):
         else:
             stock = 0
         if soup.find('p', 'price').find('ins'):
-            price = Decimal(
+            offer_price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+            offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+
+        normal_price = (offer_price * Decimal('1.065')).quantize(0)
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
@@ -112,8 +116,8 @@ class Updatech(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
