@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -75,17 +77,7 @@ class PlayFactory(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
-        if soup.find('span',
-                     'electro-stock-availability').text == 'Hay existencias':
-            stock = -1
-        else:
-            stock = 0
-        price_containers = soup.find('div', 'single-product-wrapper').findAll(
-            'span', 'woocommerce-Price-amount')
-        offer_price = Decimal(remove_words(price_containers[0].text))
-        normal_price = Decimal(remove_words(price_containers[1].text))
+
         if soup.find('figure', 'electro-wc-product-gallery__wrapper'):
             picture_urls = [tag['src'].replace('-100x100', '') for tag in
                             soup.find('figure', 'electro-wc-product-gallery'
@@ -93,18 +85,32 @@ class PlayFactory(Store):
         else:
             picture_urls = [soup.find('figure', 'woocommerce-product-gallery__'
                                                 'wrapper').find('img')['src']]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+
+        json_data = re.search('google_tag_params = (.+);', response.text)
+        json_data = json.loads(json_data.groups()[0])
+        products = []
+
+        for product_entry in json_data['ecommerce']['detail']['products']:
+            name = product_entry['name']
+            sku = product_entry['sku']
+            stock = product_entry['stocklevel']
+            offer_price = Decimal(product_entry['price'])
+            normal_price = (offer_price * Decimal('1.035')).quantize(0)
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            products.append(p)
+
+        return products
