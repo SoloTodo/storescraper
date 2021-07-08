@@ -324,6 +324,7 @@ from .top_pc import TopPc
 from .tottus import Tottus
 from .ttchile import TtChile
 from .tupi import Tupi
+from .updatech import Updatech
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
 from .ventas_albion import VentasAlbion
