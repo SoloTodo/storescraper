@@ -94,10 +94,8 @@ class Zonatec(Store):
                                        'woocommerce-Price-amount amount')
         offer_price = Decimal(remove_words(price_container[1].text))
         normal_price = Decimal(remove_words(price_container[2].text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
