@@ -152,6 +152,7 @@ from .jumbo_store import JumboStore
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kill_store import KillStore
+from .kraken_store import KrakenStore
 from .kuhn import Kuhn
 from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
 from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
