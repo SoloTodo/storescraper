@@ -34,7 +34,7 @@ class KrakenStore(Store):
                 .format(url_extension)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text)
+            soup = BeautifulSoup(response.text, 'html.parser')
             product_containers = soup.findAll('div',
                                               'col my-2 text-center')
             if not product_containers:
