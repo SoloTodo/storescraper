@@ -354,3 +354,4 @@ from .you_tech import YouTech
 from .yoytec import Yoytec
 from .zegucom import Zegucom
 from .zmart import Zmart
+from .zonatec import Zonatec
