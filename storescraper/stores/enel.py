@@ -20,7 +20,7 @@ class Enel(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['aire-acondicionado/aire-acondicionado-split-muro.list.html',
+            ['aire-acondicionado/split-muro.list.html',
              AIR_CONDITIONER],
             ['electrohogar-y-tecnologia/purificador-de-aire.list.html',
              AIR_CONDITIONER],

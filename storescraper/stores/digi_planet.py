@@ -1,12 +1,14 @@
+import json
 import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, KEYBOARD, MOUSE, HEADPHONES
+from storescraper.categories import GAMING_CHAIR, KEYBOARD, MOUSE, HEADPHONES, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class DigiPlanet(Store):
@@ -16,13 +18,15 @@ class DigiPlanet(Store):
             GAMING_CHAIR,
             KEYBOARD,
             MOUSE,
-            HEADPHONES
+            HEADPHONES,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['sillas-gamer', GAMING_CHAIR],
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['teclados-gamer', KEYBOARD],
             ['mouses-gamer', MOUSE],
             ['audifonos-gamer', HEADPHONES]
@@ -60,30 +64,35 @@ class DigiPlanet(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-single__title').text
-        sku = soup.find('span', 'shopify-product-reviews-badge')['data-id']
-        if soup.find('link', {'itemprop': 'availability'})[
-                'href'] == 'http://schema.org/OutOfStock':
-            stock = 0
-        else:
-            stock = int(soup.find('span', {'id': 'counter_left'}).text)
-        price = Decimal(
-            soup.find('span', {'id': 'ProductPrice-product-template'})[
-                'content'])
-        picture_urls = ['https:' + tag['src'].split('?v')[0] for tag in
-                        soup.find('div', 'thumbnails-wrapper').findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-        )
-        return [p]
+
+        json_data = json.loads(soup.find('script', {'id': 'ProductJson-product-template'}).text)
+        sku = str(json_data['id'])
+        name = json_data['title']
+        description = html_to_markdown(json_data['description'])
+        picture_urls = ['https:' + tag.split('?v')[0] for tag in json_data['images']]
+        products = []
+
+        for variant in json_data['variants']:
+            key = str(variant['id'])
+            price = Decimal(variant['price'] / 100)
+            stock = -1 if variant['available'] else 0
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description
+            )
+
+            products.append(p)
+
+        return products
