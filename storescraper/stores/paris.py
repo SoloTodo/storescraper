@@ -365,7 +365,10 @@ class Paris(Store):
             offer_price = Decimal(remove_words(price_tags[0].text))
             normal_price = Decimal(remove_words(price_tags[1].text))
         elif len(price_tags) == 1:
-            normal_price = Decimal(remove_words(price_tags[0].text))
+            price_text = price_tags[0].text.strip()
+            if price_text == 'N/A':
+                return []
+            normal_price = Decimal(remove_words(price_text))
             offer_price = normal_price
         else:
             raise Exception('Invalid number of tags')
