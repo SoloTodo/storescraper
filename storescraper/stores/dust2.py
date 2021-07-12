@@ -44,24 +44,20 @@ class Dust2(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['consolas', VIDEO_GAME_CONSOLE],
             ['mundo-gamer/mouse-gamer', MOUSE],
-            ['computacion-y-electronica/perifericos/mouse-perifericos', MOUSE],
             ['mundo-gamer/teclados-gamer', KEYBOARD],
-            ['computacion-y-electronica/perifericos/teclados-perifericos',
-             KEYBOARD],
+            ['mundo-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
             ['mundo-gamer/audifonos-gamer', HEADPHONES],
-            ['computacion-y-electronica/audio/audifonos-audio', HEADPHONES],
             ['mundo-gamer/parlantes-gamer', STEREO_SYSTEM],
-            ['computacion-y-electronica/audio/parlantes-audio', STEREO_SYSTEM],
             ['mundo-gamer/sillas', GAMING_CHAIR],
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['computacion-y-electronica/componentes-de-pc/gabinetes',
              COMPUTER_CASE],
             ['computacion-y-electronica/componentes-de-pc/cooler-para-cpu',
              CPU_COOLER],
+            ['computacion-y-electronica/componentes-de-pc/'
+             'refrigeracion-liquida', CPU_COOLER],
             ['computacion-y-electronica/componentes-de-pc/memorias-ram', RAM],
-            ['computacion-y-electronica/notebooks/memorias-ram-notebooks',
-             RAM],
             ['computacion-y-electronica/componentes-de-pc/fuentes-de-poder',
              POWER_SUPPLY],
             ['computacion-y-electronica/componentes-de-pc/procesadores',
@@ -70,6 +66,11 @@ class Dust2(Store):
              MOTHERBOARD],
             ['computacion-y-electronica/componentes-de-pc/tarjetas-de-video',
              VIDEO_CARD],
+            ['computacion-y-electronica/perifericos/teclados-perifericos',
+             KEYBOARD],
+            ['computacion-y-electronica/perifericos/mouse-perifericos', MOUSE],
+            ['computacion-y-electronica/perifericos/combo-teclado-y-mouse',
+             KEYBOARD_MOUSE_COMBO],
             ['computacion-y-electronica/almacenamiento/ssd-y-discos-duros',
              STORAGE_DRIVE],
             ['computacion-y-electronica/almacenamiento/tarjetas-de-memoria',
@@ -78,11 +79,18 @@ class Dust2(Store):
              EXTERNAL_STORAGE_DRIVE],
             ['computacion-y-electronica/almacenamiento/pendrive',
              USB_FLASH_DRIVE],
+            ['computacion-y-electronica/audio/audifonos-audio', HEADPHONES],
+            ['computacion-y-electronica/audio/parlantes-audio', STEREO_SYSTEM],
             ['computacion-y-electronica/monitores', MONITOR],
-            ['computacion-y-electronica/perifericos/combo-teclado-y-mouse',
-             KEYBOARD_MOUSE_COMBO],
             ['computacion-y-electronica/notebooks/equipos', NOTEBOOK],
-            ['computacion-y-electronica/tablets-e-readers', TABLET]
+            ['computacion-y-electronica/notebooks/memorias-ram-notebooks',
+             RAM],
+            ['computacion-y-electronica/tablets-e-readers', TABLET],
+            ['apple/airpods/airpods-pro', HEADPHONES],
+            ['dispositivos-inteligentes/asistentes-virtuales/'
+             'amazon-asistentes-virtuales', STEREO_SYSTEM],
+            ['dispositivos-inteligentes/asistentes-virtuales/'
+             'google-asistente', STEREO_SYSTEM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
