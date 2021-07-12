@@ -138,7 +138,7 @@ class Dust2(Store):
                     'max_qty']
                 variant_normal_price = Decimal(variant['display_price'])
                 variant_offer_price = Decimal(
-                    round(variant['display_price'] * 0.97))
+                    round(variant['display_price'] * 0.93))
                 p = Product(
                     variant_name,
                     cls.__name__,
