@@ -66,9 +66,17 @@ class GamesLegends(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find(
-                    'div', 'row mb-md-5 mb-4 mx-n2').findAll(
+
+                product_containers = soup.find('div', 'row mb-md-5 mb-4 mx-n2')
+
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                product_containers = product_containers.findAll(
                     'a', 'product-image')
+
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)

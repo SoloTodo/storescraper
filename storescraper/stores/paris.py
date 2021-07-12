@@ -347,7 +347,6 @@ class Paris(Store):
 
         name = ' '.join(name.text.strip().split())
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
-        offer_price_container = soup.find('div', 'cencosud-price-2')
 
         if soup.find('div', 'out-of-stock') or \
                 soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
@@ -361,18 +360,15 @@ class Paris(Store):
         else:
             stock = -1
 
-        if offer_price_container:
-            offer_price = Decimal(
-                remove_words(offer_price_container.contents[0]))
-            normal_price = Decimal(remove_words(soup.find(
-                'div', 'price-internet').text.split('$')[1].split('\n')[0]))
-        else:
-            price_text = soup.find('div', 'default-price').contents[0].strip()
-            if price_text == 'N/A':
-                return []
-
-            normal_price = Decimal(remove_words(price_text))
+        price_tags = soup.findAll('div', 'price__text')
+        if len(price_tags) == 2:
+            offer_price = Decimal(remove_words(price_tags[0].text))
+            normal_price = Decimal(remove_words(price_tags[1].text))
+        elif len(price_tags) == 1:
+            normal_price = Decimal(remove_words(price_tags[0].text))
             offer_price = normal_price
+        else:
+            raise Exception('Invalid number of tags')
 
         picture_urls = []
         for tag in soup.findAll('img', 'pdpMod_Mobile_GalleryImage'):

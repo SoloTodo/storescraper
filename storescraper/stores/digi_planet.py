@@ -4,8 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, KEYBOARD, MOUSE, HEADPHONES, \
-    VIDEO_GAME_CONSOLE
+from storescraper.categories import GAMING_CHAIR, KEYBOARD, MOUSE, \
+    HEADPHONES, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -65,11 +65,13 @@ class DigiPlanet(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find('script', {'id': 'ProductJson-product-template'}).text)
+        json_data = json.loads(soup.find(
+            'script', {'id': 'ProductJson-product-template'}).text)
         sku = str(json_data['id'])
         name = json_data['title']
         description = html_to_markdown(json_data['description'])
-        picture_urls = ['https:' + tag.split('?v')[0] for tag in json_data['images']]
+        picture_urls = ['https:' + tag.split('?v')[0]
+                        for tag in json_data['images']]
         products = []
 
         for variant in json_data['variants']:
