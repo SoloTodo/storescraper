@@ -27,29 +27,22 @@ class ChileGamerr(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.chilegamerr.cl/{}?page={}'.format(
-                    url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', {
-                    'data-hook': 'product-list-grid-item'})
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for i, container in enumerate(product_containers):
-                    product_url = container.find('a')['href']
-                    if len(product_containers) == len(product_urls):
-                        return product_urls
-                    if product_url in product_urls:
-                        continue
-                    product_urls.append(product_url)
-                page += 1
+            url_webpage = 'https://www.chilegamerr.cl/{}?page=100'.format(
+                url_extension)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', {
+                'data-hook': 'product-list-grid-item'})
+
+            for container in product_containers:
+                tag_box = container.find('span', 'mxMP4')
+
+                if tag_box and 'RESERVA' in tag_box.text.upper():
+                    continue
+
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
