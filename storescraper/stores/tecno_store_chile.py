@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import STORAGE_DRIVE, USB_FLASH_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
-    GAMING_CHAIR, KEYBOARD_MOUSE_COMBO
+    GAMING_CHAIR, KEYBOARD_MOUSE_COMBO, POWER_SUPPLY, COMPUTER_CASE, \
+    VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -24,27 +25,47 @@ class TecnoStoreChile(Store):
             MOUSE,
             GAMING_CHAIR,
             KEYBOARD_MOUSE_COMBO,
+            COMPUTER_CASE,
+            VIDEO_CARD,
+            MOTHERBOARD,
+            RAM,
+            CPU_COOLER,
+            PROCESSOR,
+            MONITOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['393-hdd', STORAGE_DRIVE],
             ['391-pendrives', USB_FLASH_DRIVE],
             ['392-ssd', SOLID_STATE_DRIVE],
+            ['393-hdd', STORAGE_DRIVE],
             ['394-m2', SOLID_STATE_DRIVE],
             ['387-audifonos', HEADPHONES],
             ['388-parlantes', STEREO_SYSTEM],
             ['389-equipos-de-audio', STEREO_SYSTEM],
-            ['401-audifonos-gamer', STEREO_SYSTEM],
-            ['399-teclados', KEYBOARD],
-            ['396-teclados', KEYBOARD],
-            ['398-mouse', MOUSE],
             ['395-mouse', MOUSE],
-            ['403-sillas', GAMING_CHAIR],
+            ['396-teclados', KEYBOARD],
             ['397-conjuntos', KEYBOARD_MOUSE_COMBO],
+            ['399-teclados', KEYBOARD],
+            ['398-mouse', MOUSE],
             ['400-conjuntos', KEYBOARD_MOUSE_COMBO],
-            ['397-conjuntos', KEYBOARD_MOUSE_COMBO],
+            ['401-audifonos-gamer', STEREO_SYSTEM],
+            ['403-sillas', GAMING_CHAIR],
+            ['418-audifonos', HEADPHONES],
+            ['419-mouse', MOUSE],
+            ['424-teclados', KEYBOARD],
+            ['425-sillas', GAMING_CHAIR],
+            ['430-fuentes-de-poder', POWER_SUPPLY],
+            ['431-gabinete', COMPUTER_CASE],
+            ['432-tarjeta-de-video', VIDEO_CARD],
+            ['433-placa-madre', MOTHERBOARD],
+            ['434-memoria-ram', RAM],
+            ['435-unidades-de-memoria', SOLID_STATE_DRIVE],
+            ['436-ventiladores', CPU_COOLER],
+            ['437-refrigeracion', CPU_COOLER],
+            ['438-procesadores', PROCESSOR],
+            ['440-monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

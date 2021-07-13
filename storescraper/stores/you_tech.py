@@ -7,7 +7,7 @@ from storescraper.categories import NOTEBOOK, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, \
     MOTHERBOARD, CPU_COOLER, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     STORAGE_DRIVE, RAM, MEMORY_CARD, USB_FLASH_DRIVE, CELL, WEARABLE, \
-    PRINTER, UPS, GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, TABLET
+    PRINTER, UPS, GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, TABLET, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -41,6 +41,7 @@ class YouTech(Store):
             COMPUTER_CASE,
             VIDEO_CARD,
             TABLET,
+            ALL_IN_ONE,
         ]
 
     @classmethod
@@ -48,6 +49,7 @@ class YouTech(Store):
         url_extensions = [
             ['67906_67934', NOTEBOOK],
             ['67906_67979', NOTEBOOK],
+            ['67906_67935', ALL_IN_ONE],
             ['67824_67897', HEADPHONES],
             ['67824_67850', KEYBOARD_MOUSE_COMBO],
             ['68001', MONITOR],
