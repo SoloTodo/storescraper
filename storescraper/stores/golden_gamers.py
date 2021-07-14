@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, COMPUTER_CASE, STORAGE_DRIVE, RAM, GAMING_CHAIR, MOUSE, \
-    KEYBOARD, MONITOR, NOTEBOOK, CPU_COOLER
+    KEYBOARD, MONITOR, NOTEBOOK, CPU_COOLER, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -46,6 +46,7 @@ class GoldenGamers(Store):
             ['componentes/tipo-de-producto_refrigeracion', CPU_COOLER],
             ['componentes/tipo-de-producto_tarjeta-de-video', VIDEO_CARD],
             ['componentes/Tipo-de-Producto_disco-duro', STORAGE_DRIVE],
+            ['componentes/tipo-de-producto_fuente-de-poder', POWER_SUPPLY],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
