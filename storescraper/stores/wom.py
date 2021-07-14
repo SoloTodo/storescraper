@@ -267,8 +267,7 @@ class Wom(Store):
                 prepaid_price,
                 prepaid_price,
                 'CLP',
-                cell_plan_name='WOM Prepago',
-                cell_monthly_payment=Decimal(0)
+                cell_plan_name='WOM Prepago'
             ))
 
         return products
