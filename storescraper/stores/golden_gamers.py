@@ -28,6 +28,7 @@ class GoldenGamers(Store):
             MONITOR,
             NOTEBOOK,
             CPU_COOLER,
+            POWER_SUPPLY,
         ]
 
     @classmethod
