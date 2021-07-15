@@ -29,6 +29,7 @@ class Artefacta(Store):
         while not done:
             url = 'https://www.artefacta.com/productos?at_marca=LG&p={}&' \
                   'product_list_limit=36'.format(page)
+            print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products = soup.findAll('li', 'product-item')
 
@@ -46,6 +47,7 @@ class Artefacta(Store):
                     done = True
                     break
                 product_urls.append(product_url)
+            page += 1
 
         return product_urls
 

@@ -4,7 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MONITOR, MOUSE
+from storescraper.categories import NOTEBOOK, MONITOR, MOUSE, RAM, TABLET, \
+    KEYBOARD, SOLID_STATE_DRIVE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -16,7 +17,12 @@ class V2(Store):
         return [
             NOTEBOOK,
             MONITOR,
-            MOUSE
+            MOUSE,
+            RAM,
+            TABLET,
+            KEYBOARD,
+            SOLID_STATE_DRIVE,
+            HEADPHONES,
         ]
 
     @classmethod
@@ -24,7 +30,12 @@ class V2(Store):
         url_extensions = [
             ['3-notebooks', NOTEBOOK],
             ['14-monitores', MONITOR],
-            ['5-accesorios', MOUSE]
+            ['28-mouse', MOUSE],
+            ['35-memorias-ram', RAM],
+            ['29-tablets', TABLET],
+            ['22-teclados', KEYBOARD],
+            ['25-discos-ssd', SOLID_STATE_DRIVE],
+            ['36-headsets', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

@@ -51,7 +51,7 @@ class Enel(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-        name = soup.find('h3', 'name').text.strip()
+        name = soup.find('h1', 'name').text.strip()
         key = soup.find('input', {'id': 'engineCode'})['value']
         price = Decimal(soup.find('span', {'itemprop': 'price'})['data-price'])
 

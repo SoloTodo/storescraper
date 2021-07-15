@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -12,98 +13,37 @@ class GolloTienda(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Television',
-            'OpticalDiskPlayer',
-            'AirConditioner',
-            'Stove',
-            'Oven',
-            'WashingMachine',
-            'Refrigerator',
-            'StereoSystem',
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # KEEPS ONLY LG PRODUCTS
-
-        category_filters = [
-            ('productos/telefonia/celulares', 'Cell'),
-            ('productos/pantallas', 'Television'),
-            # ('productos/audio-y-video/video/reproductores',
-            #  'OpticalDiskPlayer'),
-            # ('productos/hogar/ventilacion/aire-acondicionado',
-            #  'AirConditioner'),
-            ('productos/linea-blanca/cocina/de-gas', 'Stove'),
-            ('productos/linea-blanca/cocina/electricas', 'Stove'),
-            ('productos/hogar/peque-os-enseres/hornos-y-tostadores',
-             'Oven'),
-            ('productos/linea-blanca/cocina/microondas', 'Oven'),
-            ('productos/linea-blanca/lavanderia',
-             'WashingMachine'),
-            ('productos/linea-blanca/refrigeracion/refrigeradoras',
-             'Refrigerator'),
-            ('productos/audio-y-video/audio/minicomponentes',
-             'StereoSystem'),
-            ('productos/audio-y-video/audio/parlantes', 'StereoSystem')
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_filters:
-            if local_category != category:
-                continue
+        if category != TELEVISION:
+            return []
 
-            page = 1
-            done = False
+        url = 'https://www.gollotienda.com/productos?at_marca=LG&' \
+              'product_list_limit=100'
 
-            local_product_urls = []
-            local_lg_product_urls = []
+        print(url)
 
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        container = soup.find('div', 'products')
+        items = container.findAll('li', 'item')
 
-                url = 'https://www.gollotienda.com/{}.html?p={}.html'\
-                    .format(category_path, page)
-
-                print(url)
-
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                container = soup.find('div', 'products')
-
-                items = container.findAll('li', 'item')
-
-                if items:
-                    for item in items:
-                        product_name = item.find(
-                            'a', 'product-item-link').text.strip()
-                        product_url = item.find('a')['href']
-
-                        if product_url in local_product_urls:
-                            done = True
-                            break
-
-                        local_product_urls.append(product_url)
-
-                        if 'lg' in product_name.lower():
-                            local_lg_product_urls.append(product_url)
-                else:
-                    if page == 1:
-                        raise Exception('No products for category {}'
-                                        .format(category))
-                    break
-
-                page += 1
-
-            product_urls.extend(local_lg_product_urls)
+        for item in items:
+            product_url = item.find('a')['href']
+            product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
