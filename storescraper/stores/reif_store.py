@@ -69,9 +69,8 @@ class ReifStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = json.loads(
-            soup.find('div', {'id': 'product-details-tab'}).find('div',
-                                                                 'clearfix')[
-                'data-product'])
+            soup.findAll('div', {'id': 'product-details'})[-1]['data-product']
+        )
         name = json_container['name']
         sku = str(json_container['id_product'])
         part_number = json_container['reference']
