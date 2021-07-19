@@ -26,12 +26,14 @@ class Valrod(Store):
         url_extensions = [
             ['perifericos', HEADPHONES],
             ['sillas-gamer-3', GAMING_CHAIR],
+            ['accesorios', COMPUTER_CASE],
             ['monitores', MONITOR],
             ['gabinetes', COMPUTER_CASE],
             ['tarjeta-de-video-y-coolers', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
+
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
