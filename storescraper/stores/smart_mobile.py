@@ -83,6 +83,12 @@ class SmartMobile(Store):
 
         product_container = soup.find('div', 'single-product-wrapper')
         name = product_container.find('h1', 'product_title').text
+
+        if 'ENTREGA' in name.upper() and 'INMEDIATA' not in name.upper():
+            force_unavailable = True
+        else:
+            force_unavailable = False
+
         if soup.find('form', 'variations_form cart'):
             products = []
             variations = json.loads(soup.find('form', 'variations_form cart')[
@@ -95,7 +101,10 @@ class SmartMobile(Store):
                 offer_price = Decimal(variation['display_price'])
                 normal_price = Decimal(
                     round(variation['display_price'] * 1.04))
-                if variation['availability_html'] == '':
+
+                if force_unavailable:
+                    stock = 0
+                elif variation['availability_html'] == '':
                     stock = -1
                 elif BeautifulSoup(variation['availability_html'],
                                    'html.parser').text.split()[0] == 'Agotado':
@@ -130,7 +139,10 @@ class SmartMobile(Store):
             offer_price = Decimal(price_info)
             sku = product_container.find('a', 'add-to-compare-link')[
                 'data-product_id']
-            if not product_container.find('p', 'stock'):
+
+            if force_unavailable:
+                stock = 0
+            elif not product_container.find('p', 'stock'):
                 stock = -1
             else:
                 stock_container = product_container.find(
