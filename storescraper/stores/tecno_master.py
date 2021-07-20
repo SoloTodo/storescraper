@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO
+    STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
+    USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,6 +34,8 @@ class TecnoMaster(Store):
             KEYBOARD,
             KEYBOARD_MOUSE_COMBO,
             PRINTER,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
         ]
 
     @classmethod
@@ -55,6 +58,8 @@ class TecnoMaster(Store):
             ['teclados', KEYBOARD],
             ['kit-tecladomouse', KEYBOARD_MOUSE_COMBO],
             ['impresoras', PRINTER],
+            ['tarjetas-de-memoria', MEMORY_CARD],
+            ['flash-drives-usb', USB_FLASH_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -67,8 +72,11 @@ class TecnoMaster(Store):
             while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://tecno-master.cl/{}/page/{}'.format(
-                    url_extension, page)
+
+                url_webpage = 'https://tecno-master.cl/' + url_extension
+
+                if page > 1:
+                    url_webpage += '/page/{}'.format(page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')

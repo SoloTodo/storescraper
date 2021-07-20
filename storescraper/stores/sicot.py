@@ -6,7 +6,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MONITOR, TABLET, GAMING_CHAIR, \
-    PRINTER, ALL_IN_ONE
+    PRINTER, ALL_IN_ONE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -22,6 +22,7 @@ class Sicot(Store):
             GAMING_CHAIR,
             PRINTER,
             ALL_IN_ONE,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -33,7 +34,8 @@ class Sicot(Store):
             ['monitores', MONITOR],
             ['tablets', TABLET],
             ['gamer', GAMING_CHAIR],
-            ['impresoras', PRINTER]
+            ['impresoras', PRINTER],
+            ['accesorios', STEREO_SYSTEM],
         ]
 
         session = session_with_proxy(extra_args)

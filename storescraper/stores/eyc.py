@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, TABLET, STORAGE_DRIVE, RAM, \
-    PROCESSOR, PRINTER, UPS
+    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,20 +20,25 @@ class Eyc(Store):
             RAM,
             PROCESSOR,
             PRINTER,
-            UPS
+            UPS,
+            ALL_IN_ONE,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['294-notebooks', NOTEBOOK],
+            ['295-workstation', ALL_IN_ONE],
             ['313-tablets', TABLET],
             ['330-discos', STORAGE_DRIVE],
             ['306-discos', STORAGE_DRIVE],
             ['304-memorias', RAM],
             ['305-procesadores', PROCESSOR],
             ['331-impresoras', PRINTER],
-            ['300-ups', UPS]
+            ['300-ups', UPS],
+            ['339-memorias-ram', RAM],
+            ['342-monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
