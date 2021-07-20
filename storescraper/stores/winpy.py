@@ -4,7 +4,8 @@ import urllib
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, HEADPHONES, MEMORY_CARD, \
+    USB_FLASH_DRIVE, ALL_IN_ONE, WEARABLE
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -34,12 +35,15 @@ class Winpy(Store):
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
-            'AllInOne',
             'Television',
             'StereoSystem',
             'Headphones',
             'Ups',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            ALL_IN_ONE,
+            WEARABLE,
         ]
 
     @classmethod
@@ -50,34 +54,39 @@ class Winpy(Store):
             ['portatiles/notebooks/', 'Notebook'],
             ['portatiles/mobile-workstation/', 'Notebook'],
             ['zona-notebook-gamers/', 'Notebook'],
-            ['apple/macbook-air/', 'Notebook'],
-            ['apple/macbook/', 'Notebook'],
-            ['apple/macbook-pro/', 'Notebook'],
-            ['apple/macbook-pro-retina/', 'Notebook'],
-            ['portatiles/tablet/', 'Tablet'],
-            ['apple/ipad/', 'Tablet'],
-            ['monitores/', 'Monitor'],
-            ['partes-y-piezas/tarjetas-de-video/',
-             'VideoCard'],
-            ['memorias/', 'Ram'],
             ['portatiles/celulares/', 'Cell'],
+            ['portatiles/tablet/', 'Tablet'],
+            ['memorias/para-notebook/', 'Ram'],
             ['almacenamiento/disco-estado-solido/', 'SolidStateDrive'],
             ['almacenamiento/disco-duro-notebook/', 'StorageDrive'],
+            ['computadores/todo-en-uno/', ALL_IN_ONE],
+            ['memorias/para-computadores/', 'Ram'],
             ['almacenamiento/disco-duro-pc-s/', 'StorageDrive'],
-            ['partes-y-piezas/procesadores/', 'Processor'],
+            ['partes-y-piezas/tarjetas-de-video/', 'VideoCard'],
+            ['accesorios/mouse-y-teclados/', 'Mouse'],
             ['partes-y-piezas/placas-madres/', 'Motherboard'],
+            ['partes-y-piezas/procesadores/', 'Processor'],
+            ['memorias/', 'Ram'],
             ['partes-y-piezas/gabinetes/', 'ComputerCase'],
             ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
             ['partes-y-piezas/disipadores/', 'CpuCooler'],
-            ['impresoras/', 'Printer'],
+            ['zona-mouse-y-teclados-gamer/', 'Mouse'],
+            ['zona-audifonos-gamer/', HEADPHONES],
+            ['accesorios/para-juegos/', GAMING_CHAIR],
+            ['almacenamiento/nas/', 'StorageDrive'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
-            ['accesorios/mouse-y-teclados/', 'Mouse'],
-            ['zona-teclados-mecanicos/', 'Keyboard'],
-            ['computadores/todo-en-uno/', 'AllInOne'],
-            ['electronica/parlantes/', 'StereoSystem'],
-            ['electronica/audifonos/', 'Headphones'],
+            ['almacenamiento/discos-sobremesa/', 'ExternalStorageDrive'],
+            ['almacenamiento/memorias-flash/', MEMORY_CARD],
+            ['almacenamiento/pendrive/', USB_FLASH_DRIVE],
+            ['apple/imac/', ALL_IN_ONE],
+            ['apple/macbook-pro-retina/', 'Notebook'],
+            ['apple/ipad/', 'Tablet'],
+            ['apple/watch/', WEARABLE],
+            ['monitores/', 'Monitor'],
+            ['impresoras/', 'Printer'],
+            ['accesorios/audifonos/', 'Headphones'],
+            ['accesorios/parlantes/', 'StereoSystem'],
             ['ups/ups/', 'Ups'],
-            ['accesorios/para-juegos/', GAMING_CHAIR]
         ]
 
         product_urls = []
@@ -95,6 +104,7 @@ class Winpy(Store):
                     raise Exception('Page overflow: ' + category_path)
 
                 url_with_page = url + 'paged/' + str(page) + '/'
+                print(url_with_page)
                 soup = BeautifulSoup(session.get(url_with_page).text,
                                      'html5lib')
                 product_containers = soup.find('section', {'id': 'productos'})
