@@ -117,9 +117,11 @@ class Todoclick(Store):
         stock_container = soup.find('p', 'stock in-stock')
         if stock_container:
             stock = int(stock_container.text.split(' ')[0])
-        price_tags = soup.findAll('span', 'woocommerce-Price-amount amount')
-        offer_price = Decimal(remove_words(price_tags[0].text))
-        normal_price = Decimal(remove_words(price_tags[1].text))
+        price_tags = soup.find('div', 'l-section-h').findAll(
+            'span', 'woocommerce-Price-amount amount')
+        assert len(price_tags) in [2, 3]
+        offer_price = Decimal(remove_words(price_tags[-2].text))
+        normal_price = Decimal(remove_words(price_tags[-1].text))
         images = soup.findAll('img', 'wp-post-image')
         picture_urls = [i['src'] for i in images]
         description = html_to_markdown(
