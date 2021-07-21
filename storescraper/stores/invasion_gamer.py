@@ -47,7 +47,7 @@ class InvasionGamer(Store):
             ['audifonos', HEADPHONES],
             ['sillas', GAMING_CHAIR],
             ['portatiles', NOTEBOOK],
-            ['monitor', MONITOR]
+            ['monitores', MONITOR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

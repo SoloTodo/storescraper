@@ -1,4 +1,6 @@
+import json
 import logging
+import urllib
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -87,18 +89,56 @@ class MiMallVirtual(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
-        if soup.find('button', 'add-to-cart'):
-            stock = -1
+
+        ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['Content-Type'] = \
+            'application/x-www-form-urlencoded; charset=UTF-8'
+        base_product_data = ajax_session.post(
+            'https://www.mimallvirtual.cl/index.php?controller=product'
+            '&id_product=' + sku, 'ajax=1&action=refresh').json()
+        variants_soup = BeautifulSoup(base_product_data['product_variants'],
+                                      'html.parser')
+        variant_tags = variants_soup.findAll('label')
+        products = []
+
+        if variant_tags:
+            for variant_tag in variant_tags:
+                attribute_name = variant_tag.find('span').text.strip()
+                attribute_field = variant_tag.find('input')['name']
+                attribute_value = variant_tag.find('input')['value']
+                variant_endpoint = \
+                    'https://www.mimallvirtual.cl/index.php?controller=' \
+                    'product&id_product={}&{}={}'.format(
+                        sku, urllib.parse.quote(attribute_field),
+                        attribute_value)
+                variant_data = ajax_session.post(
+                    variant_endpoint, 'ajax=1&action=refresh').json()
+                p = cls.get_product_from_json(variant_data, category)
+                p.key += '_{}'.format(attribute_value)
+                p.name += ' ({})'.format(attribute_name)
+                products.append(p)
         else:
-            stock = 0
-        price = Decimal(soup.find('div', 'product-prices').
-                        find('div', 'current-price').
-                        find('span')['content'])
-        picture_urls = [tag['src'] for tag in
-                        soup.find('ul', 'product-images').findAll('img')]
-        p = Product(
+            products.append(cls.get_product_from_json(
+                base_product_data, category))
+
+        return products
+
+    @classmethod
+    def get_product_from_json(cls, product_json, category):
+        name = product_json['product_title']
+        url = product_json['product_url']
+        product_soup = BeautifulSoup(product_json['product_details'],
+                                     'html.parser')
+        product_data = json.loads(
+            product_soup.find('div').attrs['data-product'])
+        sku = str(product_data['id_product'])
+        part_number = product_data['reference']
+        price = Decimal(product_data['price_without_reduction'])
+        stock = product_data['quantity']
+        picture_urls = [tag['large']['url'] for tag in product_data['images']]
+
+        return Product(
             name,
             cls.__name__,
             category,
@@ -110,6 +150,6 @@ class MiMallVirtual(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls
         )
-        return [p]

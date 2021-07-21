@@ -13,48 +13,22 @@ class SmartDeal(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK,
-            MOUSE,
-            MONITOR,
-            TABLET
+            NOTEBOOK
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['tablet', TABLET],
-            ['apple', NOTEBOOK],
-            ['asus', NOTEBOOK],
-            ['lenovo', NOTEBOOK],
-            ['msi', NOTEBOOK],
-            ['mouse', MOUSE],
-            ['', MONITOR]
-        ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://smartdeal.cl/tienda/?wpf=filtro_' \
-                              'smartdeal&wpf_modelos={}&wpf_page={}'.format(
-                                url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                data = response.text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        if category != NOTEBOOK:
+            return []
+        response = session.get('https://smartdeal.cl/tienda/')
+        data = response.text
+        soup = BeautifulSoup(data, 'html.parser')
+        product_containers = soup.findAll('li', 'product')
+        for container in product_containers:
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
         return product_urls
 
     @classmethod

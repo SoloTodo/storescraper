@@ -128,29 +128,6 @@ class PcNitro(Store):
                 name = '{} ({})'.format(name, model[1].text.strip())
 
         sku = soup.find('input', {'name': 'id_product'})['value']
-        key = None
-
-        key_container = soup.find('tbody')
-        if key_container:
-            key_containers = key_container.findAll('tr')
-            for container in key_containers:
-                tds = container.findAll('td')
-                if tds[0].text == 'ID:':
-                    key = tds[1].text
-                    break
-
-        if not key:
-            key_containers = soup.find('div', {'itemprop': 'description'})\
-                .findAll('p')
-            for container in key_containers:
-                contents = container.text.strip().split(':')
-                if contents[0] == 'ID':
-                    key = contents[1].strip()
-                    break
-
-        if key is None:
-            return []
-
         stock = 0
         stock_container = soup.find('div', 'product-quantities')
 
@@ -179,7 +156,7 @@ class PcNitro(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             price,
             price,
