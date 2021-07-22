@@ -41,25 +41,29 @@ class TecnoMaster(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['placas-madres', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['sdd', SOLID_STATE_DRIVE],
-            ['hdd', STORAGE_DRIVE],
-            ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
-            ['memorias-ram', RAM],
-            ['www-tecno-master-cl-fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['refrigeracion-ventiladores', CPU_COOLER],
-            ['audifonos', HEADPHONES],
-            ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['parlantes', STEREO_SYSTEM],
-            ['teclados', KEYBOARD],
-            ['kit-tecladomouse', KEYBOARD_MOUSE_COMBO],
-            ['impresoras', PRINTER],
-            ['tarjetas-de-memoria', MEMORY_CARD],
-            ['flash-drives-usb', USB_FLASH_DRIVE],
+            ['sin-categorizar', MOTHERBOARD],
+            ['productos/hardware/placasmadres', MOTHERBOARD],
+            ['productos/hardware/procesadores', PROCESSOR],
+            ['productos/almacenamiento/discosestadosolidosdd',
+             SOLID_STATE_DRIVE],
+            ['productos/almacenamiento/discosduroshdd', STORAGE_DRIVE],
+            ['productos/almacenamiento/discosdurosecternos',
+             EXTERNAL_STORAGE_DRIVE],
+            ['productos/hardware/memorias-ram', RAM],
+            ['productos/hardware/fuentesdepoder', POWER_SUPPLY],
+            ['productos/hardware/gabinetes', COMPUTER_CASE],
+            ['productos/hardware/refrigeracion-ventiladores', CPU_COOLER],
+            ['productos/perifericos/audifonos', HEADPHONES],
+            ['productos/perifericos/monitores', MONITOR],
+            ['productos/perifericos/mouse', MOUSE],
+            ['productos/perifericos/parlantes', STEREO_SYSTEM],
+            ['productos/perifericos/teclados', KEYBOARD],
+            ['productos/perifericos/kit_tecladosymouse',
+             KEYBOARD_MOUSE_COMBO],
+            ['productos/perifericos/impresoras', PRINTER],
+            ['productos/almacenamiento/tarjetasdememoriasdd', MEMORY_CARD],
+            ['productos/almacenamiento/flash-drivers-usb', USB_FLASH_DRIVE],
+            # ['tarjetas-de-video', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -67,31 +71,34 @@ class TecnoMaster(Store):
             if local_category != category:
                 continue
             page = 1
-            local_urls = []
-            done = False
-            while not done:
+            while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://tecno-master.cl/' + url_extension
+                url_webpage = 'https://tecno-master.cl/categoria-producto/' + \
+                              url_extension
 
                 if page > 1:
                     url_webpage += '/page/{}'.format(page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('ul', 'wc-block-grid__products')
+                response = session.get(url_webpage)
+
+                if response.status_code == 404:
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                product_containers = soup.find('ul', 'products')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
                 for container in product_containers.findAll(
-                        'li', 'wc-block-grid__product'):
-                    product_url = container.find('a')['href']
-                    if product_url in local_urls:
-                        done = True
-                        break
-                    local_urls.append(product_url)
+                        'li', 'type-product'):
+                    product_url = container.find(
+                        'a', 'woocommerce-LoopProduct-link woocommerce-'
+                             'loop-product__link')['href']
                     product_urls.append(product_url)
                 page += 1
 
