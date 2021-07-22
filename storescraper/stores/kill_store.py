@@ -112,10 +112,12 @@ class KillStore(Store):
             if 'productId' in value:
                 sku = value['productId']
             if 'productName' in value:
+                if not state_key.startswith('Product'):
+                    continue
+                if name:
+                    raise Exception('Repeated name entry')
                 name = value['productName']
             if 'Price' in value and '.kit' not in state_key:
-                # print(foo)
-                # print(json.dumps(value, indent=2))
                 if price:
                     raise Exception('Repeated price entry')
                 price = Decimal(value['Price'])
