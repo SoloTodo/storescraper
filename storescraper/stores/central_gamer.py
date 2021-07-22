@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, MONITOR, HEADPHONES, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    PROCESSOR, VIDEO_CARD
+    PROCESSOR, VIDEO_CARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,6 +26,7 @@ class CentralGamer(Store):
             GAMING_CHAIR,
             PROCESSOR,
             VIDEO_CARD,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -42,6 +43,7 @@ class CentralGamer(Store):
             ['teclados-gamer', KEYBOARD],
             ['sillas-gamer-y-alfombras', GAMING_CHAIR],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -78,10 +80,10 @@ class CentralGamer(Store):
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
 
-        stock_tag = soup.find('span', 'product-form_brand')
-        if stock_tag and 'INMEDIATA' not in stock_tag.text.upper():
-            stock = 0
-        elif soup.find('div', {'id': 'stock'}):
+        # stock_tag = soup.find('span', 'product-form_brand')
+        # if stock_tag and 'INMEDIATA' not in stock_tag.text.upper():
+        #     stock = 0
+        if soup.find('div', {'id': 'stock'}):
             stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
         else:
             stock = 0
