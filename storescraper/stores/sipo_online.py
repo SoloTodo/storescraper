@@ -9,7 +9,7 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
     KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
     GAMING_CHAIR, CPU_COOLER, MOTHERBOARD, VIDEO_CARD, PROCESSOR, \
-    POWER_SUPPLY, NOTEBOOK
+    POWER_SUPPLY, NOTEBOOK, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -39,6 +39,7 @@ class SipoOnline(Store):
             VIDEO_CARD,
             POWER_SUPPLY,
             NOTEBOOK,
+            TABLET,
         ]
 
     @classmethod
@@ -70,6 +71,7 @@ class SipoOnline(Store):
             ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
             ['smartwatch', WEARABLE],
             ['computadores/notebooks', NOTEBOOK],
+            ['tablets', TABLET],
         ]
 
         session = session_with_proxy(extra_args)
@@ -106,6 +108,9 @@ class SipoOnline(Store):
         if not variants:
             variants = soup.find('div', 'variations_form')
 
+        gallery_tag = soup.find('div', 'woocommerce-product-gallery')
+        is_preorder = 'VENTA' in gallery_tag.text.upper()
+
         if variants:
             products = []
             container_products = json.loads(
@@ -117,7 +122,10 @@ class SipoOnline(Store):
                 else:
                     variant_name = name
                 sku = str(product['variation_id'])
-                if product['availability_html'] != '':
+
+                if is_preorder:
+                    stock = 0
+                elif product['availability_html'] != '':
                     stock = int(
                         BeautifulSoup(product['availability_html'],
                                       'html.parser').text.split()[0])
@@ -144,7 +152,9 @@ class SipoOnline(Store):
             return products
         else:
             stock_container = soup.find('p', 'stock in-stock')
-            if stock_container:
+            if is_preorder:
+                stock = 0
+            elif stock_container:
                 stock = int(stock_container.text.split()[0])
             else:
                 stock = -1
