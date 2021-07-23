@@ -62,6 +62,7 @@ class VGamers(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://vgamers.cl/collections/' \
                               '{}?page={}'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('a', 'product-card__link '
@@ -87,43 +88,20 @@ class VGamers(Store):
         picture_containers = product_info['images']
         picture_urls = ['https:' + url.split('?')[0] for url in
                         picture_containers]
-        if len(product_info['variants']) > 1:
-            products = []
-            for variant in product_info['variants']:
-                name = variant['name']
-                sku = str(variant['id'])
-                stock = -1 if variant['available'] else 0
-                price = Decimal(variant['price'] / 100)
-                p = Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    sku,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    picture_urls=picture_urls
-
-                )
-                products.append(p)
-            return products
-        else:
-            name = product_info['title']
-            sku = str(product_info['id'])
-            stock = -1 if product_info['available'] else 0
-            price = Decimal(product_info['price'] / 100)
-
+        products = []
+        for variant in product_info['variants']:
+            name = variant['name']
+            key = str(variant['id'])
+            sku = variant['sku']
+            stock = -1 if variant['available'] else 0
+            price = Decimal(variant['price'] / 100)
             p = Product(
                 name,
                 cls.__name__,
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
@@ -132,4 +110,5 @@ class VGamers(Store):
                 picture_urls=picture_urls
 
             )
-            return [p]
+            products.append(p)
+        return products

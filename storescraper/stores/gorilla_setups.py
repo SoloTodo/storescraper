@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES
+from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
+    GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -16,7 +17,8 @@ class GorillaSetups(Store):
             MOUSE,
             KEYBOARD,
             MONITOR,
-            HEADPHONES
+            HEADPHONES,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -25,7 +27,8 @@ class GorillaSetups(Store):
             ['26-mouse-y-mouse-pad', MOUSE],
             ['27-teclados', KEYBOARD],
             ['19-monitores', MONITOR],
-            ['28-audifonos', HEADPHONES]
+            ['28-audifonos', HEADPHONES],
+            ['29-sillas', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
