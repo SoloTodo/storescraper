@@ -1,11 +1,11 @@
 import json
 import logging
-import re
 import urllib
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -15,19 +15,7 @@ class Panafoto(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Monitor',
-            'Projector',
-            'AirConditioner',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Stove',
-            'Headphones',
+            TELEVISION
         ]
 
     @classmethod
@@ -40,110 +28,43 @@ class Panafoto(Store):
                    'olia-api-key=NzQyZDYyYTYwZGRiZDBjNjg0YjJmZDEyNWMyMTAyNTNh'\
                    'MjBjMDJiNzBhY2YyZWVjYWNjNzVjNjU5M2M5ZmVhY3RhZ0ZpbHRlcnM9'
 
-        category_filters = [
-            ('["categories.level2:Categorías /// TV y Video /// Televisores"]',
-             'Television'),
-            ('["categories.level3:Categorías /// TV y Video /// '
-             'Reproductores de Audio y Video /// Barras de Sonido"]',
-             'StereoSystem'),
-            ('["categories.level3:Categorías /// TV y Video /// '
-             'Reproductores de Audio y Video /// Teatro en Casa"]',
-             'StereoSystem'),
-            ('["categories.level3:Categorías /// TV y Video /// '
-             'Reproductores de Audio y Video /// DVD / Blu-Ray"]',
-             'OpticalDiskPlayer'),
-            ('["categories.level3:Categorías /// Audio /// Bocinas /// '
-             'Bocinas Bluetooth"]', 'StereoSystem'),
-            ('["categories.level2:Categorías /// Audio /// Sistemas de Audio'
-             '"]', 'StereoSystem'),
-            ('["categories.level2:Categorías /// Celulares y Tablets /// '
-             'Celulares"]', 'Cell'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadoras"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadora Carga Superior"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Lavadoras Semiautomáticas"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Secadoras"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Secadora Gas"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Centros de Lavado"]', 'WashingMachine'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradoras"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradora Side by Side"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Refrigeradora French-Door"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Congeladores"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Minibares y Vineras"]', 'Refrigerator'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Aires portátiles"]', 'AirConditioner'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Aires Acondicionados"]', 'AirConditioner'),
-            ('["categories.level3:Categorías /// Cómputo /// Monitores '
-             '/// Monitores"]', 'Monitor'),
-            ('["categories.level3:Categorías /// Cómputo /// Proyectores '
-             '/// Proyectores"]', 'Projector'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Hornos a gas"]', 'Oven'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Hornos eléctricos"]', 'Oven'),
-            ('["categories.level3:Categorías /// Hogar /// Línea Blanca '
-             '/// Estufas"]', 'Stove'),
-            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
-             '/// Aspiradoras"]', 'VacuumCleaner'),
-            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
-             '/// Aspiradoras"]', 'VacuumCleaner'),
-            ('["categories.level3:Categorías /// Hogar /// Electrodomésticos '
-             '/// Microondas"]', 'Oven'),
-            ('["categories.level3:Categorías /// Audio /// Audífonos /// '
-             'Inalámbricos"]', 'Headphones'),
-        ]
-
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         session.headers['Referer'] = 'https://www.panafoto.com/'
 
         product_urls = []
 
-        for category_filter, local_category in category_filters:
-            if local_category != category:
-                continue
+        if category != TELEVISION:
+            return []
 
-            page = 0
+        page = 0
 
-            while True:
-                payload_params = "page={}&facetFilters={}&numericFilters=%5B" \
-                                 "%22visibility_catalog%3D1%22%5D" \
-                                 "".format(page, urllib.parse.quote(
-                                    category_filter).replace('/', '%2F'))
+        while True:
+            payload_params = "page={}&facetFilters={}&numericFilters=%5B" \
+                             "%22visibility_catalog%3D1%22%5D" \
+                             "".format(page, urllib.parse.quote(
+                                '[["manufacturer:LG"]]'))
 
-                payload = {"requests": [
-                    {"indexName": "wwwpanafotocom_default_products",
-                     "params": payload_params}]}
+            payload = {"requests": [
+                {"indexName": "wwwpanafotocom_default_products",
+                 "params": payload_params}]}
 
-                response = session.post(endpoint, data=json.dumps(payload))
-                products_json = json.loads(response.text)['results'][0]['hits']
+            response = session.post(endpoint, data=json.dumps(payload))
+            products_json = json.loads(response.text)['results'][0]['hits']
 
-                if not products_json:
-                    if page == 0:
-                        logging.warning('Empty category: ' + category_filter)
-                    break
+            if not products_json:
+                if page == 0:
+                    logging.warning('Empty category:')
+                break
 
-                for product_json in products_json:
-                    if 'LG' not in product_json['manufacturer']:
-                        continue
-                    product_url = product_json['url']
-                    if isinstance(product_url, list):
-                        product_url = ','.join(product_url)
+            for product_json in products_json:
+                product_url = product_json['url']
+                if isinstance(product_url, list):
+                    product_url = ','.join(product_url)
 
-                    product_urls.append(product_url)
+                product_urls.append(product_url)
 
-                page += 1
+            page += 1
 
         return product_urls
 
@@ -158,24 +79,21 @@ class Panafoto(Store):
 
         data = response.text
         soup = BeautifulSoup(data, 'html.parser')
+        product_json = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
 
-        name = soup.find('h1', 'page-title').text.strip()
-        sku = soup.find('form', {'id': 'product_addtocart_form'})[
-            'data-product-sku']
-
+        name = product_json['name']
+        sku = product_json['sku']
         model_label = soup.find('div', 'attibute-label', text='Modelo')
         part_number = model_label.next.next.text.strip()
-
         name = '{} - {}'.format(part_number, name)
+        price = Decimal(product_json['offers']['price'])
 
-        if soup.find('div', 'unavailable'):
-            stock = 0
-        else:
+        if product_json['offers']['availability'] == \
+                'http://schema.org/InStock':
             stock = -1
-
-        price_text = soup.find('meta',
-                               {'property': 'product:price:amount'})['content']
-        price = Decimal(price_text)
+        else:
+            stock = 0
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'description'})))
