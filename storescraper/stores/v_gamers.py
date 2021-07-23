@@ -64,15 +64,13 @@ class VGamers(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('a', 'product-card__link '
-                                                       'product'
-                                                       '-card__switchImage')
+                product_containers = soup.findAll('div', 'product-card')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container['href']
+                    product_url = container.find('a', 'product-card__link')['href']
                     product_urls.append('https://vgamers.cl' + product_url)
                 page += 1
         return product_urls
