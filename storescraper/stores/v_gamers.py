@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import WEARABLE, HEADPHONES, STEREO_SYSTEM, \
     USB_FLASH_DRIVE, KEYBOARD, MONITOR, POWER_SUPPLY, COMPUTER_CASE, MOUSE, \
-    GAMING_CHAIR
+    GAMING_CHAIR, CPU_COOLER, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -26,26 +26,30 @@ class VGamers(Store):
             POWER_SUPPLY,
             COMPUTER_CASE,
             MOUSE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            CPU_COOLER,
+            VIDEO_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['smartwatch', WEARABLE],
-            ['audifonos', HEADPHONES],
+            ['gabinete-gamer', COMPUTER_CASE],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['audifonos-gamer', HEADPHONES],
+            ['enfriamiento', CPU_COOLER],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['hardware', COMPUTER_CASE],
+            ['gamer', COMPUTER_CASE],
+            ['mouse-gamer', MOUSE],
+            ['monitores-gamer', MONITOR],
             ['parlantes', STEREO_SYSTEM],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['teclados-gamer', KEYBOARD],
+            # Legacy
+            ['audifonos', HEADPHONES],
             ['almacenamiento', USB_FLASH_DRIVE],
             ['teclados-y-mouse', KEYBOARD],
-            ['monitores-gamer', MONITOR],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinete-gamer', COMPUTER_CASE],
-            ['mouse-gamer', MOUSE],
-            # GAMER KEYBOARD
-            ['teclados-gamer', KEYBOARD],
-            # GAMER HEADPHONES
-            ['audifonos-gamer', HEADPHONES],
-            ['sillas-gamer', GAMING_CHAIR]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

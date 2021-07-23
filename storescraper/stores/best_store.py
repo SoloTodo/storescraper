@@ -60,6 +60,7 @@ class BestStore(Store):
             ['231-computadores-notebook', NOTEBOOK],
             ['236-computadores-tableta', TABLET],
             ['284-computadores-todo-en-uno', ALL_IN_ONE],
+            ['232-computadores-computadores-de-mesa', ALL_IN_ONE],
             ['173-memorias-modulos-ram-propietarios', RAM],
             ['194-memorias-modulos-ram-genericos', RAM],
             ['207-memorias-tarjetas-de-memoria-flash', MEMORY_CARD],
