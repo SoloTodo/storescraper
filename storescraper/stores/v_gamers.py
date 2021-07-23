@@ -17,7 +17,6 @@ class VGamers(Store):
     @classmethod
     def categories(cls):
         return [
-            WEARABLE,
             HEADPHONES,
             STEREO_SYSTEM,
             USB_FLASH_DRIVE,
