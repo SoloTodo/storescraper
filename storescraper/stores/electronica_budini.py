@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, \
     PROCESSOR, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, \
-    EXTERNAL_STORAGE_DRIVE
+    EXTERNAL_STORAGE_DRIVE, TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,12 +32,16 @@ class ElectronicaBudini(Store):
             ALL_IN_ONE,
             HEADPHONES,
             EXTERNAL_STORAGE_DRIVE,
+            TABLET,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['auriculares-gamer', HEADPHONES],
+            ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['discos-de-estado-solido-ssd', SOLID_STATE_DRIVE],
             ['discos-duros-hdd', STORAGE_DRIVE],
@@ -51,7 +55,9 @@ class ElectronicaBudini(Store):
             ['placas-madre-intel', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['silla-gamer', GAMING_CHAIR],
+            ['tablet-huawei', TABLET],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['teclado-gamer', KEYBOARD],
             ['todo-en-uno-aio', ALL_IN_ONE],
             ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
         ]

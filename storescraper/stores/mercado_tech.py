@@ -145,15 +145,16 @@ class MercadoTech(Store):
             if 'PN: ' in ppn.text:
                 part_number = ppn.text.split('PN: ')[1].strip()
 
-        stock = 0
-
         if 'bad box' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 
-        if json_data['offers']['availability'] == 'InStock':
+        print(json_data['offers']['availability'])
+        if json_data['offers']['availability'] == 'https://schema.org/InStock':
             stock = -1
+        else:
+            stock = 0
 
         price = Decimal(json_data['offers']['price'])
         picture_containers = soup.findAll('div', 'carousel-inner')

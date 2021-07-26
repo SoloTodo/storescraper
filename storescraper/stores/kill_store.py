@@ -106,7 +106,7 @@ class KillStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
         page_state = json.loads(page_state_tag.text)
-        name = sku = price = stock = picture_urls = part_number = None
+        name = sku = normal_price = stock = picture_urls = part_number = None
 
         for state_key, value in page_state.items():
             if 'productId' in value:
@@ -118,9 +118,9 @@ class KillStore(Store):
                     raise Exception('Repeated name entry')
                 name = value['productName']
             if 'Price' in value and '.kit' not in state_key:
-                if price:
+                if normal_price:
                     raise Exception('Repeated price entry')
-                price = Decimal(value['Price'])
+                normal_price = Decimal(value['Price'])
             if 'AvailableQuantity' in value:
                 stock = value['AvailableQuantity']
             if 'productReference' in value:
@@ -133,8 +133,10 @@ class KillStore(Store):
                                   'arquivos/ids/' + image_id
                     picture_urls.append(picture_url)
 
-        if price is None:
+        if normal_price is None:
             return []
+
+        offer_price = (normal_price * Decimal('0.96')).quantize(0)
 
         assert name
         assert sku
@@ -148,8 +150,8 @@ class KillStore(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=part_number,

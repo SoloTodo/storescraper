@@ -105,6 +105,10 @@ class ElectroVentas(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.url != url:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data_tag = soup.findAll(
             'script', {'type': 'application/ld+json'})[2]
