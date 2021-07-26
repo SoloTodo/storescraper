@@ -20,9 +20,11 @@ class Volans(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['audifonos', HEADPHONES],
+            ['headphones', HEADPHONES],
             ['teclados-y-mouse', KEYBOARD],
             ['uncategorized', KEYBOARD],
-            ['audifonos', HEADPHONES]
+
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
