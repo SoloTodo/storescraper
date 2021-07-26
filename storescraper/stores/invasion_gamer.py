@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -81,60 +82,49 @@ class InvasionGamer(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        variants = soup.find('div', 'product-form__variants')
-        name = soup.find('h1', 'product-meta__title').text
 
-        if 'PREVENTA' in name.upper():
-            stock = 0
-        elif soup.find('button', {'class': 'product-form__add-button'})\
-                .text == 'Agotado':
-            stock = 0
-        else:
-            stock = -1
-        price = Decimal(
-            soup.find('span', 'price').text.split('$')[-1].replace('.', ''))
         picture_urls = ['https:' + tag['data-src'].replace('_130x', '').
                         split('?')[0] for tag in soup
                         .find('div', 'product-gallery__thumbnail-list')
                         .findAll('img')]
 
-        products = []
-        if variants:
-            for variant in variants.find('select').findAll('option'):
-                variant_name = name + ' ' + variant.text
-                variant_sku = variant['value']
-                p = Product(
-                    variant_name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    variant_sku,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=variant_sku,
-                    picture_urls=picture_urls,
-                )
-                products.append(p)
+        product_data_tag = soup.find('script', {'type': 'application/ld+json'})
+        product_data = json.loads(product_data_tag.text)
+        base_name = product_data['name']
+
+        if 'PREVENTA' in base_name.upper():
+            force_unavailable = True
         else:
-            sku = soup.find('input', {'name': 'id'})['value']
+            force_unavailable = False
+
+        products = []
+
+        for variant in product_data['offers']:
+            variant_name = '{} ({})'.format(base_name, variant['name'])
+            variant_price = Decimal(variant['price'])
+            variant_url = 'https://invasiongamer.com/' + variant['url']
+            variant_sku = variant['url'].split('?variant=')[1]
+
+            if force_unavailable:
+                variant_stock = 0
+            elif variant['availability'] == 'https://schema.org/InStock':
+                variant_stock = -1
+            else:
+                variant_stock = 0
 
             p = Product(
-                name,
+                variant_name,
                 cls.__name__,
                 category,
+                variant_url,
                 url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
+                variant_sku,
+                variant_stock,
+                variant_price,
+                variant_price,
                 'CLP',
-                sku=sku,
+                sku=variant_sku,
                 picture_urls=picture_urls,
             )
             products.append(p)
-
         return products

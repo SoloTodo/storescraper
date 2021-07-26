@@ -70,7 +70,8 @@ class VGamers(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a', 'product-card__link')['href']
+                    product_url = container.find(
+                        'a', 'product-card__link')['href']
                     product_urls.append('https://vgamers.cl' + product_url)
                 page += 1
         return product_urls
