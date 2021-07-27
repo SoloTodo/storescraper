@@ -86,7 +86,7 @@ class Tupi(Store):
         picture_urls = []
 
         for picture in pictures:
-            picture_url = picture.find('a')['href']
+            picture_url = picture.find('a')['href'].replace(' ', '%20')
             picture_urls.append(picture_url)
 
         return [Product(
