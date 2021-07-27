@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, CELL, \
-    SOLID_STATE_DRIVE, PROCESSOR, RAM
+    SOLID_STATE_DRIVE, PROCESSOR, RAM, KEYBOARD_MOUSE_COMBO, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,19 +21,23 @@ class UltraPc(Store):
             CELL,
             SOLID_STATE_DRIVE,
             PROCESSOR,
-            RAM
+            RAM,
+            KEYBOARD_MOUSE_COMBO,
+            PRINTER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes-para-pc/kits', KEYBOARD_MOUSE_COMBO],
             ['computadores-de-escritorio/all-in-one', ALL_IN_ONE],
+            ['impresoras', PRINTER],
             ['laptop', NOTEBOOK],
             ['tablets-e-ipads', TABLET],
             ['smartphones', CELL],
             ['almacenamiento-solido', SOLID_STATE_DRIVE],
             ['procesadores', PROCESSOR],
-            ['memorias-ram', RAM]
+            ['memorias-ram', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -50,6 +54,7 @@ class UltraPc(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-outer')
+
                 if not product_containers or soup.find('div', 'info-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -74,15 +79,22 @@ class UltraPc(Store):
             '/')[-1]
         if soup.find('span', 'electro-stock-availability').find('p', 'stock'):
             stock = -1
+        else:
+            stock = 0
         normal_price = Decimal(
             remove_words(soup.find('div', 'precios_iva').text.split()[0]))
         offer_price = Decimal(
             remove_words(soup.find('span', 'electro-price').find('bdi').text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce'
-                                                        '-product'
-                                                        '-gallery').findAll(
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll(
             'img')]
+        condition_text = soup.find(
+            'span', 'condicion_item_ultrapc').text.strip()
+        if condition_text == 'NUEVO':
+            condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -96,5 +108,6 @@ class UltraPc(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
