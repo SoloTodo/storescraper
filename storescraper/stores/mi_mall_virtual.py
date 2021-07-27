@@ -134,7 +134,7 @@ class MiMallVirtual(Store):
             product_soup.find('div').attrs['data-product'])
         sku = str(product_data['id_product'])
         part_number = product_data['reference']
-        price = Decimal(product_data['price_without_reduction'])
+        price = Decimal(product_data['price_amount'])
         stock = product_data['quantity']
         picture_urls = [tag['large']['url'] for tag in product_data['images']]
 

@@ -106,9 +106,11 @@ class EliteCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        # if not soup.find('button', 'single_add_to_cart_button'):
-        #     return []
-        sku = soup.find('button', 'single_add_to_cart_button')['value']
+
+        if soup.find('input', 'current_product_id'):
+            sku = soup.find('input', 'current_product_id')['value']
+        else:
+            sku = soup.find('button', 'single_add_to_cart_button')['value']
 
         part_number_container = soup.find('span', {'id': '_sku'})
         if part_number_container:
@@ -116,11 +118,12 @@ class EliteCenter(Store):
         else:
             part_number = None
 
-        if soup.find('p', 'stock'):
-            stock = int(
-                re.search(r'(\d+)', soup.find('p', 'stock').text).groups()[0])
+        stock_text = re.search(r'(\d+)', soup.find('p', 'stock').text)
+        if stock_text:
+            stock = int(stock_text.groups()[0])
         else:
-            stock = -1
+            stock = 0
+
         normal_price = Decimal(
             remove_words(soup.find('p', 'precio-webpay').text))
         if soup.find('p', 'precio-oferta'):

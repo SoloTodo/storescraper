@@ -322,8 +322,7 @@ class Falabella(Store):
             if extra_query_params:
                 pag_url += '&' + extra_query_params
 
-            res = session.get(pag_url, timeout=30)
-            res = json.loads(res.content.decode('utf-8'))['data']
+            res = cls.retrieve_json_page(session, pag_url)
 
             if 'results' not in res or not res['results']:
                 if page == 1:
@@ -338,6 +337,26 @@ class Falabella(Store):
             page += 1
 
         return discovered_urls
+
+    @classmethod
+    def retrieve_json_page(cls, session, url, retries=5):
+        if '?' in url:
+            separator = '&'
+        else:
+            separator = '?'
+
+        modified_url = '{}{}v={}'.format(url, separator, retries)
+
+        try:
+            res = session.get(modified_url, timeout=30)
+            return json.loads(res.content.decode('utf-8'))['data']
+        except:
+            if retries > 0:
+                time.sleep(3)
+                return cls.retrieve_json_page(session, url, retries=retries-1)
+            else:
+                raise
+
 
     @classmethod
     def _new_products_for_url(

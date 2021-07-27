@@ -33,7 +33,7 @@ class Tupi(Store):
             print(url)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+            product_containers = soup.findAll('div', 'product')
 
             if not product_containers:
                 break
