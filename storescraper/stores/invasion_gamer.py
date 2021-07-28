@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, PROCESSOR, RAM, \
     MOTHERBOARD, VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
-    KEYBOARD, MOUSE, HEADPHONES, GAMING_CHAIR, NOTEBOOK, MONITOR
+    KEYBOARD, MOUSE, HEADPHONES, GAMING_CHAIR, NOTEBOOK, MONITOR, \
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -29,7 +30,9 @@ class InvasionGamer(Store):
             HEADPHONES,
             GAMING_CHAIR,
             NOTEBOOK,
-            MONITOR
+            MONITOR,
+            KEYBOARD_MOUSE_COMBO,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -47,6 +50,8 @@ class InvasionGamer(Store):
             ['mouse', MOUSE],
             ['audifonos', HEADPHONES],
             ['sillas', GAMING_CHAIR],
+            ['set', KEYBOARD_MOUSE_COMBO],
+            ['sonido', STEREO_SYSTEM],
             ['portatiles', NOTEBOOK],
             ['monitores', MONITOR]
         ]

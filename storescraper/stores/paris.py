@@ -234,7 +234,7 @@ class Paris(Store):
             page = 0
 
             while True:
-                if page > 100:
+                if page > 150:
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \

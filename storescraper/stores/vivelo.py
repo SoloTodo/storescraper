@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CELL_ACCESORY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
@@ -25,23 +26,23 @@ class Vivelo(Store):
             'Monitor',
             'Headphones',
             'Wearable',
-            'CellAccesory',
+            CELL_ACCESORY
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['smartphones/por-modelo/ver-todos.html', 'Cell'],
+            ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
+             CELL_ACCESORY],
             ['tablets/por-modelo/ver-todos.html', 'Tablet'],
-            ['tablets/por-tecnologia/ver-todos.html', 'Tablet'],
+            ['tablets/accesorios-tablet.html', CELL_ACCESORY],
+            ['accesorios.html', CELL_ACCESORY],
             ['smartwatches/por-modelo/ver-todos.html', 'Wearable'],
-            ['smartwatches/por-tipo/ver-todos.html', 'Wearable'],
             ['audio/por-tipo/parlantes.html', 'StereoSystem'],
             ['audio/por-tipo/audifonos.html', 'Headphones'],
             ['audio/por-tipo/audifonos-bluetooth.html', 'Headphones'],
             ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
-             'CellAccesory'],
-            ['accesorios/audifonos-15/cargadores-y-conectores.html',
              'CellAccesory'],
         ]
 
