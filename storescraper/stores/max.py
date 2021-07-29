@@ -19,35 +19,33 @@ class Max(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extenisons = [
-            TELEVISION
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in url_extenisons:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page >= 16:
-                    raise Exception('Page overflow')
+        if category != TELEVISION:
+            return []
+        page = 1
+        while True:
+            if page >= 16:
+                raise Exception('Page overflow')
 
-                url_webpage = 'https://www.max.com.gt/catalogsearch/result/' \
-                              'index/?category=&marca=7&p={}&q=LG'.format(page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'item')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category')
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
-                page += 1
+            url_webpage = 'https://www.max.com.gt/catalogsearch/result/' \
+                          'index/?category=&limit=30&marca=7&p={}&q=LG' \
+                          ''.format(page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', 'item')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category')
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                print(product_url)
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod

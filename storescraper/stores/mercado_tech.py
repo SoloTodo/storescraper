@@ -135,7 +135,7 @@ class MercadoTech(Store):
         data = soup.find('script', {'type': 'application/ld+json'}).text
         json_data = json.loads(data)[0]
 
-        name = json_data['name']
+        name = json_data['name'][:250]
         sku = json_data['sku']
 
         potential_pns = soup.findAll(
@@ -150,7 +150,6 @@ class MercadoTech(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        print(json_data['offers']['availability'])
         if json_data['offers']['availability'] == 'https://schema.org/InStock':
             stock = -1
         else:
