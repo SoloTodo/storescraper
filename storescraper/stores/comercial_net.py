@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import PROCESSOR, NOTEBOOK, HEADPHONES, MOUSE, \
     KEYBOARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
-    RAM, MOTHERBOARD, VIDEO_CARD
+    RAM, MOTHERBOARD, VIDEO_CARD, MONITOR, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,7 +26,9 @@ class ComercialNet(Store):
             RAM,
             MOTHERBOARD,
             PROCESSOR,
-            VIDEO_CARD
+            VIDEO_CARD,
+            MONITOR,
+            CPU_COOLER
         ]
 
     @classmethod
@@ -43,7 +45,10 @@ class ComercialNet(Store):
             ['componentes-y-partes/memorias', RAM],
             ['componentes-y-partes/placas-madres', MOTHERBOARD],
             ['componentes-y-partes/procesadores', PROCESSOR],
-            ['componentes-y-partes/tarjetas-graficas', VIDEO_CARD]
+            ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-nvidia', VIDEO_CARD],
+            ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-amd', VIDEO_CARD],
+            ['computadores-y-tablets/monitores-y-pantallas', MONITOR],
+            ['componentes-y-partes/refrigeracion', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -60,16 +65,18 @@ class ComercialNet(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_container = soup.findAll('div', 'product-grid-item')
+                product_containers = soup.findAll('div', 'product-grid-item')
 
-                if not product_container:
+                if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_container:
+
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
+
         return product_urls
 
     @classmethod
@@ -79,29 +86,31 @@ class ComercialNet(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        sku = soup.find('span', 'sku').text.strip()
+
         if not soup.find('p', 'stock'):
             stock = -1
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce-'
-                                                               'product'
-                                                               '-gallery')
-                        .findAll('img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
