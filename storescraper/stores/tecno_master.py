@@ -63,7 +63,7 @@ class TecnoMaster(Store):
             ['productos/perifericos/impresoras', PRINTER],
             ['productos/almacenamiento/tarjetasdememoriasdd', MEMORY_CARD],
             ['productos/almacenamiento/flash-drivers-usb', USB_FLASH_DRIVE],
-            # ['tarjetas-de-video', VIDEO_CARD],
+            ['productos/hardware/tarjetasdevideo', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
