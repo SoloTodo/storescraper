@@ -44,7 +44,7 @@ class PcGamer(Store):
             ['9', MOUSE],  # Mouse y teclados
             ['1', HEADPHONES],  # Audio
             ['6', MONITOR],  # Monitores
-            ['68', GAMING_CHAIR],  # Sillas gamer
+            ['21', GAMING_CHAIR],  # Sillas gamer
             ['27', PRINTER],  # Impresoras
         ]
 
