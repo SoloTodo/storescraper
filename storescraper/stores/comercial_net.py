@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -8,7 +9,7 @@ from storescraper.categories import PROCESSOR, NOTEBOOK, HEADPHONES, MOUSE, \
     RAM, MOTHERBOARD, VIDEO_CARD, MONITOR, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class ComercialNet(Store):
@@ -34,10 +35,11 @@ class ComercialNet(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computadores-y-tablets/notebook', NOTEBOOK],
             ['computadores-y-tablets/headsets', HEADPHONES],
+            ['computadores-y-tablets/monitores-y-pantallas', MONITOR],
             ['computadores-y-tablets/mouses-y-teclados/mouse', MOUSE],
             ['computadores-y-tablets/mouses-y-teclados/categoria-1', KEYBOARD],
+            ['computadores-y-tablets/notebook', NOTEBOOK],
             ['componentes-y-partes/almacenamiento/hdd', STORAGE_DRIVE],
             ['componentes-y-partes/almacenamiento/ssd', SOLID_STATE_DRIVE],
             ['componentes-y-partes/fuentes-de-poder-psu/', POWER_SUPPLY],
@@ -45,10 +47,9 @@ class ComercialNet(Store):
             ['componentes-y-partes/memorias', RAM],
             ['componentes-y-partes/placas-madres', MOTHERBOARD],
             ['componentes-y-partes/procesadores', PROCESSOR],
+            ['componentes-y-partes/refrigeracion', CPU_COOLER],
             ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-nvidia', VIDEO_CARD],
             ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-amd', VIDEO_CARD],
-            ['computadores-y-tablets/monitores-y-pantallas', MONITOR],
-            ['componentes-y-partes/refrigeracion', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -85,22 +86,19 @@ class ComercialNet(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        sku = soup.find('span', 'sku').text.strip()
+        json_tag = soup.find('script', {'type': 'application/ld+json'})
+        product_data = json.loads(json_tag.text)['@graph'][1]
+        name = product_data['name']
+        key = str(product_data['sku'])
+        price = Decimal(product_data['offers'][0]['price'])
+        description = html_to_markdown(product_data['description'])
 
-        if not soup.find('p', 'stock'):
+        if product_data['offers'][0]['availability'] == \
+                'http://schema.org/InStock':
             stock = -1
-        elif soup.find('p', 'stock out-of-stock'):
+        else:
             stock = 0
-        else:
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
 
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
 
@@ -115,7 +113,8 @@ class ComercialNet(Store):
             price,
             price,
             'CLP',
-            sku=sku,
-            picture_urls=picture_urls
+            sku=key,
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
