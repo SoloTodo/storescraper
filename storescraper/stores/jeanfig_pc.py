@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, \
-    CPU_COOLER, HEADPHONES, MOUSE, STEREO_SYSTEM
+    CPU_COOLER, HEADPHONES, MOUSE, STEREO_SYSTEM, SOLID_STATE_DRIVE, RAM, \
+    MONITOR, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,19 +21,27 @@ class JeanfigPc(Store):
             CPU_COOLER,
             HEADPHONES,
             MOUSE,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            SOLID_STATE_DRIVE,
+            RAM,
+            MONITOR,
+            KEYBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['componentes/discos-de-estado-solido', SOLID_STATE_DRIVE],
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/gabinetes', COMPUTER_CASE],
+            ['componentes/memorias', RAM],
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/ventiladores', CPU_COOLER],
+            ['monitores', MONITOR],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/mouse', MOUSE],
-            ['perifericos/parlantes-pc', STEREO_SYSTEM]
+            ['perifericos/parlantes-pc', STEREO_SYSTEM],
+            ['perifericos/teclados', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
