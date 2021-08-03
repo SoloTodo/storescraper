@@ -6,13 +6,13 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
     COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, KEYBOARD, HEADPHONES, PRINTER, \
     MONITOR, SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
-    STEREO_SYSTEM, USB_FLASH_DRIVE, MEMORY_CARD
+    STEREO_SYSTEM, USB_FLASH_DRIVE, MEMORY_CARD, WEARABLE, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class GigaClic(Store):
+class Gigaclic(Store):
     @classmethod
     def categories(cls):
         return [
@@ -32,7 +32,9 @@ class GigaClic(Store):
             EXTERNAL_STORAGE_DRIVE,
             STEREO_SYSTEM,
             USB_FLASH_DRIVE,
-            MEMORY_CARD
+            MEMORY_CARD,
+            WEARABLE,
+            UPS,
         ]
 
     @classmethod
@@ -47,20 +49,24 @@ class GigaClic(Store):
             ['accesorios/refrigeracion', CPU_COOLER],
             ['accesorios/mouse-y-teclados', KEYBOARD],
             ['accesorios/audifonos-gamer', HEADPHONES],
-            ['electronica/audifonos', HEADPHONES],
-            ['impresoras/multifuncion-tinta', PRINTER],
-            ['impresoras/impresora-laser-color', PRINTER],
-            ['impresoras/multfuncion-laser-b-n', PRINTER],
-            ['impresoras/impresora-tinta', PRINTER],
-            ['impresoras/impresora-laser-b-n', PRINTER],
-            ['impresoras/multifuncion-laser-color', PRINTER],
+            ['accesorios/accesorios-gamer', HEADPHONES],
+            ['impresoras', PRINTER],
             ['monitores', MONITOR],
             ['almacenamiento/discos-estado-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento/discos-duro-notebook', EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento/discos-duro-pcs', STORAGE_DRIVE],
             ['almacenamiento/discos-portatiles', EXTERNAL_STORAGE_DRIVE],
-            ['electronica/parlantes', STEREO_SYSTEM],
+            ['almacenamiento/discos-sobremesa', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/memorias-sd-o-microsd', MEMORY_CARD],
             ['almacenamiento/pendrive', USB_FLASH_DRIVE],
-            ['almacenamiento/memorias-sd-o-microsd', MEMORY_CARD]
+            ['almacenamiento/accesorios-almacenamiento', STORAGE_DRIVE],
+            ['electronica/audifonos', HEADPHONES],
+            ['electronica/parlantes', STEREO_SYSTEM],
+            ['electronica/pulseras-inteligentes', WEARABLE],
+            ['mas-categorias/mouse-y-teclados-mas-categorias', KEYBOARD],
+            ['mas-categorias/accesorios-ups', UPS],
+
+
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -97,22 +103,22 @@ class GigaClic(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h2', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+
         if soup.find('span', 'inventory_status out-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = -1
+
         price_container = soup.find('p', 'price')
         if price_container.find('ins'):
             price = Decimal(
                 remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(price_container.text))
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery').
-                        findAll('img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
