@@ -110,6 +110,7 @@ from .gearbest import GearBest
 from .geant import Geant
 from .gelcom import Gelcom
 from .generacion_gamers import GeneracionGamers
+from .gigaclic import Gigaclic
 from .global_box import Globalbox
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
