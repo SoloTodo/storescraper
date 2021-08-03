@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
-    MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER
+    MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER, \
+    VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,7 +23,8 @@ class Sepuls(Store):
             MOUSE,
             COMPUTER_CASE,
             MOTHERBOARD,
-            CPU_COOLER
+            CPU_COOLER,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -36,13 +38,15 @@ class Sepuls(Store):
             ['mouse', MOUSE],
             ['gabinete', COMPUTER_CASE],
             ['placa-madre', MOTHERBOARD],
-            ['refrigeracion', CPU_COOLER]
+            ['refrigeracion', CPU_COOLER],
+            ['tarjeta-de-video', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
+
             page = 1
             while True:
                 if page > 10:
