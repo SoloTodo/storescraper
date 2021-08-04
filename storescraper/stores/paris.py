@@ -536,7 +536,11 @@ class Paris(Store):
                 if not picture:
                     continue
 
-                picture_url = picture.find('source')['srcset']
+                if picture.find('source'):
+                    picture_url = picture.find('source')['srcset']
+                else:
+                    picture_url = picture.find('img')['src']
+
                 banners.append({
                     'url': url,
                     'picture_url': picture_url,

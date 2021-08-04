@@ -443,7 +443,7 @@ class Falabella(Store):
                 condition = 'https://schema.org/NewCondition'
 
             p = Product(
-                base_name,
+                base_name[:200],
                 cls.__name__,
                 category,
                 sku_url,
@@ -603,7 +603,7 @@ class Falabella(Store):
             picture_urls = cls._get_picture_urls(session, model['id'])
 
             p = Product(
-                '{} ({})'.format(base_name, model['name'])[0: 256],
+                '{} ({})'.format(base_name, model['name'])[:200],
                 cls.__name__,
                 category,
                 sku_url,
