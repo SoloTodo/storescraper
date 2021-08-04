@@ -31,7 +31,8 @@ class TecnoStoreChile(Store):
             RAM,
             CPU_COOLER,
             PROCESSOR,
-            MONITOR
+            MONITOR,
+            POWER_SUPPLY
         ]
 
     @classmethod
@@ -77,7 +78,7 @@ class TecnoStoreChile(Store):
             while do:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://tecnostorechilespa.cl/{}#/page-{}' \
+                url_webpage = 'https://tecnostorechilespa.cl/{}?p={}' \
                     .format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
