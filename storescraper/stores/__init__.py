@@ -118,6 +118,7 @@ from .golden_gamers import GoldenGamers
 from .gollo_tienda import GolloTienda
 from .gonzalez_gimenez import GonzalezGimenez
 from .good_computer import GoodComputer
+from .good_game import GoodGame
 from .gorilla_setups import GorillaSetups
 from .grupo_cva import GrupoCva
 from .grupo_decme import GrupoDecme
