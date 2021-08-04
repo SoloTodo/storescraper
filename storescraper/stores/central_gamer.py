@@ -80,15 +80,15 @@ class CentralGamer(Store):
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
 
-        # stock_tag = soup.find('span', 'product-form_brand')
-        # if stock_tag and 'INMEDIATA' not in stock_tag.text.upper():
-        #     stock = 0
         if soup.find('div', {'id': 'stock'}):
             stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
         else:
             stock = 0
-        price = Decimal(
-            remove_words(soup.find('span', {'id': 'product-form-price'}).text))
+
+        price_tags = soup.findAll('span', {'id': 'product-form-price'})
+
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
         p = Product(
@@ -99,8 +99,8 @@ class CentralGamer(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
