@@ -1,12 +1,14 @@
 import logging
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, NOTEBOOK, \
     KEYBOARD, MOUSE, HEADPHONES, MOTHERBOARD, PROCESSOR, CPU_COOLER, VIDEO_CARD
+from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class NatCom(Store):
@@ -71,17 +73,50 @@ class NatCom(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll()
+                product_containers = soup.findAll('article', 'w-grid-item')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
+                    if product_url in product_urls:
+                        return product_urls
                     product_urls.append(product_url)
                 page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        pass
+        print(url)
+        session = session_with_proxy(extra_args)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'product_title').text
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        price_container = soup.find('p', 'price')
+        if price_container.find('ins'):
+            price = Decimal(remove_words(price_container.find('ins').text))
+        else:
+            price = Decimal(remove_words(price_container.text))
+
+        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
+                                                               '-product'
+                                                               '-gallery')
+                        .findAll('img')]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls
+        )
+        return [p]
