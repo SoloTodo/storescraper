@@ -75,15 +75,22 @@ class GeneracionGamers(Store):
             product_container = json.loads(product_container.text)
         else:
             return []
+
         name = product_container['name']
         sku = str(product_container['sku'])
+        description = product_container['description']
+        offer_price = Decimal(product_container['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.035')).quantize(0)
+        picture_urls = [product_container['image']]
+
         if product_container['offers'][0]['availability'].split('/')[-1] == \
                 'OutOfStock':
             stock = 0
+        elif 'PREVENTA' in description.upper():
+            stock = 0
         else:
             stock = -1
-        price = Decimal(product_container['offers'][0]['price'])
-        picture_urls = [product_container['image']]
+
         p = Product(
             name,
             cls.__name__,
@@ -92,10 +99,11 @@ class GeneracionGamers(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
