@@ -35,13 +35,13 @@ class KrakenStore(Store):
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div',
-                                              'col my-2 text-center')
+            product_containers = soup.find(
+                'div', {'id': 'product_list'}).findAll('a', 'text-reset')
             if not product_containers:
                 logging.warning('Empty category: ' + url_extension)
                 break
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container['href']
                 product_urls.append(product_url)
         return product_urls
 
