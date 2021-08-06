@@ -137,10 +137,9 @@ class Sodimac(Store):
 
                 for product in products:
                     product_id = product['productId']
-                    slug = "productos"
                     product_url = \
-                        'https://www.sodimac.cl/sodimac-cl/product/{}/{}/{}'\
-                        .format(product_id, slug, product_id)
+                        'https://www.sodimac.cl/sodimac-cl/product/{}'\
+                        .format(product_id)
 
                     product_entries[product_url].append({
                         'category_weight': category_weight,
@@ -199,7 +198,7 @@ class Sodimac(Store):
         print(r_url)
         response = session.get(r_url, timeout=30)
 
-        if response.url != r_url or response.status_code in [404]:
+        if response.status_code in [404]:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')

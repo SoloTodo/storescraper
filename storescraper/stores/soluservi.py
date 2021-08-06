@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -108,8 +109,11 @@ class Soluservi(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text[:200]
+        json_tag = soup.findAll('script', {'type': 'application/ld+json'})[1]
+        product_data = json.loads(json_tag.text)['@graph'][1]
+        name = product_data['name'][:200]
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+
         if not soup.find('p', 'stock'):
             stock = -1
         elif soup.find('p', 'stock').text == 'Agotado':
@@ -117,18 +121,11 @@ class Soluservi(Store):
         else:
             stock = int(soup.find('p', 'stock').text.split()[0])
 
-        price_tags = soup.find('p', 'price').findAll('b')
-        prices = [Decimal(remove_words(tag.text)) for tag in price_tags]
-        offer_price = min(prices)
-        normal_price = max(prices)
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.05')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
-
-        sku_container = soup.find('span', 'sku')
-        if sku_container:
-            part_number = sku_container.text.strip()
-        else:
-            part_number = None
+        part_number = product_data['sku'] or None
 
         p = Product(
             name,

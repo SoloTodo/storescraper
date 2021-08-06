@@ -87,8 +87,15 @@ class CentralGamer(Store):
 
         price_tags = soup.findAll('span', {'id': 'product-form-price'})
 
-        offer_price = Decimal(remove_words(price_tags[0].text))
-        normal_price = Decimal(remove_words(price_tags[1].text))
+        if len(price_tags) == 2:
+            offer_price = Decimal(remove_words(price_tags[0].text))
+            normal_price = Decimal(remove_words(price_tags[1].text))
+        elif len(price_tags) == 1:
+            offer_price = Decimal(remove_words(price_tags[0].text))
+            normal_price = offer_price
+        else:
+            raise Exception('Invalid price tags')
+
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
         p = Product(
