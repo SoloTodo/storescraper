@@ -68,9 +68,14 @@ class DazbogStore(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1',
-                         'product-title').text.strip() + ' - ' + soup.find(
-            'span', 'sku').text
+        name = soup.find('h1', 'product-title').text.strip()
+        part_number = None
+        part_number_tag = soup.find('span', 'sku')
+
+        if part_number_tag:
+            part_number = part_number_tag.text.strip()
+            name += ' - ' + part_number
+
         sku = str(soup.find('button', 'single_add_to_cart_button')['value'])
         stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         price_container = soup.find('table').findAll('bdi')
@@ -91,7 +96,8 @@ class DazbogStore(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
 
         return [p]
