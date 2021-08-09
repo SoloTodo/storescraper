@@ -41,8 +41,11 @@ class GoodGame(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
+
+            local_urls = []
             page = 1
-            while True:
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://good-game.cl/{}?page={}'.format(
@@ -51,16 +54,22 @@ class GoodGame(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-container')
+
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
+
+                    if product_url in local_urls:
+                        done = True
+                        break
+
+                    local_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_urls)
         return product_urls
 
     @classmethod
