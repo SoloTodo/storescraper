@@ -350,13 +350,12 @@ class Falabella(Store):
         try:
             res = session.get(modified_url, timeout=30)
             return json.loads(res.content.decode('utf-8'))['data']
-        except:
+        except Exception:
             if retries > 0:
                 time.sleep(3)
                 return cls.retrieve_json_page(session, url, retries=retries-1)
             else:
                 raise
-
 
     @classmethod
     def _new_products_for_url(

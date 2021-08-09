@@ -48,8 +48,10 @@ class ComercialNet(Store):
             ['componentes-y-partes/placas-madres', MOTHERBOARD],
             ['componentes-y-partes/procesadores', PROCESSOR],
             ['componentes-y-partes/refrigeracion', CPU_COOLER],
-            ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-nvidia', VIDEO_CARD],
-            ['componentes-y-partes/tarjetas-graficas/tarjetas-graficas-amd', VIDEO_CARD],
+            ['componentes-y-partes/tarjetas-graficas/'
+             'tarjetas-graficas-nvidia', VIDEO_CARD],
+            ['componentes-y-partes/tarjetas-graficas/'
+             'tarjetas-graficas-amd', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
