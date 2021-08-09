@@ -52,7 +52,8 @@ class TecnoMegaStore(Store):
         response = session.get('https://coretms.tecnomegastore.ec/admin/'
                                'api/product/{}'.format(product_extension))
         json_product = json.loads(response.text)['Product'][0]
-        name = json_product['description']
+        part_number = json_product['numparte']
+        name = part_number + ' - ' + json_product['description']
         sku = json_product['_id']
         stock = json_product['stock'][0]['S3']
         price = Decimal(json_product['priceW'])
@@ -69,6 +70,7 @@ class TecnoMegaStore(Store):
             price,
             'USD',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
         return [p]
