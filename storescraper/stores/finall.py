@@ -32,6 +32,8 @@ class Finall(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['pc/memorias-ram', RAM],
+            ['pc/memorias-ram/ddr3', RAM],
+            ['pc/memorias-ram/ddr4', RAM],
             ['pc/placa-madre', MOTHERBOARD],
             ['pc/tarjeta-de-video', VIDEO_CARD],
             ['pc/fuente-de-poder', POWER_SUPPLY],
@@ -42,7 +44,8 @@ class Finall(Store):
             ['teclados', KEYBOARD],
             ['pc/procesadores', PROCESSOR],
             ['pc/gabinetes', COMPUTER_CASE],
-            ['pc/refrigeracion', CPU_COOLER]
+            ['pc/refrigeracion', CPU_COOLER],
+            ['pc/refrigeracion-liquida', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
