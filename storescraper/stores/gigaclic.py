@@ -65,6 +65,8 @@ class Gigaclic(Store):
             ['electronica/pulseras-inteligentes', WEARABLE],
             ['mas-categorias/mouse-y-teclados-mas-categorias', KEYBOARD],
             ['mas-categorias/accesorios-ups', UPS],
+            ['mas-categorias/accesorios-ps4-ps5-xbox/',
+             EXTERNAL_STORAGE_DRIVE],
 
 
         ]
