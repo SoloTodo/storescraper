@@ -742,6 +742,8 @@ class Falabella(Store):
                     main_url = slide.get('mainUrl', None)
                     if main_url:
                         destination_urls = [main_url]
+                    elif slide['type'] == 'background_image_only':
+                        destination_urls = []
                     else:
                         destination_urls = list(
                             {slide['urlLeft'], slide['urlRight']})
