@@ -73,8 +73,10 @@ class Gigaclic(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
+            local_urls = []
             page = 1
-            while True:
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://gigaclic.cl/product-category/{}/' \
@@ -89,10 +91,12 @@ class Gigaclic(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_urls)
         return product_urls
 
     @classmethod

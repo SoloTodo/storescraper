@@ -58,7 +58,7 @@ class Centrale(Store):
             ['tecnología/computación/tablets/', TABLET],
             ['tecnología/computación/all-in-one/', ALL_IN_ONE],
             ['tecnología/entretención/consolas/', VIDEO_GAME_CONSOLE],
-            ['tecnología/monitores,-proyectores-y-audio/monitores', MONITOR],
+            ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
             ['tecnología/impresión-y-oficina/impresoras-laser', PRINTER],
             ['tecnología/impresión-y-oficina/impresoras-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-laser', PRINTER],
@@ -67,14 +67,14 @@ class Centrale(Store):
              PRINTER],
             ['tecnología/impresión-y-oficina/plotters', PRINTER],
             ['tecnología/computación/ups-y-reguladores', UPS],
-            ['tecnología/computación/teclados-y-mouses', MOUSE],
+            ['tecnología/computación/kits-teclados-y-mouses', MOUSE],
             ['tecnología/partes-y-piezas/gabinetes-desktop', COMPUTER_CASE],
             ['tecnología/telefonía/smartphones', CELL],
-            ['tecnología/electro/smartwatches', WEARABLE],
+            ['tecnología/electro/smartwatches-electro', WEARABLE],
             ['tecnología/electro/televisores', TELEVISION],
             ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
             ['tecnología/audio/audífonos', HEADPHONES],
-            ['tecnología/muebles-y-sillas/sillas', GAMING_CHAIR],
+            ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
