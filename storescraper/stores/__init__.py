@@ -274,6 +274,7 @@ from .r_s_tech import RSTech
 from .sams import Sams
 from .samsung_chile import SamsungChile
 from .samsung_shop import SamsungShop
+from .samurai_store import SamuraiStore
 from .sanborns import Sanborns
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
