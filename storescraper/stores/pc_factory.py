@@ -1,294 +1,181 @@
 import json
 import logging
-import re
-
-from collections import defaultdict
-from datetime import datetime
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
+    TELEVISION, MOTHERBOARD, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, TABLET, PRINTER, CELL, CAMERA, \
+    EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, PROJECTOR, \
+    VIDEO_GAME_CONSOLE, STEREO_SYSTEM, ALL_IN_ONE, MOUSE, OPTICAL_DRIVE, \
+    KEYBOARD, KEYBOARD_MOUSE_COMBO, WEARABLE, UPS, AIR_CONDITIONER, \
+    GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class PcFactory(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Television',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'CpuCooler',
-            'Tablet',
-            'Printer',
-            'Cell',
-            'Camera',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            'StereoSystem',
-            'AllInOne',
-            'Mouse',
-            'OpticalDrive',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'Wearable',
-            'Ups',
-            'AirConditioner',
+            NOTEBOOK,
+            VIDEO_CARD,
+            PROCESSOR,
+            MONITOR,
+            TELEVISION,
+            MOTHERBOARD,
+            RAM,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            CPU_COOLER,
+            TABLET,
+            PRINTER,
+            CELL,
+            CAMERA,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            PROJECTOR,
+            VIDEO_GAME_CONSOLE,
+            STEREO_SYSTEM,
+            ALL_IN_ONE,
+            MOUSE,
+            OPTICAL_DRIVE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
+            WEARABLE,
+            UPS,
+            AIR_CONDITIONER,
             GAMING_CHAIR
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['735', ['Notebook'],
-             'Inicio > Computadores y Tablets > Notebooks', 1],
-            ['334', ['VideoCard'],
-             'Inicio > Componentes/Partes y Piezas > Tarjetas Gráficas > '
-             'Tarjetas Gráficas AMD', 1],
-            ['994', ['Tablet'],
-             'Inicio > Computadores y Tablets > Tablets', 1],
-            ['432', ['Cell'],
-             'Inicio > Celulares > Smartphones', 1],
-            ['6', ['Camera'],
-             'Inicio > Fotografía, Video y Drones > Cámaras Compactas', 1],
-            ['620', ['Camera'],
-             'Inicio > Fotografía, Video y Drones > '
-             'Cámaras Semiprofesionales', 1],
-            ['422', ['ExternalStorageDrive'],
-             'Inicio > Discos Duros y Almacenamiento > Discos Externos', 1],
-            ['904', ['ExternalStorageDrive'],
-             'Inicio > Discos Duros y Almacenamiento > SSD Externos ', 1],
-            ['218', ['UsbFlashDrive'],
-             'Inicio > Discos Duros y Almacenamiento > Pendrives', 1],
-            ['48', ['MemoryCard'],
-             'Inicio > Discos Duros y Almacenamiento > Memoris Flash', 1],
-            ['46', ['Projector'],
-             'Inicio > Monitores y Proyectores > Proyectores', 1],
-            ['438', ['VideoGameConsole'],
-             'Inicio > Juegos y Consola > Consolas', 1],
-            ['889', ['StereoSystem'],
-             'Inicio > Audio > Equipos de Música', 1],
-            ['890', ['StereoSystem'],
-             'Inicio > Audio > Equipos de Música > Audio All in One', 1],
-            ['798', ['StereoSystem'],
-             'Inicio > Audio > Equipos de Música > Microcomponente', 1],
-            ['700', ['StereoSystem'],
-             'Inicio > Audio > Equipos de Música > Minicomponentes', 1],
-            ['831', ['StereoSystem'],
-             'Inicio > Audio > Parlantes > Parlantes PC', 1],
-            ['34', ['StereoSystem'],
-             'Inicio > Audio > Parlantes > Parlantes Portátiles', 1],
-            ['797', ['StereoSystem'],
-             'Inicio > TV y Smart TV > Video/Audio TV > Barras de Sonido', 1],
-            ['475', ['AllInOne'],
-             'Inicio > Computadores y Tablets > Escritorio > All-in-One', 1],
-            ['22', ['Mouse'],
-             'Inicio > Computadores y Tablets > Mouses y Teclados > '
-             'Mouses', 1],
-            ['789', ['Television'],
-             'Inicio > TV y Smart TV > TV y Smart TV', 1],
-            ['286', ['OpticalDrive'],
-             'Inicio > Componentes/Partes y Piezas > Ópticos', 1],
-            ['272', ['Processor'],
-             'Inicio > Componentes/Partes y Piezas > Procesadores', 1],
-            ['995', ['Monitor'],
-             'Inicio > Monitores y Proyectores > Monitores', 1],
-            ['292', ['Motherboard'],
-             'Inicio > Componentes/Partes y Piezas > Placas Madres', 1],
-            ['112', ['Ram'],
-             'Inicio > Componentes/Partes y Piezas > Memorias > '
-             'Memorias PC', 1],
-            ['100', ['Ram'],
-             'Inicio > Componentes/Partes y Piezas > Memorias > '
-             'Memorias Notebook', 1],
-            ['266', ['Ram'],
-             'Inicio > Computadores y Tablets > Servidores > '
-             'Memorias Servers', 1],
-            ['340', ['StorageDrive'],
-             'Inicio > Discos Duros y Almacenamiento > Discos Duros PC', 1],
-            ['585', ['SolidStateDrive'],
-             'Inicio > Discos Duros y Almacenamiento > Discos SSD', 1],
-            ['421', ['StorageDrive'],
-             'Inicio > Discos Duros y Almacenamiento > Discos Notebooks', 1],
-            ['932', ['StorageDrive'],
-             'Inicio > Discos Duros y Almacenamiento > '
-             'Discos de Video Vigilancia', 1],
-            ['411', ['StorageDrive'],
-             'Inicio > Computadores y Tablets > Servidores > '
-             'Discos Servers', 1],
-            ['54', ['PowerSupply'],
-             'Inicio > Componentes/Partes y Piezas > '
-             'Fuentes de Poder (PSU)', 1],
-            ['16', ['ComputerCase'],
-             'Inicio > Componentes/Partes y Piezas > Gabinetes > '
-             'Gabinetes con Fuente', 1],
-            ['328', ['ComputerCase'],
-             'Inicio > Componentes/Partes y Piezas > Gabinetes > '
-             'Gabinetes sin Fuente', 1],
-            ['42', ['CpuCooler'],
-             'Inicio > Componentes/Partes y Piezas > Refrigeración', 1],
-            ['262', ['Printer'],
-             'Inicio > Impresoras y Suministros > '
-             'Impresoras Hogar y Oficina', 1],
-            ['36', ['Keyboard'],
-             'Inicio > Computadores y Tablets > Mouse y Teclados > '
-             'Teclados', 1],
-            ['418', ['KeyboardMouseCombo'],
-             'Inicio > Computadores y Tablets > Mouses y Teclados > '
-             'Combos Teclado/Mouse', 1],
-            ['850', ['Headphones'],
-             'Inicio > Audio > Audifonos', 1],
-            ['860', ['Headphones'],
-             'Inicio > Audio > Audifonos > Audifonos DJ', 1],
-            ['861', ['Headphones'],
-             'Inicio > Audio > Audifonos > Audifonos Monitoreo', 1],
-            ['685', ['Wearable'],
-             'Inicio > Celulares > Wearables > Smartwatches', 1],
-            ['38', ['Ups'],
-             'Inicio > Accesorios y Periféricos > UPS y Energía > '
-             'UPS y Reguladores', 1],
-            ['748', ['StereoSystem'],
-             'Inicio > Smart Home (Domótica)', 1],
-            ['1026', ['AirConditioner'],
-             'Inicio > Aires Acondicionados', 1],
-            ['1007', [GAMING_CHAIR],
-             'Inicio > Componentes > Partes y Piezas > Sillas Gamer', 1]
+    def discover_urls_for_category(cls, category, extra_args=None):
+        url_extensions = [
+            ['735', NOTEBOOK],
+            ['334', VIDEO_CARD],
+            ['272', PROCESSOR],
+            ['995', MONITOR],
+            ['789', TELEVISION],
+            ['292', MOTHERBOARD],
+            ['112', RAM],
+            ['100', RAM],
+            ['266', RAM],
+            ['340', STORAGE_DRIVE],
+            ['421', STORAGE_DRIVE],
+            ['932', STORAGE_DRIVE],
+            ['411', STORAGE_DRIVE],
+            ['585', SOLID_STATE_DRIVE],
+            ['54', POWER_SUPPLY],
+            ['16', COMPUTER_CASE],
+            ['328', COMPUTER_CASE],
+            ['42', CPU_COOLER],
+            ['994', TABLET],
+            ['262', PRINTER],
+            ['432', CELL],
+            ['6', CAMERA],
+            ['620', CAMERA],
+            ['422', EXTERNAL_STORAGE_DRIVE],
+            ['904', EXTERNAL_STORAGE_DRIVE],
+            ['218', USB_FLASH_DRIVE],
+            ['48', MEMORY_CARD],
+            ['46', PROJECTOR],
+            ['438', VIDEO_GAME_CONSOLE],
+            ['889', STEREO_SYSTEM],
+            ['890', STEREO_SYSTEM],
+            ['798', STEREO_SYSTEM],
+            ['700', STEREO_SYSTEM],
+            ['831', STEREO_SYSTEM],
+            ['34', STEREO_SYSTEM],
+            ['797', STEREO_SYSTEM],
+            ['748', STEREO_SYSTEM],
+            ['475', ALL_IN_ONE],
+            ['22', MOUSE],
+            ['286', OPTICAL_DRIVE],
+            ['36', KEYBOARD],
+            ['418', KEYBOARD_MOUSE_COMBO],
+            ['685', WEARABLE],
+            ['38', UPS],
+            ['1026', AIR_CONDITIONER],
+            ['1007', GAMING_CHAIR]
         ]
-
         session = session_with_proxy(extra_args)
-        session.get('https://www.pcfactory.cl')
-
-        product_entries = defaultdict(lambda: [])
-
-        for e in category_paths:
-            category_path, local_categories, section_name, category_weight = e
-
-            if category not in local_categories:
+        product_urls = []
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
                 continue
-
             page = 1
-            current_position = 1
-
             while True:
-                if page > 30:
-                    raise Exception('Page overflow')
+                if page > 10:
+                    raise Exception('page overflow: ' + url_extension)
+                url_webpage = 'https://www.pcfactory.cl/?categoria={}&' \
+                              'pagina={}'.format(url_extension, page)
+                print(url_webpage)
+                response = session.get(url_webpage)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('div', 'product')
 
-                category_url = 'https://www.pcfactory.cl/foo?categoria={}' \
-                               '&pagina={}'.format(category_path, page)
-
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
-
-                if not soup.find('div', 'titulo_categoria'):
-                    logging.warning('Invalid category:' + category_url)
-
-                product_cells = soup.findAll('div', 'wrap-caluga-matrix')
-
-                if not product_cells:
+                if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category path: {}'.format(
-                            category_url))
-                    else:
-                        break
-
-                for product_cell in product_cells:
-                    sku = product_cell.find('span', 'txt-id').text.strip()
-                    product_url = 'https://www.pcfactory.cl/producto/{}' \
-                                  ''.format(sku)
-                    product_entries[product_url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': current_position
-                    })
-
-                    current_position += 1
-
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(
+                        'https://www.pcfactory.cl' + product_url)
                 page += 1
-
-        return product_entries
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-
-        for i in range(10):
-            session.get(url)
-
-            response = session.get(
-                'https://www.pcfactory.cl/public/scripts/dynamic/initData'
-                '.js?_={}'.format(datetime.now().timestamp()))
-
-            raw_json = re.search(
-                r'window.pcFactory.dataGlobal.serverData			=  (.+)',
-                response.text).groups()[0][:-1]
-
-            response_data = json.loads(raw_json)
-            if 'producto' in response_data:
-                break
-        else:
-            raise Exception('Too many retries')
-
-        product_data = response_data['producto']
-
-        if not product_data:
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        sku = soup.find('input', {'name': 'data_id_producto'})['value']
+        body = json.dumps(
+            {'requests': [{'indexName': 'productos_sort_price_asc',
+                           'params': 'hitsPerPage=100&query={}'.format(
+                               sku)}]})
+        api_response = session.post(
+            'https://ed3kwid4nw-dsn.algolia.net/1/indexes/*/queries?x'
+            '-algolia-api-key=7ccd81fee7933da61bac0f76e128178b&x-algolia'
+            '-application-id=ED3KWID4NW',
+            data=body)
+        json_container = json.loads(api_response.text)
+        product_json = next(
+            (product for product in json_container['results'][0]['hits'] if
+             product['idProducto'] == int(sku)), None)
+        if not product_json:
             return []
-
-        full_name = '{} {}'.format(product_data['marca'],
-                                   product_data['nombre'])
-        stock = int(product_data['stock_tienda']) + \
-            int(product_data['stock_web'])
-        sku = product_data['id_producto']
-        video_urls = []
-
-        if product_data['descripcion']:
-            soup = BeautifulSoup(product_data['descripcion'], 'html.parser')
-            for iframe in soup.findAll('iframe'):
-                match = re.match('//www.youtube.com/embed/(.+)',
-                                 iframe['src'])
-                if match:
-                    video_urls.append(
-                        'https://www.youtube.com/watch?v={}'.format(
-                            match.groups()[0]))
-            description = html_to_markdown(product_data['descripcion'])
-        else:
-            description = None
-
-        picture_urls = ['https://www.pcfactory.cl/public/foto/{}/{}'.format(
-            sku, path) for path in product_data['imagen']]
-
+        part_number = product_json['partno']
+        name = product_json['nombre']
+        stock = sum(stock['stock'] for stock in product_json['stockSucursal'])
+        price_container = soup.find('div', 'product-single__price').findAll(
+            'div', 'price-xl')
+        normal_price = Decimal(remove_words(price_container[1].text))
+        offer_price = Decimal(remove_words(price_container[0].text))
+        picture_urls = ['https://www.pcfactory.cl' + tag['src'].split('?t')[0]
+                        for tag in
+                        soup.find('div', 'product-single__gallery').findAll(
+                            'img')]
         p = Product(
-            full_name,
+            name,
             cls.__name__,
             category,
             url,
             url,
             sku,
             stock,
-            Decimal(remove_words(product_data['precio_normal'])),
-            Decimal(remove_words(product_data['precio_cash'])),
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
-            part_number=product_data['partno'],
-            description=description,
-            picture_urls=picture_urls,
-            video_urls=video_urls
+            part_number=part_number,
+            picture_urls=picture_urls
         )
-
         return [p]
