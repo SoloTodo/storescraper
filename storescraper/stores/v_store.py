@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import WEARABLE, KEYBOARD, STEREO_SYSTEM, \
-    MONITOR, MOUSE, USB_FLASH_DRIVE
+    MONITOR, MOUSE, USB_FLASH_DRIVE, GAMING_CHAIR, HEADPHONES, \
+    KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,7 +21,10 @@ class VStore(Store):
             STEREO_SYSTEM,
             MONITOR,
             MOUSE,
-            USB_FLASH_DRIVE
+            USB_FLASH_DRIVE,
+            GAMING_CHAIR,
+            HEADPHONES,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
@@ -29,9 +33,13 @@ class VStore(Store):
             ['smartwatch', WEARABLE],
             ['teclados', KEYBOARD],
             ['parlantes', STEREO_SYSTEM],
+            ['conexion-y-video', MONITOR],
             ['monitores', MONITOR],
             ['mouse', MOUSE],
-            ['almacenamiento', USB_FLASH_DRIVE]
+            ['almacenamiento', USB_FLASH_DRIVE],
+            ['sillas-de-oficina', GAMING_CHAIR],
+            ['audifonos', HEADPHONES],
+            ['pack-de-productos/COMBO', KEYBOARD_MOUSE_COMBO],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
