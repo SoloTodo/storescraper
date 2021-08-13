@@ -139,7 +139,7 @@ class PcFactory(Store):
         sku = soup.find('input', {'name': 'data_id_producto'})['value']
         body = json.dumps(
             {'requests': [{'indexName': 'productos_sort_price_asc',
-                           'params': 'hitsPerPage=100&query={}'.format(
+                           'params': 'hitsPerPage=1000&query={}'.format(
                                sku)}]})
         api_response = session.post(
             'https://ed3kwid4nw-dsn.algolia.net/1/indexes/*/queries?x'
@@ -147,9 +147,14 @@ class PcFactory(Store):
             '-application-id=ED3KWID4NW',
             data=body)
         json_container = json.loads(api_response.text)
-        product_json = next(
-            (product for product in json_container['results'][0]['hits'] if
-             product['idProducto'] == int(sku)), None)
+
+        product_json = None
+
+        for product in json_container['results'][0]['hits']:
+            if product['idProducto'] == int(sku):
+                product_json = product
+                break
+
         if not product_json:
             return []
         part_number = product_json['partno']
