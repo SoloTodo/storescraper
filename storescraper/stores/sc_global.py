@@ -7,7 +7,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
-    KEYBOARD, MONITOR, HEADPHONES, UPS, GAMING_CHAIR
+    KEYBOARD, MONITOR, HEADPHONES, UPS, GAMING_CHAIR, TABLET, RAM, \
+    SOLID_STATE_DRIVE
 
 
 class ScGlobal(Store):
@@ -22,7 +23,10 @@ class ScGlobal(Store):
             MONITOR,
             HEADPHONES,
             UPS,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            TABLET,
+            RAM,
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
@@ -32,13 +36,16 @@ class ScGlobal(Store):
             ['83', NOTEBOOK],  # Notebook
             ['84', PRINTER],  # Plotter
             ['85', UPS],  # UPS
-            ['10', NOTEBOOK],  # Notebook
-            ['32', NOTEBOOK],  # Notebooks Rendimiento
-            ['33', NOTEBOOK],  # Notebooks Hogar y Empresa
-            ['34', NOTEBOOK],  # Notebooks Movilidad
             ['22', ALL_IN_ONE],  # All In One
             ['17', MONITOR],  # Monitores
+            ['12', PRINTER],  # Impresoras
+            ['11', TABLET],  # Tablet
+            ['29', RAM],  # RAM
+            ['30', SOLID_STATE_DRIVE],  # Discos Duros
             ['24', MOUSE],  # Zona gamer
+            ['76', MOUSE],  # Teclados / Mouse
+            ['78', HEADPHONES],  # Audífonos
+            ['74', GAMING_CHAIR],  # Sillas Gamer
         ]
 
         session = session_with_proxy(extra_args)
