@@ -74,7 +74,8 @@ class Centrale(Store):
             ['tecnología/electro/televisores', TELEVISION],
             ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
             ['tecnología/audio/audífonos', HEADPHONES],
-            ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas', GAMING_CHAIR],
+            ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas',
+             GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

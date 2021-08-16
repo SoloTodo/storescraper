@@ -13,7 +13,7 @@ from storescraper.utils import session_with_proxy, remove_words, HeadlessChrome
 
 class Wom(Store):
     prepago_url = 'http://www.wom.cl/prepago/'
-    planes_url = 'https://www.wom.cl/seguro/planes/'
+    planes_url = 'https://store.wom.cl/planes/'
 
     @classmethod
     def categories(cls):
@@ -111,7 +111,7 @@ class Wom(Store):
 
             while retries:
                 plan_containers = driver.find_elements_by_class_name(
-                    'index-module--listWrapperContainer--14sTQ')
+                    'index-module--listWrapper--1PNCu')
                 if plan_containers:
                     break
                 time.sleep(2)
@@ -123,8 +123,7 @@ class Wom(Store):
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
         plan_containers = soup.find(
-            'div', 'index-module--listWrapperContainer--14sTQ').findAll(
-            'div', 'swiper-slide')
+            'div', 'index-module--listWrapper--1PNCu')
         products = []
 
         variants = [

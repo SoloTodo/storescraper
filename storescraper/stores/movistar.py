@@ -268,19 +268,17 @@ class Movistar(Store):
                             json_response['planes']['html'],
                             'html5lib')
                         plan_containers = json_soup.findAll('article')
+                        offer_data = BeautifulSoup(json_response['offer'],
+                                                   'html.parser')
+                        price = Decimal(remove_words(offer_data.find(
+                            'p', 'boxEMPlan-int-box-pie').contents[1]))
+                        cell_monthly_payment = Decimal(remove_words(
+                            offer_data.find('p', 'boxEMPlan-int-meses')
+                            .find('b').text))
 
                         for container in plan_containers:
                             cell_plan_name = container['data-id']
-                            price = Decimal(remove_words(container.find(
-                                'strong', 'pie-price').text))
-
-                            monthly_payment_text = container.find(
-                                'div', 'pie-detail').findAll('strong')[-1].text
-                            monthly_payment_text = re.search(
-                                r'\$([\d+.]+)',
-                                monthly_payment_text).groups()[0]
-                            cell_monthly_payment = Decimal(
-                                monthly_payment_text.replace('.', ''))
+                            print(cell_plan_name)
 
                             products.append(Product(
                                 name,
