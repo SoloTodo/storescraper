@@ -258,9 +258,14 @@ class AbcDin(Store):
         session = session_with_proxy(extra_args)
         page_content = session.get(url).text
         soup = BeautifulSoup(page_content, 'html.parser')
-        brand = soup.find('div', {'itemprop': 'marca'}).text.strip()
+        brand_tag = soup.find('div', {'itemprop': 'marca'})
         model = soup.find('span', {'itemprop': 'name'}).text.strip()
-        name = '{} {}'.format(brand, model)
+
+        if brand_tag:
+            name = '{} {}'.format(brand_tag.text.strip(), model)
+        else:
+            name = model
+            
         prices_box = soup.find('div', 'price-final_price')
         normal_price = Decimal(remove_words(prices_box.find(
             'span', 'internet-price').find('span', 'price').text))
