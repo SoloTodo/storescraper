@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, GAMING_CHAIR, MOUSE
+from storescraper.categories import VIDEO_CARD, GAMING_CHAIR, MOUSE, \
+    COMPUTER_CASE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,13 +16,17 @@ class KrakenStore(Store):
         return [
             VIDEO_CARD,
             GAMING_CHAIR,
-            MOUSE
+            MOUSE,
+            COMPUTER_CASE,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes', VIDEO_CARD],
+            ['tarjetas-graficas', VIDEO_CARD],
+            ['componentes', COMPUTER_CASE],
+            ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['perifericos', MOUSE]
         ]

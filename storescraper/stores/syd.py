@@ -66,25 +66,16 @@ class Syd(Store):
         print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[2].text)
+        name = json_data['name']
+        sku = json_data['sku']
+        picture_urls = json_data['image']
+        normal_price = Decimal(json_data['offers']['price'])
+        offer_price = (normal_price * Decimal('0.97')).quantize(0)
+        description = json_data['description']
 
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)['@graph']
-        product_data = None
-
-        for data in json_data:
-            if data['@type'] == 'Product':
-                product_data = data
-                break
-
-        name = product_data['name']
-        sku = product_data['sku']
-        picture_urls = product_data['image']
-        price = Decimal(product_data['offers']['price'])
-
-        description = soup.find('section', 'bs-product-description')
-        description = html_to_markdown(str(description))
-
-        if product_data['offers']['availability'] == \
+        if json_data['offers']['availability'] == \
                 'https://schema.org/InStock':
             stock = -1
         else:
@@ -98,8 +89,8 @@ class Syd(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,
