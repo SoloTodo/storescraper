@@ -40,7 +40,9 @@ class Spaceman(Store):
             if local_category != category:
                 continue
             page = 1
-            while True:
+            local_urls = []
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webapge = 'https://www.spaceman.cl/catergoria-producto/' \
@@ -55,8 +57,12 @@ class Spaceman(Store):
                     break
                 for container in product_containers.findAll('li'):
                     product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_urls)
         return product_urls
 
     @classmethod
