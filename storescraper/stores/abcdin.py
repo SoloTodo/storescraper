@@ -265,7 +265,7 @@ class AbcDin(Store):
             name = '{} {}'.format(brand_tag.text.strip(), model)
         else:
             name = model
-            
+
         prices_box = soup.find('div', 'price-final_price')
         normal_price = Decimal(remove_words(prices_box.find(
             'span', 'internet-price').find('span', 'price').text))

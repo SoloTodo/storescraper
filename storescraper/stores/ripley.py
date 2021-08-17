@@ -1,9 +1,7 @@
-import base64
 import logging
 import re
 import json
 from datetime import datetime
-from io import BytesIO
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -14,8 +12,6 @@ from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper import banner_sections as bs
-
-from PIL import Image
 
 
 class Ripley(Store):
@@ -745,41 +741,16 @@ class Ripley(Store):
                 })
             else:
                 # Collage
-                cell_tags = banner_tag.findAll('a')
+                desktop_container_tag = banner_tag.find('div')
+                cell_tags = desktop_container_tag.findAll('a')
                 destination_urls = [tag['href'] for tag in cell_tags]
-                picture_urls = [
-                    re.search(r'url\((.+)\)',
-                              tag.find('span')['style']).groups()[0]
-                    for tag in cell_tags
-                ]
-
-                assert len(destination_urls) == 3
-                assert len(picture_urls) == 3
-                key = ', '.join(picture_urls)[:250]
-
-                im1 = Image.open(BytesIO(session.get(picture_urls[0]).content))
-                im2 = Image.open(BytesIO(session.get(picture_urls[1]).content))
-                im3 = Image.open(BytesIO(session.get(picture_urls[2]).content))
-
-                dst = Image.new('RGB', (im1.width + im2.width + 9, im1.height))
-                dst.paste(im1, (0, 0))
-                dst.paste(im2, (im1.width + 9, 0))
-                dst.paste(im3, (im1.width + 9, im2.height + 9))
-
-                in_mem_file = BytesIO()
-                dst.save(in_mem_file, format="PNG")
-                in_mem_file.seek(0)
-                img_bytes = in_mem_file.read()
-
-                base64_encoded_result_bytes = base64.b64encode(img_bytes)
-                base64_encoded_result_str = base64_encoded_result_bytes.decode(
-                    'ascii')
+                picture_url = desktop_container_tag.find('source')['srcset']
 
                 banners.append({
                     'url': url,
-                    'picture': base64_encoded_result_str,
+                    'picture_url': picture_url,
                     'destination_urls': destination_urls,
-                    'key': key,
+                    'key': picture_url,
                     'position': idx + 1,
                     'section': section,
                     'subsection': subsection,
