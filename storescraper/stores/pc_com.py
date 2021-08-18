@@ -8,7 +8,8 @@ from storescraper.utils import session_with_proxy, remove_words, \
 from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
-    MOTHERBOARD, GAMING_CHAIR
+    MOTHERBOARD, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MEMORY_CARD, \
+    USB_FLASH_DRIVE, STEREO_SYSTEM
 
 
 class PcCom(Store):
@@ -29,33 +30,45 @@ class PcCom(Store):
             STORAGE_DRIVE,
             CPU_COOLER,
             MOTHERBOARD,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            VIDEO_GAME_CONSOLE,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['procesadores', PROCESSOR],
+            ['placas-madres', MOTHERBOARD],
             ['memorias-ram', RAM],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['discos-duros', STORAGE_DRIVE],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
             ['disco-duro-pc', STORAGE_DRIVE],
+            ['discos-duros/discos-duros-notebook', STORAGE_DRIVE],
             ['discos-duros/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
+            ['enfriamiento', CPU_COOLER],
+            ['almacenamiento/memoriasd', MEMORY_CARD],
+            ['almacenamiento/microsd', MEMORY_CARD],
+            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
             ['audio/audifonos-gamer', HEADPHONES],
             ['audio/audifonos-bluetooth', HEADPHONES],
             ['audio/audifonos-in-ear', HEADPHONES],
+            ['audio/parlantes-portatiles', STEREO_SYSTEM],
+            ['audio/parlantes-pc', STEREO_SYSTEM],
             ['monitores-y-accesorios/monitores', MONITOR],
             ['perifericos/mouse-alambricos', MOUSE],
             ['perifericos/mouse-inalambricos', MOUSE],
-            ['zona-gamers/mouse-gamers', MOUSE],
             ['perifericos/teclado-alambricos', KEYBOARD],
             ['perifericos/teclado-inalambricos', KEYBOARD],
-            ['zona-gamers/teclados-mecanicos', KEYBOARD],
+            ['zona-gamers/mouse-gamers', MOUSE],
             ['zona-gamers/teclados-membrana', KEYBOARD],
-            ['enfriamiento', CPU_COOLER],
-            ['placas-madres', MOTHERBOARD],
+            ['zona-gamers/teclados-mecanicos', KEYBOARD],
             ['zona-gamers/sillas-gamers', GAMING_CHAIR]
         ]
 
