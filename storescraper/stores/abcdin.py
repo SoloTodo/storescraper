@@ -274,6 +274,8 @@ class AbcDin(Store):
         if offer_price_tag:
             offer_price = Decimal(remove_words(offer_price_tag.find(
                 'span', 'price').text))
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
