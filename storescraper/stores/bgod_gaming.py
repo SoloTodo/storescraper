@@ -57,10 +57,14 @@ class BgodGaming(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock').text == 'Agotado':
+
+        if 'PREVENTA' in name.upper():
+            stock = 0
+        elif soup.find('p', 'stock').text == 'Agotado':
             stock = 0
         else:
             stock = int(soup.find('p', 'stock').text.split()[0])
+
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
