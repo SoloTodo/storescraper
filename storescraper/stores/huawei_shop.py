@@ -27,15 +27,15 @@ class HuaweiShop(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             # Notebooks
-            ['403', NOTEBOOK],
+            ['notebooks', NOTEBOOK],
             # Cells
-            ['387', CELL],
+            ['smartphones', CELL],
             # Tablets
-            ['407', TABLET],
+            ['tablets', TABLET],
             # Wearables
-            ['399', WEARABLE],
+            ['wearables', WEARABLE],
             # Headphones
-            ['391', HEADPHONES]
+            ['audio', HEADPHONES]
         ]
 
         session = session_with_proxy(extra_args)
@@ -44,24 +44,31 @@ class HuaweiShop(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            offset = 1
-            while True:
-                if offset > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://shop.huawei.com/cl/list-data-{}' \
-                              '?pageNumber={}&pageSize=9'. \
-                    format(url_extension, offset)
+            url_webpage = 'https://consumer.huawei.com/cl/offer' \
+                          '/{}/'.format(url_extension)
 
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'dataitem')
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', {
+                'card-wcm-mode': 'DISABLED'})
+            # import ipdb
+            # ipdb.set_trace()
 
-                if not product_containers:
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append('https:' + product_url.split('?')[0])
-                offset += 1
+            if not product_containers:
+                break
+            for container in product_containers:
+                try:
+                    urls_container = \
+                    json.loads(container['card-instance'])['props'][
+                        'configuration']['custom']['cardParameter'][
+                        'editModelParameter']['specialZone'][
+                        'productSets']
+                    for product_url in urls_container:
+                        product_urls.append(
+                            'https://consumer.huawei.com' + product_url['linkUrl'])
+                except:
+                    continue
+
 
         return product_urls
 
