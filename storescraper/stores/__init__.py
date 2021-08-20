@@ -219,7 +219,7 @@ from .mundo_gaming import MundoGaming
 from .musimundo import Musimundo
 from .my_box import MyBox
 from .nario_hogar import NarioHogar
-from .nat_com import NatCom
+from .natcom import Natcom
 from .next_pc import NextPc
 from .new_game import NewGame
 from .nemz import Nemz

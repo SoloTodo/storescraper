@@ -11,7 +11,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class NatCom(Store):
+class Natcom(Store):
     @classmethod
     def categories(cls):
         return [
@@ -65,7 +65,9 @@ class NatCom(Store):
             if local_category != category:
                 continue
             page = 1
-            while True:
+            local_urls = []
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://natcomchile.cl/{}/page/{}/'.format(
@@ -74,16 +76,20 @@ class NatCom(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('article', 'w-grid-item')
+
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_urls)
         return product_urls
 
     @classmethod
@@ -96,15 +102,23 @@ class NatCom(Store):
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         price_container = soup.find('p', 'price')
+
+        part_number_tag = soup.find(
+            'div', 'woocommerce-product-details__short-description').find('p')
+
+        if part_number_tag:
+            part_number = part_number_tag.text.strip()[:40]
+        else:
+            part_number = None
+
         if price_container.find('ins'):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(price_container.text))
 
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery')
-                        .findAll('img')]
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
+
         p = Product(
             name,
             cls.__name__,
@@ -117,6 +131,7 @@ class NatCom(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
         return [p]
