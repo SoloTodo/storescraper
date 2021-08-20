@@ -370,8 +370,12 @@ class Paris(Store):
             raise Exception('Invalid number of tags')
 
         picture_urls = []
-        for tag in soup.findAll('img', 'pdpMod_Mobile_GalleryImage'):
-            picture_url = tag['src'].split('?')[0]
+        pictures_tag = soup.find('ul', {'id': 'GTM_pdp_modal_zoom_mobile'})
+        if not pictures_tag:
+            pictures_tag = soup.find('div', 'box-thumbs')
+
+        for tag in pictures_tag.findAll('img'):
+            picture_url = tag['data-src'].split('?')[0]
             if '.webm' in picture_url:
                 continue
             picture_urls.append(
@@ -429,6 +433,11 @@ class Paris(Store):
         else:
             has_virtual_assistant = False
 
+        if soup.find('div', 'product-image-wrapper').find('img', {'alt': 'Productos Reacondicionados'}):
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name[:200],
             cls.__name__,
@@ -448,7 +457,8 @@ class Paris(Store):
             review_count=review_count,
             review_avg_score=review_avg_score,
             seller=seller,
-            has_virtual_assistant=has_virtual_assistant
+            has_virtual_assistant=has_virtual_assistant,
+            condition=condition
         )
 
         return [p]
