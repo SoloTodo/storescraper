@@ -1,6 +1,4 @@
-import html
 import json
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -51,24 +49,22 @@ class HuaweiShop(Store):
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('div', {
                 'card-wcm-mode': 'DISABLED'})
-            # import ipdb
-            # ipdb.set_trace()
 
             if not product_containers:
                 break
             for container in product_containers:
                 try:
                     urls_container = \
-                    json.loads(container['card-instance'])['props'][
-                        'configuration']['custom']['cardParameter'][
-                        'editModelParameter']['specialZone'][
-                        'productSets']
+                        json.loads(container['card-instance'])['props'][
+                            'configuration']['custom']['cardParameter'][
+                            'editModelParameter']['specialZone'][
+                            'productSets']
                     for product_url in urls_container:
                         product_urls.append(
-                            'https://consumer.huawei.com' + product_url['linkUrl'])
+                            'https://consumer.huawei.com' + product_url[
+                                'linkUrl'])
                 except:
                     continue
-
 
         return product_urls
 
@@ -76,32 +72,34 @@ class HuaweiShop(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        response_text = BeautifulSoup(response.text, 'html.parser').text
-        product_info = re.search(
-            r"var productInfo = transObjectAttribute\('(.*)'\)",
-            response_text
-        )
-        stock_info = re.findall(r'sbomInvInfo\["(.*)"] = (.*);',
-                                response_text)
-        stock_info = {i[0]: i[1] for i in stock_info}
-        json_info = json.loads(product_info.groups()[0])
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_id = soup.find('span', {'id': 'productId'}).text
+        query_url = 'https://itrinity-sg.c.huawei.com/eCommerce/queryPrd' \
+                    'DisplayDetailInfo?productId={}&siteCode=CL'.format(
+                        product_id)
+        product_json = json.loads(session.get(query_url).text)
+        products_price = json.loads(session.get('https://itrinity-sg.c'
+                                                '.huawei.com/eCommerce'
+                                                '/queryMinPriceAndInv'
+                                                '?productIds={}&'
+                                                'siteCode=CL'.format(
+                                                    product_id)).text
+                                    )['data']['minPriceAndInvList'][0][
+            'minPriceByColors']
         products = []
-        products_json = json_info['sbomList']
-        normal_price = Decimal(json_info['totalUnitPrice'])
-        offer_price = normal_price
-        picture_base_url = 'https://img01.huaweifile.com/sg/ms' \
-                           '/cl/pms/product/{}/group/428_428_{}'
-        for product in products_json:
-            name = html.unescape(product['name'])
+
+        for product in product_json['data']['sbomList']:
+            name = product['name']
             sku = product['sbomCode']
-            stock = int(stock_info[sku])
+            stock = -1
+            price_value = product['gbomAttrList'][0]['attrValue']
+            price = Decimal([price['unitPrice'] for price in products_price if
+                             price_value in price.values()][0])
+            picture_urls = [
+                'https://img01.huaweifile.com/sg/ms/cl/pms' + photo[
+                    'photoPath'] + '800_800_' + photo['photoName'] for photo in
+                product['groupPhotoList']]
 
-            if stock < 0:
-                stock = 0
-
-            picture_urls = [picture_base_url.format(product['gbomCode'],
-                                                    picture['photoName'])
-                            for picture in product['groupPhotoList']]
             p = Product(
                 name,
                 cls.__name__,
@@ -110,8 +108,8 @@ class HuaweiShop(Store):
                 url,
                 sku,
                 stock,
-                normal_price,
-                offer_price,
+                price,
+                price,
                 'CLP',
                 sku=sku,
                 picture_urls=picture_urls
