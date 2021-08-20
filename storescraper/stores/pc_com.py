@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -98,7 +100,7 @@ class PcCom(Store):
 
                 if not products:
                     if page == 1:
-                        raise Exception('Empty path: {}'.format(url))
+                        logging.warning('Empty path: {}'.format(url))
                     break
 
                 for product in products:

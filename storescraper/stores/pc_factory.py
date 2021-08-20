@@ -143,7 +143,7 @@ class PcFactory(Store):
                                sku)}]})
         api_response = session.post(
             'https://ed3kwid4nw-dsn.algolia.net/1/indexes/*/queries?x'
-            '-algolia-api-key=7ccd81fee7933da61bac0f76e128178b&x-algolia'
+            '-algolia-api-key=8e5bacd98938c96a0f1d8a50bd86e0cc&x-algolia'
             '-application-id=ED3KWID4NW',
             data=body)
         json_container = json.loads(api_response.text)

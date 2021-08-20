@@ -11,7 +11,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, WEARABLE
 
 
 class SpDigital(Store):
@@ -47,7 +47,8 @@ class SpDigital(Store):
             'Headphones',
             'VideoGameConsole',
             'Ups',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            WEARABLE,
         ]
 
     @classmethod
@@ -72,6 +73,8 @@ class SpDigital(Store):
              'Notebook Corporativo y Comercial', 1],
             ['474', ['Notebook'],
              'Home > Apple > Mac', 1],
+            ['559', [WEARABLE],
+             'Home > Apple > Watch', 1],
             ['556', ['Notebook'],
              'Home > Computadores y Notebooks > Notebook Gamer', 1],
             ['344', ['StereoSystem'],
