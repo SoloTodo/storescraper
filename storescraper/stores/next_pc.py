@@ -1,11 +1,10 @@
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, MOUSE, VIDEO_CARD, KEYBOARD, SOLID_STATE_DRIVE, \
-    POWER_SUPPLY, NOTEBOOK, RAM
+    POWER_SUPPLY, NOTEBOOK, RAM, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,6 +24,7 @@ class NextPc(Store):
             POWER_SUPPLY,
             NOTEBOOK,
             RAM,
+            MOTHERBOARD,
         ]
 
     @classmethod
@@ -33,9 +33,9 @@ class NextPc(Store):
             ['perifericos/headset', HEADPHONES],
             ['combos', KEYBOARD_MOUSE_COMBO],
             ['gabinetes', COMPUTER_CASE],
-            ['mouse', MOUSE],
-            ['perifericos', MOUSE],
+            ['perifericos/mouse', MOUSE],
             ['hardware/tarjetas-de-video', VIDEO_CARD],
+            ['hardware/placa-madre', MOTHERBOARD],
             ['perifericos/teclado', KEYBOARD],
             ['hardware/almacenamiento', SOLID_STATE_DRIVE],
             ['hardware/fuentes-de-poder', POWER_SUPPLY],
