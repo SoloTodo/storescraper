@@ -54,13 +54,17 @@ class NextPc(Store):
                 url_webpage = 'https://nextpc.cl/product-category/{}/page' \
                               '/{}/'.format(url_extension, page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-grid-item')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                res = session.get(url_webpage)
+
+                if res.status_code == 404:
                     break
+
+                soup = BeautifulSoup(res.text, 'html.parser')
+                product_containers = soup.findAll('div', 'product-grid-item')
+
+                if not product_containers:
+                    raise Exception('Page without products: ' + url_webpage)
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
