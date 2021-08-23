@@ -82,6 +82,10 @@ class SevenGamer(Store):
         # Append a parameter because the site tends to cache aggresively and
         # keep products "in stock" even if they are actually not available
         response = session.get(url + '?v=2')
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text[0:250]
         sku = soup.find('a', 'add-to-compare-link')['data-product_id']

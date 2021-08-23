@@ -83,7 +83,7 @@ class GGames(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
         picture_urls = ['http:' + tag['src'].split('?v')[0] for tag in
                         soup.find('div', 'product-single').
                         find('div', 'grid__item').findAll('img')
