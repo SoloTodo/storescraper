@@ -51,7 +51,8 @@ class HuaweiShop(Store):
                 'card-wcm-mode': 'DISABLED'})
 
             if not product_containers:
-                break
+                continue
+
             for container in product_containers:
                 try:
                     urls_container = \
@@ -63,7 +64,7 @@ class HuaweiShop(Store):
                         product_urls.append(
                             'https://consumer.huawei.com' + product_url[
                                 'linkUrl'])
-                except:
+                except Exception:
                     continue
 
         return product_urls
@@ -98,10 +99,12 @@ class HuaweiShop(Store):
         for product in product_json['data']['sbomList']:
             name = product['name']
             sku = product['sbomCode']
+            stock = 0
             for product_stock in json_stock['data']['inventoryReqVOs']:
                 if product_stock['skuCode'] == sku:
                     stock = product_stock['inventoryQty']
                     break
+            ean = product['gbomCode']
             price_value = product['gbomAttrList'][0]['attrValue']
             price = Decimal([price['unitPrice'] for price in products_price if
                              price_value in price.values()][0])
@@ -122,7 +125,8 @@ class HuaweiShop(Store):
                 price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                ean=ean
 
             )
             products.append(p)
