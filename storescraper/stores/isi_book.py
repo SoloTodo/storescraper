@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, COMPUTER_CASE, MOTHERBOARD, \
+    USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -32,7 +33,9 @@ class IsiBook(Store):
             'PowerSupply',
             'Ram',
             'VideoCard',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            COMPUTER_CASE,
+            MOTHERBOARD,
         ]
 
     @classmethod
@@ -40,20 +43,23 @@ class IsiBook(Store):
         category_paths = [
             ['pc-y-portatiles/notebook', 'Notebook'],
             ['pc-y-portatiles/tablet', 'Tablet'],
+            ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['impresion/multifuncionales-tinta', 'Printer'],
             ['impresion/impresoras-laser', 'Printer'],
-            ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
             ['almacenamiento/disco-duros', 'StorageDrive'],
+            ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
             ['partes-y-piezas/monitores', 'Monitor'],
             ['partes-y-piezas/pantallas', 'Monitor'],
-            ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],
+            ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
             ['partes-y-piezas/procesadores', 'Processor'],
             ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
             ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
+            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/placas-madre', MOTHERBOARD],
             ['sillas', GAMING_CHAIR],
         ]
 
