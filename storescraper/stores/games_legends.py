@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -94,12 +95,18 @@ class GamesLegends(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-header').text
-        sku_container = soup.find(
+        key_container = soup.find(
             'meta', property='og:image')['content']
-        sku = re.search(r"/(\d+)/", sku_container).group(1)
+        key = re.search(r"/(\d+)/", key_container).group(1)
 
-        if 'VENTA' in name:
+        product_json_tag = soup.find('script', {'type': 'application/ld+json'})
+        product_data = json.loads(product_json_tag.text)
+        name = product_data['name']
+        condition = product_data['itemCondition'].replace('http', 'https')
+        sku = product_data.get('sku', None)
+        part_number = product_data.get('productID', None)
+
+        if 'VENTA' in name.upper():
             # Preventa, skip
             stock = 0
         elif soup.find('div', 'form-group product-stock product-unavailable '
@@ -114,7 +121,8 @@ class GamesLegends(Store):
 
         price = Decimal(remove_words(
             soup.find('span', 'product-form-price form-price').text))
-        picture_containers = soup.find('div', 'owl-thumbs')
+        picture_containers = soup.find('div', 'product-images')
+
         if picture_containers:
             picture_urls = [tag['src'].split('?')[0] for tag in
                             picture_containers.findAll('img')]
@@ -128,12 +136,14 @@ class GamesLegends(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number,
+            condition=condition
         )
         return [p]

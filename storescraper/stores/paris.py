@@ -433,7 +433,8 @@ class Paris(Store):
         else:
             has_virtual_assistant = False
 
-        if soup.find('div', 'product-image-wrapper').find('img', {'alt': 'Productos Reacondicionados'}):
+        if soup.find('div', 'product-image-wrapper')\
+                .find('img', {'alt': 'Productos Reacondicionados'}):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'

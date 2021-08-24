@@ -6,7 +6,9 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
-    POWER_SUPPLY, SOLID_STATE_DRIVE, MOUSE
+    POWER_SUPPLY, SOLID_STATE_DRIVE, MOUSE, COMPUTER_CASE, RAM, CPU_COOLER, \
+    NOTEBOOK, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
+    USB_FLASH_DRIVE, PRINTER, MONITOR
 
 
 class Alfaomega(Store):
@@ -18,18 +20,55 @@ class Alfaomega(Store):
             VIDEO_CARD,
             POWER_SUPPLY,
             SOLID_STATE_DRIVE,
-            MOUSE
+            MOUSE,
+            COMPUTER_CASE,
+            RAM,
+            CPU_COOLER,
+            NOTEBOOK,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            PRINTER,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['procesador-2', PROCESSOR],
-            ['placa-madre', MOTHERBOARD],
-            ['tarjeta-de-video', VIDEO_CARD],
+            ['componentes-partes-y-piezas/procesador', PROCESSOR],
+            ['componentes-partes-y-piezas/placas-madres', MOTHERBOARD],
             ['disco-de-estado-solido', SOLID_STATE_DRIVE],
+            ['componentes-partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['componentes-partes-y-piezas/memorias', RAM],
+            ['componentes-partes-y-piezas/'
+             'mouse-y-teclados-componentes-partes-y-piezas', MOUSE],
+            ['componentes-partes-y-piezas/refrigeracion', CPU_COOLER],
+            ['componentes-partes-y-piezas/tarjetas-graficas', VIDEO_CARD],
+            ['computadores-y-tables/mouse-y-teclados', MOUSE],
+            ['computadores-y-tables/notebooks', NOTEBOOK],
+            ['disco-duro', STORAGE_DRIVE],
+            ['discos-duros-almacenamiento/disco-duros-para-pc', STORAGE_DRIVE],
+            ['discos-duros-almacenamiento/discos-video-vigilancia',
+             STORAGE_DRIVE],
+            ['discos-duros-almacenamiento/discos-externos',
+             EXTERNAL_STORAGE_DRIVE],
+            ['discos-duros-almacenamiento/discos-ssd', SOLID_STATE_DRIVE],
+            ['discos-duros-almacenamiento/memorias-micro-sd', MEMORY_CARD],
+            ['discos-duros-almacenamiento/pendrive', USB_FLASH_DRIVE],
             ['fuente-de-poder', POWER_SUPPLY],
+            ['gabinetes-2', COMPUTER_CASE],
+            ['impresora-hogar-y-oficina', PRINTER],
+            ['impresoras-y-suministros', PRINTER],
+            ['memorias-2', RAM],
+            ['monitores-y-proyectores/monitores', MONITOR],
             ['mouse-y-teclados-2', MOUSE],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['placa-madre', MOTHERBOARD],
+            ['placas-am4', MOTHERBOARD],
+            ['placas-intel', MOTHERBOARD],
+            ['procesador-2', PROCESSOR],
         ]
 
         product_urls = []
@@ -42,19 +81,28 @@ class Alfaomega(Store):
             if local_category != category:
                 continue
 
-            url = 'https://aopc.cl/categoria/{}/?post_type=product'\
-                .format(category_path)
-            response = session.get(url)
+            page = 1
 
-            soup = BeautifulSoup(response.text, 'html.parser')
-            products = soup.findAll('li', 'product-col')
+            while True:
+                url = 'https://aopc.cl/categoria/{}/page/{}'\
+                    .format(category_path, page)
+                print(url)
+                response = session.get(url)
 
-            if not products:
-                raise Exception('Empty path: {}'.format(url))
+                if response.status_code == 404:
+                    break
 
-            for product in products:
-                product_url = product.find('a')['href']
-                product_urls.append(product_url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                products = soup.findAll('li', 'product-col')
+
+                if not products:
+                    break
+
+                for product in products:
+                    product_url = product.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
