@@ -3,6 +3,7 @@ import logging
 import re
 from decimal import Decimal
 
+import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
@@ -95,16 +96,22 @@ class GamesLegends(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'page-header').text
         key_container = soup.find(
             'meta', property='og:image')['content']
         key = re.search(r"/(\d+)/", key_container).group(1)
 
-        product_json_tag = soup.find('script', {'type': 'application/ld+json'})
-        product_data = json.loads(product_json_tag.text)
-        name = product_data['name']
-        condition = product_data['itemCondition'].replace('http', 'https')
-        sku = product_data.get('sku', None)
-        part_number = product_data.get('productID', None)
+        part_number_match = re.search('"productID": "(.+)"', response.text)
+        if part_number_match:
+            part_number = part_number_match.groups()[0]
+        else:
+            part_number = None
+
+        sku_match = re.search('"sku": "(.+)"', response.text)
+        if sku_match:
+            sku = sku_match.groups()[0]
+        else:
+            sku = None
 
         if 'VENTA' in name.upper():
             # Preventa, skip
@@ -143,7 +150,6 @@ class GamesLegends(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            part_number=part_number,
-            condition=condition
+            part_number=part_number
         )
         return [p]

@@ -1,27 +1,21 @@
 import json
 import logging
-import random
 import re
 import time
-import base64
 
 from collections import defaultdict
 from decimal import Decimal
 from bs4 import BeautifulSoup
-from PIL import Image
-from io import BytesIO
 from html import unescape
 
 from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException
 
 from storescraper.categories import GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy, CF_REQUEST_HEADERS
+from storescraper.utils import remove_words, session_with_proxy, \
+    CF_REQUEST_HEADERS
 from storescraper import banner_sections as bs
-from storescraper.utils import HeadlessChrome
 
 
 class Falabella(Store):
@@ -639,8 +633,8 @@ class Falabella(Store):
             # [bs.WASHING_MACHINES, 'Electrohogar-Lavado',
             #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
             #  'category/cat3136/Lavado?isLanding=true'],
-            [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-             'category/cat1012/TV?isLanding=true'],
+            # [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            #  'category/cat1012/TV?isLanding=true'],
             [bs.AUDIO, 'Audio', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
              'category/cat2005/Audio?isLanding=true'],
             [bs.CELLS, 'Telefonía-Celulares y Teléfonos',
@@ -760,102 +754,45 @@ class Falabella(Store):
                         'type': subsection_type
                     })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                with HeadlessChrome(images_enabled=True, proxy=proxy,
-                                    timeout=99, headless=True) as driver:
-                    driver.set_window_size(1920, 1080)
+                session = session_with_proxy(extra_args)
+                session.headers['User-Agent'] = CF_REQUEST_HEADERS[
+                    'User-Agent']
+                soup = BeautifulSoup(session.get(url, timeout=30).text,
+                                     'html.parser')
+                next_data = json.loads(soup.find(
+                    'script', {'id': '__NEXT_DATA__'}).text)
 
-                    endpoint_url = url + '&v=' + str(random.randint(1, 1000))
-                    print(endpoint_url)
-                    driver.get(endpoint_url)
-                    pips_container = driver.find_elements_by_class_name(
-                        'fb-hero-carousel__pips')
+                for container in \
+                        next_data['props']['pageProps']['page']['containers']:
+                    if container['key'] == 'main-right':
+                        showcase_container = container
+                        break
+                else:
+                    raise Exception('No showcase container found')
 
-                    pictures = []
+                slides = showcase_container['components'][0]['data']['slides']
 
-                    if pips_container:
-                        pips_container = pips_container[0]
-                        driver.execute_script(
-                            "arguments[0].setAttribute('style', "
-                            "'display:block !important;');", pips_container)
-                        elements = driver.find_element_by_class_name(
-                            'fb-hero-carousel__pips') \
-                            .find_elements_by_class_name(
-                            'fb-hero-carousel__pips__pip')
-
-                        # TV page has empty banners for some reaseon with
-
-                        if not elements[0].is_displayed():
-                            image_url = Image.open(
-                                BytesIO(driver.get_screenshot_as_png()))
-                            image_url = image_url.crop((0, 187, 1920, 769))
-                            buffered = BytesIO()
-                            image_url.save(buffered, format='PNG')
-                            pictures.append(
-                                base64.b64encode(buffered.getvalue()))
-                        else:
-                            for element in elements:
-                                element.click()
-                                time.sleep(2)
-                                image_url = Image.open(
-                                    BytesIO(driver.get_screenshot_as_png()))
-                                image_url = image_url.crop((0, 187, 1920, 769))
-                                buffered = BytesIO()
-                                image_url.save(buffered, format='PNG')
-                                pictures.append(
-                                    base64.b64encode(buffered.getvalue()))
+                for idx, slide in enumerate(slides):
+                    main_url = slide.get('mainUrl', None)
+                    if main_url:
+                        destination_urls = [main_url]
+                    elif slide['type'] == 'background_image_only':
+                        destination_urls = []
                     else:
-                        # The page only has one banner slide
+                        destination_urls = list(
+                            {slide['urlLeft'], slide['urlRight']})
+                    picture_url = slide['imgBackgroundDesktopUrl']
 
-                        image_url = Image.open(
-                            BytesIO(driver.get_screenshot_as_png()))
-                        image_url = image_url.crop((0, 187, 1920, 769))
-                        buffered = BytesIO()
-                        image_url.save(buffered, format='PNG')
-                        pictures.append(
-                            base64.b64encode(buffered.getvalue()))
-
-                    soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    images_div = soup.findAll('div', 'fb-hero-carousel-slide')
-                    images_article = soup.findAll('article',
-                                                  'fb-hero-carousel-slide')
-                    images_module = soup.findAll('div',
-                                                 'hero fb-module-wrapper')
-
-                    images = images_div + images_article + images_module
-                    images = filter(lambda x: x.find('picture'), images)
-
-                    if not images:
-                        continue
-
-                    # if elements[0].is_displayed():
-                    #     assert len(images) == len(pictures)
-
-                    for index, image_url in enumerate(images):
-                        picture_array = image_url.findAll(
-                            'picture')[-1].findAll('source')
-                        destination_urls = [d['href'] for d in
-                                            image_url.findAll('a')]
-                        destination_urls = list(set(destination_urls))
-
-                        for picture in picture_array:
-                            key = picture['srcset'].split(' ')[0]
-
-                            if 'webp' not in key:
-                                banners.append({
-                                    'url': url,
-                                    'picture': pictures[index],
-                                    'destination_urls': destination_urls,
-                                    'key': key,
-                                    'position': index + 1,
-                                    'section': section,
-                                    'subsection': subsection,
-                                    'type': subsection_type
-                                })
-                                break
-                        else:
-                            raise Exception(
-                                'No valid banners found for {} in position '
-                                '{}'.format(url, index + 1))
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': idx + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = session_with_proxy(extra_args)
                 session.headers['User-Agent'] = CF_REQUEST_HEADERS[
