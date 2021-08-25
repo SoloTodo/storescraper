@@ -162,6 +162,8 @@ class Ripley(Store):
              'Tecno > PlayStation > Consolas', 1],
             ['tecno/nintendo/consolas', ['VideoGameConsole'],
              'Tecno > Nintendo > Consolas', 1],
+            ['tecno/xbox/consolas', ['VideoGameConsole'],
+             'Tecno > Xbox > Consolas', 1],
             ['electro/climatizacion/aire-acondicionado',
              ['AirConditioner'],
              'Electro > Climatización > Ventiladores y aire acondicionado', 1],

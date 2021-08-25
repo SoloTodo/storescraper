@@ -265,6 +265,7 @@ from .pro_gamer_afta import ProGamerAfta
 from .pro_movil import ProMovil
 from .proglobal import Proglobal
 from .raenco import Raenco
+from .refresh_store import RefreshStore
 from .reif_store import ReifStore
 from .rhona import Rhona
 from .ribeiro import Ribeiro
