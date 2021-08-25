@@ -4,13 +4,13 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import STORAGE_DRIVE, USB_FLASH_DRIVE, \
+from storescraper.categories import STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
-    GAMING_CHAIR, KEYBOARD_MOUSE_COMBO, POWER_SUPPLY, COMPUTER_CASE, \
+    GAMING_CHAIR, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class TecnoStoreChile(Store):
@@ -30,6 +30,7 @@ class TecnoStoreChile(Store):
             CPU_COOLER,
             PROCESSOR,
             MONITOR,
+            VIDEO_CARD
         ]
 
     @classmethod
@@ -49,6 +50,7 @@ class TecnoStoreChile(Store):
             ['hardware/memoria-ram', RAM],
             ['hardware/refrigeracion-y-ventilacion', CPU_COOLER],
             ['hardware/procesadores', PROCESSOR],
+            ['hardware/gpu', VIDEO_CARD],
             ['monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
@@ -82,6 +84,8 @@ class TecnoStoreChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        description = html_to_markdown(
+            str(soup.find('div', 'woocommerce-Tabs-panel--description')))
 
         if soup.find('form', 'variations_form'):
             name = soup.find('h1', 'product_title').text
@@ -140,6 +144,7 @@ class TecnoStoreChile(Store):
                 offer_price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_url
+                picture_urls=picture_url,
+                description=description
             )
             return [p]
