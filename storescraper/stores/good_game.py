@@ -28,13 +28,14 @@ class GoodGame(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['588-gabinetes', COMPUTER_CASE],
+            ['594-kit-gabinetes', COMPUTER_CASE],
             ['584-fuentes-de-poder', POWER_SUPPLY],
             ['587-sistemas-de-enfriamiento', CPU_COOLER],
             ['590-tarjetas-de-video', VIDEO_CARD],
             ['586-teclados-mouse', MOUSE],
             ['585-audio-video', HEADPHONES],
             ['589-sillas-gamer', GAMING_CHAIR],
-            ['595-almacenamiento-notebooks-gamer', STORAGE_DRIVE]
+            ['595-almacenamiento', STORAGE_DRIVE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
