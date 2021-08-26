@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
     TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, USB_FLASH_DRIVE, \
-    STEREO_SYSTEM, WEARABLE, GAMING_CHAIR
+    STEREO_SYSTEM, WEARABLE, GAMING_CHAIR, CPU_COOLER, KEYBOARD_MOUSE_COMBO, \
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -34,13 +35,19 @@ class Todoclick(Store):
             USB_FLASH_DRIVE,
             STEREO_SYSTEM,
             WEARABLE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            CPU_COOLER,
+            KEYBOARD_MOUSE_COMBO,
+            EXTERNAL_STORAGE_DRIVE,
+            STORAGE_DRIVE,
+            MEMORY_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['notebooks', NOTEBOOK],
+            ['notebook-gamer', NOTEBOOK],
             ['all-in-one', ALL_IN_ONE],
             ['disco-duro', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
@@ -56,16 +63,19 @@ class Todoclick(Store):
             ['mouse-gamer', MOUSE],
             ['teclados', KEYBOARD],
             ['teclado-gamer', KEYBOARD],
+            ['kit-gamer', KEYBOARD_MOUSE_COMBO],
             ['monitores', MONITOR],
-            ['impresoras-laser-impresoras', PRINTER],
-            ['impresoras-ink-jet-impresoras', PRINTER],
-            ['multifuncional-laser', PRINTER],
-            ['multifuncional-ink-jet', PRINTER],
+            ['monitor-gamer', MONITOR],
+            ['impresoras', PRINTER],
             ['pendrive', USB_FLASH_DRIVE],
             ['parlantes', STEREO_SYSTEM],
             ['soundbar', STEREO_SYSTEM],
             ['smartwatch', WEARABLE],
-            ['gamer/sillas-gaming', GAMING_CHAIR]
+            ['sillas-gaming', GAMING_CHAIR],
+            ['ventilador', CPU_COOLER],
+            ['externo', EXTERNAL_STORAGE_DRIVE],
+            ['disco-duro-interno', STORAGE_DRIVE],
+            ['tarjeta-memoria', MEMORY_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

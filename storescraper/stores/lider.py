@@ -219,7 +219,6 @@ class Lider(Store):
             'discount_asc',
             'discount_desc',
         ]
-        pagination_choices = [500, 600, 700, 800, 900, 1000, 1100, 1200]
         query_url = 'https://buysmart-bff-production.lider.cl/' \
                     'buysmart-bff/category'
 
@@ -235,32 +234,30 @@ class Lider(Store):
 
             for sorter in sorters:
                 print(sorter)
-                for pagination_choice in pagination_choices:
-                    print(pagination_choice)
-                    query_params = {
-                        "categories": category_id,
-                        "page": 1,
-                        "facets": [],
-                        "sortBy": sorter,
-                        "hitsPerPage": pagination_choice
-                    }
+                query_params = {
+                    "categories": category_id,
+                    "page": 1,
+                    "facets": [],
+                    "sortBy": sorter,
+                    "hitsPerPage": 1000
+                }
 
-                    session.headers['content-type'] = 'application/json'
-                    response = session.post(query_url, json.dumps(query_params))
-                    data = json.loads(response.text)
+                session.headers['content-type'] = 'application/json'
+                response = session.post(query_url, json.dumps(query_params))
+                data = json.loads(response.text)
 
-                    if not data['products']:
-                        logging.warning('Empty category: ' + category_id)
+                if not data['products']:
+                    logging.warning('Empty category: ' + category_id)
 
-                    for idx, entry in enumerate(data['products']):
-                        product_url = 'https://www.lider.cl/product/sku/{}'\
-                            .format(entry['sku'])
-                        if product_url not in local_product_entries:
-                            local_product_entries[product_url] = {
-                                'category_weight': category_weight,
-                                'section_name': section_name,
-                                'value': idx + 1
-                            }
+                for idx, entry in enumerate(data['products']):
+                    product_url = 'https://www.lider.cl/product/sku/{}'\
+                        .format(entry['sku'])
+                    if product_url not in local_product_entries:
+                        local_product_entries[product_url] = {
+                            'category_weight': category_weight,
+                            'section_name': section_name,
+                            'value': idx + 1
+                        }
 
             for product_url, product_entry in local_product_entries.items():
                 product_entries[product_url].append(product_entry)
@@ -310,7 +307,16 @@ class Lider(Store):
         response = session.get(query_url)
 
         if response.status_code in [500]:
-            return []
+            parsed_extra_args = extra_args or {}
+            retries = parsed_extra_args.pop('retries', 5)
+
+            if retries:
+                time.sleep(5)
+                parsed_extra_args['retries'] = retries - 1
+                return cls.products_for_url(
+                    url, category=category, extra_args=parsed_extra_args)
+            else:
+                return []
 
         entry = json.loads(response.text)
 
