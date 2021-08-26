@@ -59,8 +59,13 @@ class RefreshStore(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://refreshstore.cl/{}&sort=alf1' \
-                              '&page={}'.format(url_extension, page)
+                if '?' in url_extension:
+                    separator = '&'
+                else:
+                    separator = '?'
+
+                url_webpage = 'https://refreshstore.cl/{}{}sort=alf1' \
+                              '&page={}'.format(url_extension, separator, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')

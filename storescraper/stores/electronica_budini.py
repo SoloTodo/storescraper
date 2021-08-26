@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, \
     PROCESSOR, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, \
-    EXTERNAL_STORAGE_DRIVE, TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD
+    EXTERNAL_STORAGE_DRIVE, TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,6 +36,7 @@ class ElectronicaBudini(Store):
             TABLET,
             KEYBOARD,
             KEYBOARD_MOUSE_COMBO,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -61,6 +63,7 @@ class ElectronicaBudini(Store):
             ['teclado-gamer', KEYBOARD],
             ['todo-en-uno-aio', ALL_IN_ONE],
             ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)

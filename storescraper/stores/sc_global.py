@@ -34,6 +34,7 @@ class ScGlobal(Store):
         category_paths = [
             ['81', NOTEBOOK],  # Zbook
             ['83', NOTEBOOK],  # Notebook
+            ['10', NOTEBOOK],  # Notebook
             ['84', PRINTER],  # Plotter
             ['85', UPS],  # UPS
             ['22', ALL_IN_ONE],  # All In One
