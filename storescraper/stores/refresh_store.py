@@ -42,11 +42,11 @@ class RefreshStore(Store):
             ['almacenamiento?byType=19', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
-            ['memorias-ram', RAM],
+            ['ram', RAM],
             ['monitores', MONITOR],
             ['placas-madres', MOTHERBOARD],
             ['procesadores', PROCESSOR],
-            ['refrigeracion', CPU_COOLER],
+            ['Cooler-Cpu', CPU_COOLER],
             ['tarjetas-de-video', VIDEO_CARD]
         ]
         session = session_with_proxy(extra_args)
