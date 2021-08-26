@@ -56,6 +56,7 @@ class ElectronicaBudini(Store):
             ['procesadores', PROCESSOR],
             ['silla-gamer', GAMING_CHAIR],
             ['tablet-huawei', TABLET],
+            ['tablet-samsung', TABLET],
             ['tarjetas-de-video', VIDEO_CARD],
             ['teclado-gamer', KEYBOARD],
             ['todo-en-uno-aio', ALL_IN_ONE],

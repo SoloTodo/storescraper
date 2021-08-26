@@ -665,36 +665,30 @@ class Ripley(Store):
                     logging.warning('Deactivated category: ' + url)
                     continue
 
-                picture_container = soup.find('section', 'catalog-top-banner')
+                banners_container = soup.find('section', 'catalog-top-banner')
 
-                if not picture_container:
+                if not banners_container:
                     print('No banners for: ' + url)
                     continue
 
-                picture_url = picture_container.find('img')
+                for idx, banner_link in enumerate(banners_container.findAll('a')):
+                    picture_url = banner_link.find('img')
 
-                if not picture_url:
-                    continue
+                    if not picture_url:
+                        continue
 
-                destination = soup.find(
-                    'section', 'catalog-top-banner').find('a')
-                destination_urls = []
-
-                if destination:
-                    destination_urls = [destination['href']]
-
-                banners.append({
-                    'url': url,
-                    'picture_url': picture_url.get('src') or
-                    picture_url.get('data-src'),
-                    'destination_urls': destination_urls,
-                    'key': picture_url.get('src') or
-                    picture_url.get('data-src'),
-                    'position': 1,
-                    'section': section,
-                    'subsection': subsection,
-                    'type': subsection_type
-                })
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url.get('src') or
+                        picture_url.get('data-src'),
+                        'destination_urls': [banner_link['href']],
+                        'key': picture_url.get('src') or
+                        picture_url.get('data-src'),
+                        'position': idx + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
             else:
                 raise Exception('Invalid subsection type')
 

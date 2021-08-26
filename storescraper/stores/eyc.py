@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, TABLET, STORAGE_DRIVE, RAM, \
-    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD
+    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -24,6 +24,7 @@ class Eyc(Store):
             ALL_IN_ONE,
             MONITOR,
             MOTHERBOARD,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -42,6 +43,7 @@ class Eyc(Store):
             ['342-monitores', MONITOR],
             ['344-placas-madre', MOTHERBOARD],
             ['345-procesadores', PROCESSOR],
+            ['346-fuentes-de-poder', POWER_SUPPLY],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

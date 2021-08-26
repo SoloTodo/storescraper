@@ -210,38 +210,60 @@ class Lider(Store):
         session = session_with_proxy(extra_args)
         product_entries = defaultdict(lambda: [])
 
+        # It's important that the empty one goes first to ensure that the
+        # positioning information is preferable based on the default ordering
+        sorters = [
+            '',
+            'price_asc',
+            'price_desc',
+            'discount_asc',
+            'discount_desc',
+        ]
+        pagination_choices = [500, 600, 700, 800, 900, 1000, 1100, 1200]
+        query_url = 'https://buysmart-bff-production.lider.cl/' \
+                    'buysmart-bff/category'
+
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
                 continue
 
-            query_url = 'https://buysmart-bff-production.lider.cl/' \
-                        'buysmart-bff/category'
+            print(category_id)
 
-            query_params = {
-                "categories": category_id,
-                "page": 1,
-                "facets": [],
-                "sortBy": "",
-                "hitsPerPage": 1000
-            }
+            local_product_entries = {}
 
-            session.headers['content-type'] = 'application/json'
-            response = session.post(query_url, json.dumps(query_params))
-            data = json.loads(response.text)
+            for sorter in sorters:
+                print(sorter)
+                for pagination_choice in pagination_choices:
+                    print(pagination_choice)
+                    query_params = {
+                        "categories": category_id,
+                        "page": 1,
+                        "facets": [],
+                        "sortBy": sorter,
+                        "hitsPerPage": pagination_choice
+                    }
 
-            if not data['products']:
-                logging.warning('Empty category: ' + category_id)
+                    session.headers['content-type'] = 'application/json'
+                    response = session.post(query_url, json.dumps(query_params))
+                    data = json.loads(response.text)
 
-            for idx, entry in enumerate(data['products']):
-                product_url = 'https://www.lider.cl/product/sku/{}'\
-                    .format(entry['sku'])
-                product_entries[product_url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+                    if not data['products']:
+                        logging.warning('Empty category: ' + category_id)
+
+                    for idx, entry in enumerate(data['products']):
+                        product_url = 'https://www.lider.cl/product/sku/{}'\
+                            .format(entry['sku'])
+                        if product_url not in local_product_entries:
+                            local_product_entries[product_url] = {
+                                'category_weight': category_weight,
+                                'section_name': section_name,
+                                'value': idx + 1
+                            }
+
+            for product_url, product_entry in local_product_entries.items():
+                product_entries[product_url].append(product_entry)
 
         return product_entries
 

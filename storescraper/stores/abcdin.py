@@ -52,13 +52,11 @@ class AbcDin(Store):
             ['electro/tv-y-video', [TELEVISION], 'Electro / TV y Video', 0],
             ['electro/tv-y-video/televisores-led', [TELEVISION],
              'Electro / TV y Video / Televisores LED', 1],
-            ['electro/tv-y-video/televisores', [TELEVISION],
-             'Electro / TV y Video / Televisores', 1],
             ['electro/audio', [STEREO_SYSTEM], 'Electro / Audio', 0],
             ['electro/audio/parlantes-portatiles', [STEREO_SYSTEM],
              'Electro / Audio / Parlantes Portátiles', 1],
-            ['electro/audio/audio-profesional', [STEREO_SYSTEM],
-             'Electro / Audio / Audio Profesional', 1],
+            # ['electro/audio/audio-profesional', [STEREO_SYSTEM],
+            #  'Electro / Audio / Audio Profesional', 1],
             ['electro/audio/minicomponentes', [STEREO_SYSTEM],
              'Electro / Audio / Minicomponentes', 1],
             ['electro/audio/microcomponentes', [STEREO_SYSTEM],
@@ -71,8 +69,8 @@ class AbcDin(Store):
              'Electro / Audio / Reproductores de Música', 1],
             ['electro/audio/tornamesas', [STEREO_SYSTEM],
              'Electro / Audio / Tornamesas', 1],
-            ['electro/audio/radio-y-parlantes-de-auto', [STEREO_SYSTEM],
-             'Electro / Audio / Radio Y Parlantes De Auto', 0],
+            # ['electro/audio/radio-y-parlantes-de-auto', [STEREO_SYSTEM],
+            #  'Electro / Audio / Radio Y Parlantes De Auto', 0],
             ['electro/audifonos', [HEADPHONES], 'Electro / Audífonos', 1],
             ['electro/audifonos/in-ear', [HEADPHONES],
              'Electro / Audífonos / In Ear', 1],
@@ -150,7 +148,6 @@ class AbcDin(Store):
         ]
 
         discovered_entries = defaultdict(lambda: [])
-
         session = session_with_proxy(extra_args)
 
         for category_id, local_categories, section_name, category_weight in \
@@ -175,9 +172,7 @@ class AbcDin(Store):
                                           'products list items product-items')
 
                 if not products_grid:
-                    logging.warning('Empty section: {} - {}'.format(
-                        category, category_id))
-                    break
+                    raise Exception('Empty section: {}'.format(url))
 
                 product_cells = products_grid.findAll('li')
 
