@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import PROCESSOR, VIDEO_CARD, RAM
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class ShonenTienda(Store):
@@ -21,14 +22,7 @@ class ShonenTienda(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['ryzen-series-5000', PROCESSOR],
-            ['athlon-con-graficos-vega', PROCESSOR],
-            ['ryzen-4000-con-graficos-vega', PROCESSOR],
-            ['ryzen-3000', PROCESSOR],
-            ['ryzen-3000-con-graficos-vega', PROCESSOR],
-            ['frontpage', PROCESSOR],
-            ['geforce-gtx-1600', VIDEO_CARD],
-            ['memorias-ram', RAM]
+            ['all', PROCESSOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -63,19 +57,28 @@ class ShonenTienda(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        condition = 'https://schema.org/NewCondition'
-        if category == PROCESSOR:
+        description = html_to_markdown(
+            str(soup.find('div', 'product-single__description')))
+
+        if 'SOLO CPU' in description.upper():
             condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         name = soup.find('h1', 'product-single__title').text
         sku = soup.find('form', 'product-form')['id'].split('_')[-1]
-        part_number = None
+
         if len(soup.find('span', 'variant-sku').text.split()) > 1:
             part_number = soup.find('span', 'variant-sku').text.split()[1]
+        else:
+            part_number = None
+
         if soup.find('div', {'id': 'variant-inventory'}):
             stock = int(soup.find('div', {
                 'id': 'variant-inventory'}).text.strip().split()[1])
         else:
             stock = 0
+
         price = Decimal(
             remove_words(soup.find('span', 'price-item').text.strip()))
         picture_urls = ['https:'+tag['src'].split('?v')[0] for tag in
@@ -95,6 +98,7 @@ class ShonenTienda(Store):
             sku=sku,
             part_number=part_number,
             picture_urls=picture_urls,
-            condition=condition
+            condition=condition,
+            description=description
         )
         return [p]
