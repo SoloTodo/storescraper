@@ -118,6 +118,7 @@ class Sodimac(Store):
 
             page = 1
             current_position = 1
+            print(category_id)
 
             while True:
                 url = 'https://www.sodimac.cl/s/search/v1/socl/category/' \
@@ -126,6 +127,11 @@ class Sodimac(Store):
                     .format(page, category_id)
 
                 response = session.get(url, timeout=30)
+
+                # Page 3 of televisores LED returns 500 for some reason
+                if response.status_code == 500:
+                    break
+
                 data = json.loads(response.text)['data']
 
                 products = data['results']

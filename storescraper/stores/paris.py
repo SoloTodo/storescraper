@@ -436,6 +436,8 @@ class Paris(Store):
         if soup.find('div', 'product-image-wrapper')\
                 .find('img', {'alt': 'Productos Reacondicionados'}):
             condition = 'https://schema.org/RefurbishedCondition'
+        elif 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 
