@@ -25,7 +25,7 @@ class Valrod(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['perifericos', HEADPHONES],
-            ['sillas-gamer-3', GAMING_CHAIR],
+            ['sillas-gamer', GAMING_CHAIR],
             ['accesorios', COMPUTER_CASE],
             ['monitores', MONITOR],
             ['gabinetes', COMPUTER_CASE],
