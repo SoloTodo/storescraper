@@ -2,6 +2,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
+    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -11,67 +13,40 @@ class Tecnofacil(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'OpticalDiskPlayer',
-            'Stove',
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('tv-y-video', 'Television'),
-            ('audio', 'StereoSystem'),
-            ('celulares', 'Cell'),
-            ('linea-blanca', 'Refrigerator'),
-            ('electrodomesticos', 'Oven')
+        url_extensions = [
+            TELEVISION
         ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        lg_product_urls = []
-
-        for category_path, local_category in category_filters:
+        for local_category in url_extensions:
             if local_category != category:
                 continue
-
             page = 1
-            done = False
-
             while True:
                 if page >= 25:
                     raise Exception('Page overflow')
 
-                url = 'https://www.tecnofacil.com.gt/{}?limit=30&p={}' \
-                    .format(category_path, page)
+                url = 'https://www.tecnofacil.com.gt/catalogsearch/result' \
+                      '/index/?limit=30&marca=7&p={}&q=LG'.format(page)
                 print(url)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                print(url)
+                response = session.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('li', 'col-sm-6')
 
-                for container in soup.findAll('div', 'item-inner'):
-                    logo = container.find('div', 'brand').find('img')
+                for container in product_containers:
                     product_url = container.find('a')['href']
-
                     if product_url in product_urls:
-                        done = True
-                        break
-
-                    if logo and logo['src'] == 'https://www.tecnofacil.com' \
-                                               '.gt/media/marcas/lg.jpg':
-                        lg_product_urls.append(product_url)
+                        return product_urls
                     product_urls.append(product_url)
-
-                if done:
-                    break
-
                 page += 1
 
-        return lg_product_urls
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -89,8 +64,8 @@ class Tecnofacil(Store):
                                 .find('h1').text.strip(), sku)
         if soup.find('p', 'availability') and soup.find('p',
                                                         'availability').find(
-                'span').text == '✔' or soup.find('div',
-                                                 'availability-in-store'):
+            'span').text == '✔' or soup.find('div',
+                                             'availability-in-store'):
             stock = -1
         else:
             stock = 0
