@@ -671,7 +671,8 @@ class Ripley(Store):
                     print('No banners for: ' + url)
                     continue
 
-                for idx, banner_link in enumerate(banners_container.findAll('a')):
+                for idx, banner_link in enumerate(
+                        banners_container.findAll('a')):
                     picture_url = banner_link.find('img')
 
                     if not picture_url:

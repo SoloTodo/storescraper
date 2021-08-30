@@ -65,9 +65,8 @@ class PlazaLama(Store):
             stock = -1
         else:
             stock = 0
-        price = Decimal(
-            soup.find('span', 'price').text.strip().split()[-1].replace(','
-                                                                        , ''))
+        price = Decimal(soup.find('span', 'price').text.strip()
+                        .split()[-1].replace(',', ''))
         picture_urls = ['https:' + tag['data-src'].split('_130')[0] + '.jpg'
                         for
                         tag in
