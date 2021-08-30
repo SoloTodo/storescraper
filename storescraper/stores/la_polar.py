@@ -240,8 +240,6 @@ class LaPolar(Store):
         else:
             offer_price = normal_price = highlighted_price
 
-        stock = -1
-
         description = html_to_markdown(
             str(soup.find('div', 'description-wrapper')))
 
@@ -324,6 +322,12 @@ class LaPolar(Store):
                                             condition=condition))
 
             return products
+        else:
+            add_to_cart_button = soup.find('button', 'add-to-cart')
+            if 'AGOTADO' in add_to_cart_button.text.upper():
+                stock = 0
+            else:
+                stock = -1
 
         p = Product(
             name,
