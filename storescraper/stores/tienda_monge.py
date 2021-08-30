@@ -17,22 +17,15 @@ class TiendaMonge(Store):
     @classmethod
     def categories(cls):
         return [
-            CELL,
-            TELEVISION,
-            OPTICAL_DISK_PLAYER,
-            AIR_CONDITIONER,
-            STOVE,
-            OVEN,
-            WASHING_MACHINE,
-            REFRIGERATOR,
-            STEREO_SYSTEM,
-            MONITOR,
-            HEADPHONES
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # KEEPS ONLY LG PRODUCTS
+
+        if category != TELEVISION:
+            return []
 
         endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
                    'x-algolia-agent=Algolia%20for%20vanilla%20' \
@@ -42,70 +35,23 @@ class TiendaMonge(Store):
                    'golia-api-key=MjQyMGI4YWYzNWJkNzg5OTIxMmRkYTljY2ZmNDkyOD' \
                    'NmMmZmNGU1NWRkZWU3NGE3MjNhYmNmZWZhOWFmNmQ0M3RhZ0ZpbHRlcnM9'
 
-        category_filters = [
-            ('["categories.level2:Productos /// Celulares y Tablets '
-             '/// Celulares"]',
-             CELL),
-            ('["categories.level2:Productos /// TV y Video /// Pantallas"]',
-             TELEVISION),
-            ('["categories.level2:Productos /// TV y Video /// '
-             'Reproductores de video y proyectores"]',
-             OPTICAL_DISK_PLAYER),
-            ('["categories.level2:Productos /// Hogar /// '
-             'Aires acondicionados"]',
-             AIR_CONDITIONER),
-            ('["categories.level2:Productos /// Hogar /// Cocinas"]',
-             STOVE),
-            ('["categories.level2:Productos /// Hogar /// '
-             'Hornos y extractores"]',
-             OVEN),
-            ('["categories.level2:Productos /// Hogar /// '
-             'Lavadoras y secadoras"]',
-             WASHING_MACHINE),
-            ('["categories.level2:Productos /// Hogar /// Refrigeradoras"]',
-             REFRIGERATOR),
-            ('["categories.level2:Productos /// Audio /// Minicomponentes"]',
-             STEREO_SYSTEM),
-            ('["categories.level2:Productos /// Audio /// Parlantes"]',
-             STEREO_SYSTEM),
-            ('["categories.level2:Productos /// Audio /// '
-             'Sistemas de audio y accesorios"]',
-             STEREO_SYSTEM),
-            ('["categories.level2:Productos /// Computadoras /// '
-             'De Escritorio"]',
-             MONITOR),
-            ('["categories.level2:Productos /// Audio /// Audífonos"]',
-             HEADPHONES),
-        ]
-
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/json'
         product_urls = []
 
-        for category_id, local_category in category_filters:
-            if local_category != category:
-                continue
+        payload_params = 'hitsPerPage=1000&facetFilters=["marca:LG"]'
+        payload = {
+            "requests": [
+                {"indexName": "monge_prod_default_products",
+                 "params": payload_params}
+            ]
+        }
 
-            payload_params = 'hitsPerPage=1000&page=0&facetFilters={}'.format(
-                urllib.parse.quote(category_id).replace('/', '%2F')
-            )
+        response = session.post(endpoint, data=json.dumps(payload))
+        products_json = json.loads(response.text)['results'][0]['hits']
 
-            payload = {
-                "requests": [
-                    {"indexName": "monge_prod_default_products",
-                     "params": payload_params}
-                ]
-            }
-
-            response = session.post(endpoint, data=json.dumps(payload))
-            products_json = json.loads(response.text)['results'][0]['hits']
-
-            if not products_json:
-                logging.warning('Empty category: ' + category_id)
-
-            for product in products_json:
-                if product.get('marca', None) == 'LG':
-                    product_urls.append(product['url'])
+        for product in products_json:
+            product_urls.append(product['url'])
 
         return product_urls
 
