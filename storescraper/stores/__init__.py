@@ -267,6 +267,7 @@ from .proglobal import Proglobal
 from .raenco import Raenco
 from .refresh_store import RefreshStore
 from .reif_store import ReifStore
+from .reuse import Reuse
 from .rhona import Rhona
 from .ribeiro import Ribeiro
 from .ripley import Ripley
