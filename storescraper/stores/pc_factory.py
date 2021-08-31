@@ -141,7 +141,7 @@ class PcFactory(Store):
             ['liq-smart', WEARABLE],
             ['liq-impresoras', PRINTER],
         ]
-        product_urls = []
+
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue

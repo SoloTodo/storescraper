@@ -109,13 +109,13 @@ class CrazyGamesenChile(Store):
 
             for sku_data in product_data['productItems']:
                 variation_key = sku_data['id']
-                variation_sku = sku_data['sku']
+                variation_sku = sku_data['sku'] or None
                 variation_stock = sku_data['inventory']['quantity']
                 variation_price = Decimal(sku_data['price'])
                 assert len(sku_data['optionsSelections']) == 1
                 variation_option_key = sku_data['optionsSelections'][0]
                 variation_option = variation_options[variation_option_key]
-                variation_name = '{} ({})'.format(
+                variation_name = '{} - ({})'.format(
                     base_name, variation_option['key'])
                 picture_urls = [x['fullUrl'] for x in
                                 variation_option['linkedMediaItems'] or []]

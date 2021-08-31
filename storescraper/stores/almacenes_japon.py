@@ -59,11 +59,15 @@ class AlmacenesJapon(Store):
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-detail-name').text.strip()
-        sku = soup.find('span', 'item-code').text.strip()
-        stock = 0
+        sku = soup.find('meta', {'property': 'product:retailer_item_id'})[
+            'content']
+
         if soup.find('link', {'itemprop': 'availability'})['href'] \
                 == 'https://schema.org/InStock':
             stock = -1
+        else:
+            stock = 0
+
         price = Decimal(soup.find('h4', {'itemprop': 'price'}).
                         text.replace('$', '').replace('.', '').
                         replace(',', '.').strip())
