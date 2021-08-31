@@ -118,6 +118,11 @@ class Microplay(Store):
                         soup.find('div', 'owl-carousel').findAll(
                             'a', 'fancybox')]
 
+        if soup.find('span', 'fecha-lanzamiento'):
+            stock = 0
+        else:
+            stock = -1
+
         p = Product(
             name,
             cls.__name__,
@@ -125,7 +130,7 @@ class Microplay(Store):
             url,
             url,
             sku,
-            -1,
+            stock,
             price,
             price,
             'CLP',

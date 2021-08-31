@@ -9,7 +9,7 @@ from storescraper.categories import HEADPHONES, COMPUTER_CASE, \
     POWER_SUPPLY, MOTHERBOARD, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class CrazyGamesenChile(Store):
@@ -92,71 +92,70 @@ class CrazyGamesenChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-        name = json_container['name']
-        if json_container['Offers'][
-                'Availability'] == 'https://schema.org/OutOfStock':
-            stock = 0
-        else:
-            stock = -1
-        price = Decimal(json_container['Offers']['price'])
-        picture_urls = [tag['src'] for tag in
-                        soup.findAll('img',
-                                     {'data-hook': 'thumbnail-image'})]
-        if not picture_urls:
-            picture_urls = [json_container['image']['contentUrl']]
         sku_container = json.loads(
             soup.find('script', {'id': 'wix-warmup-data'}).text)
         sku_key_1 = list(sku_container['appsWarmupData'].keys())[0]
         sku_key_2 = list(sku_container['appsWarmupData'][sku_key_1].keys())[0]
-        sku = sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
-            'product']['id']
-        if sku_container['appsWarmupData'][sku_key_1][sku_key_2]['catalog'][
-                'product']['options']:
-            options = sku_container['appsWarmupData'][sku_key_1][sku_key_2][
-                'catalog']['product']['options'][0]['selections']
+        product_data = sku_container['appsWarmupData'][sku_key_1][
+            sku_key_2]['catalog']['product']
+        base_name = product_data['name']
+        description = html_to_markdown(product_data['description'])
+        base_picture_urls = [x['fullUrl'] for x in product_data['media']]
+        if len(product_data['productItems']) > 1:
+            assert len(product_data['options']) == 1
+            variation_options = {x['id']: x for x in product_data[
+                'options'][0]['selections']}
             products = []
-            for option in options:
-                sku_var = sku + ' - ' + str(option['id'])
-                name_var = name + ' - ' + '(' + option['description'] + ')'
 
-                price = Decimal(json_container['Offers']['price'])
-                picture_urls = [tag['src'] for tag in
-                                soup.findAll('img',
-                                             {'data-hook': 'thumbnail-image'})]
-                if not picture_urls:
-                    picture_urls = [json_container['image']['contentUrl']]
+            for sku_data in product_data['productItems']:
+                variation_key = sku_data['id']
+                variation_sku = sku_data['sku']
+                variation_stock = sku_data['inventory']['quantity']
+                variation_price = Decimal(sku_data['price'])
+                assert len(sku_data['optionsSelections']) == 1
+                variation_option_key = sku_data['optionsSelections'][0]
+                variation_option = variation_options[variation_option_key]
+                variation_name = '{} ({})'.format(
+                    base_name, variation_option['key'])
+                picture_urls = [x['fullUrl'] for x in
+                                variation_option['linkedMediaItems'] or []]
                 p = Product(
-                    name_var,
+                    variation_name,
                     cls.__name__,
                     category,
                     url,
                     url,
-                    sku_var,
-                    stock,
-                    price,
-                    price,
+                    variation_key,
+                    variation_stock,
+                    variation_price,
+                    variation_price,
                     'CLP',
-                    sku=sku,
-                    picture_urls=picture_urls
+                    sku=variation_sku,
+                    picture_urls=picture_urls or base_picture_urls,
+                    description=description
                 )
                 products.append(p)
             return products
 
         else:
+            assert len(product_data['productItems']) == 1
+            price = Decimal(product_data['price'])
+            key = product_data['id']
+            sku = product_data['sku']
+            stock = product_data['inventory']['quantity']
             p = Product(
-                name,
+                base_name,
                 cls.__name__,
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=base_picture_urls,
+                description=description
             )
             return [p]

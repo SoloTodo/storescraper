@@ -4,6 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -14,10 +15,8 @@ class Syd(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Monitor',
-            'Ram',
-            'Tablet',
+            NOTEBOOK,
+            ALL_IN_ONE
         ]
 
     @classmethod
@@ -25,11 +24,12 @@ class Syd(Store):
         url_base = 'https://syd.cl'
 
         category_paths = [
-            ['/collection/macbook-pro-13-m1-de-apple', 'Notebook'],
-            ['/collection/macbook-pro-13', 'Notebook'],
-            ['/collection/macbook-pro-16', 'Notebook'],
-            ['/collection/macbook-air', 'Notebook'],
-            ['/collection/memorias', 'Ram'],
+            ['/collection/imac-m1', ALL_IN_ONE],
+            ['/collection/imac', ALL_IN_ONE],
+            ['/collection/macbook-pro-13-m1-de-apple', NOTEBOOK],
+            ['/collection/macbook-pro-13', NOTEBOOK],
+            ['/collection/macbook-pro-16', NOTEBOOK],
+            ['/collection/macbook-air-m1', NOTEBOOK],
         ]
 
         product_urls = []

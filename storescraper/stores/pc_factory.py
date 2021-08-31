@@ -55,6 +55,9 @@ class PcFactory(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        session = session_with_proxy(extra_args)
+
+        # Productos normales
         url_extensions = [
             ['735', NOTEBOOK],
             ['334', VIDEO_CARD],
@@ -103,7 +106,6 @@ class PcFactory(Store):
             ['1026', AIR_CONDITIONER],
             ['1007', GAMING_CHAIR]
         ]
-        session = session_with_proxy(extra_args)
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -128,6 +130,35 @@ class PcFactory(Store):
                     product_urls.append(
                         'https://www.pcfactory.cl' + product_url)
                 page += 1
+
+        # Segunda seleccción
+        url_extensions = [
+            ['liq-celulares', CELL],
+            ['liq-tablets', TABLET],
+            ['liq-notebook', NOTEBOOK],
+            ['liq-aio', ALL_IN_ONE],
+            ['liq-tv', TELEVISION],
+            ['liq-smart', WEARABLE],
+            ['liq-impresoras', PRINTER],
+        ]
+        product_urls = []
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
+                continue
+            url_webpage = 'https://www.pcfactory.cl/{}'.format(url_extension)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product')
+
+            if not product_containers:
+                continue
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(
+                    'https://www.pcfactory.cl' + product_url)
+
         return product_urls
 
     @classmethod
@@ -157,6 +188,7 @@ class PcFactory(Store):
 
         if not product_json:
             return []
+
         part_number = product_json['partno']
         name = product_json['nombre']
         stock = sum(stock['stock'] for stock in product_json['stockSucursal'])
@@ -168,6 +200,12 @@ class PcFactory(Store):
                         for tag in
                         soup.find('div', 'product-single__gallery').findAll(
                             'img')]
+
+        if 'LIQ' in name:
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -181,6 +219,7 @@ class PcFactory(Store):
             'CLP',
             sku=sku,
             part_number=part_number,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
