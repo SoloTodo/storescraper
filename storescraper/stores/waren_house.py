@@ -39,13 +39,12 @@ class WarenHouse(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'mf-shop-content')
+                product_containers = soup.findAll('li', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('div',
-                                                            'product-inner'):
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -57,27 +56,22 @@ class WarenHouse(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h4', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock') and \
-                soup.find('p', 'stock').text.split(':')[1].split()[
-                    0] == 'Agotado':
-            stock = 0
-        elif soup.find('p', 'stock'):
-            stock = int(soup.find('p', 'stock').text.split(':')[1].split()[0])
+        if soup.find('p', 'stock in-stock'):
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').text == '':
-            return []
-        elif soup.find('p', 'price').find('ins'):
+        if soup.find('h4', 'price').find('ins'):
             price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
+                remove_words(soup.find('h4', 'price').find('ins').text))
         else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
+            price = Decimal(remove_words(soup.find('h4', 'price').text))
 
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'woocommerce-product'
-                                                        '-gallery').findAll(
+                                                        '-gallery-2').find(
+            'div', 'col-12').findAll(
             'img')]
         p = Product(
             name,
