@@ -61,7 +61,13 @@ class SamuraiStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('span', 'sku').text.strip()
+        sku_tag = soup.find('span', 'sku')
+
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
