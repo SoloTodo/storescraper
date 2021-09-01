@@ -8,7 +8,8 @@ from storescraper.categories import CELL, NOTEBOOK, ALL_IN_ONE, TABLET, \
     HEADPHONES, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class Reuse(Store):
@@ -67,29 +68,33 @@ class Reuse(Store):
         product_json = json.loads(
             soup.find('script', {'data-section-id': 'static-product'}).text)[
             'product']
+        description = html_to_markdown(product_json['description'])
 
-        name = product_json['title']
-        sku = str(product_json['variants'][0]['id'])
-        stock = -1 if product_json['available'] else 0
-        price = Decimal(remove_words(
-            soup.find('div', 'price__current').find('span',
-                                                    'money').text.strip()))
-        picture_urls = ['https:' + tag.split('?v')[0] for tag in
-                        product_json['images']]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-            condition='https://schema.org/RefurbishedCondition'
+        products = []
+        for variant in product_json['variants']:
+            name = variant['name']
+            sku = variant['sku']
+            key = str(variant['id'])
+            stock = -1 if variant['available'] else 0
+            price = Decimal(variant['price'] / 100)
+            picture_urls = ['https:' + tag.split('?v')[0] for tag in
+                            product_json['images']]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                condition='https://schema.org/RefurbishedCondition',
+                description=description
+            )
+            products.append(p)
 
-        )
-        return [p]
+        return products
