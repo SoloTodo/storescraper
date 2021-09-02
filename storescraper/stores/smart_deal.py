@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MOUSE, MONITOR, TABLET
+from storescraper.categories import NOTEBOOK, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -13,22 +13,37 @@ class SmartDeal(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK
+            NOTEBOOK,
+            CELL,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        category_paths = [
+            ('lenovo', NOTEBOOK),
+            ('asus', NOTEBOOK),
+            ('msi', NOTEBOOK),
+            ('apple', NOTEBOOK),
+            ('huawei', NOTEBOOK),
+            ('smartphones', CELL),
+        ]
+
         session = session_with_proxy(extra_args)
         product_urls = []
-        if category != NOTEBOOK:
-            return []
-        response = session.get('https://smartdeal.cl/tienda/')
-        data = response.text
-        soup = BeautifulSoup(data, 'html.parser')
-        product_containers = soup.findAll('li', 'product')
-        for container in product_containers:
-            product_url = container.find('a')['href']
-            product_urls.append(product_url)
+
+        for category_path, local_category in category_paths:
+            if category != local_category:
+                continue
+
+            response = session.get('https://smartdeal.cl/categoria-producto/'
+                                   + category_path)
+            data = response.text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
