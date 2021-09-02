@@ -159,16 +159,7 @@ class ProMovil(Store):
             picture_url = image.find('img')['data-image-large-src']
             picture_urls.append(picture_url)
 
-        title_name = soup.find('title').text
-
-        condition_name = '{} {}'.format(name, title_name).lower()
-        refurbished_keywords = ['semi', 'reacon', 'open']
-        condition = 'https://schema.org/NewCondition'
-
-        for kw in refurbished_keywords:
-            if kw in condition_name or kw in description:
-                condition = 'https://schema.org/RefurbishedCondition'
-                break
+        condition = 'https://schema.org/RefurbishedCondition'
 
         return Product(
             name,
