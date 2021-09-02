@@ -4,7 +4,8 @@ import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, \
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -34,6 +35,10 @@ class AllTec(Store):
             'StereoSystem',
             'Notebook',
             GAMING_CHAIR,
+            USB_FLASH_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
+            CELL,
         ]
 
     @classmethod
@@ -46,6 +51,7 @@ class AllTec(Store):
             ['17-placas-madre', 'Motherboard'],
             ['20-procesadores', 'Processor'],
             ['19-memorias', 'Ram'],
+            ['100-sodimm', 'Ram'],
             ['24-mouse', 'Mouse'],
             ['43-impresoras', 'Printer'],
             ['55-tarjetas-de-video', 'VideoCard'],
@@ -60,15 +66,24 @@ class AllTec(Store):
             ['93-cpu-cooler', 'CpuCooler'],
             ['92-water-cooling', 'CpuCooler'],
             ['25-auriculares', 'Headphones'],
+            ['110-pc', 'Headphones'],
+            ['111-consolas', 'Headphones'],
             ['26-parlantes', 'StereoSystem'],
             ['65-notebook-tablet', 'Notebook'],
             ['96-sillas', GAMING_CHAIR],
+            ['35-flashpendrive', USB_FLASH_DRIVE],
+            ['58-pendrive', USB_FLASH_DRIVE],
+            ['95-externos-usb', EXTERNAL_STORAGE_DRIVE],
+            ['59-memorias-flash-microsdsdcompac-flash', MEMORY_CARD],
+            ['74-smartphone-smartwatch-smartband', CELL],
         ]
 
         session = session_with_proxy(extra_args)
         for category_path, local_category in category_urls:
             if local_category != category:
                 continue
+
+            url_extensions.append((category_path, category))
 
             category_url = base_url + category_path
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
