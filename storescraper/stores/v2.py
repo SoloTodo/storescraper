@@ -83,7 +83,8 @@ class V2(Store):
         else:
             stock = json_container['quantity']
 
-        if soup.find('meta', {'property': 'product:price:condition'})['content'] == 'new':
+        if soup.find('meta', {'property': 'product:price:condition'})[
+                'content'] == 'new':
             condition = 'https://schema.org/NewCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
