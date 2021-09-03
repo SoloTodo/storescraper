@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -34,7 +35,8 @@ class Max(Store):
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('li', 'item product product-item')
+            product_containers = soup.findAll('li',
+                                              'item product product-item')
             if not product_containers:
                 if page == 1:
                     logging.warning('Empty category')
@@ -53,27 +55,25 @@ class Max(Store):
         session = session_with_proxy(extra_args)
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
+        name = soup.find('h1', 'page-title').text.strip()
+        sku = soup.find('input', {'id': 'getproductid'})['value']
 
-        sku_container = soup.find('h6', 'sku')
-        if sku_container:
-            sku = sku_container.text.strip()
-        else:
-            sku = soup.find('input', {'name': 'product'})['value']
-
-        name = '{} ({})'.format(soup.find('h1').text.strip(), sku)
-
-        if soup.find('input', {'id': 'qty_stock'}):
-            stock = int(soup.find('input', {'id': 'qty_stock'})['value'])
-        else:
+        if soup.find('div', 'stock available'):
             stock = -1
+        else:
+            stock = 0
 
-        price_container = soup.find('span', {'itemprop': 'price'})
+        price_container = soup.find('span', {'data-price-type': 'finalPrice'})
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
+        picture_container = json.loads(
+            soup.find('div', 'product media').find('script', {
+                'type': 'text/x-magento-init'}).text)[
+            '[data-gallery-role=gallery-placeholder]']['mage/gallery/gallery'][
+            'data']
 
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', 'fancybox-button')]
+        picture_urls = [tag['img'] for tag in picture_container]
         description = html_to_markdown(
-            str(soup.find('div', 'tab-product-detail')))
+            str(soup.find('table', {'id': 'product-attribute-specs-table'})))
 
         p = Product(
             name,
