@@ -51,6 +51,7 @@ class V2(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://v2.cl/{}?page={}'.format(url_extension,
                                                                 page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', {
@@ -67,6 +68,7 @@ class V2(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -80,6 +82,12 @@ class V2(Store):
             stock = 0
         else:
             stock = json_container['quantity']
+
+        if soup.find('meta', {'property': 'product:price:condition'})['content'] == 'new':
+            condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         price = Decimal(json_container['price_amount'])
         picture_urls = [tag['src'] for tag in
                         soup.find('ul', 'product-images').findAll('img')]
@@ -95,6 +103,7 @@ class V2(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
