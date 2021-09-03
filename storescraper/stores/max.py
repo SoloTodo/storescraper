@@ -56,7 +56,8 @@ class Max(Store):
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
-        sku = soup.find('input', {'id': 'getproductid'})['value']
+        key = soup.find('input', {'id': 'getproductid'})['value']
+        sku = soup.find('div', {'itemprop': 'sku'}).text
 
         if soup.find('div', 'stock available'):
             stock = -1
@@ -81,7 +82,7 @@ class Max(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
