@@ -41,7 +41,7 @@ class Finall(Store):
             ['pc/m2', SOLID_STATE_DRIVE],
             ['mouse', MOUSE],
             ['audifonos', HEADPHONES],
-            ['teclados', KEYBOARD],
+            ['perifericos/teclados', KEYBOARD],
             ['pc/procesadores', PROCESSOR],
             ['pc/gabinetes', COMPUTER_CASE],
             ['pc/refrigeracion', CPU_COOLER],
@@ -60,6 +60,8 @@ class Finall(Store):
                     url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
+                if response.status_code == 404:
+                    raise Exception('Invalid category: ' + url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div',
                                                   'col-lg-3 col-md-4 col-6')
