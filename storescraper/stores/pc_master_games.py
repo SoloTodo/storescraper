@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, SOLID_STATE_DRIVE, NOTEBOOK, \
     RAM, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
-    WEARABLE, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR
+    WEARABLE, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR, STORAGE_DRIVE, \
+    VIDEO_CARD, CPU_COOLER, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,7 +28,11 @@ class PcMasterGames(Store):
             HEADPHONES,
             MOUSE,
             KEYBOARD,
-            PROCESSOR
+            PROCESSOR,
+            STORAGE_DRIVE,
+            VIDEO_CARD,
+            CPU_COOLER,
+            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
@@ -44,11 +49,15 @@ class PcMasterGames(Store):
             ['procesadores-amd', PROCESSOR],
             ['procesadores-intel', PROCESSOR],
             ['monitores', MONITOR],
+            ['disco-duro', STORAGE_DRIVE],
             ['disco-ssd', SOLID_STATE_DRIVE],
             ['equipos', NOTEBOOK],
             ['memoria-ram', RAM],
             ['sillas-gamer', GAMING_CHAIR],
             ['smartwatch', WEARABLE],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['ventiladores-y-sistema-de-enfriamiento-componentes', CPU_COOLER],
+            ['combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

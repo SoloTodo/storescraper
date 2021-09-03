@@ -28,20 +28,19 @@ class Max(Store):
             if page >= 16:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.max.com.gt/catalogsearch/result/' \
+            url_webpage = 'https://max.com.gt/catalogsearch/result/' \
                           'index/?category=&limit=30&marca=7&p={}&q=LG' \
                           ''.format(page)
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('div', 'item')
+            product_containers = soup.findAll('li', 'item product product-item')
             if not product_containers:
                 if page == 1:
                     logging.warning('Empty category')
                 break
             for container in product_containers:
                 product_url = container.find('a')['href']
-                print(product_url)
                 if product_url in product_urls:
                     return product_urls
                 product_urls.append(product_url)
