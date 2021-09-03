@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import REFRIGERATOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Eurogen(Store):
@@ -40,17 +40,17 @@ class Eurogen(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         info_container = soup.find('div', 'product-information')
-        name = info_container.find('h2').text
+        name = info_container.find('p').text
         if 'LG' not in name.upper():
             return []
-        sku = info_container.find('p').text.split(':')[1].strip()
+        sku = soup.find('input', {'name': 'prod'})['value']
         stock = -1
-        price = Decimal(info_container.find('span').find('span').text.split()[
-                            1].replace('.', ''))
+        price = Decimal(remove_words(info_container.findAll('bdi')[1].text))
         picture_urls = [
             'https://eurogen.com.uy/' + urllib.parse.quote(tag['src']) for tag
             in soup.find('div', 'carousel-inner').findAll('img')]
@@ -64,7 +64,7 @@ class Eurogen(Store):
             stock,
             price,
             price,
-            'USD',
+            'UYU',
             sku=sku,
             picture_urls=picture_urls
         )
