@@ -35,8 +35,10 @@ class VentasAlbion(Store):
                 if page > 10:
                     raise Exception('page overflow')
                 url_webpage = 'https://ventasalbion.com/tienda/page/{}/?' \
-                              'filter_marcas=lg&per_page=32' \
+                              'filter_marca=lg&per_page=32' \
+                              '&_pjax=.main-page-wrapper' \
                               '&loop=32&woo_ajax=1'.format(page)
+                print(url_webpage)
 
                 data = session.get(url_webpage)
                 if data.status_code == 404:
