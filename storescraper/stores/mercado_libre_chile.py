@@ -80,6 +80,11 @@ class MercadoLibreChile(Store):
 
         if new_mode_data:
             data = json.loads(new_mode_data.groups()[0])
+
+            for entry in data['initialState']['components'].get('head', []):
+                if entry['id'] == 'item_status_message' and 'PAUSADA' in entry['body']['text'].upper():
+                    return []
+
             if 'component_id' in data['initialState']['components'][
                     'variations']:
                 return cls.retrieve_type2_products(session, url, soup,
@@ -92,6 +97,7 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def retrieve_type3_products(cls, data, session, category):
+        print('Type3')
         variations = set()
         pickers = data['initialState']['components']['variations'].get(
             'pickers', None)
@@ -151,6 +157,7 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def retrieve_type2_products(cls, session, url, soup, category, data):
+        print('Type2')
         seller = data['initialState']['components']['track'][
             'analytics_event']['custom_dimensions'][
             'customDimensions']['officialStore']
@@ -174,17 +181,13 @@ class MercadoLibreChile(Store):
         products = []
 
         if picker:
+            picker_id = picker['id']
             for variation in picker['products']:
                 color_name = variation['label']['text']
                 name = '{} ({})'.format(base_name, color_name)
                 color_id = variation['attribute_id']
 
-                variation_url = 'https://articulo.mercadolibre.cl/' \
-                                'noindex/variation/choose?itemId={}&' \
-                                'attribute={}%7C{}' \
-                                ''.format(sku,
-                                          urllib.parse.quote(picker['id']),
-                                          urllib.parse.quote(color_id))
+                variation_url = '{}?attributes={}:{}'.format(url, picker_id, color_id)
                 res = session.get(variation_url)
                 key_match = re.search(r'variation=(\d+)', res.url)
 
@@ -233,6 +236,7 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def retrieve_type1_products(cls, page_source, url, soup, category):
+        print('Type1')
         name = soup.find('h1', 'item-title__primary ').text.strip()
         seller_tag = soup.find('p', 'title')
         seller = seller_tag.text.strip()
