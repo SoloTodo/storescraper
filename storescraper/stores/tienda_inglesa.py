@@ -34,12 +34,12 @@ class TiendaInglesa(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
                 url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?0,' \
-                              '0,,0,0,0,rel,%5B%22LG%22%5D,true,%5B%5D,' \
-                              '%5B%5D,,{}'.format(page)
+                              '0,*:*,302,0,0,rel,%5B%22LG%22%5D,true,' \
+                              '%5B%5D,%5B%5D,,{}'.format(page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll(
-                    'span', 'wCartProductName')
+                product_containers = soup.find('div', {'id': 'SECTION1'}). \
+                    findAll('div', 'card-product-section')
                 if not product_containers:
                     break
                 for container in product_containers:
