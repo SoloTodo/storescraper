@@ -68,13 +68,11 @@ class VentasAlbion(Store):
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         stock = -1
-        price = Decimal(
-            soup.find('p', 'price').text.replace(u'USD\xa0', '').replace('.',
-                                                                         ''))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        price = Decimal(soup.find('p', 'price').text
+                        .replace('USD', '').replace('\xa0', '')
+                        .replace('$', '').replace('.', ''))
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'woocommerce-product-gallery').findAll('img')]
 
         p = Product(
             name,
