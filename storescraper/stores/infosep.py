@@ -92,8 +92,12 @@ class Infosep(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://infosep.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
+                if page == 1:
+                    url_webpage = 'https://infosep.cl/categoria-producto/{}/' \
+                                  ''.format(url_extension)
+                else:
+                    url_webpage = 'https://infosep.cl/categoria-producto/{}/' \
+                                  'page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
