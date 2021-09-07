@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
     REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, STOVE, MONITOR, \
-    HEADPHONES
+    HEADPHONES, WEARABLE, VACUUM_CLEANER, CELL_ACCESORY
 
 
 class Jetstereo(Store):
@@ -26,86 +26,76 @@ class Jetstereo(Store):
             WASHING_MACHINE,
             STOVE,
             MONITOR,
-            HEADPHONES
+            HEADPHONES,
+            WEARABLE,
+            VACUUM_CLEANER,
+            CELL_ACCESORY,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('tvs', TELEVISION),
-            ('audio-portatil', STEREO_SYSTEM),
-            ('equipos-de-sonido', STEREO_SYSTEM),
-            ('teatros-en-casa', STEREO_SYSTEM),
-            ('smartphones', CELL),
-            ('refrigeradoras-side-by-side', REFRIGERATOR),
-            ('refrigeradoras-french-door', REFRIGERATOR),
-            ('refrigeradoras-twin', REFRIGERATOR),
-            ('refrigeradora-top-mount', REFRIGERATOR),
-            ('microondas', OVEN),
-            ('hornos', OVEN),
-            ('aire-acondicionado', AIR_CONDITIONER),
-            ('twinwash', WASHING_MACHINE),
-            ('lavadoras-top-load', WASHING_MACHINE),
-            ('lavadora-carga-frontal', WASHING_MACHINE),
-            ('secadoras', WASHING_MACHINE),
-            ('estufas-electricas', STOVE),
-            ('estufas-de-gas', STOVE),
-            ('monitores', MONITOR),
-            ('audifonos-gaming', HEADPHONES),
-            ('in-ear', HEADPHONES),
-            ('on-ear', HEADPHONES),
-            ('over-ear', HEADPHONES),
-            ('alambricos', HEADPHONES),
-            ('bluetooth', HEADPHONES),
-            ('noise-cancelling', HEADPHONES),
-            ('true-wireless', HEADPHONES),
-        ]
+        category_paths = {
+            'barras-de-sonido': STEREO_SYSTEM,
+            'alambricos': HEADPHONES,
+            'tvs': TELEVISION,
+            'smartphones': CELL,
+            'monitores': MONITOR,
+            'wearables': WEARABLE,
+            'twinwash': WASHING_MACHINE,
+            'estufas-de-gas': STOVE,
+            'lavadoras-top-load': WASHING_MACHINE,
+            'lavadoras': WASHING_MACHINE,
+            'microondas': OVEN,
+            'refrigeradoras-side-by-side': REFRIGERATOR,
+            'audifonos': HEADPHONES,
+            'refrigeradora-top-mount': REFRIGERATOR,
+            'secadoras': WASHING_MACHINE,
+            'lavadora-carga-frontal': WASHING_MACHINE,
+            'refrigeradoras': REFRIGERATOR,
+            'aspiradoras': VACUUM_CLEANER,
+            'estufas-electricas': OVEN,
+            'accesorios-tv-y-video': CELL_ACCESORY,
+            'equipos-de-sonido': STEREO_SYSTEM,
+            'refrigeradoras-french-door': REFRIGERATOR,
+            'gadget': CELL_ACCESORY,
+            'estufas': OVEN,
+            'aire-acondicionado': AIR_CONDITIONER
+        }
 
         session = session_with_proxy(extra_args)
         product_urls = []
-
-        for category_path, local_category in category_filters:
+        url_subsections = 'https://www.jetstereo.com/brands/lg'
+        response = session.get(url_subsections, verify=False).text
+        soup = BeautifulSoup(response, 'html.parser')
+        sub_sections = soup.findAll('div', 'col-6 col-lg-2')
+        for sub_section in sub_sections:
+            url_extension = sub_section.find('a')['href']
+            category_path = url_extension.split('/')[-1]
+            if category_path not in category_paths:
+                Exception('Not {} in category paths'.format(category_path))
+            local_category = category_paths[category_path]
             if local_category != category:
                 continue
-
             page = 1
-            local_urls = []
-            done = False
-
-            while not done:
-                url = '{}/{}?pv=50&page={}'.format(
-                    cls.base_url, category_path, page)
-                print(url)
-
+            while True:
                 if page > 20:
-                    raise Exception('Page overflow: ' + url)
+                    raise Exception('Page overflow: ' + sub_section)
+                url = 'https://www.jetstereo.com{}?page={}'.format(
+                    url_extension, page)
+                print(url)
+                response = session.get(url, verify=False).text
+                soup = BeautifulSoup(response, 'html.parser')
+                product_containers = soup.findAll('div', 'product-box')
 
-                soup = BeautifulSoup(session.get(url, verify=False).text,
-                                     'html.parser')
-                containers = soup.findAll('div', 'product-box')
-
-                if not containers:
-                    logging.warning('Empty category: ' + url)
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url)
                     break
 
-                for container in containers:
-                    title_container = container.find('div', 'product-name')
-                    if not title_container:
-                        title_container = container.find('h2', 'product-name')
-
-                    product_title = title_container.text
+                for container in product_containers:
                     product_url = container.find('a')['href']
-                    if (product_title, product_url) in local_urls:
-                        done = True
-                        break
-                    local_urls.append((product_title, product_url))
-
-                page += 1
-
-            for product_title, product_url in local_urls:
-                if 'LG' in product_title.upper():
                     product_urls.append(product_url)
-
+                page += 1
         return product_urls
 
     @classmethod
