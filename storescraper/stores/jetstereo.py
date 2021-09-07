@@ -72,7 +72,8 @@ class Jetstereo(Store):
             url_extension = sub_section.find('a')['href']
             category_path = url_extension.split('/')[-1]
             if category_path not in category_paths:
-                Exception('Not {} in category paths'.format(category_path))
+                raise Exception('Not {} in category paths'.format(
+                    category_path))
             local_category = category_paths[category_path]
             if local_category != category:
                 continue
@@ -144,7 +145,8 @@ class Jetstereo(Store):
             'HNL',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            part_number=sku
         )
 
         return [p]
