@@ -58,6 +58,12 @@ class TiendaClaro(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        stock_session = session_with_proxy(extra_args)
+        stock_session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36'
+        stock_session.headers['Content-Type'] = \
+            'application/x-www-form-urlencoded; charset=UTF-8'
         response = session.get(url, verify=False)
 
         if response.status_code == 400:
@@ -97,10 +103,18 @@ class TiendaClaro(Store):
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
                 product_entry['ItemImage467']).replace(' ', '%20')]
 
-            if soup.find('a', {'id': 'add2CartBtn'}):
+            stock_payload = 'storeId=10151&quantity=1&catEntryId=' + sku
+            stock_res = stock_session.post(
+                'https://tienda.clarochile.cl/AjaxRESTOrderItemAdd',
+                stock_payload, verify=False)
+            stock_data = json.loads(stock_res.text.strip()[2:-2])
+
+            if 'errorMessageKey' in stock_data:
+                stock = 0
+            elif 'orderId' in stock_data:
                 stock = -1
             else:
-                stock = 0
+                raise Exception('Invalid stock response')
 
             products.append(Product(
                 name,
