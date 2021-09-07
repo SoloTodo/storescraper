@@ -75,7 +75,11 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_id = soup.find('span', {'id': 'productId'}).text
+        product_id = soup.find('span', {'id': 'productId'}).text.strip()
+
+        if not product_id:
+            return []
+
         query_url = 'https://itrinity-sg.c.huawei.com/eCommerce/queryPrd' \
                     'DisplayDetailInfo?productId={}&siteCode=CL'.format(
                         product_id)

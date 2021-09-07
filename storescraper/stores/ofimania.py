@@ -96,7 +96,7 @@ class Ofimania(Store):
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         price = Decimal(
-            remove_words(soup.find('p', 'price').find('span').text))
+            remove_words(soup.find('p', 'price').findAll('bdi')[-1].text))
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div',
                                   'woocommerce-product-gallery').findAll(

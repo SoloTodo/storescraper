@@ -11,7 +11,8 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class Soluservi(Store):
@@ -125,7 +126,8 @@ class Soluservi(Store):
         normal_price = (offer_price * Decimal('1.05')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
-        part_number = product_data['sku'] or None
+        part_number = str(product_data['sku']) or None
+        description = html_to_markdown(product_data['description'])
 
         p = Product(
             name,
@@ -140,6 +142,7 @@ class Soluservi(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            part_number=part_number
+            part_number=part_number,
+            description=description
         )
         return [p]
