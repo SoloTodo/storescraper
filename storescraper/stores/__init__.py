@@ -82,6 +82,7 @@ from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
 from .electro_ventas import ElectroVentas
 from .el_gallo_mas_gallo import ElGalloMasGallo
+from .el_juri_store import ElJuriStore
 from .elite_center import EliteCenter
 from .enarix import Enarix
 from .enel import Enel
