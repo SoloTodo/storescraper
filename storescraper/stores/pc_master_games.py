@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, SOLID_STATE_DRIVE, NOTEBOOK, \
     RAM, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
     WEARABLE, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR, STORAGE_DRIVE, \
-    VIDEO_CARD, CPU_COOLER, KEYBOARD_MOUSE_COMBO
+    VIDEO_CARD, CPU_COOLER, KEYBOARD_MOUSE_COMBO, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,7 +32,8 @@ class PcMasterGames(Store):
             STORAGE_DRIVE,
             VIDEO_CARD,
             CPU_COOLER,
-            KEYBOARD_MOUSE_COMBO
+            KEYBOARD_MOUSE_COMBO,
+            UPS,
         ]
 
     @classmethod
@@ -58,6 +59,7 @@ class PcMasterGames(Store):
             ['tarjeta-de-video', VIDEO_CARD],
             ['ventiladores-y-sistema-de-enfriamiento-componentes', CPU_COOLER],
             ['combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
+            ['ups', UPS],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -96,7 +98,8 @@ class PcMasterGames(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('meta', {'property': 'product:retailer_item_id'})['content']
         if not soup.find('p', 'stock'):
             stock = -1
         elif soup.find('p', 'stock').text == 'Agotado':
@@ -117,12 +120,13 @@ class PcMasterGames(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
 
         )
