@@ -27,6 +27,7 @@ class MancoStore(Store):
             KEYBOARD,
             MOUSE,
             MONITOR,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -42,6 +43,7 @@ class MancoStore(Store):
             ['18-refrigeracion', CPU_COOLER],
             ['19-perifericos', MOUSE],
             ['21-monitores', MONITOR],
+            ['23-sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -87,8 +89,9 @@ class MancoStore(Store):
         name = product_json['name']
         sku = str(product_json['id'])
         stock = product_json['quantity']
-        price = Decimal(
+        offer_price = Decimal(
             remove_words(product_json['price'].replace('\xa0', '')))
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('ul', 'product-images '
                                                               'js-qv-product'
                                                               '-images'
@@ -101,8 +104,8 @@ class MancoStore(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
