@@ -225,6 +225,13 @@ class Lenovo(Store):
                 soup.find('meta', {'name': 'thumbnail'})['content']
             ]
 
+            stock_msg = soup.find('span', 'stock_message').text
+
+            if stock_msg == 'Agotado':
+                stock = 0
+            else:
+                stock = -1
+
             p = Product(
                 '{} ({})'.format(name, sku),
                 cls.__name__,
@@ -232,7 +239,7 @@ class Lenovo(Store):
                 url,
                 url,
                 sku,
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',
