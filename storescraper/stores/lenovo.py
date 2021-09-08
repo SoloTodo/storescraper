@@ -225,9 +225,9 @@ class Lenovo(Store):
                 soup.find('meta', {'name': 'thumbnail'})['content']
             ]
 
-            stock_msg = soup.find('span', 'stock_message').text
+            stock_tag = soup.find('span', 'stock_message')
 
-            if stock_msg == 'Agotado':
+            if stock_tag and stock_tag.text.strip() == 'Agotado':
                 stock = 0
             else:
                 stock = -1
