@@ -210,7 +210,7 @@ class Hites(Store):
                                 category_path, start)
                 print(category_url)
 
-                if start >= 360:
+                if start >= 600:
                     raise Exception('Page overflow: ' + category_url)
 
                 response = session.get(category_url, timeout=60)

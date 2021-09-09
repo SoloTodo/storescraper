@@ -52,7 +52,7 @@ class Eyc(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://tienda.eyc.cl/es/{}?page={}'. \
                     format(url_extension, page)

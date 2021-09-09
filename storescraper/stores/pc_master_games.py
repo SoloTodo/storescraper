@@ -99,7 +99,11 @@ class PcMasterGames(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('meta', {'property': 'product:retailer_item_id'})['content']
+        sku_tag = soup.find('meta', {'property': 'product:retailer_item_id'})
+        if sku_tag:
+            sku = sku_tag['content']
+        else:
+            sku = None
         if not soup.find('p', 'stock'):
             stock = -1
         elif soup.find('p', 'stock').text == 'Agotado':
