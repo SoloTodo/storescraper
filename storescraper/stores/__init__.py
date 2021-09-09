@@ -45,6 +45,7 @@ from .clima_seguro import ClimaSeguro
 from .comandato import Comandato
 from .comercial_net import ComercialNet
 from .compumundo import Compumundo
+from .computron import Computron
 from .conelectric import Conelectric
 from .coppel import Coppel
 from .corona import Corona
