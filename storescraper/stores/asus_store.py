@@ -75,7 +75,8 @@ class AsusStore(Store):
             stock = -1
         price = Decimal(soup.find('span', {'data-price-type': 'finalPrice'})[
                             'data-price-amount'])
-        picture_urls = []
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'product media').findAll('img')]
         p = Product(
             name,
             cls.__name__,
