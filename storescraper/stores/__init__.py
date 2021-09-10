@@ -316,6 +316,7 @@ from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
 from .tecno_mega_store import TecnoMegaStore
 from .tecno_saga import TecnoSaga
+from .tecno_site import TecnoSite
 from .tecno_store_chile import TecnoStoreChile
 from .tekstore import Tekstore
 from .terabyte import Terabyte
