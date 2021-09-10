@@ -54,15 +54,16 @@ class Computron(Store):
                                '/all')
         store_categories = json.loads(response.text)['data']['categories']
         for store_category in store_categories:
-            category_id = str(store_category['id'])
-            local_category = category_paths.get(category_id, TELEVISION)
+            store_category_id = str(store_category['id'])
+            local_category = category_paths.get(store_category_id, TELEVISION)
 
             if local_category != category:
                 continue
 
             url = 'https://api.computron.com.ec/api/product/category' \
-                  '/{}'.format(category_id)
-            products_response = session.get(url)
+                  '/{}'.format(store_category_id)
+            print(url)
+            products_response = session.get(url, timeout=30)
             json_products = json.loads(products_response.text)
             for product in json_products['data']['products']:
                 if product['manufacturer']['name'] == 'LG':
@@ -81,7 +82,7 @@ class Computron(Store):
         product_id = url.split('/')[-1]
         product_url = 'https://api.computron.com.ec/api/product/id/{}'.format(
             product_id)
-        response = session.get(product_url).text
+        response = session.get(product_url, timeout=30).text
         product = json.loads(response)['data']['results'][0]
         name = product['name']
         part_number = product['external_code']
@@ -92,8 +93,8 @@ class Computron(Store):
         picture_urls = [html.escape(picture) for picture in product['images']]
         p = Product(
             name,
-            category,
             cls.__name__,
+            category,
             url,
             url,
             sku,
