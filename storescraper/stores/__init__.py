@@ -14,6 +14,7 @@ from .amazon_print import AmazonPrint
 from .americanas import Americanas
 from .ampera import Ampera
 from .artefacta import Artefacta
+from .asus_store import AsusStore
 from .bbcc import BookComputer
 from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
