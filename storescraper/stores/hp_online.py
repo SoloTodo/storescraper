@@ -61,6 +61,9 @@ class HpOnline(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         if soup.find('ol', 'products'):

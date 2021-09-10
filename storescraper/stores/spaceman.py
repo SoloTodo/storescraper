@@ -77,6 +77,12 @@ class Spaceman(Store):
             product_variants = json.loads(soup.find('form', 'variations_form')[
                                               'data-product_variations'])
             products = []
+
+            if not product_variants:
+                # This case https://www.spaceman.cl/producto/
+                # teclado-mecanico-set-de-keycaps/
+                return []
+
             for variant in product_variants:
                 variant_name = name + ' - ' + ' '.join(
                     variant['attributes'].values())
