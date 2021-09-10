@@ -61,12 +61,13 @@ class AsusStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('span',
-                         {'data-dynamic': 'product_name'}).text.replace(
-            '\u200b', '') + ' (' + \
-            soup.find('div', 'simple-sku').text.split(' - ')[-1] + ')'
+        base_name = soup.find('span', {'data-dynamic': 'product_name'})\
+            .text.replace('\u200b', '').strip()
+        model_name = soup.find('div', 'simple-sku').text.split(' - ')[-1]\
+            .strip()
+        name = '{} ({})'.format(base_name, model_name)
         sku = soup.find('div', 'price-box')['data-product-id']
         part_number = soup.find('div', 'simple-part').text.split(' - ')[-1]
         if soup.find('div', 'box-tocart').find('div', 'out-stock'):
