@@ -65,27 +65,73 @@ class VentasAlbion(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        stock = -1
-        price = Decimal(soup.find('p', 'price').text
-                        .replace('USD', '').replace('\xa0', '')
-                        .replace('$', '').replace('.', ''))
-        picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'woocommerce-product-gallery').findAll('img')]
+        base_name = soup.find('h1', 'product_title').text
+        variations_form = soup.find('form', 'variations_form')
+        products = []
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'USD',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+        if variations_form:
+            variation_entries = json.loads(
+                variations_form['data-product_variations'])
+            for variation_entry in variation_entries:
+                name = '{} ({})'.format(
+                    base_name,
+                    variation_entry['attributes']['attribute_pa_color'])
+                key = str(variation_entry['variation_id'])
+
+                # stock_text is a number or ''
+                stock_text = variation_entry['max_qty']
+                if stock_text:
+                    stock = stock_text
+                else:
+                    stock = 0
+
+                price = Decimal(variation_entry['display_price'])
+                picture_urls = [x['src'] for x in
+                                variation_entry[
+                                    'additional_variation_images_default']]
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    'USD',
+                    sku=key,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+
+        else:
+            product_data = json.loads(
+                soup.find('script', {'type': 'application/ld+json'}).text)
+            key = str(product_data['sku'])
+            stock_tag = soup.find('input', {'name': 'quantity'})
+            if stock_tag:
+                stock = int(stock_tag.get('max', 1))
+            else:
+                stock = 0
+            price = Decimal(product_data['offers'][0]['price'])
+            picture_urls = [tag['src'] for tag in soup.find(
+                'div', 'woocommerce-product-gallery').findAll('img')]
+
+            p = Product(
+                base_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=key,
+                picture_urls=picture_urls
+            )
+            products.append(p)
+
+        return products

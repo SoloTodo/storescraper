@@ -58,7 +58,7 @@ class Xenex(Store):
             soup.find('input', {'name': 'pagina_recomendar'})['value'].split(
                 '=')[
                 -1]
-        if soup.find('div', 'contenedor_31').find('div', 'agotado'):
+        if soup.find('div', 'especiales2').find('div', 'agotado'):
             stock = 0
         else:
             stock = -1
