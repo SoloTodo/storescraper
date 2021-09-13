@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import CELL_ACCESORY
+from storescraper.categories import CELL_ACCESORY, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
@@ -33,6 +33,10 @@ class Vivelo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['smartphones/por-modelo/ver-todos.html', 'Cell'],
+            ['smartphones/por-modelo/galaxy-a.html', CELL],
+            ['smartphones/por-modelo/galaxy-s.html', CELL],
+            ['smartphones/por-modelo/galaxy-note.html', CELL],
+            ['smartphones/por-modelo/galaxy-fold.html', CELL],
             ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
              CELL_ACCESORY],
             ['tablets/por-modelo/ver-todos.html', 'Tablet'],
