@@ -26,6 +26,7 @@ from .bristol import Bristol
 from .bulldog_pc import BulldogPc
 from .byp import Byp
 from .c_network import CNetwork
+from .cafe_digital import CafeDigital
 from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
 from .casa_confort import CasaConfort
