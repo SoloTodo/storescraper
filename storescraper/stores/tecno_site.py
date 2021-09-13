@@ -105,7 +105,7 @@ class TecnoSite(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text.strip()
+        name = soup.find('h1', 'product_title').text.strip()[:256]
         part_number = soup.find('span', 'sku').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('div', 'no-purchasable-tag no-stock'):
