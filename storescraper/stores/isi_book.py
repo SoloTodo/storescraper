@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, COMPUTER_CASE, MOTHERBOARD, \
-    USB_FLASH_DRIVE
+    USB_FLASH_DRIVE, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -36,6 +36,7 @@ class IsiBook(Store):
             GAMING_CHAIR,
             COMPUTER_CASE,
             MOTHERBOARD,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -61,6 +62,7 @@ class IsiBook(Store):
             ['partes-y-piezas/gabinetes', COMPUTER_CASE],
             ['partes-y-piezas/placas-madre', MOTHERBOARD],
             ['sillas', GAMING_CHAIR],
+            ['partes-y-piezas/refrigeracion', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)

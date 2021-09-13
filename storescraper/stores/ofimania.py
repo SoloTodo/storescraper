@@ -9,7 +9,8 @@ from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, KEYBOARD, \
     NOTEBOOK, TABLET, CELL
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class Ofimania(Store):
@@ -72,12 +73,18 @@ class Ofimania(Store):
         if response.status_code == 301:
             return []
         soup = BeautifulSoup(response.text, 'html.parser')
-        if soup.find('form', 'variations_form'):
+        product_data = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[1].text)[
+            '@graph'][1]
+        description = html_to_markdown(product_data['description'])
+
+        if 'pedido' in description.lower():
+            stock = 0
+        elif soup.find('form', 'variations_form'):
             json_container = json.loads(soup.find('form', 'variations_form')[
                                             'data-product_variations'])
             stock_tag = BeautifulSoup(json_container[0]['availability_html'],
                                       'html.parser')
-            print(stock_tag.text)
 
             if stock_tag.text.strip() == 'Agotado' or \
                     not stock_tag.text.strip():
@@ -93,10 +100,15 @@ class Ofimania(Store):
         else:
             stock = -1
 
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        price = Decimal(
-            remove_words(soup.find('p', 'price').findAll('bdi')[-1].text))
+        sku = product_data['sku']
+        name = product_data['name']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        print(json.dumps(product_data, indent=2))
+        pricing_data = product_data['offers'][0]
+        if 'price' in pricing_data:
+            price = Decimal(pricing_data['price'])
+        else:
+            price = Decimal(pricing_data['lowPrice'])
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div',
                                   'woocommerce-product-gallery').findAll(
@@ -108,12 +120,13 @@ class Ofimania(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
