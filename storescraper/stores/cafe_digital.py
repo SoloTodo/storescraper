@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -9,7 +10,7 @@ from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class CafeDigital(Store):
@@ -45,6 +46,7 @@ class CafeDigital(Store):
             ['tarjetas-de-video', VIDEO_CARD],
             ['gabinetes-pc', COMPUTER_CASE],
             ['refrigeracion-para-pc/cooler-cpu', CPU_COOLER],
+            ['refrigeracion-para-pc/refrigeracion-liquida', CPU_COOLER],
             ['perifericos/audifono', HEADPHONES],
             ['perifericos/combo-kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['perifericos/teclados', KEYBOARD],
@@ -65,6 +67,7 @@ class CafeDigital(Store):
 
                 url_webpage = 'https://cafedigital.cl/categoria-producto/{}/' \
                               'page/{}/'.format(url_extension, page)
+                print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
@@ -86,26 +89,34 @@ class CafeDigital(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock out-of-stock'):
-            stock = 0
-        else:
-            stock = -1
+        product_data = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[1].text)
 
-        price_container = soup.find('p', 'price')
-        if price_container.text == '':
+        if '@graph' not in product_data:
             return []
-        if price_container.find('ins'):
-            offer_price = Decimal(
-                remove_words(price_container.find('ins').text))
-            normal_price = Decimal(
-                int(remove_words(price_container.find('ins').text)) * 1.045)
+
+        product_data = product_data['@graph'][1]
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        description = html_to_markdown(product_data['description'])
+
+        if product_data['offers'][0]['availability'] == \
+                'http://schema.org/InStock':
+            stock = -1
         else:
-            offer_price = Decimal(
-                remove_words(price_container.text))
-            normal_price = Decimal(
-                int(remove_words(price_container.text)) * 1.045)
+            stock = 0
+
+        price_containers = soup.findAll('span', {'style': 'color: #3366ff;'})
+        if price_containers:
+            offer_price = Decimal(price_containers[0].text.split(
+                '$')[1].replace('.', '').replace('OFERTA', ''))
+            normal_price = Decimal(price_containers[1].text.split(
+                '$')[1].replace('.', ''))
+        else:
+            normal_price = Decimal(product_data['offers'][0]['price'])
+            offer_price = normal_price
+
         picture_urls = []
         for tag in soup.find('div', 'product-gallery').findAll('img',
                                                                'lazyload'):
@@ -125,6 +136,7 @@ class CafeDigital(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
