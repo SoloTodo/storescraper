@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -89,11 +90,12 @@ class RefreshStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text
-        sku = soup.find('h6').text.split()[1]
+        sku = re.search('let sku = "(.+)";', response.text).groups()[0]
         stock = int(soup.find('h6', {'id': 'bodegastock1'}).text) + int(
             soup.find('h6', {'id': 'bodegastock2'}).text)
-        price = Decimal(remove_words(
+        offer_price = Decimal(remove_words(
             soup.find('meta', {'name': 'description'})['content'].split()[1]))
+        normal_price = Decimal(remove_words(soup.find('h2', {'style': 'color: #00cbcd;'}).text))
         picture_urls = [quote(tag['src'], safe='/:') for tag in
                         soup.find('div', 'carousel slide').findAll('img')]
         p = Product(
@@ -104,8 +106,8 @@ class RefreshStore(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
