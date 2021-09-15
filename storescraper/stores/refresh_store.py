@@ -70,16 +70,18 @@ class RefreshStore(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'col-md-3')
+                product_containers = soup.findAll('div', 'contenedorImagen')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = \
-                        container.find('button')['onclick'].split('\'')[1]
-                    product_urls.append(
-                        'https://refreshstore.cl/producto/' + product_url)
+                    product_sku = re.search(
+                        r"verProducto\('(.+)'\)",
+                        container.find('img')['onclick']).groups()[0]
+                    product_url = 'https://www.refreshstore.cl/producto/' + \
+                                  product_sku
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -95,7 +97,8 @@ class RefreshStore(Store):
             soup.find('h6', {'id': 'bodegastock2'}).text)
         offer_price = Decimal(remove_words(
             soup.find('meta', {'name': 'description'})['content'].split()[1]))
-        normal_price = Decimal(remove_words(soup.find('h2', {'style': 'color: #00cbcd;'}).text))
+        normal_price = Decimal(remove_words(
+            soup.find('h2', {'style': 'color: #00cbcd;'}).text))
         picture_urls = [quote(tag['src'], safe='/:') for tag in
                         soup.find('div', 'carousel slide').findAll('img')]
         p = Product(
