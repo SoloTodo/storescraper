@@ -1,3 +1,5 @@
+import html
+import json
 import logging
 from decimal import Decimal
 
@@ -5,7 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, VIDEO_GAME_CONSOLE, RAM, \
     POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD, PROCESSOR, \
-    GAMING_CHAIR, CPU_COOLER, KEYBOARD, HEADPHONES, MOUSE, MONITOR
+    GAMING_CHAIR, CPU_COOLER, KEYBOARD, HEADPHONES, MOUSE, MONITOR, \
+    MEMORY_CARD, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,30 +32,33 @@ class GameShark(Store):
             HEADPHONES,
             MOUSE,
             MONITOR,
+            STEREO_SYSTEM,
+            MEMORY_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['26-consolas', VIDEO_GAME_CONSOLE],
-            ['75-consolas', VIDEO_GAME_CONSOLE],
-            ['29-consolas-x1', VIDEO_GAME_CONSOLE],
-            ['46-consolas-nsw', VIDEO_GAME_CONSOLE],
-            ['32-consolas-ps3', VIDEO_GAME_CONSOLE],
-            ['36-consolas', VIDEO_GAME_CONSOLE],
-            ['50-gabinetes', COMPUTER_CASE],
-            ['64-memorias', RAM],
-            ['68-fuentes-de-poder', POWER_SUPPLY],
-            ['65-almacenamiento', SOLID_STATE_DRIVE],
-            ['69-gpu', VIDEO_CARD],
-            ['72-placa-madre', MOTHERBOARD],
-            ['74-procesadores', PROCESSOR],
-            ['60-sillas', GAMING_CHAIR],
-            ['66-refrigeracion', CPU_COOLER],
-            ['20-teclados', KEYBOARD],
-            ['21-audifonos', HEADPHONES],
-            ['22-mouse', MOUSE],
-            ['70-monitores', MONITOR],
+            ['66-consolas', VIDEO_GAME_CONSOLE],
+            ['62-consolas', VIDEO_GAME_CONSOLE],
+            ['79-consolas', VIDEO_GAME_CONSOLE],
+            ['19-consolas', VIDEO_GAME_CONSOLE],
+            ['21-tarjetas-sd', MEMORY_CARD],
+            ['40-fuentes-de-poder', POWER_SUPPLY],
+            ['45-video', VIDEO_CARD],
+            ['46-motherboards', MOTHERBOARD],
+            ['47-ram', RAM],
+            ['51-procesadores', PROCESSOR],
+            ['52-refrigeracion', CPU_COOLER],
+            ['53-sillas', GAMING_CHAIR],
+            ['49-mouse', MOUSE],
+            ['54-teclados', KEYBOARD],
+            ['35-audifonos', HEADPHONES],
+            ['38-parlantes', STEREO_SYSTEM],
+            ['29-almacenamiento', SOLID_STATE_DRIVE],
+            ['41-gabinetes', COMPUTER_CASE],
+            ['42-monitores', MONITOR],
+            ['28-refrigeracion', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -63,7 +69,7 @@ class GameShark(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'http://www.gameshark.cl/sitio/{}?page={}' \
+                url_webpage = 'http://www.gameshark.cl/{}?page={}' \
                     .format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
@@ -86,30 +92,30 @@ class GameShark(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'h1').text
-        sku = soup.find('input', {'name': 'id_product'})['value']
-        if soup.find('div', 'product-quantities'):
-            stock = int(soup.find('div', 'product-quantities').find(
-                'span').text.split()[0])
-        else:
-            stock = 0
-        price = Decimal(remove_words(
-            soup.find('div', 'current-price').find('span')['content']))
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'images-container').findAll('img')]
+        product_data = json.loads(html.unescape(
+            soup.find('div', {'id': 'product-details'})['data-product']))
+        name = product_data['name']
+        description = product_data['description_short']
+        key = str(product_data['id'])
+        sku = product_data['reference']
+        stock = product_data['quantity']
+        price = Decimal(product_data['price_amount'])
+        picture_urls = [tag['bySize']['large_default']['url'] for tag in
+                        product_data['images']]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            description=description
 
         )
         return [p]
