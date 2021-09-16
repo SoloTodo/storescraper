@@ -110,7 +110,7 @@ class InfographicsSolutions(Store):
             '@graph'][1]
 
         name = product_data['name']
-        sku = product_data['sku']
+        sku = str(product_data['sku'])
         key = soup.find('div', 'wd-wishlist-btn').find('a')['data-product-id']
 
         stock_container = soup.find('p', 'stock')
