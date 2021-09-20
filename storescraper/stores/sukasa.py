@@ -6,55 +6,35 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.categories import REFRIGERATOR, OVEN, WASHING_MACHINE, \
-    TELEVISION, STEREO_SYSTEM, CELL
+from storescraper.categories import TELEVISION
 
 
 class Sukasa(Store):
     @classmethod
     def categories(cls):
         return [
-            REFRIGERATOR,
-            OVEN,
-            WASHING_MACHINE,
-            TELEVISION,
-            STEREO_SYSTEM,
-            CELL
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['4232-refrigeradoras', REFRIGERATOR],
-            ['72-microondas', OVEN],
-            ['93-lavadoras', WASHING_MACHINE],
-            ['94-secadoras', WASHING_MACHINE],
-            ['95-lavadoras-y-secadoras-todo-en-1', WASHING_MACHINE],
-            ['309-televisores', TELEVISION],
-            ['2849-parlantes', STEREO_SYSTEM],
-            ['4248-micro-y-mini-componentes', STEREO_SYSTEM],
-            ['4249-barras-de-sonido-y-teatros-en-casa', STEREO_SYSTEM],
-            ['4251-celulares-y-tablets', CELL]
-        ]
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
-        base_url = 'https://www.sukasa.com/{}?q=Marca-LG'
         product_urls = []
 
-        for url_extension, local_category in category_paths:
-            if category != local_category:
-                continue
+        soup = BeautifulSoup(session.get(
+            'https://www.sukasa.com/busqueda?controller=search&s=LG')
+                             .text, 'html.parser')
+        products = soup.findAll('div', 'product-container')
 
-            url = base_url.format(url_extension)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('div', 'product-container')
+        if not products:
+            raise Exception('Empty store')
 
-            if not products:
-                raise Exception('Empty path: ' + url)
-
-            for product in products:
-                product_url = product.find('a')['href']
-                product_urls.append(product_url)
+        for product in products:
+            product_url = product.find('a')['href']
+            product_urls.append(product_url)
 
         return product_urls
 
@@ -64,6 +44,8 @@ class Sukasa(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        brand = soup.find('h2', 'manufacturer-product').text.strip()
+        stock = -1 if brand == 'LG' else 0
         variants_container = soup.find('div', 'attribute-list')
         sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
         name = soup.find('h1', 'page-heading').text.strip()
@@ -107,7 +89,7 @@ class Sukasa(Store):
                     variant_url,
                     variant_url,
                     key,
-                    -1,
+                    stock,
                     normal_price,
                     offer_price,
                     'USD',
@@ -116,8 +98,6 @@ class Sukasa(Store):
 
             return products
         else:
-            stock = -1
-
             price = Decimal(
                 soup.find('span', {'itemprop': 'price'})
                     .find('span').text.replace('$', ''))
