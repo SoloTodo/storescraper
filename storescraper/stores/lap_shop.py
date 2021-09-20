@@ -58,7 +58,8 @@ class LapShop(Store):
         name = json_info['title']
         sku = str(json_info['id'])
         stock = -1 if json_info['available'] else 0
-        price = Decimal(json_info['price'] // 100)
+        normal_price = Decimal(json_info['price'] // 100)
+        offer_price = (normal_price * Decimal('0.97')).quantize(0)
         picture_urls = ['https:' + image_url.split('?')[0] for image_url in
                         json_info['images']]
         p = Product(
@@ -69,8 +70,8 @@ class LapShop(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls

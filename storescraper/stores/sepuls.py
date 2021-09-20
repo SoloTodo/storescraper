@@ -1,14 +1,16 @@
 import logging
+import re
 from decimal import Decimal
 
+import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
     MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER, \
-    VIDEO_CARD
+    VIDEO_CARD, RAM, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class Sepuls(Store):
@@ -25,21 +27,24 @@ class Sepuls(Store):
             MOTHERBOARD,
             CPU_COOLER,
             VIDEO_CARD,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['sillas', GAMING_CHAIR],
-            ['teclados', KEYBOARD],
-            ['audifono', HEADPHONES],
-            ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['gabinete', COMPUTER_CASE],
-            ['placa-madre', MOTHERBOARD],
-            ['refrigeracion', CPU_COOLER],
-            ['tarjeta-de-video', VIDEO_CARD],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['audifonos-gamer', HEADPHONES],
+            ['teclado-gamer', KEYBOARD],
+            ['mouse-gamer', MOUSE],
+            ['monitor-gamer', MONITOR],
+            ['componentes-para-pc/tarjeta-de-video', VIDEO_CARD],
+            ['componentes-para-pc/refrigeracion', CPU_COOLER],
+            ['componentes-para-pc/gabinete-gamer', COMPUTER_CASE],
+            ['componentes-para-pc/memoria-ram', RAM],
+            ['accesorios/placa-madre', MOTHERBOARD],
+            ['componentes-para-pc/fuente-de-poder', POWER_SUPPLY],
+            ['accesorios/parlantes', STEREO_SYSTEM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -51,19 +56,19 @@ class Sepuls(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.sepuls.cl/{}/?product-page={}' \
+                url_webpage = 'https://www.sepuls.cl/{}/?page={}' \
                     .format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+                product_containers = soup.findAll('div', 'product-block')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+                    product_urls.append('https://sepuls.cl' + product_url)
                 page += 1
         return product_urls
 
@@ -71,38 +76,32 @@ class Sepuls(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, allow_redirects=False)
-
-        if response.status_code == 301:
-            return []
-
+        response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        if not soup.find('p', 'price') or soup.find('p', 'price').text == '':
-            return []
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
+        key_tag = soup.find('form', 'product-form')
+        key = re.search(r'(\d+)', key_tag['id']).groups()[0]
+        product_data = demjson.decode(
+            soup.find('script', {'type': 'application/ld+json'})
+                .text)
+        name = product_data['name']
+        sku = product_data.get('sku', key)
+        price = Decimal(product_data['offers']['price'])
+        stock_tag = soup.find('span', 'product-form-stock')
+        if stock_tag:
+            stock = int(stock_tag.text)
         else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
-        if soup.find('p', 'stock').text == 'SIN STOCK':
             stock = 0
-        else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
 
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery'
-                                                               '').findAll(
-            'img')]
+        picture_urls = [tag['src'].split('?')[0] for tag in
+                        soup.find('div', 'main-product-image').findAll(
+                            'img', 'img-fluid')]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

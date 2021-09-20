@@ -34,7 +34,7 @@ class SamuraiStore(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.samuraistorejp.cl/' \
                               'product-category/{}/page/{}/'.format(

@@ -172,9 +172,9 @@ class Dust2(Store):
             if soup.find('p', 'stock out-of-stock'):
                 stock = 0
             else:
-                stock = int(soup.find('span', 'woostify-single-product'
-                                              '-stock-label').text.strip()
-                            .split()[4])
+                stock = int(soup.find(
+                    'span', 'woostify-single-product-stock-progress-bar')[
+                                'data-number'])
             normal_price = Decimal(remove_words(soup.find('p', 'price').text))
             offer_price = Decimal(
                 remove_words(soup.find('h3', {'id': 'precio2'}).text))

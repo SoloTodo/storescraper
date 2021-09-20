@@ -80,6 +80,9 @@ class PcExpress(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
 
         for category_id, local_category in category_info:
             if local_category != category:
@@ -125,6 +128,9 @@ class PcExpress(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'rm-product-page__title').text
