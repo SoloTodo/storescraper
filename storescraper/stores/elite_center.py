@@ -67,6 +67,7 @@ class EliteCenter(Store):
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)
