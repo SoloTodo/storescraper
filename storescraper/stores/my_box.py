@@ -1,115 +1,105 @@
-import re
 import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, KEYBOARD, VIDEO_CARD, \
+    PROCESSOR, MOTHERBOARD, RAM, STORAGE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
+    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class MyBox(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            'CpuCooler',
-            'Keyboard',
-            'Mouse',
-            'KeyboardMouseCombo',
-            'Ups',
-            GAMING_CHAIR
+            KEYBOARD,
+            GAMING_CHAIR,
+            VIDEO_CARD,
+            PROCESSOR,
+            MOTHERBOARD,
+            RAM,
+            STORAGE_DRIVE,
+            CPU_COOLER,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            MONITOR,
+            HEADPHONES,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            # ['38-notebooks', 'Notebook'],
-            ['7-monitores-y-proyectores', 'Monitor'],
-            ['41-placas-madre', 'Motherboard'],
-            ['44-procesadores', 'Processor'],
-            ['54-tarjetas-de-video', 'VideoCard'],
-            ['28-memoria-ram', 'Ram'],
-            ['5-discos-duros', 'StorageDrive'],
-            ['126-tarjeta-m2-ssd', 'SolidStateDrive'],
-            ['19-fuentes-de-poder', 'PowerSupply'],
-            ['16-gabinetes', 'ComputerCase'],
-            ['53-refrigeracion', 'CpuCooler'],
-            ['77-teclado-keyboard', 'Keyboard'],
-            ['55-teclado-y-mouse', 'Mouse'],
-            ['57-ups', 'Ups'],
-            ['133-sillas-gamer-gaming-chair', GAMING_CHAIR]
+        url_extensions = [
+            ['20-teclados-mouse', KEYBOARD],
+            ['25-sillas-gamer', GAMING_CHAIR],
+            ['68-tarjeta-de-video', VIDEO_CARD],
+            ['64-procesador', PROCESSOR],
+            ['65-placa-madre', MOTHERBOARD],
+            ['66-memoria-ram', RAM],
+            ['67-almacenamiento', STORAGE_DRIVE],
+            ['92-enfriamiento-refrigeracion', CPU_COOLER],
+            ['63-fuentes-de-poder', POWER_SUPPLY],
+            ['62-gabinetes', COMPUTER_CASE],
+            ['28-monitor', MONITOR],
+            ['21-audifonos-headset', HEADPHONES],
+            ['22-parlantes', STEREO_SYSTEM],
         ]
 
-        product_urls = []
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.54.0'
-
-        for category_path, local_category in category_paths:
+        product_urls = []
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            category_url = 'https://www.mybox.cl/' + category_path + '?n=50'
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('page overlfow: ' + url_extension)
 
-            print(category_url)
+                url_webpage = 'https://mybox.cl/{}?page={}'.format(
+                    url_extension, page)
+                print(url_webpage)
 
-            soup = BeautifulSoup(session.get(category_url, timeout=30).text,
-                                 'html.parser')
-            prod_list = soup.find('ul', {'id': 'product_list'})
+                response = session.get(url_webpage)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('div', 'js-product-'
+                                                         'miniature-wrapper')
 
-            if not prod_list:
-                logging.warning('Empty category: ' + category_url)
-                continue
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
 
-            prod_cells = prod_list.findAll('li')
-
-            if not prod_cells:
-                logging.warning('Empty category: ' + category_url)
-                continue
-
-            for cell in prod_cells:
-                product_urls.append(
-                    cell.find('a')['href'].replace('http:', 'https:'))
-
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.54.0'
-        page_source = session.get(url, timeout=30).text
-
-        stock = int(re.search(r"quantityAvailable=(-?\d+)",
-                              page_source).groups()[0])
-
-        if stock > 0:
-            stock = -1
-        else:
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', {'itemprop': 'name'}).text
+        sku = soup.find('input', {'name': 'id_product'})['value']
+        if soup.find('div', 'stock-disponible').text.strip() == 'No hay ' \
+                                                                'suficientes' \
+                                                                ' productos ' \
+                                                                'en stock':
             stock = 0
-
-        soup = BeautifulSoup(page_source, 'html.parser')
-
-        name = soup.find('h1').text.strip()
-        sku = re.search(r"id_product='(\d+)'", page_source).groups()[0]
-
-        price = re.search(r"productPriceTaxExcluded=(\d+)",
-                          page_source).groups()[0]
-        price = Decimal(price)
-
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'idTab1'})))
-
-        picture_urls = [x['href'] for x in soup.findAll('a', 'thickbox')]
-
+        else:
+            stock = -1
+        normal_price = Decimal(
+            soup.find('span', 'current-price').find('span', 'product-price')[
+                'content'])
+        offer_price = Decimal(remove_words(
+            soup.find('span', 'transf-price').text.strip().split()[0]))
+        picture_urls = [tag['src'] for tag in soup.find('div',
+                                                        'images-container').
+                        findAll('img') if tag.get('src')]
         p = Product(
             name,
             cls.__name__,
@@ -118,12 +108,10 @@ class MyBox(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
-            description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
-
         return [p]
