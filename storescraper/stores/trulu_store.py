@@ -80,8 +80,8 @@ class TruluStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
-        part_number = soup.find('span', 'sku').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        sku = soup.find('span', 'sku').text
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
@@ -104,13 +104,12 @@ class TruluStore(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
             picture_urls=picture_urls
         )
         return [p]
