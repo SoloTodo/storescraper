@@ -97,6 +97,8 @@ class MyBox(Store):
                 'content'])
         offer_price = Decimal(remove_words(
             soup.find('span', 'transf-price').text.strip().split()[0]))
+        if normal_price == 0 or offer_price == 0:
+            stock = 0
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'images-container').
                         findAll('img') if tag.get('src')]
