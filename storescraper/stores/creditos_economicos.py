@@ -49,6 +49,7 @@ class CreditosEconomicos(Store):
                 product_url = product['href']
                 if product_url == '#':
                     continue
+                product_url += '?sc=2'
 
                 product_urls.append(product_url)
 
@@ -63,6 +64,9 @@ class CreditosEconomicos(Store):
         response = session.get(url)
 
         if response.status_code != 200:
+            if '?sc=2' in url:
+                return cls.products_for_url(url.replace('?sc=2', ''), category, extra_args)
+
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
