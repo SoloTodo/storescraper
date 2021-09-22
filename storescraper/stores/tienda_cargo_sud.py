@@ -8,7 +8,8 @@ from storescraper.categories import STORAGE_DRIVE, VIDEO_CARD, RAM, \
     VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class TiendaCargoSud(Store):
@@ -94,6 +95,8 @@ class TiendaCargoSud(Store):
         picture_urls.append(
             'https:' + soup.find('div', 'product-image-main').find('img')[
                 'data-photoswipe-src'])
+        description = html_to_markdown(str(
+            soup.find('div', 'product-single__description')))
         p = Product(
             name,
             cls.__name__,
@@ -107,5 +110,6 @@ class TiendaCargoSud(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            description=description
         )
         return [p]
