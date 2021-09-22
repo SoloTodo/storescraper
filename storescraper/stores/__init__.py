@@ -324,6 +324,7 @@ from .tekstore import Tekstore
 from .terabyte import Terabyte
 from .tecno_master import TecnoMaster
 from .tec_tec import TecTec
+from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_inglesa import TiendaInglesa
