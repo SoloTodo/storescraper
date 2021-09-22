@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 import re
 import time
 
@@ -302,7 +303,8 @@ class Falabella(Store):
     def _get_product_urls(cls, session, category_id, extra_query_params):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zone=13&categoryId={}&page={}'
+                   'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
+                   '&categoryId={}&page={}'
 
         page = 1
 
@@ -339,7 +341,7 @@ class Falabella(Store):
         else:
             separator = '?'
 
-        modified_url = '{}{}v={}'.format(url, separator, retries)
+        modified_url = '{}{}v={}'.format(url, separator, random.random())
 
         try:
             res = session.get(modified_url, timeout=30)
