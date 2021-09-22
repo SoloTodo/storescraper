@@ -65,7 +65,8 @@ class CreditosEconomicos(Store):
 
         if response.status_code != 200:
             if '?sc=2' in url:
-                return cls.products_for_url(url.replace('?sc=2', ''), category, extra_args)
+                return cls.products_for_url(
+                    url.replace('?sc=2', ''), category, extra_args)
 
             return []
 
