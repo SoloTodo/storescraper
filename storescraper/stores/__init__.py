@@ -146,6 +146,7 @@ from .infographics_solutions import InfographicsSolutions
 from .infosep import Infosep
 from .infor_ingen import InforIngen
 from .ingram_micro import IngramMicro
+from .ingtech import Ingtech
 from .intcomex import Intcomex
 from .invasion_gamer import InvasionGamer
 from .inverfin import Inverfin
