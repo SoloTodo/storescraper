@@ -95,9 +95,8 @@ class TruluStore(Store):
                 remove_words(price_container.find('bdi').text))
         normal_price = Decimal(
             remove_words(soup.find('p', 'price').find('div', 'ww-price').text))
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-gallery').findAll('img') if
-                        tag['class'][0] != 'attachment-woocommerce_thumbnail']
+        picture_urls = [tag.find('a')['href'] for tag in
+                        soup.findAll('div', 'woocommerce-product-gallery__image')]
         p = Product(
             name,
             cls.__name__,

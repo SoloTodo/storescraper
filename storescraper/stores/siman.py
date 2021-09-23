@@ -51,8 +51,8 @@ class Siman(Store):
                     if 'productId' not in product:
                         continue
                     done = False
-                    if product['brand'].upper() != 'LG':
-                        continue
+                    # if product['brand'].upper() != 'LG':
+                    #     continue
                     product_url = 'https://{}.siman.com/{}/p'.format(
                         cls.country_url, product['linkText'])
                     product_urls.append(product_url)

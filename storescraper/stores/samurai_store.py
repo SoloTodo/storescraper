@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, MOUSE
+from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, MOUSE, \
+    CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,7 +17,8 @@ class SamuraiStore(Store):
             RAM,
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
-            MOUSE
+            MOUSE,
+            CELL
         ]
 
     @classmethod
@@ -26,6 +28,10 @@ class SamuraiStore(Store):
             ['tarjetas-graficas', VIDEO_CARD],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
             ['perifericos', MOUSE],
+            ['apple/iphone/iphone-13', CELL],
+            ['apple/iphone/iphone-13-mini', CELL],
+            ['apple/iphone/iphone-13-pro', CELL],
+            ['apple/iphone/iphone-13-pro-max', CELL],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -68,7 +74,9 @@ class SamuraiStore(Store):
         else:
             sku = None
 
-        if soup.find('p', 'stock out-of-stock'):
+        if 'preventa' in name.lower():
+            stock = 0
+        elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
