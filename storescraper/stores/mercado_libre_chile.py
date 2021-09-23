@@ -1,17 +1,14 @@
-import html
 import json
 import logging
-import urllib
 
-import demjson
 import re
 from decimal import Decimal
 
-import ipdb
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MONITOR, SOLID_STATE_DRIVE, \
-    WEARABLE, PRINTER, MOUSE, ALL_IN_ONE, KEYBOARD_MOUSE_COMBO, HEADPHONES
+    WEARABLE, PRINTER, MOUSE, ALL_IN_ONE, KEYBOARD_MOUSE_COMBO, HEADPHONES, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,10 +17,7 @@ from storescraper.utils import session_with_proxy
 class MercadoLibreChile(Store):
     @classmethod
     def categories(cls):
-        return [
-            NOTEBOOK,
-            MONITOR
-        ]
+        return list(set(cls._category_paths().values()))
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -33,60 +27,68 @@ class MercadoLibreChile(Store):
         for store_extension, local_category in cls._category_paths().items():
             if local_category != category:
                 continue
-            print(store_extension)
-            url_webpage = 'https://listado.mercadolibre.cl/{}'.format(
-                store_extension)
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'ui-search-layout__item')
-            if not product_containers:
-                logging.warning('Empty category: ' + store_extension)
-                break
 
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+            offset = 1
+            while True:
+                if offset > 1000:
+                    raise Exception('Page overflow')
+
+                url_webpage = 'https://listado.mercadolibre.cl/_Desde_{}{}'.format(
+                    offset, store_extension)
+                print(url_webpage)
+                response = session.get(url_webpage)
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                if soup.find('div', 'ui-search-rescue'):
+                    break
+
+                product_containers = soup.findAll(
+                    'li', 'ui-search-layout__item')
+
+                if not product_containers:
+                    logging.warning('Empty category: ' + store_extension)
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href'].split('#')[0].split('?')[0]
+                    product_urls.append(product_url)
+
+                offset += 48
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        category = NOTEBOOK
         print(url)
+        category = NOTEBOOK
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
         new_mode_data = re.search(
             r'window.__PRELOADED_STATE__ =([\S\s]+?);\n', page_source)
-        if new_mode_data:
-            data = json.loads(new_mode_data.groups()[0])
-            # import ipdb
-            # ipdb.set_trace()
+        data = json.loads(new_mode_data.groups()[0])
 
-            for entry in data['initialState']['components'].get('head', []):
-                if entry['id'] == 'item_status_message' and 'PAUSADA' in \
-                        entry['body']['text'].upper():
-                    return []
-            key_to_categories = cls.category_paths()
-            for possibly_category in data['initialState']['schema'][1][
+        for entry in data['initialState']['components'].get('head', []):
+            if entry['id'] == 'item_status_message' and 'PAUSADA' in \
+                    entry['body']['text'].upper():
+                return []
+        key_to_categories = cls.category_paths()
+        for possibly_category in data['initialState']['schema'][1][
                 'itemListElement']:
-                category_name = possibly_category['item']['name']
-                # print(category_name)
-                if category_name in key_to_categories:
-                    category = key_to_categories[category_name]
-                    break
-
-            if 'component_id' in data['initialState']['components'][
-                'variations']:
-                return cls.retrieve_type2_products(session, url, soup,
-                                                   category, data)
+            category_name = possibly_category['item']['name']
+            if category_name in key_to_categories:
+                category = key_to_categories[category_name]
+                break
             else:
-                return cls.retrieve_type3_products(data, session, category)
+                print(category_name)
+
+        if 'component_id' in data['initialState']['components'][
+                'variations']:
+            return cls.retrieve_type2_products(session, url, soup,
+                                               category, data)
         else:
-            return cls.retrieve_type1_products(
-                page_source, url, soup, category)
+            return cls.retrieve_type3_products(data, session, category)
 
     @classmethod
     def retrieve_type3_products(cls, data, session, category):
@@ -228,81 +230,14 @@ class MercadoLibreChile(Store):
         return products
 
     @classmethod
-    def retrieve_type1_products(cls, page_source, url, soup, category):
-        print('Type1')
-        name = soup.find('h1', 'item-title__primary ').text.strip()
-        seller_tag = soup.find('p', 'title')
-        seller = seller_tag.text.strip()
-        variations = re.search(r'meli.Variations\(({[\S\s]+?})\);',
-                               page_source)
-        products = []
-
-        if variations:
-            variations_str = variations.groups()[0]
-            variations_data = demjson.decode(variations_str)['model']
-
-            for variation in variations_data:
-                key = str(variation['id'])
-                sku = soup.find('input', {'name': 'itemId'})['value']
-                v_suffix = variation[
-                    'attribute_combinations'][0]['value_name']
-                v_name = name + "({})".format(v_suffix)
-                v_url = url.split('?')[0] + "?variation={}".format(key)
-                price = Decimal(variation['price'])
-                picture_url_base = 'https://mlc-s2-p.mlstatic.com/{}-F.jpg'
-                picture_urls = [picture_url_base.format(p_id)
-                                for p_id in variation['picture_ids']]
-
-                products.append(Product(
-                    v_name,
-                    cls.__name__,
-                    category,
-                    v_url,
-                    url,
-                    key,
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    picture_urls=picture_urls,
-                    seller=seller,
-                    description='Type1'
-                ))
-        else:
-            pictures_tag = soup.find('div', 'gallery-content')
-            pictures_data = json.loads(
-                html.unescape(pictures_tag['data-full-images']))
-            picture_urls = [e['src'] for e in pictures_data]
-            pricing_str = re.search(
-                r'dataLayer = ([\S\s]+?);', page_source).groups()[0]
-            pricing_data = json.loads(pricing_str)[0]
-            sku = pricing_data['itemId']
-            price = Decimal(pricing_data['localItemPrice'])
-
-            products.append(Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                -1,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls,
-                seller=seller,
-                description='Type1'
-            ))
-
-        return products
-
-    @classmethod
     def _category_paths(cls):
         return {
-            '_Tienda_acer':NOTEBOOK,
+            '_Tienda_mercado-libre-gaming': VIDEO_GAME_CONSOLE,
+            '_Tienda_microplay': VIDEO_GAME_CONSOLE,
+            '_Tienda_playstation': VIDEO_GAME_CONSOLE,
+            '_Tienda_ubisoft': VIDEO_GAME_CONSOLE,
+            '_Tienda_warner-bros-games': VIDEO_GAME_CONSOLE,
+            '_Tienda_acer': NOTEBOOK,
             '_Tienda_hp': NOTEBOOK,
 
         }
