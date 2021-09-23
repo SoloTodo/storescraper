@@ -8,7 +8,8 @@ from storescraper.categories import STORAGE_DRIVE, POWER_SUPPLY, \
     VIDEO_CARD, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class Ingtech(Store):
@@ -78,17 +79,19 @@ class Ingtech(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        part_number = soup.find('span', 'sku').text
-        offer_price = Decimal(int(
-            remove_words(soup.find('p', 'price').find('bdi').text)) * 0.98)
+        sku = soup.find('span', 'sku').text
         normal_price = Decimal(
             remove_words(soup.find('p', 'price').find('bdi').text))
+        offer_price = (normal_price * Decimal('0.98')).quantize(0)
+
         picture_urls = []
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'tab-description'})))
 
         p = Product(
             name,
@@ -96,13 +99,14 @@ class Ingtech(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=sku,
             picture_urls=picture_urls,
+            description=description
         )
         return [p]
