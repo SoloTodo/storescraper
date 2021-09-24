@@ -671,8 +671,10 @@ class Ripley(Store):
                     print('No banners for: ' + url)
                     continue
 
-                for idx, banner_link in enumerate(
-                        banners_container.findAll('a')):
+                idx = 1
+                for banner_link in banners_container.findAll('a'):
+                    if 'item' in banner_link.attrs.get('class', []):
+                        continue
                     picture_url = banner_link.find('img')
 
                     if not picture_url:
@@ -685,11 +687,12 @@ class Ripley(Store):
                         'destination_urls': [banner_link['href']],
                         'key': picture_url.get('src') or
                         picture_url.get('data-src'),
-                        'position': idx + 1,
+                        'position': idx,
                         'section': section,
                         'subsection': subsection,
                         'type': subsection_type
                     })
+                    idx += 1
             else:
                 raise Exception('Invalid subsection type')
 
