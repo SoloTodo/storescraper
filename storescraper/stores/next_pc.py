@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, MOUSE, VIDEO_CARD, KEYBOARD, SOLID_STATE_DRIVE, \
-    POWER_SUPPLY, NOTEBOOK, RAM, MOTHERBOARD
+    POWER_SUPPLY, NOTEBOOK, RAM, MOTHERBOARD, PROCESSOR, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,6 +25,8 @@ class NextPc(Store):
             NOTEBOOK,
             RAM,
             MOTHERBOARD,
+            PROCESSOR,
+            CPU_COOLER
         ]
 
     @classmethod
@@ -41,6 +43,8 @@ class NextPc(Store):
             ['hardware/fuentes-de-poder', POWER_SUPPLY],
             ['notebooks', NOTEBOOK],
             ['hardware/ram', RAM],
+            ['hardware/procesadores', PROCESSOR],
+            ['hardware/refrigeracion', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

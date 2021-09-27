@@ -85,6 +85,7 @@ class SipoOnline(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://sipoonline.cl/product-category/' \
                               '{}/page/{}/'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'nv-product-content')
@@ -100,10 +101,16 @@ class SipoOnline(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+
+        product_data = json.loads(
+                soup.find('script', {'type': 'application/ld+json'})
+                    .text)['@graph'][1]
+        name = product_data['name']
+        description = product_data['description']
         variants = soup.find('form', 'variations_form')
         if not variants:
             variants = soup.find('div', 'variations_form')
@@ -131,7 +138,8 @@ class SipoOnline(Store):
                                       'html.parser').text.split()[0])
                 else:
                     stock = -1
-                price = Decimal(product['display_price'])
+                normal_price = Decimal(product['display_price'])
+                offer_price = (normal_price * Decimal('0.97')).quantize(0)
                 picture_urls = [product['image']['src']]
                 p = Product(
                     variant_name,
@@ -141,12 +149,12 @@ class SipoOnline(Store):
                     url,
                     sku,
                     stock,
-                    price,
-                    price,
+                    normal_price,
+                    offer_price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls
-
+                    picture_urls=picture_urls,
+                    description=description
                 )
                 products.append(p)
             return products
@@ -159,12 +167,8 @@ class SipoOnline(Store):
             else:
                 stock = -1
             sku = soup.find('button', 'single_add_to_cart_button')['value']
-            price_container = soup.find('p', 'price')
-            if price_container.find('ins'):
-                price = Decimal(
-                    remove_words(price_container.find('ins').find('bdi').text))
-            else:
-                price = Decimal(remove_words(price_container.find('bdi').text))
+            normal_price = Decimal(product_data['offers'][0]['price'])
+            offer_price = (normal_price * Decimal('0.97')).quantize(0)
             picture_containers = soup.find('div',
                                            'woocommerce-product-gallery') \
                 .findAll('img')
@@ -177,10 +181,11 @@ class SipoOnline(Store):
                 url,
                 sku,
                 stock,
-                price,
-                price,
+                normal_price,
+                offer_price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                description=description
             )
             return [p]

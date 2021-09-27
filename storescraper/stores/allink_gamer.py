@@ -54,8 +54,14 @@ class AllinkGamer(Store):
                 url_webpage = 'https://allinkgamer.cl/{}?page={}'.format(
                     url_extension, page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                res = session.get(url_webpage)
+
+                if res.status_code == 404:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                soup = BeautifulSoup(res.text, 'html.parser')
                 product_containers = soup.find('section', {'id': 'products'}) \
                     .findAll('article')
                 if not product_containers:

@@ -3,8 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, MOUSE, \
-    CELL
+from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
+    MOUSE, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
