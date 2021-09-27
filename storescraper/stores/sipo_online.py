@@ -108,7 +108,12 @@ class SipoOnline(Store):
 
         product_data = json.loads(
                 soup.find('script', {'type': 'application/ld+json'})
-                    .text)['@graph'][1]
+                    .text)
+        if '@graph' not in product_data:
+            return []
+
+        product_data = product_data['@graph'][1]
+
         name = product_data['name']
         description = product_data['description']
         variants = soup.find('form', 'variations_form')

@@ -33,7 +33,7 @@ class Max(Store):
                           'index/?category=&product_list_limit=30&' \
                           'marca=7&p={}&q=LG%20LG'.format(page)
             print(url_webpage)
-            data = session.get(url_webpage).text
+            data = session.get(url_webpage, timeout=30).text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('li',
                                               'item product product-item')
@@ -54,7 +54,7 @@ class Max(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        data = session.get(url, timeout=30).text
         soup = BeautifulSoup(data, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
         key = soup.find('input', {'id': 'getproductid'})['value']
