@@ -122,12 +122,8 @@ class YouTech(Store):
         else:
             stock = 0
 
-        price_container = soup.find('h2', 'price-new')
-
-        if not price_container:
-            price_container = soup.find('span', 'price-new')
-
-        price = Decimal(remove_words(price_container.text))
+        price_container = soup.find('li', 'product-tax')
+        price = Decimal(remove_words(price_container.text.split(':')[1]))
         picture_urls = [tag['data-zoom-image'] for tag in
                         soup.find('div', 'additional-images-container')
                             .findAll('img')]
