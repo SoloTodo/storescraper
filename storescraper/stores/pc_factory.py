@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import requests.utils
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
@@ -58,6 +59,8 @@ class PcFactory(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.cookies = requests.utils.cookiejar_from_dict(
+            extra_args['cookies'])
 
         # Productos normales
         url_extensions = [
@@ -118,7 +121,7 @@ class PcFactory(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.pcfactory.cl/?categoria={}&' \
+                url_webpage = 'https://www.pcfactory.cl/a?categoria={}&' \
                               'pagina={}'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
@@ -169,6 +172,8 @@ class PcFactory(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.cookies = requests.utils.cookiejar_from_dict(
+            extra_args['cookies'])
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         sku = soup.find('input', {'name': 'data_id_producto'})['value']
@@ -227,3 +232,17 @@ class PcFactory(Store):
             condition=condition
         )
         return [p]
+
+    def preflight(cls, extra_args=None):
+        session = session_with_proxy(extra_args)
+        res = session.get('https://www.pcfactory.cl/', allow_redirects=False)
+        assert res.status_code == 302
+        url = res.headers['Location']
+        fixed_url = url.replace('http%3A', 'https%3A')
+        res = session.get(fixed_url)
+        assert res.status_code == 200
+
+        cookies = requests.utils.dict_from_cookiejar(res.cookies)
+        return {
+            'cookies': cookies
+        }
