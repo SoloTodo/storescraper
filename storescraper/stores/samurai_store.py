@@ -66,6 +66,10 @@ class SamuraiStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
+
+        if 'RIFA' in name:
+            return []
+
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         sku_tag = soup.find('span', 'sku')
 

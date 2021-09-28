@@ -82,8 +82,12 @@ class Enarix(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        stock_tag = soup.find('input', {'name': 'quantity'})
+        if stock_tag:
+            if 'max' in stock_tag.attrs:
+                stock = int(stock_tag['max'])
+            else:
+                stock = 1
         else:
             stock = 0
         price_container = soup.find('span', 'electro-price')
