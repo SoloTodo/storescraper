@@ -7,7 +7,8 @@ from storescraper.categories import SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, POWER_SUPPLY, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, \
     MONITOR, PRINTER, UPS, MOUSE, COMPUTER_CASE, HEADPHONES, STEREO_SYSTEM, \
-    ALL_IN_ONE, VIDEO_GAME_CONSOLE, CELL, WEARABLE, TELEVISION, GAMING_CHAIR
+    ALL_IN_ONE, VIDEO_GAME_CONSOLE, CELL, WEARABLE, TELEVISION, GAMING_CHAIR, \
+    KEYBOARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -40,42 +41,46 @@ class Centrale(Store):
             WEARABLE,
             TELEVISION,
             GAMING_CHAIR,
+            CPU_COOLER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnología/computación/almacenamiento-externo',
+            ['tecnología/audio/audífonos', HEADPHONES],
+            ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
+            ['tecnología/computación/all-in-one/', ALL_IN_ONE],
+            ['tecnología/computación/almacenamiento-externo/',
              EXTERNAL_STORAGE_DRIVE],
-            ['tecnología/partes-y-piezas/almacenamiento',
-             SOLID_STATE_DRIVE],
-            ['tecnología/partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
-            ['tecnología/partes-y-piezas/memorias-ram', RAM],
-            ['tecnología/partes-y-piezas/placas-madres', MOTHERBOARD],
-            ['tecnología/partes-y-piezas/procesadores-pc', PROCESSOR],
-            ['tecnología/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+            ['tecnología/computación/kits-teclados-y-mouses', MOUSE],
+            ['tecnología/computación/mouses', MOUSE],
             ['tecnología/computación/notebooks', NOTEBOOK],
             ['tecnología/computación/tablets/', TABLET],
-            ['tecnología/computación/all-in-one/', ALL_IN_ONE],
-            ['tecnología/entretención/consolas/', VIDEO_GAME_CONSOLE],
-            ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
+            ['tecnología/computación/teclados/', KEYBOARD],
+            ['tecnología/computación/ups-y-reguladores', UPS],
+            ['tecnología/electro/smartwatches-electro', WEARABLE],
+            ['tecnología/electro/televisores', TELEVISION],
+            ['tecnologia/entretención/consolas', VIDEO_GAME_CONSOLE],
             ['tecnología/impresión-y-oficina/impresoras-laser', PRINTER],
             ['tecnología/impresión-y-oficina/impresoras-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-laser', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/impresoras-fotograficas',
              PRINTER],
-            ['tecnología/impresión-y-oficina/plotters', PRINTER],
-            ['tecnología/computación/ups-y-reguladores', UPS],
-            ['tecnología/computación/kits-teclados-y-mouses', MOUSE],
-            ['tecnología/partes-y-piezas/gabinetes-desktop', COMPUTER_CASE],
-            ['tecnología/telefonía/smartphones', CELL],
-            ['tecnología/electro/smartwatches-electro', WEARABLE],
-            ['tecnología/electro/televisores', TELEVISION],
-            ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
-            ['tecnología/audio/audífonos', HEADPHONES],
+            ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
             ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas',
              GAMING_CHAIR],
+            ['tecnología/impresión-y-oficina/plotters', PRINTER],
+            ['tecnología/partes-y-piezas/almacenamiento',
+             SOLID_STATE_DRIVE],
+            ['tecnología/partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
+            ['tecnología/partes-y-piezas/gabinetes-desktop', COMPUTER_CASE],
+            ['tecnología/partes-y-piezas/memorias-ram', RAM],
+            ['tecnología/partes-y-piezas/placas-madres', MOTHERBOARD],
+            ['tecnología/partes-y-piezas/procesadores-pc', PROCESSOR],
+            ['tecnología/partes-y-piezas/refrigeración', CPU_COOLER],
+            ['tecnología/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+            ['tecnología/telefonía/smartphones', CELL],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

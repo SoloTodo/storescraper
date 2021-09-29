@@ -184,7 +184,8 @@ class Wom(Store):
             graphql_data = json.loads(context['graphql_data'])
 
             stock_reference = entry['referenceId']
-            stock_endoint = 'https://store.wom.cl/ss/{}.json'.format(stock_reference.replace('.', '_'))
+            stock_endoint = 'https://store.wom.cl/ss/{}.json'.format(
+                stock_reference.replace('.', '_'))
             stock_json = json.loads(session.get(stock_endoint).text)
 
             if stock_json['inventory']:

@@ -79,7 +79,7 @@ class Ingtech(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('input', {'name': 'comment_post_ID'})['value']
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:

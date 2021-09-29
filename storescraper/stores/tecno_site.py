@@ -110,15 +110,26 @@ class TecnoSite(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        if not soup.find('span', {'id': 'final-price'}):
+            return []
+
         name = soup.find('h1', 'product_title').text.strip()[:256]
         part_number = soup.find('span', 'sku').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        if soup.find('div', 'no-purchasable-tag no-stock'):
-            stock = 0
+
+        stock_tag = soup.find('input', {'name': 'quantity'})
+        if stock_tag:
+            if 'max' in stock_tag.attrs:
+                if stock_tag['max']:
+                    stock = int(stock_tag['max'])
+                else:
+                    stock = -1
+            else:
+                stock = 1
         else:
-            stock = int(soup.find('span', 'stock-quantity').text.strip())
-        if not soup.find('span', {'id': 'final-price'}):
-            return []
+            stock = 0
+
         price = Decimal(
             soup.find('span', {'id': 'final-price'}).text.replace('.', ''))
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
