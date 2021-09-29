@@ -41,7 +41,9 @@ class Centrale(Store):
             WEARABLE,
             TELEVISION,
             GAMING_CHAIR,
-            CPU_COOLER
+            CPU_COOLER,
+            KEYBOARD,
+
         ]
 
     @classmethod
