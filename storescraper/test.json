@@ -1,0 +1,2872 @@
+{
+  'user': None,
+  'device': {
+    'type': 'desktop',
+    'mobile': False,
+    'tablet': False,
+    'desktop': True,
+    'forced': False,
+    'originalType': 'desktop',
+    'lowEnd': False,
+    'webView': False,
+    'pciCompliant': True,
+    'nativeWebview': False,
+    'webviewUserAgent': {},
+    'osName': 'other',
+    'osVersion': '0.0.0'
+  },
+  'platform': {
+    'siteId': 'MLC',
+    'countryId': 'CL',
+    'id': 'ML',
+    'domain': 'mercadolibre.cl'
+  },
+  'browser': {
+    'support': {
+      'webp': False,
+      'prefetch': True,
+      'preconnect': True,
+      'pushNotifications': False,
+      'serviceWorkers': False,
+      'brotli': False,
+      'sameSite': True
+    },
+    'name': 'python requests',
+    'version': '2.24.0',
+    'major': '2',
+    'minor': '24',
+    'patch': '0',
+    'userAgent': 'Python Requests 2.24.0 / Other 0.0.0',
+    'outdated': False
+  },
+  'actualLocation': 'https://www.mercadolibre.cl/tienda/apple',
+  'scripts': None,
+  'criticalPath': {
+    'key': 'deals'
+  },
+  'perfill': None,
+  'metrics': {
+    'hotjar': {
+      'traffic': {
+        'from': 0,
+        'to': 9
+      }
+    }
+  },
+  'feConfigEnvironment': 'production',
+  'infoUser': None,
+  'isLegacyBrowser': True,
+  'baseURL': '/',
+  'dataLanding': {
+    'name': 'Apple',
+    'enabled': True,
+    'theme': 'default',
+    'folder': 'tienda',
+    'hotjar': {
+      'id': 783944,
+      'traffic': {
+        'from': 0,
+        'to': 25
+      }
+    },
+    'host': 'mercadolibre.cl',
+    'site': {
+      'copyright': 'MercadoLibre S.R.L.',
+      'analytics': 'apple'
+    },
+    'seo': {
+      'meta': {
+        'description': 'Encontrá lo que buscás en Apple. Todo lo que necesitas lo conseguís en un solo lugar, en Mercado Libre',
+        'keywords': 'Apple, mercado libre',
+        'facebookImage': None,
+        'author': 'MercadoLibre - Donde compras y vendes de todo'
+      },
+      'seo_text': 'en Apple Mercado Libre'
+    },
+    'contents': [
+      {
+        'type': 'home',
+        'key': 'www.mercadolibre.cl/tienda/apple/type/home',
+        'startTime': '',
+        'endTime': ''
+      }
+    ],
+    'metrics': {
+      'vertical': 'BRAND_STORES',
+      'bu': 'CORE'
+    },
+    'url': 'www.mercadolibre.cl/tienda/apple',
+    'creationDate': '2021-09-28T17:35:49.582Z',
+    'type': 'home',
+    'hasDynamicContent': True,
+    'ctr': 21,
+    'components': [
+      {
+        'component_name': 'Header',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [],
+        'data': {
+          'label': 'Header',
+          'link': {
+            'url': 'https://listado.mercadolibre.cl/_Tienda_apple_Deal_apple_af_to',
+            'component': 'Header-normal',
+            'position': 0
+          },
+          'section': 'hub_header',
+          'imgAlt': 'Tracking',
+          'element_order': 1
+        },
+        'styles': {
+          'bg_color': '#ffffff',
+          'bg_mobile': 'https://http2.mlstatic.com/storage/splinter-admin/1623881286543-headermobile.jpg',
+          'bg_desktop': 'https://http2.mlstatic.com/storage/splinter-admin/1623881282378-headerdesktop.jpg'
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'CarouselDynamic',
+        'variations': 'normal',
+        'hasDynamicContent': True,
+        'typeContent': 'items_carousel',
+        'items': [
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC641550841',
+              'categoryId': 'MLC3697',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Apple AirPods Con Estuche De Carga - Blanco',
+              'permalink': 'https://www.mercadolibre.cl/apple-airpods-con-estuche-de-carga-blanco/p/MLC15914456',
+              'thumbnail': 'http://http2.mlstatic.com/D_864145-MLA46317906508_062021-I.jpg',
+              'image_id': '864145-MLA46317906508_062021',
+              'price': 159000,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 159.000',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': False
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '26500',
+                'price_decimals': None
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC584755652',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Apple iPhone XR 64 Gb - Negro',
+              'permalink': 'https://www.mercadolibre.cl/apple-iphone-xr-64-gb-negro/p/MLC12866681',
+              'thumbnail': 'http://http2.mlstatic.com/D_642474-MLA46597444699_072021-I.jpg',
+              'image_id': '642474-MLA46597444699_072021',
+              'price': 558000,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 558.000',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': False
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '46500',
+                'price_decimals': None
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219846',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "Apple iPad Air De 10,9'' Wi- Fi 64 Gb (4a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219846-apple-ipad-air-de-109-wi-fi-64-gb-4a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_769793-MLC45853448612_052021-O.jpg',
+              'image_id': '769793-MLC45853448612_052021',
+              'price': 649990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 649.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '54165',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219774',
+              'categoryId': 'MLC1652',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "Macbook Air 13'' Procesador Apple M1 (8 Gb Ram, 256 Gb Ssd)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219774-macbook-air-13-procesador-apple-m1-8-gb-ram-256-gb-ssd-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_851825-MLC45857054008_052021-O.jpg',
+              'image_id': '851825-MLC45857054008_052021',
+              'price': 969990,
+              'original_price': 1099990,
+              'discount': 11,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 969.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.099.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '80832',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611221087',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 12 Apple 64 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611221087-iphone-12-apple-64-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_911325-MLC46082892367_052021-O.jpg',
+              'image_id': '911325-MLC46082892367_052021',
+              'price': 789990,
+              'original_price': 869990,
+              'discount': 9,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 789.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 869.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '65832',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219785',
+              'categoryId': 'MLC1652',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "Macbook Pro 13'' Procesador Apple M1 (8 Gb Ram, 256 Gb Ssd)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219785-macbook-pro-13-procesador-apple-m1-8-gb-ram-256-gb-ssd-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_663212-MLC45936583581_052021-O.jpg',
+              'image_id': '663212-MLC45936583581_052021',
+              'price': 1199990,
+              'original_price': 1349990,
+              'discount': 11,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.199.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.349.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '99999',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC612415807',
+              'categoryId': 'MLC116538',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Apple Watch Series 3 38mm (gps, Aluminio Y Correa Deportiva)',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-612415807-apple-watch-series-3-38mm-gps-aluminio-y-correa-deportiva-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_771373-MLC46081558805_052021-O.jpg',
+              'image_id': '771373-MLC46081558805_052021',
+              'price': 209990,
+              'original_price': 249990,
+              'discount': 16,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 209.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 249.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '34998',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC637512982',
+              'categoryId': 'MLC3697',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Apple AirPods Con Estuche De Carga Inalámbrica - Blanco',
+              'permalink': 'https://www.mercadolibre.cl/apple-airpods-con-estuche-de-carga-inalambrica-blanco/p/MLC15914241',
+              'thumbnail': 'http://http2.mlstatic.com/D_730568-MLA46317906143_062021-I.jpg',
+              'image_id': '730568-MLA46317906143_062021',
+              'price': 186000,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 186.000',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': False
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '31000',
+                'price_decimals': None
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219831',
+              'categoryId': 'MLC1652',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "Macbook Air 13'' Procesador Apple M1 (8 Gb Ram, 512 Gb Ssd)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219831-macbook-air-13-procesador-apple-m1-8-gb-ram-512-gb-ssd-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_744487-MLC45933290651_052021-O.jpg',
+              'image_id': '744487-MLC45933290651_052021',
+              'price': 1299990,
+              'original_price': 1399990,
+              'discount': 7,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.299.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.399.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '108332',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219764',
+              'categoryId': 'MLC116538',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Apple Watch Series 6 40mm (gps+4g, Aluminio, Cor. Deportiva)',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219764-apple-watch-series-6-40mm-gps4g-aluminio-cor-deportiva-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_729963-MLC46077049698_052021-O.jpg',
+              'image_id': '729963-MLC46077049698_052021',
+              'price': 499990,
+              'original_price': 569990,
+              'discount': 12,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 499.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 569.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '41665',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219826',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 11'' Apple M1, 256 Gb, Wi-fi (3a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219826-ipad-pro-11-apple-m1-256-gb-wi-fi-3a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_847813-MLC45856562306_052021-O.jpg',
+              'image_id': '847813-MLC45856562306_052021',
+              'price': 999990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 999.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '83332',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219848',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 11 Apple 128 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219848-iphone-11-apple-128-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_609473-MLC45976065581_052021-O.jpg',
+              'image_id': '609473-MLC45976065581_052021',
+              'price': 619990,
+              'original_price': 749990,
+              'discount': 17,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 619.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 749.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '51665',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          }
+        ],
+        'data': {
+          'title': 'Las Mejores Ofertas',
+          'viewMoreLink': {
+            'url': 'https://ofertas.mercadolibre.cl/apple-carrusel-2',
+            'deal_id': 'MLC',
+            'component': 'CarouselDynamic-normal',
+            'position': 2
+          },
+          'viewMoreText': 'Ver más',
+          'element_order': 1
+        },
+        'styles': {},
+        'filters': {
+          'dealOrUrl': {
+            'source': 'deal',
+            'deal': 'MLC3052'
+          }
+        },
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {},
+        'track_info': {},
+        'enableAddToCart': False,
+        'items_id': [
+          'MLC641550841',
+          'MLC584755652',
+          'MLC611219846',
+          'MLC611219774',
+          'MLC611221087',
+          'MLC611219785',
+          'MLC612415807',
+          'MLC637512982',
+          'MLC611219831',
+          'MLC611219764',
+          'MLC611219826',
+          'MLC611219848'
+        ]
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Banner',
+            'variations': 'large',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'Mejores Ofertas',
+              'link': {
+                'url': 'https://tienda.mercadolibre.cl/apple',
+                'component': 'Banner-large',
+                'position': 1
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 1
+            },
+            'styles': {
+              'bg_mobile': 'https://http2.mlstatic.com/D_NQ_NP_909075-MLA46509112308_062021-F.jpg',
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_886748-MLA46509112299_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'Iphone 12 ',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/celulares-telefonia/celulares/_Tienda_apple_Deal_apple-iphone-12-pro_af_to',
+                'component': 'Banner-small',
+                'position': 0
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 1
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_871661-MLA46442160160_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'Ipad air',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/computacion/tablets/apple/ipad-air_Tienda_apple_af_to',
+                'component': 'Banner-small',
+                'position': 1
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 2
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_828853-MLA47517748635_092021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'withTitle',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/celulares-telefonia/celulares/_Tienda_apple',
+                'component': 'Special-normal',
+                'position': 5
+              },
+              'title': 'iPhone',
+              'label': 'Iphone',
+              'imgAlt': 'Título',
+              'element_order': 1
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_680977-MLA46494958071_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://ofertas.mercadolibre.cl/apple-mac',
+                'component': 'Special-normal',
+                'position': 6
+              },
+              'title': 'MAC',
+              'label': 'MAC',
+              'imgAlt': 'Título',
+              'element_order': 2
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_674340-MLA46414565941_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/tablets-accesorios/_Tienda_apple',
+                'component': 'Special-normal',
+                'position': 7
+              },
+              'title': 'IPAD',
+              'label': 'IPAd',
+              'imgAlt': 'Título',
+              'element_order': 3
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_634932-MLA46494958074_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {
+          'title': 'CATEGORÍAS'
+        },
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/smartwatches-accesorios/_Tienda_apple',
+                'component': 'Special-normal',
+                'position': 8
+              },
+              'title': 'APPLE WATCH',
+              'label': 'apple watch',
+              'imgAlt': 'Título',
+              'element_order': 4
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_795018-MLA46494958079_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/audio/_Tienda_apple_WITH*BLUETOOTH_242085',
+                'component': 'Special-normal',
+                'position': 9
+              },
+              'title': 'AIRPODS',
+              'label': 'AIRPODS',
+              'imgAlt': 'Título',
+              'element_order': 5
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_743500-MLA46509402514_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/electronica/_Tienda_apple_Deal_apple-tv_af_to_NoIndex_True',
+                'component': 'Special-normal',
+                'position': 10
+              },
+              'title': 'apple tv',
+              'label': 'apple tv',
+              'imgAlt': 'Título',
+              'element_order': 6
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_665504-MLA46494514979_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'iPhone 12',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/celulares-telefonia/celulares/_Tienda_apple_Deal_apple-iphone-12_af_to_NoIndex_True',
+                'component': 'Banner-small',
+                'position': 11
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 3
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_879230-MLA46494668685_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'MacBook Air',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/macbook-air_Tienda_apple',
+                'component': 'Banner-small',
+                'position': 12
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 4
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_701146-MLA46494668691_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'withTitle',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/celulares-telefonia/accesorios-celulares/_Tienda_apple',
+                'component': 'Special-normal',
+                'position': 13
+              },
+              'title': 'IPHONE',
+              'label': 'Iphone accesorios',
+              'imgAlt': 'Título',
+              'element_order': 7
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_850766-MLA46495016007_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/perifericos-pc/_Tienda_apple_NoIndex_True',
+                'component': 'Special-normal',
+                'position': 14
+              },
+              'title': 'MAC',
+              'label': 'mac accesorios',
+              'imgAlt': 'Título',
+              'element_order': 8
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_759267-MLA46495016008_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/computacion/tablets/accesorios/_Tienda_apple',
+                'component': 'Special-normal',
+                'position': 15
+              },
+              'title': 'IPAD',
+              'label': 'Ipad accesorios',
+              'imgAlt': 'Título',
+              'element_order': 9
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_667496-MLA46494668701_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Special',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/_Tienda_apple_Deal_apple-todos_af_to',
+                'component': 'Special-normal',
+                'position': 16
+              },
+              'title': 'Ver Todos',
+              'label': 'todos accesorios',
+              'imgAlt': 'Título',
+              'element_order': 10
+            },
+            'styles': {
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_658790-MLA46495016012_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {
+          'title': 'ACCESORIOS'
+        },
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'Air Tag',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/_Tienda_apple_Deal_apple-airtag_af_to',
+                'component': 'Banner-small',
+                'position': 17
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 5
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_886140-MLA46419425740_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'Banner',
+            'variations': 'small',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'watch series',
+              'link': {
+                'url': 'https://listado.mercadolibre.cl/smartwatches-accesorios/serie-6_Tienda_apple',
+                'component': 'Banner-small',
+                'position': 18
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 6
+            },
+            'styles': {
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_797195-MLA46419425747_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'CarouselDynamic',
+        'variations': 'normal',
+        'hasDynamicContent': True,
+        'typeContent': 'items_carousel',
+        'items': [
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC616911852',
+              'categoryId': 'MLC416947',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Airtag Apple - 1 Unidad',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-616911852-airtag-apple-1-unidad-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_682774-MLC46246853571_062021-O.jpg',
+              'image_id': '682774-MLC46246853571_062021',
+              'price': 29990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 29.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '4998',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC616911857',
+              'categoryId': 'MLC416947',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Airtag Apple Pack De 4',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-616911857-airtag-apple-pack-de-4-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_610548-MLC46246877288_062021-O.jpg',
+              'image_id': '610548-MLC46246877288_062021',
+              'price': 104990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 104.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '17498',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC616911858',
+              'categoryId': 'MLC416947',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Llavero De Cuero Para Airtag Apple',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-616911858-llavero-de-cuero-para-airtag-apple-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_809561-MLC46247121104_062021-O.jpg',
+              'image_id': '809561-MLC46247121104_062021',
+              'price': 34990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 34.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '5831',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219819',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 11'' Apple M1, 128 Gb, Wi-fi (3a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219819-ipad-pro-11-apple-m1-128-gb-wi-fi-3a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_976382-MLC45856366665_052021-O.jpg',
+              'image_id': '976382-MLC45856366665_052021',
+              'price': 769990,
+              'original_price': 879990,
+              'discount': 12,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 769.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 879.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '64165',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219826',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 11'' Apple M1, 256 Gb, Wi-fi (3a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219826-ipad-pro-11-apple-m1-256-gb-wi-fi-3a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_847813-MLC45856562306_052021-O.jpg',
+              'image_id': '847813-MLC45856562306_052021',
+              'price': 999990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 999.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '83332',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC616911853',
+              'categoryId': 'MLC416947',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Etiqueta Loop Para Airtag Apple',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-616911853-etiqueta-loop-para-airtag-apple-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_805880-MLC46246880760_062021-O.jpg',
+              'image_id': '805880-MLC46246880760_062021',
+              'price': 29990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 29.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '4998',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219770',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 12,9'' Apple M1, 128 Gb, Wi-fi (5a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219770-ipad-pro-129-apple-m1-128-gb-wi-fi-5a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_653932-MLC45856512074_052021-O.jpg',
+              'image_id': '653932-MLC45856512074_052021',
+              'price': 1049990,
+              'original_price': 1099990,
+              'discount': 4,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.049.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.099.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '87499',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219827',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 11'' Apple M1, 256 Gb, Wi-fi + Cellular  (3a Gene)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219827-ipad-pro-11-apple-m1-256-gb-wi-fi-cellular-3a-gene-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_835251-MLC45856202620_052021-O.jpg',
+              'image_id': '835251-MLC45856202620_052021',
+              'price': 1039990,
+              'original_price': 1069990,
+              'discount': 2,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.039.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.069.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '86665',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611221075',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 12 Apple 128 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611221075-iphone-12-apple-128-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_691673-MLC46082934132_052021-O.jpg',
+              'image_id': '691673-MLC46082934132_052021',
+              'price': 849990,
+              'original_price': 929990,
+              'discount': 8,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 849.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 929.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '70832',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219759',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 12,9'' Apple M1, 256 Gb, Wi-fi (5a Generación)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219759-ipad-pro-129-apple-m1-256-gb-wi-fi-5a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_706877-MLC45856510839_052021-O.jpg',
+              'image_id': '706877-MLC45856510839_052021',
+              'price': 1199990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.199.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '99999',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611221087',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 12 Apple 64 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611221087-iphone-12-apple-64-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_911325-MLC46082892367_052021-O.jpg',
+              'image_id': '911325-MLC46082892367_052021',
+              'price': 789990,
+              'original_price': 869990,
+              'discount': 9,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 789.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 869.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '65832',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC613839438',
+              'categoryId': 'MLC181025',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iMac 24'' Apple M1 256gb Gpu 8c",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-613839438-imac-24-apple-m1-256gb-gpu-8c-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_621038-MLC46184914360_052021-O.jpg',
+              'image_id': '621038-MLC46184914360_052021',
+              'price': 1399990,
+              'original_price': 1539990,
+              'discount': 9,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.399.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.539.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '116665',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219762',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 12,9'' Apple M1, 512 Gb, Wi-fi (5a Generación) ",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219762-ipad-pro-129-apple-m1-512-gb-wi-fi-5a-generacion-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_617890-MLC45856628108_052021-O.jpg',
+              'image_id': '617890-MLC45856628108_052021',
+              'price': 1599990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.599.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '133332',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC616911854',
+              'categoryId': 'MLC416947',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'Etiqueta Loop De Cuero Para Airtag Apple',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-616911854-etiqueta-loop-de-cuero-para-airtag-apple-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_926941-MLC46246997853_062021-O.jpg',
+              'image_id': '926941-MLC46246997853_062021',
+              'price': 39990,
+              'original_price': None,
+              'discount': None,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 39.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': None
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 6,
+                'price': '6665',
+                'price_decimals': None
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611221066',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 12 Mini Apple 128 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611221066-iphone-12-mini-apple-128-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_604758-MLC46082890207_052021-O.jpg',
+              'image_id': '604758-MLC46082890207_052021',
+              'price': 749990,
+              'original_price': 849990,
+              'discount': 11,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 749.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 849.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '62499',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611219853',
+              'categoryId': 'MLC82067',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': "iPad Pro 12,9'' Apple M1, 256 Gb, Wi-fi + Cellular (5a Gene)",
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611219853-ipad-pro-129-apple-m1-256-gb-wi-fi-cellular-5a-gene-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_981813-MLC45856227987_052021-O.jpg',
+              'image_id': '981813-MLC45856227987_052021',
+              'price': 1299990,
+              'original_price': 1359990,
+              'discount': 4,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 1.299.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 1.359.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '108332',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          },
+          {
+            'componentName': 'CarouselDynamicItem',
+            'variation': 'normal',
+            'data': {
+              'itemId': 'MLC611221061',
+              'categoryId': 'MLC1055',
+              'cartQuantity': 0,
+              'hasVariations': False,
+              'title': 'iPhone 12 Mini Apple 64 Gb',
+              'permalink': 'https://articulo.mercadolibre.cl/MLC-611221061-iphone-12-mini-apple-64-gb-_JM?pdp_filters=official_store:1078',
+              'thumbnail': 'http://http2.mlstatic.com/D_924143-MLC46082890116_052021-O.jpg',
+              'image_id': '924143-MLC46082890116_052021',
+              'price': 679990,
+              'original_price': 769990,
+              'discount': 11,
+              'decimal_places': 0,
+              'currency': '$',
+              'has_loyalty_discount': False,
+              'thousands_separator': '.',
+              'decimal_separator': ',',
+              'formatted_price': {
+                'price': '$ 679.990',
+                'price_decimals': None,
+                'original_price_decimals': None,
+                'original_price': '$ 769.990'
+              },
+              'label': '',
+              'shipping': {
+                'free_shipping': True,
+                'fulfillment': True
+              },
+              'installments': {
+                'quantity': 12,
+                'price': '56665',
+                'price_decimals': ''
+              },
+              'deal_of_the_day': False,
+              'lightning_deal_configuration': {},
+              'best_sellers_position': ''
+            },
+            'styles': {}
+          }
+        ],
+        'data': {
+          'title': 'Últimos lanzamientos',
+          'viewMoreLink': {
+            'url': 'https://ofertas.mercadolibre.cl/apple-lanzamientos',
+            'deal_id': 'MLC3055',
+            'component': 'CarouselDynamic-normal',
+            'position': 19
+          },
+          'viewMoreText': 'Ver más',
+          'element_order': 2
+        },
+        'styles': {},
+        'filters': {
+          'dealOrUrl': {
+            'source': 'deal',
+            'deal': 'MLC3055'
+          }
+        },
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {},
+        'track_info': {},
+        'enableAddToCart': False,
+        'items_id': [
+          'MLC616911852',
+          'MLC616911857',
+          'MLC616911858',
+          'MLC611219819',
+          'MLC611219826',
+          'MLC616911853',
+          'MLC611219770',
+          'MLC611219827',
+          'MLC611221075',
+          'MLC611219759',
+          'MLC611221087',
+          'MLC613839438',
+          'MLC611219762',
+          'MLC616911854',
+          'MLC611221066',
+          'MLC611219853',
+          'MLC611221061'
+        ]
+      },
+      {
+        'component_name': 'Grid',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'Banner',
+            'variations': 'large',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'label': 'Santander',
+              'link': {
+                'url': 'https://tienda.mercadolibre.cl/apple',
+                'component': 'Banner-large',
+                'position': 20
+              },
+              'imgAlt': 'Tracking',
+              'element_order': 2
+            },
+            'styles': {
+              'bg_mobile': 'https://http2.mlstatic.com/D_NQ_NP_618190-MLA46509112685_062021-F.jpg',
+              'bg_desktop': 'https://http2.mlstatic.com/D_NQ_NP_817768-MLA46509112682_062021-F.jpg'
+            },
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {
+          'bg_color': '#E7E7E7',
+          'bg_mobile': '',
+          'bg_desktop': ''
+        },
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': False,
+          'webview': False,
+          'mobile': False,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Video',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [],
+        'data': {
+          'videoId': 'zvWI1hwB1do',
+          'element_order': 1
+        },
+        'styles': {},
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': False,
+          'webview': False,
+          'mobile': False,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Disclaimer',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [],
+        'data': {
+          'text': '\nEsta tienda es autorizada por Apple y es operada por Resellers o Distribuidores autorizados Apple\nPromoción válida desde las 00:00 hrs. del 27 de Septiembre de 2021 hasta las 23:59 hrs. del 03 de Septiembre de 2021 inclusive, para los nuevos usuarios de Mercado Libre. Sólo para compras realizadas en Chile en moneda nacional. La promoción consiste en $50.000 de descuento para compras sobre $199.990, pagando dentro de la plataforma. Máximo de un (1) cupón de descuento por Usuario. Descuento se verá reflejado al momento del pago ingresando APPLEWEEK como código de descuento en la APP o página web. Mensaje: "cupón inválido", al intentar redimir el cupón de descuento, significa que se ya se alcanzó el límite de emisión de quinientos (500) cupones de descuento.\n',
+          'element_order': 1
+        },
+        'styles': {},
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Slides',
+        'variations': 'normal',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [
+          {
+            'component_name': 'SlideItem',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': '',
+                'component': 'SlideItem-normal',
+                'position': 21
+              },
+              'title': 'Compra Protegida',
+              'description': 'Si compraste por Mercado Libre y tu producto no es como esperabas o no te llega, te devolvemos el dinero.',
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_667817-MLA45759121133_042021-F.jpg',
+              'link_txt': '',
+              'label': 'SLIDE_1',
+              'element_order': 1
+            },
+            'styles': {},
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'SlideItem',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': '',
+                'component': 'SlideItem-normal',
+                'position': 22
+              },
+              'title': 'Envío rápidos',
+              'description': 'Disfruta de envíos en 48 horas y gratis a todo Chile en miles de productos.',
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_958425-MLA45759135100_042021-F.jpg',
+              'link_txt': '',
+              'label': 'SLIDE_2',
+              'element_order': 2
+            },
+            'styles': {},
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          },
+          {
+            'component_name': 'SlideItem',
+            'variations': 'normal',
+            'hasDynamicContent': False,
+            'typeContent': '',
+            'items': [],
+            'data': {
+              'link': {
+                'url': '',
+                'component': 'SlideItem-normal',
+                'position': 23
+              },
+              'title': 'Hasta 12 cuotas sin interés',
+              'description': 'Compra hoy y paga en cómodas cuotas sin interés con tarjetas de Crédito de cualquier banco.',
+              'image_src': 'https://http2.mlstatic.com/D_NQ_NP_978530-MLA45759121145_042021-F.jpg',
+              'link_txt': '',
+              'label': 'SLIDE_3',
+              'element_order': 3
+            },
+            'styles': {},
+            'filters': {},
+            'availableDeviceTypes': {
+              'desktop': True,
+              'webview': True,
+              'mobile': True,
+              'tablet': True
+            },
+            'date': {}
+          }
+        ],
+        'data': {},
+        'styles': {},
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Tracking',
+        'variations': 'gtm',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [],
+        'data': {
+          'element_order': 1
+        },
+        'styles': {},
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      },
+      {
+        'component_name': 'Tracking',
+        'variations': 'pixel',
+        'hasDynamicContent': False,
+        'typeContent': '',
+        'items': [],
+        'data': {
+          'element_order': 1
+        },
+        'styles': {},
+        'filters': {},
+        'availableDeviceTypes': {
+          'desktop': True,
+          'webview': True,
+          'mobile': True,
+          'tablet': True
+        },
+        'date': {}
+      }
+    ],
+    'version': {
+      'by': 'ext_jcrdova@mercadolibre.com',
+      'last_modified': '2021-09-28T17:35:49.429Z',
+      'contentKey': 'www.mercadolibre.cl/tienda/apple/type/home',
+      'versionName': 'Original'
+    }
+  },
+  'siteName': 'Chile',
+  'siteId': 'MLC',
+  'lowEnd': False,
+  'locale': 'es_CL',
+  'deviceType': 'desktop',
+  'webView': False,
+  'company': 'MercadoLibre Chile Ltda.',
+  'serverTime': 1633023058559,
+  'webp': False,
+  'bgLettersByDevice': 'B',
+  'platformId': 'ML',
+  'hotjar': {
+    'id': 783944,
+    'traffic': {
+      'from': 0,
+      'to': 25
+    }
+  },
+  'googleTagManager': 'GTM-2MJX',
+  'lazyLoad': {
+    'enabled': True
+  },
+  'pixelEnabled': True,
+  'pixelId': '762238943834560',
+  'showDealParam': None,
+  'osVersion': '0.0.0',
+  'osName': 'other',
+  'xCanonical': None,
+  'xExperimentName': None,
+  'xExperimentVariant': None,
+  'xDebugHotjar': False,
+  'd2id': '5aefe6c0-1099-45a4-93f6-7a94b802cc1c',
+  'dealPrintId': '2ca8c0f0-2214-11ec-9311-112576befec8',
+  'supportNewPdp': False,
+  'supportAddToCart': True,
+  'type': 'plus',
+  'configSchema': {
+    'i18n': {
+      'favorites': 'Favoritos',
+      'signinAs': 'Ingresaste como',
+      'notifications': 'Notificaciones',
+      'noNotifications': 'Nada por acá',
+      'myAccountDashboard': 'Resumen',
+      'searchIconLabel': 'Buscar',
+      'searchInputLabel': 'Ingresa lo que quieras encontrar',
+      'searchPlaceholder': 'Buscar productos, marcas y más…',
+      'searchPlaceholderMobile': 'Estoy buscando…'
+    },
+    'footer': {
+      'items': [
+        'jobs',
+        'tyc',
+        'politics',
+        'helpMain'
+      ]
+    },
+    'styles': {
+      'useProximaNova': True
+    },
+    'headerMenu': [
+      {
+        'link': 'cpLocation',
+        'isCP': True
+      },
+      {
+        'link': 'categories',
+        'isCategory': True
+      },
+      {
+        'link': 'offers'
+      },
+      {
+        'link': 'navigation'
+      },
+      {
+        'link': 'moda'
+      },
+      {
+        'link': 'sell'
+      },
+      {
+        'link': 'helpMain'
+      }
+    ],
+    'mobileHeaderMenu': {
+      'logged': [
+        [
+          'home',
+          'notificationsCenter',
+          'purchases',
+          'bookmarks',
+          'myAccount',
+          'offers',
+          'subscriptions',
+          'navigation',
+          'sell',
+          'mshopsHub'
+        ],
+        [
+          'mobileCategories',
+          'officialStores'
+        ],
+        [
+          'helpMain'
+        ],
+        [
+          'downloadAppStore'
+        ]
+      ],
+      'guest': [
+        [
+          'home',
+          'offers',
+          'navigation',
+          'sell'
+        ],
+        [
+          'mobileCategories',
+          'officialStores'
+        ],
+        [
+          'helpMain'
+        ],
+        [
+          'downloadAppStore'
+        ]
+      ]
+    },
+    'a2hsAvailablePaths': [
+      '^$',
+      '^/$',
+      '^/gz/notifications/*',
+      '^/pwa$'
+    ],
+    'cleanServiceWorkers': False,
+    'mobileSplashOnOff': {
+      'homes_palpatine': True,
+      'vpp_frontend': True,
+      'search_nordic': True,
+      'default': False
+    },
+    'userMenuGuest': {
+      'title': 'Bienvenido',
+      'subtitle': 'Ingresa a tu cuenta para ver tus compras, favoritos, etc.'
+    },
+    'modelessBoxVersion': '3.9.5',
+    'navigationFeatures': {
+      'locationOff': True,
+      'onBoardingCPVersion': '1.0.15',
+      'modalVersion': '1.0.6',
+      'categoriesVersion': '1.3.0',
+      'userMenuVersion': '1.5.2',
+      'searchBoxVersion': '2.6.1-sic-hotfix-1',
+      'snackbarVersion': '1.0.1'
+    }
+  },
+  'labels': {
+    'headTitle': 'Mercado Libre Chile - Donde comprar y vender de todo',
+    'copyrightSince': '1999',
+    'companyName': 'MercadoLibre Chile Ltda.',
+    'extraCompanyName': 'Av. Apoquindo 4800, Torre 2, piso 21, Las Condes, Santiago - Chile.',
+    'mobileAppsStore': {
+      'ios': 'https://itunes.apple.com/es/app/id463624852',
+      'android': 'https://play.google.com/store/apps/details?id=com.mercadolibre'
+    },
+    'mobileApps': {
+      'splash': 'https://http2.mlstatic.com/resources/splash/force-splash-v5.js',
+      'splashTest': 'https://http2.mlstatic.com/resources/splash/force-splash-v5.js'
+    }
+  },
+  'urls': {
+    'mainDomain': {
+      'name': '',
+      'link': 'mercadolibre.cl'
+    },
+    'baseDomain': {
+      'name': '',
+      'link': '//www.mercadolibre.cl'
+    },
+    'rootDomain': {
+      'name': '',
+      'link': 'https://www.mercadolibre.com/jms/mlc'
+    },
+    'listing': {
+      'name': 'Listado',
+      'link': 'https://listado.mercadolibre.cl'
+    },
+    'buyingFlow': {
+      'name': '',
+      'link': 'https://buyingflow.mercadolibre.cl'
+    },
+    'downloadAppLanding': {
+      'name': '¡Descarga gratis la app de Mercado&nbsp;Libre!',
+      'link': 'https://www.mercadolibre.cl/l/app'
+    },
+    'downloadAppStore': {
+      'name': '¡Compra y vende con la app!',
+      'link': 'https://www.mercadolibre.cl/l/app'
+    },
+    'institucional': {
+      'link': 'https://www.mercadolibre.cl/institucional',
+      'name': 'Mercado Libre'
+    },
+    'jobs': {
+      'link': 'https://careers-meli.mercadolibre.com/?utm_campaign=site-mlc&utm_source=mercadolibre&utm_medium=mercadolibre',
+      'name': 'Trabaja con nosotros'
+    },
+    'investor': {
+      'link': 'https://investor.mercadolibre.com',
+      'name': 'Investor relations'
+    },
+    'developers': {
+      'link': 'https://developers.mercadolibre.com',
+      'name': 'Developers'
+    },
+    'login': {
+      'name': 'Ingresa',
+      'link': 'https://www.mercadolibre.com/jms/mlc/lgz/login?platform_id=ML&go=https%3A%2F%2Fwww.mercadolibre.cl%2Ftienda%2Fapple&loginType=explicit'
+    },
+    'logout': {
+      'name': 'Salir',
+      'link': 'https://www.mercadolibre.com/jms/mlc/lgz/logout'
+    },
+    'registration': {
+      'name': 'Crea tu cuenta',
+      'link': 'https://www.mercadolibre.cl/registration?confirmation_url=https%3A%2F%2Fwww.mercadolibre.cl%2Ftienda%2Fapple'
+    },
+    'notifications': {
+      'name': 'Notificaciones',
+      'link': '//www.mercadolibre.cl/notifications'
+    },
+    'notificationsCenter': {
+      'name': 'Notificaciones',
+      'link': 'https://www.mercadolibre.cl/gz/notifications/center'
+    },
+    'mpago': {
+      'name': 'Mercado Pago',
+      'link': 'https://www.mercadopago.cl'
+    },
+    'mclics': {
+      'name': 'Mercado Ads',
+      'link': 'https://ads.mercadolibre.cl'
+    },
+    'mshops': {
+      'name': 'Mercado Shops',
+      'link': 'https://www.mercadoshops.cl'
+    },
+    'menvios': {
+      'name': 'Mercado Envíos',
+      'link': 'https://envios.mercadolibre.cl'
+    },
+    'mideas': {
+      'name': 'Mercado Libre Ideas',
+      'link': 'https://ideas.mercadolibre.com/cl/'
+    },
+    'trends': {
+      'name': 'Tendencias',
+      'link': 'https://tendencias.mercadolibre.cl'
+    },
+    'officialStores': {
+      'name': 'Tiendas oficiales',
+      'link': 'https://www.mercadolibre.cl/tiendas-oficiales'
+    },
+    'moda': {
+      'name': 'Moda',
+      'link': 'https://www.mercadolibre.cl/c/vestuario-y-calzado'
+    },
+    'loyalty': {
+      'name': 'Mercado Puntos',
+      'link': 'https://www.mercadolibre.cl/mercado-puntos'
+    },
+    'hbomax': {
+      'name': 'HBO MAX',
+      'link': 'https://www.mercadolibre.cl/suscripciones/hbo#origin=footer_ml'
+    },
+    'disneyplus': {
+      'name': 'Disney+',
+      'link': 'https://www.mercadolibre.cl/suscripciones/disneyplus#origin=footer_ml'
+    },
+    'deezer': {
+      'name': 'Deezer'
+    },
+    'paramount': {
+      'name': 'Paramount+'
+    },
+    'credits': {
+      'name': 'Mercado Crédito'
+    },
+    'home': {
+      'name': 'Inicio',
+      'link': 'https://www.mercadolibre.cl'
+    },
+    'sitemap': {
+      'name': 'Mapa del sitio',
+      'link': 'http://www.mercadolibre.cl/sitemap.html'
+    },
+    'myAccount': {
+      'name': 'Mi cuenta',
+      'link': 'https://myaccount.mercadolibre.cl'
+    },
+    'yourPurchases': {
+      'name': 'Mis compras',
+      'link': 'https://myaccount.mercadolibre.cl/purchases/list'
+    },
+    'purchases': {
+      'name': 'Mis compras',
+      'link': 'https://myaccount.mercadolibre.cl/purchases/list'
+    },
+    'yourNavigation': {
+      'name': 'Historial',
+      'link': 'https://www.mercadolibre.cl/gz/home/navigation'
+    },
+    'navigation': {
+      'name': 'Historial',
+      'link': 'https://www.mercadolibre.cl/gz/home/navigation'
+    },
+    'subscriptions': {
+      'name': 'Películas y series',
+      'link': 'https://www.mercadolibre.cl/suscripciones/'
+    },
+    'offers': {
+      'name': 'Ofertas',
+      'link': 'https://www.mercadolibre.cl/ofertas'
+    },
+    'bookmarks': {
+      'name': 'Favoritos',
+      'link': 'https://myaccount.mercadolibre.cl/bookmarks/list'
+    },
+    'categories': {
+      'name': 'Categorías',
+      'link': 'https://www.mercadolibre.cl/categorias'
+    },
+    'mobileCategories': {
+      'name': 'Categorías',
+      'link': 'https://www.mercadolibre.cl/categorias'
+    },
+    'mobileCPlocations': {
+      'name': 'Ingresa tu domicilio',
+      'link': 'https://www.mercadolibre.cl/navigation/addresses-hub'
+    },
+    'cpLocation': {
+      'name': 'Ingresa tu domicilio',
+      'link': 'https://www.mercadolibre.cl/navigation/addresses-hub'
+    },
+    'profile': {
+      'name': 'Perfil',
+      'link': 'https://perfil.mercadolibre.cl'
+    },
+    'politics': {
+      'name': 'Cómo cuidamos tu privacidad',
+      'link': 'https://www.mercadolibre.cl/privacidad'
+    },
+    'firstPartyPolitics': {
+      'name': 'Cómo cuidamos tu privacidad',
+      'link': 'https://centrodeproveedores.mercadolibre.cl/privacidad'
+    },
+    'tyc': {
+      'name': 'Términos y condiciones',
+      'link': 'https://www.mercadolibre.cl/ayuda/terminos-y-condiciones-uso_1843'
+    },
+    'sell': {
+      'name': 'Vender',
+      'link': 'https://www.mercadolibre.cl/publicar'
+    },
+    'syi': {
+      'name': 'Vender',
+      'link': 'https://www.mercadolibre.cl/publicar'
+    },
+    'cart': {
+      'name': 'Carrito',
+      'link': 'https://www.mercadolibre.cl/gz/cart'
+    },
+    'accountMoney': {
+      'name': 'Dinero en Mercado Pago'
+    },
+    'discounts': {
+      'name': 'Descuentos exclusivos'
+    },
+    'sustentability': {
+      'name': 'Sustentabilidad',
+      'link': 'https://sustentabilidadmercadolibre.com/'
+    },
+    'helpMain': {
+      'name': 'Ayuda',
+      'link': 'https://www.mercadolibre.cl/ayuda'
+    },
+    'helpBuy': {
+      'name': 'Comprar',
+      'link': 'https://www.mercadolibre.cl/ayuda/Compras_638'
+    },
+    'helpSell': {
+      'name': 'Vender',
+      'link': 'https://www.mercadolibre.cl/ayuda/Vendiendo_643'
+    },
+    'helpFreeSell': {
+      'name': 'Vende gratis',
+      'link': 'https://www.mercadolibre.cl/ayuda/Publicaciones_644'
+    },
+    'helpContact': {
+      'name': 'Resolución de problemas',
+      'link': 'https://www.mercadolibre.cl/ayuda'
+    },
+    'helpShipping': {
+      'name': 'Cómo recibir el producto',
+      'link': 'https://www.mercadolibre.cl/ayuda/Como-pagar-tu-compra_923'
+    },
+    'helpSecurity': {
+      'name': 'Centro de seguridad',
+      'link': 'https://www.mercadolibre.cl/ayuda/Seguridad_663'
+    },
+    'helpMpagoFaq': {
+      'name': 'Comprar con MercadoPago',
+      'link': 'https://www.mercadolibre.cl/ayuda/Comprar-con-MercadoPago_1076'
+    },
+    'helpBpp': {
+      'name': 'Compra Protegida',
+      'link': 'https://www.mercadolibre.cl/ayuda/Compra-protegida_986'
+    },
+    'helpLegalFinancial': {
+      'name': 'Información al usuario financiero'
+    },
+    'twitter': {
+      'name': 'Twitter',
+      'link': 'https://twitter.com/Mercadolibre'
+    },
+    'facebook': {
+      'name': 'Facebook',
+      'link': 'https://www.facebook.com/MercadoLibre'
+    },
+    'instagram': {
+      'name': 'Instagram'
+    },
+    'youtube': {
+      'name': 'YouTube',
+      'link': 'https://www.youtube.com/user/mercadolibre'
+    },
+    'supermercado': {
+      'name': 'Supermercado'
+    },
+    'honeyPath': {
+      'link': 'https://hp.mercadolibre.com/',
+      'name': 'Mercado Libre'
+    },
+    'reauthentication': {
+      'link': 'https://www.mercadolibre.com/jms/mlc/lgz/authentication'
+    },
+    'changeNickName': {
+      'link': 'https://myaccount.mercadolibre.cl/profile/changeNickName'
+    },
+    'helpValidateUser': {
+      'link': 'https://www.mercadolibre.cl/ayuda/validateUser'
+    },
+    'firstPartyHome': {
+      'link': 'https://centrodeproveedores.mercadolibre.cl/'
+    },
+    'firstPartyTyC': {
+      'name': 'Términos y condiciones',
+      'link': 'https://centrodeproveedores.mercadolibre.cl/ayuda/16596'
+    },
+    'firstPartyHelpMain': {
+      'name': 'Ayuda',
+      'link': 'https://centrodeproveedores.mercadolibre.cl/ayuda/'
+    },
+    'firstPartyFallbackUrl': {
+      'link': 'https://centrodeproveedores.mercadolibre.cl/forbidden'
+    },
+    'mshopsHub': {
+      'name': 'Mercado Shops',
+      'link': 'https://www.mercadolibre.cl/mercadoshops'
+    },
+    'compraInternacional': {
+      'name': 'Compra Internacional'
+    },
+    'starplus': {
+      'name': 'Star+'
+    },
+    'creditsOpenSea': {
+      'name': 'Mercado Crédito'
+    }
+  },
+  'features': {
+    'cart': False,
+    'loyalty': False,
+    'menuShippingLocation': {
+      'isShippingLocation': True
+    }
+  },
+  'cartInfo': {
+    'badge_icon': {
+      'quantity': 0,
+      'label': ''
+    }
+  },
+  'cookies': {},
+  'melilab': None,
+  'a2hs': False,
+  'cleanServiceWorkers': False,
+  'cdn': {
+    'name': 'default',
+    'link': 'https://http2.mlstatic.com',
+    'cssFileSuffix': ''
+  },
+  'queryParams': {},
+  'staticMarkup': False,
+  'loadable': 'hub',
+  'currentLocation': {
+    'onMobile': True
+  },
+  'exhibitorInfo': {
+    'title': 'Cyber Monday está llegando',
+    'permalink': 'https://www.mercadolibre.cl/cyber-monday#me.audience=all&me.content_id=MLC__BM_WEB_2__PREVIA_CYBER&me.component_id=banner_menu_web_ml&me.logic=user_journey&me.position=0&me.bu_line=26&me.flow=-1&me.bu=3',
+    'picture': 'https://http2.mlstatic.com/D_NQ_778895-MLA47690942578_092021-OO.jpg'
+  },
+  'userInfo': {},
+  'notificationsInfo': {
+    'count': 0
+  },
+  'cpInfo': {
+    'id': 'nav-location',
+    'type': 'nav-location',
+    'title': 'Ingresa tu',
+    'label': 'ubicación',
+    'inferred': False
+  },
+  'loansInfo': None,
+  'downloadApp': {},
+  'navigationPIIData': {},
+  'kycInfo': {},
+  'cookieDisclaimer': {}
+}
