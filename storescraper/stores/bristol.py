@@ -52,7 +52,12 @@ class Bristol(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        res = session.get(url)
+
+        if res.status_code == 500:
+            return []
+
+        soup = BeautifulSoup(res.text, 'html.parser')
         product_id = soup.find(
             'meta', {'property': 'product:retailer_item_id'})['content']
 

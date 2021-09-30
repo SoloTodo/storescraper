@@ -16,28 +16,9 @@ class TiendaEntel(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        session = session_with_proxy(extra_args)
-        product_urls = []
-
-        response = session.get(
-            'https://miportal.entel.cl/lista-productos?Nrpp=1000&'
-            'format=json-rest')
-
-        json_prepago = json.loads(response.text)
-
-        records = json_prepago['response']['main'][2].get('records', None)
-
-        if not records:
-            records = json_prepago['response']['main'][1].get('records', None)
-
-        for record in records:
-            cell_id = record['attributes']['productId'][0]
-            cell_url = 'https://miportal.entel.cl/personas/producto/Equipos/' \
-                       + cell_id
-            product_urls.append(cell_url)
-
-        return product_urls
+    def discover_entries_for_category(cls, category, extra_args=None):
+        from .entel import Entel
+        return Entel.discover_entries_for_category(category, extra_args)
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -98,6 +79,11 @@ class TiendaEntel(Store):
                               container['heroImage']
                 picture_urls.append(picture_url.replace(' ', '%20'))
 
+            if 'seminuevo' in sku['skuName'].lower():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
+
             product = Product(
                 sku['skuName'],
                 cls.__name__,
@@ -111,7 +97,8 @@ class TiendaEntel(Store):
                 'CLP',
                 sku=sku_id,
                 cell_plan_name='Entel Prepago',
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                condition=condition
             )
             products.append(product)
 

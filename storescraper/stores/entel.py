@@ -33,7 +33,7 @@ class Entel(Store):
             endpoints = ['equipo-plan', 'celulares']
 
             for endpoint in endpoints:
-                json_url = 'https://miportal.entel.cl/catalogo/{}?' \
+                json_url = 'https://miportal.entel.cl/personas/catalogo/{}?' \
                            'No=0&Nrpp=1000&subPath=main%5B1%5D'.format(
                             endpoint)
                 response = session.get(json_url)

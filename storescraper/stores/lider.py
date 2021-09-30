@@ -434,8 +434,8 @@ class Lider(Store):
             return {}
 
         with HeadlessChrome() as driver:
-            driver.get('https://www.lider.cl/catalogo/product/sku/' +
-                       livechat_sku)
+            sku_url = 'https://www.lider.cl/catalogo/product/sku/' + livechat_sku
+            driver.get(sku_url)
 
             for i in range(10):
                 print(i)
@@ -447,6 +447,6 @@ class Lider(Store):
                     # Wait a little and try again in the next iteration
                     time.sleep(1)
             else:
-                raise Exception('No LiveChat implementaton found')
+                raise Exception('No LiveChat implementaton found: ' + sku_url)
 
         return {}
