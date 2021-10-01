@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, TABLET, STORAGE_DRIVE, RAM, \
     PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD, POWER_SUPPLY, \
-    MEMORY_CARD, USB_FLASH_DRIVE
+    MEMORY_CARD, USB_FLASH_DRIVE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,7 +27,8 @@ class Eyc(Store):
             MOTHERBOARD,
             POWER_SUPPLY,
             MEMORY_CARD,
-            USB_FLASH_DRIVE
+            USB_FLASH_DRIVE,
+            HEADPHONES
         ]
 
     @classmethod
@@ -49,6 +50,7 @@ class Eyc(Store):
             ['346-fuentes-de-poder', POWER_SUPPLY],
             ['351-microsd', MEMORY_CARD],
             ['350-pendrives', USB_FLASH_DRIVE],
+            ['353-audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

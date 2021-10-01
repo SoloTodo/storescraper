@@ -493,6 +493,9 @@ class Falabella(Store):
                 continue
 
             for iframe in panel.findAll('iframe'):
+                if 'src' not in iframe.attrs:
+                    continue
+
                 match = re.search(
                     r'//www.youtube.com/embed/(.+)\?', iframe['src'])
                 if not match:

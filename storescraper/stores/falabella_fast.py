@@ -100,7 +100,8 @@ class FalabellaFast(Store):
     def _get_products_data(cls, session, category_id, extra_query_params):
         products_data = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'categoryId={}&zones=LOSC%2C130617%2C13&page={}'
+                   'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
+                   '&categoryId={}&page={}'
 
         page = 1
 
