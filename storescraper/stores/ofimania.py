@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from decimal import Decimal
 
 import validators
@@ -72,6 +73,9 @@ class Ofimania(Store):
         response = session.get(url, allow_redirects=False)
         if response.status_code == 301:
             return []
+
+        currrency_data = json.loads(re.search(r'var woocs_current_currency = (.+);', response.text).groups()[0])
+        assert currrency_data['name'] == 'CLP'
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[1].text)[
@@ -103,12 +107,19 @@ class Ofimania(Store):
         sku = product_data['sku']
         name = product_data['name']
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        print(json.dumps(product_data, indent=2))
         pricing_data = product_data['offers'][0]
         if 'price' in pricing_data:
-            price = Decimal(pricing_data['price'])
+            orig_price = Decimal(pricing_data['price'])
         else:
-            price = Decimal(pricing_data['lowPrice'])
+            orig_price = Decimal(pricing_data['lowPrice'])
+
+        if pricing_data['priceCurrency'] == 'USD':
+            price = (orig_price * Decimal(str(currrency_data['rate']))).quantize(0)
+        elif pricing_data['priceCurrency'] == 'CLP':
+            price = orig_price
+        else:
+            raise Exception('Invalid currency')
+
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div',
                                   'woocommerce-product-gallery').findAll(
