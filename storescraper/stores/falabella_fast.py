@@ -115,16 +115,9 @@ class FalabellaFast(Store):
             if extra_query_params:
                 pag_url += '&' + extra_query_params
 
-            res = session.get(pag_url, timeout=30)
+            res = Falabella.retrieve_json_page(session, pag_url)
 
-            if res.status_code == 409:
-                if page == 1:
-                    logging.warning('Empty category: {}'.format(category_id))
-                break
-
-            res = json.loads(res.content.decode('utf-8'))['data']
-
-            if 'results' not in res:
+            if 'results' not in res or not res['results']:
                 if page == 1:
                     logging.warning('Empty category: {}'.format(category_id))
                 break
