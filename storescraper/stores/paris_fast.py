@@ -134,6 +134,12 @@ class ParisFast(Store):
         name = data['name']
         sku = data['variant']
 
+        seller_info = data.get('dimension3', None)
+        if seller_info == 'MARKETPLACE':
+            seller = 'MARKETPLACE'
+        else:
+            seller = None
+
         normal_price = Decimal(data['price'])
         if data['dimension20']:
             offer_price = Decimal(data['dimension20'])
@@ -154,6 +160,7 @@ class ParisFast(Store):
             offer_price,
             'CLP',
             sku=sku,
+            seller=seller
         )
 
         return p
