@@ -12,7 +12,7 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     POWER_SUPPLY, NOTEBOOK, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class SipoOnline(Store):
@@ -169,9 +169,11 @@ class SipoOnline(Store):
                 stock = 0
             elif stock_container:
                 stock = int(stock_container.text.split()[0])
+            elif soup.find('p', 'stock out-of-stock'):
+                stock = 0
             else:
                 stock = -1
-            sku = soup.find('button', 'single_add_to_cart_button')['value']
+            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
             normal_price = Decimal(product_data['offers'][0]['price'])
             offer_price = (normal_price * Decimal('0.97')).quantize(0)
             picture_containers = soup.find('div',
