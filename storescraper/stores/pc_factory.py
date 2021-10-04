@@ -181,7 +181,13 @@ class PcFactory(Store):
 
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        sku = soup.find('input', {'name': 'data_id_producto'})['value']
+        sku_tag = soup.find('input', {'name': 'data_id_producto'})
+
+        if 'value' not in sku_tag.attrs:
+            return []
+
+        sku = sku_tag['value']
+
         body = json.dumps(
             {'requests': [{'indexName': 'productos_sort_price_asc',
                            'params': 'hitsPerPage=1000&query={}'.format(
