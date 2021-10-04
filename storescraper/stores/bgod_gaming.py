@@ -60,10 +60,11 @@ class BgodGaming(Store):
 
         if 'PREVENTA' in name.upper():
             stock = 0
-        elif soup.find('p', 'stock').text == 'Agotado':
+        elif soup.find('p', 'stock') and \
+                soup.find('p', 'stock').text == 'Agotado':
             stock = 0
         else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
+            stock = -1
 
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
