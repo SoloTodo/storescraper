@@ -5,9 +5,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import WEARABLE, HEADPHONES, STEREO_SYSTEM, \
+from storescraper.categories import HEADPHONES, STEREO_SYSTEM, \
     USB_FLASH_DRIVE, KEYBOARD, MONITOR, POWER_SUPPLY, COMPUTER_CASE, MOUSE, \
-    GAMING_CHAIR, CPU_COOLER, VIDEO_CARD
+    GAMING_CHAIR, CPU_COOLER, VIDEO_CARD, STORAGE_DRIVE, MOTHERBOARD, \
+    PROCESSOR, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -28,27 +29,30 @@ class VGamers(Store):
             GAMING_CHAIR,
             CPU_COOLER,
             VIDEO_CARD,
+            STORAGE_DRIVE,
+            MOTHERBOARD,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['gabinete-gamer', COMPUTER_CASE],
-            ['sillas-gamer', GAMING_CHAIR],
+            ['accesorios-gamer', MOUSE],
             ['audifonos-gamer', HEADPHONES],
-            ['enfriamiento', CPU_COOLER],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['hardware', COMPUTER_CASE],
-            ['gamer', COMPUTER_CASE],
-            ['mouse-gamer', MOUSE],
             ['monitores-gamer', MONITOR],
-            ['parlantes', STEREO_SYSTEM],
-            ['tarjetas-de-video', VIDEO_CARD],
+            ['mouse-gamer', MOUSE],
+            ['sillas-gamer', GAMING_CHAIR],
             ['teclados-gamer', KEYBOARD],
-            # Legacy
-            ['audifonos', HEADPHONES],
             ['almacenamiento', USB_FLASH_DRIVE],
-            ['teclados-y-mouse', KEYBOARD],
+            ['fuente-de-poder', POWER_SUPPLY],
+            ['gabinete-gamer', COMPUTER_CASE],
+            ['enfriamiento', CPU_COOLER],
+            ['discos-duros', STORAGE_DRIVE],
+            ['placamadre', MOTHERBOARD],
+            ['procesador', PROCESSOR],
+            ['tarjetas-de-video-gpu', VIDEO_CARD],
+            ['memoria-ram', RAM],
+            ['water-cooling', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
