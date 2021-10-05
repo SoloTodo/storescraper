@@ -146,9 +146,13 @@ class TtChile(Store):
 
         sku = sku_tag.text.strip()
         name = soup.find('h1', 'product_name').text.strip()
-        price_tags = soup.findAll('span', {'itemprop': 'price'})
-        offer_price = Decimal(remove_words(price_tags[0].text.split()[0]))
-        normal_price = Decimal(price_tags[1]['content'])
+
+        base_price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
+        assert soup.find('meta', {'property': 'product:price:currency'})[
+                   'content'] == 'CLP'
+        offer_price = (base_price * Decimal('0.95')).quantize(0)
+        normal_price = (base_price * Decimal('1.03')).quantize(0)
 
         availability_message = soup.find(
             'span', {'id': 'product-availability'}).contents[2].strip()
