@@ -35,8 +35,8 @@ class SmartDeal(Store):
             if category != local_category:
                 continue
 
-            response = session.get('https://smartdeal.cl/categoria-producto/'
-                                   + category_path)
+            response = session.get('https://smartdeal.cl/categoria-'
+                                   'producto/' + category_path)
             data = response.text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('li', 'product')
@@ -55,9 +55,11 @@ class SmartDeal(Store):
         name = soup.find('div', 'et_pb_module et_pb_wc_title '
                                 'et_pb_wc_title_0_tb_body '
                                 'et_pb_bg_layout_light').find('h1').text
-        sku = soup.find('button', 'single_add_to_cart_button')['value']
-
-        stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        if soup.find('p', 'stock out-of-stock'):
+            stock = 0
+        else:
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
@@ -94,5 +96,5 @@ class SmartDeal(Store):
             condition=condition,
             part_number=part_number,
             picture_urls=picture_url
-            )
+        )
         return [p]
