@@ -1,12 +1,13 @@
 from .mercado_libre_chile import MercadoLibreChile
 from storescraper.categories import STEREO_SYSTEM, TELEVISION, CELL_ACCESORY, \
-    CELL, WEARABLE, VACUUM_CLEANER, REFRIGERATOR, AIR_CONDITIONER, STOVE, \
-    OVEN, WASHING_MACHINE, TABLET, DISH_WASHER, MONITOR
+    CELL, WEARABLE, VACUUM_CLEANER, REFRIGERATOR, AIR_CONDITIONER, OVEN, \
+    WASHING_MACHINE, TABLET, DISH_WASHER, MONITOR
 from ..utils import session_with_proxy
 
 
 class MercadoLibreSamsung(MercadoLibreChile):
     seller_id = '404495030'
+
     @classmethod
     def categories(cls):
         return [

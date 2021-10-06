@@ -1042,8 +1042,6 @@ class MercadoLibreChile(Store):
             if offset > 1000:
                 raise Exception('Page overflow')
             if seller_id:
-                # import ipdb
-                # ipdb.set_trace()
                 url = 'https://api.mercadolibre.com/sites/MLC/search?' \
                       'seller_id={}&category={}&' \
                       'offset={}&limit=50'.format(seller_id, query_code,
@@ -1056,8 +1054,7 @@ class MercadoLibreChile(Store):
             product_containers = json.loads(response.text)['results']
             if not product_containers:
                 if offset == 0:
-                    logging.warning('Empty category: ' + cls.categories_name[
-                        cls.categories_code[query_code]])
+                    logging.warning('Empty category: ' + category)
                 break
 
             for container in product_containers:
