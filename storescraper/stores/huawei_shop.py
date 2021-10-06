@@ -89,8 +89,11 @@ class HuaweiShop(Store):
                                                 '.huawei.com/eCommerce'
                                                 '/queryMinPriceAndInv'
                                                 '?productIds={}&siteCode'
-                                                '=CL'.format(product_id)).
-                                    text)['data']['minPriceAndInvList'][0][
+                                                '=CL'.format(product_id)).text)
+        if not products_price['data']['minPriceAndInvList']:
+            return []
+
+        products_price = products_price['data']['minPriceAndInvList'][0][
             'minPriceByColors']
 
         sbom_codes = []
