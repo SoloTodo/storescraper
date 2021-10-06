@@ -1042,8 +1042,10 @@ class MercadoLibreChile(Store):
             if offset > 1000:
                 raise Exception('Page overflow')
             if seller_id:
+                # import ipdb
+                # ipdb.set_trace()
                 url = 'https://api.mercadolibre.com/sites/MLC/search?' \
-                      'seller_id={}category={}&official_store=all&' \
+                      'seller_id={}&category={}&' \
                       'offset={}&limit=50'.format(seller_id, query_code,
                                                   offset)
             else:
@@ -1061,7 +1063,7 @@ class MercadoLibreChile(Store):
             for container in product_containers:
                 category_name = cls.categories_code[
                     container['category_id']]
-                if cls.categories_name[category_name] != category:
+                if not seller_id and cls.categories_name[category_name] != category:
                     continue
                 official_store_id = container['official_store_id']
                 product_url = '{}?pdp_filters=official_store:{}'. \
