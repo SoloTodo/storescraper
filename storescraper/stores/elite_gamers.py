@@ -45,8 +45,6 @@ class EliteGamers(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                # import ipdb
-                # ipdb.set_trace()
                 product_containers = soup.findAll('div', 'product-grid-item')
                 if not product_containers:
                     if page == 1:
@@ -84,9 +82,9 @@ class EliteGamers(Store):
         p = Product(
             name,
             cls.__name__,
+            category,
             url,
             url,
-            sku,
             sku,
             stock,
             price,
