@@ -127,6 +127,19 @@ class ElectronicaBudini(Store):
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
 
+        refurbished_keywords = [
+            'OPEN BOX',
+            'SEMI',
+            'EXHIBICION',
+            'USADO'
+        ]
+
+        condition = 'https://schema.org/NewCondition'
+
+        for kw in refurbished_keywords:
+            if kw in name.upper():
+                condition = 'https://schema.org/RefurbishedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -139,6 +152,7 @@ class ElectronicaBudini(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]

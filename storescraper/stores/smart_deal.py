@@ -25,6 +25,7 @@ class SmartDeal(Store):
             ('msi', NOTEBOOK),
             ('apple', NOTEBOOK),
             ('huawei', NOTEBOOK),
+            ('acer', NOTEBOOK),
             ('smartphones', CELL),
         ]
 
@@ -55,7 +56,7 @@ class SmartDeal(Store):
         name = soup.find('div', 'et_pb_module et_pb_wc_title '
                                 'et_pb_wc_title_0_tb_body '
                                 'et_pb_bg_layout_light').find('h1').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
@@ -81,13 +82,15 @@ class SmartDeal(Store):
         else:
             part_number = None
 
+        sku = part_number or key
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

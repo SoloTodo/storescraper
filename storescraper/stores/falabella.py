@@ -525,7 +525,7 @@ class Falabella(Store):
             if not prices:
                 continue
 
-            normal_price_keys = ['internetPrice', 'normalPrice']
+            normal_price_keys = ['eventPrice', 'internetPrice', 'normalPrice']
             offer_price_keys = ['cmrPrice', 'eventPrice']
 
             normal_price = None
