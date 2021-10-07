@@ -248,7 +248,8 @@ class PcFactory(Store):
     def preflight(cls, extra_args=None):
         if extra_args and extra_args.get('queueit'):
             session = session_with_proxy(extra_args)
-            res = session.get('https://www.pcfactory.cl/', allow_redirects=False)
+            res = session.get('https://www.pcfactory.cl/',
+                              allow_redirects=False)
             assert res.status_code == 302
             url = res.headers['Location']
             fixed_url = url.replace('http%3A', 'https%3A')
