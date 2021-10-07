@@ -4,13 +4,16 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    POWER_SUPPLY, COMPUTER_CASE, PROCESSOR, VIDEO_CARD
+    POWER_SUPPLY, COMPUTER_CASE, PROCESSOR, VIDEO_CARD, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
 class GamingHouse(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -20,8 +23,9 @@ class GamingHouse(Store):
             GAMING_CHAIR,
             POWER_SUPPLY,
             COMPUTER_CASE,
+            MOTHERBOARD,
             PROCESSOR,
-            VIDEO_CARD
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -33,6 +37,7 @@ class GamingHouse(Store):
             ['sillas', GAMING_CHAIR],
             ['hardware/fuentes-de-poder', POWER_SUPPLY],
             ['hardware/gabinetes', COMPUTER_CASE],
+            ['hardware/placas-madre', MOTHERBOARD],
             ['hardware/procesadores', PROCESSOR],
             ['hardware/tarjetas-graficas', VIDEO_CARD]
         ]
@@ -48,7 +53,7 @@ class GamingHouse(Store):
                 url_webpage = 'https://gaming-house.cl/categoria-producto/' \
                               '{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, timeout=30)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-grid-item')
 
@@ -66,7 +71,7 @@ class GamingHouse(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
