@@ -74,7 +74,8 @@ class Ofimania(Store):
         if response.status_code == 301:
             return []
 
-        currrency_data = json.loads(re.search(r'var woocs_current_currency = (.+);', response.text).groups()[0])
+        currrency_data = json.loads(re.search(
+            r'var woocs_current_currency = (.+);', response.text).groups()[0])
         assert currrency_data['name'] == 'CLP'
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads(
@@ -114,7 +115,8 @@ class Ofimania(Store):
             orig_price = Decimal(pricing_data['lowPrice'])
 
         if pricing_data['priceCurrency'] == 'USD':
-            price = (orig_price * Decimal(str(currrency_data['rate']))).quantize(0)
+            price = (orig_price * Decimal(
+                str(currrency_data['rate']))).quantize(0)
         elif pricing_data['priceCurrency'] == 'CLP':
             price = orig_price
         else:

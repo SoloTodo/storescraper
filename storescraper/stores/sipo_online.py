@@ -173,7 +173,8 @@ class SipoOnline(Store):
                 stock = 0
             else:
                 stock = -1
-            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+            sku = soup.find(
+                'link', {'rel': 'shortlink'})['href'].split('p=')[1]
             normal_price = Decimal(product_data['offers'][0]['price'])
             offer_price = (normal_price * Decimal('0.97')).quantize(0)
             picture_containers = soup.find('div',

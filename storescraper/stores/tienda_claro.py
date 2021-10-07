@@ -64,6 +64,7 @@ class TiendaClaro(Store):
             '(KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36'
         stock_session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded; charset=UTF-8'
+        stock_session.cookies = session.cookies
         response = session.get(url, verify=False)
 
         if response.status_code == 400:
@@ -109,10 +110,10 @@ class TiendaClaro(Store):
                 stock_payload, verify=False)
             stock_data = json.loads(stock_res.text.strip()[2:-2])
 
-            if 'errorMessageKey' in stock_data:
-                stock = 0
-            elif 'orderId' in stock_data:
+            if 'orderId' in stock_data:
                 stock = -1
+            elif stock_data['errorMessageKey'] == '_ERR_ITEM_INVENTORY_AVALAIBLE':
+                stock = 0
             else:
                 raise Exception('Invalid stock response')
 

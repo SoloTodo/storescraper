@@ -175,8 +175,10 @@ class Todoclick(Store):
             stock_container = soup.find('p', 'stock in-stock')
             if stock_container:
                 stock = int(stock_container.text.split(' ')[0])
-            offer_price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content'])
-            assert soup.find('meta', {'property': 'product:price:currency'})['content'] == 'CLP'
+            offer_price = Decimal(soup.find(
+                'meta', {'property': 'product:price:amount'})['content'])
+            assert soup.find('meta', {'property': 'product:price:currency'})[
+                       'content'] == 'CLP'
             normal_price = (offer_price * Decimal('1.05')).quantize(0)
             images = soup.findAll('img', 'wp-post-image')
             picture_urls = [i['src'] for i in images]
