@@ -217,6 +217,7 @@ from .mercado_libre_samsung import MercadoLibreSamsung
 from .meroli import Meroli
 from .mhw_store import MHWStore
 from .mi_mall_virtual import MiMallVirtual
+from .mi_store import MiStore
 from .mi_pc import MiPc
 from .microplay import Microplay
 from .mis_beneficios import MisBeneficios
