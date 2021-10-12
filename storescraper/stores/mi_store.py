@@ -45,7 +45,7 @@ class MiStore(Store):
                 url_webpage = 'https://mistorechile.cl/categoria-producto/' \
                               '{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, timeout=30)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
 
@@ -64,7 +64,7 @@ class MiStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text.strip()
         if soup.find('form', 'variations_form'):
