@@ -69,37 +69,71 @@ class Sandos(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+            -1]
         soup = BeautifulSoup(
             json.loads(soup.find('script', {'type': 'text/template'}).text),
             'html.parser')
 
         name = soup.find('h2').text.strip()
-        if soup.find('span', 'product-stock'):
-            stock = int(soup.find('span', 'product-stock').find('span',
-                                                                'stock').text.
-                        split()[0])
+        if soup.find('form', 'variations_form'):
+
+            variations = json.loads(soup.find('form', 'variations_form')[
+                                        'data-product_variations'])
+            products = []
+            for variation in variations:
+                variation_name = name + ' - ' + variation['attributes'][
+                    'attribute_pa_color']
+                sku = str(variation['variation_id'])
+                if variation['is_in_stock']:
+                    stock = variation['max_qty']
+                else:
+                    stock = 0
+                price = Decimal(variation['display_price'])
+                picture_urls = [variation['image']['url']]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
         else:
-            stock = -1
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-images').findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+
+            if soup.find('span', 'product-stock'):
+                stock = int(soup.find('span', 'product-stock').find('span',
+                                                                    'stock').
+                            text.split()[0])
+            else:
+                stock = -1
+            if soup.find('p', 'price').find('ins'):
+                price = Decimal(
+                    remove_words(soup.find('p', 'price').find('ins').text))
+            else:
+                price = Decimal(remove_words(soup.find('p', 'price').text))
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'product-images').findAll('img')]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
