@@ -109,7 +109,7 @@ class CrazyGamesenChile(Store):
                 variation_stock = sku_data['inventory']['quantity']
                 variation_price = Decimal(sku_data['comparePrice']) or \
                     Decimal(sku_data['price'])
-                assert variation_price
+                assert variation_price or not variation_stock
                 assert len(sku_data['optionsSelections']) == 1
                 variation_option_key = sku_data['optionsSelections'][0]
                 variation_option = variation_options[variation_option_key]
@@ -138,10 +138,10 @@ class CrazyGamesenChile(Store):
         else:
             assert len(product_data['productItems']) == 1
             price = Decimal(product_data['discountedPrice'])
-            assert price
             key = product_data['id']
             sku = product_data['sku']
             stock = product_data['inventory']['quantity']
+            assert price or not stock
             p = Product(
                 base_name,
                 cls.__name__,
