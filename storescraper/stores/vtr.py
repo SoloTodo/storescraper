@@ -144,7 +144,7 @@ class Vtr(Store):
             picture_urls = [x['url'] for x in variant['images']]
 
             for plan in product_data['plans']:
-                base_cell_plan_name = plan['name'][:40]
+                base_cell_plan_name = plan['name'].split(' - ')[0][:40]
 
                 # Sin portabilidad, sin arriendo
                 price = Decimal(plan['pricing_data']['COMPRA']['value'])
