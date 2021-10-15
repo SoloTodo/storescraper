@@ -84,7 +84,7 @@ class Siman(Store):
 
         price = Decimal(product_data['offers']['lowPrice'])
         picture_urls = [product_data['image']]
-        description = product_data['description']
+        description = product_data.get('description', None)
 
         p = Product(
             name,
