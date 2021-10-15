@@ -1,69 +1,58 @@
+import json
+import logging
+import re
+import urllib.parse
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import CELL, WEARABLE, TELEVISION, \
+    STEREO_SYSTEM, TABLET, MONITOR, WASHING_MACHINE, REFRIGERATOR, \
+    VACUUM_CLEANER, OVEN
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+from storescraper.utils import session_with_proxy
 
 
 class TravelTienda(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Cell',
-            'Television',
-            'Tablet',
-            'VideoGameConsole',
-            'Refrigerator',
-            'WashingMachine',
-            'Oven',
-            'Stove',
-            'VacuumCleaner',
-            'AllInOne',
-            'Wearable',
-            'Projector',
-            'DishWasher',
-            'AirConditioner',
-            'StereoSystem',
-            'Headphones'
+            CELL,
+            WEARABLE,
+            TELEVISION,
+            STEREO_SYSTEM,
+            TABLET,
+            MONITOR,
+            WASHING_MACHINE,
+            REFRIGERATOR,
+            VACUUM_CLEANER,
+            OVEN
+
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'https://www.travelclub.cl/traveltienda/{}'
-
-        category_filters = [
-            ('categoria.asp?id=1566&idm=404', 'Notebook'),
-            ('categoria.asp?id=1548&idm=447', 'Cell'),
-            ('categoria.asp?id=1552&idm=404', 'Cell'),
-            ('categoria.asp?id=1561&idm=483', 'Television'),
-            ('categoria.asp?id=1550&idm=447', 'Tablet'),
-            ('categoria.asp?id=1567&idm=404', 'Tablet'),
-            ('categoria.asp?id=1419&idm=404', 'VideoGameConsole'),
-            ('categoria.asp?id=1534&idm=438', 'Refrigerator'),
-            ('categoria.asp?id=1535&idm=438', 'Refrigerator'),
-            ('categoria.asp?id=1542&idm=480', 'WashingMachine'),
-            ('categoria.asp?id=1543&idm=480', 'WashingMachine'),
-            ('categoria.asp?id=1538&idm=436', 'Oven'),
-            ('categoria.asp?id=1922&idm=436', 'Oven'),
-            ('categoria.asp?id=1509&idm=476', 'Oven'),
-            ('categoria.asp?id=1374&idm=476', 'Oven'),
-            ('categoria.asp?id=1923&idm=436', 'Stove'),
-            ('categoria.asp?id=1539&idm=436', 'Stove'),
-            ('categoria.asp?id=1494&idm=473', 'VacuumCleaner'),
-            ('categoria.asp?id=1870&idm=473', 'VacuumCleaner'),
-            ('categoria.asp?id=1362&idm=404', 'AllInOne'),
-            ('categoria.asp?id=1551&idm=447', 'Wearable'),
-            ('categoria.asp?id=1858&idm=404', 'Wearable'),
-            ('categoria.asp?id=1920&idm=404', 'Projector'),
-            ('categoria.asp?id=1541&idm=480', 'DishWasher'),
-            ('categoria.asp?id=1508&idm=475', 'AirConditioner'),
-            ('categoria.asp?id=1563&idm=483', 'StereoSystem'),
-            ('categoria.asp?id=1564&idm=483', 'StereoSystem'),
-            ('categoria.asp?id=1565&idm=483', 'Headphones')
+        url_extensions = [
+            ['carrusel-categorias-tienda/smartphones?N=3842720512',
+             CELL],
+            ['relojes/smartwatch?N=816923966', WEARABLE],
+            ['tv/televisores?N=2722336774', TELEVISION],
+            ['tv/sistemas-de-sonido-tv?N=2234300147',
+             STEREO_SYSTEM],
+            ['carrusel-categorias-tienda/audio?N=4064311224',
+             STEREO_SYSTEM],
+            ['computación/tablets?N=2934181475', TABLET],
+            ['gamer/monitor-gamer?N=2871236375', MONITOR],
+            ['categorías-redondo/lavadoras?N=2620100069',
+             WASHING_MACHINE],
+            ['línea-blanca/secadoras?N=394354836', WASHING_MACHINE],
+            ['línea-blanca/refrigeradores?N=306745319',
+             REFRIGERATOR],
+            ['electrodomésticos/aspiradora-robot?N=2553914886',
+             VACUUM_CLEANER],
+            ['electrodomésticos/hornos-electricos-y-microondas?N=831669398',
+             OVEN]
         ]
 
         session = session_with_proxy(extra_args)
@@ -72,18 +61,37 @@ class TravelTienda(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
 
-        for category_path, local_category in category_filters:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-
-            url = base_url.format(category_path)
-            print(url)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            items = soup.findAll('div', 'contenedor-productos')
-
-            for item in items:
-                product_urls.append(base_url.format(item.parent['href']))
-
+            page = 0
+            url_webpage = r'https://tienda.travel.cl/category/{}+' \
+                          r'3479876154&Nr=AND(sku.availabilityStatus:' \
+                          r'INSTOCK)&maxItems=18&No={}'.format(url_extension,
+                                                               page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            data = soup.find('body').find('script').text
+            data_clean = urllib.parse.unquote(
+                re.search(r'window.state = JSON.parse\(decodeURI\((.+)\)\)',
+                          data).groups()[0])
+            json_container = json.loads(data_clean[1:-1])
+            category_path = \
+                json_container['clientRepository']['context']['global'][
+                    'path'].split('/')[-1]
+            product_container = \
+                list(json_container['searchRepository']['pages'].values())[0][
+                    'results']['records']
+            if not product_container:
+                if page == 0:
+                    logging.warning('Empty category' + url_extension)
+                break
+            for container in product_container:
+                product_url = container['attributes']['product.route'][0]
+                product_urls.append(
+                    'https://tienda.travel.cl/' + category_path + product_url)
+            page += 18
         return product_urls
 
     @classmethod
@@ -95,31 +103,25 @@ class TravelTienda(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('p', 'txt-nombre-producto').text
 
-        if 'samsung' in name.lower() or 'galaxy' in name.lower():
-            stock = -1
-        else:
-            stock = 0
+        product_json = json.loads(
+            soup.find('script', {'data-name': 'occ-structured-data'}).text)[0]
+        data = soup.find('body').find('script').text
 
-        sku = soup.find('input', {'name': 'idPro'})['value']
-        normal_price = Decimal(soup.find('p', 'precio-standard').text
-                               .replace('$', '').replace('.', '').strip())
-        offer_price_container = soup.find('p', 'precio-bch')
-
-        if offer_price_container and offer_price_container.contents[0].strip():
-            # print(offer_price_container.contents[0])
-            offer_price = Decimal(remove_words(
-                offer_price_container.contents[0]))
-        else:
-            offer_price = normal_price
-
-        images = soup.find('div', {'id': 'img-thumb'}).findAll('img')
-        picture_urls = ['https://www.travelclub.cl{}'.format(image['src'])
-                        for image in images]
-
-        description = html_to_markdown(
-            str(soup.find('article', {'id': 'tab1'})))
+        data_clean = urllib.parse.unquote(
+            re.search(r'window.state = JSON.parse\(decodeURI\((.+)\)\)',
+                      data).groups()[0])
+        json_container = list(
+            json.loads(data_clean[1:-1])['catalogRepository'][
+                'products'].values())[0]
+        name = product_json['name']
+        sku = product_json['sku']
+        stock = -1
+        normal_price = Decimal(product_json['offers']['price'])
+        offer_price = Decimal(
+            json_container['listPrices']['tiendaBancoDeChile'])
+        picture_urls = ['https://tienda.travel.cl' + picture for picture in
+                        json_container['fullImageURLs']]
 
         p = Product(
             name,
@@ -133,7 +135,6 @@ class TravelTienda(Store):
             offer_price,
             'CLP',
             sku=sku,
-            description=description,
             picture_urls=picture_urls
         )
 
