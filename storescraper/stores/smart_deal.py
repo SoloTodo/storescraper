@@ -59,8 +59,10 @@ class SmartDeal(Store):
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
-        else:
+        elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        else:
+            stock = -1
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))

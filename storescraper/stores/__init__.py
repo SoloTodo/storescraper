@@ -218,6 +218,7 @@ from .mercado_libre_samsung import MercadoLibreSamsung
 from .meroli import Meroli
 from .mhw_store import MHWStore
 from .mi_mall_virtual import MiMallVirtual
+from .mi_store import MiStore
 from .mi_pc import MiPc
 from .microplay import Microplay
 from .mis_beneficios import MisBeneficios
@@ -288,6 +289,7 @@ from .samsung_chile import SamsungChile
 from .samsung_shop import SamsungShop
 from .samurai_store import SamuraiStore
 from .sanborns import Sanborns
+from .sandos import Sandos
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico

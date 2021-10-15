@@ -86,8 +86,10 @@ class SamuraiStore(Store):
             stock = 0
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
-        else:
+        elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        else:
+            stock = -1
         price_container = soup.find('div', 'product-stacked-info').find(
             'table').findAll('bdi')
         normal_price = Decimal(remove_words(price_container[0].text))

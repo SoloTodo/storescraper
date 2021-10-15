@@ -88,8 +88,6 @@ class Weplay(Store):
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 

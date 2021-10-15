@@ -156,7 +156,7 @@ class Movistar(Store):
                        'catalogo.html':
             return []
 
-        if page.status_code == 404:
+        if page.status_code in [404, 503]:
             return []
 
         soup = BeautifulSoup(page.text, 'html.parser')
