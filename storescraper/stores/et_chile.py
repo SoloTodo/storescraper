@@ -7,10 +7,11 @@ from bs4 import BeautifulSoup
 from storescraper.categories import UPS, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, \
     RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
     HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, VIDEO_CARD, GAMING_CHAIR, \
-    NOTEBOOK
+    NOTEBOOK, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class ETChile(Store):
@@ -33,7 +34,8 @@ class ETChile(Store):
             CPU_COOLER,
             VIDEO_CARD,
             GAMING_CHAIR,
-            NOTEBOOK
+            NOTEBOOK,
+            USB_FLASH_DRIVE,
         ]
 
     @classmethod
@@ -45,20 +47,30 @@ class ETChile(Store):
             ['partes-y-piezas/procesadores', PROCESSOR],
             ['partes-y-piezas/memorias', RAM],
             ['partes-y-piezas/almacenamiento/discos-duros', STORAGE_DRIVE],
+            ['almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
             ['partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
             ['almacenamiento-y-drives/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento-y-drives/ssd-externo',
+             EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento-y-drives/ssd-interno-almacenamiento-y-drives',
              SOLID_STATE_DRIVE],
+            ['partes-y-piezas/almacenamiento/ssd/ssd-interno/',
+             SOLID_STATE_DRIVE],
+            ['partes-y-piezas/almacenamiento/ssd/ssd-servers/',
+             SOLID_STATE_DRIVE],
+            ['accesorios-smartphones', MEMORY_CARD],
             ['almacenamiento-y-drives/memorias-flash', MEMORY_CARD],
             ['audio-y-streaming/audifonos', HEADPHONES],
             ['mouse-accesorios/mouse', MOUSE],
             ['monitores', MONITOR],
             ['teclados', KEYBOARD],
-            ['partes-y-piezas/refrigeracion', CPU_COOLER],
+            ['partes-y-piezas/refrigeracion/ventiladores', CPU_COOLER],
+            ['partes-y-piezas/refrigeracion/water-cooling', CPU_COOLER],
             ['partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
             ['sillas', GAMING_CHAIR],
-            ['notebooks', NOTEBOOK],
+            ['notebooks/notebooks-gamers', NOTEBOOK],
+            ['accesorios-usb', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -102,42 +114,46 @@ class ETChile(Store):
             for variation in product_variations:
                 variation_name = name + ' - ' + variation['attributes'][
                     'attribute_color']
-                part_number = variation['sku']
-                sku = str(variation['variation_id'])
-                if variation['is_in_stock']:
-                    stock = -1
-                else:
-                    stock = 0
+                sku = variation['sku']
+                key = str(variation['variation_id'])
+                stock = variation['max_qty']
                 price = Decimal(variation['display_price'])
                 picture_urls = [variation['image']['url']]
+
                 p = Product(
                     variation_name,
                     cls.__name__,
                     category,
                     url,
                     url,
-                    sku,
+                    key,
                     stock,
                     price,
                     price,
                     'CLP',
                     sku=sku,
-                    part_number=part_number,
+                    part_number=sku,
                     picture_urls=picture_urls,
                 )
                 products.append(p)
             return products
 
         else:
-            part_number = None
+            sku = None
             if soup.find('span', 'sku'):
-                part_number = soup.find('span', 'sku').text
-            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+                sku = soup.find('span', 'sku').text
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
                 -1]
-            if soup.find('p', 'stock in-stock'):
-                stock = -1
+
+            stock_tag = soup.find('input', {'name': 'quantity'})
+            if stock_tag:
+                if 'max' in stock_tag.attrs:
+                    stock = int(stock_tag['max'])
+                else:
+                    stock = 1
             else:
                 stock = 0
+
             if soup.find('p', 'price').find('ins'):
                 price = Decimal(
                     remove_words(
@@ -149,19 +165,21 @@ class ETChile(Store):
             picture_urls = [tag.find('img')['data-src'].split('?')[0] for tag
                             in
                             soup.findAll('li', 'product_thumbnail_item')]
+            description = html_to_markdown(str(soup.find('div', 'woocommerce-Tabs-panel--description')))
             p = Product(
                 name,
                 cls.__name__,
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
                 'CLP',
                 sku=sku,
-                part_number=part_number,
+                part_number=sku,
                 picture_urls=picture_urls,
+                description=description
             )
             return [p]
