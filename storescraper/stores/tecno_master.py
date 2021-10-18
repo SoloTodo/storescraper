@@ -7,7 +7,7 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
-    USB_FLASH_DRIVE
+    USB_FLASH_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,6 +36,7 @@ class TecnoMaster(Store):
             PRINTER,
             MEMORY_CARD,
             USB_FLASH_DRIVE,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -64,6 +65,7 @@ class TecnoMaster(Store):
             ['productos/almacenamiento/tarjetasdememoriasdd', MEMORY_CARD],
             ['productos/almacenamiento/flash-drivers-usb', USB_FLASH_DRIVE],
             ['productos/hardware/tarjetasdevideo', VIDEO_CARD],
+            ['sillasgamer', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
