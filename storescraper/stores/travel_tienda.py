@@ -120,7 +120,8 @@ class TravelTienda(Store):
         normal_price = Decimal(product_json['offers']['price'])
         offer_price = Decimal(
             json_container['listPrices']['tiendaBancoDeChile'])
-        picture_urls = ['https://tienda.travel.cl' + picture for picture in
+        picture_urls = ['https://tienda.travel.cl' +
+                        picture.replace(' ', '%20') for picture in
                         json_container['fullImageURLs']]
 
         p = Product(
