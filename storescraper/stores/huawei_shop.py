@@ -60,10 +60,11 @@ class HuaweiShop(Store):
                             'configuration']['custom']['cardParameter'][
                             'editModelParameter']['specialZone'][
                             'productSets']
-                    for product_url in urls_container:
-                        product_urls.append(
-                            'https://consumer.huawei.com' + product_url[
-                                'linkUrl'])
+                    for product_url_container in urls_container:
+                        product_url = product_url_container['linkUrl']
+                        if 'https' not in product_url:
+                            product_url = 'https://consumer.huawei.com' + product_url
+                        product_urls.append(product_url)
                 except Exception:
                     continue
 

@@ -84,6 +84,12 @@ class Eyc(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-reference_top').find(
             'span').text + ' - ' + soup.find('h1', 'product_name').text
+
+        if 'BAD BOX' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         sku = soup.find('input', {'name': 'id_product'})['value']
         stock = -1
         price = Decimal(soup.find('span', 'price')['content'])
@@ -101,6 +107,7 @@ class Eyc(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
