@@ -356,6 +356,7 @@ from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
 from .valrod import Valrod
 from .ventas_albion import VentasAlbion
+from .video_vision import VideoVision
 from .virtual_drakon import VirtualDrakon
 from .vitel import Vitel
 from .vivelo import Vivelo
