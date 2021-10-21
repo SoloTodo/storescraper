@@ -111,7 +111,10 @@ class Soluservi(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_tag = soup.findAll('script', {'type': 'application/ld+json'})[1]
-        product_data = json.loads(json_tag.text)['@graph'][1]
+        product_data = json.loads(json_tag.text)
+        if '@graph' not in product_data:
+            return []
+        product_data = product_data['@graph'][1]
         name = product_data['name'][:200]
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
 
