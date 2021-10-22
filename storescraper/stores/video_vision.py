@@ -70,6 +70,7 @@ class VideoVision(Store):
         else:
             stock = 0
         price = Decimal(remove_words(soup.find('p', 'price').find('bdi').text))
+        price = (price * Decimal('1.19')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'woocommerce-product'
                                                         '-gallery').findAll(
