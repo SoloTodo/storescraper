@@ -74,9 +74,7 @@ class PcBoost(Store):
             normal_price = Decimal(
                 remove_words(price_container.find('bdi').text))
             offer_price = normal_price
-
         else:
-
             normal_price = Decimal(
                 remove_words(
                     price_container.find('del').find('span', 'woocommerce'
