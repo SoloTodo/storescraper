@@ -129,7 +129,8 @@ class Vtr(Store):
         prod_id = parsed_qs['code'][0]
 
         product_data = json.loads(session.get(
-            'https://vtr.com/api/product/device?device={}'.format(prod_id)).text)
+            'https://vtr.com/api/product/device?device={}'.format(
+                prod_id)).text)
 
         for plan_entry in product_data['plans']:
             plan_entry['pricing_data'] = {x['name']: x

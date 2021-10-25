@@ -52,7 +52,7 @@ class TiendaMovistar(Store):
                 category_url = 'https://catalogo.movistar.cl/fullprice/' \
                                'catalogo/{}?p={}'.format(category_path, page)
 
-                if page >= 60:
+                if page >= 80:
                     raise Exception('Page overflow: ' + category_url)
 
                 soup = BeautifulSoup(session.get(category_url).text,
