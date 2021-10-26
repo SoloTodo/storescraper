@@ -4,10 +4,10 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, POWER_SUPPLY, PROCESSOR, \
-    VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
-    GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE
+  VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
+  EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+  KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
+  GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -41,6 +41,8 @@ class Globalbox(Store):
             KEYBOARD,
             MOUSE,
             UPS,
+            CPU_COOLER,
+
         ]
 
     @classmethod
@@ -77,6 +79,9 @@ class Globalbox(Store):
             ['gamer/mouse-gamer', MOUSE],
             ['gamer/audifonos-gamer', HEADPHONES],
             ['gamer/sillas-gamer', GAMING_CHAIR],
+            ['perifericos/teclados', KEYBOARD],
+            ['perifericos/mouse', MOUSE],
+            ['componentes/enfriamiento-y-ventilacion', CPU_COOLER]
         ]
 
         session = session_with_proxy(extra_args)
