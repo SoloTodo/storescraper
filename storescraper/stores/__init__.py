@@ -215,6 +215,7 @@ from .mercadolibre_argentina_western_digital import \
 from .mercado_libre_chile import MercadoLibreChile
 from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_samsung import MercadoLibreSamsung
+from .meritek import Meritek
 from .meroli import Meroli
 from .mhw_store import MHWStore
 from .mi_mall_virtual import MiMallVirtual
