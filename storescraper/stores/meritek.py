@@ -63,10 +63,15 @@ class Meritek(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         soup = BeautifulSoup(
             json.loads(soup.find('div', 'product').find('script').text),
             'html.parser')
+        sku_tag = soup.find('span', 'sku')
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
         name = soup.find('h2', 'product_title').text.strip()
         if soup.find('span', 'product-stock in-stock'):
             stock = int(
@@ -87,12 +92,13 @@ class Meritek(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            part_number=sku
         )
         return [p]
