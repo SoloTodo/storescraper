@@ -131,7 +131,11 @@ class TecnoStoreChile(Store):
             json_product = json_product['@graph'][1]
             name = json_product['name']
             sku = str(json_product['sku'])
-            stock = int(soup.find('span', 'stock in-stock').text.split()[0])
+            stock_tag = soup.find('span', 'stock in-stock')
+            if stock_tag:
+                stock = int(stock_tag.text.split()[0])
+            else:
+                stock = -1
             normal_price = Decimal(
                 round(int(json_product['offers'][0]['price']) * 1.05))
             offer_price = Decimal(json_product['offers'][0]['price'])
