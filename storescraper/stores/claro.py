@@ -52,17 +52,12 @@ class Claro(Store):
         if category == 'Cell':
             # Con plan
 
-            soup = BeautifulSoup(session.post(
-                'https://equipos.clarochile.cl/servicio/catalogo',
-                'destacados=destacado'
+            soup = BeautifulSoup(session.get(
+                'https://www.clarochile.cl/personas/ofertaplanconequipo/'
             ).text, 'html.parser')
 
-            products_json = json.loads(soup.contents[-1])
-
-            for idx, product_entry in enumerate(products_json):
-                product_slug = product_entry['slug']
-                product_url = 'https://equipos.clarochile.cl/' \
-                              'catalogo/' + product_slug
+            for idx, product_tag in enumerate(soup.findAll('div', 'oferta')):
+                product_url = product_tag.find('a')['href']
                 discovered_entries[product_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',
@@ -109,7 +104,7 @@ class Claro(Store):
 
         soup = BeautifulSoup(session.get(data_url).text,
                              'html.parser')
-        containers = soup.findAll('article', 'plan-destacado-Landing')
+        containers = soup.findAll('div', 'new-card') + soup.findAll('div', 'card-box')
 
         products = []
         portabilidad_modes = [
@@ -122,12 +117,34 @@ class Claro(Store):
             ' (sin cuota de arriendo)'
         ]
 
-        for container in containers:
-            c = container.find('div', 'tab-content').find('div')
-            plan_name = c.find('h1').text.strip()
-            plan_price_text = c.findAll('h2')[-1]\
-                .text.replace('$', '')
-            plan_price = Decimal(plan_price_text.replace('.', ''))
+        for container in soup.findAll('div', 'new-card'):
+            plan_name = container.find('span', 'new-card__title').text.strip()
+            plan_price = Decimal(remove_words(
+                container.findAll('li')[1].text.strip()))
+
+            for portability_mode in portabilidad_modes:
+                for leasing_mode in leasing_modes:
+                    name = '{}{}{}'.format(plan_name, portability_mode,
+                                           leasing_mode)
+                    key = '{}{}{}'.format(plan_name, portability_mode,
+                                          leasing_mode)
+
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'CellPlan',
+                        url,
+                        url,
+                        key,
+                        -1,
+                        plan_price,
+                        plan_price,
+                        'CLP'))
+
+        for container in soup.findAll('div', 'card-box'):
+            plan_name = container.find('h1').text.strip()
+            plan_price = Decimal(remove_words(container.findAll(
+                'h2')[1].text.strip()))
 
             for portability_mode in portabilidad_modes:
                 for leasing_mode in leasing_modes:

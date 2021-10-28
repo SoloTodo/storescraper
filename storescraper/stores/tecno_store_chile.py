@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
     GAMING_CHAIR, COMPUTER_CASE, \
-    VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR
+    VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR, NOTEBOOK, \
+    POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -30,28 +31,34 @@ class TecnoStoreChile(Store):
             CPU_COOLER,
             PROCESSOR,
             MONITOR,
-            VIDEO_CARD
+            VIDEO_CARD,
+            NOTEBOOK,
+            POWER_SUPPLY,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['hardware/almacenamiento/hdd-disco-duro', STORAGE_DRIVE],
-            ['hardware/almacenamiento/m-2-sata-y-nvme', SOLID_STATE_DRIVE],
-            ['hardware/almacenamiento/ssd-unidad-de-estado-solido',
-             SOLID_STATE_DRIVE],
-            ['gamer/perifericos/audifono', HEADPHONES],
+            ['accesorios/audifonos-clasicos', HEADPHONES],
+            ['accesorios/mouse-de-escrtorio', MOUSE],
             ['accesorios/parlantes-y-equipos-de-audio', STEREO_SYSTEM],
+            ['gamer/perifericos/audifono', HEADPHONES],
             ['gamer/perifericos/teclados', KEYBOARD],
             ['gamer/perifericos/mouse', MOUSE],
-            ['sillas', GAMING_CHAIR],
-            ['hardware/gabinetes', COMPUTER_CASE],
-            ['hardware/placa-madre', MOTHERBOARD],
-            ['hardware/memoria-ram', RAM],
-            ['hardware/refrigeracion-y-ventilacion', CPU_COOLER],
+            ['notebooks', NOTEBOOK],
             ['hardware/procesadores', PROCESSOR],
+            ['hardware/almacenamiento/hdd-disco-duro', STORAGE_DRIVE],
+            ['hardware/almacenamiento/ssd-unidad-de-estado-solido',
+             SOLID_STATE_DRIVE],
+            ['hardware/almacenamiento/m-2-sata-y-nvme', SOLID_STATE_DRIVE],
+            ['hardware/fuente-de-poder', POWER_SUPPLY],
+            ['hardware/gabinetes', COMPUTER_CASE],
             ['hardware/gpu', VIDEO_CARD],
+            ['hardware/memoria-ram', RAM],
+            ['hardware/placa-madre', MOTHERBOARD],
+            ['hardware/refrigeracion-y-ventilacion', CPU_COOLER],
             ['monitores', MONITOR],
+            ['sillas', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

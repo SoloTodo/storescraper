@@ -68,11 +68,12 @@ class SmartDeal(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        if soup.find('div', 'et_pb_row et_pb_row_3_tb_body').findAll(
-                'div', 'et_pb_text_inner')[1].text in ['Factory Refurbished']:
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
+        if soup.find('div', 'et_pb_module et_pb_text et_pb_text_1_tb_body '
+                            'et_pb_text_align_left et_pb_bg_layout_light')\
+                .text.strip() == 'Nuevo Sellado':
             condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
 
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'woocommerce-product-gallery').findAll(
