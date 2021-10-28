@@ -222,6 +222,7 @@ from .mi_store import MiStore
 from .mi_pc import MiPc
 from .microplay import Microplay
 from .mis_beneficios import MisBeneficios
+from .mi_tienda_damasco import MiTiendaDamasco
 from .mobile_hut import MobileHut
 from .movistar import Movistar
 from .movistar_one import MovistarOne
