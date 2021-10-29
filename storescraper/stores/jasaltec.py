@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
@@ -6,8 +7,9 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, VIDEO_GAME, GAMING_CHAIR
+from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Jasaltec(Store):
@@ -90,3 +92,42 @@ class Jasaltec(Store):
                     product_urls.append(product_url)
                 page += 1
         return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'product_title').text
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        if soup.find('p', 'stock out-of-stock'):
+            stock = 0
+        else:
+            stock = -1
+        if soup.find('p', 'price').find('ins'):
+            offer_price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text))
+        else:
+            offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
+        picture_urls = [tag['src'] for tag in soup.find('div',
+                                                        'woocommerce-product'
+                                                        '-gallery').findAll(
+            'img')]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+        )
+        return [p]
