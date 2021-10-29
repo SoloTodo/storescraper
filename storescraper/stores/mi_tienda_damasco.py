@@ -20,35 +20,33 @@ class MiTiendaDamasco(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        local_categories = [
-            TELEVISION
-        ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in local_categories:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + local_category)
 
-                url_webpage = 'https://www.mitiendadamasco.com/buscar/q-lg/' \
-                              'qc-products/page-{}?collections=LG'.format(page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', {
-                    'data-hook': 'grid-layout-item'})
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('empty category: ' + local_category)
-                    break
+        if category != TELEVISION:
+            return []
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 20:
+                raise Exception('page overflow')
+
+            url_webpage = 'https://www.mitiendadamasco.com/buscar/q-lg/' \
+                          'qc-products/page-{}?collections=LG'.format(page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', {
+                'data-hook': 'grid-layout-item'})
+            if not product_containers:
+                if page == 1:
+                    logging.warning('empty category')
+                break
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -68,6 +66,8 @@ class MiTiendaDamasco(Store):
             stock = 0
         price = Decimal(json_product['Offers']['price'])
         picture_urls = [json_product['image']['contentUrl']]
+        description = json_product['description']
+
         p = Product(
             name,
             cls.__name__,
@@ -81,5 +81,6 @@ class MiTiendaDamasco(Store):
             'USD',
             sku=sku,
             picture_urls=picture_urls,
+            description=description
         )
         return [p]
