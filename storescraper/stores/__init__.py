@@ -109,6 +109,7 @@ from .fnac import Fnac
 from .fravega import Fravega
 from .fullcolor_spa import FullcolorSpa
 from .g_games import GGames
+from .gad_tecnology import GadTecnology
 from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
