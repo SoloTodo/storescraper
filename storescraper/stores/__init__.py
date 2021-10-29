@@ -307,6 +307,7 @@ from .sipo_online import SipoOnline
 from .sistemax import Sistemax
 from .smart_deal import SmartDeal
 from .smart_gadget_chile import SmartGadgetChile
+from .smart_gaming import SmartGaming
 from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
