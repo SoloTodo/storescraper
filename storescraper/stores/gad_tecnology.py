@@ -18,31 +18,23 @@ class GadTecnology(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        local_categories = [
-            TELEVISION
-        ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in local_categories:
-            if local_category != category:
-                continue
-            page = 1
-            if page > 10:
-                raise Exception('page overlfow: ' + local_category)
-            url_webpage = 'https://gadtecnology.com/shop/'
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+        if category != TELEVISION:
+            return []
 
-            if not product_containers:
-                if page == 1:
-                    logging.warning('empty category: ' + local_category)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+        url_webpage = 'https://gadtecnology.com/shop/'
+        response = session.get(url_webpage)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_containers = soup.findAll('li', 'product')
+
+        if not product_containers:
+            logging.warning('empty category')
+
+        for container in product_containers:
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
+
         return product_urls
 
     @classmethod
