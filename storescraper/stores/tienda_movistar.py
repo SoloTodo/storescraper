@@ -6,6 +6,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import HEADPHONES, TABLET, CELL, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
@@ -19,19 +20,21 @@ class TiendaMovistar(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Tablet'
+            CELL,
+            TABLET,
+            HEADPHONES,
+            MOUSE
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['smartphones-liberados.html', ['Cell'],
+            ['smartphones-liberados.html', [CELL],
              'Smartphones liberados', 1],
-            ['outlet.html', ['Cell'],
-             'Outlet', 1],
-            ['tablets.html', ['Tablet'],
-             'Tablets', 1],
+            ['outlet.html', [CELL], 'Outlet', 1],
+            ['tablets.html', [TABLET], 'Tablets', 1],
+            ['accesorios.html', [HEADPHONES], 'Accesorios', 1],
+            ['gaming.html', [MOUSE], 'Gaming', 1],
         ]
 
         session = session_with_proxy(extra_args)
