@@ -164,15 +164,19 @@ class Claro(Store):
 
         # 2. Obtain the products
         session = session_with_proxy(extra_args)
-        res = session.get('https://www.clarochile.cl/personas/ofertaplanconequipo/')
+        res = session.get('https://www.clarochile.cl/'
+                          'personas/ofertaplanconequipo/')
         soup = BeautifulSoup(res.text, 'html.parser')
         products = []
 
         for cell_tag in soup.findAll('div', 'oferta'):
-            cell_name = cell_tag.find('div', 'datos-plan').find('h2').text.strip()
-            price_text = cell_tag.find('div', 'cuotas').findAll('i')[-1].text.split('$')[1]
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'cuotas').findAll(
+                'i')[-1].text.split('$')[1]
             price = Decimal(remove_words(price_text))
-            picture_urls = [cell_tag.find('div', 'imagen-equipo').find('img')['src']]
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src']]
 
             for cell_plan_name in cell_plans_names:
                 product = Product(

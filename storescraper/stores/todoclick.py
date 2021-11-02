@@ -13,6 +13,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
+
 class Todoclick(Store):
     @classmethod
     def categories(cls):
@@ -133,46 +134,44 @@ class Todoclick(Store):
                 html.unescape(variants['data-product_variations']))
             is_variant = True
             for product in container_products:
-              if not product['attributes']:
-                is_variant = False
-                variant_name = base_name
-              else:
-                variant_name = base_name + " - " + next(
-                  iter(product['attributes'].values()))
-              if product['is_in_stock']:
-                  stock = int(product['max_qty'])
-              else:
-                  stock = 0
-              key = str(product['variation_id'])
-              sku = str(product['sku'])
-              price = Decimal(product['display_price'])
-              if product['image']['src'] == '':
-                  picture_urls = [tag['src'] for tag in
-                                  soup.find('div', 'woocommerce-product'
-                                                   '-gallery').findAll(
-                                      'img')]
-              else:
-                  picture_urls = [product['image']['src']]
+                if not product['attributes']:
+                    is_variant = False
+                    variant_name = base_name
+                else:
+                    variant_name = base_name + " - " + next(
+                        iter(product['attributes'].values()))
+                if product['is_in_stock']:
+                    stock = int(product['max_qty'])
+                else:
+                    stock = 0
+                key = str(product['variation_id'])
+                sku = str(product['sku'])
+                price = Decimal(product['display_price'])
+                if product['image']['src'] == '':
+                    picture_urls = [tag['src'] for tag in soup.find(
+                        'div', 'woocommerce-product-gallery').findAll('img')]
+                else:
+                    picture_urls = [product['image']['src']]
 
-              p = Product(
-                  variant_name,
-                  cls.__name__,
-                  category,
-                  url,
-                  url,
-                  key,
-                  stock,
-                  price,
-                  price,
-                  'CLP',
-                  sku=sku,
-                  part_number=sku,
-                  picture_urls=picture_urls,
-                  description=description
-              )
-              if not is_variant:
-                return [p]
-              products.append(p)
+                p = Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description
+                )
+                if not is_variant:
+                    return [p]
+                products.append(p)
         else:
             sku = soup.find('span', 'sku').text
             stock = 0
