@@ -11,8 +11,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    remove_words
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Todoclick(Store):
@@ -133,10 +132,14 @@ class Todoclick(Store):
         if variants:
             container_products = json.loads(
                 html.unescape(variants['data-product_variations']))
-
+            is_variant = True
             for product in container_products:
-                variant_name = base_name + " - " + next(
-                    iter(product['attributes'].values()))
+                if not product['attributes']:
+                    is_variant = False
+                    variant_name = base_name
+                else:
+                    variant_name = base_name + " - " + next(
+                        iter(product['attributes'].values()))
                 if product['is_in_stock']:
                     stock = int(product['max_qty'])
                 else:
@@ -145,10 +148,8 @@ class Todoclick(Store):
                 sku = str(product['sku'])
                 price = Decimal(product['display_price'])
                 if product['image']['src'] == '':
-                    picture_urls = [tag['src'] for tag in
-                                    soup.find('div', 'woocommerce-product'
-                                                     '-gallery').findAll(
-                                        'img')]
+                    picture_urls = [tag['src'] for tag in soup.find(
+                        'div', 'woocommerce-product-gallery').findAll('img')]
                 else:
                     picture_urls = [product['image']['src']]
 
@@ -168,6 +169,8 @@ class Todoclick(Store):
                     picture_urls=picture_urls,
                     description=description
                 )
+                if not is_variant:
+                    return [p]
                 products.append(p)
         else:
             sku = soup.find('span', 'sku').text

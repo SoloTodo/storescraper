@@ -109,6 +109,7 @@ from .fnac import Fnac
 from .fravega import Fravega
 from .fullcolor_spa import FullcolorSpa
 from .g_games import GGames
+from .gad_tecnology import GadTecnology
 from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
@@ -216,6 +217,7 @@ from .mercadolibre_argentina_western_digital import \
 from .mercado_libre_chile import MercadoLibreChile
 from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_samsung import MercadoLibreSamsung
+from .meritek import Meritek
 from .meroli import Meroli
 from .mhw_store import MHWStore
 from .mi_mall_virtual import MiMallVirtual
@@ -223,6 +225,7 @@ from .mi_store import MiStore
 from .mi_pc import MiPc
 from .microplay import Microplay
 from .mis_beneficios import MisBeneficios
+from .mi_tienda_damasco import MiTiendaDamasco
 from .mobile_hut import MobileHut
 from .movistar import Movistar
 from .movistar_one import MovistarOne
@@ -250,6 +253,7 @@ from .panafoto import Panafoto
 from .panamericana import Panamericana
 from .paris import Paris
 from .paris_fast import ParisFast
+from .pc_boost import PcBoost
 from .pc_com import PcCom
 from .pc_compu import PcCompu
 from .pc_digital import PcDigital
@@ -308,6 +312,7 @@ from .sipo_online import SipoOnline
 from .sistemax import Sistemax
 from .smart_deal import SmartDeal
 from .smart_gadget_chile import SmartGadgetChile
+from .smart_gaming import SmartGaming
 from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
@@ -357,6 +362,7 @@ from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
 from .valrod import Valrod
 from .ventas_albion import VentasAlbion
+from .video_vision import VideoVision
 from .virtual_drakon import VirtualDrakon
 from .vitel import Vitel
 from .vivelo import Vivelo

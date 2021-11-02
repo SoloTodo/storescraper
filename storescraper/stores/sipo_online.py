@@ -180,7 +180,7 @@ class SipoOnline(Store):
             picture_containers = soup.find('div',
                                            'woocommerce-product-gallery') \
                 .findAll('img')
-            picture_urls = [tag['src'] for tag in picture_containers]
+            picture_urls = [tag['data-src'] for tag in picture_containers]
             p = Product(
                 name,
                 cls.__name__,
