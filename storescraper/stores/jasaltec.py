@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, VIDEO_GAME, GAMING_CHAIR
+    STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,7 +34,6 @@ class Jasaltec(Store):
             KEYBOARD,
             UPS,
             VIDEO_GAME_CONSOLE,
-            VIDEO_GAME,
             GAMING_CHAIR,
 
         ]
@@ -45,7 +44,7 @@ class Jasaltec(Store):
             ['almacenamiento-de-datos/hdd-externo', EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento-de-datos/pendrive', USB_FLASH_DRIVE],
             ['almacenamiento-de-datos/ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento-de-datos/ssd-externo', SOLID_STATE_DRIVE],
+            ['almacenamiento-de-datos/ssd-externo', EXTERNAL_STORAGE_DRIVE],
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
             ['componentes-informaticos/memoria-ram', RAM],
@@ -62,7 +61,6 @@ class Jasaltec(Store):
             ['perifericos/teclados', KEYBOARD],
             ['respaldo-energia/ups', UPS],
             ['videojuegos/consola', VIDEO_GAME_CONSOLE],
-            ['videojuegos/juegos', VIDEO_GAME],
             ['sillas', GAMING_CHAIR],
         ]
 
@@ -100,7 +98,8 @@ class Jasaltec(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        sku = soup.find('span', 'sku').text.strip()
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
@@ -122,12 +121,13 @@ class Jasaltec(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
         )
         return [p]
