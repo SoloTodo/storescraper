@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, MOTHERBOARD, PROCESSOR, \
-    SOLID_STATE_DRIVE, VIDEO_CARD
+    SOLID_STATE_DRIVE, VIDEO_CARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,7 +18,8 @@ class PcBoost(Store):
             MOTHERBOARD,
             PROCESSOR,
             SOLID_STATE_DRIVE,
-            VIDEO_CARD
+            VIDEO_CARD,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -28,7 +29,8 @@ class PcBoost(Store):
             ['placas-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['ssd', SOLID_STATE_DRIVE],
-            ['tarjetas-de-video', VIDEO_CARD]
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['disipadores', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)

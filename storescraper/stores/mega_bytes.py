@@ -92,7 +92,8 @@ class MegaBytes(Store):
                                     '-description')
         if price_container and price_container.find('strong'):
             normal_price = Decimal(
-                remove_words(price_container.find('strong').text))
+                remove_words(price_container.find('strong').text
+                             .replace('-', '')))
         elif price_container and price_container.find('span'):
             normal_price = Decimal(
                 remove_words(price_container.find('span').text))
