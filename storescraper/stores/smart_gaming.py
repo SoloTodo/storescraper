@@ -8,7 +8,8 @@ from storescraper.categories import STORAGE_DRIVE, HEADPHONES, POWER_SUPPLY, \
     GAMING_CHAIR, VIDEO_CARD, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class SmartGaming(Store):
@@ -92,7 +93,10 @@ class SmartGaming(Store):
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
-            stock = 0
+            if soup.find('input', {'name': 'quantity'}):
+                stock = -1
+            else:
+                stock = 0
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
@@ -102,6 +106,11 @@ class SmartGaming(Store):
         picture_urls = [tag['data-large_image'] for tag in
                         soup.find('div', 'woocommerce-product-gallery').find(
                             'div', 'slider').findAll('img')]
+
+        description = html_to_markdown(str(soup.find(
+            'div', 'woocommerce-product-details__short-description')) +
+            str(soup.find('div', 'woocommerce-Tabs-panel--description')))
+
         p = Product(
             name,
             cls.__name__,
@@ -114,6 +123,7 @@ class SmartGaming(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
