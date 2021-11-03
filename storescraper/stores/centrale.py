@@ -49,7 +49,7 @@ class Centrale(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnología/audio/audífonos', HEADPHONES],
+            ['tecnología/audio/audifonos', HEADPHONES],
             ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
             ['tecnología/computación/all-in-one/', ALL_IN_ONE],
             ['tecnología/computación/almacenamiento-externo/',
@@ -67,8 +67,8 @@ class Centrale(Store):
             ['tecnología/impresión-y-oficina/impresoras-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-laser', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-tinta', PRINTER],
-            ['tecnología/impresión-y-oficina/impresoras-fotograficas',
-             PRINTER],
+            # ['tecnología/impresión-y-oficina/impresoras-fotograficas',
+            #  PRINTER],
             ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
             ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas',
              GAMING_CHAIR],
