@@ -68,9 +68,7 @@ class AlmacenesJapon(Store):
         else:
             stock = 0
 
-        price = Decimal(soup.find('h4', {'itemprop': 'price'}).
-                        text.replace('$', '').replace('.', '').
-                        replace(',', '.').strip())
+        price = Decimal(soup.find('h4', {'itemprop': 'price'})['content'])
 
         picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
 
