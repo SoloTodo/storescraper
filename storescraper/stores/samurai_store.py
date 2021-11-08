@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
-    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR
+    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,6 +22,7 @@ class SamuraiStore(Store):
             CPU_COOLER,
             NOTEBOOK,
             PROCESSOR,
+            MOTHERBOARD,
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class SamuraiStore(Store):
             ['cooler-cpu', CPU_COOLER],
             ['notebook', NOTEBOOK],
             ['procesador', PROCESSOR],
+            ['placa-madre', MOTHERBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
