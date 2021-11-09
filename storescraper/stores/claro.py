@@ -94,40 +94,16 @@ class Claro(Store):
                              'html.parser')
 
         products = []
+
         portabilidad_modes = [
             '',
             # ' Portabilidad',
         ]
 
         leasing_modes = [
-            # ' (con cuota de arriendo)',
-            ' (sin cuota de arriendo)'
+            ' (sin cuota de arriendo)',
+            ' (con cuota de arriendo)'
         ]
-
-        # for container in soup.findAll('div', 'new-card'):
-        #     plan_name = container.find('span', 'new-card__title')
-        #     .text.strip()
-        #     plan_price = Decimal(remove_words(
-        #         container.findAll('li')[1].text.strip()))
-        #
-        #     for portability_mode in portabilidad_modes:
-        #         for leasing_mode in leasing_modes:
-        #             name = '{}{}{}'.format(plan_name, portability_mode,
-        #                                    leasing_mode)
-        #             key = '{}{}{}'.format(plan_name, portability_mode,
-        #                                   leasing_mode)
-        #
-        #             products.append(Product(
-        #                 name,
-        #                 cls.__name__,
-        #                 'CellPlan',
-        #                 url,
-        #                 url,
-        #                 key,
-        #                 -1,
-        #                 plan_price,
-        #                 plan_price,
-        #                 'CLP'))
 
         for container in soup.findAll('div', 'card-box'):
             plan_name = container.find('h1').text.strip()
@@ -161,7 +137,8 @@ class Claro(Store):
         # 1. Obtain cell plans data
         plans = cls._planes(cls.planes_url, extra_args)
         cell_plans_names = ['Claro ' + plan.name.split('(')[0].strip()
-                            for plan in plans]
+                            for plan in plans
+                            if 'sin cuota de arriendo' in plan.name]
 
         # 2. Obtain the products
         session = session_with_proxy(extra_args)
@@ -174,7 +151,7 @@ class Claro(Store):
             cell_name = cell_tag.find('div', 'datos-plan').find(
                 'h2').text.strip()
             price_text = cell_tag.find('div', 'cuotas').findAll(
-                'i')[-1].text.split('$')[1]
+                'i')[1].text.split('$')[1]
             price = Decimal(remove_words(price_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
                 'img')['src']]
