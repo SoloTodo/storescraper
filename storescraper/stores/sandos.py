@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, HEADPHONES, MOUSE, KEYBOARD, \
-    GAMING_CHAIR, MONITOR
+    GAMING_CHAIR, MONITOR, MOTHERBOARD, RAM, POWER_SUPPLY, CPU_COOLER, \
+    COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,12 +22,22 @@ class Sandos(Store):
             KEYBOARD,
             GAMING_CHAIR,
             MONITOR,
+            MOTHERBOARD,
+            RAM,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            COMPUTER_CASE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['componentes/tarjetas-de-video', VIDEO_CARD],
+            ['componentes/placas-madre', MOTHERBOARD],
+            ['componentes/memorias-ram', RAM],
+            ['componentes/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes/cooler', CPU_COOLER],
+            ['componentes/gabinetes', COMPUTER_CASE],
             ['accesorios/audifonos', HEADPHONES],
             ['accesorios/mouse', MOUSE],
             ['accesorios/teclados', KEYBOARD],
