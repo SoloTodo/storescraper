@@ -121,7 +121,7 @@ class Centrale(Store):
             part_number = None
 
         name = soup.find('h1', 'product-title').text.strip()
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
@@ -152,12 +152,12 @@ class Centrale(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=part_number,
             picture_urls=picture_urls,
             part_number=part_number
         )

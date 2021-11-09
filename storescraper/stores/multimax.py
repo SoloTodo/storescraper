@@ -35,6 +35,7 @@ class Multimax(Store):
 
             url_webpage = 'https://www.multimax.net/search?page={}&q=lg' \
                 .format(page)
+            print(url_webpage)
 
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
