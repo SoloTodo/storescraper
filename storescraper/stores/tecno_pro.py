@@ -4,14 +4,15 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.banner_sections import TELEVISIONS
-from storescraper.categories import VIDEO_GAME_CONSOLE, VIDEO_GAME, NOTEBOOK, \
+from storescraper.categories import VIDEO_GAME_CONSOLE, NOTEBOOK, \
     VIDEO_CARD, PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     USB_FLASH_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, COMPUTER_CASE, \
     MONITOR, MOTHERBOARD, POWER_SUPPLY, KEYBOARD, MOUSE, CPU_COOLER, \
-    GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE
+    GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class TecnoPro(Store):
@@ -19,7 +20,6 @@ class TecnoPro(Store):
     def categories(cls):
         return [
             VIDEO_GAME_CONSOLE,
-            VIDEO_GAME,
             NOTEBOOK,
             VIDEO_CARD,
             PROCESSOR,
@@ -43,6 +43,7 @@ class TecnoPro(Store):
             ALL_IN_ONE,
             TABLET,
             WEARABLE,
+            PRINTER,
         ]
 
     @classmethod
@@ -51,7 +52,6 @@ class TecnoPro(Store):
             ['playstation', VIDEO_GAME_CONSOLE],
             ['xbox', VIDEO_GAME_CONSOLE],
             ['nintendo', VIDEO_GAME_CONSOLE],
-            ['videojuegos', VIDEO_GAME, ],
             ['notebook-y-computadores', NOTEBOOK],
             ['tarjetas-de-video', VIDEO_CARD],
             ['procesadores', PROCESSOR],
@@ -67,7 +67,11 @@ class TecnoPro(Store):
             ['fuentes-de-poder', POWER_SUPPLY],
             ['teclados', KEYBOARD],
             ['mouses-y-teclados', MOUSE],
+            ['impresora-laser', PRINTER],
+            ['impresora-tinta', PRINTER],
             ['refrigeracion-cpu', CPU_COOLER],
+            ['ventilador-pc', CPU_COOLER],
+            ['perifericos-pc', HEADPHONES],
             ['sillas-y-mesas-gamers', GAMING_CHAIR],
             ['televisores', TELEVISIONS],
             ['audifonos', HEADPHONES],
@@ -77,6 +81,7 @@ class TecnoPro(Store):
             ['ipad', TABLET],
             ['apple-watch', WEARABLE],
             ['audifonos-apple', HEADPHONES],
+            ['celulares-y-telefonia', CELL],
         ]
 
         session = session_with_proxy(extra_args)
@@ -101,7 +106,7 @@ class TecnoPro(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append('https://tecnopro.cl'+ product_url)
+                    product_urls.append('https://tecnopro.cl' + product_url)
                 page += 1
         return product_urls
 
@@ -112,14 +117,14 @@ class TecnoPro(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-detail-name').text.strip()
-        sku = soup.find('span','variant-sku').text
-        if soup.find('span','in-stock'):
+        sku = soup.find('span', 'variant-sku').text
+        if soup.find('span', 'in-stock'):
             stock = -1
         else:
             stock = 0
-        price_container = soup.find('dl','price')
-        if price_container.find('div','price__sale'):
-            price = Decimal(remove_words( price_container.find('div',
+        price_container = soup.find('dl', 'price')
+        if price_container.find('div', 'price__sale'):
+            price = Decimal(remove_words(price_container.find('div',
                             'price__sale').find('span',
                                                 'price-item').text.strip()))
         else:
@@ -129,6 +134,9 @@ class TecnoPro(Store):
         picture_urls = ['https:' + tag['data-src'].split('?')[0] for tag in
                         soup.find('div',
                                   'gp-product-media-wrapper').findAll('img')]
+
+        description = html_to_markdown(
+            soup.find('div', 'product-detail-infomation').text)
 
         p = Product(
             name,
@@ -143,5 +151,6 @@ class TecnoPro(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
+            description=description,
         )
         return [p]
