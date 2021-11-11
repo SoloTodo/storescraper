@@ -92,8 +92,6 @@ class TecnoKing(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         name = soup.find('h1', 'product_title').text
         if soup.find('form', 'variations_form'):
             variations = json.loads(soup.find('form', 'variations_form')[
@@ -143,7 +141,7 @@ class TecnoKing(Store):
                                                             'woocommerce-'
                                                             'product-'
                                                             'gallery').
-                findAll('img')]
+                            findAll('img')]
             p = Product(
                 name,
                 cls.__name__,
