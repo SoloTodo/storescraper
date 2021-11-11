@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -105,7 +107,7 @@ class TecnoPro(Store):
                         logging.warning('empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('a')['href'].split('?')[0]
                     product_urls.append('https://tecnopro.cl' + product_url)
                 page += 1
         return product_urls
@@ -115,42 +117,43 @@ class TecnoPro(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('div', 'product-detail-name').text.strip()
-        sku = soup.find('span', 'variant-sku').text
-        if soup.find('span', 'in-stock'):
-            stock = -1
-        else:
-            stock = 0
-        price_container = soup.find('dl', 'price')
-        if price_container.find('div', 'price__sale'):
-            price = Decimal(remove_words(price_container.find('div',
-                            'price__sale').find('span',
-                                                'price-item').text.strip()))
-        else:
-            price = Decimal(remove_words(price_container.find('div',
-                            'price__regular').find('span',
-                                                   'price-item').text.strip()))
-        picture_urls = ['https:' + tag['data-src'].split('?')[0] for tag in
-                        soup.find('div',
-                                  'gp-product-media-wrapper').findAll('img')]
 
+        soup = BeautifulSoup(response.text, 'html.parser')
         description = html_to_markdown(
             soup.find('div', 'product-detail-infomation').text)
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-            description=description,
-        )
-        return [p]
+        json_tag = re.search(r'AVADA_CDT.product = ([\s\S]+?);', response.text)
+        product_data = json.loads(json_tag.groups()[0])
+        products = []
+
+        for variant in product_data['variants']:
+            name = variant['name']
+            sku = variant['sku']
+            key = str(variant['id'])
+            stock = -1 if variant['available'] else 0
+            price = Decimal(variant['price'] / 100)
+            variant_url = '{}?variant={}'.format(url, key)
+
+            if variant['featured_image']:
+                picture_urls = [variant['featured_image']['src']]
+            else:
+                picture_urls = None
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                variant_url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description,
+            )
+            products.append(p)
+
+        return products
