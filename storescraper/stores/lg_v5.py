@@ -16,6 +16,7 @@ from storescraper.utils import session_with_proxy
 class LgV5(Store):
     base_url = 'https://www.lg.com'
     region_code = property(lambda self: 'Subclasses must implement this')
+    currency = 'USD'
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -23,6 +24,7 @@ class LgV5(Store):
         discovered_urls = []
         session = session_with_proxy(extra_args)
         session.headers['content-type'] = 'application/x-www-form-urlencoded'
+        skip_unavailable = extra_args and extra_args.get('skip_unavailable')
 
         endpoint_url = 'https://www.lg.com/{}/mkt/ajax/category/' \
                        'retrieveCategoryProductList'.format(cls.region_code)
@@ -39,6 +41,10 @@ class LgV5(Store):
 
             payload = 'categoryId={}&modelStatusCode={}&bizType=B2C&viewAll' \
                       '=Y'.format(category_id, status)
+
+            if skip_unavailable:
+                payload += '&obsOnly=Y'
+
             json_response = json.loads(
                 session.post(endpoint_url, payload).text)
             product_entries = json_response['data'][0]['productList']
@@ -58,6 +64,7 @@ class LgV5(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=20)
+        skip_unavailable = extra_args and extra_args.get('skip_unavailable')
 
         if response.url != url or response.status_code == 404:
             return []
@@ -74,13 +81,15 @@ class LgV5(Store):
                     if sibling['modelId'] not in sibling_ids:
                         sibling_ids.append(sibling['modelId'])
             else:
-                raise Exception('Unkown sibling type for: ' + url)
+                raise Exception('Unknown sibling type for: ' + url)
 
         products = []
 
         for sibling_id in sibling_ids:
             sibling = cls._retrieve_single_product(sibling_id, category)
             if sibling:
+                if skip_unavailable and sibling.stock == 0:
+                    continue
                 products.append(sibling)
 
         return products
@@ -108,13 +117,15 @@ class LgV5(Store):
         else:
             name = '{} - {}'.format(model_name, short_description)
 
-        # This scraper is used by LG's WTB service, and its entities are
-        # mapped to WtbEntity instances. These instances do not have a stock
-        # field so if the price is "0" we assume they are not available.
+        # Unavailable products do not have a price, but we still need to
+        # return them by default because the Where To Buy (WTB) system
+        # needs to consider all products, so use zero as default.
         if model_data['obsInventoryFlag'] == 'Y':
             price = Decimal(model_data['obsSellingPrice'])
+            stock = -1
         else:
             price = Decimal(0)
+            stock = 0
 
         picture_urls = [cls.base_url + x['largeImageAddr'].replace(' ', '%20')
                         for x in model_data['galleryImages']]
@@ -165,12 +176,13 @@ class LgV5(Store):
             url,
             url,
             model_id,
-            -1,
+            stock,
             price,
             price,
-            'USD',
+            cls.currency,
             sku=sku,
             picture_urls=picture_urls,
+            part_number=sku,
             positions=positions
         )
 

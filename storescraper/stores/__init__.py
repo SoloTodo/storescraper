@@ -337,6 +337,7 @@ from .tecno_store_chile import TecnoStoreChile
 from .tekstore import Tekstore
 from .terabyte import Terabyte
 from .tecno_master import TecnoMaster
+from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
 from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro

@@ -26,6 +26,7 @@ class SmartDeal(Store):
             ('apple', NOTEBOOK),
             ('huawei', NOTEBOOK),
             ('acer', NOTEBOOK),
+            ('hp', NOTEBOOK),
             ('smartphones', CELL),
         ]
 
