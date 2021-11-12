@@ -43,9 +43,7 @@ class EliteCenter(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes-pc/disco-estado-solido', SOLID_STATE_DRIVE],
             ['componentes-pc/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['componentes-pc/discos-duros-pcs', STORAGE_DRIVE],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/placas-madres', MOTHERBOARD],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
@@ -57,16 +55,13 @@ class EliteCenter(Store):
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/mouse', MOUSE],
             ['accesorios/parlantes', STEREO_SYSTEM],
-            ['almacenamiento/disco-duro-pcs', STORAGE_DRIVE],
-            ['almacenamiento/disco-estado-solido', SOLID_STATE_DRIVE],
-            ['almacenamiento/disco-estado-solido-almacenamiento',
-             SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-duro-pc-hdd', STORAGE_DRIVE],
+            ['almacenamiento/disco-estado-solido-ssd', SOLID_STATE_DRIVE],
             ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/disco-externo-almacenamiento',
-             EXTERNAL_STORAGE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -86,7 +81,7 @@ class EliteCenter(Store):
 
                 if response.status_code == 404:
                     if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                        raise Exception('Invalid category: ' + url_extension)
                     break
 
                 data = response.text

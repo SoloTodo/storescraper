@@ -93,7 +93,7 @@ class Digiplot(Store):
                 url = 'https://www.digiplot.cl/product/category/{}?page={}'\
                     .format(url_extension, page)
 
-                data = session.get(url).text
+                data = session.get(url, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'product-container')
 
@@ -112,7 +112,7 @@ class Digiplot(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, verify=False)
 
         soup = BeautifulSoup(response.text, 'html.parser')
         data = re.search(r'value_product = ([\s\S]+?)\];',

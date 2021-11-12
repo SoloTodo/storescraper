@@ -60,10 +60,12 @@ class HuaweiShop(Store):
                             'configuration']['custom']['cardParameter'][
                             'editModelParameter']['specialZone'][
                             'productSets']
-                    for product_url in urls_container:
-                        product_urls.append(
-                            'https://consumer.huawei.com' + product_url[
-                                'linkUrl'])
+                    for product_url_container in urls_container:
+                        product_url = product_url_container['linkUrl']
+                        if 'https' not in product_url:
+                            product_url = 'https://consumer.huawei.com' + \
+                                          product_url
+                        product_urls.append(product_url)
                 except Exception:
                     continue
 
@@ -75,7 +77,10 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_id = soup.find('span', {'id': 'productId'}).text.strip()
+        if soup.find('span', {'id': 'productId'}):
+            product_id = soup.find('span', {'id': 'productId'}).text.strip()
+        else:
+            product_id = soup.find('input', {'id': 'productId'})['value']
 
         if not product_id:
             return []
@@ -89,8 +94,11 @@ class HuaweiShop(Store):
                                                 '.huawei.com/eCommerce'
                                                 '/queryMinPriceAndInv'
                                                 '?productIds={}&siteCode'
-                                                '=CL'.format(product_id)).
-                                    text)['data']['minPriceAndInvList'][0][
+                                                '=CL'.format(product_id)).text)
+        if not products_price['data']['minPriceAndInvList']:
+            return []
+
+        products_price = products_price['data']['minPriceAndInvList'][0][
             'minPriceByColors']
 
         sbom_codes = []

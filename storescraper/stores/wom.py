@@ -183,6 +183,16 @@ class Wom(Store):
             context = json.loads(entry['context']['context'])
             graphql_data = json.loads(context['graphql_data'])
 
+            stock_reference = entry['referenceId']
+            stock_endoint = 'https://store.wom.cl/ss/{}.json'.format(
+                stock_reference.replace('.', '_'))
+            stock_json = json.loads(session.get(stock_endoint).text)
+
+            if stock_json['inventory']:
+                stock = -1
+            else:
+                stock = 0
+
             portability_choices = [
                 ('', 'newConnection'),
                 (' Portabilidad', 'portIn'),
@@ -219,7 +229,7 @@ class Wom(Store):
                         url,
                         url,
                         '{} {}{}'.format(name, plan, portability_name_suffix),
-                        -1,
+                        stock,
                         price_without_installments,
                         price_without_installments,
                         'CLP',
@@ -239,7 +249,7 @@ class Wom(Store):
                         url,
                         '{} {}{} Cuotas'.format(name, plan,
                                                 portability_name_suffix),
-                        -1,
+                        stock,
                         initial_price_with_installments,
                         initial_price_with_installments,
                         'CLP',
@@ -262,7 +272,7 @@ class Wom(Store):
                 url,
                 url,
                 '{} Prepago'.format(name),
-                -1,
+                stock,
                 prepaid_price,
                 prepaid_price,
                 'CLP',

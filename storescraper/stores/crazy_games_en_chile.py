@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, \
     SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, KEYBOARD, \
-    POWER_SUPPLY, MOTHERBOARD, PROCESSOR, VIDEO_CARD
+    POWER_SUPPLY, MOTHERBOARD, PROCESSOR, VIDEO_CARD, CPU_COOLER, \
+    EXTERNAL_STORAGE_DRIVE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -28,11 +29,15 @@ class CrazyGamesenChile(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
+            CPU_COOLER,
+            EXTERNAL_STORAGE_DRIVE,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['acc-ps5', HEADPHONES],
             ['audifonos', HEADPHONES],
             ['audifonos-ps4-xbox-one-y-switch', HEADPHONES],
             ['audifonos-home-oficce', HEADPHONES],
@@ -49,8 +54,12 @@ class CrazyGamesenChile(Store):
             ['teclados-ps4-y-xbox-one', KEYBOARD],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['placas-madres', MOTHERBOARD],
-            ['procesadores-de-pc', PROCESSOR],
+            ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['fan-cooler-pc', CPU_COOLER],
+            ['discos-duros-internos', SOLID_STATE_DRIVE],
+            ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -58,32 +67,23 @@ class CrazyGamesenChile(Store):
             if local_category != category:
                 continue
 
-            local_product_urls = []
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.crazygamesenchile.com/{}?page={}' \
-                    .format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', {
-                    'data-hook': 'product-list-grid-item'})
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                if len(product_containers) == len(local_product_urls):
-                    break
-                product_containers = product_containers[
-                                     len(local_product_urls):
-                                     len(product_containers) + 1]
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                    local_product_urls.append(product_url)
-                page += 1
+            url_webpage = 'https://www.crazygamesenchile.com/{}?page=20' \
+                .format(url_extension)
+            print(url_webpage)
+            res = session.get(url_webpage)
+
+            if res.status_code == 404:
+                raise Exception('Invalid category: ' + url_extension)
+
+            soup = BeautifulSoup(res.text, 'html.parser')
+            product_containers = soup.findAll('li', {
+                'data-hook': 'product-list-grid-item'})
+            if not product_containers:
+                logging.warning('Empty category: ' + url_extension)
+                continue
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
@@ -111,7 +111,9 @@ class CrazyGamesenChile(Store):
                 variation_key = sku_data['id']
                 variation_sku = sku_data['sku'] or None
                 variation_stock = sku_data['inventory']['quantity']
-                variation_price = Decimal(sku_data['price'])
+                variation_price = Decimal(sku_data['comparePrice']) or \
+                    Decimal(sku_data['price'])
+                assert variation_price or not variation_stock
                 assert len(sku_data['optionsSelections']) == 1
                 variation_option_key = sku_data['optionsSelections'][0]
                 variation_option = variation_options[variation_option_key]
@@ -139,10 +141,11 @@ class CrazyGamesenChile(Store):
 
         else:
             assert len(product_data['productItems']) == 1
-            price = Decimal(product_data['price'])
+            price = Decimal(product_data['discountedPrice'])
             key = product_data['id']
             sku = product_data['sku']
             stock = product_data['inventory']['quantity']
+            assert price or not stock
             p = Product(
                 base_name,
                 cls.__name__,

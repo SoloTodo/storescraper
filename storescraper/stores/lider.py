@@ -160,20 +160,9 @@ class Lider(Store):
              'Computación > Almacenamiento > Tarjetas de Memoria', 1.0],
             ['Computación/Almacenamiento/Pendrives', ['UsbFlashDrive'],
              'Computación > Almacenamiento > Pendrives', 1.0],
-            ['Electrohogar/Lavado_y_secado',
+            ['Electrohogar/Lavado y Planchado',
              ['WashingMachine'],
              'Electrohogar > Lavado y secado', 1.0],
-            ['Electrohogar/Lavado_y_secado/Lavadoras_superiores',
-             ['WashingMachine'],
-             'Electrohogar > Lavado y secado > Lavadoras superiores', 1.0],
-            ['Electrohogar/Lavado_y_secado/Lavadoras_frontales',
-             ['WashingMachine'],
-             'Electrohogar > Lavado y secado > Lavadoras frontales', 1.0],
-            ['Electrohogar/Lavado_y_secado/Lavadoras_-_secadoras',
-             ['WashingMachine'],
-             'Electrohogar > Lavado y secado > Lavadoras - secadoras', 1.0],
-            ['Electrohogar/Lavado_y_secado/Secadoras', ['WashingMachine'],
-             'Electrohogar > Lavado y secado > Secadoras', 1.0],
             ['Electrohogar/Lavado_y_secado/Lavavajillas', ['DishWasher'],
              'Electrohogar > Lavado y secado > Lavavajillas', 1.0],
             ['Electrohogar/Refrigeración', ['Refrigerator'],
@@ -434,8 +423,9 @@ class Lider(Store):
             return {}
 
         with HeadlessChrome() as driver:
-            driver.get('https://www.lider.cl/catalogo/product/sku/' +
-                       livechat_sku)
+            sku_url = 'https://www.lider.cl/catalogo/product/sku/' + \
+                      livechat_sku
+            driver.get(sku_url)
 
             for i in range(10):
                 print(i)
@@ -447,6 +437,6 @@ class Lider(Store):
                     # Wait a little and try again in the next iteration
                     time.sleep(1)
             else:
-                raise Exception('No LiveChat implementaton found')
+                raise Exception('No LiveChat implementaton found: ' + sku_url)
 
         return {}

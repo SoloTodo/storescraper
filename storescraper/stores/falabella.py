@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 import re
 import time
 
@@ -10,7 +11,7 @@ from html import unescape
 
 from dateutil.parser import parse
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy, \
@@ -93,12 +94,11 @@ class Falabella(Store):
         ['cat2005', ['StereoSystem'],
          'Home > Tecnología-Audio', 0],
         ['cat3091', ['StereoSystem'],
-         'Home > Audio-Equipos de Música y Karaokes', 1],
+         'Home > Tecnología-Audio > Equipos de Música y Karaokes', 1],
         ['cat3171', ['StereoSystem'],
-         'Home > Computación- Accesorios Tecnología > Accesorios Audio > '
-         'Parlantes Bluetooth', 1],
+         'Home > Tecnología-Audio > Parlantes Bluetooth', 1],
         ['cat2045', ['StereoSystem'],
-         'Home > Audio-Soundbar y Home Theater', 1],
+         'Home > Tecnología-Audio > Soundbar y Home Theater', 1],
         ['cat1130010', ['StereoSystem'],
          'Home > Audio- Hi-Fi > Tornamesas', 1],
         ['cat6260041', ['StereoSystem'],
@@ -158,6 +158,10 @@ class Falabella(Store):
          'Teclados Smart', 1],
         ['cat1640002', ['Headphones'],
          'Home > Tecnología-Audio > Audífonos', 1],
+        ['cat3239', [STEREO_SYSTEM],
+         'Home > Tecnología-Audio > Parlantes y Subwoofer', 1],
+        ['cat3203', [STEREO_SYSTEM],
+         'Home > Tecnología-Audio > Hi-Fi', 1],
         ['cat4061', ['DishWasher'],
          'Home > Lavado-Lavavajillas', 1],
         ['cat12084890', [GAMING_CHAIR],
@@ -302,7 +306,8 @@ class Falabella(Store):
     def _get_product_urls(cls, session, category_id, extra_query_params):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zone=13&categoryId={}&page={}'
+                   'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
+                   '&categoryId={}&page={}'
 
         page = 1
 
@@ -339,7 +344,7 @@ class Falabella(Store):
         else:
             separator = '?'
 
-        modified_url = '{}{}v={}'.format(url, separator, retries)
+        modified_url = '{}{}v={}'.format(url, separator, random.random())
 
         try:
             res = session.get(modified_url, timeout=30)
@@ -488,6 +493,9 @@ class Falabella(Store):
                 continue
 
             for iframe in panel.findAll('iframe'):
+                if 'src' not in iframe.attrs:
+                    continue
+
                 match = re.search(
                     r'//www.youtube.com/embed/(.+)\?', iframe['src'])
                 if not match:
@@ -517,7 +525,7 @@ class Falabella(Store):
             if not prices:
                 continue
 
-            normal_price_keys = ['internetPrice', 'normalPrice']
+            normal_price_keys = ['eventPrice', 'internetPrice', 'normalPrice']
             offer_price_keys = ['cmrPrice', 'eventPrice']
 
             normal_price = None

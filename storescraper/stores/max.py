@@ -29,11 +29,10 @@ class Max(Store):
             if page >= 16:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://max.com.gt/catalogsearch/result/' \
-                          'index/?category=&limit=30&marca=7&p={}&q=LG' \
-                          ''.format(page)
+            url_webpage = 'https://www.max.com.gt/catalogsearch/result/index' \
+                          '/?marca=7&p={}&q=LG+LG'.format(page)
             print(url_webpage)
-            data = session.get(url_webpage).text
+            data = session.get(url_webpage, timeout=30).text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('li',
                                               'item product product-item')
@@ -43,6 +42,7 @@ class Max(Store):
                 break
             for container in product_containers:
                 product_url = container.find('a')['href']
+                print(product_url)
                 if product_url in product_urls:
                     return product_urls
                 product_urls.append(product_url)
@@ -53,7 +53,7 @@ class Max(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
+        data = session.get(url, timeout=30).text
         soup = BeautifulSoup(data, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
         key = soup.find('input', {'id': 'getproductid'})['value']

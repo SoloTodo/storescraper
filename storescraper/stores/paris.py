@@ -121,7 +121,7 @@ class Paris(Store):
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Top Mount', 1],
         ['linea-blanca/refrigeracion/refrigeradores/'
-         'refrigerador-bottom-freezer//',
+         'refrigerador-bottom-freezer/',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Bottom Freezer', 1],
         ['linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side',
@@ -530,11 +530,10 @@ class Paris(Store):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                image = soup.find('div', 'desktop-plp-2')
+                image = soup.find('section', 'ocultar_banner_mobile')
 
                 if not image:
-                    image = soup.find('div', {'id': 'primary'}) \
-                        .find('div', 'slot-grid-header')
+                    image = soup.find('section', 'ocultar_banner_plp_mobile')
 
                 if not image:
                     continue

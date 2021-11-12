@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -104,8 +105,13 @@ class InfographicsSolutions(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('div', 'wd-wishlist-btn').find('a')['data-product-id']
+        product_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[1].text)[
+            '@graph'][1]
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        key = soup.find('div', 'wd-wishlist-btn').find('a')['data-product-id']
 
         stock_container = soup.find('p', 'stock')
 
@@ -128,25 +134,14 @@ class InfographicsSolutions(Store):
         else:
             part_number = None
 
-        price_container = soup.find('p', 'price')
-
-        if not price_container.text.strip():
-            return []
-
-        if price_container.find('ins'):
-            price = Decimal(price_container.find('ins').text.replace(
-                '$', '').replace('.', ''))
-        else:
-            price = Decimal(price_container.text.replace(
-                '$', '').replace('.', ''))
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.05')).quantize(0)
 
         picture_containers = soup.findAll('div', 'product-image-wrap')
         picture_urls = [
             p.find('a')['href'] for p in picture_containers
             if validators.url(p.find('a')['href'])
         ]
-
-        print(picture_urls)
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
@@ -157,10 +152,10 @@ class InfographicsSolutions(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,

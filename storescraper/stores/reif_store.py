@@ -49,7 +49,7 @@ class ReifStore(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 containers = soup.findAll('div',
-                                          'js-product-miniature-wrapper')
+                                          'product-description')
 
                 if not containers:
                     if page == 1:

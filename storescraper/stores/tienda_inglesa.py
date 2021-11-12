@@ -36,6 +36,7 @@ class TiendaInglesa(Store):
                 url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?0,' \
                               '0,*:*,302,0,0,rel,%5B%22LG%22%5D,true,' \
                               '%5B%5D,%5B%5D,,{}'.format(page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('div', {'id': 'SECTION1'}). \
@@ -57,6 +58,10 @@ class TiendaInglesa(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
+
+        if response.url != url:
+            return []
+
         soup = BeautifulSoup(response.text, 'html5lib')
         json_data = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)

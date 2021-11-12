@@ -85,8 +85,10 @@ class Danaus(Store):
                 continue
 
             page = 1
+            local_urls = []
+            done = False
 
-            while True:
+            while not done:
                 url = base_url.format(url_extension, page)
                 print(url)
 
@@ -104,9 +106,15 @@ class Danaus(Store):
                 products = product_containers.findAll('li', 'item')
 
                 for product in products:
-                    product_urls.append(product.find('a')['href'])
+                    product_url = product.find('a')['href']
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
 
                 page += 1
+
+            product_urls.extend(local_urls)
 
         return product_urls
 

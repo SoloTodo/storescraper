@@ -62,6 +62,10 @@ class AsusStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=30)
+
+        if response.status_code == 401:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         base_name = soup.find('span', {'data-dynamic': 'product_name'})\
             .text.replace('\u200b', '').strip()

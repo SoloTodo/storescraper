@@ -1,3 +1,5 @@
+import html
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -9,8 +11,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    remove_words
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Todoclick(Store):
@@ -121,36 +122,84 @@ class Todoclick(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
-        name = soup.find('h1', 'w-post-elm').text
-        sku = soup.find('span', 'sku').text
-        stock = 0
-        stock_container = soup.find('p', 'stock in-stock')
-        if stock_container:
-            stock = int(stock_container.text.split(' ')[0])
-        price_tags = soup.find('div', 'l-section-h').findAll(
-            'span', 'woocommerce-Price-amount amount')
-        assert len(price_tags) in [2, 3]
-        offer_price = Decimal(remove_words(price_tags[-2].text))
-        normal_price = Decimal(remove_words(price_tags[-1].text))
-        images = soup.findAll('img', 'wp-post-image')
-        picture_urls = [i['src'] for i in images]
+        base_name = soup.find('h1', 'w-post-elm').text
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            part_number=sku,
-            picture_urls=picture_urls,
-            description=description
-        )
 
-        return [p]
+        products = []
+        variants = soup.find('form', 'variations_form')
+
+        if variants:
+            container_products = json.loads(
+                html.unescape(variants['data-product_variations']))
+            is_variant = True
+            for product in container_products:
+                if not product['attributes']:
+                    is_variant = False
+                    variant_name = base_name
+                else:
+                    variant_name = base_name + " - " + next(
+                        iter(product['attributes'].values()))
+                if product['is_in_stock']:
+                    stock = int(product['max_qty'])
+                else:
+                    stock = 0
+                key = str(product['variation_id'])
+                sku = str(product['sku'])
+                price = Decimal(product['display_price'])
+                if product['image']['src'] == '':
+                    picture_urls = [tag['src'] for tag in soup.find(
+                        'div', 'woocommerce-product-gallery').findAll('img')]
+                else:
+                    picture_urls = [product['image']['src']]
+
+                p = Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description
+                )
+                if not is_variant:
+                    return [p]
+                products.append(p)
+        else:
+            sku = soup.find('span', 'sku').text
+            stock = 0
+            stock_container = soup.find('p', 'stock in-stock')
+            if stock_container:
+                stock = int(stock_container.text.split(' ')[0])
+            offer_price = Decimal(soup.find(
+                'meta', {'property': 'product:price:amount'})['content'])
+            assert soup.find('meta', {'property': 'product:price:currency'})[
+                       'content'] == 'CLP'
+            normal_price = (offer_price * Decimal('1.05')).quantize(0)
+            images = soup.findAll('img', 'wp-post-image')
+            picture_urls = [i['src'] for i in images]
+            products.append(Product(
+                base_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                part_number=sku,
+                picture_urls=picture_urls,
+                description=description
+            ))
+
+        return products

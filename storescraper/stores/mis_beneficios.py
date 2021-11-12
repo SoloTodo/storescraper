@@ -1,4 +1,4 @@
-import json
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -27,18 +27,21 @@ class MisBeneficios(Store):
         while True:
             if page > 10:
                 raise Exception('page overflow')
-            url_webpage = 'https://ultimate-dot-acp-magento.appspot.com/' \
-                          'full_text_search?q=lg&page_num={}&store_id=8' \
-                          '&UUID=3a30338d-e35f-42e8-b98c-9ea16cca9012'. \
-                format(page)
-            data = session.get(url_webpage).text
-            produts_data = json.loads(data)
-            product_entries = produts_data['items']
-            for entry in product_entries:
-                product_url = entry['u']
-                product_urls.append(product_url)
-            if page >= produts_data['p']:
+            url_webpage = 'https://www.misbeneficios.' \
+                          'com.uy/lg?p={}'.format(page)
+            response = session.get(url_webpage).text
+            soup = BeautifulSoup(response, 'html.parser')
+            product_containers = soup.find('ol', 'products').findAll('li',
+                                                                     'item')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category')
                 break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
             page += 1
         return product_urls
 

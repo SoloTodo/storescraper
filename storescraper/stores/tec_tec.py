@@ -63,12 +63,12 @@ class TecTec(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://tectec.cl/product-category/{}/page' \
+                url_webpage = 'https://tectec.cl/categoria/{}/page' \
                               '/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+                product_containers = soup.findAll('div', 'product-wrapper')
 
                 if not product_containers:
                     if page == 1:
@@ -91,7 +91,13 @@ class TecTec(Store):
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
+            stock_tag = soup.find('input', {'name': 'quantity'})
+            if not stock_tag:
+                stock = 0
+            elif 'max' in stock_tag:
+                stock = int(stock_tag['max'])
+            else:
+                stock = int(stock_tag['value'])
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))

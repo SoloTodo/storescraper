@@ -51,8 +51,8 @@ class Siman(Store):
                     if 'productId' not in product:
                         continue
                     done = False
-                    if product['brand'].upper() != 'LG':
-                        continue
+                    # if product['brand'].upper() != 'LG':
+                    #     continue
                     product_url = 'https://{}.siman.com/{}/p'.format(
                         cls.country_url, product['linkText'])
                     product_urls.append(product_url)
@@ -84,7 +84,7 @@ class Siman(Store):
 
         price = Decimal(product_data['offers']['lowPrice'])
         picture_urls = [product_data['image']]
-        description = product_data['description']
+        description = product_data.get('description', None)
 
         p = Product(
             name,

@@ -110,7 +110,7 @@ class SamsungShop(Store):
         products = []
 
         for sku_entry in skus_data:
-            name = sku_entry['nameComplete']
+            name = sku_entry['nameComplete'][:250]
             sku = sku_entry['ean']
             key = sku_entry['itemId']
             stock = sku_entry['sellers'][0]['commertialOffer'][

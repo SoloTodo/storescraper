@@ -57,11 +57,18 @@ class KillStore(Store):
             ['computacion/mouse-y-teclado/teclados', KEYBOARD],
             ['computacion/mouse-y-teclado/mouse', MOUSE],
             ['computacion/monitores', MONITOR],
-            ['Computacion/Almacenamiento/Discos-Externos',
+            ['computacion/almacenamiento/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
-            ['256', MEMORY_CARD],
-            ['257', MEMORY_CARD],
-            ['258', PRINTER],
+            ['fotografia/almacenamiento/memorias-cf', MEMORY_CARD],
+            ['fotografia/almacenamiento/memorias-cf-express', MEMORY_CARD],
+            ['fotografia/almacenamiento/memorias-cfast', MEMORY_CARD],
+            ['fotografia/almacenamiento/memorias-micro-sd', MEMORY_CARD],
+            ['fotografia/almacenamiento/memorias-sd', MEMORY_CARD],
+            ['fotografia/almacenamiento/memorias-xqd', MEMORY_CARD],
+            ['video/almacenamiento/memorias', MEMORY_CARD],
+            ['256?map=productClusterIds', MEMORY_CARD],
+            ['257?map=productClusterIds', MEMORY_CARD],
+            ['258?map=productClusterIds', PRINTER],
             ['computacion/sillas', GAMING_CHAIR],
             ['gaming', VIDEO_GAME_CONSOLE],
         ]
@@ -74,8 +81,10 @@ class KillStore(Store):
             while True:
                 if page > 20:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.killstore.cl/{}?page={}'.format(
-                    url_extension, page)
+
+                sep = '&' if '?' in url_extension else '?'
+                url_webpage = 'https://www.killstore.cl/{}{}page={}'.format(
+                    url_extension, sep, page)
                 print(url_webpage)
 
                 data = session.get(url_webpage).text

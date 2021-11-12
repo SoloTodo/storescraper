@@ -88,7 +88,7 @@ class MancoStore(Store):
             soup.find('div', {'id': 'product-details'})['data-product'])
         name = product_json['name']
         sku = str(product_json['id'])
-        stock = product_json['quantity']
+        stock = max(product_json['quantity'], 0)
         offer_price = Decimal(
             remove_words(product_json['price'].replace('\xa0', '')))
         normal_price = (offer_price * Decimal('1.03')).quantize(0)

@@ -53,6 +53,7 @@ class GonzalezGimenez(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -62,9 +63,8 @@ class GonzalezGimenez(Store):
         price = Decimal(soup.find('div', 'product-price').text.strip()
                         .replace('Gs', '').replace('*', '').replace('.', '')
                         .strip())
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-image-gallery').findAll(
-                            'img')]
+        picture_urls = [tag['href'] for tag in
+                        soup.findAll('a', 'galeria-modal')]
 
         p = Product(
             name,

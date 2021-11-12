@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import KEYBOARD, HEADPHONES
+from storescraper.categories import KEYBOARD, HEADPHONES, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -14,16 +14,16 @@ class Volans(Store):
     def categories(cls):
         return [
             KEYBOARD,
-            HEADPHONES
+            HEADPHONES,
+            MOUSE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audifonos', HEADPHONES],
-            ['headphones', HEADPHONES],
-            ['teclados-y-mouse', KEYBOARD],
-            ['uncategorized', KEYBOARD],
+            ['audio', HEADPHONES],
+            ['teclados', KEYBOARD],
+            ['mousesmousepads', MOUSE],
 
         ]
         session = session_with_proxy(extra_args)

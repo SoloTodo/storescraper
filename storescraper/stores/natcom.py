@@ -104,10 +104,10 @@ class Natcom(Store):
         price_container = soup.find('p', 'price')
 
         part_number_tag = soup.find(
-            'div', 'woocommerce-product-details__short-description').find('p')
+            'div', 'woocommerce-product-details__short-description')
 
-        if part_number_tag:
-            part_number = part_number_tag.text.strip()[:40]
+        if part_number_tag and part_number_tag.find('p'):
+            part_number = part_number_tag.find('p').text.strip()[:40]
         else:
             part_number = None
 

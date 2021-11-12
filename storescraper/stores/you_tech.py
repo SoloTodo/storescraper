@@ -94,7 +94,7 @@ class YouTech(Store):
                 print(url_webpage)
                 data = session.get(url_webpage, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-thumb')
+                product_containers = soup.findAll('div', 'product-layout')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -111,21 +111,22 @@ class YouTech(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text.strip()
+        name = soup.find('h1', 'product-name').text.strip()
         key = soup.find('input', {'name': 'product_id'})['value']
-        sku = soup.find('div', text='Código del producto: ').next.next.strip()
+        sku = soup.find('td', text='Código del producto:').next.next\
+            .text.strip()
         stock_text = soup.find(
-            'div', text='Disponibilidad: ').next.next.strip()
+            'td', text='Disponibilidad:').next.next.text.strip()
         if stock_text == 'En Stock':
             stock = -1
         else:
             stock = 0
 
-        price_container = soup.find('h2', 'special-price')
-        if not price_container:
-            price_container = soup.find('h2', 'product-price')
-        price = Decimal(remove_words(price_container.text))
-        picture_urls = [soup.find('img', {'id': 'zoom'})['data-zoom-image']]
+        price_container = soup.find('li', 'product-tax')
+        price = Decimal(remove_words(price_container.text.split(':')[1]))
+        picture_urls = [tag['data-zoom-image'] for tag in
+                        soup.find('div', 'additional-images-container')
+                            .findAll('img')]
 
         p = Product(
             name,

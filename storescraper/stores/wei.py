@@ -105,6 +105,7 @@ class Wei(Store):
                 continue
 
             page = 0
+            local_urls = []
 
             while True:
                 if page >= 10:
@@ -125,11 +126,13 @@ class Wei(Store):
 
                 for cell in product_cells:
                     product_url = cell.find('a')['href']
-                    if product_url in product_urls:
+                    if product_url in local_urls:
                         continue
-                    product_urls.append(product_url)
+                    local_urls.append(product_url)
 
                 page += 1
+
+            product_urls.extend(local_urls)
 
         return product_urls
 

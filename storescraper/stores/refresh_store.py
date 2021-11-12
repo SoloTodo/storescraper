@@ -93,8 +93,12 @@ class RefreshStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text
         sku = re.search('let sku = "(.+)";', response.text).groups()[0]
-        stock = int(soup.find('h6', {'id': 'bodegastock1'}).text) + int(
-            soup.find('h6', {'id': 'bodegastock2'}).text)
+        if soup.find('h6', {
+            'id': 'bodegastock1'}).text.strip() == 'Disponible' or soup.find(
+                'h6', {'id': 'bodegastock2'}).text == 'Disponible':
+            stock = -1
+        else:
+            stock = 0
         offer_price = Decimal(remove_words(
             soup.find('meta', {'name': 'description'})['content'].split()[1]))
         normal_price = Decimal(remove_words(

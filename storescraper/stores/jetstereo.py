@@ -1,14 +1,16 @@
+import json
 import logging
+import urllib
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
-    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, STOVE, MONITOR, \
-    HEADPHONES, WEARABLE, VACUUM_CLEANER, CELL_ACCESORY
+    REFRIGERATOR, OVEN, WASHING_MACHINE, STOVE, CELL_ACCESORY, HEADPHONES, \
+    MONITOR, AIR_CONDITIONER, WEARABLE, VACUUM_CLEANER
 
 
 class Jetstereo(Store):
@@ -17,86 +19,66 @@ class Jetstereo(Store):
     @classmethod
     def categories(cls):
         return [
-            TELEVISION,
             STEREO_SYSTEM,
+            TELEVISION,
             CELL,
             REFRIGERATOR,
-            OVEN,
-            AIR_CONDITIONER,
-            WASHING_MACHINE,
             STOVE,
-            MONITOR,
+            OVEN,
+            WASHING_MACHINE,
+            CELL_ACCESORY,
             HEADPHONES,
+            MONITOR,
+            AIR_CONDITIONER,
             WEARABLE,
             VACUUM_CLEANER,
-            CELL_ACCESORY,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = {
-            'barras-de-sonido': STEREO_SYSTEM,
-            'alambricos': HEADPHONES,
-            'tvs': TELEVISION,
-            'smartphones': CELL,
-            'monitores': MONITOR,
-            'wearables': WEARABLE,
-            'twinwash': WASHING_MACHINE,
-            'estufas-de-gas': STOVE,
-            'lavadoras-top-load': WASHING_MACHINE,
-            'lavadoras': WASHING_MACHINE,
-            'microondas': OVEN,
-            'refrigeradoras-side-by-side': REFRIGERATOR,
-            'audifonos': HEADPHONES,
-            'refrigeradora-top-mount': REFRIGERATOR,
-            'secadoras': WASHING_MACHINE,
-            'lavadora-carga-frontal': WASHING_MACHINE,
-            'refrigeradoras': REFRIGERATOR,
-            'aspiradoras': VACUUM_CLEANER,
-            'estufas-electricas': OVEN,
-            'accesorios-tv-y-video': CELL_ACCESORY,
-            'equipos-de-sonido': STEREO_SYSTEM,
-            'refrigeradoras-french-door': REFRIGERATOR,
-            'gadget': CELL_ACCESORY,
-            'estufas': OVEN,
-            'aire-acondicionado': AIR_CONDITIONER
+        category_path = {
+            STEREO_SYSTEM: ['48', '212'],
+            TELEVISION: ['41'],
+            CELL: ['26'],
+            REFRIGERATOR: ['74', '159', '195', '160', '161'],
+            STOVE: ['75', '163', '164'],
+            OVEN: ['76'],
+            WASHING_MACHINE: ['77', '157', '78', '249', '158', '156'],
+            CELL_ACCESORY: ['63'],
+            HEADPHONES: ['132'],
+            MONITOR: ['91'],
+            AIR_CONDITIONER: ['79'],
+            WEARABLE: ['89'],
+            VACUUM_CLEANER: ['152'],
         }
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        url_subsections = 'https://www.jetstereo.com/brands/lg'
-        response = session.get(url_subsections, verify=False).text
-        soup = BeautifulSoup(response, 'html.parser')
-        sub_sections = soup.findAll('div', 'col-6 col-lg-2')
-        for sub_section in sub_sections:
-            url_extension = sub_section.find('a')['href']
-            category_path = url_extension.split('/')[-1]
-            if category_path not in category_paths:
-                raise Exception('Not {} in category paths'.format(
-                    category_path))
-            local_category = category_paths[category_path]
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 20:
-                    raise Exception('Page overflow: ' + sub_section)
-                url = 'https://www.jetstereo.com{}?page={}'.format(
-                    url_extension, page)
-                print(url)
-                response = session.get(url, verify=False).text
-                soup = BeautifulSoup(response, 'html.parser')
-                product_containers = soup.findAll('div', 'product-box')
+        page = 1
+        while True:
+            if page > 20:
+                raise Exception('Page overflow')
+            url = 'https://api.jetstereo.com/manufacturers/2/products?' \
+                  'per-page=20&page={}'.format(page)
+            print(url)
+            response = session.get(url)
+            product_containers = json.loads(response.text)
+            if page > product_containers['_meta']['pageCount']:
+                break
+            product_containers = product_containers['content']
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url)
-                    break
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url)
+                break
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                if container['mainCategory']['id'] not in \
+                        category_path[category]:
+                    continue
+                product_url = 'https://www.jetstereo.com/product/' + \
+                              container['url'].split('.com/')[-1]
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -105,32 +87,21 @@ class Jetstereo(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
+        product_json = json.loads(
+            soup.find('script', {'id': '__NEXT_DATA__'}).text)['props'][
+            'pageProps']['product']
+        name = product_json['name']
+        sku = str(product_json['id'])
+        part_number = product_json['sku']
 
-        add_to_cart_button = soup.find(
-            'div', {'id': 'Button-storeAvailability'})
-        key = add_to_cart_button['data-product-id']
-        sku = soup.find('span', 'id').text.strip()
-        add_to_cart_button = soup.find(
-            'button', {'id': 'ButtonAddCart-fixeReference'})
-
-        if add_to_cart_button and \
-                add_to_cart_button['data-available'] == 'true':
+        if product_json['saleStatus'] == 'AVAILABLE':
             stock = -1
         else:
             stock = 0
-
-        name = soup.find('h4', 'name').text.strip()
-        price = Decimal(soup.find('div', 'sale').text.strip().replace(
-            'L. ', '').replace(',', ''))
-
-        picture_urls = []
-        pictures = soup.findAll('a', 'zoom')
-
-        for picture in pictures:
-            picture_url = picture.find('img')['src'].replace(' ', '%20')
-            picture_urls.append(picture_url)
-
-        description = html_to_markdown(str(soup.find('div', 'tecnical-specs')))
+        price = Decimal(product_json['price']['sale'])
+        picture_urls = [urllib.parse.quote(picture_url, safe='://') for
+                        picture_url in
+                        product_json['allImages']['full']]
 
         p = Product(
             name,
@@ -138,15 +109,14 @@ class Jetstereo(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             price,
             price,
             'HNL',
             sku=sku,
             picture_urls=picture_urls,
-            description=description,
-            part_number=sku
+            part_number=part_number
         )
 
         return [p]

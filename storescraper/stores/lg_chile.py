@@ -3,6 +3,7 @@ from .lg_v5 import LgV5
 
 class LgChile(LgV5):
     region_code = 'cl'
+    currency = 'CLP'
 
     @classmethod
     def categories(cls):

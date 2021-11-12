@@ -4,7 +4,9 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
-    GAMING_CHAIR, VIDEO_CARD, PROCESSOR, MOTHERBOARD
+    GAMING_CHAIR, VIDEO_CARD, PROCESSOR, MOTHERBOARD, POWER_SUPPLY, \
+    CPU_COOLER, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, COMPUTER_CASE, \
+    SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -22,19 +24,33 @@ class GorillaSetups(Store):
             VIDEO_CARD,
             PROCESSOR,
             MOTHERBOARD,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            RAM,
+            COMPUTER_CASE,
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['26-mouse-y-mouse-pad', MOUSE],
-            ['27-teclados', KEYBOARD],
-            ['19-monitores', MONITOR],
-            ['28-audifonos', HEADPHONES],
-            ['29-sillas', GAMING_CHAIR],
-            ['31-tarjeta-de-video', VIDEO_CARD],
-            ['32-procesadores', PROCESSOR],
-            ['35-placas-madre', MOTHERBOARD],
+            ['20-procesadores', PROCESSOR],
+            ['13-mouse', MOUSE],
+            ['16-teclados', KEYBOARD],
+            ['6-monitores', MONITOR],
+            ['15-audifonos-', HEADPHONES],
+            ['17-sillas-gamer-', GAMING_CHAIR],
+            ['19-tarjetas-de-video', VIDEO_CARD],
+            ['23-fuente-de-poder', POWER_SUPPLY],
+            ['26-refrigeracion-', CPU_COOLER],
+            ['28-disco-duro-pcs', STORAGE_DRIVE],
+            ['30-disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['21-placas-madres', MOTHERBOARD],
+            ['22-memoria-ram', RAM],
+            ['24-gabinetes', COMPUTER_CASE],
+            ['29-disco-estado-solido-', SOLID_STATE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -51,14 +67,13 @@ class GorillaSetups(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('section', {'id': 'products'}) \
-                    .find('div', 'laberProductGrid')
+                product_containers = soup.findAll(
+                    'article', 'product-miniature')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers. \
-                        findAll('article', 'product-miniature'):
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1

@@ -51,7 +51,6 @@ class IsiBook(Store):
             ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
             ['audio-video-y-fotografia/videoproyectores', 'Projector'],
             ['partes-y-piezas/monitores', 'Monitor'],
-            ['partes-y-piezas/pantallas', 'Monitor'],
             ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],
             ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
@@ -74,8 +73,10 @@ class IsiBook(Store):
                 continue
 
             page = 1
+            local_urls = []
+            done = False
 
-            while True:
+            while not done:
                 if page > 10:
                     raise Exception('Page overflow')
 
@@ -91,9 +92,15 @@ class IsiBook(Store):
                 products = product_containers.findAll('li', 'item')
 
                 for product in products:
-                    product_urls.append(product.find('a')['href'])
+                    product_url = product.find('a')['href']
+                    if product_url in local_urls:
+                        done = True
+                        break
+                    local_urls.append(product_url)
 
                 page += 1
+
+            product_urls.extend(local_urls)
 
         return product_urls
 

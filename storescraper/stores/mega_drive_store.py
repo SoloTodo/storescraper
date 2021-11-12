@@ -93,9 +93,10 @@ class MegaDriveStore(Store):
         product_container = soup.find('div', 'row product_container')
         name = product_container.find('h1', 'product_name').text
         sku = product_container.find('input', {'name': 'id_product'})['value']
-        price = Decimal(remove_words(product_container.find('div',
-                                                            'product-prices')
-                                     .find('span', 'price')['content']))
+        offer_price = Decimal(remove_words(
+            product_container.find('div', 'product-prices')
+            .find('span', 'price')['content']))
+        normal_price = (offer_price / Decimal('0.95')).quantize(0)
         stock_container = product_container.find('span', {
             'id': 'product-availability'}).text.strip().split('\n')[-1].strip()
         if stock_container == 'Producto en Stock' or stock_container == \
@@ -113,8 +114,8 @@ class MegaDriveStore(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,

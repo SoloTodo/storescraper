@@ -72,7 +72,7 @@ class Winpy(Store):
             ['partes-y-piezas/disipadores/', 'CpuCooler'],
             ['zona-mouse-y-teclados-gamer/', 'Mouse'],
             ['zona-audifonos-gamer/', HEADPHONES],
-            ['accesorios/para-juegos/', GAMING_CHAIR],
+            ['accesorios/sillas-y-mesas/', GAMING_CHAIR],
             ['almacenamiento/nas/', 'StorageDrive'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
             ['almacenamiento/discos-sobremesa/', 'ExternalStorageDrive'],
@@ -100,7 +100,7 @@ class Winpy(Store):
 
             page = 1
             while True:
-                if page >= 20:
+                if page >= 30:
                     raise Exception('Page overflow: ' + category_path)
 
                 url_with_page = url + 'paged/' + str(page) + '/'

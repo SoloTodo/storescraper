@@ -47,7 +47,7 @@ class CafeDigital(Store):
             ['gabinetes-pc', COMPUTER_CASE],
             ['refrigeracion-para-pc/cooler-cpu', CPU_COOLER],
             ['refrigeracion-para-pc/refrigeracion-liquida', CPU_COOLER],
-            ['perifericos/audifono', HEADPHONES],
+            ['perifericos/audifonos', HEADPHONES],
             ['perifericos/combo-kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['perifericos/teclados', KEYBOARD],
             ['perifericos/mouse', MOUSE],
@@ -107,15 +107,8 @@ class CafeDigital(Store):
         else:
             stock = 0
 
-        price_containers = soup.findAll('span', {'style': 'color: #3366ff;'})
-        if price_containers:
-            offer_price = Decimal(price_containers[0].text.split(
-                '$')[1].replace('.', '').replace('OFERTA', ''))
-            normal_price = Decimal(price_containers[1].text.split(
-                '$')[1].replace('.', ''))
-        else:
-            normal_price = Decimal(product_data['offers'][0]['price'])
-            offer_price = normal_price
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.045')).quantize(0)
 
         picture_urls = []
         for tag in soup.find('div', 'product-gallery').findAll('img',

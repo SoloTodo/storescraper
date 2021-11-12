@@ -69,6 +69,10 @@ class Wisdomts(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[1].text)
+
+        if '@graph' not in json_data:
+            return []
+
         product_data = json_data['@graph'][1]
 
         if product_data['offers'][0]['availability'] == \

@@ -44,7 +44,7 @@ class Omnisport(Store):
             page = 1
 
             while True:
-                if page >= 10:
+                if page >= 20:
                     raise Exception('Page overflow')
 
                 url = 'https://www.omnisport.com/marcas/lg?page={}' \

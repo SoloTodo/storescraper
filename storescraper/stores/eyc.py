@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, TABLET, STORAGE_DRIVE, RAM, \
-    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD, POWER_SUPPLY
+    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD, POWER_SUPPLY, \
+    MEMORY_CARD, USB_FLASH_DRIVE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -25,6 +26,9 @@ class Eyc(Store):
             MONITOR,
             MOTHERBOARD,
             POWER_SUPPLY,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            HEADPHONES
         ]
 
     @classmethod
@@ -44,6 +48,9 @@ class Eyc(Store):
             ['344-placas-madre', MOTHERBOARD],
             ['345-procesadores', PROCESSOR],
             ['346-fuentes-de-poder', POWER_SUPPLY],
+            ['351-microsd', MEMORY_CARD],
+            ['350-pendrives', USB_FLASH_DRIVE],
+            ['353-audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -77,6 +84,12 @@ class Eyc(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-reference_top').find(
             'span').text + ' - ' + soup.find('h1', 'product_name').text
+
+        if 'BAD BOX' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         sku = soup.find('input', {'name': 'id_product'})['value']
         stock = -1
         price = Decimal(soup.find('span', 'price')['content'])
@@ -94,6 +107,7 @@ class Eyc(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
