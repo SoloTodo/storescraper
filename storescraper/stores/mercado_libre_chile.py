@@ -17,7 +17,6 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
 
-
 class MercadoLibreChile(Store):
     categories_code = {
         'MLC1051': 'Celulares y Telefonía',
@@ -588,6 +587,7 @@ class MercadoLibreChile(Store):
         'MLC416554': 'Gamepads y Joysticks',
         'MLC11964': 'Otros',
         'MLC116433': 'Otros',
+        'MLC440647': 'Otros'
 
     }
     categories_name = {
@@ -1030,9 +1030,16 @@ class MercadoLibreChile(Store):
         'Para Otras Consolas': None,
         'Volantes': None,
     }
+
     @classmethod
     def categories(cls):
-        return [i for i in set(cls.categories_name.values()) if i]
+        # We are hardcoding the categories for now to slowly input ML SKUs
+        # over time
+        return [
+            CELL,
+            NOTEBOOK
+        ]
+        # return [i for i in set(cls.categories_name.values()) if i]
 
     @classmethod
     def get_products(cls, session, category, query_code, product_urls,
@@ -1050,6 +1057,7 @@ class MercadoLibreChile(Store):
                 url = 'https://api.mercadolibre.com/sites/MLC/search?' \
                       'category={}&official_store=all&offset={}&' \
                       'limit=50'.format(query_code, offset)
+            print(query_code)
             response = session.get(url)
             product_containers = json.loads(response.text)['results']
             if not product_containers:
@@ -1060,7 +1068,8 @@ class MercadoLibreChile(Store):
             for container in product_containers:
                 category_name = cls.categories_code[
                     container['category_id']]
-                if not seller_id and cls.categories_name[category_name] != category:
+                if not seller_id and \
+                        cls.categories_name[category_name] != category:
                     continue
                 official_store_id = container['official_store_id']
                 product_url = '{}?pdp_filters=official_store:{}'. \
@@ -1107,7 +1116,7 @@ class MercadoLibreChile(Store):
                     entry['body']['text'].upper():
                 return []
         if 'component_id' in data['initialState']['components'][
-            'variations']:
+                'variations']:
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
         else:
@@ -1134,6 +1143,10 @@ class MercadoLibreChile(Store):
             endpoint = 'https://www.mercadolibre.cl/p/api/products/' + \
                        variation
             variation_data = json.loads(session.get(endpoint).text)
+
+            if variation_data.get('status', None) == 404:
+                continue
+
             if variation_data['schema'][0]['offers']['availability'] == \
                     'https://schema.org/OutOfStock':
                 # No price information in this case, so skip it
@@ -1142,6 +1155,7 @@ class MercadoLibreChile(Store):
             if variation_data['components']['seller']['state'] == 'HIDDEN':
                 continue
             name = variation_data['components']['header']['title']
+            print(name)
             if 'title_value' not in variation_data['components']['seller']:
                 continue
             seller = variation_data['components']['seller']['title_value']
