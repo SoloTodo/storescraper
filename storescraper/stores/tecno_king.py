@@ -14,6 +14,9 @@ from storescraper.utils import session_with_proxy, remove_words
 
 
 class TecnoKing(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -38,7 +41,7 @@ class TecnoKing(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['notebook-accesorios/notebooks-tradicionales', NOTEBOOK],
-            ['notebook-accesorios/notebooks-ultralivianos/', NOTEBOOK],
+            ['notebook-accesorios/notebooks-ultralivianos', NOTEBOOK],
             ['perifericos/mouse', MOUSE],
             ['componentes-para-pc-notebook/fuente-de-poder', POWER_SUPPLY],
             ['componentes-para-pc-notebook/gabinetes', COMPUTER_CASE],
@@ -100,7 +103,8 @@ class TecnoKing(Store):
             for product in variations:
                 variation_name = name + ' - ' + product['attributes'][
                     'attribute_pa_color']
-                sku = str(product['variation_id'])
+                key = str(product['variation_id'])
+                sku = product['sku']
                 if product['is_in_stock']:
                     stock = -1
                 else:
@@ -113,7 +117,7 @@ class TecnoKing(Store):
                     category,
                     url,
                     url,
-                    sku,
+                    key,
                     stock,
                     price,
                     price,
@@ -126,8 +130,15 @@ class TecnoKing(Store):
             return products
 
         else:
-            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
                 -1]
+            sku_tag = soup.find('span', 'sku')
+
+            if sku_tag:
+                sku = sku_tag.text.strip()
+            else:
+                sku = None
+
             if soup.find('p', 'stock out-of-stock'):
                 stock = 0
             else:
@@ -148,7 +159,7 @@ class TecnoKing(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
