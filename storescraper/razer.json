@@ -1,0 +1,5547 @@
+{
+  'siteId': 'MLC',
+  'cookies': {},
+  'lowEnd': False,
+  'deviceType': 'desktop',
+  'deviceOs': 'other',
+  'country': {
+    'id': 'CL',
+    'name': 'Chile',
+    'locale': 'es_CL',
+    'currency_id': 'CLP',
+    'decimal_separator': ',',
+    'thousands_separator': '.',
+    'time_zone': 'GMT-03:00',
+    'geo_information': {
+      'location': {
+        'latitude': -35.675148,
+        'longitude': -71.54297
+      }
+    },
+    'states': [
+      {
+        'id': 'CL-AI',
+        'name': 'Aysén'
+      },
+      {
+        'id': 'CL-AN',
+        'name': 'Antofagasta'
+      },
+      {
+        'id': 'CL-AP',
+        'name': 'Arica y Parinacota'
+      },
+      {
+        'id': 'CL-AT',
+        'name': 'Atacama'
+      },
+      {
+        'id': 'CL-BI',
+        'name': 'Biobío'
+      },
+      {
+        'id': 'CL-CO',
+        'name': 'Coquimbo'
+      },
+      {
+        'id': 'CL-AR',
+        'name': 'La Araucanía'
+      },
+      {
+        'id': 'CL-LI',
+        'name': "Libertador B. O'Higgins"
+      },
+      {
+        'id': 'CL-LL',
+        'name': 'Los Lagos'
+      },
+      {
+        'id': 'CL-LR',
+        'name': 'Los Ríos'
+      },
+      {
+        'id': 'CL-MA',
+        'name': 'Magallanes'
+      },
+      {
+        'id': 'CL-ML',
+        'name': 'Maule'
+      },
+      {
+        'id': 'CL-RM',
+        'name': 'RM (Metropolitana)'
+      },
+      {
+        'id': 'CL-TA',
+        'name': 'Tarapacá'
+      },
+      {
+        'id': 'CL-VS',
+        'name': 'Valparaíso'
+      },
+      {
+        'id': 'CL-NB',
+        'name': 'Ñuble'
+      }
+    ],
+    'currencies': {
+      'CLP': {
+        'id': 'CLP',
+        'symbol': '$',
+        'description': 'Peso Chileno',
+        'decimal_places': 0
+      },
+      'USD': {
+        'id': 'USD',
+        'symbol': 'U$S',
+        'description': 'Dólar',
+        'decimal_places': 2
+      },
+      'CLF': {
+        'id': 'CLF',
+        'symbol': 'UF',
+        'description': 'Unidad de Fomento',
+        'decimal_places': 2
+      }
+    }
+  },
+  'currentUser': {
+    'loggedIn': False,
+    'loginUrl': 'https://www.mercadolibre.com/jms/mlc/lgz/login?platform_id=ML&go=https%3A%2F%2Ftienda.mercadolibre.cl%2Frazer&loginType=explicit',
+    'nickname': '',
+    'id': ''
+  },
+  'initialState': {
+    'adult_info': {
+      'is_zrp_adult': False,
+      'show_adult_filter': False,
+      'adult_results': 0
+    },
+    'view_options': {
+      'id': 'VIEW_OPTIONS',
+      'type': 'VIEW_OPTIONS',
+      'state': 'VISIBLE',
+      'tooltip': {
+        'title': '¡Encuentra más fácil lo que buscas!',
+        'label': {
+          'text': 'Ordena los resultados por relevancia o precio, y elige verlos como lista o grilla.'
+        },
+        'action': {
+          'label': {
+            'text': 'Entendido'
+          }
+        }
+      },
+      'sort': {
+        'label': 'Ordenar por',
+        'sorts': [
+          {
+            'id': 'relevance',
+            'name': 'Más relevantes',
+            'disclaimer': '',
+            'selected': True,
+            'has_disclaimer': False
+          },
+          {
+            'url': 'https://listado.mercadolibre.cl/_OrderId_PRICE_Tienda_razer_NoIndex_True',
+            'id': 'price_asc',
+            'name': 'Menor precio',
+            'selected': False,
+            'has_disclaimer': False
+          },
+          {
+            'url': 'https://listado.mercadolibre.cl/_OrderId_PRICE*DESC_Tienda_razer_NoIndex_True',
+            'id': 'price_desc',
+            'name': 'Mayor precio',
+            'selected': False,
+            'has_disclaimer': False
+          }
+        ],
+        'has_disclaimer': False
+      }
+    },
+    'bookmark': {
+      'label': {
+        'add': 'Agregar a favoritos',
+        'remove': 'Quitar de favoritos'
+      },
+      'show_user_bookmarks': True
+    },
+    'ads_metadata': {
+      'show_google_ads': True
+    },
+    'analytics_track': {
+      'dimensions': {
+        'itemId': 'MLC615892475,MLC615884602,MLC615892496,MLC615892448,MLC615884320,MLC615884647,MLC615884613,MLC599313677,MLC641114701,MLC626962685,MLC615884512,MLC626968566,MLC641117780,MLC616974569,MLC626968323,MLC626984839,MLC630285612,MLC613612398,MLC458487722,MLC509585307,MLC458261611,MLC489344074,MLC914225267,MLC599302245,MLC458261674,MLC456785585,MLC584728870,MLC528742702,MLC605996595,MLC526419602,MLC526419582,MLC526419621,MLC613613008,MLC630794145,MLC623977486,MLC461228811,MLC458262420,MLC503215474,MLC641159542,MLC641114694,MLC520107667,MLC528742602,MLC584731709,MLC641221810,MLC599316226,MLC637448116,MLC613616526,MLC489344879',
+        'CategoryDomain': 'MLC-HEADPHONES,MLC-COMPUTER_MICE,MLC-MICROPHONES,MLC-PC_KEYBOARDS,MLC-GAMEPADS_AND_JOYSTICKS,MLC-COMPUTER_EQUIPMENT_AND_SPARE_PARTS,MLC-WEBCAMS,MLC-OFFICE_CHAIRS,MLC-MOUSE_PADS,MLC-SPEAKERS,MLC-BACKPACKS',
+        'context': 'PDP+officialStore',
+        'searchResults': '61',
+        'officialStore': 'RAZER',
+        'experiment1': 'SEO-allowlist: in - SEARCH-noindex: false',
+        'storeType': 'normal',
+        'searchConfig': '20',
+        'melidataExperiments': {
+          'searchbackend/recommended-products': '6158',
+          'searchbackend/cbt-antiboost': '6334',
+          'frontend/assetsCdnDomainMLC': 'DEFAULT',
+          'frontend/assetsCdnDomainMLU': 'DEFAULT',
+          'search/filters/sort-by-ranking-v2': '7938'
+        }
+      },
+      'platform': 'ML',
+      'section': 'search',
+      'siteId': 'MLC',
+      'page': 'LISTING',
+      'pathFromRoot': [],
+      'pageVertical': 'CORE',
+      'business': 'MARKETPLACE',
+      'pageLayout': 'gallery'
+    },
+    'canonical_info': {
+      'canonical': 'https://tienda.mercadolibre.cl/razer',
+      'should_add_none_to_response': False,
+      'q_cat_off': False
+    },
+    'header': {
+      'id': 'HEADER',
+      'type': 'OFFICIAL_STORE_HEADER',
+      'state': 'VISIBLE',
+      'background': {
+        'pictures': {
+          '1x': 'https://http2.mlstatic.com/storage/official-stores-images/razer/background201712130159.jpg',
+          '2x': 'https://http2.mlstatic.com/storage/official-stores-images/razer/background201712130159.jpg'
+        }
+      },
+      'logo': {
+        'pictures': {
+          '1x': 'https://http2.mlstatic.com/D_Q_NP_870051-MLA26526124053_122017-T.jpg',
+          '2x': 'https://http2.mlstatic.com/D_Q_NP_870051-MLA26526124053_122017-T.jpg'
+        }
+      },
+      'url': 'https://tienda.mercadolibre.cl/razer',
+      'title': 'Razer',
+      'subtitle': 'Tienda oficial'
+    },
+    'landing': {
+      'type': 'OFFICIAL_STORE',
+      'show_item_shipping_info': True,
+      'show_item_installments': True,
+      'show_item_product': True,
+      'show_item_reviews': True,
+      'show_item_attributes': True,
+      'show_item_brand_logo': True,
+      'show_item_official_store': True,
+      'show_item_variations': True,
+      'show_view_change_buttons': True,
+      'show_product_header': False
+    },
+    'layout_options': {
+      'id': 'LAYOUT',
+      'state': 'VISIBLE',
+      'current': 'grid',
+      'views': [
+        {
+          'id': 'grid',
+          'label': 'Galería',
+          'url_host': 'https://listado.mercadolibre.cl',
+          'url_path': '/_DisplayType_G_Tienda_razer'
+        }
+      ],
+      'track': {
+        'melidata_track': {
+          'path': '/search/change_view/apply'
+        }
+      }
+    },
+    'listing_disclaimer': {
+      'state': 'VISIBLE',
+      'text': 'El envío gratis está sujeto al peso, precio y la distancia del envío.'
+    },
+    'melidata_track': {
+      'path': '/search',
+      'event_data': {
+        'query': '',
+        'limit': 50,
+        'offset': 0,
+        'total': 61,
+        'category_id': '',
+        'category_path': [],
+        'sort_id': 'relevance',
+        'filters': {
+          'official_store': '269',
+          'notfinalized': '1633353781293'
+        },
+        'available_filters': {},
+        'displayed_filters': [
+          {
+            'id': 'shipping_cost_highlighted',
+            'name': 'Costo de envío',
+            'type': 'highlighted',
+            'position': 1,
+            'values_quantity': 1
+          },
+          {
+            'id': 'category',
+            'name': 'Categorías',
+            'type': 'text',
+            'position': 2,
+            'values_quantity': 2
+          },
+          {
+            'id': 'shipping_cost',
+            'name': 'Costo de envío',
+            'type': 'text',
+            'position': 3,
+            'values_quantity': 1
+          },
+          {
+            'id': 'price',
+            'name': 'Precio',
+            'type': 'range',
+            'position': 4,
+            'values_quantity': 3
+          },
+          {
+            'id': 'BRAND',
+            'name': 'Marca',
+            'type': 'STRING',
+            'position': 5,
+            'values_quantity': 1
+          }
+        ],
+        'autoselected_filters': [],
+        'view_mode': 'GRID',
+        'results': [
+          'MLC615892475',
+          'MLC615884602',
+          'MLC615892496',
+          'MLC615892448',
+          'MLC615884320',
+          'MLC615884647',
+          'MLC615884613',
+          'MLC599313677',
+          'MLC641114701',
+          'MLC626962685',
+          'MLC615884512',
+          'MLC626968566',
+          'MLC641117780',
+          'MLC616974569',
+          'MLC626968323',
+          'MLC626984839',
+          'MLC630285612',
+          'MLC613612398',
+          'MLC458487722',
+          'MLC509585307',
+          'MLC458261611',
+          'MLC489344074',
+          'MLC914225267',
+          'MLC599302245',
+          'MLC458261674',
+          'MLC456785585',
+          'MLC584728870',
+          'MLC528742702',
+          'MLC605996595',
+          'MLC526419602',
+          'MLC526419582',
+          'MLC526419621',
+          'MLC613613008',
+          'MLC630794145',
+          'MLC623977486',
+          'MLC461228811',
+          'MLC458262420',
+          'MLC503215474',
+          'MLC641159542',
+          'MLC641114694',
+          'MLC520107667',
+          'MLC528742602',
+          'MLC584731709',
+          'MLC641221810',
+          'MLC599316226',
+          'MLC637448116',
+          'MLC613616526',
+          'MLC489344879'
+        ],
+        'billboards': [],
+        'catalog_product_id': '',
+        'backend_data': {
+          'aa': [
+            'inv:4',
+            'inv2:0'
+          ],
+          'ab': '78',
+          'fsm': '50F',
+          'ac': [
+            'qpE',
+            's1',
+            'epb',
+            'qpci',
+            'itemctrB'
+          ],
+          'qas': [],
+          'ab_bucket': [
+            'rpsv1',
+            'cbton',
+            'ic1'
+          ],
+          'request_flow': {
+            'origin': 'backend'
+          },
+          'fbm_ids': [],
+          'ap': []
+        },
+        'promise_items': {
+          'nextday': [],
+          'sameday': []
+        },
+        'official_stores_carousel_shown': [],
+        'user_zone': '',
+        'pdp_rows': [
+          {
+            'item_id': 'MLC615892475',
+            'product_id': 'MLC15276047'
+          },
+          {
+            'item_id': 'MLC615884602',
+            'product_id': 'MLC15702709'
+          },
+          {
+            'item_id': 'MLC615892496',
+            'product_id': 'MLC7565689'
+          },
+          {
+            'item_id': 'MLC615892448',
+            'product_id': 'MLC15276048'
+          },
+          {
+            'item_id': 'MLC615884320',
+            'product_id': 'MLC15469053'
+          },
+          {
+            'item_id': 'MLC615884647',
+            'product_id': 'MLC15465588'
+          },
+          {
+            'item_id': 'MLC615884613',
+            'product_id': 'MLC6214305'
+          },
+          {
+            'item_id': 'MLC599313677',
+            'product_id': 'MLC15991138'
+          },
+          {
+            'item_id': 'MLC641114701',
+            'product_id': 'MLC9471790'
+          },
+          {
+            'item_id': 'MLC626962685',
+            'product_id': 'MLC15592381'
+          },
+          {
+            'item_id': 'MLC615884512',
+            'product_id': 'MLC16214415'
+          },
+          {
+            'item_id': 'MLC626968566',
+            'product_id': 'MLC15570786'
+          },
+          {
+            'item_id': 'MLC641117780',
+            'product_id': 'MLC17843906'
+          },
+          {
+            'item_id': 'MLC616974569',
+            'product_id': 'MLC15799069'
+          },
+          {
+            'item_id': 'MLC626968323',
+            'product_id': 'MLC15401620'
+          },
+          {
+            'item_id': 'MLC626984839',
+            'product_id': 'MLC17409212'
+          },
+          {
+            'item_id': 'MLC630285612',
+            'product_id': 'MLC15760960'
+          },
+          {
+            'item_id': 'MLC613612398',
+            'product_id': 'MLC15465494'
+          }
+        ],
+        'carousel_filters': [],
+        'show_supermarket_carousel': False,
+        'tracking_id': 'abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pdp_grouped_search': False,
+        'highlights_info': {
+          'best_seller_info': {
+            'candidates': 16,
+            'selected': [
+              'MLC615884320'
+            ]
+          },
+          'meli_choice_info': {
+            'candidates': 0,
+            'overrides': []
+          }
+        },
+        'tag_tracking_info': {
+          'best_seller': [
+            {
+              'type': 'best_seller',
+              'item_id': 'MLC615884320',
+              'product_id': 'MLC15469053',
+              'position': 5
+            }
+          ],
+          'highlights': [],
+          'lightning_deal': [],
+          'shipping_guaranteed': [],
+          'deal_of_the_day': [],
+          'discount_volume': [],
+          'meli_choice': [],
+          'next_day': [],
+          'same_day': [],
+          'supermarket_partnership': []
+        },
+        'pdp_info': [
+          {
+            'id': 'MLC15276047',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15702709',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC7565689',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15276048',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15469053',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15465588',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC6214305',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15991138',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC9471790',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15592381',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC16214415',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15570786',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC17843906',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15799069',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15401620',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC17409212',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15760960',
+            'score': 1,
+            'status': 'shown'
+          },
+          {
+            'id': 'MLC15465494',
+            'score': 1,
+            'status': 'shown'
+          }
+        ],
+        'location_info': {},
+        'related_searches_info': {
+          'quantity': 0,
+          'related_queries': []
+        },
+        'canonical': {
+          'url': 'https://tienda.mercadolibre.cl/razer',
+          'no_follow_tag': False
+        },
+        'landing': 'official_store',
+        'layout_forced': False,
+        'shown_as_product': [],
+        'geo_search': False,
+        'is_googlebot': False,
+        'seo': {
+          'allowlist': {
+            'seo_is_allowlisted': True,
+            'seo_apply_no_index': True,
+            'search_no_index_applied': False,
+            'results_by_strategy': {
+              'heuristics': True
+            }
+          },
+          'seo_experiments': {
+            'status': 'success',
+            'experiment_list': [
+              {
+                'id': 'EXPERIMENT_ONE',
+                'is_enabled': False,
+                'is_active': False,
+                'should_apply': False,
+                'group': 'Control',
+                'executed_successfully': False
+              },
+              {
+                'id': 'EXPERIMENT_2',
+                'is_enabled': True,
+                'is_active': True,
+                'should_apply': False,
+                'group': 'B',
+                'executed_successfully': True
+              },
+              {
+                'id': 'batman',
+                'is_enabled': False,
+                'is_active': False,
+                'should_apply': False,
+                'group': 'Control',
+                'executed_successfully': True
+              },
+              {
+                'id': 'ironman',
+                'is_enabled': False,
+                'is_active': False,
+                'should_apply': False,
+                'group': 'Control',
+                'executed_successfully': True
+              }
+            ]
+          }
+        },
+        'pdp_highlight_enabled': False,
+        'user_profile_type': 'BUYER'
+      },
+      'experiments': {
+        'searchbackend/recommended-products': '6158',
+        'searchbackend/cbt-antiboost': '6334',
+        'frontend/assetsCdnDomainMLC': 'DEFAULT',
+        'frontend/assetsCdnDomainMLU': 'DEFAULT',
+        'search/filters/sort-by-ranking-v2': '7938'
+      }
+    },
+    'pagination': {
+      'page_count': 2,
+      'first_page': 1,
+      'last_page': 1,
+      'selected_page': 1,
+      'show_pagination': True,
+      'previous_page': {
+        'value': 'Anterior',
+        'show': False
+      },
+      'pagination_nodes_url': [
+        {
+          'value': '1',
+          'url': 'https://tienda.mercadolibre.cl/_Tienda_razer_NoIndex_True',
+          'is_actual_page': True
+        }
+      ],
+      'next_page': {
+        'value': 'Siguiente',
+        'url': 'https://listado.mercadolibre.cl/_Desde_49_Tienda_razer_NoIndex_True',
+        'show': True
+      },
+      'results_limit': 61
+    },
+    'results': [
+      {
+        'id': 'MLC615892475',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-razer-green/p/MLC15276047?pdp_filters=official_store:269#searchVariation=MLC15276047&position=1&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_850769-MLA45269540632_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken razer green'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_850769-MLA45269540632_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken razer green'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken razer green',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 79990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15276047',
+          'name': 'Audífonos gamer Razer Kraken razer green'
+        },
+        'title': 'Audífonos gamer Razer Kraken razer green',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 13332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 195
+        },
+        'image_ratio': '0.78',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 13
+      },
+      {
+        'id': 'MLC615884602',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/mouse-de-juego-inalambrico-recargable-razer-basilisk-x-hyperspeed-negro/p/MLC15702709?pdp_filters=official_store:269#searchVariation=MLC15702709&position=2&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_814445-MLA45376323168_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Basilisk X Hyperspeed negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_814445-MLA45376323168_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Basilisk X Hyperspeed negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Basilisk X Hyperspeed negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 67990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15702709',
+          'name': 'Mouse de juego inalámbrico recargable Razer  Basilisk X Hyperspeed negro'
+        },
+        'title': 'Mouse de juego inalámbrico recargable Razer  Basilisk X Hyperspeed negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 11332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.5,
+          'total': 36
+        },
+        'image_ratio': '0.58',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 11
+      },
+      {
+        'id': 'MLC615892496',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-classic-black/p/MLC7565689?pdp_filters=official_store:269#searchVariation=MLC7565689&position=3&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_999830-MLA45269540770_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken classic black'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_999830-MLA45269540770_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken classic black'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken classic black',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 72983,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC7565689',
+          'name': 'Audífonos gamer Razer Kraken classic black'
+        },
+        'title': 'Audífonos gamer Razer Kraken classic black',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 12164,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 195
+        },
+        'image_ratio': '0.79',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 8
+      },
+      {
+        'id': 'MLC615892448',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-quartz-pink/p/MLC15276048?pdp_filters=official_store:269#searchVariation=MLC15276048&position=4&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_864599-MLA45269545230_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken quartz pink'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_864599-MLA45269545230_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken quartz pink'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken quartz pink',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 79990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15276048',
+          'name': 'Audífonos gamer Razer Kraken quartz pink'
+        },
+        'title': 'Audífonos gamer Razer Kraken quartz pink',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 13332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 195
+        },
+        'image_ratio': '0.78',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 15
+      },
+      {
+        'id': 'MLC615884320',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-x-lite-black/p/MLC15469053?pdp_filters=official_store:269#searchVariation=MLC15469053&position=5&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_948285-MLA45258805400_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken X Lite black'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_948285-MLA45258805400_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken X Lite black'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken X Lite black',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 36646,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15469053',
+          'name': 'Audífonos gamer Razer Kraken X Lite black'
+        },
+        'title': 'Audífonos gamer Razer Kraken X Lite black',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 6108,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.6,
+          'total': 512
+        },
+        'image_ratio': '0.67',
+        'category_id': 'MLC6777',
+        'highlight': {
+          'id': 'DEFAULT_HIGHLIGHT',
+          'label': {
+            'text': 'MÁS VENDIDO',
+            'color': '#FFFFFF'
+          },
+          'type': 'best_seller',
+          'background': '#FF7733'
+        },
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 471
+      },
+      {
+        'id': 'MLC615884647',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-x-console/p/MLC15465588?pdp_filters=official_store:269#searchVariation=MLC15465588&position=6&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_778236-MLA45259130686_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken X console'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_778236-MLA45259130686_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken X console'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken X console',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 59990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15465588',
+          'name': 'Audífonos gamer Razer Kraken X console'
+        },
+        'title': 'Audífonos gamer Razer Kraken X console',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 9998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.7,
+          'total': 35
+        },
+        'image_ratio': '0.73',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 14
+      },
+      {
+        'id': 'MLC615884613',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/mouse-de-juego-razer-deathadder-essential-negro/p/MLC6214305?pdp_filters=official_store:269#searchVariation=MLC6214305&position=7&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_826639-MLA45376579042_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse de juego Razer  DeathAdder Essential negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_826639-MLA45376579042_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse de juego Razer  DeathAdder Essential negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse de juego Razer  DeathAdder Essential negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 49990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC6214305',
+          'name': 'Mouse de juego Razer  DeathAdder Essential negro'
+        },
+        'title': 'Mouse de juego Razer  DeathAdder Essential negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 8332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.9,
+          'total': 151
+        },
+        'image_ratio': '0.50',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 8
+      },
+      {
+        'id': 'MLC599313677',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/microfono-razer-seiren-emote-condensador-hipercardioide-negro/p/MLC15991138?pdp_filters=official_store:269#searchVariation=MLC15991138&position=8&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_895277-MLA45260051356_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Micrófono Razer Seiren Emote condensador hipercardioide negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_895277-MLA45260051356_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Micrófono Razer Seiren Emote condensador hipercardioide negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Micrófono Razer Seiren Emote condensador hipercardioide negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 179990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15991138',
+          'name': 'Micrófono Razer Seiren Emote condensador hipercardioide negro'
+        },
+        'title': 'Micrófono Razer Seiren Emote condensador hipercardioide negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 29998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item'
+        ],
+        'image_ratio': '0.51',
+        'category_id': 'MLC4075',
+        'pictures_quantity': 2,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 2
+      },
+      {
+        'id': 'MLC641114701',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/teclado-de-una-mano-gamer-razer-tartarus-v2-color-negro-con-luz-rgb/p/MLC9471790?pdp_filters=official_store:269#searchVariation=MLC9471790&position=9&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_945697-MLA45315563116_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado de una mano gamer Razer Tartarus V2 color negro con luz RGB'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_945697-MLA45315563116_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado de una mano gamer Razer Tartarus V2 color negro con luz RGB'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado de una mano gamer Razer Tartarus V2 color negro con luz RGB',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 104990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC9471790',
+          'name': 'Teclado de una mano gamer Razer Tartarus V2 color negro con luz RGB'
+        },
+        'title': 'Teclado de una mano gamer Razer Tartarus V2 color negro con luz RGB',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 17498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 5,
+          'total': 11
+        },
+        'image_ratio': '0.68',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 2,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 3
+      },
+      {
+        'id': 'MLC626962685',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/mouse-de-juego-inalambrico-recargable-razer-viper-ultimate-black/p/MLC15592381?pdp_filters=official_store:269#searchVariation=MLC15592381&position=10&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_916140-MLA46389323432_062021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Viper Ultimate black'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_916140-MLA46389323432_062021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Viper Ultimate black'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse de juego inalámbrico recargable Razer  Viper Ultimate black',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 174990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15592381',
+          'name': 'Mouse de juego inalámbrico recargable Razer  Viper Ultimate black'
+        },
+        'title': 'Mouse de juego inalámbrico recargable Razer  Viper Ultimate black',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 29165,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 11
+        },
+        'image_ratio': '0.54',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 2,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 17
+      },
+      {
+        'id': 'MLC615884512',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/mouse-de-juego-razer-deathadder-v2-mini-negro/p/MLC16214415?pdp_filters=official_store:269#searchVariation=MLC16214415&position=11&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_991758-MLA45377263390_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse de juego Razer  DeathAdder V2 Mini negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_991758-MLA45377263390_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse de juego Razer  DeathAdder V2 Mini negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse de juego Razer  DeathAdder V2 Mini negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 35025,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC16214415',
+          'name': 'Mouse de juego Razer  DeathAdder V2 Mini negro'
+        },
+        'title': 'Mouse de juego Razer  DeathAdder V2 Mini negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 5838,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 12
+        },
+        'image_ratio': '0.49',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 12
+      },
+      {
+        'id': 'MLC626968566',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-ultimate-negro-con-luz-rgb/p/MLC15570786?pdp_filters=official_store:269#searchVariation=MLC15570786&position=12&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_656641-MLA45258599535_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken Ultimate negro con luz  rgb'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_656641-MLA45258599535_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken Ultimate negro con luz  rgb'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken Ultimate negro con luz  rgb',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 122511,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15570786',
+          'name': 'Audífonos gamer Razer Kraken Ultimate negro con luz  rgb'
+        },
+        'title': 'Audífonos gamer Razer Kraken Ultimate negro con luz  rgb',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 20418,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.9,
+          'total': 24
+        },
+        'image_ratio': '0.77',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 6
+      },
+      {
+        'id': 'MLC641117780',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/teclado-gamer-razer-blackwidow-v3-qwerty-green-espanol-espana-color-negro-con-luz-rgb/p/MLC17843906?pdp_filters=official_store:269#searchVariation=MLC17843906&position=13&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_917449-MLA46361761569_062021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado gamer Razer BlackWidow V3 QWERTY Green español España color negro con luz RGB'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_917449-MLA46361761569_062021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado gamer Razer BlackWidow V3 QWERTY Green español España color negro con luz RGB'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado gamer Razer BlackWidow V3 QWERTY Green español España color negro con luz RGB',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 169990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC17843906',
+          'name': 'Teclado gamer Razer BlackWidow V3 QWERTY Green español España color negro con luz RGB'
+        },
+        'title': 'Teclado gamer Razer BlackWidow V3 QWERTY Green español España color negro con luz RGB',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 28332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'image_ratio': '2.06',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 2,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 2
+      },
+      {
+        'id': 'MLC616974569',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/teclado-de-una-mano-gamer-razer-tartarus-pro-color-classic-black-con-luz-rgb/p/MLC15799069?pdp_filters=official_store:269#searchVariation=MLC15799069&position=14&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_911123-MLA45315501091_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado de una mano gamer Razer Tartarus Pro color classic black con luz RGB'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_911123-MLA45315501091_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado de una mano gamer Razer Tartarus Pro color classic black con luz RGB'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado de una mano gamer Razer Tartarus Pro color classic black con luz RGB',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 159990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15799069',
+          'name': 'Teclado de una mano gamer Razer Tartarus Pro color classic black con luz RGB'
+        },
+        'title': 'Teclado de una mano gamer Razer Tartarus Pro color classic black con luz RGB',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 26665,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item'
+        ],
+        'image_ratio': '0.73',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 8
+      },
+      {
+        'id': 'MLC626968323',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-in-ear-inalambricos-razer-hammerhead-true-wireless-earbuds-black/p/MLC15401620?pdp_filters=official_store:269#searchVariation=MLC15401620&position=15&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_891994-MLA45258996775_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos in-ear inalámbricos Razer Hammerhead True Wireless Earbuds black'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_891994-MLA45258996775_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos in-ear inalámbricos Razer Hammerhead True Wireless Earbuds black'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos in-ear inalámbricos Razer Hammerhead True Wireless Earbuds black',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 114990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15401620',
+          'name': 'Audífonos in-ear inalámbricos Razer Hammerhead True Wireless Earbuds black'
+        },
+        'title': 'Audífonos in-ear inalámbricos Razer Hammerhead True Wireless Earbuds black',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 19165,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 4.4,
+          'total': 15
+        },
+        'image_ratio': '1.25',
+        'category_id': 'MLC3697',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 22
+      },
+      {
+        'id': 'MLC626984839',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/control-joystick-razer-wolverine-v2-negro/p/MLC17409212?pdp_filters=official_store:269#searchVariation=MLC17409212&position=16&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_991541-MLA46237942047_062021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Control joystick Razer Wolverine V2 negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_991541-MLA46237942047_062021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Control joystick Razer Wolverine V2 negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Control joystick Razer Wolverine V2 negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 123774,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC17409212',
+          'name': 'Control joystick Razer Wolverine V2 negro'
+        },
+        'title': 'Control joystick Razer Wolverine V2 negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 20629,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item'
+        ],
+        'image_ratio': '1.21',
+        'category_id': 'MLC2048',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 4
+      },
+      {
+        'id': 'MLC630285612',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/microfono-razer-seiren-x-condensador-supercardioide-classic-black/p/MLC15760960?pdp_filters=official_store:269#searchVariation=MLC15760960&position=17&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_648247-MLA45259989781_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Micrófono Razer Seiren X condensador supercardioide classic black'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_648247-MLA45259989781_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Micrófono Razer Seiren X condensador supercardioide classic black'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Micrófono Razer Seiren X condensador supercardioide classic black',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 99524,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15760960',
+          'name': 'Micrófono Razer Seiren X condensador supercardioide classic black'
+        },
+        'title': 'Micrófono Razer Seiren X condensador supercardioide classic black',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 16587,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item'
+        ],
+        'reviews': {
+          'rating_average': 4.8,
+          'total': 11
+        },
+        'image_ratio': '0.50',
+        'category_id': 'MLC4075',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 2
+      },
+      {
+        'id': 'MLC613612398',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://www.mercadolibre.cl/audifonos-gamer-razer-kraken-kitty-negro-con-luz-rgb/p/MLC15465494?pdp_filters=official_store:269#searchVariation=MLC15465494&position=18&search_layout=grid&type=product&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_612191-MLA45258663381_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos gamer Razer Kraken Kitty negro con luz  rgb'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_612191-MLA45258663381_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos gamer Razer Kraken Kitty negro con luz  rgb'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos gamer Razer Kraken Kitty negro con luz  rgb',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 165015,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'product': {
+          'id': 'MLC15465494',
+          'name': 'Audífonos gamer Razer Kraken Kitty negro con luz  rgb'
+        },
+        'title': 'Audífonos gamer Razer Kraken Kitty negro con luz  rgb',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 27502,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible',
+          'product_item',
+          'best_seller_candidate'
+        ],
+        'reviews': {
+          'rating_average': 5,
+          'total': 22
+        },
+        'image_ratio': '0.73',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 13
+      },
+      {
+        'id': 'MLC458487722',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-458487722-razer-l33t-pack-pack-gamer-para-fans-razerchile-_JM#position=19&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_683266-MLC31367132198_072019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Razer L33t Pack - Pack Gamer Para Fans - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_683266-MLC31367132198_072019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Razer L33t Pack - Pack Gamer Para Fans - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Razer L33t Pack - Pack Gamer Para Fans - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 4990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Razer L33t Pack - Pack Gamer Para Fans - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 831.67,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'interest_free',
+          'paid_shipping',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.95',
+        'category_id': 'MLC1699',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 732
+      },
+      {
+        'id': 'MLC509585307',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-509585307-audifonos-gamer-razer-kraken-x-lite-71-pc-mac-ps4-switch-_JM?searchVariation=86088297746#searchVariation=86088297746&position=20&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_868945-MLC32520403657_102019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos Gamer Razer Kraken X Lite 7.1 Pc Mac Ps4 Switch'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_868945-MLC32520403657_102019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos Gamer Razer Kraken X Lite 7.1 Pc Mac Ps4 Switch'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos Gamer Razer Kraken X Lite 7.1 Pc Mac Ps4 Switch',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 36646,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audífonos Gamer Razer Kraken X Lite 7.1 Pc Mac Ps4 Switch',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 6108,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible',
+          'best_seller_candidate'
+        ],
+        'image_ratio': '0.85',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 471
+      },
+      {
+        'id': 'MLC458261611',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-458261611-camara-webcam-razer-kiyo-razerchile-_JM?searchVariation=76254387388#searchVariation=76254387388&position=21&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_751742-MLC32638645575_102019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Camara Webcam Razer Kiyo - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_751742-MLC32638645575_102019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Camara Webcam Razer Kiyo - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Camara Webcam Razer Kiyo - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 124990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Camara Webcam Razer Kiyo - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 20832,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.79',
+        'category_id': 'MLC1667',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 8
+      },
+      {
+        'id': 'MLC489344074',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-489344074-kitty-ears-orejas-para-auriculares-razer-kraken-razerchile-_JM?searchVariation=36924239662#searchVariation=36924239662&position=22&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_791306-MLC31214029164_062019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Kitty Ears Orejas Para Auriculares Razer Kraken - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_791306-MLC31214029164_062019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Kitty Ears Orejas Para Auriculares Razer Kraken - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Kitty Ears Orejas Para Auriculares Razer Kraken - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 26990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Kitty Ears Orejas Para Auriculares Razer Kraken - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 4498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.22',
+        'category_id': 'MLC1699',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 67
+      },
+      {
+        'id': 'MLC914225267',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-914225267-silla-gamer-profesional-razer-iskur-negro-verde-_JM?searchVariation=173727074596#searchVariation=173727074596&position=23&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_907584-MLC47663163240_092021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Silla Gamer Profesional Razer Iskur  Negro Verde'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_907584-MLC47663163240_092021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Silla Gamer Profesional Razer Iskur  Negro Verde'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Silla Gamer Profesional Razer Iskur  Negro Verde',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 599990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Silla Gamer Profesional Razer Iskur  Negro Verde',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 99998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.54',
+        'category_id': 'MLC447782',
+        'pictures_quantity': 7,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 9
+      },
+      {
+        'id': 'MLC599302245',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-599302245-audifonos-gamer-razer-inalambricos-blackshark-v2-pro-negro-_JM?searchVariation=80307627998#searchVariation=80307627998&position=24&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_759118-MLC45394469842_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Inalámbricos Blackshark V2 Pro Negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_759118-MLC45394469842_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Inalámbricos Blackshark V2 Pro Negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Inalámbricos Blackshark V2 Pro Negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 229990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Inalámbricos Blackshark V2 Pro Negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 38332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.84',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 9
+      },
+      {
+        'id': 'MLC458261674',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-458261674-mouse-pad-sphex-v2-razer-razerchile-_JM?searchVariation=173597902027#searchVariation=173597902027&position=25&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_838401-MLC31212040199_062019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Pad Sphex V2 Razer - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_838401-MLC31212040199_062019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Pad Sphex V2 Razer - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Pad Sphex V2 Razer - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 16900,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Pad Sphex V2 Razer - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 2817,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'interest_free',
+          'color_variations',
+          'paid_shipping',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.69',
+        'category_id': 'MLC1716',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 24
+      },
+      {
+        'id': 'MLC456785585',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-456785585-keypad-gamer-tartarus-chroma-razer-v2-razerchile-_JM#position=26&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_842492-MLC31211913699_062019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Keypad Gamer Tartarus Chroma Razer V2 - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_842492-MLC31211913699_062019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Keypad Gamer Tartarus Chroma Razer V2 - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Keypad Gamer Tartarus Chroma Razer V2 - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 104990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Keypad Gamer Tartarus Chroma Razer V2 - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 17498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.71',
+        'category_id': 'MLC1713',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 13
+      },
+      {
+        'id': 'MLC584728870',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-584728870-mouse-gamer-razer-deathadder-v2-mini-8500-dpi-negro-razer-_JM?searchVariation=76965444940#searchVariation=76965444940&position=27&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_914948-MLC44985412808_022021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Gamer Razer Deathadder V2 Mini 8500 Dpi Negro - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_914948-MLC44985412808_022021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Gamer Razer Deathadder V2 Mini 8500 Dpi Negro - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Gamer Razer Deathadder V2 Mini 8500 Dpi Negro - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 35025,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Gamer Razer Deathadder V2 Mini 8500 Dpi Negro - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 5838,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.50',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 12
+      },
+      {
+        'id': 'MLC528742702',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-528742702-mouse-gamer-razer-inalambrico-viper-ultimate-negro-razer-_JM?searchVariation=90079152954#searchVariation=90079152954&position=28&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_873546-MLC41906690765_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Gamer Razer Inalámbrico Viper Ultimate Negro - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_873546-MLC41906690765_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Gamer Razer Inalámbrico Viper Ultimate Negro - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Gamer Razer Inalámbrico Viper Ultimate Negro - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 174990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Gamer Razer Inalámbrico Viper Ultimate Negro - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 29165,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.97',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 17
+      },
+      {
+        'id': 'MLC605996595',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-605996595-audifonos-gamer-razer-bluetooth-kraken-kitty-edition-rgb-_JM?searchVariation=82289103142#searchVariation=82289103142&position=29&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_869043-MLC45634425183_042021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Bluetooth Kraken Kitty Edition Rgb '
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_869043-MLC45634425183_042021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Bluetooth Kraken Kitty Edition Rgb '
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Bluetooth Kraken Kitty Edition Rgb ',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 129990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Bluetooth Kraken Kitty Edition Rgb ',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 21665,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible',
+          'best_seller_candidate'
+        ],
+        'image_ratio': '0.75',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 18
+      },
+      {
+        'id': 'MLC526419602',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-526419602-mouse-gamer-razer-inalambrico-basilisk-x-hyperspeed-rgb-fps-_JM?searchVariation=55581211946#searchVariation=55581211946&position=30&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_757594-MLC41755128564_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Gamer Razer Inalámbrico Basilisk X Hyperspeed Rgb Fps '
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_757594-MLC41755128564_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Gamer Razer Inalámbrico Basilisk X Hyperspeed Rgb Fps '
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Gamer Razer Inalámbrico Basilisk X Hyperspeed Rgb Fps ',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 67990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Gamer Razer Inalámbrico Basilisk X Hyperspeed Rgb Fps ',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 11332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.04',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 11
+      },
+      {
+        'id': 'MLC526419582',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-526419582-mousepad-gamer-razer-chroma-firefly-v2-razer-_JM?searchVariation=55581109870#searchVariation=55581109870&position=31&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_980274-MLC41755118463_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mousepad Gamer Razer Chroma Firefly V2 - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_980274-MLC41755118463_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mousepad Gamer Razer Chroma Firefly V2 - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mousepad Gamer Razer Chroma Firefly V2 - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 59990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mousepad Gamer Razer Chroma Firefly V2 - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 9998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.96',
+        'category_id': 'MLC1716',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 13
+      },
+      {
+        'id': 'MLC526419621',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-526419621-audifonos-gamer-razer-kraken-ultimate-rgb-pc-ps4-switch-xbox-_JM?searchVariation=90081953281#searchVariation=90081953281&position=32&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_696116-MLC41755144538_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos Gamer Razer Kraken Ultimate Rgb Pc Ps4 Switch Xbox'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_696116-MLC41755144538_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos Gamer Razer Kraken Ultimate Rgb Pc Ps4 Switch Xbox'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos Gamer Razer Kraken Ultimate Rgb Pc Ps4 Switch Xbox',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 122511,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audífonos Gamer Razer Kraken Ultimate Rgb Pc Ps4 Switch Xbox',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 20418,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.76',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 6
+      },
+      {
+        'id': 'MLC613613008',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-613613008-audifonos-gamer-razer-kraken-kitty-chroma-rgb-usb-rosado-_JM?searchVariation=85097539312#searchVariation=85097539312&position=33&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_980008-MLC46063800737_052021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Kraken Kitty Chroma Rgb Usb Rosado'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_980008-MLC46063800737_052021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Kraken Kitty Chroma Rgb Usb Rosado'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Kraken Kitty Chroma Rgb Usb Rosado',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 169990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Kraken Kitty Chroma Rgb Usb Rosado',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 28332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.73',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 18
+      },
+      {
+        'id': 'MLC630794145',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-630794145-mousepad-gamer-razer-overwatch-lucio-negro-razer-_JM?searchVariation=91213978380#searchVariation=91213978380&position=34&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_649863-MLC46758966367_072021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mousepad Gamer Razer Overwatch Lucio Negro - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_649863-MLC46758966367_072021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mousepad Gamer Razer Overwatch Lucio Negro - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mousepad Gamer Razer Overwatch Lucio Negro - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 16990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mousepad Gamer Razer Overwatch Lucio Negro - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 2832,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.39',
+        'category_id': 'MLC1716',
+        'pictures_quantity': 1,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 5
+      },
+      {
+        'id': 'MLC623977486',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-623977486-mouse-gamer-razer-naga-x-16-botones-18000dpi-negro-_JM?searchVariation=89030441517#searchVariation=89030441517&position=35&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_765198-MLC46511634169_062021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Gamer Razer Naga X 16 Botones 18000dpi Negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_765198-MLC46511634169_062021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Gamer Razer Naga X 16 Botones 18000dpi Negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Gamer Razer Naga X 16 Botones 18000dpi Negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 92990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Gamer Razer Naga X 16 Botones 18000dpi Negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 15498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.54',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 7
+      },
+      {
+        'id': 'MLC461228811',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-461228811-mousepad-razer-goliathus-chroma-tela-rgb-razerchile-_JM?searchVariation=94920683521#searchVariation=94920683521&position=36&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_841897-MLC31212278899_062019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mousepad Razer Goliathus Chroma Tela Rgb - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_841897-MLC31212278899_062019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mousepad Razer Goliathus Chroma Tela Rgb - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mousepad Razer Goliathus Chroma Tela Rgb - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 54990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mousepad Razer Goliathus Chroma Tela Rgb - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 9165,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.49',
+        'category_id': 'MLC1716',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 7
+      },
+      {
+        'id': 'MLC458262420',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-458262420-parlante-soundbar-razer-leviathan-51-razerchile-_JM?searchVariation=94904858825#searchVariation=94904858825&position=37&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_705572-MLC31873982363_082019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Parlante Soundbar Razer Leviathan 5.1 - Razerchile'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_705572-MLC31873982363_082019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Parlante Soundbar Razer Leviathan 5.1 - Razerchile'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Parlante Soundbar Razer Leviathan 5.1 - Razerchile',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 259990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Parlante Soundbar Razer Leviathan 5.1 - Razerchile',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 43332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.73',
+        'category_id': 'MLC1022',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 13
+      },
+      {
+        'id': 'MLC503215474',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-503215474-pack-mouse-razer-abyssus-lite-chroma-mousepad-goliathus-_JM?searchVariation=76254780080#searchVariation=76254780080&position=38&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_939170-MLC32021444872_082019-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Pack Mouse Razer Abyssus Lite Chroma + Mousepad Goliathus'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_939170-MLC32021444872_082019-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Pack Mouse Razer Abyssus Lite Chroma + Mousepad Goliathus'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Pack Mouse Razer Abyssus Lite Chroma + Mousepad Goliathus',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 44990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Pack Mouse Razer Abyssus Lite Chroma + Mousepad Goliathus',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 7498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.37',
+        'category_id': 'MLC1716',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 3
+      },
+      {
+        'id': 'MLC641159542',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-641159542-audifonos-gamer-razer-kaira-pro-inalambrico-xbox-serie-x-s-_JM?searchVariation=94933704718#searchVariation=94933704718&position=39&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_608120-MLC47169874170_082021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Kaira Pro Inalambrico Xbox Serie X S'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_608120-MLC47169874170_082021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Kaira Pro Inalambrico Xbox Serie X S'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Kaira Pro Inalambrico Xbox Serie X S',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 169990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Kaira Pro Inalambrico Xbox Serie X S',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 28332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.17',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 4,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 5
+      },
+      {
+        'id': 'MLC641114694',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-641114694-teclado-gamer-tartarus-chroma-razer-v2-razer-_JM?searchVariation=94918714006#searchVariation=94918714006&position=40&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_945697-MLA45315563116_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado Gamer Tartarus Chroma Razer V2 - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_945697-MLA45315563116_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado Gamer Tartarus Chroma Razer V2 - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado Gamer Tartarus Chroma Razer V2 - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 104990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Teclado Gamer Tartarus Chroma Razer V2 - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 17498,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.68',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 2,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 3
+      },
+      {
+        'id': 'MLC520107667',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-520107667-audifonos-bluetooth-razer-hammerhead-true-wireless-negro-_JM?searchVariation=50577273918#searchVariation=50577273918&position=41&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_649542-MLC40748539574_022020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos Bluetooth Razer Hammerhead True Wireless Negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_649542-MLC40748539574_022020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos Bluetooth Razer Hammerhead True Wireless Negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos Bluetooth Razer Hammerhead True Wireless Negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 114990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audífonos Bluetooth Razer Hammerhead True Wireless Negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 19165,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.40',
+        'category_id': 'MLC3697',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 22
+      },
+      {
+        'id': 'MLC528742602',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-528742602-teclado-keypad-gamer-tartarus-pro-negro-razer-_JM?searchVariation=86575765082#searchVariation=86575765082&position=42&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_722736-MLC41906660757_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado Keypad Gamer Tartarus Pro Negro - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_722736-MLC41906660757_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado Keypad Gamer Tartarus Pro Negro - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado Keypad Gamer Tartarus Pro Negro - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 159990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Teclado Keypad Gamer Tartarus Pro Negro - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 26665,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.75',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 8
+      },
+      {
+        'id': 'MLC584731709',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-584731709-audifonos-gamer-razer-nari-ultimate-wireless-negro-razer-_JM?searchVariation=76967634882#searchVariation=76967634882&position=43&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_761425-MLC44985833710_022021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Nari Ultimate Wireless Negro - Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_761425-MLC44985833710_022021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Nari Ultimate Wireless Negro - Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Nari Ultimate Wireless Negro - Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 294900,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Nari Ultimate Wireless Negro - Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 49150,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.74',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 5,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 1
+      },
+      {
+        'id': 'MLC641221810',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-641221810-teclado-razer-mecanico-pro-type-bluetooth-wireless-blanco-_JM?searchVariation=94954322373#searchVariation=94954322373&position=44&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_759765-MLC47171637622_082021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Teclado Razer Mecanico Pro Type Bluetooth Wireless Blanco'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_759765-MLC47171637622_082021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Teclado Razer Mecanico Pro Type Bluetooth Wireless Blanco'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Teclado Razer Mecanico Pro Type Bluetooth Wireless Blanco',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 179990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Teclado Razer Mecanico Pro Type Bluetooth Wireless Blanco',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 29998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'cart_eligible'
+        ],
+        'image_ratio': '1.57',
+        'category_id': 'MLC418448',
+        'pictures_quantity': 6,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 9
+      },
+      {
+        'id': 'MLC599316226',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-599316226-mochila-razer-tactical-pro-v2-173-negro-_JM?searchVariation=80310493083#searchVariation=80310493083&position=45&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_626475-MLC45394740531_032021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mochila Razer Tactical Pro V2 17.3 Negro'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_626475-MLC45394740531_032021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mochila Razer Tactical Pro V2 17.3 Negro'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mochila Razer Tactical Pro V2 17.3 Negro',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 199990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mochila Razer Tactical Pro V2 17.3 Negro',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 33332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.69',
+        'category_id': 'MLC26538',
+        'pictures_quantity': 7,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 1
+      },
+      {
+        'id': 'MLC637448116',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-637448116-audifonos-gamer-razer-kraken-x-for-console-pc-ps4-blanco-_JM?searchVariation=93552674311#searchVariation=93552674311&position=46&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_965365-MLC47018074580_082021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audífonos Gamer Razer Kraken X For Console Pc Ps4 Blanco '
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_965365-MLC47018074580_082021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audífonos Gamer Razer Kraken X For Console Pc Ps4 Blanco '
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audífonos Gamer Razer Kraken X For Console Pc Ps4 Blanco ',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 69990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audífonos Gamer Razer Kraken X For Console Pc Ps4 Blanco ',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 11665,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.74',
+        'category_id': 'MLC6777',
+        'pictures_quantity': 3,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 19
+      },
+      {
+        'id': 'MLC613616526',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-613616526-mouse-gamer-razer-deathadder-v2-pro-wireless-negro-razer-_JM?searchVariation=85099758588#searchVariation=85099758588&position=47&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_814551-MLC46064844440_052021-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Mouse Gamer Razer Deathadder V2 Pro Wireless Negro -  Razer'
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_814551-MLC46064844440_052021-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Mouse Gamer Razer Deathadder V2 Pro Wireless Negro -  Razer'
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Mouse Gamer Razer Deathadder V2 Pro Wireless Negro -  Razer',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 157990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Mouse Gamer Razer Deathadder V2 Pro Wireless Negro -  Razer',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 26332,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.57',
+        'category_id': 'MLC1714',
+        'pictures_quantity': 6,
+        'value_propositions': [],
+        'available_quantity': 7
+      },
+      {
+        'id': 'MLC489344879',
+        'bookmarked': False,
+        'discount_source': 'default',
+        'shipping': {
+          'label': {
+            'text': 'Envío gratis'
+          }
+        },
+        'seller_info': {
+          'id': 305330042,
+          'car_dealer': False,
+          'real_estate_agency': False,
+          'tags': [],
+          'address': {
+            'id': 1157222944,
+            'comment': '',
+            'address_line': '',
+            'country': {
+              'id': 'CL',
+              'name': 'Chile'
+            },
+            'city': {
+              'id': 'TUxDQ1NBTjk4M2M',
+              'name': 'Santiago'
+            }
+          },
+          'official_store_id': '269',
+          'official_store_name': 'Razer',
+          'official_store_text': 'por Razer',
+          'official_store_verbose_text': 'Vendido por Razer'
+        },
+        'permalink': 'https://articulo.mercadolibre.cl/MLC-489344879-audifonos-gamer-razer-kraken-2019-multiplataforma-pc-ps4-_JM?searchVariation=56452768940#searchVariation=56452768940&position=48&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+        'pictures': {
+          'stack': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_967213-MLC41906601499_052020-V.jpg',
+            'tags': {
+              'heigth': 160,
+              'width': 160,
+              'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+            }
+          },
+          'grid': {
+            'retina': 'https://http2.mlstatic.com/D_NQ_NP_967213-MLC41906601499_052020-W.jpg',
+            'tags': {
+              'heigth': 284,
+              'width': 284,
+              'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+            }
+          },
+          'mosaic': {
+            'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+            'tags': {
+              'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 ',
+              'class_name': 'list-view-item-figure'
+            }
+          }
+        },
+        'price': {
+          'amount': 89990,
+          'currency_id': 'CLP',
+          'discount_rate': 0,
+          'rebate_price': {
+            'text': 'en',
+            'color': '#000000'
+          }
+        },
+        'title': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 ',
+        'subtitles': {},
+        'vertical': 'CORE',
+        'is_ad': False,
+        'installments': {
+          'amount': 14998,
+          'currency_id': 'CLP',
+          'text': '6x {price} sin interés',
+          'color': 'LIGHT_GREEN'
+        },
+        'tags': [
+          'free_shipping',
+          'interest_free',
+          'color_variations',
+          'cart_eligible'
+        ],
+        'image_ratio': '0.77',
+        'category_id': 'MLC6777',
+        'variations_picker': {
+          'label': {
+            'text': 'Color'
+          },
+          'pill': {
+            'text': '3 colores'
+          },
+          'thumbnails_to_show': {},
+          'options': [
+            {
+              'id': '56452768940',
+              'name': 'Verde',
+              'thumbnail': {
+                'normal': 'https://http2.mlstatic.com/D_Q_NP_967213-MLC41906601499_052020-M.jpg',
+                'retina': 'https://http2.mlstatic.com/D_Q_NP_967213-MLC41906601499_052020-S.jpg',
+                'tags': {
+                  'heigth': 36,
+                  'width': 36,
+                  'alt': 'Verde'
+                }
+              },
+              'item': {
+                'permalink': 'https://articulo.mercadolibre.cl/MLC-489344879-audifonos-gamer-razer-kraken-2019-multiplataforma-pc-ps4-_JM?searchVariation=56452768940#searchVariation=56452768940&position=48&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+                'pictures': {
+                  'stack': {
+                    'normal': 'https://http2.mlstatic.com/D_NP_967213-MLC41906601499_052020-X.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_967213-MLC41906601499_052020-V.jpg',
+                    'tags': {
+                      'heigth': 160,
+                      'width': 160,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'grid': {
+                    'normal': 'https://http2.mlstatic.com/D_NQ_NP_967213-MLC41906601499_052020-Q.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_967213-MLC41906601499_052020-W.jpg',
+                    'tags': {
+                      'heigth': 284,
+                      'width': 284,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'mosaic': {
+                    'normal': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T.jpg',
+                    'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+                    'tags': {
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 ',
+                      'class_name': 'list-view-item-figure'
+                    }
+                  }
+                }
+              }
+            },
+            {
+              'id': '56452768964',
+              'name': 'Rosa',
+              'thumbnail': {
+                'normal': 'https://http2.mlstatic.com/D_Q_NP_876117-MLC41906598457_052020-M.jpg',
+                'retina': 'https://http2.mlstatic.com/D_Q_NP_876117-MLC41906598457_052020-S.jpg',
+                'tags': {
+                  'heigth': 36,
+                  'width': 36,
+                  'alt': 'Rosa'
+                }
+              },
+              'item': {
+                'permalink': 'https://articulo.mercadolibre.cl/MLC-489344879-audifonos-gamer-razer-kraken-2019-multiplataforma-pc-ps4-_JM?searchVariation=56452768964#searchVariation=56452768940&position=48&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+                'pictures': {
+                  'stack': {
+                    'normal': 'https://http2.mlstatic.com/D_NP_876117-MLC41906598457_052020-X.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_876117-MLC41906598457_052020-V.jpg',
+                    'tags': {
+                      'heigth': 160,
+                      'width': 160,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'grid': {
+                    'normal': 'https://http2.mlstatic.com/D_NQ_NP_876117-MLC41906598457_052020-Q.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_876117-MLC41906598457_052020-W.jpg',
+                    'tags': {
+                      'heigth': 284,
+                      'width': 284,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'mosaic': {
+                    'normal': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T.jpg',
+                    'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+                    'tags': {
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 ',
+                      'class_name': 'list-view-item-figure'
+                    }
+                  }
+                }
+              }
+            },
+            {
+              'id': '56452768890',
+              'name': 'Negro',
+              'thumbnail': {
+                'normal': 'https://http2.mlstatic.com/D_Q_NP_819489-MLC41906585756_052020-M.jpg',
+                'retina': 'https://http2.mlstatic.com/D_Q_NP_819489-MLC41906585756_052020-S.jpg',
+                'tags': {
+                  'heigth': 36,
+                  'width': 36,
+                  'alt': 'Negro'
+                }
+              },
+              'item': {
+                'permalink': 'https://articulo.mercadolibre.cl/MLC-489344879-audifonos-gamer-razer-kraken-2019-multiplataforma-pc-ps4-_JM?searchVariation=56452768890#searchVariation=56452768940&position=48&search_layout=grid&type=item&tracking_id=abb3bc05-8953-4f24-8811-e721e57c9282',
+                'pictures': {
+                  'stack': {
+                    'normal': 'https://http2.mlstatic.com/D_NP_819489-MLC41906585756_052020-X.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_819489-MLC41906585756_052020-V.jpg',
+                    'tags': {
+                      'heigth': 160,
+                      'width': 160,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'grid': {
+                    'normal': 'https://http2.mlstatic.com/D_NQ_NP_819489-MLC41906585756_052020-Q.jpg',
+                    'retina': 'https://http2.mlstatic.com/D_NQ_NP_819489-MLC41906585756_052020-W.jpg',
+                    'tags': {
+                      'heigth': 284,
+                      'width': 284,
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 '
+                    }
+                  },
+                  'mosaic': {
+                    'normal': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T.jpg',
+                    'retina': 'https://http2.mlstatic.com/resources/frontend/statics/img-not-available/1.1.0/T@2x.jpg',
+                    'tags': {
+                      'alt': 'Audifonos Gamer Razer Kraken 2019 Multiplataforma Pc Ps4 ',
+                      'class_name': 'list-view-item-figure'
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        'pictures_quantity': 14,
+        'rebates': [],
+        'value_propositions': [],
+        'available_quantity': 23
+      }
+    ],
+    'search_filter': {
+      'id': 'razer',
+      'name': 'Solo en Razer oficial',
+      'permalink': 'https://listado.mercadolibre.cl/$query_Tienda_razer',
+      'default_checked': False
+    },
+    'seo': {
+      'h1': 'Razer Tienda Oficial',
+      'title': 'Razer: Tienda Oficial | MercadoLibre.cl',
+      'description': 'Encuentra Razer en MercadoLibre.cl! Entre y conozca nuestras increíbles ofertas y promociones. Descubre la mejor forma de comprar online.',
+      'h1_bookmarks': '',
+      'is_valid_page': False
+    },
+    'sidebar': {
+      'id': 'SIDEBAR',
+      'type': 'SIDEBAR',
+      'components': [
+        {
+          'type': 'BREADCRUMB',
+          'h1': 'Razer Tienda Oficial',
+          'nodes': [
+            {
+              'text': 'Tiendas oficiales',
+              'url': 'https://mercadolibre.cl/tiendas-oficiales'
+            },
+            {
+              'text': 'Razer',
+              'url': 'https://tienda.mercadolibre.cl/razer'
+            }
+          ]
+        },
+        {
+          'type': 'TOTAL_RESULTS',
+          'text': '61 resultados'
+        },
+        {
+          'type': 'APPLIED_FILTERS',
+          'filters': []
+        },
+        {
+          'type': 'AVAILABLE_FILTERS',
+          'filters': [
+            {
+              'id': 'shipping_cost_highlighted',
+              'name': 'Costo de envío',
+              'type': 'highlighted',
+              'values': [
+                {
+                  'id': 'free',
+                  'name': 'Gratis',
+                  'url': 'https://listado.mercadolibre.cl/_CostoEnvio_Gratis_Tienda_razer#applied_filter_id%3Dshipping_cost_highlighted%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D1%26applied_value_id%3Dfree%26applied_value_name%3DGratis%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)',
+                  'title': {
+                    'text': 'Envío gratis',
+                    'icons': []
+                  },
+                  'switch': {
+                    'is_on': False
+                  }
+                }
+              ],
+              'fragment': 'applied_filter_id%3Dshipping_cost_highlighted%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D1%26applied_value_id%3DUNKNOWN_VALUE_ID%26applied_value_name%3DUNKNOWN_APPLIED_VALUE_ID%26applied_value_order%3D2%26applied_value_results%3DUNKNOWN_RESULTS%26is_custom%3Dtrue',
+              'expanded_values': [
+                {
+                  'id': 'free',
+                  'name': 'Gratis',
+                  'url': 'https://listado.mercadolibre.cl/_CostoEnvio_Gratis_Tienda_razer#applied_filter_id%3Dshipping_cost_highlighted%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D1%26applied_value_id%3Dfree%26applied_value_name%3DGratis%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)',
+                  'title': {
+                    'text': 'Envío gratis',
+                    'icons': []
+                  },
+                  'switch': {
+                    'is_on': False
+                  }
+                }
+              ],
+              'show_modal': False
+            },
+            {
+              'id': 'category',
+              'name': 'Categorías',
+              'type': 'text',
+              'values': [
+                {
+                  'id': 'MLC1648',
+                  'name': 'Computación',
+                  'url': 'https://listado.mercadolibre.cl/computacion/_Tienda_razer#applied_filter_id%3Dcategory%26applied_filter_name%3DCategor%C3%ADas%26applied_filter_order%3D2%26applied_value_id%3DMLC1648%26applied_value_name%3DComputaci%C3%B3n%26applied_value_order%3D1%26applied_value_results%3D53%26is_custom%3Dfalse',
+                  'results': '(53)'
+                },
+                {
+                  'id': 'MLC1000',
+                  'name': 'Electrónica, Audio y Video',
+                  'url': 'https://listado.mercadolibre.cl/electronica/_Tienda_razer#applied_filter_id%3Dcategory%26applied_filter_name%3DCategor%C3%ADas%26applied_filter_order%3D2%26applied_value_id%3DMLC1000%26applied_value_name%3DElectr%C3%B3nica%2C+Audio+y+Video%26applied_value_order%3D2%26applied_value_results%3D8%26is_custom%3Dfalse',
+                  'results': '(8)'
+                }
+              ],
+              'fragment': 'applied_filter_id%3Dcategory%26applied_filter_name%3DCategor%C3%ADas%26applied_filter_order%3D2%26applied_value_id%3DUNKNOWN_VALUE_ID%26applied_value_name%3DUNKNOWN_APPLIED_VALUE_ID%26applied_value_order%3D3%26applied_value_results%3DUNKNOWN_RESULTS%26is_custom%3Dtrue',
+              'expanded_values': [
+                {
+                  'id': 'MLC1648',
+                  'name': 'Computación',
+                  'url': 'https://listado.mercadolibre.cl/computacion/_Tienda_razer#applied_filter_id%3Dcategory%26applied_filter_name%3DCategor%C3%ADas%26applied_filter_order%3D2%26applied_value_id%3DMLC1648%26applied_value_name%3DComputaci%C3%B3n%26applied_value_order%3D1%26applied_value_results%3D53%26is_custom%3Dfalse',
+                  'results': '(53)'
+                },
+                {
+                  'id': 'MLC1000',
+                  'name': 'Electrónica, Audio y Video',
+                  'url': 'https://listado.mercadolibre.cl/electronica/_Tienda_razer#applied_filter_id%3Dcategory%26applied_filter_name%3DCategor%C3%ADas%26applied_filter_order%3D2%26applied_value_id%3DMLC1000%26applied_value_name%3DElectr%C3%B3nica%2C+Audio+y+Video%26applied_value_order%3D2%26applied_value_results%3D8%26is_custom%3Dfalse',
+                  'results': '(8)'
+                }
+              ],
+              'show_modal': False
+            },
+            {
+              'id': 'shipping_cost',
+              'name': 'Costo de envío',
+              'type': 'text',
+              'values': [
+                {
+                  'id': 'free',
+                  'name': 'Gratis',
+                  'url': 'https://listado.mercadolibre.cl/_CostoEnvio_Gratis_Tienda_razer#applied_filter_id%3Dshipping_cost%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D3%26applied_value_id%3Dfree%26applied_value_name%3DGratis%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)'
+                }
+              ],
+              'fragment': 'applied_filter_id%3Dshipping_cost%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D3%26applied_value_id%3DUNKNOWN_VALUE_ID%26applied_value_name%3DUNKNOWN_APPLIED_VALUE_ID%26applied_value_order%3D2%26applied_value_results%3DUNKNOWN_RESULTS%26is_custom%3Dtrue',
+              'expanded_values': [
+                {
+                  'id': 'free',
+                  'name': 'Gratis',
+                  'url': 'https://listado.mercadolibre.cl/_CostoEnvio_Gratis_Tienda_razer#applied_filter_id%3Dshipping_cost%26applied_filter_name%3DCosto+de+env%C3%ADo%26applied_filter_order%3D3%26applied_value_id%3Dfree%26applied_value_name%3DGratis%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)'
+                }
+              ],
+              'show_modal': False
+            },
+            {
+              'id': 'price',
+              'name': 'Precio',
+              'type': 'range',
+              'values': [
+                {
+                  'id': '*-70000.0',
+                  'name': 'Hasta $70.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_0-70000#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D*-70000.0%26applied_value_name%3DHasta+%2470.000%26applied_value_order%3D1%26applied_value_results%3D20%26is_custom%3Dfalse',
+                  'results': '(20)'
+                },
+                {
+                  'id': '70000.0-150000.0',
+                  'name': '$70.000 a $150.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_70000-150000#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D70000.0-150000.0%26applied_value_name%3D%2470.000+a+%24150.000%26applied_value_order%3D2%26applied_value_results%3D20%26is_custom%3Dfalse',
+                  'results': '(20)'
+                },
+                {
+                  'id': '150000.0-*',
+                  'name': 'Más de $150.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_150000-0#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D150000.0-*%26applied_value_name%3DM%C3%A1s+de+%24150.000%26applied_value_order%3D3%26applied_value_results%3D21%26is_custom%3Dfalse',
+                  'results': '(21)'
+                }
+              ],
+              'url_templates': {
+                'only_from': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_$from-0',
+                'only_to': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_0-$to',
+                'from_and_to': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_$from-$to'
+              },
+              'fragment': 'applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3DUNKNOWN_VALUE_ID%26applied_value_name%3DUNKNOWN_APPLIED_VALUE_ID%26applied_value_order%3D4%26applied_value_results%3DUNKNOWN_RESULTS%26is_custom%3Dtrue',
+              'expanded_values': [
+                {
+                  'id': '*-70000.0',
+                  'name': 'Hasta $70.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_0-70000#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D*-70000.0%26applied_value_name%3DHasta+%2470.000%26applied_value_order%3D1%26applied_value_results%3D20%26is_custom%3Dfalse',
+                  'results': '(20)'
+                },
+                {
+                  'id': '70000.0-150000.0',
+                  'name': '$70.000 a $150.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_70000-150000#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D70000.0-150000.0%26applied_value_name%3D%2470.000+a+%24150.000%26applied_value_order%3D2%26applied_value_results%3D20%26is_custom%3Dfalse',
+                  'results': '(20)'
+                },
+                {
+                  'id': '150000.0-*',
+                  'name': 'Más de $150.000',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_PriceRange_150000-0#applied_filter_id%3Dprice%26applied_filter_name%3DPrecio%26applied_filter_order%3D4%26applied_value_id%3D150000.0-*%26applied_value_name%3DM%C3%A1s+de+%24150.000%26applied_value_order%3D3%26applied_value_results%3D21%26is_custom%3Dfalse',
+                  'results': '(21)'
+                }
+              ],
+              'show_modal': False
+            },
+            {
+              'id': 'BRAND',
+              'name': 'Marca',
+              'type': 'STRING',
+              'values': [
+                {
+                  'id': '17587',
+                  'name': 'Razer',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_BRAND_17587#applied_filter_id%3DBRAND%26applied_filter_name%3DMarca%26applied_filter_order%3D5%26applied_value_id%3D17587%26applied_value_name%3DRazer%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)'
+                }
+              ],
+              'fragment': 'applied_filter_id%3DBRAND%26applied_filter_name%3DMarca%26applied_filter_order%3D5%26applied_value_id%3DUNKNOWN_VALUE_ID%26applied_value_name%3DUNKNOWN_APPLIED_VALUE_ID%26applied_value_order%3D2%26applied_value_results%3DUNKNOWN_RESULTS%26is_custom%3Dtrue',
+              'expanded_values': [
+                {
+                  'id': '17587',
+                  'name': 'Razer',
+                  'url': 'https://listado.mercadolibre.cl/_Tienda_razer_BRAND_17587#applied_filter_id%3DBRAND%26applied_filter_name%3DMarca%26applied_filter_order%3D5%26applied_value_id%3D17587%26applied_value_name%3DRazer%26applied_value_order%3D1%26applied_value_results%3D59%26is_custom%3Dfalse',
+                  'results': '(59)'
+                }
+              ],
+              'show_modal': False
+            },
+            {
+              'id': 'related_searches',
+              'name': 'Otras personas buscaron',
+              'type': 'text',
+              'values': [],
+              'expanded_values': [],
+              'show_modal': False
+            }
+          ],
+          'labels': {
+            'filter': 'Filtrar',
+            'filter_by': 'Filtrar por',
+            'apply': 'Aplicar',
+            'clean': 'Limpiar',
+            'to': 'Hasta',
+            'from': 'Desde',
+            'number_separator': '.',
+            'range_separator': 'a',
+            'range_title': 'Define tu propio rango',
+            'minimum': 'Mínimo',
+            'maximum': 'Máximo',
+            'range_names': {
+              'only_to': 'Hasta $to',
+              'only_from': 'Desde $from'
+            },
+            'continue': 'Continuar'
+          }
+        }
+      ]
+    },
+    'vertical': 'CORE',
+    'find_user_location': False,
+    'valuePropositionsDetailsHidden': False,
+    'userConsentCookie': True
+  },
+  'queryParams': {},
+  'domain': 'mercadolibre.cl',
+  'csrfToken': 'leSUIWoc-dVnBbwjeR9zDFMHOUdeZzIc588I',
+  'mapApiKey': 'AIzaSyBKpigzeKC4SICrIn0Z-3xIR8iQl3yvYUI'
+}
