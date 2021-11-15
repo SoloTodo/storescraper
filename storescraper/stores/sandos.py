@@ -63,10 +63,16 @@ class Sandos(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                soup = BeautifulSoup(
-                    json.loads(
-                        soup.find('script', {'type': 'text/template'}).text),
-                    'html.parser')
+
+                script_tag = soup.find('script', {'type': 'text/template'})
+
+                if not script_tag:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                soup = BeautifulSoup(json.loads(script_tag.text),
+                                     'html.parser')
 
                 product_containers = soup.findAll('li', 'product-col')
 

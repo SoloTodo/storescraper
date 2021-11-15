@@ -1,11 +1,11 @@
 from .mercado_libre_chile import MercadoLibreChile
 from ..categories import STEREO_SYSTEM, TELEVISION, REFRIGERATOR, \
-    WASHING_MACHINE, CELL, MONITOR
+    WASHING_MACHINE, CELL, MONITOR, CELL_ACCESORY
 from ..utils import session_with_proxy
 
 
 class MercadoLibreLg(MercadoLibreChile):
-    seller_id = 625506390
+    official_store_id = 376
 
     @classmethod
     def categories(cls):
@@ -15,25 +15,27 @@ class MercadoLibreLg(MercadoLibreChile):
             REFRIGERATOR,
             WASHING_MACHINE,
             CELL,
-            MONITOR
+            MONITOR,
+            CELL_ACCESORY
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         categories_codes = {
-            STEREO_SYSTEM: ['MLC1012', 'MLC3697', 'MLC10177', 'MLC1014',
-                            'MLC455686'],
-            TELEVISION: ['MLC1002', 'MLC4632'],
+            STEREO_SYSTEM: ['MLC1010'],
+            TELEVISION: ['MLC1002'],
             REFRIGERATOR: ['MLC1576'],
             WASHING_MACHINE: ['MLC178593', 'MLC27590'],
             CELL: ['MLC1051'],
             MONITOR: [],
+            CELL_ACCESORY: ['MLC4632', 'MLC439844'],
         }
         session = session_with_proxy(extra_args)
         product_urls = []
         for category_code in categories_codes[category]:
-            super().get_products(session, category, category_code,
-                                 product_urls, cls.seller_id)
+            product_urls.extend(cls.get_products(
+                session, category, category_code,
+                official_store_id=cls.official_store_id))
 
         return product_urls
 

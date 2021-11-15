@@ -99,11 +99,18 @@ class Jasaltec(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        sku = soup.find('span', 'sku').text.strip()
+        sku_tag = soup.find('span', 'sku')
+
+        if sku_tag:
+            sku = soup.find('span', 'sku').text.strip()
+        else:
+            sku = None
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
             stock = -1
+
         if soup.find('p', 'price').find('ins'):
             offer_price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))

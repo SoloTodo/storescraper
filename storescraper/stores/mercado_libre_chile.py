@@ -1042,41 +1042,56 @@ class MercadoLibreChile(Store):
         # return [i for i in set(cls.categories_name.values()) if i]
 
     @classmethod
-    def get_products(cls, session, category, query_code, product_urls,
-                     seller_id):
+    def get_products(cls, session, category=None, query_code=None,
+                     seller_id=None, official_store_id=None):
         offset = 0
+        product_urls = []
+
+        base_url = 'https://api.mercadolibre.com/sites/MLC/search?' \
+                   'limit=50'
+
+        if query_code:
+            base_url += '&category=' + query_code
+
+        if seller_id:
+            base_url += '&seller_id=' + str(seller_id)
+
+        if official_store_id:
+            base_url += '&official_store_id=' + str(official_store_id)
+        else:
+            base_url += '&official_store=all'
+
         while True:
             if offset > 1000:
                 raise Exception('Page overflow')
-            if seller_id:
-                url = 'https://api.mercadolibre.com/sites/MLC/search?' \
-                      'seller_id={}&category={}&' \
-                      'offset={}&limit=50'.format(seller_id, query_code,
-                                                  offset)
-            else:
-                url = 'https://api.mercadolibre.com/sites/MLC/search?' \
-                      'category={}&official_store=all&offset={}&' \
-                      'limit=50'.format(query_code, offset)
-            print(query_code)
+
+            url = '{}&offset={}'.format(base_url, offset)
             response = session.get(url)
-            product_containers = json.loads(response.text)['results']
-            if not product_containers:
+            product_containers = json.loads(response.text)
+            if not product_containers['results']:
                 if offset == 0:
-                    logging.warning('Empty category: ' + category)
+                    logging.warning('Empty category: ' + category or 'Unkown')
                 break
 
-            for container in product_containers:
+            for container in product_containers['results']:
                 category_name = cls.categories_code[
                     container['category_id']]
-                if not seller_id and \
+                # If during normal search (that is, without an associated
+                # seller_id or official_store_id) we find a product with
+                # an unknown category, skip it.
+                # Implementations such as ML LG and ML Samsung may
+                # find these cases too, but we need to consider all of their
+                # products always.
+                if not seller_id and not official_store_id and \
                         cls.categories_name[category_name] != category:
                     continue
-                official_store_id = container['official_store_id']
+                product_official_store_id = container['official_store_id']
                 product_url = '{}?pdp_filters=official_store:{}'. \
-                    format(container['permalink'], official_store_id)
+                    format(container['permalink'], product_official_store_id)
                 product_urls.append(product_url)
 
             offset += 50
+        return product_urls
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -1095,8 +1110,8 @@ class MercadoLibreChile(Store):
                 query_categories_code.append(category_code[0])
 
         for query_code in query_categories_code:
-            cls.get_products(session, category, query_code, product_urls,
-                             seller_id=None)
+            product_urls.extend(
+                cls.get_products(session, category, query_code))
 
         return product_urls
 
@@ -1128,6 +1143,7 @@ class MercadoLibreChile(Store):
         variations = set()
         pickers = data['initialState']['components']['variations'].get(
             'pickers', None)
+        official_store_filter = data['initialState']['filters']
 
         if pickers:
             for picker in pickers:
@@ -1140,8 +1156,9 @@ class MercadoLibreChile(Store):
 
         for variation in variations:
             sku = variation
-            endpoint = 'https://www.mercadolibre.cl/p/api/products/' + \
-                       variation
+            endpoint = 'https://www.mercadolibre.cl/p/api/products/' \
+                       '{}?pdp_filters={}'.format(variation,
+                                                  official_store_filter)
             variation_data = json.loads(session.get(endpoint).text)
 
             if variation_data.get('status', None) == 404:
@@ -1155,7 +1172,6 @@ class MercadoLibreChile(Store):
             if variation_data['components']['seller']['state'] == 'HIDDEN':
                 continue
             name = variation_data['components']['header']['title']
-            print(name)
             if 'title_value' not in variation_data['components']['seller']:
                 continue
             seller = variation_data['components']['seller']['title_value']
