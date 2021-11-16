@@ -7,7 +7,8 @@ from storescraper.categories import HEADPHONES, MOUSE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, CPU_COOLER, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, RAM, MOTHERBOARD, VIDEO_CARD, COMPUTER_CASE, \
     NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, \
-    VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE
+    VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE, CELL, \
+    POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,6 +39,8 @@ class PcLinkStore(Store):
             PROCESSOR,
             MEMORY_CARD,
             USB_FLASH_DRIVE,
+            CELL,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -47,15 +50,18 @@ class PcLinkStore(Store):
             ['accesorios/mouse', MOUSE],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['accesorios/flash-drive-usb', USB_FLASH_DRIVE],
+            ['celulares', CELL],
             ['disipador/water-cooling', CPU_COOLER],
+            ['componentes/fuente-de-poder', POWER_SUPPLY],
             ['componentes/disco-duro-sata', STORAGE_DRIVE],
             ['componentes/disco-duro-ssd', SOLID_STATE_DRIVE],
             ['componentes/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['memorias-ram', RAM],
+            ['componentes/gabinete', COMPUTER_CASE],
+            ['componentes/memoria-ram', RAM],
             ['placas-madres', MOTHERBOARD],
             ['componentes/procesador', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['componentes/gabinete', COMPUTER_CASE],
             ['consolas', VIDEO_GAME_CONSOLE],
             ['notebook', NOTEBOOK],
             ['monitores', MONITOR],
