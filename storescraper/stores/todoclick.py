@@ -103,8 +103,7 @@ class Todoclick(Store):
                                     page_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-
-                products = soup.findAll('li', 'product')
+                products = soup.findAll('article', 'w-grid-item')
 
                 if not products:
                     break
@@ -183,8 +182,8 @@ class Todoclick(Store):
             assert soup.find('meta', {'property': 'product:price:currency'})[
                        'content'] == 'CLP'
             normal_price = (offer_price * Decimal('1.05')).quantize(0)
-            images = soup.findAll('img', 'wp-post-image')
-            picture_urls = [i['src'] for i in images]
+            picture_urls = [tag['src'] for tag in soup.find('div',
+                            'woocommerce-product-gallery').findAll('img')]
             products.append(Product(
                 base_name,
                 cls.__name__,
