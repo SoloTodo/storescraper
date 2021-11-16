@@ -121,12 +121,10 @@ class TecnoPro(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         description = html_to_markdown(
             soup.find('div', 'product-detail-infomation').text)
-
-        json_tag = re.search(r'AVADA_CDT.product = ([\s\S]+?);', response.text)
-        product_data = json.loads(json_tag.groups()[0])
+        json_products = json.loads(soup.find('script', {
+            'id': "ProductJson-gp-product-template-2-columns-right"}).text)
         products = []
-
-        for variant in product_data['variants']:
+        for variant in json_products['variants']:
             name = variant['name']
             sku = variant['sku']
             key = str(variant['id'])
