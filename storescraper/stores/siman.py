@@ -56,6 +56,9 @@ class Siman(Store):
                         cls.country_url, product['linkText'])
                     product_urls.append(product_url)
 
+                if done and page == 1:
+                    raise Exception('Empty site')
+
                 page += 1
 
         return product_urls
