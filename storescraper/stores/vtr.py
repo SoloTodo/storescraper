@@ -39,6 +39,15 @@ class Vtr(Store):
                 raise Exception('Empty cell category')
 
             for record in data:
+                in_stock = False
+                for variant in record['variantMatrix']:
+                    if variant['stockLevelStatus'] == 'inStock':
+                        in_stock = True
+                        break
+
+                if not in_stock:
+                    continue
+
                 product_id = record['code']
                 product_url = 'https://vtr.com/product/details?code={}'.format(
                     product_id)
