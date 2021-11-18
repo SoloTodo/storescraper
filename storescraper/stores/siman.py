@@ -73,8 +73,6 @@ class Siman(Store):
         product_data = json.loads(
             soup.find('template', {'data-varname': '__STATE__'}).text)
 
-        print(json.dumps(product_data))
-
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
 
