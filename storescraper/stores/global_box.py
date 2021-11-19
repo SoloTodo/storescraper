@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
@@ -135,7 +136,8 @@ class Globalbox(Store):
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('th', text='SKU').next.next.next.text.strip()
+        key = soup.find('input', {'name': 'product'})['value']
+        sku = urlparse(url).path.split('/')[1].split('-')[-1]
         part_number = soup.find('th', text='Part Number').next.next.next\
             .text.strip()
         availability_tag = soup.find('link', {'itemprop': 'availability'})
@@ -156,7 +158,7 @@ class Globalbox(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
