@@ -154,11 +154,17 @@ class Entel(Store):
         if json_data['isAccessory']:
             return []
 
+        stock_dict = {
+            x['skuId']: x['maxQuantity'] for x in
+            json_data['skuViews']
+        }
+
         products = []
 
         for variant in json_data['renderSkusBean']['skus']:
             variant_name = variant['skuName']
             variant_sku = variant['skuId']
+            stock = stock_dict[variant_sku]
 
             refurbished_blacklist = ['seminuevo', 'renovado']
 
@@ -203,7 +209,7 @@ class Entel(Store):
                     url,
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
-                    -1,
+                    stock,
                     price,
                     price,
                     'CLP',
@@ -227,7 +233,7 @@ class Entel(Store):
                 url,
                 url,
                 '{} - Entel Prepago'.format(variant_sku),
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',
