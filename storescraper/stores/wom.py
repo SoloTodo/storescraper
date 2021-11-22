@@ -174,6 +174,7 @@ class Wom(Store):
             'Plan Acumula 180 GB',
             'Plan Acumula 240 GB',
             'Plan Acumula 300 GB',
+            'Plan Womers Libre',
         ]
 
         for entry in json_data['result']['data']['contentfulProduct'][

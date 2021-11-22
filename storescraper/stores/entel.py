@@ -158,8 +158,12 @@ class Entel(Store):
             variant_name = variant['skuName']
             variant_sku = variant['skuId']
 
-            if 'seminuevo' in variant_name.lower():
-                condition = 'https://schema.org/RefurbishedCondition'
+            refurbished_blacklist = ['seminuevo', 'renovado']
+
+            for blacklist in refurbished_blacklist:
+                if blacklist in variant_name.lower():
+                    condition = 'https://schema.org/RefurbishedCondition'
+                    break
             else:
                 condition = 'https://schema.org/NewCondition'
 
