@@ -132,7 +132,9 @@ class BestStore(Store):
         part_number = soup.find('span', {'itemprop': 'sku'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
         stock_container = soup.find('p', 'en-stock-cantidad')
-        if not stock_container:
+        if soup.find('p', {'id': 'consultar_stock'}):
+            stock = 0
+        elif not stock_container:
             stock = -1
         elif stock_container.text.split(':')[-1].strip().startswith('Más'):
             stock = int(stock_container.text.split(':')[-1].strip().split()[2])
