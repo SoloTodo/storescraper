@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     VIDEO_GAME_CONSOLE, GAMING_CHAIR, KEYBOARD, COMPUTER_CASE, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -32,7 +32,8 @@ class ZonaPortatil(Store):
             SOLID_STATE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
             MEMORY_CARD,
-            MONITOR
+            MONITOR,
+            PRINTER,
         ]
 
     @classmethod
@@ -56,7 +57,8 @@ class ZonaPortatil(Store):
             ['almacenamiento/discos-ssd', SOLID_STATE_DRIVE],
             ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento/memorias-flash', MEMORY_CARD],
-            ['monitores-proyectores/monitores', MONITOR]
+            ['monitores-proyectores/monitores', MONITOR],
+            ['impresoras', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
@@ -97,8 +99,8 @@ class ZonaPortatil(Store):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
-        part_number = soup.find('span', 'sku').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('span', 'sku').text
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
@@ -119,13 +121,13 @@ class ZonaPortatil(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=sku,
             picture_urls=picture_urls,
             condition=condition
 
