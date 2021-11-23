@@ -30,16 +30,15 @@ class AllinkGamer(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['26-gabinetes', COMPUTER_CASE],
-            ['27-teclados', KEYBOARD],
-            ['19-mouse', MOUSE],
-            ['39-audifonos', HEADPHONES],
-            ['18-sillas', GAMING_CHAIR],
-            ['35-monitores', MONITOR],
-            ['38-kits-gamer', KEYBOARD_MOUSE_COMBO],
-            ['41-fuentes-de-poder', POWER_SUPPLY],
-            ['43-parlantes', STEREO_SYSTEM],
-            ['44-refrigeracion-liquida', CPU_COOLER]
+            ['teclados-64', KEYBOARD],
+            ['mouse-66', MOUSE],
+            ['audifonos-67', HEADPHONES],
+            ['sillas-gamer-18', GAMING_CHAIR],
+            ['monitores-35', MONITOR],
+            ['fuentes-de-poder-72', POWER_SUPPLY],
+            ['gabinetes-70', COMPUTER_CASE],
+            ['refrigeracion-liquida-71', CPU_COOLER],
+            ['parlantes-46', STEREO_SYSTEM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

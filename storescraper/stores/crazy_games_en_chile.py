@@ -54,7 +54,7 @@ class CrazyGamesenChile(Store):
             ['teclados-ps4-y-xbox-one', KEYBOARD],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['placas-madres', MOTHERBOARD],
-            ['procesadores-de-pc', PROCESSOR],
+            ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['fan-cooler-pc', CPU_COOLER],
             ['discos-duros-internos', SOLID_STATE_DRIVE],
@@ -67,11 +67,15 @@ class CrazyGamesenChile(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://www.crazygamesenchile.com/{}?page=50' \
+            url_webpage = 'https://www.crazygamesenchile.com/{}?page=20' \
                 .format(url_extension)
             print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            res = session.get(url_webpage)
+
+            if res.status_code == 404:
+                raise Exception('Invalid category: ' + url_extension)
+
+            soup = BeautifulSoup(res.text, 'html.parser')
             product_containers = soup.findAll('li', {
                 'data-hook': 'product-list-grid-item'})
             if not product_containers:

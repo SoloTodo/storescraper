@@ -51,6 +51,7 @@ class BestStore(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['109-componentes-informaticos-fuentes-de-poder', POWER_SUPPLY],
+            ['106-componentes-informaticos-cajas-gabinetes', COMPUTER_CASE],
             ['275-componentes-informaticos-procesadores', PROCESSOR],
             ['180-componentes-informaticos-tarjetas-madre-placas-madre',
              MOTHERBOARD],
@@ -80,6 +81,10 @@ class BestStore(Store):
             ['228-celulares-celulares-desbloqueados', CELL],
             ['123-almacenamiento-discos-duros-externos',
              EXTERNAL_STORAGE_DRIVE],
+            ['198-almacenamiento-almacenamiento-de-redes-nas', STORAGE_DRIVE],
+            ['285-almacenamiento-area-de-redes-de-almacenamiento-san',
+             STORAGE_DRIVE],
+            ['72-discos-duros-servidores', STORAGE_DRIVE],
             ['124-almacenamiento-discos-duros-internos', STORAGE_DRIVE],
             ['146-almacenamiento-discos-de-estado-solido', SOLID_STATE_DRIVE],
             ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
@@ -127,7 +132,9 @@ class BestStore(Store):
         part_number = soup.find('span', {'itemprop': 'sku'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
         stock_container = soup.find('p', 'en-stock-cantidad')
-        if not stock_container:
+        if soup.find('p', {'id': 'consultar_stock'}):
+            stock = 0
+        elif not stock_container:
             stock = -1
         elif stock_container.text.split(':')[-1].strip().startswith('Más'):
             stock = int(stock_container.text.split(':')[-1].strip().split()[2])

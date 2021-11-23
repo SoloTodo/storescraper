@@ -1,47 +1,36 @@
 import logging
 from decimal import Decimal
 
-import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, \
-    RAM, PROCESSOR, CPU_COOLER, NOTEBOOK, MONITOR, VIDEO_GAME_CONSOLE, \
-    STORAGE_DRIVE
+from storescraper.categories import RAM, MOTHERBOARD, PROCESSOR, \
+    SOLID_STATE_DRIVE, VIDEO_CARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class RSTech(Store):
+class PcBoost(Store):
     @classmethod
     def categories(cls):
         return [
-            VIDEO_CARD,
-            MOTHERBOARD,
-            POWER_SUPPLY,
             RAM,
+            MOTHERBOARD,
             PROCESSOR,
+            SOLID_STATE_DRIVE,
+            VIDEO_CARD,
             CPU_COOLER,
-            NOTEBOOK,
-            MONITOR,
-            VIDEO_GAME_CONSOLE,
-            STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-y-componentes/tarjetas-de-video', VIDEO_CARD],
-            ['accesorios-y-componentes/placa-madre-motherboard', MOTHERBOARD],
-            ['accesorios-y-componentes/fuentes-de-poder', POWER_SUPPLY],
-            ['accesorios-y-componentes/memoria-ram', RAM],
-            ['accesorios-y-componentes/procesadores', PROCESSOR],
-            ['accesorios-y-componentes/refrigeracion', CPU_COOLER],
-            ['sin-categoria/notebook-gamer', NOTEBOOK],
-            ['monitores', MONITOR],
-            ['consolas-y-videojuegos', VIDEO_GAME_CONSOLE],
-            ['accesorios-y-componentes/disco-duro-y-almacenamiento',
-             STORAGE_DRIVE],
+            ['memorias-ram', RAM],
+            ['placas-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['ssd', SOLID_STATE_DRIVE],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['disipadores', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)
@@ -53,19 +42,18 @@ class RSTech(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-
-                url_webpage = 'https://rstech.cl/categoria-producto/{}/' \
+                url_webpage = 'https://www.pcboost.cl/product-category/{}/' \
                               'page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_container = soup.findAll('div', 'product-small')
+                product_containers = soup.findAll('div', 'product-small')
 
-                if not product_container:
+                if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_container:
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -77,23 +65,30 @@ class RSTech(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text
+        name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
-            stock = -1
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text.strip()))
+        price_container = soup.find('p', 'price')
+        if not price_container.find('del'):
+            normal_price = Decimal(
+                remove_words(price_container.find('bdi').text))
+            offer_price = normal_price
         else:
-            price = Decimal(
-                remove_words(soup.find('p', 'price').text.strip()))
-
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-gallery').findAll('img')
-                        if validators.url(tag['src'])
-                        ]
+            normal_price = Decimal(
+                remove_words(
+                    price_container.find('del').find('span', 'woocommerce'
+                                                             '-Price'
+                                                             '-amount').
+                    text))
+            offer_price = Decimal(remove_words(
+                price_container.find('ins').find('span', 'woocommerce-Price'
+                                                         '-amount').text))
+        picture_urls = [tag['src'] for tag in soup.find('div',
+                                                        'product-images').
+                        findAll('img')]
         p = Product(
             name,
             cls.__name__,
@@ -102,8 +97,8 @@ class RSTech(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,

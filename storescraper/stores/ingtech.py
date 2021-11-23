@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -13,6 +14,9 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 
 class Ingtech(Store):
+    preferred_discover_urls_concurrency = 1
+    preferred_products_for_url_concurrency = 1
+
     @classmethod
     def categories(cls):
         return [
@@ -77,21 +81,31 @@ class Ingtech(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        key = soup.find('input', {'name': 'comment_post_ID'})['value']
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        soup = BeautifulSoup(response.text, 'html5lib')
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+        product_data = json_data['@graph'][1]
+        picture_urls = [tag.find('a')['href']
+                        for tag in soup.findAll(
+                'figure', 'woocommerce-product-gallery__image')]
+        sku = str(product_data['sku'])
+        name = product_data['name']
+        description = product_data['description']
+
+        prices_tag = soup.find('p', 'price')
+        normal_price = Decimal(remove_words(prices_tag.find(
+            'bdi').text.split('$')[1]))
+        offer_price = Decimal(remove_words(prices_tag.find(
+            'span', 'pro_price_extra_info').text.split('$')[1]))
+
+        stock_tag = soup.find('input', {'name': 'quantity'})
+        if stock_tag:
+            if 'max' in stock_tag.attrs:
+                stock = int(stock_tag['max'])
+            else:
+                stock = 1
         else:
             stock = 0
-        sku = soup.find('span', 'sku').text
-        normal_price = Decimal(
-            remove_words(soup.find('p', 'price').find('bdi').text))
-        offer_price = (normal_price * Decimal('0.98')).quantize(0)
-
-        picture_urls = []
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
 
         p = Product(
             name,
@@ -99,13 +113,12 @@ class Ingtech(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )

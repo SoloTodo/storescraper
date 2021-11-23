@@ -41,7 +41,7 @@ class Tupi(Store):
             for product in product_containers:
                 product_link = product.findAll('a')[1]
                 if 'lg' in product_link.text.lower():
-                    product_urls.append(product_link['href'])
+                    product_urls.append(product_link['href'].replace('%', ''))
 
             page += 1
 

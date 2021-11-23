@@ -59,7 +59,7 @@ class KrakenStore(Store):
         product_container = soup.find('div', 'row pt-2')
         name = product_container.find('h2').text
         sku = product_container.find('input', {'name': 'product_id'})['value']
-        if product_container.find('button', {'name': 'shopadd'}).text == \
+        if product_container.find('button', {'name': 'bag_add'}).text == \
                 'No disponible':
             stock = 0
         else:

@@ -49,7 +49,7 @@ class Centrale(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnología/audio/audífonos', HEADPHONES],
+            ['tecnología/audio/audifonos', HEADPHONES],
             ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
             ['tecnología/computación/all-in-one/', ALL_IN_ONE],
             ['tecnología/computación/almacenamiento-externo/',
@@ -67,8 +67,8 @@ class Centrale(Store):
             ['tecnología/impresión-y-oficina/impresoras-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-laser', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-tinta', PRINTER],
-            ['tecnología/impresión-y-oficina/impresoras-fotograficas',
-             PRINTER],
+            # ['tecnología/impresión-y-oficina/impresoras-fotograficas',
+            #  PRINTER],
             ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
             ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas',
              GAMING_CHAIR],
@@ -121,7 +121,7 @@ class Centrale(Store):
             part_number = None
 
         name = soup.find('h1', 'product-title').text.strip()
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
@@ -152,12 +152,12 @@ class Centrale(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=part_number,
             picture_urls=picture_urls,
             part_number=part_number
         )

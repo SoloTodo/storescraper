@@ -124,7 +124,9 @@ class Infosep(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
+        if soup.find('p', 'price').text == '':
+            return []
+        elif soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:

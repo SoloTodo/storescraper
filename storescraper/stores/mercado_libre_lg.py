@@ -1,46 +1,43 @@
-from collections import defaultdict
-
 from .mercado_libre_chile import MercadoLibreChile
+from ..categories import STEREO_SYSTEM, TELEVISION, REFRIGERATOR, \
+    WASHING_MACHINE, CELL, MONITOR, CELL_ACCESORY
+from ..utils import session_with_proxy
 
 
 class MercadoLibreLg(MercadoLibreChile):
-    store_extension = '_Tienda_lg'
+    official_store_id = 376
 
     @classmethod
-    def _category_paths(cls):
-        return {'_Tienda_lg': [
-            ('audio', 'StereoSystem'),
-            ('electronica/televisores', 'Television'),
-            ('electrodomesticos/refrigeracion', 'Refrigerator'),
-            ('lavado', 'WashingMachine'),
-            ('celulares-telefonia', 'Cell'),
-            ('computacion', 'Monitor'),
-        ]}
+    def categories(cls):
+        return [
+            STEREO_SYSTEM,
+            TELEVISION,
+            REFRIGERATOR,
+            WASHING_MACHINE,
+            CELL,
+            MONITOR,
+            CELL_ACCESORY
+        ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
-        product_urls = cls.discover_urls_for_category(category, extra_args)
-        product_entries = defaultdict(lambda: [])
-
-        sections_dict = {
-            'StereoSystem': 'Audio',
-            'Television': 'Televisores',
-            'Refrigerator': 'Refrigeración',
-            'WashingMachine': 'Lavado',
-            'Cell': 'Celulares y Telefonía',
-            'Monitor': 'Computación',
+    def discover_urls_for_category(cls, category, extra_args=None):
+        categories_codes = {
+            STEREO_SYSTEM: ['MLC1010'],
+            TELEVISION: ['MLC1002'],
+            REFRIGERATOR: ['MLC1576'],
+            WASHING_MACHINE: ['MLC178593', 'MLC27590'],
+            CELL: ['MLC1051'],
+            MONITOR: [],
+            CELL_ACCESORY: ['MLC4632', 'MLC439844'],
         }
+        session = session_with_proxy(extra_args)
+        product_urls = []
+        for category_code in categories_codes[category]:
+            product_urls.extend(cls.get_products(
+                session, category, category_code,
+                official_store_id=cls.official_store_id))
 
-        section_name = sections_dict[category]
-
-        for idx, product_url in enumerate(product_urls):
-            product_entries[product_url].append({
-                'category_weight': 1.0,
-                'section_name': section_name,
-                'value': idx + 1
-            })
-
-        return product_entries
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

@@ -162,8 +162,6 @@ class Movistar(Store):
         soup = BeautifulSoup(page.text, 'html.parser')
         base_name = soup.find('h1').text.strip()
 
-        is_movistar_one = soup.find('p', text='+ cuotas Movistar One')
-
         sku_color_choices = []
         for color_container in soup.find('ul', 'colorEMP').findAll('li'):
             color_element = color_container.find('a')
@@ -185,11 +183,8 @@ class Movistar(Store):
 
             return json.loads(_response.text)
 
-        if is_movistar_one:
-            payload_params = 'current%5BhasMovistar1%5D=1&' \
-                             'current%5Bmovistar1%5D=1'
-        else:
-            payload_params = ''
+        payload_params = 'current%5BhasMovistar1%5D=1&' \
+                         'current%5Bmovistar1%5D=1'
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
@@ -204,7 +199,8 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
                               'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=Plus+Libre+Cod_0J3_Porta' \
+                              'current%5Bplan%5D=' \
+                              'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
                     json_response = get_json_response(payload)

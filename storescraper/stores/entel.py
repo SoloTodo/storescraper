@@ -1,4 +1,6 @@
 import json
+
+import demjson
 import math
 import re
 
@@ -12,7 +14,8 @@ from storescraper.utils import session_with_proxy, remove_words
 
 
 class Entel(Store):
-    prepago_url = 'http://www.entel.cl/prepago/'
+    prepago_url = 'https://www.entel.cl/prepago/'
+    planes_url = 'https://www.entel.cl/planes/oferta-portabilidad/'
 
     @classmethod
     def categories(cls):
@@ -60,7 +63,7 @@ class Entel(Store):
                 'section_name': 'Planes',
                 'value': 1
             })
-            product_entries['http://www.entel.cl/planes/'].append({
+            product_entries[cls.planes_url].append({
                 'category_weight': 1,
                 'section_name': 'Planes',
                 'value': 2
@@ -87,9 +90,9 @@ class Entel(Store):
                 'CLP',
             ))
 
-        elif 'entel.cl/planes/' in url:
+        elif url == cls.planes_url:
             # Plan Postpago
-            products.extend(cls._plans(url, extra_args))
+            products.extend(cls._plans(extra_args))
         elif 'miportal.entel.cl' in url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
@@ -98,30 +101,29 @@ class Entel(Store):
         return products
 
     @classmethod
-    def _plans(cls, url, extra_args):
+    def _plans(cls, extra_args):
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        endpoint = 'https://www.entel.cl/planes/includes/includes-planes/' \
+                   'new-card/public/js/data-planes.js?v=8.8'
+        res = session.get(endpoint)
+        raw_plans = re.search(r'Planes_TP_25dcto=(.*?),Planes_TP_50dcto',
+                              res.text).groups()[0]
+        plans = demjson.decode(raw_plans)
 
         products = []
 
-        for plan_box in soup.findAll('div', 'plan-box'):
-            base_plan_name = plan_box.find('h3').text.strip()
+        for plan in plans:
+            base_plan_name = plan['nombre']
+            price = Decimal(plan['precio'])
 
             for suffix in ['', ' Portabilidad']:
                 name = '{}{}'.format(base_plan_name, suffix)
-
-                price_text = plan_box.find(
-                    'p', 'txt-price').text.replace('/mes', '')
-                # Plan SD costs "24.74324743"
-                price_text = re.search(r'(\d+\.\d{3})', price_text).groups()[0]
-                price = Decimal(remove_words(price_text))
-
                 products.append(Product(
                     name,
                     cls.__name__,
                     'CellPlan',
-                    url,
-                    url,
+                    cls.planes_url,
+                    cls.planes_url,
                     name,
                     -1,
                     price,
@@ -152,14 +154,24 @@ class Entel(Store):
         if json_data['isAccessory']:
             return []
 
+        stock_dict = {
+            x['skuId']: x['maxQuantity'] for x in
+            json_data['skuViews']
+        }
+
         products = []
 
         for variant in json_data['renderSkusBean']['skus']:
             variant_name = variant['skuName']
             variant_sku = variant['skuId']
+            stock = stock_dict[variant_sku]
 
-            if 'seminuevo' in variant_name.lower():
-                condition = 'https://schema.org/RefurbishedCondition'
+            refurbished_blacklist = ['seminuevo', 'renovado']
+
+            for blacklist in refurbished_blacklist:
+                if blacklist in variant_name.lower():
+                    condition = 'https://schema.org/RefurbishedCondition'
+                    break
             else:
                 condition = 'https://schema.org/NewCondition'
 
@@ -197,7 +209,7 @@ class Entel(Store):
                     url,
                     url,
                     '{} - {}'.format(variant_sku, plan_name),
-                    -1,
+                    stock,
                     price,
                     price,
                     'CLP',
@@ -221,7 +233,7 @@ class Entel(Store):
                 url,
                 url,
                 '{} - Entel Prepago'.format(variant_sku),
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',

@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import TELEVISION
+from storescraper.categories import TELEVISION, HEADPHONES, AIR_CONDITIONER, \
+    OVEN, STOVE, WASHING_MACHINE, CELL, REFRIGERATOR, CELL_ACCESORY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -14,39 +15,57 @@ class AlmacenesJapon(Store):
     def categories(cls):
         return [
             TELEVISION,
+            HEADPHONES,
+            AIR_CONDITIONER,
+            OVEN,
+            STOVE,
+            WASHING_MACHINE,
+            CELL,
+            REFRIGERATOR,
+            CELL_ACCESORY
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        url_extensions = [
+            ['55-tv-y-video', TELEVISION],
+            ['3-audio', HEADPHONES],
+            ['10-climatizacion', AIR_CONDITIONER],
+            ['26-electromenores', OVEN],
+            ['13-cocina', STOVE],
+            ['30-lavado-y-secado', WASHING_MACHINE],
+            ['49-tecnologia', CELL],
+            ['62-refrigeración', REFRIGERATOR],
+            ['79-cuidado-personal', CELL_ACCESORY]
+        ]
         session = session_with_proxy(extra_args)
         product_urls = []
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
+                continue
+            page = 1
+            while True:
+                url_webpage = 'https://almacenesjapon.com/{}?q=Marca-' \
+                              'LG&page={}'.format(url_extension, page)
+                print(url_webpage)
 
-        if category != TELEVISION:
-            return []
+                if page > 20:
+                    raise Exception('page overflow: ' + url_webpage)
 
-        page = 1
-        while True:
-            url_webpage = 'https://almacenesjapon.com/brand/53-lg?page={}' \
-                          ''.format(page)
-            print(url_webpage)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('div',
+                                                  'ajax_block_product')
 
-            if page > 20:
-                raise Exception('page overflow: ' + url_webpage)
+                if not product_containers:
+                    if page == 1:
+                        raise Exception('No products found: ' + url_webpage)
+                    break
 
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('article',
-                                              'product-miniature')
-
-            if not product_containers:
-                if page == 1:
-                    raise Exception('No products found: ' + url_webpage)
-                break
-
-            for product in product_containers:
-                product_url = product.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+                for product in product_containers:
+                    product_url = product.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
 
         return product_urls
 
@@ -68,9 +87,7 @@ class AlmacenesJapon(Store):
         else:
             stock = 0
 
-        price = Decimal(soup.find('h4', {'itemprop': 'price'}).
-                        text.replace('$', '').replace('.', '').
-                        replace(',', '.').strip())
+        price = Decimal(soup.find('h4', {'itemprop': 'price'})['content'])
 
         picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
 
