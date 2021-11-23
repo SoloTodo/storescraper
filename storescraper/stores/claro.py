@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from decimal import Decimal
 from bs4 import BeautifulSoup
@@ -97,7 +98,7 @@ class Claro(Store):
 
         portabilidad_modes = [
             '',
-            # ' Portabilidad',
+            ' Portabilidad',
         ]
 
         leasing_modes = [
@@ -136,9 +137,6 @@ class Claro(Store):
     def _celular_postpago(cls, url, extra_args):
         # 1. Obtain cell plans data
         plans = cls._planes(cls.planes_url, extra_args)
-        cell_plans_names = ['Claro ' + plan.name.split('(')[0].strip()
-                            for plan in plans
-                            if 'sin cuota de arriendo' in plan.name]
 
         # 2. Obtain the products
         session = session_with_proxy(extra_args)
@@ -147,7 +145,15 @@ class Claro(Store):
         soup = BeautifulSoup(res.text, 'html.parser')
         products = []
 
-        for cell_tag in soup.findAll('div', 'oferta'):
+        # Nuevo sin cuotas
+        for cell_tag in soup.find('div', {'id': 'equipoRecambioDos'})\
+                            .findAll('div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if 'sin cuota de arriendo' in plan.name and
+                                'portabilidad' not in plan.name.lower()]
+
             cell_name = cell_tag.find('div', 'datos-plan').find(
                 'h2').text.strip()
             price_text = cell_tag.find('div', 'cuotas').findAll(
@@ -171,6 +177,122 @@ class Claro(Store):
                     cell_plan_name=cell_plan_name,
                     picture_urls=picture_urls,
                     cell_monthly_payment=Decimal(0)
+                )
+                products.append(product)
+
+        # Nuevo con cuotas
+        for cell_tag in soup.find('div',
+                                  {'id': 'equipoRecambio'}).findAll(
+                'div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if
+                                'con cuota de arriendo' in plan.name and
+                                'portabilidad' not in plan.name.lower()]
+
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'pie-new').find(
+                'h1').text
+            price = Decimal(remove_words(price_text))
+            monthly_payment_text = cell_tag.find('div', 'cuotas-uno')\
+                .find('h3').text.replace('*', '')
+            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src']]
+
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name,
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=cell_monthly_payment
+                )
+                products.append(product)
+
+        # Portabilidad sin cuotas
+        for cell_tag in soup.find('div',
+                                  {'id': 'equipoPlanDos'}).findAll(
+                'div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if
+                                'sin cuota de arriendo' in plan.name and
+                                'portabilidad' in plan.name.lower()]
+
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'cuotas').findAll(
+                'i')[1].text.split('$')[1]
+            price = Decimal(remove_words(price_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src']]
+
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name[:60],
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=Decimal(0)
+                )
+                products.append(product)
+
+        # Nuevo con cuotas
+        for cell_tag in soup.find('div', {'id': 'equipoPlan'})\
+                            .findAll('div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                                    .replace(')', '')
+                                for plan in plans
+                                if
+                                'con cuota de arriendo' in plan.name and
+                                'portabilidad' in plan.name.lower()]
+
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            monthly_payment_text = cell_tag.find('div',
+                                                 'cuotas-new').findAll(
+                'i')[-1].text
+            price_match = re.search(r'\$([\d|.]+)', monthly_payment_text)
+            cell_monthly_payment = Decimal(
+                remove_words(price_match.groups()[0]))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src']]
+
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    Decimal(0),
+                    Decimal(0),
+                    'CLP',
+                    cell_plan_name=cell_plan_name[:60],
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=cell_monthly_payment
                 )
                 products.append(product)
 
