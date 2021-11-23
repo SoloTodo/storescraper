@@ -84,26 +84,27 @@ class PcInfinity(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser').find(
-            'div', 'row product_container')
-        name = soup.find('h1', 'product_name').text
-        sku = soup.find('input', {'name': 'id_product'})['value']
-        if soup.find('span', {'id': 'product-availability'})\
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_data = soup.find('div', 'row product_container')
+        name = product_data.find('h1', 'product_name').text
+        key = product_data.find('input', {'name': 'id_product'})['value']
+        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        if product_data.find('span', {'id': 'product-availability'})\
                 .text.strip() == '':
             stock = -1
         else:
             stock = 0
-        price = Decimal(soup.find('span', 'price').text.replace('$\xa0', '')
+        price = Decimal(product_data.find('span', 'price').text.replace('$\xa0', '')
                         .replace('.', ''))
         picture_urls = [tag['src'] for tag in
-                        soup.find('ul', 'product-images').findAll('img')]
+                        product_data.find('ul', 'product-images').findAll('img')]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
