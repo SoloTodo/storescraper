@@ -261,6 +261,7 @@ from .pc_express import PcExpress
 from .pc_factory import PcFactory
 from .pc_fericos import PcFericos
 from .pc_gamer import PcGamer
+from .pc_infinity import PcInfinity
 from .pc_link_store import PcLinkStore
 from .pc_master_games import PcMasterGames
 from .pc_ofertas import PcOfertas
