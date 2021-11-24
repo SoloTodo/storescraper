@@ -182,7 +182,7 @@ class Claro(Store):
 
         # Nuevo con cuotas
         for cell_tag in soup.find('div',
-                                  {'id': 'equipoRecambio'}).findAll(
+                                  {'id': 'equipoRecambioUno'}).findAll(
                 'div', 'oferta'):
             cell_plans_names = ['Claro ' + plan.name.replace('(', '')
                                                .replace(')', '')
@@ -257,8 +257,8 @@ class Claro(Store):
                 )
                 products.append(product)
 
-        # Nuevo con cuotas
-        for cell_tag in soup.find('div', {'id': 'equipoPlan'})\
+        # Portabilidad con cuotas
+        for cell_tag in soup.find('div', {'id': 'equipoPlanUno'})\
                             .findAll('div', 'oferta'):
             cell_plans_names = ['Claro ' + plan.name.replace('(', '')
                                                     .replace(')', '')
@@ -269,12 +269,9 @@ class Claro(Store):
 
             cell_name = cell_tag.find('div', 'datos-plan').find(
                 'h2').text.strip()
-            monthly_payment_text = cell_tag.find('div',
-                                                 'cuotas-new').findAll(
-                'i')[-1].text
-            price_match = re.search(r'\$([\d|.]+)', monthly_payment_text)
-            cell_monthly_payment = Decimal(
-                remove_words(price_match.groups()[0]))
+            monthly_payment_text = cell_tag.find('div', 'cuotas-uno') \
+                .find('h3').text.replace('*', '')
+            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
                 'img')['src']]
 
