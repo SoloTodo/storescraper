@@ -5,10 +5,11 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, POWER_SUPPLY, PROCESSOR, \
-  VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
-  EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-  KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
-  GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE, CPU_COOLER
+    VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
+    GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE, CPU_COOLER, \
+    MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,7 +44,7 @@ class Globalbox(Store):
             MOUSE,
             UPS,
             CPU_COOLER,
-
+            MEMORY_CARD,
         ]
 
     @classmethod
@@ -57,8 +58,9 @@ class Globalbox(Store):
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['componentes/memorias-ram', RAM],
-            ['componentes/pendrive', USB_FLASH_DRIVE],
+            ['componentes/memorias/memorias-ram', RAM],
+            ['componentes/memorias/pendrive', USB_FLASH_DRIVE],
+            ['componentes/memorias/tarjetas-de-memoria', MEMORY_CARD],
             ['componentes/almacenamiento/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
             ['componentes/almacenamiento/discos-internos', STORAGE_DRIVE],
