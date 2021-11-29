@@ -47,7 +47,7 @@ class ClaroUp(Store):
 
         for plan_row in plan_rows:
             cell_plan_name = 'Claro ' + plan_row.find('td').text.strip() + \
-                             ' cuotas'
+                             ' con cuota de arriendo'
             price = Decimal(remove_words(plan_row.findAll('td')[2].text))
             cell_monthly_payment = Decimal(remove_words(plan_row.findAll(
                 'td')[3].text))
@@ -63,7 +63,7 @@ class ClaroUp(Store):
                 price,
                 price,
                 'CLP',
-                cell_plan_name=cell_plan_name,
+                cell_plan_name=cell_plan_name.upper(),
                 cell_monthly_payment=cell_monthly_payment
             )
             products.append(product)

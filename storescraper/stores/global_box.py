@@ -103,12 +103,19 @@ class Globalbox(Store):
             while True:
                 url_webpage = 'https://globalbox.cl/{}?p={}'.format(
                     url_extension, page)
+                print(url_webpage)
 
                 if page > 10:
                     raise Exception('page overflow: ' + url_webpage)
 
-                data = session.get(url_webpage, verify=False).text
-                soup = BeautifulSoup(data, 'html.parser')
+                response = session.get(url_webpage, verify=False)
+
+                if response.url != url_webpage:
+                    raise Exception(
+                        'URL mismatch: {} {}'.format(
+                            url_webpage, response.url))
+
+                soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'item isotope-item')
                 if not product_containers:
                     if page == 1:

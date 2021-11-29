@@ -174,7 +174,7 @@ class Claro(Store):
                     price,
                     price,
                     'CLP',
-                    cell_plan_name=cell_plan_name,
+                    cell_plan_name=cell_plan_name.upper(),
                     picture_urls=picture_urls,
                     cell_monthly_payment=Decimal(0)
                 )
@@ -214,7 +214,7 @@ class Claro(Store):
                     price,
                     price,
                     'CLP',
-                    cell_plan_name=cell_plan_name,
+                    cell_plan_name=cell_plan_name.upper(),
                     picture_urls=picture_urls,
                     cell_monthly_payment=cell_monthly_payment
                 )
@@ -251,7 +251,7 @@ class Claro(Store):
                     price,
                     price,
                     'CLP',
-                    cell_plan_name=cell_plan_name[:60],
+                    cell_plan_name=cell_plan_name[:60].upper(),
                     picture_urls=picture_urls,
                     cell_monthly_payment=Decimal(0)
                 )
@@ -287,7 +287,7 @@ class Claro(Store):
                     Decimal(0),
                     Decimal(0),
                     'CLP',
-                    cell_plan_name=cell_plan_name[:60],
+                    cell_plan_name=cell_plan_name[:60].upper(),
                     picture_urls=picture_urls,
                     cell_monthly_payment=cell_monthly_payment
                 )
