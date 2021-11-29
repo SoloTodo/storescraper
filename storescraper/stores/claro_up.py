@@ -63,7 +63,7 @@ class ClaroUp(Store):
                 price,
                 price,
                 'CLP',
-                cell_plan_name=cell_plan_name,
+                cell_plan_name=cell_plan_name.upper(),
                 cell_monthly_payment=cell_monthly_payment
             )
             products.append(product)
