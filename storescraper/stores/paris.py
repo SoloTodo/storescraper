@@ -263,8 +263,13 @@ class Paris(Store):
                     if not product_link:
                         continue
                     product_url = product_link['href'].split('?')[0]
+
+                    if product_url.startswith('/'):
+                        product_url = 'https://www.paris.cl' + product_url
+
                     if product_url == "null":
                         continue
+
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
 
