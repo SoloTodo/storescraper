@@ -81,10 +81,13 @@ class UltraPc(Store):
             stock = -1
         else:
             stock = 0
-        normal_price = Decimal(
-            remove_words(soup.find('div', 'precios_iva').text.split()[0]))
-        offer_price = Decimal(
-            remove_words(soup.find('span', 'electro-price').find('bdi').text))
+        iva = Decimal('1.19')
+        normal_price = (iva * Decimal(
+            remove_words(soup.find('div', 'precios_iva').text.split()[0]))). \
+            quantize(0)
+        offer_price = (iva * Decimal(remove_words(
+            soup.find('p', 'price').find('span', 'electro-price').find(
+                'bdi').text))).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll(
             'img')]
