@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import STORAGE_DRIVE, POWER_SUPPLY, \
     COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
-    VIDEO_CARD, HEADPHONES
+    VIDEO_CARD, HEADPHONES, GAMING_CHAIR, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -30,7 +30,9 @@ class Ingtech(Store):
             MOTHERBOARD,
             PROCESSOR,
             CPU_COOLER,
-            VIDEO_CARD
+            VIDEO_CARD,
+            NOTEBOOK,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -43,9 +45,11 @@ class Ingtech(Store):
             ['memorias-ram', RAM],
             ['monitores', MONITOR],
             ['mouse-y-teclado', MOUSE],
+            ['notebook', NOTEBOOK],
             ['placas-madres', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['refrigeracion', CPU_COOLER],
+            ['setup-gamer', GAMING_CHAIR],
             ['tarjetas-graficas', VIDEO_CARD]
         ]
 
