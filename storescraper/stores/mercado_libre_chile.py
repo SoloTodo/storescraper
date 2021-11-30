@@ -1037,7 +1037,10 @@ class MercadoLibreChile(Store):
         # over time
         return [
             CELL,
-            NOTEBOOK
+            NOTEBOOK,
+            STEREO_SYSTEM,
+            KEYBOARD,
+            MOUSE,
         ]
         # return [i for i in set(cls.categories_name.values()) if i]
 
@@ -1235,8 +1238,14 @@ class MercadoLibreChile(Store):
                 name = '{} ({})'.format(base_name, color_name)
                 color_id = variation['attribute_id']
 
-                variation_url = '{}?attributes={}:{}'.format(url, picker_id,
-                                                             color_id)
+                if '?' in url:
+                    separator = '&'
+                else:
+                    separator = '?'
+
+                variation_url = '{}{}attributes={}:{}'.format(url, separator,
+                                                              picker_id,
+                                                              color_id)
                 res = session.get(variation_url)
                 key_match = re.search(r'variation=(\d+)', res.url)
 
