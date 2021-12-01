@@ -65,6 +65,7 @@ from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
 from .de_prati import DePrati
+from .dc_computer import DcComputer
 from .dgital import Dgital
 from .digi_planet import DigiPlanet
 from .digiplot import Digiplot
