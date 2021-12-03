@@ -92,7 +92,8 @@ class RefreshStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text
-        sku = re.search('let sku = "(.+)";', response.text).groups()[0]
+        canonical_url = soup.find('link', {'rel': 'canonical'})['href']
+        sku = canonical_url.split('/')[-1].strip()
         if soup.find('h6', {
             'id': 'bodegastock1'}).text.strip() == 'Disponible' or soup.find(
                 'h6', {'id': 'bodegastock2'}).text == 'Disponible':
