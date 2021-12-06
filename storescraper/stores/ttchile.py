@@ -10,7 +10,8 @@ from storescraper.utils import session_with_proxy, html_to_markdown, \
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
     MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
-    CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES, GAMING_CHAIR
+    CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES, GAMING_CHAIR, \
+    USB_FLASH_DRIVE, PRINTER
 
 
 class TtChile(Store):
@@ -25,7 +26,6 @@ class TtChile(Store):
             POWER_SUPPLY,
             COMPUTER_CASE,
             RAM,
-            MEMORY_CARD,
             MONITOR,
             MOUSE,
             KEYBOARD,
@@ -36,51 +36,37 @@ class TtChile(Store):
             VIDEO_CARD,
             STEREO_SYSTEM,
             HEADPHONES,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            USB_FLASH_DRIVE,
+            PRINTER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['40', STORAGE_DRIVE],  # Discos duros notebook
-            ['41', SOLID_STATE_DRIVE],  # SSD
-            ['42', EXTERNAL_STORAGE_DRIVE],  # Discos duros extenos
-            ['86', STORAGE_DRIVE],  # Discos duros NAS
-            ['87', SOLID_STATE_DRIVE],  # SSD M.2
-            ['87', STORAGE_DRIVE],  # Discos duros 3.5"
-            ['79', POWER_SUPPLY],  # Fuentes de poder
-            ['88', POWER_SUPPLY],  # Fuentes de poder ATX
-            ['90', COMPUTER_CASE],  # Gabinetes Micro ATX
-            ['91', COMPUTER_CASE],  # Gabinetes ATX-E
-            ['44', RAM],  # RAM Desktop
+            ['37', VIDEO_CARD],  # Tarjetas de video
+            ['33', PROCESSOR],  # Procesadores AMD
+            ['34', PROCESSOR],  # Procesadores Intel
+            ['31', MOTHERBOARD],  # Placas madre AMD
+            ['32', MOTHERBOARD],  # Placas madre Intel
+            ['113', STORAGE_DRIVE],  # HDD
+            ['114', SOLID_STATE_DRIVE],  # SSD
+            ['44', RAM],  # DDR4
             ['45', RAM],  # RAM Notebook
-            ['46', MEMORY_CARD],  # Tarjetas de memoria
+            ['46', USB_FLASH_DRIVE],  # Flash / USB
+            ['79', POWER_SUPPLY],  # Fuentes de poder
+            ['74', CPU_COOLER],  # Cooler Procesador
+            ['76', CPU_COOLER],  # Refrigeración Líquida
+            ['82', COMPUTER_CASE],  # Gabinetes
             ['27', MONITOR],  # Monitores y proyectores
             ['47', MOUSE],  # Mouses
             ['48', KEYBOARD],  # Teclados
             ['49', KEYBOARD_MOUSE_COMBO],  # Kits
-            ['54', MOTHERBOARD],  # Placas madre sTR4
-            ['55', MOTHERBOARD],  # Placas madre AM4
-            ['56', MOTHERBOARD],  # Placas madre AM3+
-            ['57', MOTHERBOARD],  # Placas madre FM2
-            ['58', MOTHERBOARD],  # Placas madre 1151
-            ['59', MOTHERBOARD],  # Placas madre 2066
-            ['97', MOTHERBOARD],  # Placas madre 1200
-            ['60', PROCESSOR],  # Procesadores AM4
-            ['61', PROCESSOR],  # Procesadores sTR4
-            ['62', PROCESSOR],  # Procesadores AM3+
-            ['63', PROCESSOR],  # Procesadores FM2
-            ['64', PROCESSOR],  # Procesadores 2066
-            ['65', PROCESSOR],  # Procesadores 1151
-            ['98', PROCESSOR],  # Procesadores 1200
-            ['74', CPU_COOLER],  # Cooler Procesador
-            ['76', CPU_COOLER],  # Refrigeración Líquida
-            ['77', VIDEO_CARD],  # Tarjetas de video NVIDIA
-            ['78', VIDEO_CARD],  # Tarjetas de video Profesionales
-            ['99', VIDEO_CARD],  # Tarjetas de video AMD
             ['94', STEREO_SYSTEM],  # Parlantes
             ['95', HEADPHONES],  # Audífonos
-            ['100', GAMING_CHAIR]
+            ['107', PRINTER],  # Impresoras
+            ['100', GAMING_CHAIR],  # Sillas y Escritorio
+            ['42', EXTERNAL_STORAGE_DRIVE],  # Discos duros extenos
         ]
 
         product_urls = []

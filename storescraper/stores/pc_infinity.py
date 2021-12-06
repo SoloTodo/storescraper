@@ -94,10 +94,11 @@ class PcInfinity(Store):
             stock = -1
         else:
             stock = 0
-        price = Decimal(product_data.find('span', 'price').text.replace('$\xa0', '')
-                        .replace('.', ''))
+        price = Decimal(product_data.find('span', 'price').text.replace(
+            '$\xa0', '').replace('.', ''))
         picture_urls = [tag['src'] for tag in
-                        product_data.find('ul', 'product-images').findAll('img')]
+                        product_data.find('ul', 'product-images')
+                        .findAll('img')]
         p = Product(
             name,
             cls.__name__,
