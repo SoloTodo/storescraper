@@ -89,7 +89,7 @@ class TecTec(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h1', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
