@@ -587,7 +587,8 @@ class MercadoLibreChile(Store):
         'MLC416554': 'Gamepads y Joysticks',
         'MLC11964': 'Otros',
         'MLC116433': 'Otros',
-        'MLC440647': 'Otros'
+        'MLC440647': 'Otros',
+        'MLC174376': 'Walkman',
 
     }
     categories_name = {
@@ -1029,6 +1030,7 @@ class MercadoLibreChile(Store):
         'Gamepads': None,
         'Para Otras Consolas': None,
         'Volantes': None,
+        'Walkman': None
     }
 
     @classmethod
