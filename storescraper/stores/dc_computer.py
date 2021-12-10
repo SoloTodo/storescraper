@@ -93,7 +93,8 @@ class DcComputer(Store):
         else:
             stock = int(soup.find('p', 'stock').text.split()[0])
 
-        offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+        offer_price = Decimal(remove_words(soup.find('p', 'price').findAll(
+            'bdi')[-1].text))
         normal_price = (offer_price * Decimal('1.04')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                         '-product-gallery').findAll('img')]
