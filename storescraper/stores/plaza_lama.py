@@ -21,8 +21,7 @@ class PlazaLama(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         # Only interested in LG products
         url_extensions = [
-            ['electrodomesticos/lg', TELEVISION],
-            ['all/lg+tecnologia', HEADPHONES],
+            ['lg', TELEVISION],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
