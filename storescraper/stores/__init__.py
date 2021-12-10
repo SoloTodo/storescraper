@@ -57,6 +57,7 @@ from .creditos_economicos import CreditosEconomicos
 from .creditos_mundiales import CreditosMundiales
 from .cyber_puerta import CyberPuerta
 from .daewoo import Daewoo
+from .dark_light_pc import DarkLightPc
 from .danaus import Danaus
 from .david_and_joseph import DavidAndJoseph
 from .dazbog_store import DazbogStore
