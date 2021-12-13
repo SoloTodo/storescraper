@@ -333,6 +333,7 @@ from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
 from .tecno_king import TecnoKing
+from .tecno_mas import TecnoMas
 from .tecno_mega_store import TecnoMegaStore
 from .tecno_saga import TecnoSaga
 from .tecno_site import TecnoSite
