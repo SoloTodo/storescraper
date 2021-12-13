@@ -59,7 +59,8 @@ class DarkLightPc(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', 'single_add_to_cart_button')['value']
+        key = soup.find('button', 'single_add_to_cart_button')['value']
+        sku = soup.find('span', 'sku').text.strip()
         stock = -1
         if soup.find('p', 'price').find('ins'):
             price = Decimal(
@@ -75,7 +76,7 @@ class DarkLightPc(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
