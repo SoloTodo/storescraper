@@ -31,7 +31,6 @@ class Ripley(Store):
             # 'VacuumCleaner',
             'WashingMachine',
             'Cell',
-            'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
             'ExternalStorageDrive',
