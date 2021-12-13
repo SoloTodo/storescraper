@@ -324,6 +324,9 @@ class Lider(Store):
             offer_price = Decimal(offer_price_container)
             if not offer_price:
                 offer_price = normal_price
+
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
