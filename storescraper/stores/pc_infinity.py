@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, \
     KEYBOARD, COMPUTER_CASE, CPU_COOLER, POWER_SUPPLY, RAM, MEMORY_CARD, \
-    USB_FLASH_DRIVE
+    USB_FLASH_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -29,12 +29,12 @@ class PcInfinity(Store):
             RAM,
             MEMORY_CARD,
             USB_FLASH_DRIVE,
+            GAMING_CHAIR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['14-mouse', MOUSE],
             ['18-discos-duros', STORAGE_DRIVE],
             ['22-discos-externos', EXTERNAL_STORAGE_DRIVE],
             ['19-discos-solidos', SOLID_STATE_DRIVE],
@@ -42,13 +42,15 @@ class PcInfinity(Store):
             ['24-audifonos', HEADPHONES],
             ['23-parlantes', STEREO_SYSTEM],
             ['13-teclados', KEYBOARD],
-            ['38-gabinetes-gamer', COMPUTER_CASE],
+            ['14-mouse', MOUSE],
+            ['16-gabinetes', COMPUTER_CASE],
             ['78-ventiladores-para-cpu', CPU_COOLER],
             ['51-fuentes-de-poder', POWER_SUPPLY],
             ['60-memorias-pc', RAM],
             ['61-memorias-notebook', RAM],
             ['62-memorias-flash', MEMORY_CARD],
             ['64-pendrives', USB_FLASH_DRIVE],
+            ['82-sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
