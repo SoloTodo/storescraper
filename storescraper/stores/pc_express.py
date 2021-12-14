@@ -109,7 +109,7 @@ class PcExpress(Store):
 
                 if len(td_products) == 0:
                     if page == 1:
-                        raise Exception(category_page_url)
+                        # raise Exception(category_page_url)
                         logging.warning('Empty category: ' + category_id)
                     break
 
