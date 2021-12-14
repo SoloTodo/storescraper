@@ -1019,7 +1019,9 @@ categories_name = {
     'Volantes': None,
     'Walkman': None
 }
+
 all_categories = []
 for code, ml_category in categories_code.items():
-    all_categories.append((code,ml_category,categories_name[ml_category]))
+    all_categories.append((code, ml_category, categories_name[ml_category]))
+
 print(all_categories)

@@ -37,7 +37,8 @@ class TarreoStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-y-perifericos/combo-accesorios', KEYBOARD_MOUSE_COMBO],
+            ['accesorios-y-perifericos/combo-accesorios',
+             KEYBOARD_MOUSE_COMBO],
             ['accesorios-y-perifericos/mouses-mousespads-y-accesorios', MOUSE],
             ['accesorios-y-perifericos/teclados', KEYBOARD],
             ['audio-y-video/speakers', STEREO_SYSTEM],
@@ -68,7 +69,8 @@ class TarreoStore(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('section', 'vtex-product-summary-2-x-container')
+                product_containers = soup.findAll(
+                    'section', 'vtex-product-summary-2-x-container')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)

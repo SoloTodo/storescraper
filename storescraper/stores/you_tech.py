@@ -124,7 +124,8 @@ class YouTech(Store):
 
         prices_tag = soup.find('ul', 'product-price')
         normal_price_container = prices_tag.find('li', 'product-tax')
-        normal_price = Decimal(remove_words(normal_price_container.text.split(':')[1]))
+        normal_price = Decimal(remove_words(
+            normal_price_container.text.split(':')[1]))
         offer_price_container = prices_tag.find('h2', 'cash-price')
         offer__price = Decimal(remove_words(offer_price_container.text))
 
