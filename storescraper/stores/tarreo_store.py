@@ -106,8 +106,7 @@ class TarreoStore(Store):
             base_json_key)
         pricing_data = product_data[pricing_key]
 
-        normal_price = Decimal(pricing_data['Price'])
-        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        price = Decimal(pricing_data['Price'])
         stock = pricing_data['AvailableQuantity']
 
         picture_list_key = '{}.items.0'.format(base_json_key)
@@ -127,8 +126,8 @@ class TarreoStore(Store):
             url,
             key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             part_number=part_number,
