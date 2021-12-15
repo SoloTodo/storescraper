@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, MOTHERBOARD, VIDEO_CARD, \
     POWER_SUPPLY, SOLID_STATE_DRIVE, MOUSE, HEADPHONES, KEYBOARD, \
-    PROCESSOR, COMPUTER_CASE, CPU_COOLER
+    PROCESSOR, COMPUTER_CASE, CPU_COOLER, STORAGE_DRIVE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,7 +25,9 @@ class Finall(Store):
             KEYBOARD,
             PROCESSOR,
             COMPUTER_CASE,
-            CPU_COOLER
+            CPU_COOLER,
+            STORAGE_DRIVE,
+            MONITOR,
         ]
 
     @classmethod
@@ -38,6 +40,8 @@ class Finall(Store):
             ['pc/tarjeta-de-video', VIDEO_CARD],
             ['pc/fuente-de-poder', POWER_SUPPLY],
             ['pc/disco-estado-solido-1', SOLID_STATE_DRIVE],
+            ['sata', SOLID_STATE_DRIVE],
+            ['nvme-pcie', SOLID_STATE_DRIVE],
             ['pc/m2', SOLID_STATE_DRIVE],
             ['mouse', MOUSE],
             ['audifonos', HEADPHONES],
@@ -46,6 +50,8 @@ class Finall(Store):
             ['pc/gabinetes', COMPUTER_CASE],
             ['pc/refrigeracion', CPU_COOLER],
             ['pc/refrigeracion-liquida', CPU_COOLER],
+            ['pc/disco-duro-mecanico', STORAGE_DRIVE],
+            ['pc/monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
