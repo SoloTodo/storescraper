@@ -1,14 +1,11 @@
 import json
-import logging
 import re
 import urllib.parse
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, WEARABLE, TELEVISION, \
-    STEREO_SYSTEM, TABLET, MONITOR, WASHING_MACHINE, REFRIGERATOR, \
-    VACUUM_CLEANER, OVEN
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -18,80 +15,27 @@ class TravelTienda(Store):
     @classmethod
     def categories(cls):
         return [
-            CELL,
-            WEARABLE,
-            TELEVISION,
-            STEREO_SYSTEM,
-            TABLET,
-            MONITOR,
-            WASHING_MACHINE,
-            REFRIGERATOR,
-            VACUUM_CLEANER,
-            OVEN
-
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['carrusel-categorias-tienda/smartphones?N=3842720512',
-             CELL],
-            ['relojes/smartwatch?N=816923966', WEARABLE],
-            ['tv/televisores?N=2722336774', TELEVISION],
-            ['tv/sistemas-de-sonido-tv?N=2234300147',
-             STEREO_SYSTEM],
-            ['carrusel-categorias-tienda/audio?N=4064311224',
-             STEREO_SYSTEM],
-            ['computación/tablets?N=2934181475', TABLET],
-            ['gamer/monitor-gamer?N=2871236375', MONITOR],
-            ['categorías-redondo/lavadoras?N=2620100069',
-             WASHING_MACHINE],
-            ['línea-blanca/secadoras?N=394354836', WASHING_MACHINE],
-            ['línea-blanca/refrigeradores?N=306745319',
-             REFRIGERATOR],
-            ['electrodomésticos/aspiradora-robot?N=2553914886',
-             VACUUM_CLEANER],
-            ['electrodomésticos/hornos-electricos-y-microondas?N=831669398',
-             OVEN]
-        ]
+        if category != TELEVISION:
+            return []
 
-        session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
 
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 0
-            url_webpage = r'https://tienda.travel.cl/category/{}+' \
-                          r'3479876154&Nr=AND(sku.availabilityStatus:' \
-                          r'INSTOCK)&maxItems=18&No={}'.format(url_extension,
-                                                               page)
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            data = soup.find('body').find('script').text
-            data_clean = urllib.parse.unquote(
-                re.search(r'window.state = JSON.parse\(decodeURI\((.+)\)\)',
-                          data).groups()[0])
-            json_container = json.loads(data_clean[1:-1])
-            category_path = \
-                json_container['clientRepository']['context']['global'][
-                    'path'].split('/')[-1]
-            product_container = \
-                list(json_container['searchRepository']['pages'].values())[0][
-                    'results']['records']
-            if not product_container:
-                if page == 0:
-                    logging.warning('Empty category' + url_extension)
-                break
-            for container in product_container:
-                product_url = container['attributes']['product.route'][0]
-                product_urls.append(
-                    'https://tienda.travel.cl/' + category_path + product_url)
-            page += 18
+        session = session_with_proxy(extra_args)
+        url_webpage = 'https://tienda.travel.cl/ccstore/v1/assembler/pages/' \
+                      'Default/osf/catalog?Ntt=samsung&Nrpp=1000&' \
+                      'Nr=AND%28sku.availabilityStatus%3AINSTOCK%29'
+        print(url_webpage)
+        response = session.get(url_webpage)
+        json_data = response.json()
+        for product_entry in json_data['results']['records']:
+            product_path = product_entry['attributes']['product.route'][0]
+            product_urls.append(
+                'https://tienda.travel.cl' + product_path)
         return product_urls
 
     @classmethod
@@ -103,9 +47,23 @@ class TravelTienda(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        script_tag = soup.find('script', {'data-name': 'occ-structured-data'})
 
-        product_json = json.loads(
-            soup.find('script', {'data-name': 'occ-structured-data'}).text)[0]
+        if not script_tag:
+            print('FOO')
+            if extra_args:
+                retries = extra_args.get('retries', 5)
+                if retries > 0:
+                    retries -= 1
+                    extra_args['retries'] = retries
+                    return cls.products_for_url(url, category, extra_args)
+                else:
+                    raise Exception('Empty product page: ' + url)
+            else:
+                extra_args = {'retries': 5}
+                return cls.products_for_url(url, category, extra_args)
+
+        product_json = json.loads(script_tag.text)[0]
         data = soup.find('body').find('script').text
 
         data_clean = urllib.parse.unquote(
