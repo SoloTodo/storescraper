@@ -1,5 +1,6 @@
 import json
 import re
+import time
 import urllib.parse
 from decimal import Decimal
 
@@ -50,17 +51,18 @@ class TravelTienda(Store):
         script_tag = soup.find('script', {'data-name': 'occ-structured-data'})
 
         if not script_tag:
-            print('FOO')
             if extra_args:
                 retries = extra_args.get('retries', 5)
                 if retries > 0:
                     retries -= 1
                     extra_args['retries'] = retries
+                    time.sleep(2)
                     return cls.products_for_url(url, category, extra_args)
                 else:
                     raise Exception('Empty product page: ' + url)
             else:
                 extra_args = {'retries': 5}
+                time.sleep(2)
                 return cls.products_for_url(url, category, extra_args)
 
         product_json = json.loads(script_tag.text)[0]
@@ -76,8 +78,13 @@ class TravelTienda(Store):
         sku = product_json['sku']
         stock = -1
         normal_price = Decimal(product_json['offers']['price'])
-        offer_price = Decimal(
-            json_container['listPrices']['tiendaBancoDeChile'])
+
+        offer_price_text = json_container['listPrices']['tiendaBancoDeChile']
+        if offer_price_text:
+            offer_price = Decimal(offer_price_text)
+        else:
+            offer_price = normal_price
+
         picture_urls = ['https://tienda.travel.cl' +
                         picture.replace(' ', '%20') for picture in
                         json_container['fullImageURLs']]
