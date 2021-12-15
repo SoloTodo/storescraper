@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import VIDEO_CARD, MONITOR, \
     KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, STEREO_SYSTEM, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
-    PROCESSOR, CPU_COOLER, VIDEO_GAME_CONSOLE, GAMING_CHAIR
+    PROCESSOR, CPU_COOLER, VIDEO_GAME_CONSOLE, GAMING_CHAIR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -32,11 +32,13 @@ class TarreoStore(Store):
             CPU_COOLER,
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['audio-y-video/audifonos-y-accesorios/audifonos', HEADPHONES],
             ['accesorios-y-perifericos/combo-accesorios',
              KEYBOARD_MOUSE_COMBO],
             ['accesorios-y-perifericos/mouses-mousespads-y-accesorios', MOUSE],
