@@ -20,6 +20,7 @@ class AsusStore(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # Products URL: https://www.asus.com/cl/deals/All-Deals/
         url_extensions = [
             ['Laptops', 99, NOTEBOOK],
             ['Displays-Desktops', 197, ALL_IN_ONE]

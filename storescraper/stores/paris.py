@@ -90,9 +90,10 @@ class Paris(Store):
         ['tecnologia/consolas-videojuegos/nintendo',
          ['VideoGameConsole'],
          'Tecno > Consolas VideoJuegos > Consolas Nintendo', 1],
-        ['tecnologia/impresoras', ['Printer'], 'Tecno > Impresoras', 0],
-        ['tecnologia/impresoras/multifuncionales', ['Printer'],
-         'Tecno > Impresión > Multifuncionales', 1],
+        ['tecnologia/impresoras/laser', ['Printer'],
+         'Tecno > Impresoras > Impresión Láser', 1],
+        ['tecnologia/impresoras/tinta', ['Printer'],
+         'Tecno > Impresoras > Impresión de Tinta', 1],
         # Also includes other accesories
         ['tecnologia/accesorios-fotografia',
          ['MemoryCard'], 'Tecno > Accesorios Fotografía', 0],
