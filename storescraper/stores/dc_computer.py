@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, KEYBOARD, MOUSE, HEADPHONES, \
     COMPUTER_CASE, GAMING_CHAIR, POWER_SUPPLY, RAM, PROCESSOR, MOTHERBOARD, \
-    CPU_COOLER, VIDEO_CARD
+    CPU_COOLER, VIDEO_CARD, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,7 +26,8 @@ class DcComputer(Store):
             PROCESSOR,
             MOTHERBOARD,
             CPU_COOLER,
-            VIDEO_CARD
+            VIDEO_CARD,
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
@@ -43,7 +44,8 @@ class DcComputer(Store):
             ['componentes/procesadores', PROCESSOR],
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/refrigeracion', CPU_COOLER],
-            ['componentes/tarjeta-de-video', VIDEO_CARD]
+            ['componentes/tarjeta-de-video', VIDEO_CARD],
+            ['componentes/unidad-de-estado-solido-ssd', SOLID_STATE_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
