@@ -89,6 +89,8 @@ class EliteCenter(Store):
                 product_containers = soup.findAll('div', 'product-grid-item')
 
                 for container in product_containers:
+                    if container.find('span', 'out-of-stock'):
+                        continue
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -103,15 +105,12 @@ class EliteCenter(Store):
         name = soup.find('h1', 'product_title').text
 
         if soup.find('input', 'current_product_id'):
-            sku = soup.find('input', 'current_product_id')['value']
+            key = soup.find('input', 'current_product_id')['value']
         else:
-            sku = soup.find('button', 'single_add_to_cart_button')['value']
+            key = soup.find('button', 'single_add_to_cart_button')['value']
 
-        part_number_container = soup.find('span', {'id': '_sku'})
-        if part_number_container:
-            part_number = part_number_container.text.strip()
-        else:
-            part_number = None
+        sku_tag = soup.find('div', {'data-id': '6897d6e'})
+        sku = sku_tag.text.split('SKU: ')[1].strip()
 
         if soup.find('button', 'stock_alert_button'):
             stock = 0
@@ -140,7 +139,7 @@ class EliteCenter(Store):
                         if validators.url(tag['href'])
                         ]
 
-        description = html_to_markdown(str(soup.find('div', 'tabbed-content')))
+        description = soup.find('meta', {'name': 'description'})['content']
 
         p = Product(
             name,
@@ -148,13 +147,13 @@ class EliteCenter(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description
 
