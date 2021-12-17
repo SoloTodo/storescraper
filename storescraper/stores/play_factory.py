@@ -88,6 +88,10 @@ class PlayFactory(Store):
 
         json_data = re.search('google_tag_params = (.+);', response.text)
         json_data = json.loads(json_data.groups()[0])
+
+        if 'ecommerce' not in json_data:
+            return []
+
         products = []
 
         for product_entry in json_data['ecommerce']['detail']['products']:

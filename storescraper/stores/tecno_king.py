@@ -147,7 +147,10 @@ class TecnoKing(Store):
                 price = Decimal(
                     remove_words(soup.find('p', 'price').find('ins').text))
             else:
-                price = Decimal(remove_words(soup.find('p', 'price').text))
+                price_text = soup.find('p', 'price').text.strip()
+                if not price_text:
+                    return []
+                price = Decimal(remove_words(price_text))
             picture_urls = [tag['src'] for tag in soup.find('div',
                                                             'woocommerce-'
                                                             'product-'
