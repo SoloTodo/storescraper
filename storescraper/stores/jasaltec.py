@@ -119,7 +119,7 @@ class Jasaltec(Store):
             offer_price = Decimal(remove_words(
                 soup.find('p', 'price').find('bdi').text))
 
-        normal_price = (offer_price * Decimal('1.03')).quantize(0)
+        normal_price = (offer_price / Decimal('0.96')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'woocommerce-product'
                                                         '-gallery').findAll(
