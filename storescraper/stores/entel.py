@@ -106,7 +106,7 @@ class Entel(Store):
         endpoint = 'https://www.entel.cl/planes/includes/includes-planes/' \
                    'new-card/public/js/data-planes.js?v=66.11'
         res = session.get(endpoint)
-        raw_plans = re.search(r'Planes_TP_25dcto = ([\s\S]*?,\r\n {2}])',
+        raw_plans = re.search(r'Planes_TP_25dcto=([\s\S]*?),Planes_TP_50dcto',
                               res.text).groups()[0]
         plans = demjson.decode(raw_plans)
 
