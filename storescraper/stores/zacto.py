@@ -52,6 +52,7 @@ class Zacto(Store):
             ['almacenamiento/discos-duros', STORAGE_DRIVE],
             ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
             ['impresion/impresoras-laser-y-tinta', PRINTER],
+            ['impresion/multifuncionales-tinta', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
@@ -91,7 +92,14 @@ class Zacto(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        sku_tag = soup.find('span', 'sku')
+
+        if sku_tag:
+            sku = soup.find('span', 'sku').text.strip()
+        else:
+            sku = None
+
         if soup.find('p', 'stock in-stock'):
             stock = -1
         else:
@@ -106,12 +114,13 @@ class Zacto(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
