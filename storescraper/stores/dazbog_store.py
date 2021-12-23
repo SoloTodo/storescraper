@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, MONITOR, PROCESSOR, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD, CPU_COOLER, NOTEBOOK, RAM, \
-    COMPUTER_CASE
+    COMPUTER_CASE, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,6 +25,7 @@ class DazbogStore(Store):
             NOTEBOOK,
             RAM,
             COMPUTER_CASE,
+            KEYBOARD,
         ]
 
     @classmethod
@@ -40,6 +41,7 @@ class DazbogStore(Store):
             ['ssd', SOLID_STATE_DRIVE],
             ['gpus', VIDEO_CARD],
             ['gabinete', COMPUTER_CASE],
+            ['perifericos', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
