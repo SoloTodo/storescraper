@@ -35,20 +35,20 @@ class RefreshStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios?byType=13', KEYBOARD],
-            ['accesorios?byType=14', MOUSE],
-            ['accesorios?byType=21', HEADPHONES],
-            ['almacenamiento?byType=18', SOLID_STATE_DRIVE],
-            ['almacenamiento?byType=20', SOLID_STATE_DRIVE],
-            ['almacenamiento?byType=19', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['ram', RAM],
-            ['monitores', MONITOR],
-            ['placas-madres', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
+            ['Accesorios/Teclados', KEYBOARD],
+            ['Accesorios/Mouse', MOUSE],
+            ['Accesorios/Audífonos', HEADPHONES],
+            ['Almacenamiento/SSD', SOLID_STATE_DRIVE],
+            ['Almacenamiento/M.2', SOLID_STATE_DRIVE],
+            ['Almacenamiento/%20HDD', STORAGE_DRIVE],
+            ['Fuentes-de-poder', POWER_SUPPLY],
+            ['Gabinetes', COMPUTER_CASE],
+            ['Ram', RAM],
+            ['Monitores', MONITOR],
+            ['Placas-Madres', MOTHERBOARD],
+            ['Procesadores', PROCESSOR],
             ['Cooler-Cpu', CPU_COOLER],
-            ['tarjetas-de-video', VIDEO_CARD]
+            ['Tarjetas-de-video', VIDEO_CARD]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

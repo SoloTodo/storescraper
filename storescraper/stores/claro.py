@@ -160,7 +160,7 @@ class Claro(Store):
                 'i')[1].text.split('$')[1]
             price = Decimal(remove_words(price_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip()]
+                'img')['src'].strip().replace(' ', '%20')]
 
             for cell_plan_name in cell_plans_names:
                 product = Product(
@@ -200,7 +200,7 @@ class Claro(Store):
                 .find('h3').text.replace('*', '')
             cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip()]
+                'img')['src'].strip().replace(' ', '%20')]
 
             for cell_plan_name in cell_plans_names:
                 product = Product(
@@ -237,7 +237,7 @@ class Claro(Store):
                 'i')[1].text.split('$')[1]
             price = Decimal(remove_words(price_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip()]
+                'img')['src'].strip().replace(' ', '%20')]
 
             for cell_plan_name in cell_plans_names:
                 product = Product(
@@ -273,7 +273,7 @@ class Claro(Store):
                 .find('h3').text.replace('*', '')
             cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip()]
+                'img')['src'].strip().replace(' ', '%20')]
 
             for cell_plan_name in cell_plans_names:
                 product = Product(
