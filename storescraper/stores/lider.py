@@ -194,6 +194,13 @@ class Lider(Store):
              ['Oven'],
              'Electrohogar > Electrodomésticos > Microondas',
              1.0],
+            # Supermercado
+            ['Entretenimiento/Tecnología/Televisión', ['Television'],
+             'Entretenimiento > Tecnología > Televisión', 1],
+            ['Entretenimiento/Tecnología/Telefonía', ['Cell'],
+             'Entretenimiento > Tecnología > Telefonía', 1],
+            ['Entretenimiento/Tecnología/Computación', ['Notebook'],
+             'Entretenimiento > Tecnología > Computación', 1],
         ]
 
         session = session_with_proxy(extra_args)
