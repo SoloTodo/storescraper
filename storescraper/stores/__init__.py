@@ -158,6 +158,7 @@ from .invasion_gamer import InvasionGamer
 from .inverfin import Inverfin
 from .iprotech import Iprotech
 from .isi_book import IsiBook
+from .japan_market import JapanMarket
 from .jasaltec import Jasaltec
 from .jeanfig_pc import JeanfigPc
 from .jetstereo import Jetstereo
