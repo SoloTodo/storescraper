@@ -4,8 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    SOLID_STATE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE
+    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,30 +18,23 @@ class NotebooksYa(Store):
             PRINTER,
             MONITOR,
             STORAGE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            USB_FLASH_DRIVE,
-            SOLID_STATE_DRIVE,
             HEADPHONES,
             KEYBOARD,
             WEARABLE,
+            ALL_IN_ONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['portatiles/?', NOTEBOOK],
+            ['computadores/?', ALL_IN_ONE],
             ['impresion/?', PRINTER],
             ['pantallas-y-tvs/?', MONITOR],
-            ['almacenamiento/?wpf=almacenamiento_ya&wpf_cols=4&'
-             'wpf_producto=disco-duro%2Cdisco-duro-interno', STORAGE_DRIVE],
-            ['almacenamiento/?wpf=almacenamiento_ya&wpf_cols=4&'
-             'wpf_producto=disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/?wpf=almacenamiento_ya&wpf_cols=4&'
-             'wpf_producto=pendrive%2Cunidad-flash-usb', USB_FLASH_DRIVE],
-            ['almacenamiento/?wpf=almacenamiento_ya&wpf_cols=4&wpf_producto'
-             '=unidad-de-estado-solido-externo%2Cunidad-en-estado-solido',
-             SOLID_STATE_DRIVE],
+            ['almacenamiento/?', STORAGE_DRIVE],
+            ['partes-y-piezas/?', STORAGE_DRIVE],
             ['audifonos/?', HEADPHONES],
+            ['audio-y-video/?', HEADPHONES],
             ['teclados-mouse/?', KEYBOARD],
             ['relojes/?', WEARABLE],
         ]
@@ -96,6 +88,9 @@ class NotebooksYa(Store):
         offer_price = Decimal(remove_words(price_container[1].text))
         picture_urls = [tag['src'] for tag in soup.find('div',
                         'woocommerce-product-gallery').findAll('img')]
+        description = soup.find(
+            'meta', {'property': 'og:description'})['content']
+
         p = Product(
             name,
             cls.__name__,
@@ -108,6 +103,7 @@ class NotebooksYa(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
