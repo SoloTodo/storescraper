@@ -243,6 +243,7 @@ from .new_game import NewGame
 from .nemz import Nemz
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
+from .notebooks_ya import NotebooksYa
 from .notetop import Notetop
 from .ofimania import Ofimania
 from .olier import Olier
