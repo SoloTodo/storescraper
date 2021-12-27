@@ -229,6 +229,7 @@ from .microplay import Microplay
 from .mis_beneficios import MisBeneficios
 from .mi_tienda_damasco import MiTiendaDamasco
 from .mobile_hut import MobileHut
+from .motorola_shop import MotorolaShop
 from .movistar import Movistar
 from .movistar_one import MovistarOne
 from .multi_ahorro import MultiAhorro
