@@ -110,7 +110,12 @@ class SamsungShop(Store):
         products = []
 
         for sku_entry in skus_data:
-            name = sku_entry['nameComplete'][:250]
+            name = sku_entry['nameComplete']
+
+            if 'Promoción' in sku_entry:
+                name += ' + {}'.format(sku_entry['Promoción'][0])
+
+            name = name[:250]
             sku = sku_entry['ean']
             key = sku_entry['itemId']
             stock = sku_entry['sellers'][0]['commertialOffer'][
