@@ -125,6 +125,12 @@ class SamsungShop(Store):
                 # Unavailable products don't have a valid price, so skip them
                 continue
 
+            # Mark the "trade in" offers as unavailable because they are not
+            # regular sale products with a specific price
+            if 'TradeIn' in sku_entry and \
+                    sku_entry['TradeIn'][0] == 'Con trade In':
+                stock = 0
+
             price = Decimal(sku_entry['sellers'][0]['commertialOffer'][
                                 'Price'])
             picture_urls = [x['imageUrl'] for x in sku_entry['images']]
