@@ -34,6 +34,9 @@ class Syd(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -47,7 +50,6 @@ class Syd(Store):
                 raise Exception('Invalid category: ' + category_url)
 
             soup = BeautifulSoup(response.text, 'html.parser')
-
             titles = soup.findAll('div', 'bs-product')
 
             if not titles:
@@ -65,6 +67,10 @@ class Syd(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[2].text)

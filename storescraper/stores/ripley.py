@@ -742,7 +742,8 @@ class Ripley(Store):
                 # Collage
                 desktop_container_tag = banner_tag.find('div')
                 cell_tags = desktop_container_tag.findAll('a')
-                destination_urls = [tag['href'] for tag in cell_tags]
+                destination_urls = [tag['href'] for tag in cell_tags
+                                    if 'href' in tag.attrs]
                 picture_url = desktop_container_tag.find('source')['srcset']
 
                 banners.append({

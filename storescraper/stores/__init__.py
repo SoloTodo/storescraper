@@ -393,6 +393,7 @@ from .wom import Wom
 from .xenex import Xenex
 from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
+from .yokan_store import YokanStore
 from .you_tech import YouTech
 from .yoytec import Yoytec
 from .zacto import Zacto

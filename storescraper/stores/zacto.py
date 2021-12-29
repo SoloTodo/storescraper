@@ -104,7 +104,9 @@ class Zacto(Store):
             stock = -1
         else:
             stock = 0
-        price = Decimal(remove_words(soup.find('p', 'price').text))
+
+        price = Decimal(remove_words(
+            soup.find('p', 'price').find('bdi').text))
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery').
                         findAll('img')]
