@@ -61,16 +61,17 @@ class GamerLab(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('span', 'sku').text.strip()
         if soup.find('button', {'name': 'add-to-cart'}):
             stock = -1
         else:
             stock = 0
-        price_cotnainer = soup.find('p', 'price')
-        if price_cotnainer.find('ins'):
-            price = Decimal(remove_words(price_cotnainer.find('ins').text))
+        price_container = soup.find('p', 'price')
+        if price_container.find('ins'):
+            price = Decimal(remove_words(price_container.find('ins').text))
         else:
-            price = Decimal(remove_words(price_cotnainer.text))
+            price = Decimal(remove_words(price_container.text))
         picture_urls = [tag.find('a')['href'] for tag in
                         soup.find('div', {'id': 'product-images'}).findAll(
                             'figure')]
@@ -80,7 +81,7 @@ class GamerLab(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
