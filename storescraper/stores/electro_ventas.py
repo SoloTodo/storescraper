@@ -113,7 +113,7 @@ class ElectroVentas(Store):
         product_data_tag = soup.findAll(
             'script', {'type': 'application/ld+json'})[2]
         product_data = json.loads(product_data_tag.text
-                                      .replace('\u000a', ''))
+                                  .replace('\u000a', ''))
         name = product_data['name']
         sku = product_data['mpn']
         price = Decimal(product_data['offers']['price'])
