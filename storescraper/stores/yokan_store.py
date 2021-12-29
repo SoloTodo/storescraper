@@ -59,7 +59,13 @@ class YokanStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('span', 'sku').text.strip()
+        sku_tag = soup.find('span', 'sku')
+        
+        if sku_tag:
+            sku = soup.find('span', 'sku').text.strip()
+        else:
+            sku = None
+
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock').text.strip().split()[0])
         else:
