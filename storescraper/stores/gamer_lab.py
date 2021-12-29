@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -61,33 +62,69 @@ class GamerLab(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('span', 'sku').text.strip()
-        if soup.find('button', {'name': 'add-to-cart'}):
-            stock = -1
-        else:
-            stock = 0
-        price_container = soup.find('p', 'price')
-        if price_container.find('ins'):
-            price = Decimal(remove_words(price_container.find('ins').text))
-        else:
-            price = Decimal(remove_words(price_container.text))
-        picture_urls = [tag.find('a')['href'] for tag in
-                        soup.find('div', {'id': 'product-images'}).findAll(
-                            'figure')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
 
-        )
-        return [p]
+        if soup.find('form', 'variations_form cart'):
+            variations = json.loads(soup.find('form', 'variations_form cart')[
+                                        'data-product_variations'])
+            products = []
+            for variation in variations:
+                variation_name = name + ' - ' + variation['attributes'][
+                    'attribute_pa_switch']
+                key = variation['sku']
+                sku = str(variation['variation_id'])
+                if variation['max_qty'] == '':
+                    stock = 0
+                else:
+                    stock = variation['max_qty']
+                price = Decimal(variation['display_price'])
+                picture_urls = [variation['image']['url']]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls,
+
+                )
+                products.append(p)
+            return products
+        else:
+            name = soup.find('h1', 'product_title').text
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+                -1]
+            sku = soup.find('span', 'sku').text.strip()
+            if soup.find('button', {'name': 'add-to-cart'}):
+                stock = -1
+            else:
+                stock = 0
+            price_container = soup.find('p', 'price')
+            if price_container.find('ins'):
+                price = Decimal(remove_words(price_container.find('ins').text))
+            else:
+                price = Decimal(remove_words(price_container.text))
+            picture_urls = [tag.find('a')['href'] for tag in
+                            soup.find('div', {'id': 'product-images'}).findAll(
+                                'figure')]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+
+            )
+            return [p]
