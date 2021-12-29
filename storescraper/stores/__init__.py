@@ -116,6 +116,7 @@ from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .game_shark import GameShark
+from .gamer_lab import GamerLab
 from .gaming_house import GamingHouse
 from .gaming_store import GamingStore
 from .gearbest import GearBest
