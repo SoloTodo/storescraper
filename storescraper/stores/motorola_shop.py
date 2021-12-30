@@ -57,36 +57,41 @@ class MotorolaShop(Store):
         json_product = json.loads('{' + product_container + '}')
         item_key = list(json_product.keys())[0]
         products = []
-        for i in range(6):
-            variation_key = '{}.items.{}'.format(item_key, i)
-            if variation_key in json_product:
-                product = json_product[variation_key]
-                name = product['nameComplete']
-                sku = product['itemId']
-                variation_url = url + '?skuId=' + sku
-                stock = json_product['$' + variation_key +
-                                     '.sellers.0.commertialOffer'][
-                    'AvailableQuantity']
-                price = Decimal(json_product['$' + variation_key +
-                                             '.sellers.0.commertialOffer'][
-                                    'Price'])
-                picture_urls = [
-                    json_product[image['id']]['imageUrl'].split('?v=')[0] for
-                    image in product['images']]
-                p = Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    variation_url,
-                    variation_url,
-                    sku,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    picture_urls=picture_urls,
+        index = 0
+        while True:
+            variation_key = '{}.items.{}'.format(item_key, index)
+            product = json_product.get(variation_key, None)
+            if not product:
+                break
 
-                )
-                products.append(p)
+            product = json_product[variation_key]
+            name = product['nameComplete']
+            sku = product['itemId']
+            variation_url = url + '?skuId=' + sku
+            stock = json_product['$' + variation_key +
+                                 '.sellers.0.commertialOffer'][
+                'AvailableQuantity']
+            price = Decimal(json_product['$' + variation_key +
+                                         '.sellers.0.commertialOffer'][
+                                'Price'])
+            picture_urls = [
+                json_product[image['id']]['imageUrl'].split('?v=')[0] for
+                image in product['images']]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                variation_url,
+                variation_url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+
+            )
+            products.append(p)
+            index += 1
         return products
