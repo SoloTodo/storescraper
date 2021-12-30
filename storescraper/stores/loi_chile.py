@@ -8,7 +8,7 @@ from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
     MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class LoiChile(Store):
@@ -31,26 +31,28 @@ class LoiChile(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['monitores-tv-y-soportes', MONITOR],
-            ['audifonos', HEADPHONES],
-            ['parlantes-y-microfonos', STEREO_SYSTEM],
-            ['teclados-mouses', MOUSE],
-            ['notebooks-y-cumputadoras', NOTEBOOK],
-            ['tablets-accesorios', TABLET],
-            ['sillas-sillones', GAMING_CHAIR],
-            ['consolas-de-videojuegos', VIDEO_GAME_CONSOLE],
+            ['10', MONITOR],
+            ['1', HEADPHONES],
+            ['25', STEREO_SYSTEM],
+            ['23', MOUSE],
+            ['2', NOTEBOOK],
+            ['17', TABLET],
+            ['154', GAMING_CHAIR],
+            ['207', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         products_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://loichile.cl/ver/cuadros/{}'.format(
-                url_extension)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.find('ul', 'navexp-rejilla').findAll(
-                'li')
+            url_webpage = 'https://loichile.cl/index.php?ctrl=productos&' \
+                          'act=productosPorCategoriaAjax'
+            payload = {'categ_id': url_extension}
+            print(url_webpage)
+            data = session.post(url_webpage, data=payload)
+            products_ids = data.json()['html']
+            soup = BeautifulSoup(products_ids, 'html.parser')
+            product_containers = soup.findAll('li')
             if not product_containers:
                 logging.warning('Empty category: ' + url_extension)
                 break
