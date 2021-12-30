@@ -60,7 +60,7 @@ class YokanStore(Store):
         name = soup.find('h1', 'product-title').text.strip()
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         sku_tag = soup.find('span', 'sku')
-        
+
         if sku_tag:
             sku = soup.find('span', 'sku').text.strip()
         else:
