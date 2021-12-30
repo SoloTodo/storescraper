@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, CELL
+from storescraper.categories import NOTEBOOK, CELL, TABLET, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,12 +15,17 @@ class SmartDeal(Store):
         return [
             NOTEBOOK,
             CELL,
+            TABLET,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('lenovo', NOTEBOOK),
+            ('gateway', NOTEBOOK),
+            ('gigabyte', NOTEBOOK),
+            ('dell', NOTEBOOK),
             ('asus', NOTEBOOK),
             ('msi', NOTEBOOK),
             ('apple', NOTEBOOK),
@@ -28,6 +33,11 @@ class SmartDeal(Store):
             ('acer', NOTEBOOK),
             ('hp', NOTEBOOK),
             ('smartphones', CELL),
+            ('iphone', CELL),
+            ('google', CELL),
+            ('samsung', CELL),
+            ('smartphones-y-tablets-lenovo', TABLET),
+            ('componentes-y-otros', RAM),
         ]
 
         session = session_with_proxy(extra_args)

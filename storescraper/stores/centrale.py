@@ -129,9 +129,9 @@ class Centrale(Store):
         offer_price = Decimal(remove_words(
             soup.find('div', {'style': 'margin-bottom: -12px;'}).text.split()[
                 0]))
-        normal_price = Decimal(remove_words(soup.find('div', {
-            'style': 'margin-bottom: -10px; margin-top:-20px'}).text.split()[
-                                                0]))
+        normal_price = Decimal(remove_words(soup.find('span', {
+            'style': 'font-size: 23px; '
+                     'font-weight: bold; color: black;'}).text.split()[0]))
         picture_urls = []
         picture_container = soup.find('div', 'product-thumbnails')
         if picture_container:

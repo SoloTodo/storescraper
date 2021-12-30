@@ -116,6 +116,7 @@ from .garbarino import Garbarino
 from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .game_shark import GameShark
+from .gamer_lab import GamerLab
 from .gaming_house import GamingHouse
 from .gaming_store import GamingStore
 from .gearbest import GearBest
@@ -393,6 +394,7 @@ from .wom import Wom
 from .xenex import Xenex
 from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
+from .yokan_store import YokanStore
 from .you_tech import YouTech
 from .yoytec import Yoytec
 from .zacto import Zacto
