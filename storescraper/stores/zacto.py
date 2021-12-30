@@ -105,8 +105,13 @@ class Zacto(Store):
         else:
             stock = 0
 
-        price = Decimal(remove_words(
-            soup.find('p', 'price').find('bdi').text))
+        price_tags = soup.findAll('span', 'product-view-cash-price-value')
+
+        assert len(price_tags) == 2
+
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
+
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery').
                         findAll('img')]
@@ -118,8 +123,8 @@ class Zacto(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,
