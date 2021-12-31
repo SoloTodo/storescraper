@@ -79,7 +79,9 @@ class SmartDeal(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        if soup.find('span', 'tagged_as').find('a').text == 'Nuevo Sellado':
+
+        condition_tag = soup.find('span', 'tagged_as')
+        if condition_tag and condition_tag.find('a').text == 'Nuevo Sellado':
             condition = 'https://schema.org/NewCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
