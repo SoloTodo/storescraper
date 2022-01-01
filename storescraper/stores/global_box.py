@@ -49,6 +49,7 @@ class Globalbox(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        raise Exception
         url_extensions = [
             ['computacion/notebooks', NOTEBOOK],
             ['computacion/ipad-tablets', TABLET],
