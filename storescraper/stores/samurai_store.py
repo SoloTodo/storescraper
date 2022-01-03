@@ -49,7 +49,7 @@ class SamuraiStore(Store):
                 continue
             page = 1
             while True:
-                if page > 30:
+                if page > 50:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.samuraistorejp.cl/' \
                               'product-category/{}/page/{}/'.format(
@@ -58,7 +58,7 @@ class SamuraiStore(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
-                if not product_containers:
+                if not product_containers or soup.find('section', 'error-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
@@ -103,8 +103,10 @@ class SamuraiStore(Store):
             'table').findAll('bdi')
         normal_price = Decimal(remove_words(price_container[0].text))
         offer_price = Decimal(remove_words(price_container[1].text))
+
         picture_urls = [tag.find('a')['href'] for tag in soup.find('div',
-                        'product-gallery').findAll('div',
+                        'product-gallery').findAll(
+                        'div',
                         'woocommerce-product-gallery__image')]
         p = Product(
             name,
