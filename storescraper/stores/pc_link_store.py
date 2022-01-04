@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -104,18 +106,26 @@ class PcLinkStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        product_data_match = re.search('var productInfo = (.+);', response.text)
+        product_data = json.loads(product_data_match.groups()[0])
+
+        if not product_data:
+            return []
+
+        key = str(product_data[0]['variant']['product_id'])
+        price = Decimal(product_data[0]['variant']['price_decimal'])
+        sku = product_data[0]['variant']['sku']
+        stock = 0
+
+        for variant in product_data:
+            assert str(variant['variant']['product_id']) == key
+            assert variant['variant']['sku'] == sku
+            assert Decimal(variant['variant']['price_decimal']) == price
+            stock += variant['variant']['stock']
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text
-        part_number = soup.find('span', 'sku_elem').text.strip()
-        sku = \
-            soup.find('form', {'enctype': 'multipart/form-data'})[
-                'action'].split('/')[-1]
-        if not soup.find('span', 'product-form-stock'):
-            stock = 0
-        else:
-            stock = int(soup.find('span', 'product-form-stock').text)
-        price = Decimal(
-            remove_words(soup.find('span', 'product-form_price').text))
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
         p = Product(
@@ -124,13 +134,13 @@ class PcLinkStore(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
