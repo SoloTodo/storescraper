@@ -106,28 +106,34 @@ class PcLinkStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-
-        product_data_match = re.search('var productInfo = (.+);', response.text)
-        product_data = json.loads(product_data_match.groups()[0])
-
-        if not product_data:
-            return []
-
-        key = str(product_data[0]['variant']['product_id'])
-        price = Decimal(product_data[0]['variant']['price_decimal'])
-        sku = product_data[0]['variant']['sku']
-        stock = 0
-
-        for variant in product_data:
-            assert str(variant['variant']['product_id']) == key
-            assert variant['variant']['sku'] == sku
-            assert Decimal(variant['variant']['price_decimal']) == price
-            stock += variant['variant']['stock']
-
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-form_title').text
+        product_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+        name = product_data['name']
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
+
+        product_data_match = re.search('var productInfo = (.+);', response.text)
+        key = soup.find('form', 'product-form')['action'].split('/')[-1]
+        price = Decimal(product_data['offers']['price'])
+
+        if product_data_match:
+            product_data = json.loads(product_data_match.groups()[0])
+
+            if not product_data:
+                return []
+
+            sku = product_data[0]['variant']['sku']
+            stock = 0
+
+            for variant in product_data:
+                assert str(variant['variant']['product_id']) == key
+                assert variant['variant']['sku'] == sku
+                stock += variant['variant']['stock']
+        else:
+            sku = product_data['sku']
+            stock = int(soup.find('input', {'id': 'input-qty'})['max'])
+
         p = Product(
             name,
             cls.__name__,
