@@ -3,7 +3,7 @@ appnope==0.1.0
 backcall==0.2.0
 beautifulsoup4==4.6.0
 billiard==3.6.3.0
-celery==4.4.7
+celery==5.2.2
 certifi==2017.4.17
 chardet==3.0.4
 decorator==4.0.11
