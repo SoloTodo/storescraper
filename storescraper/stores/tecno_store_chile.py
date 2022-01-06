@@ -61,6 +61,10 @@ class TecnoStoreChile(Store):
             ['sillas', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -89,7 +93,10 @@ class TecnoStoreChile(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         description = html_to_markdown(
             str(soup.find('div', 'woocommerce-Tabs-panel--description')))
