@@ -143,6 +143,13 @@ class Movistar(Store):
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         print(url)
+
+        # Movistar has a bug when selecting the grey color in
+        # https://catalogo.movistar.cl/equipomasplan/xiaomi-11t-256gb-5g.html
+        # Remove this condition if they fix it
+        if 'xiaomi-11t-256gb-5g.html' in url:
+            return []
+
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)

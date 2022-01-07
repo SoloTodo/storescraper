@@ -53,6 +53,7 @@ class Zacto(Store):
             ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
             ['impresion/impresoras-laser-y-tinta', PRINTER],
             ['impresion/multifuncionales-tinta', PRINTER],
+            ['zona-outlet', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
