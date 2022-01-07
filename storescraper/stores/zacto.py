@@ -101,7 +101,8 @@ class Zacto(Store):
         else:
             sku = None
 
-        if soup.find('p', 'stock in-stock'):
+        if soup.find('link', {'itemprop': 'availability'})['href'] == \
+                'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
