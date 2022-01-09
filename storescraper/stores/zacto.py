@@ -93,7 +93,8 @@ class Zacto(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split(
+            '?p=')[1].strip()
         sku_tag = soup.find('span', 'sku')
 
         if sku_tag:
@@ -101,8 +102,7 @@ class Zacto(Store):
         else:
             sku = None
 
-        if soup.find('link', {'itemprop': 'availability'})['href'] == \
-                'http://schema.org/InStock':
+        if soup.find('button', 'single_add_to_cart_button'):
             stock = -1
         else:
             stock = 0
