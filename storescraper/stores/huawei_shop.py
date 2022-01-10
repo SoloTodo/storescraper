@@ -120,7 +120,6 @@ class HuaweiShop(Store):
         for product in product_json['data']['sbomList']:
             base_stock = stock_dict[product['sbomCode']]
             name = product['name']
-            ean = product['gbomCode']
             picture_urls = [
                 'https://img01.huaweifile.com/sg/ms/cl/pms' + photo[
                     'photoPath'] + '800_800_' + photo['photoName'] for photo in
@@ -146,8 +145,7 @@ class HuaweiShop(Store):
                         price,
                         'CLP',
                         sku=sku,
-                        picture_urls=picture_urls,
-                        ean=ean
+                        picture_urls=picture_urls
 
                     )
                     products.append(p)
@@ -171,9 +169,7 @@ class HuaweiShop(Store):
                     price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls,
-                    ean=ean
-
+                    picture_urls=picture_urls
                 )
                 products.append(p)
 

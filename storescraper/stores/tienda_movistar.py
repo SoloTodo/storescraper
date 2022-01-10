@@ -54,6 +54,7 @@ class TiendaMovistar(Store):
             while not done:
                 category_url = 'https://catalogo.movistar.cl/fullprice/' \
                                'catalogo/{}?p={}'.format(category_path, page)
+                print(category_url)
 
                 if page >= 80:
                     raise Exception('Page overflow: ' + category_url)
@@ -64,9 +65,14 @@ class TiendaMovistar(Store):
                 items = soup.findAll('div', 'item-producto')
 
                 if not items:
-                    raise Exception('Emtpy category: ' + category_url)
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
 
                 for cell_item in items:
+                    if cell_item.find('div', 'sin-stock'):
+                        done = True
+                        break
                     product_url = cell_item.find('a')['href']
                     if product_url in product_entries:
                         done = True
