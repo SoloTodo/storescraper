@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     VIDEO_GAME_CONSOLE, GAMING_CHAIR, KEYBOARD, COMPUTER_CASE, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,6 +34,7 @@ class ZonaPortatil(Store):
             MEMORY_CARD,
             MONITOR,
             PRINTER,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -43,6 +44,7 @@ class ZonaPortatil(Store):
             ['computadores/notebook', NOTEBOOK],
             ['computadores/tablets', TABLET],
             ['accesorios/audifonos-accesorios', HEADPHONES],
+            ['accesorios/parlantes', STEREO_SYSTEM],
             ['accesorios/consolas', VIDEO_GAME_CONSOLE],
             ['accesorios/sillas-gamer', GAMING_CHAIR],
             ['accesorios/teclados-mouse', KEYBOARD],
@@ -56,9 +58,15 @@ class ZonaPortatil(Store):
             ['almacenamiento/discos-duros-notebook/', STORAGE_DRIVE],
             ['almacenamiento/discos-ssd', SOLID_STATE_DRIVE],
             ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/discos-duros-video-vigilancia', STORAGE_DRIVE],
             ['almacenamiento/memorias-flash', MEMORY_CARD],
             ['monitores-proyectores/monitores', MONITOR],
             ['impresoras', PRINTER],
+            ['zona-gamer/monitores-zona-gamer', MONITOR],
+            ['zona-gamer/sillas-gamer', GAMING_CHAIR],
+            ['zona-gamer/gabinetes-zona-gamer', COMPUTER_CASE],
+            ['zona-gamer/audifonos', HEADPHONES],
+            ['zona-gamer/teclados-mouse-zona-gamer', KEYBOARD],
         ]
 
         session = session_with_proxy(extra_args)
