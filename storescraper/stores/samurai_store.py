@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
-    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR, MOTHERBOARD
+    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR, MOTHERBOARD, \
+    EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -23,6 +24,7 @@ class SamuraiStore(Store):
             NOTEBOOK,
             PROCESSOR,
             MOTHERBOARD,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
@@ -41,6 +43,8 @@ class SamuraiStore(Store):
             ['notebook', NOTEBOOK],
             ['procesador', PROCESSOR],
             ['placa-madre', MOTHERBOARD],
+            ['unidades-de-estado-solido-externas', EXTERNAL_STORAGE_DRIVE],
+            ['ram-mac', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
