@@ -344,6 +344,7 @@ from .travim import Travim
 from .trulu_store import TruluStore
 from .todo_juegos import TodoJuegos
 from .todoclick import Todoclick
+from .tok_stock import TokStock
 from .tomalo import Tomalo
 from .top_fps_store import TopFpsStore
 from .top_pc import TopPc
