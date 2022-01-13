@@ -57,8 +57,9 @@ class GonzalezGimenez(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text
-        sku = soup.find('div', 'product-details').find('span').text.split()[-1]
+        name = soup.find('meta', {'name': 'title'})['content']
+        sku = soup.find('meta', {'property': 'product:retailer_item_id'})[
+            'content']
         stock = -1
         price = Decimal(soup.find('div', 'product-price').text.strip()
                         .replace('Gs', '').replace('*', '').replace('.', '')
