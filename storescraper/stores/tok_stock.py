@@ -98,7 +98,7 @@ class TokStock(Store):
                 sku = sku_tag.text.strip()
             else:
                 sku = None
-                
+
             if soup.find('p', 'price').find('ins'):
                 price = Decimal(
                     remove_words(soup.find('p', 'price').find('ins').text))

@@ -169,8 +169,8 @@ class LgV5(Store):
         if not sku:
             sku = model_name + '.'
 
-        description = '. '.join([x['bulletFeatureDesc'] for x in model_data['bulletFeatures']])
-        print(description)
+        description = '. '.join([x['bulletFeatureDesc']
+                                 for x in model_data['bulletFeatures']])
 
         return Product(
             name[:250],

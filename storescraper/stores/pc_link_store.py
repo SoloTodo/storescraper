@@ -113,7 +113,8 @@ class PcLinkStore(Store):
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-images').findAll('img')]
 
-        product_data_match = re.search('var productInfo = (.+);', response.text)
+        product_data_match = re.search('var productInfo = (.+);',
+                                       response.text)
         key = soup.find('form', 'product-form')['action'].split('/')[-1]
         price = Decimal(product_data['offers']['price'])
 
