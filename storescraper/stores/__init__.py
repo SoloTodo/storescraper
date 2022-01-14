@@ -162,6 +162,7 @@ from .isi_book import IsiBook
 from .jasaltec import Jasaltec
 from .jeanfig_pc import JeanfigPc
 from .jetstereo import Jetstereo
+from .jf_connect import JfConnect
 from .johnson import Johnson
 from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
