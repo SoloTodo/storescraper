@@ -9,7 +9,8 @@ from storescraper.categories import HEADPHONES, MOUSE, GAMING_CHAIR, \
     MOTHERBOARD, VIDEO_CARD, NOTEBOOK, PRINTER, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class JfConnect(Store):
@@ -107,6 +108,9 @@ class JfConnect(Store):
         else:
             picture_urls = [tag['src'] for tag in soup.find('div',
                             'main-product-image').findAll('img')]
+
+        description = html_to_markdown(str(soup.find('div', 'description')))
+
         p = Product(
             name,
             cls.__name__,
@@ -119,6 +123,7 @@ class JfConnect(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
