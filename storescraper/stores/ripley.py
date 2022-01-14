@@ -3,6 +3,7 @@ import re
 import json
 from datetime import datetime
 
+import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -477,7 +478,11 @@ class Ripley(Store):
         url = cls._get_entry_url(element)
 
         if 'image' in data:
-            picture_urls = ['https:{}'.format(data['image'])]
+            picture_url = 'https:{}'.format(data['image'])
+            if validators.url(picture_url):
+                picture_urls = [picture_url]
+            else:
+                picture_urls = None
         else:
             picture_urls = None
 
