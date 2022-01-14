@@ -123,7 +123,7 @@ class Sodimac(Store):
             while True:
                 url = 'https://www.sodimac.cl/s/search/v1/socl/category/' \
                       'products?priceGroup=96&zone=130617&currentpage={}&' \
-                      'sortBy=_score,desc&categoryId={}'\
+                      'sortBy=_score,desc&categoryId={}' \
                     .format(page, category_id)
 
                 response = session.get(url, timeout=30)
@@ -143,9 +143,8 @@ class Sodimac(Store):
 
                 for product in products:
                     product_id = product['productId']
-                    product_url = \
-                        'https://www.sodimac.cl/sodimac-cl/product/{}'\
-                        .format(product_id)
+                    product_url = 'https://www.sodimac.cl/' \
+                                  'sodimac-cl/product/{}'.format(product_id)
 
                     product_entries[product_url].append({
                         'category_weight': category_weight,
@@ -166,7 +165,7 @@ class Sodimac(Store):
         page = 0
 
         while True:
-            url = 'https://www.sodimac.cl/sodimac-cl/search/?No={}&Ntt={}'\
+            url = 'https://www.sodimac.cl/sodimac-cl/search/?No={}&Ntt={}' \
                 .format(page, keyword)
 
             print(url)
@@ -331,19 +330,22 @@ class Sodimac(Store):
         offer_price_container = soup.find('div', 'cmr')
         offer_price = None
 
-        if offer_price_container:
+        if offer_price_container and \
+                offer_price_container.find('div', 'price'):
             offer_price = Decimal(
                 soup.find('div', 'cmr').find('div', 'price').text
                     .replace('c/u', '').replace('$', '').replace('.', '')
                     .replace('caja', '')
                     .strip())
-
         if not offer_price:
             data_json = json.loads(
                 soup.find("script", {"id": "__NEXT_DATA__"}).text)
             offer_price = Decimal(
-                data_json['props']['pageProps']['productProps']['result']
-                ['variants'][0]['price'][0]['price'].replace('.', ''))
+                    data_json['props']['pageProps']['productProps']['result'][
+                        'variants'][0]['price'][0]['price'].replace('.', ''))
+            if data_json['props']['pageProps']['productProps']['result'][
+                    'variants'][0]['price'][0]['type'] == 'EVENT':
+                normal_price = offer_price
 
         if not offer_price:
             offer_price = normal_price
@@ -370,7 +372,7 @@ class Sodimac(Store):
 
         for picture_entry in picture_entries:
             picture_url = 'https://sodimac.scene7.com/is/image/{}?' \
-                          'wid=1500&hei=1500&qlt=70'\
+                          'wid=1500&hei=1500&qlt=70' \
                 .format(picture_entry['i']['n'])
             picture_urls.append(picture_url)
 

@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, \
@@ -90,7 +91,9 @@ class RSTech(Store):
                 remove_words(soup.find('p', 'price').text.strip()))
 
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-gallery').findAll('img')]
+                        soup.find('div', 'product-gallery').findAll('img')
+                        if validators.url(tag['src'])
+                        ]
         p = Product(
             name,
             cls.__name__,

@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
-    MOUSE, CELL
+    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR, MOTHERBOARD, \
+    EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,13 +19,19 @@ class SamuraiStore(Store):
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
             MOUSE,
-            CELL
+            CELL,
+            CPU_COOLER,
+            NOTEBOOK,
+            PROCESSOR,
+            MOTHERBOARD,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['ram', RAM],
+            ['ram-notebook', RAM],
             ['tarjetas-graficas', VIDEO_CARD],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
             ['perifericos', MOUSE],
@@ -32,6 +39,12 @@ class SamuraiStore(Store):
             ['apple/iphone/iphone-13-mini', CELL],
             ['apple/iphone/iphone-13-pro', CELL],
             ['apple/iphone/iphone-13-pro-max', CELL],
+            ['cooler-cpu', CPU_COOLER],
+            ['notebook', NOTEBOOK],
+            ['procesador', PROCESSOR],
+            ['placa-madre', MOTHERBOARD],
+            ['unidades-de-estado-solido-externas', EXTERNAL_STORAGE_DRIVE],
+            ['ram-mac', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -40,7 +53,7 @@ class SamuraiStore(Store):
                 continue
             page = 1
             while True:
-                if page > 30:
+                if page > 50:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.samuraistorejp.cl/' \
                               'product-category/{}/page/{}/'.format(
@@ -49,7 +62,7 @@ class SamuraiStore(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
-                if not product_containers:
+                if not product_containers or soup.find('section', 'error-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
@@ -94,8 +107,10 @@ class SamuraiStore(Store):
             'table').findAll('bdi')
         normal_price = Decimal(remove_words(price_container[0].text))
         offer_price = Decimal(remove_words(price_container[1].text))
+
         picture_urls = [tag.find('a')['href'] for tag in soup.find('div',
-                        'product-gallery').findAll('div',
+                        'product-gallery').findAll(
+                        'div',
                         'woocommerce-product-gallery__image')]
         p = Product(
             name,

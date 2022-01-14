@@ -35,20 +35,20 @@ class RefreshStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios?byType=13', KEYBOARD],
-            ['accesorios?byType=14', MOUSE],
-            ['accesorios?byType=21', HEADPHONES],
-            ['almacenamiento?byType=18', SOLID_STATE_DRIVE],
-            ['almacenamiento?byType=20', SOLID_STATE_DRIVE],
-            ['almacenamiento?byType=19', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['ram', RAM],
-            ['monitores', MONITOR],
-            ['placas-madres', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
+            ['Accesorios/Teclados', KEYBOARD],
+            ['Accesorios/Mouse', MOUSE],
+            ['Accesorios/Audífonos', HEADPHONES],
+            ['Almacenamiento/SSD', SOLID_STATE_DRIVE],
+            ['Almacenamiento/M.2', SOLID_STATE_DRIVE],
+            ['Almacenamiento/%20HDD', STORAGE_DRIVE],
+            ['Fuentes-de-poder', POWER_SUPPLY],
+            ['Gabinetes', COMPUTER_CASE],
+            ['Ram', RAM],
+            ['Monitores', MONITOR],
+            ['Placas-Madres', MOTHERBOARD],
+            ['Procesadores', PROCESSOR],
             ['Cooler-Cpu', CPU_COOLER],
-            ['tarjetas-de-video', VIDEO_CARD]
+            ['Tarjetas-de-video', VIDEO_CARD]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -92,13 +92,18 @@ class RefreshStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text
-        sku = re.search('let sku = "(.+)";', response.text).groups()[0]
-        if soup.find('h6', {
-            'id': 'bodegastock1'}).text.strip() == 'Disponible' or soup.find(
-                'h6', {'id': 'bodegastock2'}).text == 'Disponible':
-            stock = -1
+        canonical_url = soup.find('link', {'rel': 'canonical'})['href']
+        sku = canonical_url.split('/')[-1].strip()
+        bodega_ids = ['bodegastock1', 'bodegastock2']
+
+        for bodega_id in bodega_ids:
+            bodega_tag = soup.find('h6', {'id': bodega_id})
+            if bodega_tag and bodega_tag.text.strip() == 'Disponible':
+                stock = -1
+                break
         else:
             stock = 0
+
         offer_price = Decimal(remove_words(
             soup.find('meta', {'name': 'description'})['content'].split()[1]))
         normal_price = Decimal(remove_words(

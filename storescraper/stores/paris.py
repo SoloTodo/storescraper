@@ -70,8 +70,10 @@ class Paris(Store):
          'Tecno > Celulares > Smartphones', 1],
         ['tecnologia/celulares/basicos', ['Cell'],
          'Tecno > Celulares > Básicos', 1],
-        ['tecnologia/celulares/smartwatch-wearables', ['Wearable'],
-         'Tecno > Celulares > Smartwatch y Wearables', 1],
+        ['tecnologia/wearables/smartwatches', ['Wearable'],
+         'Tecno > Wearables > Smartwatches', 1],
+        ['tecnologia/wearables/smartband', ['Wearable'],
+         'Tecno > Wearables > Smartband', 1],
         ['tecnologia/gamers',
          ['Notebook', 'VideoGameConsole', 'Keyboard', 'Headphones'],
          'Tecno > Gamers', 0.5],
@@ -88,9 +90,10 @@ class Paris(Store):
         ['tecnologia/consolas-videojuegos/nintendo',
          ['VideoGameConsole'],
          'Tecno > Consolas VideoJuegos > Consolas Nintendo', 1],
-        ['tecnologia/impresoras', ['Printer'], 'Tecno > Impresoras', 0],
-        ['tecnologia/impresoras/multifuncionales', ['Printer'],
-         'Tecno > Impresión > Multifuncionales', 1],
+        ['tecnologia/impresoras/laser', ['Printer'],
+         'Tecno > Impresoras > Impresión Láser', 1],
+        ['tecnologia/impresoras/tinta', ['Printer'],
+         'Tecno > Impresoras > Impresión de Tinta', 1],
         # Also includes other accesories
         ['tecnologia/accesorios-fotografia',
          ['MemoryCard'], 'Tecno > Accesorios Fotografía', 0],
@@ -261,8 +264,13 @@ class Paris(Store):
                     if not product_link:
                         continue
                     product_url = product_link['href'].split('?')[0]
+
+                    if product_url.startswith('/'):
+                        product_url = 'https://www.paris.cl' + product_url
+
                     if product_url == "null":
                         continue
+
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
 

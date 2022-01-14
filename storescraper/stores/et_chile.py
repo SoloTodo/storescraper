@@ -4,10 +4,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import UPS, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, \
-    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
-    HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, VIDEO_CARD, GAMING_CHAIR, \
-    NOTEBOOK, USB_FLASH_DRIVE
+from storescraper.categories import COMPUTER_CASE, MOTHERBOARD, \
+    PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
+    MEMORY_CARD, HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
+    VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, USB_FLASH_DRIVE, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -18,7 +18,7 @@ class ETChile(Store):
     @classmethod
     def categories(cls):
         return [
-            UPS,
+            POWER_SUPPLY,
             COMPUTER_CASE,
             MOTHERBOARD,
             PROCESSOR,
@@ -41,7 +41,7 @@ class ETChile(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['partes-y-piezas/psu-fuentes-de-poder', UPS],
+            ['partes-y-piezas/psu-fuentes-de-poder', POWER_SUPPLY],
             ['partes-y-piezas/gabinetes', COMPUTER_CASE],
             ['partes-y-piezas/placas-madres', MOTHERBOARD],
             ['partes-y-piezas/procesadores', PROCESSOR],
@@ -165,7 +165,8 @@ class ETChile(Store):
             picture_urls = [tag.find('img')['data-src'].split('?')[0] for tag
                             in
                             soup.findAll('li', 'product_thumbnail_item')]
-            description = html_to_markdown(str(soup.find('div', 'woocommerce-Tabs-panel--description')))
+            description = html_to_markdown(
+                str(soup.find('div', 'woocommerce-Tabs-panel--description')))
             p = Product(
                 name,
                 cls.__name__,

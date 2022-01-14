@@ -1,60 +1,64 @@
 import json
 import logging
 import re
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION, CAMERA, STEREO_SYSTEM, \
+    OPTICAL_DISK_PLAYER, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    check_ean13
+from storescraper.utils import session_with_proxy
 
 
 class SonyStore(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'Cell',
-            'Camera',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'Tablet',
-            'Headphones',
+            TELEVISION,
+            CAMERA,
+            STEREO_SYSTEM,
+            OPTICAL_DISK_PLAYER,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['televisores-y-teatro-en-casa/televisores', 'Television'],
-            ['celulares-y-tablets/smartphones-xperia', 'Cell'],
-            ['camaras/cyber-shot', 'Camera'],
-            ['audio/sistemas-de-audio', 'StereoSystem'],
+        url_extensions = [
+            ['televisores-y-teatro-en-casa/televisores', TELEVISION],
+            ['camaras/cyber-shot', CAMERA],
+            ['audio/sistemas-de-audio', STEREO_SYSTEM],
             ['televisores-y-teatro-en-casa/reproductores-de-blu-ray-disc'
-             '-y-dvd', 'OpticalDiskPlayer'],
-            ['televisores-y-teatro-en-casa/teatro-en-casa', 'StereoSystem'],
-            ['audio/audifonos', 'Headphones'],
+             '-y-dvd', OPTICAL_DISK_PLAYER],
+            ['televisores-y-teatro-en-casa/teatro-en-casa', STEREO_SYSTEM],
+            ['audio/audifonos', HEADPHONES],
         ]
 
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in category_paths:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            category_url = 'https://store.sony.cl/{}?PS=48'.format(
-                category_path)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            url_webpage = 'https://store.sony.cl/{}?PS=48'.format(
+                url_extension)
 
-            containers = soup.findAll('div', 'prod')
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            r = re.compile(r'Product:sp-(\d+$)')
+            product_containers = json.loads(
+                soup.find('template', {'data-varname': '__STATE__'}).find(
+                    'script').text)
+            product_container_keys = product_containers.keys()
+            products_to_find = list(filter(r.match, product_container_keys))
+            if not product_containers:
+                logging.warning('Empty category: ' + url_extension)
 
-            if not containers:
-                logging.warning('Empty category: ' + category_url)
-
-            for product_container in containers:
-                product_url = product_container.find('a')['href']
-                product_urls.append(product_url)
+            for product_key in products_to_find:
+                product_url = product_containers[product_key]['link']
+                product_urls.append('https://store.sony.cl' + product_url)
 
         return product_urls
 
@@ -62,54 +66,41 @@ class SonyStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
-
-        pricing_data = re.search(r'vtex.events.addData\(([\S\s]+?)\);',
-                                 page_source).groups()[0]
-        pricing_data = json.loads(pricing_data)
-        name = '{} {}'.format(pricing_data['productBrandName'],
-                              pricing_data['productName'])
-        price = Decimal(pricing_data['productPriceTo'])
-
-        soup = BeautifulSoup(page_source, 'html.parser')
-
-        picture_urls = [tag['rel'][0] for tag in
-                        soup.findAll('a', {'id': 'botaoZoom'})]
-
-        description = html_to_markdown(
-            str(soup.find('div', 'section-specifications')))
-
-        products = []
-
-        if 'productEans' in pricing_data:
-            ean = pricing_data['productEans'][0]
-            if len(ean) == 12:
-                ean = '0' + ean
-            if not check_ean13(ean):
-                ean = None
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        json_container = list(json.loads(
+                soup.find('template', {'data-varname': '__STATE__'}).find(
+                    'script').text).values())[0]
+        api_url = 'https://store.sony.cl/api/catalog_system/pub/products' \
+                  '/search?fq=productId:{}'.format(json_container['productId'])
+        api_response = session.get(api_url)
+        json_product = json.loads(api_response.text)[0]['items'][0]
+        name = json_product['name']
+        part_number = json_product['name'].replace('|', '').strip()
+        sku = json_product['itemId']
+        if json_product['sellers'][0]['commertialOffer']['AvailableQuantity'] \
+                > 10:
+            stock = 10
         else:
-            ean = None
-
-        name = '{} / {}'.format(pricing_data['productReferenceId'],
-                                pricing_data['productName'])[:255]
-
-        for sku, stock in pricing_data['skuStocks'].items():
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                ean=ean,
-                description=description,
-                picture_urls=picture_urls
-            )
-            products.append(p)
-
-        return products
+            stock = json_product['sellers'][0]['commertialOffer'][
+                'AvailableQuantity']
+        price = Decimal(
+            json_product['sellers'][0]['commertialOffer']['Price'])
+        picture_urls = [picture['imageUrl'].split('?v')[0] for picture
+                        in json_product['images']]
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            part_number=part_number,
+            picture_urls=picture_urls
+        )
+        return [p]

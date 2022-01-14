@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, ALL_IN_ONE, TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -37,45 +37,50 @@ class PcExpress(Store):
             'Headphones',
             'StereoSystem',
             'Ups',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            ALL_IN_ONE,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_info = [
-            ['136', 'Notebook'],              # Comercial y corporativos
-            ['475', 'VideoCard'],             # Tarjetas de Video
-            ['473', 'Processor'],             # Procesadores
-            ['73_523_171', 'Monitor'],        # Monitores Tradicionales
-            ['73_523_128', 'Monitor'],        # Monitores Gamer
-            ['73_523_129', 'Monitor'],        # Monitores Profesionales
-            ['472', 'Motherboard'],           # Placas Madres
-            ['72', 'Ram'],                    # Memorias
-            ['101', 'StorageDrive'],          # Discos Duros para PC
-            ['103', 'StorageDrive'],          # Discos Duros para Notebook
-            ['411', 'StorageDrive'],          # Discos Duros para NAS
-            ['412', 'StorageDrive'],          # Discos Duros para vigilancia
-            ['331', 'SolidStateDrive'],       # Unidades de estado Solido
-            ['102', 'ExternalStorageDrive'],  # Discod Duros Externos
-            ['118', 'PowerSupply'],           # Fuentes Estandar
-            ['279', 'PowerSupply'],           # Fuentes Certificadas
-            ['460_462_119', 'ComputerCase'],  # Gabinetes Basicos
-            ['460_462_120', 'ComputerCase'],  # Gabinetes Gamer
-            ['460_462_278', 'ComputerCase'],  # Gabinetes SLIM
-            ['169', 'CpuCooler'],             # Ventilacion para CPU
-            ['269', 'Tablet'],                # Tablets
+            ['321', 'Headphones'],  # Audifonos Gamers
+            ['319', 'Mouse'],  # Mouse Gamers
+            ['318', 'Keyboard'],  # Teclados Gamers
+            ['376', 'KeyboardMouseCombo'],  # Accesorios Gamer
+            ['576', GAMING_CHAIR],  # Sillas gamer
+            ['416', 'Headphones'],  # Audifonos
+            ['427', 'StereoSystem'],  # Parlantes/Subwoofer/Soundbar
+            ['101', 'StorageDrive'],  # Discos Duros para PC
+            ['102', 'ExternalStorageDrive'],  # Discos Duros Externos
+            ['284', 'Mouse'],  # Inalambricos
+            ['131', 'KeyboardMouseCombo'],  # Kit Teclado y Mouse
+            ['133', 'Mouse'],  # Mouse Gamers
+            ['135', 'Keyboard'],  # Teclados
+            ['467', 'KeyboardMouseCombo'],  # Kit Teclado y Mouse
+            ['471', 'Mouse'],  # Mouses
+            ['136', 'Notebook'],  # Notebooks Comercial y Corporativos
+            ['477', ALL_IN_ONE],  # Equipos AIO
+            ['479', 'Notebook'],  # Notebooks Gamer
             ['106', 'MemoryCard'],            # Memorias Flash
-            ['107', 'UsbFlashDrive'],         # Pendrive
+            ['107', 'UsbFlashDrive'],  # Pendrive
+            ['126', 'Ram'],  # Memorias para PC
+            ['127', 'Ram'],  # Memorias para Notebook
+            ['225', TELEVISION],  # Televisores Smart TV
+            ['269', 'Tablet'],  # Tablets
+            ['154', 'Ups'],  # Ups
+            ['461', 'PowerSupply'],  # Fuentes de poder
+            ['462', 'ComputerCase'],  # Gabinetes
+            ['472', 'Motherboard'],  # Placas Madres
+            ['473', 'Processor'],  # Procesadores
+            ['475', 'VideoCard'],             # Tarjetas de Video
+            ['523', 'Monitor'],        # Monitores
+            ['413', 'StorageDrive'],          # Discos Duros
+            ['331', 'SolidStateDrive'],       # Unidades de estado Solido
+            ['169', 'CpuCooler'],             # Ventilacion para CPU
             ['493', 'Printer'],               # Impresoras Hogar y Oficina
-            ['460_466_471', 'Mouse'],         # Mouse Gamers
-            ['460_466_470', 'Keyboard'],      # Teclados Gamers
-            ['460_466_467', 'KeyboardMouseCombo'],  # Combos Teclado y Mouse
-            ['321', 'Headphones'],            # Audifonos Gamers
-            ['282', 'Headphones'],            # Audifonos Microfono Bluetooth
             ['282', 'Headphones'],            # Microfonos y Manos Libres
-            ['427', 'StereoSystem'],          # Parlantes/Subwoofer/Soundbar
-            ['154', 'Ups'],                    # Ups
-            ['313_576', GAMING_CHAIR]
         ]
 
         product_urls = []
@@ -97,12 +102,14 @@ class PcExpress(Store):
                     raise Exception('Page overflow: ' + category_id)
 
                 category_page_url = category_url + str(page)
+                print(category_page_url)
                 soup = BeautifulSoup(
                     session.get(category_page_url).text, 'html.parser')
                 td_products = soup.findAll('div', 'product-list__image')
 
                 if len(td_products) == 0:
                     if page == 1:
+                        # raise Exception(category_page_url)
                         logging.warning('Empty category: ' + category_id)
                     break
 

@@ -84,7 +84,7 @@ class TruluStore(Store):
         name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('span', 'sku').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock out-of-stock'):
+        if soup.find('p', 'stock out-of-stock') or 'venta' in name.lower():
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
@@ -97,9 +97,18 @@ class TruluStore(Store):
                 remove_words(price_container.find('bdi').text))
         normal_price = Decimal(
             remove_words(soup.find('p', 'price').find('div', 'ww-price').text))
-        picture_urls = [tag.find('a')['href'] for tag in
-                        soup.findAll('div',
-                                     'woocommerce-product-gallery__image')]
+
+        picture_tags = soup.find('div', 'product-thumbnails')
+
+        if picture_tags:
+            picture_urls = [tag.find('img')['src'] for tag in
+                            soup.find('div', 'product-thumbnails').findAll(
+                                'noscript')]
+        else:
+            picture_urls = [
+                soup.find('meta', {'property': 'og:image'})['content']
+            ]
+
         p = Product(
             name,
             cls.__name__,

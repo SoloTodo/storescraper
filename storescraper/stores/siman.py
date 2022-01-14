@@ -1,5 +1,4 @@
 import json
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -39,12 +38,12 @@ class Siman(Store):
 
                 url_webpage = 'https://{}.siman.com/lg?page={}'.format(
                     cls.country_url, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 page_state_tag = soup.find('template',
                                            {'data-varname': '__STATE__'})
                 page_state = json.loads(page_state_tag.text)
-
                 done = True
 
                 for key, product in page_state.items():
@@ -57,6 +56,9 @@ class Siman(Store):
                         cls.country_url, product['linkText'])
                     product_urls.append(product_url)
 
+                if done and page == 1:
+                    raise Exception('Empty site')
+
                 page += 1
 
         return product_urls
@@ -66,25 +68,36 @@ class Siman(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         product_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            soup.find('template', {'data-varname': '__STATE__'}).text)
 
-        if product_data['brand'] != 'LG':
+        base_json_key = list(product_data.keys())[0]
+        product_specs = product_data[base_json_key]
+
+        if product_specs['brand'] != 'LG':
             return []
 
-        name = product_data['name']
-        sku = soup.find(
-            'meta', {'property': 'product:retailer_item_id'})['content']
-        stock = 0
-        if soup.find('meta', {'property': 'product:availability'})['content'] \
-                == 'instock':
-            stock = -1
+        name = product_specs['productName']
+        sku = product_specs['productReference']
+        description = product_specs.get('description', None)
 
-        price = Decimal(product_data['offers']['lowPrice'])
-        picture_urls = [product_data['image']]
-        description = product_data.get('description', None)
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        price = Decimal(pricing_data['Price'])
+        stock = pricing_data['AvailableQuantity']
+
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
+
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,

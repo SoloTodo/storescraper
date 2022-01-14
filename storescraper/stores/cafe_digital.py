@@ -47,7 +47,7 @@ class CafeDigital(Store):
             ['gabinetes-pc', COMPUTER_CASE],
             ['refrigeracion-para-pc/cooler-cpu', CPU_COOLER],
             ['refrigeracion-para-pc/refrigeracion-liquida', CPU_COOLER],
-            ['perifericos/audifono', HEADPHONES],
+            ['perifericos/audifonos', HEADPHONES],
             ['perifericos/combo-kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['perifericos/teclados', KEYBOARD],
             ['perifericos/mouse', MOUSE],

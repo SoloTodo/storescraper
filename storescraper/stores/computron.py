@@ -65,6 +65,11 @@ class Computron(Store):
             print(url)
             products_response = session.get(url, timeout=30)
             json_products = json.loads(products_response.text)
+
+            if 'data' not in json_products:
+                # Read timed out, just skip it
+                continue
+
             for product in json_products['data']['products']:
                 if product['manufacturer']['name'] == 'LG':
                     name = urllib.parse.quote(

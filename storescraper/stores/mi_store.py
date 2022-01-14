@@ -92,7 +92,7 @@ class MiStore(Store):
                     price,
                     price,
                     'CLP',
-                    sku=sku,
+                    sku=part_number,
                     part_number=part_number,
                     picture_urls=picture_urls,
                 )
@@ -137,7 +137,7 @@ class MiStore(Store):
                 price,
                 price,
                 'CLP',
-                sku=sku,
+                sku=part_number,
                 part_number=part_number,
                 picture_urls=picture_urls,
             )

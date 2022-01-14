@@ -111,6 +111,11 @@ class SamsungShop(Store):
 
         for sku_entry in skus_data:
             name = sku_entry['nameComplete']
+
+            if 'Promoción' in sku_entry:
+                name += ' + {}'.format(sku_entry['Promoción'][0])
+
+            name = name[:250]
             sku = sku_entry['ean']
             key = sku_entry['itemId']
             stock = sku_entry['sellers'][0]['commertialOffer'][
@@ -119,6 +124,12 @@ class SamsungShop(Store):
             if not stock:
                 # Unavailable products don't have a valid price, so skip them
                 continue
+
+            # Mark the "trade in" offers as unavailable because they are not
+            # regular sale products with a specific price
+            if 'TradeIn' in sku_entry and \
+                    sku_entry['TradeIn'][0] == 'Con trade In':
+                stock = 0
 
             price = Decimal(sku_entry['sellers'][0]['commertialOffer'][
                                 'Price'])

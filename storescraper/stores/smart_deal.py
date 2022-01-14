@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, CELL
+from storescraper.categories import NOTEBOOK, CELL, TABLET, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,18 +15,29 @@ class SmartDeal(Store):
         return [
             NOTEBOOK,
             CELL,
+            TABLET,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('lenovo', NOTEBOOK),
+            ('gateway', NOTEBOOK),
+            ('gigabyte', NOTEBOOK),
+            ('dell', NOTEBOOK),
             ('asus', NOTEBOOK),
             ('msi', NOTEBOOK),
             ('apple', NOTEBOOK),
             ('huawei', NOTEBOOK),
             ('acer', NOTEBOOK),
+            ('hp', NOTEBOOK),
             ('smartphones', CELL),
+            ('iphone', CELL),
+            ('google', CELL),
+            ('samsung', CELL),
+            ('smartphones-y-tablets-lenovo', TABLET),
+            ('componentes-y-otros', RAM),
         ]
 
         session = session_with_proxy(extra_args)
@@ -68,11 +79,12 @@ class SmartDeal(Store):
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
-        if soup.find('div', 'et_pb_row et_pb_row_3_tb_body').findAll(
-                'div', 'et_pb_text_inner')[1].text in ['Factory Refurbished']:
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
+
+        condition_tag = soup.find('span', 'tagged_as')
+        if condition_tag and condition_tag.find('a').text == 'Nuevo Sellado':
             condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
 
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'woocommerce-product-gallery').findAll(

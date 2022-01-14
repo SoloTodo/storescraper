@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, \
     OPTICAL_DISK_PLAYER, CELL, WASHING_MACHINE, REFRIGERATOR, OVEN, \
-    AIR_CONDITIONER, VACUUM_CLEANER
+    AIR_CONDITIONER, VACUUM_CLEANER, HEADPHONES
 
 
 class Llevatelo(Store):
@@ -24,23 +24,23 @@ class Llevatelo(Store):
             OVEN,
             AIR_CONDITIONER,
             VACUUM_CLEANER,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ('electronica/televisores', TELEVISION),
+            ('electronica/telefonia', CELL),
             ('electronica/audio', STEREO_SYSTEM),
-            ('electronica/home-theater', STEREO_SYSTEM),
-            ('electronica/video', OPTICAL_DISK_PLAYER),
-            ('telefonia', CELL),
+            ('electronica/audio/audifonos', HEADPHONES),
+            ('climatizacion/equipos-de-climatizacion/', AIR_CONDITIONER),
+            ('electrodomesticos/hornos-electricos-y-microondas/', OVEN),
+            ('limpieza/aspiradoras/', VACUUM_CLEANER),
+            ('empotrados/', OVEN),
             ('linea-blanca/lavadoras', WASHING_MACHINE),
             ('linea-blanca/secadoras-de-ropa', WASHING_MACHINE),
             ('linea-blanca/refrigeradores', REFRIGERATOR),
-            ('linea-blanca/microondas/', OVEN),
-            ('climatizacion/equipos-de-climatizacion/', AIR_CONDITIONER),
-            ('climatizacion/purificadores-de-aire/', AIR_CONDITIONER),
-            ('limpieza/aspiradoras/', VACUUM_CLEANER),
         ]
 
         session = session_with_proxy(extra_args)

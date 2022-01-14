@@ -168,13 +168,13 @@ class Wom(Store):
         json_data = session.get(endpoint).json()
         products = []
         plans = [
-            'WOM Plan 15 Gigas',
-            'Plan Acumula 50 GB',
-            'Plan Acumula 100 GB',
-            'Plan Acumula 150 GB',
-            'Plan Acumula 200 GB',
-            'Plan Acumula 250 GB',
-            'Plan Womers Libre'
+            'Plan Womers 20 GB',
+            'Plan Acumula 60 GB',
+            'Plan Acumula 120 GB',
+            'Plan Acumula 180 GB',
+            'Plan Acumula 240 GB',
+            'Plan Acumula 300 GB',
+            'Plan Womers Libre',
         ]
 
         for entry in json_data['result']['data']['contentfulProduct'][

@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, RAM, MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
     CPU_COOLER, KEYBOARD, MOUSE, HEADPHONES, STEREO_SYSTEM, TABLET, \
-    VIDEO_GAME_CONSOLE
+    VIDEO_GAME_CONSOLE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,13 +30,16 @@ class TecTec(Store):
             HEADPHONES,
             STEREO_SYSTEM,
             TABLET,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            MONITOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['laptops-notebooks', NOTEBOOK],
+            ['notebooks', NOTEBOOK],
+            ['monitores', MONITOR],
+            ['componentes-para-pc/refrigeracion-cpu', CPU_COOLER],
             ['componentes-para-pc/discos-duro', STORAGE_DRIVE],
             ['componentes-para-pc/discos-estado-solido', SOLID_STATE_DRIVE],
             ['componentes-para-pc/fuentes-de-poder', POWER_SUPPLY],
@@ -44,13 +47,12 @@ class TecTec(Store):
             ['componentes-para-pc/placas-madres', MOTHERBOARD],
             ['componentes-para-pc/procesadores', PROCESSOR],
             ['componentes-para-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-para-pc/ventiladores', CPU_COOLER],
-            ['perifericos-gamer/teclados', KEYBOARD],
-            ['perifericos-gamer/mouse', MOUSE],
-            ['perifericos-gamer/headset-audifonos', HEADPHONES],
-            ['accesorios-pc/parlantes-barras-de-sonido', STEREO_SYSTEM],
+            ['perifericos/teclados', KEYBOARD],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/headset-audifonos', HEADPHONES],
+            ['perifericos/parlantes-barras-de-sonido', STEREO_SYSTEM],
             ['tablets', TABLET],
-            ['consolas', VIDEO_GAME_CONSOLE]
+            ['consolas-y-juegos', VIDEO_GAME_CONSOLE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,13 +67,14 @@ class TecTec(Store):
 
                 url_webpage = 'https://tectec.cl/categoria/{}/page' \
                               '/{}/'.format(url_extension, page)
-                print(url_webpage)
+                # print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-wrapper')
 
                 if not product_containers:
                     if page == 1:
+                        print(url_webpage)
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
@@ -86,7 +89,7 @@ class TecTec(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h1', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         if soup.find('p', 'stock out-of-stock'):
             stock = 0

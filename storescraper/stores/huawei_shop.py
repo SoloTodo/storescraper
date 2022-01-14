@@ -63,7 +63,8 @@ class HuaweiShop(Store):
                     for product_url_container in urls_container:
                         product_url = product_url_container['linkUrl']
                         if 'https' not in product_url:
-                            product_url = 'https://consumer.huawei.com' + product_url
+                            product_url = 'https://consumer.huawei.com' + \
+                                          product_url
                         product_urls.append(product_url)
                 except Exception:
                     continue
@@ -76,7 +77,10 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_id = soup.find('span', {'id': 'productId'}).text.strip()
+        if soup.find('span', {'id': 'productId'}):
+            product_id = soup.find('span', {'id': 'productId'}).text.strip()
+        else:
+            product_id = soup.find('input', {'id': 'productId'})['value']
 
         if not product_id:
             return []
@@ -116,7 +120,6 @@ class HuaweiShop(Store):
         for product in product_json['data']['sbomList']:
             base_stock = stock_dict[product['sbomCode']]
             name = product['name']
-            ean = product['gbomCode']
             picture_urls = [
                 'https://img01.huaweifile.com/sg/ms/cl/pms' + photo[
                     'photoPath'] + '800_800_' + photo['photoName'] for photo in
@@ -142,8 +145,7 @@ class HuaweiShop(Store):
                         price,
                         'CLP',
                         sku=sku,
-                        picture_urls=picture_urls,
-                        ean=ean
+                        picture_urls=picture_urls
 
                     )
                     products.append(p)
@@ -167,9 +169,7 @@ class HuaweiShop(Store):
                     price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls,
-                    ean=ean
-
+                    picture_urls=picture_urls
                 )
                 products.append(p)
 

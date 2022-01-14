@@ -122,8 +122,13 @@ class YouTech(Store):
         else:
             stock = 0
 
-        price_container = soup.find('li', 'product-tax')
-        price = Decimal(remove_words(price_container.text.split(':')[1]))
+        prices_tag = soup.find('ul', 'product-price')
+        normal_price_container = prices_tag.find('li', 'product-tax')
+        normal_price = Decimal(remove_words(
+            normal_price_container.text.split(':')[1]))
+        offer_price_container = prices_tag.find('h2', 'cash-price')
+        offer__price = Decimal(remove_words(offer_price_container.text))
+
         picture_urls = [tag['data-zoom-image'] for tag in
                         soup.find('div', 'additional-images-container')
                             .findAll('img')]
@@ -136,8 +141,8 @@ class YouTech(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer__price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
