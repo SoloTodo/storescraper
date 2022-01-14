@@ -67,7 +67,8 @@ class TokStock(Store):
             for variation in product_variations:
                 variation_name = name + ' - ' + variation['attributes'][
                     'attribute_pa_color']
-                sku = str(variation['variation_id'])
+                key = str(variation['variation_id'])
+                sku = variation['sku']
                 price = Decimal(variation['display_price'])
                 stock = variation['max_qty']
                 picture_urls = [image['url'] for image in
@@ -78,7 +79,7 @@ class TokStock(Store):
                     category,
                     url,
                     url,
-                    sku,
+                    key,
                     stock,
                     price,
                     price,
@@ -90,7 +91,14 @@ class TokStock(Store):
                 products.append(p)
             return products
         else:
-            sku = soup.find('button', {'name': 'add-to-cart'})['value']
+            key = soup.find('button', {'name': 'add-to-cart'})['value']
+            sku_tag = soup.find('span', 'sku')
+
+            if sku_tag:
+                sku = sku_tag.text.strip()
+            else:
+                sku = None
+                
             if soup.find('p', 'price').find('ins'):
                 price = Decimal(
                     remove_words(soup.find('p', 'price').find('ins').text))
@@ -109,7 +117,7 @@ class TokStock(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
