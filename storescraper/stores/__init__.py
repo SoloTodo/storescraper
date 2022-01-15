@@ -357,6 +357,7 @@ from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
 from .tienda_toyotomi import TiendaToyotomi
 from .travel_tienda import TravelTienda
+from .travel_tienda_full import TravelTiendaFull
 from .travim import Travim
 from .trulu_store import TruluStore
 from .todo_juegos import TodoJuegos
