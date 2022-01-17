@@ -33,6 +33,7 @@ class SamuraiStore(Store):
             ['ram', RAM],
             ['ram-notebook', RAM],
             ['tarjetas-graficas', VIDEO_CARD],
+            ['tarjetas-de-video', VIDEO_CARD],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
             ['perifericos', MOUSE],
             ['apple/iphone/iphone-13', CELL],
@@ -44,6 +45,8 @@ class SamuraiStore(Store):
             ['procesador', PROCESSOR],
             ['placa-madre', MOTHERBOARD],
             ['unidades-de-estado-solido-externas', EXTERNAL_STORAGE_DRIVE],
+            ['unidades-de-estado-solido-externas-para-mac',
+             EXTERNAL_STORAGE_DRIVE],
             ['ram-mac', RAM],
         ]
         session = session_with_proxy(extra_args)
