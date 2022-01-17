@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    POWER_SUPPLY, COMPUTER_CASE, PROCESSOR, VIDEO_CARD, MOTHERBOARD
+    POWER_SUPPLY, COMPUTER_CASE, PROCESSOR, VIDEO_CARD, MOTHERBOARD, RAM, \
+    HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,11 +27,14 @@ class GamingHouse(Store):
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,
+            RAM,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['perifericos/audifonos', HEADPHONES],
             ['perifericos/monitores', MONITOR],
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
@@ -39,7 +43,8 @@ class GamingHouse(Store):
             ['hardware/gabinetes', COMPUTER_CASE],
             ['hardware/placas-madre', MOTHERBOARD],
             ['hardware/procesadores', PROCESSOR],
-            ['hardware/tarjetas-graficas', VIDEO_CARD]
+            ['hardware/tarjetas-graficas', VIDEO_CARD],
+            ['hardware/memorias-ram', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
