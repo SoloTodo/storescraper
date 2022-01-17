@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, VIDEO_CARD, NOTEBOOK
+from storescraper.categories import HEADPHONES, VIDEO_CARD, NOTEBOOK, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,15 +16,18 @@ class Meritek(Store):
         return [
             HEADPHONES,
             VIDEO_CARD,
-            NOTEBOOK
+            NOTEBOOK,
+            PROCESSOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['gaming/accesorios', HEADPHONES],
             ['hardware-tecno/perifericos', HEADPHONES],
+            ['hardware-tecno/procesadores', PROCESSOR],
             ['hardware-tecno/tarjetadevideo', VIDEO_CARD],
-            ['tecnologia/notebooks', NOTEBOOK]
+            ['tecnologia/notebooks', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
