@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, MONITOR, HEADPHONES, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    PROCESSOR, VIDEO_CARD, VIDEO_GAME_CONSOLE
+    PROCESSOR, VIDEO_CARD, VIDEO_GAME_CONSOLE, STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,23 +27,24 @@ class CentralGamer(Store):
             PROCESSOR,
             VIDEO_CARD,
             VIDEO_GAME_CONSOLE,
+            STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['procesadores', PROCESSOR],
-            ['placas-madre-pc', MOTHERBOARD],
-            ['gabinetes-gamer', COMPUTER_CASE],
-            ['cooler-refrigeracion-cpu', CPU_COOLER],
+            ['almacenamiento', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
-            ['monitores-gamers', MONITOR],
+            ['gabinetes-gamer', COMPUTER_CASE],
+            ['placas-madre-pc', MOTHERBOARD],
+            ['todo-para-pc-gamer/refrigeracion', CPU_COOLER],
+            ['tarjetas-de-video', VIDEO_CARD],
             ['audifonos-gamer', HEADPHONES],
+            ['monitores-gamers', MONITOR],
             ['mouses-gamer', MOUSE],
             ['teclados-gamer', KEYBOARD],
             ['sillas-gamer-y-alfombras', GAMING_CHAIR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['consolas', VIDEO_GAME_CONSOLE],
+            ['procesadores', PROCESSOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
