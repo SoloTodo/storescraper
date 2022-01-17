@@ -105,9 +105,9 @@ class Movistar(Store):
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
-            plan_url = plan_link['href']
+            plan_url = 'https://ww2.movistar.cl' + plan_link['href']
 
-            base_plan_name = 'Plan ' + plan_link.find('h3').text.strip()
+            base_plan_name = 'Plan ' + plan_link.find('h2').text.strip()
             base_plan_name = base_plan_name.replace('&nbsp;', '')
 
             price_text = plan_container.find('div', 'mb-parrilla_price').find(
