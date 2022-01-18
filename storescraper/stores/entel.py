@@ -33,7 +33,8 @@ class Entel(Store):
         if category == 'Cell':
             # Contrato
 
-            endpoints = ['equipo-plan', 'celulares']
+            endpoints = ['equipo-plan', 'celulares', 'ofertas', 'equipos-5g',
+                         'seminuevos']
 
             for endpoint in endpoints:
                 json_url = 'https://miportal.entel.cl/personas/catalogo/{}?' \
