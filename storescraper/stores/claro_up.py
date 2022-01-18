@@ -21,14 +21,13 @@ class ClaroUp(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        res = session.get('https://digital.clarochile.cl/wcm-inyect/'
-                          'landing-claroup/index.php')
+        res = session.get('https://www.clarochile.cl/personas/claro-up-new/')
         soup = BeautifulSoup(res.text, 'html.parser')
         product_urls = []
-        for product_box in soup.findAll('li', 'equipo_slider'):
-            link_container = product_box.findAll(
-                'a', 'btn-rojo-claroup')[1]['href']
-            product_urls.append(link_container)
+        for product_box in soup.findAll('div', 'c09BodyCardWrap'):
+            product_url = product_box.find('a')['href'].replace(
+                '=contactar', '=ofertas')
+            product_urls.append(product_url)
 
         return product_urls
 
