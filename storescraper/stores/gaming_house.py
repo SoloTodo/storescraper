@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, MOUSE, KEYBOARD, GAMING_CHAIR, \
     POWER_SUPPLY, COMPUTER_CASE, PROCESSOR, VIDEO_CARD, MOTHERBOARD, RAM, \
-    HEADPHONES
+    HEADPHONES, NOTEBOOK, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,22 +29,26 @@ class GamingHouse(Store):
             VIDEO_CARD,
             RAM,
             HEADPHONES,
+            NOTEBOOK,
+            SOLID_STATE_DRIVE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['hardware/almacenamiento', SOLID_STATE_DRIVE],
+            ['hardware/fuentes-de-poder', POWER_SUPPLY],
+            ['hardware/gabinetes', COMPUTER_CASE],
+            ['hardware/memorias-ram', RAM],
+            ['hardware/placas-madre', MOTHERBOARD],
+            ['hardware/procesadores', PROCESSOR],
+            ['hardware/tarjetas-graficas', VIDEO_CARD],
+            ['notebooks', NOTEBOOK],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/monitores', MONITOR],
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
             ['sillas', GAMING_CHAIR],
-            ['hardware/fuentes-de-poder', POWER_SUPPLY],
-            ['hardware/gabinetes', COMPUTER_CASE],
-            ['hardware/placas-madre', MOTHERBOARD],
-            ['hardware/procesadores', PROCESSOR],
-            ['hardware/tarjetas-graficas', VIDEO_CARD],
-            ['hardware/memorias-ram', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -82,6 +86,8 @@ class GamingHouse(Store):
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        elif soup.find('button', {'name': 'add-to-cart'}):
+            stock = -1
         else:
             stock = 0
         if soup.find('p', 'price').find('ins'):
