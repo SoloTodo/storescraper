@@ -1,9 +1,7 @@
-import json
 import logging
 import re
 from decimal import Decimal
 
-import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
@@ -76,7 +74,9 @@ class GamesLegends(Store):
                     break
 
                 soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.find('div', 'row mb-md-5 mb-4 mx-n2')
+                product_containers = soup.find('div',
+                                               'row '
+                                               'product-list mx-md-n3 mx-n2')
 
                 if not product_containers:
                     if page == 1:
@@ -84,14 +84,14 @@ class GamesLegends(Store):
                     break
 
                 product_containers = product_containers.findAll(
-                    'a', 'product-image')
+                    'div', 'col-lg-3')
 
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container['href']
+                    product_url = container.find('a')['href']
                     product_urls.append(
                         'https://www.gameslegends.cl' + product_url)
                 page += 1
@@ -103,10 +103,8 @@ class GamesLegends(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-header').text
-        key_container = soup.find(
-            'meta', property='og:image')['content']
-        key = re.search(r"/(\d+)/", key_container).group(1)
+        name = soup.find('h1', 'product-form_title').text
+        key = soup.find('form', 'product-form')['action'].split('/')[-1]
 
         part_number_match = re.search('"productID": "(.+)"', response.text)
         if part_number_match:
@@ -123,10 +121,9 @@ class GamesLegends(Store):
         if 'VENTA' in name.upper():
             # Preventa, skip
             stock = 0
-        elif soup.find('div', 'form-group product-stock product-unavailable '
-                              'visible') or soup.find(
-            'div', 'form-group product-stock '
-                   'product-out-stock visible'):
+        elif soup.find('div',
+                       'form-group product-stock product-out-stock '
+                       'text-center visible'):
             stock = 0
         elif soup.find('span', 'product-form-stock'):
             stock = int(soup.find('span', 'product-form-stock').text)
@@ -134,7 +131,7 @@ class GamesLegends(Store):
             stock = -1
 
         price = Decimal(remove_words(
-            soup.find('span', 'product-form-price form-price').text))
+            soup.find('span', 'product-form_price').text))
         picture_containers = soup.find('div', 'product-images')
 
         if picture_containers:
