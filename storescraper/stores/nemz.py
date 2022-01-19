@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -74,50 +75,83 @@ class Nemz(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        pn_container = soup.find('span', 'sku')
-
-        if pn_container:
-            name += ' ({})'.format(pn_container.text.strip())
-
-        sku = soup.find('input', {'name': 'queried_id'})['value']
-        description_tag = soup.find(
-            'div', 'woocommerce-product-details__short-description')
-        if description_tag and 'PREVENTA' in description_tag.text.upper():
-            stock = 0
-        elif soup.find('p', 'stock'):
-            stock = 0
-        elif soup.find('span', 'stock') and re.search(r'(\d+)', soup.find(
-                'span', 'stock').text):
-            stock = int(re.search(r'(\d+)', soup.find('span', 'stock').text)
-                        .groups()[0])
-        elif soup.find('span', 'stock') and '✅En Stock!':
-            stock = -1
+        if soup.find('form', 'variations_form'):
+            products = []
+            variations = json.loads(soup.find('form', 'variations_form')[
+                                        'data-product_variations'])
+            for variation in variations:
+                variation_name = name
+                for attribute in variation['attributes'].values():
+                    variation_name += ' - ' + attribute
+                sku = str(variation['variation_id'])
+                if variation['max_qty'] == '':
+                    stock = 0
+                else:
+                    stock = variation['max_qty']
+                price = Decimal(variation['display_price'])
+                picture_urls = [variation['image']['url']]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+            return products
         else:
-            return []
-        price_container = soup.find('p', 'price')
-        if price_container.find('ins'):
-            price = Decimal(remove_words(price_container.find('ins').text
-                                         .strip()))
-        elif price_container.find('bdi'):
-            price = Decimal(remove_words(price_container.find('bdi').text
-                                         .strip()))
-        else:
-            return []
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'woocommerce-product-gallery')
-                            .findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+            pn_container = soup.find('span', 'sku')
+
+            if pn_container:
+                name += ' ({})'.format(pn_container.text.strip())
+
+            sku = soup.find('input', {'name': 'queried_id'})['value']
+            description_tag = soup.find(
+                'div', 'woocommerce-product-details__short-description')
+            if description_tag and 'PREVENTA' in description_tag.text.upper():
+                stock = 0
+            elif soup.find('p', 'stock'):
+                stock = 0
+            elif soup.find('span', 'stock') and re.search(r'(\d+)', soup.find(
+                    'span', 'stock').text):
+                stock = int(
+                    re.search(r'(\d+)', soup.find('span', 'stock').text)
+                    .groups()[0])
+            elif soup.find('span', 'stock') and '✅En Stock!':
+                stock = -1
+            else:
+                return []
+            price_container = soup.find('p', 'price')
+            if price_container.find('ins'):
+                price = Decimal(remove_words(price_container.find('ins').text
+                                             .strip()))
+            elif price_container.find('bdi'):
+                price = Decimal(remove_words(price_container.find('bdi').text
+                                             .strip()))
+            else:
+                return []
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'woocommerce-product-gallery')
+                                .findAll('img')]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
