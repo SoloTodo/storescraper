@@ -1,5 +1,6 @@
 import logging
 import re
+import urllib
 from decimal import Decimal
 import json
 
@@ -97,7 +98,7 @@ class SamsungShop(Store):
             'Safari/537.36'
         res = session.get(url)
 
-        if res.status_code == 404:
+        if res.status_code == 404 or urllib.parse.unquote(res.url) != url:
             return []
 
         soup = BeautifulSoup(res.text, 'html.parser')

@@ -3,9 +3,11 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import STORAGE_DRIVE, TABLET, STEREO_SYSTEM, \
+    KEYBOARD, HEADPHONES, MOUSE, WEARABLE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
+from storescraper.utils import html_to_markdown, \
     session_with_proxy
 
 
@@ -13,35 +15,45 @@ class CasaRoyal(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Wearable',
-            'Mouse',
-            'Headphones',
-            'StereoSystem',
-            'Keyboard',
-            'Printer',
-            'SolidStateDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'VideoGameConsole',
+            STORAGE_DRIVE,
+            TABLET,
+            STEREO_SYSTEM,
+            KEYBOARD,
+            HEADPHONES,
+            MOUSE,
+            WEARABLE,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['telefonia/celulares/smartphones', 'Cell'],
-            ['telefonia/celulares/basicos-senior', 'Cell'],
-            ['telefonia/wearables', 'Wearable'],
-            ['computacion/perifericos-y-adaptadores/mouse', 'Mouse'],
-            ['audio/audifonos', 'Headphones'],
-            ['audio/audio-hogar', 'StereoSystem'],
-            ['audio/audio-profesional/bafles', 'StereoSystem'],
-            ['computacion/perifericos-y-adaptadores/teclados', 'Keyboard'],
-            ['computacion/impresoras-y-tintas/impresoras', 'Printer'],
-            ['computacion/almacenamiento/discos-duros', 'SolidStateDrive'],
-            ['computacion/almacenamiento/pendrives', 'UsbFlashDrive'],
-            ['computacion/almacenamiento/tarjetas-de-memoria', 'MemoryCard'],
-            ['computacion/gamers/consolas', 'VideoGameConsole']
+            ['audio/audifonos', HEADPHONES],
+            ['audio/portable', STEREO_SYSTEM],
+            ['audio/parlantes', STEREO_SYSTEM],
+            ['audio/hogar', STEREO_SYSTEM],
+            ['audifono', HEADPHONES],
+            ['computacion/almacenamiento', STORAGE_DRIVE],
+            ['computacion/tablet-y-proyectores/tablets', TABLET],
+            ['computacion/accesorios-computacion/teclados-de-computacion',
+             KEYBOARD],
+            ['computacion/accesorios-computacion/mouse', MOUSE],
+            ['computacion/accesorios-computacion/parlantes-de-computacion',
+             STEREO_SYSTEM],
+            ['computacion/accesorios-computacion/teclados', KEYBOARD],
+            ['computacion/accesorios-computacion/parlantes-computacion',
+             STEREO_SYSTEM],
+            ['telefonia/wearables', WEARABLE],
+            ['telefonia/audifonos', HEADPHONES],
+            ['gamer/consolas', VIDEO_GAME_CONSOLE],
+            ['gamer/audifonos-gamer', HEADPHONES],
+            ['gamer/teclados-gamer', KEYBOARD],
+            ['gamer/mouse-gamer', MOUSE],
+            ['gamer/mouse', MOUSE],
+            ['gamer/teclados', KEYBOARD],
+            ['electronica-y-electricidad/computacion/mouse', MOUSE],
+            ['electronica-y-electricidad/computacion/teclados-de-'
+             'computacion.html', KEYBOARD],
         ]
 
         product_urls = []
@@ -58,19 +70,22 @@ class CasaRoyal(Store):
                 if page >= 15:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www.casaroyal.cl/{}?p={}'\
+                category_url = 'https://www.casaroyal.cl/{}.html?p={}'\
                     .format(category_path, page)
+                print(category_url)
                 soup = BeautifulSoup(
                     session.get(category_url).text, 'html.parser')
 
-                link_containers = soup.findAll('li', 'item')
+                link_container = soup.find('ol', 'product-items')
 
-                if not link_containers:
+                if not link_container:
                     if page == 1:
                         logging.warning('Empty category: ' + category_path)
                     break
 
-                for link_container in link_containers:
+                link_containers = soup.find('ol', 'product-items')
+
+                for link_container in link_containers.findAll('li', 'item'):
                     product_url = link_container.find('a')['href']
                     if product_url in product_urls:
                         done = True

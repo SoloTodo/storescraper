@@ -249,8 +249,12 @@ class AbcDin(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_content = session.get(url).text
-        soup = BeautifulSoup(page_content, 'html.parser')
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
+        soup = BeautifulSoup(response.text, 'html.parser')
         brand_tag = soup.find('div', {'itemprop': 'marca'})
         model = soup.find('span', {'itemprop': 'name'}).text.strip()
 
