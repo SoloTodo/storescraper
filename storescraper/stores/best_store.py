@@ -11,7 +11,7 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class BestStore(Store):
@@ -97,22 +97,21 @@ class BestStore(Store):
                 continue
             page = 1
             while True:
-                if page > 15:
+                if page > 25:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.beststore.cl/{}?page={}'.format(
                     url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_containers = soup.find('div',
-                                               {'id': 'js-product-list'})
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.find('div', {
+                    'id': 'js-product-list'}).findAll(
+                    'article', 'product-miniature')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.find('div',
-                                                         'products row') \
-                        .findAll('article'):
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -129,22 +128,18 @@ class BestStore(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        part_number = soup.find('span', {'itemprop': 'sku'}).text
-        sku = soup.find('input', {'name': 'id_product'})['value']
-        stock_container = soup.find('p', 'en-stock-cantidad')
-        if soup.find('p', {'id': 'consultar_stock'}):
-            stock = 0
-        elif not stock_container:
-            stock = -1
-        elif stock_container.text.split(':')[-1].strip().startswith('Más'):
-            stock = int(stock_container.text.split(':')[-1].strip().split()[2])
-        else:
-            stock = int(soup.find('p', 'en-stock-cantidad').text.split()[1])
-        price_container = soup.findAll('div', 'current-price')
-        normal_price = Decimal(remove_words(price_container[1].find('span', {
-            'itemprop': 'price'}).text.strip()))
-        offer_price = Decimal(remove_words(price_container[0].find('span', {
-            'itemprop': 'price'}).text.strip()))
+        part_number = soup.find('div', 'product-reference-supplier').find(
+            'span').text
+        sku = soup.find('span', {'itemprop': 'sku'}).text
+        stock_container = soup.find('div', 'stock-description')
+        stock = int(
+            stock_container.find('label', 'stock-info').text.split()[1])
+
+        normal_price = Decimal(
+            soup.find('div', 'current-price').find('span')['content'])
+        offer_price = Decimal(
+            soup.find('div', 'current-price-money').find('span').text.replace(
+                '$\xa0', '').replace('.', ''))
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'images-container').findAll('img')
                        if validators.url(tag['src'])
