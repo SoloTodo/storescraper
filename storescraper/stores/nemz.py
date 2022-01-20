@@ -81,8 +81,8 @@ class Nemz(Store):
                                         'data-product_variations'])
             for variation in variations:
                 variation_name = name
-                for attribute in variation['attributes'].values():
-                    variation_name += ' - ' + attribute
+                for attr_name, attr_value in variation['attributes'].items():
+                    variation_name += ' / ' + attr_name + ' ' + attr_value
                 sku = str(variation['variation_id'])
                 if variation['max_qty'] == '':
                     stock = 0
