@@ -70,7 +70,7 @@ class CasaRoyal(Store):
                 if page >= 15:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www.casaroyal.cl/{}.html?p={}'\
+                category_url = 'https://www.casaroyal.cl/{}.html?p={}' \
                     .format(category_path, page)
                 print(category_url)
                 soup = BeautifulSoup(
@@ -101,36 +101,31 @@ class CasaRoyal(Store):
         print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h1', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', 'sku').find('span', 'value').text.strip()
-
-        stock = -1
-
-        price = soup.find('span', 'price').text.strip()
-        price = Decimal(price.replace('$', '').replace('.', ''))
-
-        description_panels = soup.find('div', 'tabs-panels')\
-            .findAll('div', 'panel')
+        name = soup.find('h1', 'page-title').text.strip()
+        sku = soup.find('input', {'name': 'product'})['value']
+        if soup.find('p', 'redalert').text == 'Disponible':
+            stock = -1
+        else:
+            stock = 0
+            stock_container = soup.findAll('p', 'stocktienda')
+            for stock in stock_container:
+                if int(stock.text.split()[1]) > 0:
+                    stock = -1
+                    break
+        price = Decimal(
+            soup.find('span', 'price').text.replace('$', '').replace('.', ''))
 
         description = html_to_markdown(
-            str(description_panels[0]) + '\n' + str(description_panels[1]))
+            soup.find('div', 'productTabs-container').find(
+                'div', {'id': 'description'}).text)
 
         if 'reacond' in name.lower() or 'reacond' in description.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 
-        picture_urls = []
-
-        for container in soup.find(
-                'div', {'id': 'amasty_gallery'}).findAll('a'):
-            try:
-                picture_url = container['data-zoom-image']
-                if picture_url.strip():
-                    picture_urls.append(picture_url.strip())
-            except KeyError:
-                pass
+        picture_urls = [tag['content'] for tag in
+                        soup.findAll('meta', {'property': 'og:image'})]
 
         p = Product(
             name,
