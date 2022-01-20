@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -23,20 +24,20 @@ class SmartDeal(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('lenovo', NOTEBOOK),
-            ('gateway', NOTEBOOK),
-            ('gigabyte', NOTEBOOK),
-            ('dell', NOTEBOOK),
-            ('asus', NOTEBOOK),
-            ('msi', NOTEBOOK),
-            ('apple', NOTEBOOK),
             ('huawei', NOTEBOOK),
+            ('gateway', NOTEBOOK),
+            ('asus', NOTEBOOK),
             ('acer', NOTEBOOK),
+            ('gigabyte', NOTEBOOK),
+            ('msi', NOTEBOOK),
             ('hp', NOTEBOOK),
+            ('apple', NOTEBOOK),
+            ('dell', NOTEBOOK),
             ('smartphones', CELL),
             ('iphone', CELL),
             ('google', CELL),
-            ('samsung', CELL),
             ('smartphones-y-tablets-lenovo', TABLET),
+            ('samsung', CELL),
             ('componentes-y-otros', RAM),
         ]
 
@@ -64,21 +65,27 @@ class SmartDeal(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('div', 'et_pb_module et_pb_wc_title '
-                                'et_pb_wc_title_0_tb_body '
-                                'et_pb_bg_layout_light').find('h1').text
+
+        json_data = json.loads(soup.find('script', 'rank-math-schema').text)
+
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = product_data['sku']
+        price = Decimal(product_data['offers']['price'])
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = -1
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
 
         condition_tag = soup.find('span', 'tagged_as')
         if condition_tag and condition_tag.find('a').text == 'Nuevo Sellado':
@@ -89,14 +96,6 @@ class SmartDeal(Store):
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'woocommerce-product-gallery').findAll(
                            'img')]
-        if soup.find('div', 'et_pb_row et_pb_row_3_tb_body').find('span',
-                                                                  'sku'):
-            part_number = soup.find('div', 'et_pb_row et_pb_row_3_tb_body'). \
-                find('span', 'sku').text
-        else:
-            part_number = None
-
-        sku = part_number or key
 
         p = Product(
             name,
@@ -111,7 +110,7 @@ class SmartDeal(Store):
             'CLP',
             sku=sku,
             condition=condition,
-            part_number=part_number,
+            part_number=sku,
             picture_urls=picture_url
         )
         return [p]
