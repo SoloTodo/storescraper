@@ -131,9 +131,11 @@ class BestStore(Store):
         part_number = soup.find('div', 'product-reference-supplier').find(
             'span').text
         sku = soup.find('span', {'itemprop': 'sku'}).text
-        stock_container = soup.find('div', 'stock-description')
-        stock = int(
-            stock_container.find('label', 'stock-info').text.split()[1])
+        stock_container = soup.find('div', 'product-quantities')
+        stock = int(stock_container.find('span')['data-stock'])
+
+        if stock < 0:
+            stock = 0
 
         normal_price = Decimal(
             soup.find('div', 'current-price').find('span')['content'])

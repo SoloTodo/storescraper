@@ -172,7 +172,12 @@ class Todoclick(Store):
                     return [p]
                 products.append(p)
         else:
-            sku = soup.find('span', 'sku').text
+            sku_tag = soup.find('span', 'sku')
+
+            if not sku_tag:
+                return []
+
+            sku = sku_tag.text.strip()
             stock = 0
             stock_container = soup.find('p', 'stock in-stock')
             if stock_container:
