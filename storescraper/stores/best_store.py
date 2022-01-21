@@ -8,7 +8,8 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     VIDEO_CARD, CPU_COOLER, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS
+    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS, \
+    GAMING_CHAIR, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -45,6 +46,8 @@ class BestStore(Store):
             EXTERNAL_STORAGE_DRIVE,
             SOLID_STATE_DRIVE,
             UPS,
+            GAMING_CHAIR,
+            WEARABLE,
         ]
 
     @classmethod
@@ -78,6 +81,7 @@ class BestStore(Store):
             ['1098-notebook-gamer', NOTEBOOK],
             ['1101-gabinetes-gamer', COMPUTER_CASE],
             ['1102-auriculares-gamer', HEADPHONES],
+            ['1120-sillas-gamer', GAMING_CHAIR],
             ['228-celulares-celulares-desbloqueados', CELL],
             ['123-almacenamiento-discos-duros-externos',
              EXTERNAL_STORAGE_DRIVE],
@@ -88,6 +92,8 @@ class BestStore(Store):
             ['124-almacenamiento-discos-duros-internos', STORAGE_DRIVE],
             ['146-almacenamiento-discos-de-estado-solido', SOLID_STATE_DRIVE],
             ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
+            ['1099-accesorios-gamer', GAMING_CHAIR],
+            ['226-tecnologia-portatil-relojes', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -132,9 +138,12 @@ class BestStore(Store):
             'span').text
         sku = soup.find('span', {'itemprop': 'sku'}).text
         stock_container = soup.find('div', 'product-quantities')
-        stock = int(stock_container.find('span')['data-stock'])
 
-        if stock < 0:
+        if stock_container:
+            stock = int(stock_container.find('span')['data-stock'])
+            if stock < 0:
+                stock = 0
+        else:
             stock = 0
 
         normal_price = Decimal(
