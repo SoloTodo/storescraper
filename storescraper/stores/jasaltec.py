@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR, ALL_IN_ONE
+    STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR, ALL_IN_ONE, \
+    STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,15 +37,20 @@ class Jasaltec(Store):
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
             ALL_IN_ONE,
+            STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-de-datos/hdd-externo', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento-de-datos/disco-duro-hdd-interno', STORAGE_DRIVE],
+            ['almacenamiento-de-datos/disco-duro-hdd-externo',
+             EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento-de-datos/pendrive', USB_FLASH_DRIVE],
-            ['almacenamiento-de-datos/ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento-de-datos/ssd-externo', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento-de-datos/disco-de-estado-solido-ssd',
+             SOLID_STATE_DRIVE],
+            ['almacenamiento-de-datos/disco-de-estado-solido-ssd-externo',
+             EXTERNAL_STORAGE_DRIVE],
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
             ['componentes-informaticos/memoria-ram', RAM],
@@ -78,6 +84,10 @@ class Jasaltec(Store):
                               'page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
+
+                if response.status_code == 404 and page == 1:
+                    raise Exception(url_webpage)
+
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-grid-item')
 
