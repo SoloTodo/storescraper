@@ -30,15 +30,16 @@ class EVision(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://www.evisionstore.com/api/product/search.php'
-            data = json.dumps({'keyword': 'LG'})
+            url_webpage = 'https://www.evisionstore.com/api/product/' \
+                          'onlineproducts-react.php'
             product_containers = json.loads(
-                session.post(url_webpage, data=data).text)['search_data']
+                session.post(url_webpage).text)['online_products_all']
+
             if not product_containers:
                 raise Exception('Empty')
 
             for container in product_containers:
-                if 'LG' not in container['product_name'].upper():
+                if container['brand'] != 'lg':
                     continue
                 product_url = 'https://www.evisionstore.com/product/' + \
                               container['modelo']
