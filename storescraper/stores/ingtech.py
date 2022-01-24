@@ -9,8 +9,7 @@ from storescraper.categories import STORAGE_DRIVE, POWER_SUPPLY, \
     VIDEO_CARD, HEADPHONES, GAMING_CHAIR, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Ingtech(Store):
@@ -99,8 +98,14 @@ class Ingtech(Store):
         prices_tag = soup.find('p', 'price')
         normal_price = Decimal(remove_words(prices_tag.find(
             'bdi').text.split('$')[1]))
-        offer_price = Decimal(remove_words(prices_tag.find(
-            'span', 'pro_price_extra_info').text.split('$')[1]))
+        if '$' in prices_tag.find('span', 'pro_price_extra_info').text:
+            offer_price = Decimal(remove_words(prices_tag.find(
+                'span', 'pro_price_extra_info').text.split('$')[1]))
+        else:
+            offer_price = Decimal(
+                prices_tag.find('span', 'pro_price_extra_info').text.split(
+
+                )[-1].replace('.', ''))
 
         stock_tag = soup.find('input', {'name': 'quantity'})
         if stock_tag:
