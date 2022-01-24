@@ -1,6 +1,5 @@
 import logging
 
-import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
