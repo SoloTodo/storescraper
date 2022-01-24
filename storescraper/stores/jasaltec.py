@@ -18,6 +18,7 @@ class Jasaltec(Store):
     def categories(cls):
         return [
             EXTERNAL_STORAGE_DRIVE,
+            STORAGE_DRIVE,
             USB_FLASH_DRIVE,
             SOLID_STATE_DRIVE,
             POWER_SUPPLY,
@@ -37,19 +38,18 @@ class Jasaltec(Store):
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
             ALL_IN_ONE,
-            STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-de-datos/disco-duro-hdd-interno', STORAGE_DRIVE],
-            ['almacenamiento-de-datos/disco-duro-hdd-externo',
+            ['almacenamiento-de-datos/disco-duro-interno', STORAGE_DRIVE],
+            ['almacenamiento-de-datos/disco-duro-externo',
              EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento-de-datos/pendrive', USB_FLASH_DRIVE],
-            ['almacenamiento-de-datos/disco-de-estado-solido-ssd',
+            ['almacenamiento-de-datos/disco-estado-solido-interno',
              SOLID_STATE_DRIVE],
-            ['almacenamiento-de-datos/disco-de-estado-solido-ssd-externo',
+            ['almacenamiento-de-datos/disco-estado-solido-externo',
              EXTERNAL_STORAGE_DRIVE],
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
