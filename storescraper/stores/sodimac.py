@@ -45,7 +45,7 @@ class Sodimac(Store):
              'Línea Blanca > Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
              'Lavadoras y Secadoras > Secadoras', 1],
-            ['scat112543', ['Refrigerator'],
+            ['scat915266', ['Refrigerator'],
              'Refrigeradores', 0],
             ['scat112543', ['Refrigerator'],
              'Refrigeradores > Freezer', 1],
