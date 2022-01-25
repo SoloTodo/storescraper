@@ -55,7 +55,8 @@ class Tottus(Store):
                 continue
 
             category_url = '{}/api/product-search/by-category-slug?' \
-                           'slug={}&sort=recommended_web&perPage=1000'\
+                           'slug={}&sort=recommended_web&perPage=1000' \
+                           '&channel=Regular_Delivery_RM_4'\
                 .format(url_base, category_path)
 
             print(category_url)
