@@ -3,7 +3,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import REFRIGERATOR
+from storescraper.categories import REFRIGERATOR, AIR_CONDITIONER, \
+    VACUUM_CLEANER, OVEN, WASHING_MACHINE, HEADPHONES, \
+    SOLID_STATE_DRIVE, MOUSE, KEYBOARD, MONITOR, TELEVISION, STEREO_SYSTEM, \
+    CELL, WEARABLE, TABLET, PRINTER, NOTEBOOK, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -13,25 +16,63 @@ class SendTech(Store):
     @classmethod
     def categories(cls):
         return [
-            REFRIGERATOR
+            AIR_CONDITIONER,
+            REFRIGERATOR,
+            VACUUM_CLEANER,
+            OVEN,
+            WASHING_MACHINE,
+            HEADPHONES,
+            SOLID_STATE_DRIVE,
+            MOUSE,
+            KEYBOARD,
+            MONITOR,
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            WEARABLE,
+            TABLET,
+            PRINTER,
+            NOTEBOOK,
+            MEMORY_CARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            REFRIGERATOR
+            ['climatizacion/aire-acondicionado', AIR_CONDITIONER],
+            ['electrodomesticos/refrigerador', REFRIGERATOR],
+            ['electro-hogas/aspiradoras/', VACUUM_CLEANER],
+            ['microondas/hornos-electricos', OVEN],
+            ['electro-hogas/microondas/microondas-microondas', OVEN],
+            ['electrodomesticos/lavadora/lavadoras', WASHING_MACHINE],
+            ['gaming/auriculares', HEADPHONES],
+            ['tecnologia/perifericos/auriculares-y-manos-libres', HEADPHONES],
+            ['gaming/disco-duro-solidos', SOLID_STATE_DRIVE],
+            ['gaming/mouse', MOUSE],
+            ['tecnologia/perifericos/mouse-accesorios', MOUSE],
+            ['gaming/teclados', KEYBOARD],
+            ['tecnologia/perifericos/teclado/', KEYBOARD],
+            ['tecnologia/audio-video/monitores', MONITOR],
+            ['tecnologia/audio-video/smart-tv', TELEVISION],
+            ['tecnologia/audio-video/parlantes', STEREO_SYSTEM],
+            ['tecnologia/dispositivos-moviles/celulares', CELL],
+            ['tecnologia/dispositivos-moviles/relojes', WEARABLE],
+            ['tecnologia/dispositivos-moviles/tablets', TABLET],
+            ['tecnologia/impresoras', PRINTER],
+            ['tecnologia/notebook', NOTEBOOK],
+            ['tecnologia/perifericos/tarjeta-de-memoria', MEMORY_CARD]
         ]
         session = session_with_proxy(extra_args)
         products_urls = []
-        for local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
             page = 1
             while True:
                 if page > 20:
                     raise Exception('page overflow')
-                url_webpage = 'https://sendtech.cl/page/' \
-                              '{}/?s=SAMSUNG&post_type=product'.format(page)
+                url_webpage = 'https://sendtech.cl/categoria-productos/{}' \
+                              '/page/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 products_containers = soup.find('ul', 'products')
