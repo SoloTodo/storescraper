@@ -61,9 +61,8 @@ class GonzalezGimenez(Store):
         sku = soup.find('meta', {'property': 'product:retailer_item_id'})[
             'content']
         stock = -1
-        price = Decimal(soup.find('div', 'product-price').text.strip()
-                        .replace('Gs', '').replace('*', '').replace('.', '')
-                        .strip())
+        price = Decimal(soup.find('meta', {'property':
+                                           'product:price:amount'})['content'])
         picture_urls = [tag['href'] for tag in
                         soup.findAll('a', 'galeria-modal')]
 
