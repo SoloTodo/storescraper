@@ -102,8 +102,8 @@ class Panafoto(Store):
         key = product_entry['sku']
         stock = -1 if product_entry['in_stock'] else 0
         price = Decimal(product_entry['price']['USD']['default'])
-        part_number = product_entry['reference']
-        picture_urls = ['https:' + product_entry['image_url']]
+        part_number = product_entry.get('reference', None)
+        picture_urls = [product_entry['image_url']]
 
         return [Product(
             name,

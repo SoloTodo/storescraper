@@ -66,7 +66,8 @@ class RSTech(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_container:
-                    product_url = container.find('a')['href']
+                    product_url = 'https://rstech.cl' + \
+                                  container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
         return product_urls
