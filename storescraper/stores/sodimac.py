@@ -46,6 +46,8 @@ class Sodimac(Store):
             ['scat114994', ['WashingMachine'],
              'Lavadoras y Secadoras > Secadoras', 1],
             ['scat112543', ['Refrigerator'],
+             'Refrigeradores', 0],
+            ['scat112543', ['Refrigerator'],
              'Refrigeradores > Freezer', 1],
             ['scat114992', ['Refrigerator'],
              'Refrigeradores > Refrigeradores No Frost', 1],
