@@ -8,7 +8,7 @@ from storescraper.categories import SOLID_STATE_DRIVE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, \
     MONITOR, PRINTER, UPS, MOUSE, COMPUTER_CASE, HEADPHONES, STEREO_SYSTEM, \
     ALL_IN_ONE, VIDEO_GAME_CONSOLE, CELL, WEARABLE, TELEVISION, GAMING_CHAIR, \
-    KEYBOARD, CPU_COOLER
+    KEYBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,6 +43,7 @@ class Centrale(Store):
             GAMING_CHAIR,
             CPU_COOLER,
             KEYBOARD,
+            MICROPHONE
 
         ]
 
@@ -83,6 +84,7 @@ class Centrale(Store):
             ['tecnología/partes-y-piezas/refrigeración', CPU_COOLER],
             ['tecnología/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
             ['tecnología/telefonía/smartphones', CELL],
+            ['tecnologia/audio/micrófono', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

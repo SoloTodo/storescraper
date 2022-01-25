@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import STORAGE_DRIVE, TABLET, STEREO_SYSTEM, \
-    KEYBOARD, HEADPHONES, MOUSE, WEARABLE, VIDEO_GAME_CONSOLE
+    KEYBOARD, HEADPHONES, MOUSE, WEARABLE, VIDEO_GAME_CONSOLE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -22,7 +22,8 @@ class CasaRoyal(Store):
             HEADPHONES,
             MOUSE,
             WEARABLE,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            MICROPHONE
         ]
 
     @classmethod
@@ -54,6 +55,7 @@ class CasaRoyal(Store):
             ['electronica-y-electricidad/computacion/mouse', MOUSE],
             ['electronica-y-electricidad/computacion/teclados-de-'
              'computacion.html', KEYBOARD],
+            ['audio/microfonos', MICROPHONE]
         ]
 
         product_urls = []

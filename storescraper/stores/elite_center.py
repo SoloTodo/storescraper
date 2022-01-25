@@ -11,7 +11,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE
+    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
@@ -38,6 +38,8 @@ class EliteCenter(Store):
             GAMING_CHAIR,
             NOTEBOOK,
             EXTERNAL_STORAGE_DRIVE,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -62,6 +64,8 @@ class EliteCenter(Store):
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
             ['consolas', VIDEO_GAME_CONSOLE],
+            ['accesorios/escritorios', GAMING_DESK],
+            ['accesorios/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -135,7 +139,7 @@ class EliteCenter(Store):
         picture_urls = [tag['href'].split('?')[0] for tag in
                         soup.find(
                             'figure', 'woocommerce-product-gallery__wrapper')
-                        .findAll('a')
+                            .findAll('a')
                         if validators.url(tag['href'])
                         ]
 

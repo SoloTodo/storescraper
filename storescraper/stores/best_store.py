@@ -9,7 +9,7 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS, \
-    GAMING_CHAIR, WEARABLE
+    GAMING_CHAIR, WEARABLE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -48,6 +48,7 @@ class BestStore(Store):
             UPS,
             GAMING_CHAIR,
             WEARABLE,
+            MICROPHONE
         ]
 
     @classmethod
@@ -94,6 +95,7 @@ class BestStore(Store):
             ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
             ['1099-accesorios-gamer', GAMING_CHAIR],
             ['226-tecnologia-portatil-relojes', WEARABLE],
+            ['288-perifericos-microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

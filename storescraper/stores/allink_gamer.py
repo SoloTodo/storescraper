@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, KEYBOARD, MOUSE, \
     HEADPHONES, GAMING_CHAIR, MONITOR, KEYBOARD_MOUSE_COMBO, POWER_SUPPLY, \
-    CPU_COOLER, STEREO_SYSTEM
+    CPU_COOLER, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -24,7 +24,9 @@ class AllinkGamer(Store):
             KEYBOARD_MOUSE_COMBO,
             POWER_SUPPLY,
             CPU_COOLER,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -39,6 +41,8 @@ class AllinkGamer(Store):
             ['gabinetes-70', COMPUTER_CASE],
             ['refrigeracion-liquida-71', CPU_COOLER],
             ['parlantes-46', STEREO_SYSTEM],
+            ['escritorios-62', GAMING_DESK],
+            ['microfonos-75', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
