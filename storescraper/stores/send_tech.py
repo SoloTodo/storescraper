@@ -100,7 +100,13 @@ class SendTech(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        sku_tag = soup.find('span', 'sku')
+
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
 
         if soup.find('p', 'price').text == '':
             return []
@@ -134,7 +140,7 @@ class SendTech(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
