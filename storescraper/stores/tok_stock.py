@@ -91,7 +91,8 @@ class TokStock(Store):
                 products.append(p)
             return products
         else:
-            key = soup.find('button', {'name': 'add-to-cart'})['value']
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+                -1]
             sku_tag = soup.find('span', 'sku')
 
             if sku_tag:
@@ -105,8 +106,10 @@ class TokStock(Store):
             else:
                 price = Decimal(
                     remove_words(soup.find('p', 'price').text))
-            if soup.find('p', 'stock'):
+            if soup.find('p', 'stock in-stock'):
                 stock = int(soup.find('p', 'stock').text.split()[0])
+            elif soup.find('p', 'stock out-of-stock'):
+                stock = 0
             else:
                 stock = -1
             picture_urls = [tag['src'] for tag in
