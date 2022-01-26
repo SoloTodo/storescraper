@@ -40,11 +40,15 @@ class Sodimac(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
             ['scat112555', ['WashingMachine'],
-             'Lavadoras y Secadoras > Lavadoras', 1],
+             'Electrohogar y Climatización > Línea Blanca > Lavadoras', 1],
             ['cat1590057', ['WashingMachine'],
-             'Línea Blanca > Lavadoras y Secadoras', 1],
+             'Electrohogar y Climatización > Línea Blanca > '
+             'Lavadoras y Secadoras', 1],
             ['scat114994', ['WashingMachine'],
-             'Lavadoras y Secadoras > Secadoras', 1],
+             'Electrohogar y Climatización > Línea Blanca > '
+             'Secadoras de Ropa', 1],
+            ['scat915266', ['Refrigerator'],
+             'Refrigeradores', 0],
             ['scat112543', ['Refrigerator'],
              'Refrigeradores > Freezer', 1],
             ['scat114992', ['Refrigerator'],

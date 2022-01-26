@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import REFRIGERATOR, AIR_CONDITIONER, \
     VACUUM_CLEANER, OVEN, WASHING_MACHINE, HEADPHONES, \
     SOLID_STATE_DRIVE, MOUSE, KEYBOARD, MONITOR, TELEVISION, STEREO_SYSTEM, \
-    CELL, WEARABLE, TABLET, PRINTER, NOTEBOOK, MEMORY_CARD
+    CELL, WEARABLE, TABLET, PRINTER, NOTEBOOK, MEMORY_CARD, DISH_WASHER, \
+    POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,34 +34,40 @@ class SendTech(Store):
             TABLET,
             PRINTER,
             NOTEBOOK,
-            MEMORY_CARD
+            MEMORY_CARD,
+            DISH_WASHER,
+            POWER_SUPPLY,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['climatizacion/aire-acondicionado', AIR_CONDITIONER],
-            ['electrodomesticos/refrigerador', REFRIGERATOR],
+            ['climatizacion/purificador-de-aire', AIR_CONDITIONER],
             ['electro-hogas/aspiradoras/', VACUUM_CLEANER],
-            ['microondas/hornos-electricos', OVEN],
+            ['electro-hogas/microondas/hornos-electricos', OVEN],
             ['electro-hogas/microondas/microondas-microondas', OVEN],
+            ['electrodomesticos/empotrados', OVEN],
             ['electrodomesticos/lavadora/lavadoras', WASHING_MACHINE],
+            ['electrodomesticos/lavavajillas', DISH_WASHER],
+            ['electrodomesticos/refrigerador', REFRIGERATOR],
+            ['gaming/accesorios-gaming', POWER_SUPPLY],
             ['gaming/auriculares', HEADPHONES],
-            ['tecnologia/perifericos/auriculares-y-manos-libres', HEADPHONES],
             ['gaming/disco-duro-solidos', SOLID_STATE_DRIVE],
             ['gaming/mouse', MOUSE],
-            ['tecnologia/perifericos/mouse-accesorios', MOUSE],
             ['gaming/teclados', KEYBOARD],
-            ['tecnologia/perifericos/teclado/', KEYBOARD],
             ['tecnologia/audio-video/monitores', MONITOR],
-            ['tecnologia/audio-video/smart-tv', TELEVISION],
             ['tecnologia/audio-video/parlantes', STEREO_SYSTEM],
+            ['tecnologia/audio-video/smart-tv', TELEVISION],
             ['tecnologia/dispositivos-moviles/celulares', CELL],
             ['tecnologia/dispositivos-moviles/relojes', WEARABLE],
             ['tecnologia/dispositivos-moviles/tablets', TABLET],
             ['tecnologia/impresoras', PRINTER],
             ['tecnologia/notebook', NOTEBOOK],
-            ['tecnologia/perifericos/tarjeta-de-memoria', MEMORY_CARD]
+            ['tecnologia/perifericos/auriculares-y-manos-libres', HEADPHONES],
+            ['tecnologia/perifericos/mouse-accesorios', MOUSE],
+            ['tecnologia/perifericos/tarjeta-de-memoria', MEMORY_CARD],
+            ['tecnologia/perifericos/teclado/', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         products_urls = []
