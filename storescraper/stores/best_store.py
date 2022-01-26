@@ -139,12 +139,9 @@ class BestStore(Store):
         part_number = soup.find('div', 'product-reference-supplier').find(
             'span').text
         sku = soup.find('span', {'itemprop': 'sku'}).text
-        stock_container = soup.find('div', 'product-quantities')
 
-        if stock_container:
-            stock = int(stock_container.find('span')['data-stock'])
-            if stock < 0:
-                stock = 0
+        if soup.find('button', 'btn btn-primary add-to-cart'):
+            stock = -1
         else:
             stock = 0
 
