@@ -35,12 +35,7 @@ class BestStore(Store):
             HEADPHONES,
             KEYBOARD_MOUSE_COMBO,
             STEREO_SYSTEM,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            MONITOR,
-            NOTEBOOK,
             COMPUTER_CASE,
-            HEADPHONES,
             CELL,
             STORAGE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
@@ -140,10 +135,12 @@ class BestStore(Store):
             'span').text
         sku = soup.find('span', {'itemprop': 'sku'}).text
 
-        if soup.find('button', 'btn btn-primary add-to-cart'):
-            stock = -1
-        else:
+        add_to_cart_button = soup.find('button', 'btn btn-primary add-to-cart')
+
+        if 'disabled' in add_to_cart_button.attrs:
             stock = 0
+        else:
+            stock = -1
 
         normal_price = Decimal(
             soup.find('div', 'current-price').find('span')['content'])
