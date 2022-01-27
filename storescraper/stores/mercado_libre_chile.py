@@ -2,6 +2,7 @@ import json
 import logging
 
 import re
+import urllib
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -692,8 +693,8 @@ class MercadoLibreChile(Store):
             if entry['id'] == 'item_status_message' and 'PAUSADA' in \
                     entry['body']['text'].upper():
                 return []
-        if 'component_id' in data['initialState']['components'][
-                'variations']:
+
+        if url.startswith('https://articulo.mercadolibre.cl/'):
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
         else:
@@ -703,7 +704,7 @@ class MercadoLibreChile(Store):
     def retrieve_type3_products(cls, data, session, category):
         print('Type3')
         variations = set()
-        pickers = data['initialState']['components']['variations'].get(
+        pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
         official_store_filter = data['initialState']['filters']
 
@@ -850,3 +851,21 @@ class MercadoLibreChile(Store):
                 description='Type2'
             ))
         return products
+
+    @classmethod
+    def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        session = session_with_proxy(extra_args)
+        offset = 0
+        result = []
+
+        while offset < threshold:
+            endpoint = 'https://api.mercadolibre.com/sites/MLC/search?q={}' \
+                       '&offset={}'.format(urllib.parse.quote(keyword), offset)
+            json_results = json.loads(session.get(endpoint).text)
+            for product_entry in json_results['results']:
+                result.append(product_entry['permalink'])
+                if len(result) >= threshold:
+                    break
+            offset += 50
+
+        return result

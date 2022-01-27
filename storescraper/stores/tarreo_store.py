@@ -102,7 +102,11 @@ class TarreoStore(Store):
         description = html_to_markdown(product_specs.get('description', None))
 
         part_number_key = '{}.properties.0'.format(base_json_key)
-        part_number = product_data[part_number_key]['values']['json'][0]
+
+        if part_number_key in product_data:
+            part_number = product_data[part_number_key]['values']['json'][0]
+        else:
+            part_number = None
 
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)

@@ -8,8 +8,8 @@ from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, NOTEBOOK, MOUSE, HEADPHONES, \
-    VIDEO_GAME_CONSOLE
+from storescraper.categories import GAMING_CHAIR, NOTEBOOK, MOUSE, \
+    HEADPHONES, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -217,7 +217,6 @@ class Lider(Store):
             ['Computación/Mundo Gamer/Consolas', [VIDEO_GAME_CONSOLE],
              'Computación > Mundo Gamer > Consolas', 1],
         ]
-
 
         session = session_with_proxy(extra_args)
         product_entries = defaultdict(lambda: [])

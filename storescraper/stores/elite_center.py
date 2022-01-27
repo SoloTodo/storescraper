@@ -139,7 +139,7 @@ class EliteCenter(Store):
         picture_urls = [tag['href'].split('?')[0] for tag in
                         soup.find(
                             'figure', 'woocommerce-product-gallery__wrapper')
-                            .findAll('a')
+                        .findAll('a')
                         if validators.url(tag['href'])
                         ]
 

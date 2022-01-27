@@ -53,7 +53,9 @@ class AsusStore(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container['Buy']['Link']
+                    product_url = container['Buy']['Link'].strip()
+                    if not product_url:
+                        continue
                     product_urls.append(product_url)
                 page += 1
         return product_urls

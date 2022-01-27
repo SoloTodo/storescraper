@@ -42,7 +42,7 @@ class BitCenter(Store):
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['sillas-gamer', GAMING_CHAIR],
-            ['microfonos',MICROPHONE]
+            ['microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
