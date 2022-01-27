@@ -12,7 +12,7 @@ from storescraper.categories import CELL, NOTEBOOK, STEREO_SYSTEM, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, VIDEO_GAME_CONSOLE, MONITOR, \
     MEMORY_CARD, GAMING_CHAIR, STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     USB_FLASH_DRIVE, RAM, TELEVISION, AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
-    UPS, ALL_IN_ONE, VACUUM_CLEANER, PRINTER
+    ALL_IN_ONE, VACUUM_CLEANER, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -606,6 +606,12 @@ class MercadoLibreChile(Store):
             STEREO_SYSTEM,
             KEYBOARD,
             MOUSE,
+            WEARABLE,
+            TABLET,
+            REFRIGERATOR,
+            WASHING_MACHINE,
+            TELEVISION,
+            MONITOR,
         ]
         # return [i for i in set(cls.categories_name.values()) if i]
 
@@ -863,7 +869,8 @@ class MercadoLibreChile(Store):
 
         while offset < threshold:
             endpoint = 'https://api.mercadolibre.com/sites/MLC/search?q={}' \
-                       '&offset={}'.format(urllib.parse.quote(keyword), offset)
+                       '&offset={}&official_store=all'.format(
+                urllib.parse.quote(keyword), offset)
             json_results = json.loads(session.get(endpoint).text)
             for product_entry in json_results['results']:
                 result.append(product_entry['permalink'])
