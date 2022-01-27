@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MONITOR, CPU_COOLER, PRINTER, MOUSE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, \
-    MEMORY_CARD, GAMING_CHAIR
+    MEMORY_CARD, GAMING_CHAIR, MICROPHONE, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -32,6 +32,8 @@ class Gelcom(Store):
             STEREO_SYSTEM,
             KEYBOARD,
             GAMING_CHAIR,
+            MICROPHONE,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -64,6 +66,8 @@ class Gelcom(Store):
             ['233-fuentes-de-poder-gamer', POWER_SUPPLY],
             ['47-gabinetes-gamers', COMPUTER_CASE],
             ['232-refrigeracion-gamer', CPU_COOLER],
+            ['53-escritorios-gamers', GAMING_DESK],
+            ['50-microfonos-gamers', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
