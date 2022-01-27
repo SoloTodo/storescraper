@@ -107,6 +107,7 @@ from .falabella_peru import FalabellaPeru
 from .fama import Fama
 from .fiesta_lan import FiestaLan
 from .finall import Finall
+from .fsn_store import FsnStore
 from .fnac import Fnac
 from .fravega import Fravega
 from .fullcolor_spa import FullcolorSpa
