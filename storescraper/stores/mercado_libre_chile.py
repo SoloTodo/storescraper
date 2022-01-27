@@ -706,7 +706,8 @@ class MercadoLibreChile(Store):
         variations = set()
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
-        official_store_filter = data['initialState']['filters']
+
+        official_store_filter = data['initialState'].get('filters', None)
 
         if pickers:
             for picker in pickers:
@@ -720,8 +721,10 @@ class MercadoLibreChile(Store):
         for variation in variations:
             sku = variation
             endpoint = 'https://www.mercadolibre.cl/p/api/products/' \
-                       '{}?pdp_filters={}'.format(variation,
-                                                  official_store_filter)
+                       '{}'.format(variation)
+            if official_store_filter:
+                endpoint += '?pdp_filters={}'.format(official_store_filter)
+
             variation_data = json.loads(session.get(endpoint).text)
 
             if variation_data.get('status', None) == 404:
