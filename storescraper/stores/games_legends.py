@@ -115,7 +115,7 @@ class GamesLegends(Store):
         else:
             part_number = None
 
-        sku = json_data['sku']
+        sku = json_data.get('sku', None)
 
         if 'VENTA' in name.upper():
             # Preventa, skip
