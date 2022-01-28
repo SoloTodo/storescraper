@@ -117,7 +117,10 @@ class ZonaPortatil(Store):
             normal_price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:
-            normal_price = Decimal(remove_words(soup.find('p', 'price').text))
+            price_text = soup.find('p', 'price').text.strip()
+            if not price_text:
+                return []
+            normal_price = Decimal(remove_words(price_text))
         offer_price = (normal_price * Decimal('0.95')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'

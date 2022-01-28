@@ -94,8 +94,7 @@ class SmartDeal(Store):
             condition = 'https://schema.org/RefurbishedCondition'
 
         picture_url = [tag['src'] for tag in
-                       soup.find('div', 'woocommerce-product-gallery').findAll(
-                           'img')]
+                       soup.findAll('img', 'iconic-woothumbs-images__image')]
 
         p = Product(
             name,

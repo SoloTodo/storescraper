@@ -77,10 +77,17 @@ class HuaweiShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if soup.find('span', {'id': 'productId'}):
-            product_id = soup.find('span', {'id': 'productId'}).text.strip()
+
+        product_id_tag = soup.find('span', {'id': 'productId'})
+
+        if product_id_tag:
+            product_id = product_id_tag.text.strip()
         else:
-            product_id = soup.find('input', {'id': 'productId'})['value']
+            product_id_tag = soup.find('input', {'id': 'productId'})
+            if product_id_tag:
+                product_id = product_id_tag['value']
+            else:
+                return []
 
         if not product_id:
             return []

@@ -703,8 +703,16 @@ class MercadoLibreChile(Store):
         if url.startswith('https://articulo.mercadolibre.cl/'):
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
-        else:
+        elif url.startswith('https://www.mercadolibre.cl/'):
             return cls.retrieve_type3_products(data, session, category)
+        else:
+            # Another scraper with embedded ML pages
+            try:
+                return cls.retrieve_type2_products(session, url, soup,
+                                                   category, data)
+            except Exception:
+                return cls.retrieve_type3_products(data, session, category)
+
 
     @classmethod
     def retrieve_type3_products(cls, data, session, category):
