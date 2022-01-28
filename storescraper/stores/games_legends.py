@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -103,7 +104,9 @@ class GamesLegends(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-form_title').text
+
+        json_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
+        name = json_data['name']
         key = soup.find('form', 'product-form')['action'].split('/')[-1]
 
         part_number_match = re.search('"productID": "(.+)"', response.text)
@@ -112,18 +115,13 @@ class GamesLegends(Store):
         else:
             part_number = None
 
-        sku_match = re.search('"sku": "(.+)"', response.text)
-        if sku_match:
-            sku = sku_match.groups()[0]
-        else:
-            sku = None
+        sku = json_data['sku']
 
         if 'VENTA' in name.upper():
             # Preventa, skip
             stock = 0
-        elif soup.find('div',
-                       'form-group product-stock product-out-stock '
-                       'text-center visible'):
+        elif json_data['offers']['availability'] == \
+                'http://schema.org/OutOfStock':
             stock = 0
         elif soup.find('span', 'product-form-stock'):
             stock = int(soup.find('span', 'product-form-stock').text)

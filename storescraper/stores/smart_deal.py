@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, CELL, TABLET, RAM
@@ -93,8 +94,17 @@ class SmartDeal(Store):
         else:
             condition = 'https://schema.org/RefurbishedCondition'
 
-        picture_url = [tag['src'] for tag in
-                       soup.findAll('img', 'iconic-woothumbs-images__image')]
+        picture_tags = soup.findAll('img', 'iconic-woothumbs-images__image')
+        picture_urls = []
+
+        for picture_tag in picture_tags:
+            if 'data-large_image' in picture_tag.attrs:
+                picture_url = picture_tag['data-large_image']
+            else:
+                picture_url = picture_tag['src']
+
+            if validators.url(picture_url):
+                picture_urls.append(picture_url)
 
         p = Product(
             name,
@@ -110,6 +120,6 @@ class SmartDeal(Store):
             sku=sku,
             condition=condition,
             part_number=sku,
-            picture_urls=picture_url
+            picture_urls=picture_urls
         )
         return [p]
