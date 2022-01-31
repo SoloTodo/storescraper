@@ -7,7 +7,7 @@ from storescraper.categories import GAMING_CHAIR, MONITOR, MOUSE, KEYBOARD, \
     STORAGE_DRIVE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, TELEVISION, \
     HEADPHONES, STEREO_SYSTEM, WEARABLE, NOTEBOOK, TABLET, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
-    RAM, PRINTER
+    RAM, PRINTER, CELL, ALL_IN_ONE, SOLID_STATE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,33 +36,44 @@ class FsnStore(Store):
             POWER_SUPPLY,
             COMPUTER_CASE,
             RAM,
-            PRINTER
+            PRINTER,
+            CELL,
+            ALL_IN_ONE,
+            SOLID_STATE_DRIVE,
+            MEMORY_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnologia/sillas', GAMING_CHAIR],
+            ['celulares', CELL],
+            ['tecnologia/computadores-de-escritorio', ALL_IN_ONE],
+            ['computadores-portatilestablets-1/notebook', NOTEBOOK],
+            ['computadores-portatilestablets-1/ipad-tablet', TABLET],
+            ['tecnologia/discos-duros/disco-duro-externo',
+             EXTERNAL_STORAGE_DRIVE],
+            ['tecnologia/discos-duros/disco-duro-interno', STORAGE_DRIVE],
+            ['otros', STORAGE_DRIVE],
+            ['tecnologia/fuentes-de-poder', POWER_SUPPLY],
+            ['tecnologia/gabinetes-de-pcs', COMPUTER_CASE],
+            ['memoria-ram', RAM],
+            ['tecnologia/memorias/memoria-flash', USB_FLASH_DRIVE],
             ['monitores', MONITOR],
             ['mouse', MOUSE],
             ['teclado', KEYBOARD],
+            ['otros-mouse-y-teclado', MOUSE],
             ['tecnologia/pendrives', USB_FLASH_DRIVE],
-            ['tecnologia/discos-duros/disco-duro-interno', STORAGE_DRIVE],
             ['tecnologia/placa-madre', MOTHERBOARD],
             ['tecnologia/procesadores-amd', PROCESSOR],
             ['tecnologia/procesadores-intel', PROCESSOR],
             ['tarjetas-gr-ficas', VIDEO_CARD],
             ['tecnologia/televisores', TELEVISION],
+            ['unidad-ssd', SOLID_STATE_DRIVE],
+            ['tecnologia/sillas', GAMING_CHAIR],
             ['audifonos', HEADPHONES],
             ['fsn-play/parlantes', STEREO_SYSTEM],
             ['fsn-play/relojes-trackers-de-actividad', WEARABLE],
-            ['computadores-portatilestablets-1/notebook', NOTEBOOK],
-            ['computadores-portatilestablets-1/ipad-tablet', TABLET],
-            ['tecnologia/discos-duros/disco-duro-externo',
-             EXTERNAL_STORAGE_DRIVE],
-            ['tecnologia/fuentes-de-poder', POWER_SUPPLY],
-            ['tecnologia/gabinetes-de-pcs', COMPUTER_CASE],
-            ['memoria-ram', RAM],
+            ['play', MEMORY_CARD],
             ['impresoras', PRINTER]
         ]
         session = session_with_proxy(extra_args)
