@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MONITOR, \
-    ALL_IN_ONE, NOTEBOOK
+    ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -17,17 +17,27 @@ class TecnoMas(Store):
             ALL_IN_ONE,
             VIDEO_CARD,
             MONITOR,
-            NOTEBOOK
+            NOTEBOOK,
+            COMPUTER_CASE,
+            PROCESSOR,
+            STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['all-in-one-aio', ALL_IN_ONE],
+            # ['aio-preconfigurados', ALL_IN_ONE],
+            ['aios-reacondicionados', ALL_IN_ONE],
             ['tarjetas-de-video', VIDEO_CARD],
             ['monitores', MONITOR],
             ['notebooks', NOTEBOOK],
+            # ['notebooks-preconfigurados', NOTEBOOK],
+            ['notebooks-reacondicionados', NOTEBOOK],
             ['equipos-refaccionados/notebooks-reacondicionados', NOTEBOOK],
+            ['componentes-de-computador/gabinetes', COMPUTER_CASE],
+            ['componentes-de-computador/procesadores', PROCESSOR],
+            ['componentes-de-computador/hdd-disco-duro', STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -80,6 +90,10 @@ class TecnoMas(Store):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
+
+        # if 'CN-' in sku:
+        #     condition = 'https://schema.org/RefurbishedCondition'
+        #     name = '[ESPECIFICACIONES MODIFICADAS] - ' + name
 
         price = Decimal(
             soup.find('meta', {'property': 'product:price:amount'})['content'])
