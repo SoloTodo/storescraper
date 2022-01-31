@@ -27,17 +27,16 @@ class TecnoMas(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['all-in-one-aio', ALL_IN_ONE],
-            # ['aio-preconfigurados', ALL_IN_ONE],
-            ['aios-reacondicionados', ALL_IN_ONE],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['monitores', MONITOR],
-            ['notebooks', NOTEBOOK],
-            # ['notebooks-preconfigurados', NOTEBOOK],
-            ['notebooks-reacondicionados', NOTEBOOK],
-            ['equipos-refaccionados/notebooks-reacondicionados', NOTEBOOK],
             ['componentes-de-computador/gabinetes', COMPUTER_CASE],
             ['componentes-de-computador/procesadores', PROCESSOR],
+            ['tarjetas-de-video', VIDEO_CARD],
             ['componentes-de-computador/hdd-disco-duro', STORAGE_DRIVE],
+            ['monitores', MONITOR],
+            ['notebooks', NOTEBOOK],
+            ['equipos-reacondicionados/aios-reacondicionados', ALL_IN_ONE],
+            ['equipos-refaccionados/notebooks-reacondicionados', NOTEBOOK],
+            # ['aio-preconfigurados', ALL_IN_ONE],
+            # ['notebooks-preconfigurados', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

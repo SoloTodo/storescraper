@@ -69,10 +69,11 @@ class TiendaMovistar(Store):
                         raise Exception('Empty category: ' + category_url)
                     break
 
+                empty_page = True
+
                 for cell_item in items:
-                    if cell_item.find('div', 'sin-stock'):
-                        done = True
-                        break
+                    if not cell_item.find('div', 'sin-stock'):
+                        empty_page = False
                     product_url = cell_item.find('a')['href']
                     if product_url in product_entries:
                         done = True
@@ -85,6 +86,9 @@ class TiendaMovistar(Store):
                     })
 
                     current_position += 1
+
+                if empty_page:
+                    break
 
                 page += 1
 
