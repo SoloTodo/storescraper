@@ -8,11 +8,10 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
     CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE, KEYBOARD, MOUSE, \
-    MEMORY_CARD, PRINTER, STEREO_SYSTEM
+    MEMORY_CARD, PRINTER, STEREO_SYSTEM, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class KillStore(Store):
@@ -38,6 +37,7 @@ class KillStore(Store):
             MOUSE,
             MEMORY_CARD,
             STEREO_SYSTEM,
+            MICROPHONE
         ]
 
     @classmethod
@@ -72,6 +72,7 @@ class KillStore(Store):
             ['258?map=productClusterIds', PRINTER],
             ['computacion/sillas', GAMING_CHAIR],
             ['gaming', VIDEO_GAME_CONSOLE],
+            ['audio/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

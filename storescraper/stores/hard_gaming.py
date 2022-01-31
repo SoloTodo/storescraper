@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, COMPUTER_CASE, POWER_SUPPLY, \
     RAM, MONITOR, MOUSE, VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
-    KEYBOARD, CPU_COOLER, SOLID_STATE_DRIVE, GAMING_CHAIR
+    KEYBOARD, CPU_COOLER, SOLID_STATE_DRIVE, GAMING_CHAIR, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +29,8 @@ class HardGaming(Store):
             MOTHERBOARD,
             KEYBOARD,
             CPU_COOLER,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -47,7 +48,8 @@ class HardGaming(Store):
             ['placas-madres', MOTHERBOARD],
             ['teclados', KEYBOARD],
             ['refrigeracion', CPU_COOLER],
-            ['sillas-gamer', GAMING_CHAIR]
+            ['sillas-gamer', GAMING_CHAIR],
+            ['microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

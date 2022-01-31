@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, \
     COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD, GAMING_CHAIR, \
     KEYBOARD, POWER_SUPPLY, CPU_COOLER, MONITOR, MOUSE, USB_FLASH_DRIVE, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, KEYBOARD_MOUSE_COMBO
+    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, KEYBOARD_MOUSE_COMBO, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,6 +35,7 @@ class GWStore(Store):
             CPU_COOLER,
             GAMING_CHAIR,
             KEYBOARD_MOUSE_COMBO,
+            MICROPHONE
         ]
 
     @classmethod
@@ -54,6 +55,7 @@ class GWStore(Store):
             ['9-almacenamiento', SOLID_STATE_DRIVE],
             ['14-monitores', MONITOR],
             ['13-refrigeracion', CPU_COOLER],
+            ['33-microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

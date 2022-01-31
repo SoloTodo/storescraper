@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, PROCESSOR, RAM, \
     MOTHERBOARD, VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
     KEYBOARD, MOUSE, HEADPHONES, GAMING_CHAIR, NOTEBOOK, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, VIDEO_GAME_CONSOLE
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -34,6 +34,7 @@ class InvasionGamer(Store):
             KEYBOARD_MOUSE_COMBO,
             STEREO_SYSTEM,
             VIDEO_GAME_CONSOLE,
+            MICROPHONE
         ]
 
     @classmethod
@@ -56,6 +57,7 @@ class InvasionGamer(Store):
             ['portatiles', NOTEBOOK],
             ['monitores', MONITOR],
             ['joysticks-pc', VIDEO_GAME_CONSOLE],
+            ['microfono', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -91,9 +93,9 @@ class InvasionGamer(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         picture_urls = ['https:' + tag['data-src'].replace('_130x', '').
-                        split('?')[0] for tag in soup
-                        .find('div', 'product-gallery__thumbnail-list')
-                        .findAll('img')]
+            split('?')[0] for tag in soup
+                            .find('div', 'product-gallery__thumbnail-list')
+                            .findAll('img')]
 
         product_data_tag = soup.find('script', {'type': 'application/ld+json'})
         product_data = json.loads(product_data_tag.text)

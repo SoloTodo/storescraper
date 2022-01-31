@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, \
-    VIDEO_CARD, MOUSE, HEADPHONES, GAMING_CHAIR, STORAGE_DRIVE, NOTEBOOK
+    VIDEO_CARD, MOUSE, HEADPHONES, GAMING_CHAIR, STORAGE_DRIVE, NOTEBOOK, \
+    GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -23,6 +24,7 @@ class GoodGame(Store):
             GAMING_CHAIR,
             STORAGE_DRIVE,
             NOTEBOOK,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -38,6 +40,7 @@ class GoodGame(Store):
             ['589-sillas-gamer', GAMING_CHAIR],
             ['595-almacenamiento', STORAGE_DRIVE],
             ['601-notebook', NOTEBOOK],
+            ['592-escritorios-gamer', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -84,7 +87,7 @@ class GoodGame(Store):
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
         if soup.find('span', {
-                'id': 'availability_value'}).text == 'Producto sin stock':
+            'id': 'availability_value'}).text == 'Producto sin stock':
             stock = 0
         else:
             stock = -1
