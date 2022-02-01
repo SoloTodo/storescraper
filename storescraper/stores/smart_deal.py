@@ -89,7 +89,7 @@ class SmartDeal(Store):
             stock = -1
 
         condition_tag = soup.find('span', 'tagged_as')
-        if condition_tag and condition_tag.find('a').text == 'Nuevo Sellado':
+        if condition_tag and condition_tag.find('a').text == 'Nuevo y Sellado':
             condition = 'https://schema.org/NewCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
