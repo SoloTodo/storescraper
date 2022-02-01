@@ -115,10 +115,11 @@ class TiendaMovistar(Store):
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
         ajax_session = session_with_proxy(extra_args)
-        ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
         ajax_session.headers['content-type'] = \
             'application/x-www-form-urlencoded'
+        # The header just needs to be set with anything
+        ajax_session.headers['referer'] = 'foo'
 
         stock_data = json.loads(ajax_session.post(
             'https://catalogo.movistar.cl/fullprice/stockproducto/validar/',
