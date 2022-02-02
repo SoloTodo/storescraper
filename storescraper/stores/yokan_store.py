@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, MOUSE
+from storescraper.categories import VIDEO_CARD, MOUSE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -14,14 +14,16 @@ class YokanStore(Store):
     def categories(cls):
         return [
             VIDEO_CARD,
-            MOUSE
+            MOUSE,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['graphics-cards', VIDEO_CARD],
-            ['computer-parts/mouse-mousepad', MOUSE]
+            ['computer-parts/mouse-mousepad', MOUSE],
+            ['nintendo', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)
