@@ -66,10 +66,13 @@ class YokanStore(Store):
         else:
             sku = None
 
-        if soup.find('p', 'stock in-stock'):
+        if soup.find('p', 'available-on-backorder'):
+            stock = 0
+        elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock').text.strip().split()[0])
         else:
             stock = -1
+
         price_container = soup.find('p', 'price')
         if price_container.find('ins'):
             price = Decimal(remove_words(

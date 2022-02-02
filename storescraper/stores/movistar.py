@@ -226,13 +226,8 @@ class Movistar(Store):
 
                     # Movistar one phones do not have this pricing option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', ''))
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             cell_plan_name = container['data-id']
@@ -325,14 +320,8 @@ class Movistar(Store):
 
                     # Movistar one only phones do not have this option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', '')
-                        )
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             # break
