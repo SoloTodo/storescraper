@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -25,10 +26,12 @@ class Valrod(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['perifericos', HEADPHONES],
+            ['audifonos', HEADPHONES],
             ['sillas-gamer', GAMING_CHAIR],
             ['accesorios', COMPUTER_CASE],
             ['monitores', MONITOR],
             ['gabinetes', COMPUTER_CASE],
+            ['accesorios', COMPUTER_CASE],
             ['tarjeta-de-video-y-coolers', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
@@ -66,7 +69,8 @@ class Valrod(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-name-wrapper').find('h1').text
-        sku = soup.find('form', {'id': 'addtocart'})['action'].split('/')[-1]
+        key = soup.find('form', {'id': 'addtocart'})['action'].split('/')[-1]
+        sku = re.search(r'"sku":\s?"(.+?)"', response.text).groups()[0]
         stock_container = soup.find('div', 'product-availability').find('span')
         if stock_container.text == 'No Disponible' or \
                 stock_container.text == 'Agotado':
@@ -84,12 +88,13 @@ class Valrod(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
