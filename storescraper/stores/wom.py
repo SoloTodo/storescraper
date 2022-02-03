@@ -165,16 +165,20 @@ class Wom(Store):
         path = url.split('/', 3)[-1]
         endpoint = 'https://store.wom.cl/page-data/{}/' \
                    'page-data.json'.format(path)
-        json_data = session.get(endpoint).json()
+        response = session.get(endpoint)
+
+        if response.status_code == 404:
+            return []
+
+        json_data = response.json()
         products = []
         plans = [
-            'Plan Womers 20 GB',
-            'Plan Acumula 60 GB',
-            'Plan Acumula 120 GB',
-            'Plan Acumula 180 GB',
-            'Plan Acumula 240 GB',
-            'Plan Acumula 300 GB',
-            'Plan Womers Libre',
+            'WOM Plan 40 GB',
+            'WOM Plan 100 GB',
+            'WOM Plan 300 GB',
+            'WOM Plan 400 GB',
+            'WOM Plan 500 GB',
+            'WOM Plan Libre',
         ]
 
         for entry in json_data['result']['data']['contentfulProduct'][
