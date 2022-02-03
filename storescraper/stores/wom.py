@@ -175,6 +175,7 @@ class Wom(Store):
         plans = [
             'WOM Plan 40 GB',
             'WOM Plan 100 GB',
+            'WOM Plan 200 GB',
             'WOM Plan 300 GB',
             'WOM Plan 400 GB',
             'WOM Plan 500 GB',
