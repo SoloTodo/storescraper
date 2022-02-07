@@ -84,7 +84,7 @@ class LaCuracaoOnline(Store):
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         price = Decimal(soup.find('meta',
-                                  {'itemprop': 'price'})['content'].strip())
+                                  {'property': 'product:price:amount'})['content'].strip())
         stock = -1
 
         pictures_data = re.search(r'"mage/gallery/gallery": ([\s\S]*?)\}\n',
