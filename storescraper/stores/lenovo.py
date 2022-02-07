@@ -211,41 +211,44 @@ class Lenovo(Store):
         session.headers['User-Agent'] = 'curl/7.68.0'
 
         products_urls = []
+        sorters = ['price-asc', 'price-desc', 'selling-desc', '']
 
         for category_path, local_category in category_paths:
             if local_category != category:
                 continue
 
-            nb_path = \
-                cls.base_domain + '/api/product/graph?src=splitter&' \
-                                  'categories={}&page='.format(category_path)
-            page = 0
+            for sorter in sorters:
+                nb_path = \
+                    cls.base_domain + '/api/product/graph?src=splitter&' \
+                                      'categories={}&sort={}&page='.format(
+                        category_path, sorter)
+                page = 0
 
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow')
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
 
-                url = nb_path + str(page)
-                print(url)
-                response = session.get(url)
+                    url = nb_path + str(page)
+                    print(url)
+                    response = session.get(url)
 
-                if response.status_code == 500:
-                    break
+                    if response.status_code == 500:
+                        break
 
-                data = json.loads(response.text)
+                    data = json.loads(response.text)
 
-                if 'results' not in data:
-                    break
+                    if 'results' not in data:
+                        break
 
-                if not data['results']:
-                    break
+                    if not data['results']:
+                        break
 
-                for product_entry in data['results']:
-                    product_url = cls.base_domain + product_entry['url']
-                    if product_url not in products_urls:
-                        products_urls.append(product_url)
+                    for product_entry in data['results']:
+                        product_url = cls.base_domain + product_entry['url']
+                        if product_url not in products_urls:
+                            products_urls.append(product_url)
 
-                page += 1
+                    page += 1
 
         return products_urls
 
