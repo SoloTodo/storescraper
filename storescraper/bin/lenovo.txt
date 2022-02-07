@@ -1,0 +1,158 @@
+INFO:storescraper.store:Discovering URLs for: LenovoChile
+INFO:storescraper.store:Using sync method
+https://www.lenovo.com/cl/es/api/product/graph?src=splitter&categories=LAPTOPS&page=0
+https://www.lenovo.com/cl/es/api/product/graph?src=splitter&categories=LAPTOPS&page=1
+https://www.lenovo.com/cl/es/api/product/graph?src=splitter&categories=LAPTOPS&page=2
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/lenovo/student-laptops/Lenovo-14w/p/88EL10S9990 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13s-Gen-2-Intel/p/XXTBXTSI300 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Legion-7-16ITH6/p/LEN101G0002 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-500/IdeaPad-5-Pro-14ITL6/p/88IPS501617 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Extreme-G4/p/22TP2X1X1E4 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-flex/IdeaPad-Flex-5-15ITL-05/p/88IPF501454 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/E15-G2/p/22TPE15E5N2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/yoga/yoga-slim-series/Yoga-Slim-7-14ARE05/p/88YGS701397 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-flex/IdeaPad-Flex-5-14ITL-05/p/88IPF501452 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/yoga/yoga-2-in-1-series/Yoga-7-14ITL5/p/88YGC701456 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-17ACH6H/p/88GMY501586 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Legion-S7-15ACH6/p/88GMY701595 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Lenovo-Legion-S7-15ARH5/p/88GMY701561 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-l/L14-AMD-G2/p/22TPL14L4A2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/IdeaPad-Gaming-3i-Gen-6-15-Intel/p/WMD00000451 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-x/X13-G2/p/22TPX13X3N2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-16p-G2-ACH/p/XXTBXPEA600 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/Lenovo-ThinkBook-15-G2-ITL/p/XXTBXTMI500 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/E14-G2/p/22TPE14E4N2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Fold-G1/p/22TP2X1X1F1 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5i-Gen-6-15''-Intel/p/LEN101G0001 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13s-G3-ACN/p/XXTBXTSA301 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-l/ThinkPad-L13-Gen-2/p/22TPL13L3N2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13x/p/WMD00000478 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Carbon-G9/p/22TP2X1X1C9 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/ideapad-serie-d/IdeaPad-D330/p/88IPD301545 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-14p-G2-ACH/p/XXTBXPEA400 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-x/X12-Detachable-G1/p/22TPX12X2D1 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-14s-Gen-2-Intel/p/XXTBXTSI400 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-15ACH6H/p/88GMY501582 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-t/ThinkPad-T14s-G2/p/22TPT14T4S2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Titanium-G1/p/22TP2X1X1T1 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/Gaming-3-Gen-6-15-AMD/p/WMD00000479 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/IdeaPad-3-15ALC6/p/LEN101I0010 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-p/P14s-AMD-G2/p/22WSP144SA2 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Yoga-G6/p/22TP2X1X1Y6 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-Pro-16ACH6H/p/WMD00000468 (Notebook)
+INFO:storescraper.store:Discovered URL: https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/ThinkPad-E15-AMD/p/22TPE15E5A2 (Notebook)
+
+https://www.lenovo.com/cl/es/laptops/lenovo/student-laptops/Lenovo-14w/p/88EL10S9990 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13s-Gen-2-Intel/p/XXTBXTSI300 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Legion-7-16ITH6/p/LEN101G0002 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-500/IdeaPad-5-Pro-14ITL6/p/88IPS501617 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Extreme-G4/p/22TP2X1X1E4 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-flex/IdeaPad-Flex-5-15ITL-05/p/88IPF501454 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/E15-G2/p/22TPE15E5N2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/yoga/yoga-slim-series/Yoga-Slim-7-14ARE05/p/88YGS701397 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-flex/IdeaPad-Flex-5-14ITL-05/p/88IPF501452 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/yoga/yoga-2-in-1-series/Yoga-7-14ITL5/p/88YGC701456 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-17ACH6H/p/88GMY501586 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Legion-S7-15ACH6/p/88GMY701595 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-7-series/Lenovo-Legion-S7-15ARH5/p/88GMY701561 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-l/L14-AMD-G2/p/22TPL14L4A2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/IdeaPad-Gaming-3i-Gen-6-15-Intel/p/WMD00000451 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-x/X13-G2/p/22TPX13X3N2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-16p-G2-ACH/p/XXTBXPEA600 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/Lenovo-ThinkBook-15-G2-ITL/p/XXTBXTMI500 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/E14-G2/p/22TPE14E4N2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Fold-G1/p/22TP2X1X1F1 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5i-Gen-6-15''-Intel/p/LEN101G0001 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13s-G3-ACN/p/XXTBXTSA301 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-l/ThinkPad-L13-Gen-2/p/22TPL13L3N2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-13x/p/WMD00000478 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Carbon-G9/p/22TP2X1X1C9 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/ideapad-serie-d/IdeaPad-D330/p/88IPD301545 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-14p-G2-ACH/p/XXTBXPEA400 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-x/X12-Detachable-G1/p/22TPX12X2D1 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkbook/thinkbook/ThinkBook-14s-Gen-2-Intel/p/XXTBXTSI400 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-15ACH6H/p/88GMY501582 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-t/ThinkPad-T14s-G2/p/22TPT14T4S2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Titanium-G1/p/22TP2X1X1T1 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/Gaming-3-Gen-6-15-AMD/p/WMD00000479 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/ideapad/serie-300/IdeaPad-3-15ALC6/p/LEN101I0010 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-p/P14s-AMD-G2/p/22WSP144SA2 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/thinkpad-x1/X1-Yoga-G6/p/22TP2X1X1Y6 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/laptops-legion/legion-5-series/Legion-5-Pro-16ACH6H/p/WMD00000468 (Notebook - 1)
+No positions given
+
+https://www.lenovo.com/cl/es/laptops/thinkpad/serie-e/ThinkPad-E15-AMD/p/22TPE15E5A2 (Notebook - 1)
+No positions given
+Total: 38 URLs
