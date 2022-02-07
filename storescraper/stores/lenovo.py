@@ -38,8 +38,8 @@ class Lenovo(Store):
         response = session.get(url,  allow_redirects=False)
         if response.status_code == 301:
             return []
-        soup = BeautifulSoup(response.text, 'html.parser')
 
+        soup = BeautifulSoup(response.text, 'html5lib')
         models_containers = soup.findAll('div', 'tabbedBrowse-productListing')
         products = []
 
