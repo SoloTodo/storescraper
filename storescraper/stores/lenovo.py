@@ -3,7 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MONITOR, NOTEBOOK, TABLET
+from storescraper.categories import MONITOR, NOTEBOOK, TABLET, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -19,6 +19,7 @@ class Lenovo(Store):
             NOTEBOOK,
             TABLET,
             MONITOR,
+            ALL_IN_ONE,
         ]
 
     @classmethod
@@ -205,6 +206,7 @@ class Lenovo(Store):
         category_paths = [
             ('LAPTOPS', NOTEBOOK),
             ('TABLETS', TABLET),
+            ('DESKTOPS', ALL_IN_ONE),
         ]
 
         session = session_with_proxy(extra_args)
