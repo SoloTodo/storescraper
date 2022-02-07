@@ -92,10 +92,16 @@ class BitCenter(Store):
                 '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']
-        if soup.find('p', 'stock').text == 'Agotado':
-            stock = 0
+
+        stock_tag = soup.find('input', {'name': 'quantity'})
+        if stock_tag:
+            if 'max' in stock_tag.attrs:
+                stock = int(stock_tag['max'])
+            else:
+                stock = 1
         else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
+            stock = 0
+
         normal_price = Decimal(
             int(json_container['offers'][0]['price']) * 1.038 // 1)
         offer_price = Decimal(json_container['offers'][0]['price'])

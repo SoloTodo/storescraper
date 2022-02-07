@@ -39,7 +39,8 @@ class LaCuracaoOnline(Store):
                 raise Exception('Page overflow')
 
             url = 'https://www.lacuracaonline.com/{}/catalogsearch/' \
-                  'result/index/?q=lg&p={}'.format(cls.country, page)
+                  'result/index/?q=PRODUCTOS&at_marca=LG&p={}' \
+                  ''.format(cls.country, page)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
