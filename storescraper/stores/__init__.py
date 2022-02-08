@@ -41,6 +41,7 @@ from .central_gamer import CentralGamer
 from .chile_gamerr import ChileGamerr
 from .cintegral import Cintegral
 from .claro import Claro
+from .claro_ecuador import ClaroEcuador
 from .claro_up import ClaroUp
 from .clie import Clie
 from .clima_seguro import ClimaSeguro
@@ -349,6 +350,7 @@ from .terabyte import Terabyte
 from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
+from .techni_diseno import TechniDiseno
 from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
