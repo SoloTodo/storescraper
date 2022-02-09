@@ -59,7 +59,8 @@ class MultiAhorro(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find('div', {'id': '_jsonDataFicha_'}).text)
+        json_data = json.loads(
+            soup.find('div', {'id': '_jsonDataFicha_'}).text)
         name = json_data['producto']['nombre']
         sku = json_data['producto']['codigo']
         stock = -1 if json_data['variante']['tieneStock'] else 0

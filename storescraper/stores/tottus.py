@@ -5,13 +5,12 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK, TABLET, PRINTER, CELL, WEARABLE, \
-    TELEVISION, MOUSE, VIDEO_GAME_CONSOLE, REFRIGERATOR, WASHING_MACHINE, \
-    STEREO_SYSTEM, HEADPHONES
+from storescraper.categories import NOTEBOOK, TABLET, PRINTER, CELL, \
+    WEARABLE, TELEVISION, MOUSE, VIDEO_GAME_CONSOLE, REFRIGERATOR, \
+    WASHING_MACHINE, STEREO_SYSTEM, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Tottus(Store):

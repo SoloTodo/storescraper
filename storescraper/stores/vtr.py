@@ -49,8 +49,8 @@ class Vtr(Store):
                     continue
 
                 product_id = record['code']
-                product_url = 'https://vtr.com/productos/details?code={}'.format(
-                    product_id)
+                product_url = 'https://vtr.com/productos/details?code={}'\
+                    .format(product_id)
                 product_urls.append(product_url)
 
         return product_urls

@@ -269,8 +269,13 @@ class Claro(Store):
 
             cell_name = cell_tag.find('div', 'datos-plan').find(
                 'h2').text.strip()
-            monthly_payment_text = cell_tag.find('div', 'cuotas-uno') \
-                .find('h3').text.replace('*', '')
+
+            monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
+                .find('h3')
+            if not monthly_payment_tag:
+                monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
+                    .find('h4')
+            monthly_payment_text = monthly_payment_tag.text.replace('*', '')
             cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
             picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
                 'img')['src'].strip().replace(' ', '%20')]

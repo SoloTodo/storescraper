@@ -713,7 +713,6 @@ class MercadoLibreChile(Store):
             except Exception:
                 return cls.retrieve_type3_products(data, session, category)
 
-
     @classmethod
     def retrieve_type3_products(cls, data, session, category):
         print('Type3')
@@ -878,7 +877,7 @@ class MercadoLibreChile(Store):
         while offset < threshold:
             endpoint = 'https://api.mercadolibre.com/sites/MLC/search?q={}' \
                        '&offset={}&official_store=all'.format(
-                urllib.parse.quote(keyword), offset)
+                        urllib.parse.quote(keyword), offset)
             json_results = json.loads(session.get(endpoint).text)
             for product_entry in json_results['results']:
                 result.append(product_entry['permalink'])

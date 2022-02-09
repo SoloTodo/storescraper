@@ -106,7 +106,8 @@ class SamuraiStore(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = -1
-        price_container = soup.find('p', 'product-page-price').findAll('span', 'woocommerce-Price-amount')[-1]
+        price_container = soup.find('p', 'product-page-price').findAll(
+            'span', 'woocommerce-Price-amount')[-1]
         offer_price = Decimal(remove_words(price_container.text))
         normal_price = (offer_price * Decimal('1.04')).quantize(0)
 

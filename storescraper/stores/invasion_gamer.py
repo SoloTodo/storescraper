@@ -92,10 +92,10 @@ class InvasionGamer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        picture_urls = ['https:' + tag['data-src'].replace('_130x', '').
-            split('?')[0] for tag in soup
-                            .find('div', 'product-gallery__thumbnail-list')
-                            .findAll('img')]
+        picture_urls = ['https:' + tag['data-src'].replace('_130x', '')
+                        .split('?')[0] for tag in soup
+                        .find('div', 'product-gallery__thumbnail-list')
+                        .findAll('img')]
 
         product_data_tag = soup.find('script', {'type': 'application/ld+json'})
         product_data = json.loads(product_data_tag.text)

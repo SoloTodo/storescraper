@@ -25,8 +25,10 @@ class Lenovo(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         product_urls = []
-        product_urls.extend(cls._discover_urls_for_category_old(category, extra_args))
-        product_urls.extend(cls._discover_urls_for_category_new(category, extra_args))
+        product_urls.extend(cls._discover_urls_for_category_old(category,
+                                                                extra_args))
+        product_urls.extend(cls._discover_urls_for_category_new(category,
+                                                                extra_args))
         return product_urls
 
     @classmethod
@@ -223,7 +225,7 @@ class Lenovo(Store):
                 nb_path = \
                     cls.base_domain + '/api/product/graph?src=splitter&' \
                                       'categories={}&sort={}&page='.format(
-                        category_path, sorter)
+                                        category_path, sorter)
                 page = 0
 
                 while True:

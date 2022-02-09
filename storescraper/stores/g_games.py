@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, RAM, GAMING_CHAIR, STEREO_SYSTEM, \
-    TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, SOLID_STATE_DRIVE, \
-    MICROPHONE
+    TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, \
+    SOLID_STATE_DRIVE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -95,7 +95,7 @@ class GGames(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
         picture_urls = ['http:' + tag['src'].split('?v')[0] for tag in
                         soup.find('div', 'product-single').
-                            find('div', 'grid__item').findAll('img')
+                        find('div', 'grid__item').findAll('img')
                         if tag.has_attr('src')]
         if 'AGOTADO' in soup.find('dl', 'price').text.strip():
             stock = 0

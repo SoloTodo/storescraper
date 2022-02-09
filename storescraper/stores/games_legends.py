@@ -110,7 +110,8 @@ class GamesLegends(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
         name = json_data['name']
         key = soup.find('form', 'product-form')['action'].split('/')[-1]
 
