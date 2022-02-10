@@ -1,4 +1,3 @@
-import logging
 import re
 from decimal import Decimal
 
@@ -12,8 +11,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
     GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class EliteCenter(Store):

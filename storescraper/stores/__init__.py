@@ -293,6 +293,7 @@ from .refresh_store import RefreshStore
 from .reif_store import ReifStore
 from .reuse import Reuse
 from .rhona import Rhona
+from .riady_digital import RiadyDigital
 from .ribeiro import Ribeiro
 from .ripley import Ripley
 from .ripley_peru import RipleyPeru
