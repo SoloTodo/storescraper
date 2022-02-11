@@ -104,7 +104,9 @@ class CasaRoyal(Store):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
-        sku = soup.find('input', {'name': 'product'})['value']
+        key = soup.find('input', {'name': 'product'})['value']
+        sku = soup.find('div', 'sku').find('div', 'value').text.strip()
+
         if soup.find('p', 'redalert').text == 'Disponible':
             stock = -1
         else:
@@ -135,7 +137,7 @@ class CasaRoyal(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
