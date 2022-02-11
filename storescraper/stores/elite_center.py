@@ -106,10 +106,13 @@ class EliteCenter(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
 
-        if soup.find('input', 'current_product_id'):
-            key = soup.find('input', 'current_product_id')['value']
-        else:
-            key = soup.find('button', 'single_add_to_cart_button')['value']
+        key_container = soup.find('input', 'current_product_id')
+        if not key_container:
+            key_container = soup.find('button', 'single_add_to_cart_button')
+        if not key_container:
+            return []
+
+        key = key_container['value']
 
         sku_tag = soup.find('div', {'data-id': '6897d6e'})
         sku = sku_tag.text.split('SKU: ')[1].strip()
