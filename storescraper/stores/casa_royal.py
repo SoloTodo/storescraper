@@ -115,7 +115,7 @@ class CasaRoyal(Store):
                     stock = -1
                     break
         price = Decimal(
-            soup.find('span', 'price').text.replace('$', '').replace('.', ''))
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
 
         description = html_to_markdown(
             soup.find('div', 'productTabs-container').find(
