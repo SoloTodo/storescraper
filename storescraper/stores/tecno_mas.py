@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MONITOR, \
-    ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, MOTHERBOARD
+    ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, MOTHERBOARD, \
+    TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -22,6 +23,7 @@ class TecnoMas(Store):
             PROCESSOR,
             STORAGE_DRIVE,
             MOTHERBOARD,
+            TELEVISION
         ]
 
     @classmethod
@@ -37,6 +39,9 @@ class TecnoMas(Store):
             ['notebooks', NOTEBOOK],
             ['equipos-reacondicionados/aios-reacondicionados', ALL_IN_ONE],
             ['equipos-refaccionados/notebooks-reacondicionados', NOTEBOOK],
+            ['equipos-reacondicionados/monitores-reacondicionados', MONITOR],
+            ['equipos-reacondicionados/televisores-reacondicionados',
+             TELEVISION],
             # ['aio-preconfigurados', ALL_IN_ONE],
             # ['notebooks-preconfigurados', NOTEBOOK],
         ]

@@ -54,7 +54,7 @@ class RiadyDigital(Store):
                 url_webpage = 'https://riadydigital.cl/wp/' \
                               'categoria-producto/{}/page/{}/'.format(
                                 url_extension, page)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, timeout=30)
 
                 if response.status_code == 404:
                     if page == 1:
@@ -75,7 +75,7 @@ class RiadyDigital(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
