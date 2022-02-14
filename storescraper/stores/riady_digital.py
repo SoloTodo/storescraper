@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import CELL, EXTERNAL_STORAGE_DRIVE, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD, ALL_IN_ONE, NOTEBOOK, PRINTER, TABLET
+    STEREO_SYSTEM, KEYBOARD, ALL_IN_ONE, NOTEBOOK, PRINTER, TABLET, HEADPHONES, \
+    MONITOR
 from storescraper.utils import session_with_proxy
 
 
@@ -22,7 +23,9 @@ class RiadyDigital(Store):
             ALL_IN_ONE,
             NOTEBOOK,
             PRINTER,
-            TABLET
+            TABLET,
+            HEADPHONES,
+            MONITOR
         ]
 
     @classmethod
@@ -34,6 +37,9 @@ class RiadyDigital(Store):
             ['componentes-para-pc/mouse-gamer', MOUSE],
             ['componentes-para-pc/parlantes', STEREO_SYSTEM],
             ['componentes-para-pc/teclados', KEYBOARD],
+            ['componentes-para-pc/teclados-gamer', KEYBOARD],
+            ['componentes-para-pc/audifonos-gamer', HEADPHONES],
+            ['componentes-para-pc/monitores', MONITOR],
             ['computacion/all-in-one', ALL_IN_ONE],
             ['computacion/notebook', NOTEBOOK],
             ['computacion/notebook-gamer', NOTEBOOK],
