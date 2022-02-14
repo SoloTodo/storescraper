@@ -88,7 +88,7 @@ class RiadyDigital(Store):
         stock_tag = soup.find('input', {'name': 'quantity'})
 
         if stock_tag:
-            if 'max' in stock_tag.attrs:
+            if 'max' in stock_tag.attrs and stock_tag.attrs['max']:
                 stock = int(stock_tag['max'])
             else:
                 stock = 1
