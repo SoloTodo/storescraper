@@ -609,9 +609,18 @@ class MercadoLibreChile(Store):
             WEARABLE,
             TABLET,
             REFRIGERATOR,
+            HEADPHONES,
+            KEYBOARD_MOUSE_COMBO,
+            VIDEO_GAME_CONSOLE,
+            MONITOR,
+            MEMORY_CARD,
+            GAMING_CHAIR,
+            STORAGE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
             WASHING_MACHINE,
             TELEVISION,
-            MONITOR,
+
         ]
         # return [i for i in set(cls.categories_name.values()) if i]
 

@@ -43,27 +43,26 @@ class EliteCenter(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes-pc/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['componentes-pc/procesadores', PROCESSOR],
-            ['componentes-pc/placas-madres', MOTHERBOARD],
-            ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-pc/memorias-ram', RAM],
-            ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
-            ['componentes-pc/refrigeracion', CPU_COOLER],
-            ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['accesorios/audifonos', HEADPHONES],
-            ['accesorios/teclados', KEYBOARD],
-            ['accesorios/mouse', MOUSE],
-            ['accesorios/parlantes', STEREO_SYSTEM],
-            ['almacenamiento/disco-duro-pc-hdd', STORAGE_DRIVE],
-            ['almacenamiento/disco-estado-solido-ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['audifonos', HEADPHONES],
+            ['teclados', KEYBOARD],
+            ['mouse', MOUSE],
+            ['escritorios', GAMING_DESK],
+            ['microfonos', MICROPHONE],
+            ['parlantes', STEREO_SYSTEM],
+            ['disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['procesadores', PROCESSOR],
+            ['placas-madres', MOTHERBOARD],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['memorias-ram', RAM],
+            ['fuente-de-poder', POWER_SUPPLY],
+            ['refrigeracion', CPU_COOLER],
+            ['gabinetes', COMPUTER_CASE],
+            ['disco-duro-pc-hdd', STORAGE_DRIVE],
+            ['disco-estado-solido-ssd', SOLID_STATE_DRIVE],
             ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
             ['consolas', VIDEO_GAME_CONSOLE],
-            ['accesorios/escritorios', GAMING_DESK],
-            ['accesorios/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -76,14 +75,16 @@ class EliteCenter(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://elitecenter.cl/product-category/{}/' \
-                              'page/{}'.format(url_extension, page)
+                url_webpage = 'https://elitecenter.cl/product-category/a/' \
+                              '?paged={}&yith_wcan=1&product_cat={}' \
+                              '&instock_filter=1'.format(
+                                page, url_extension)
                 print(url_webpage)
                 response = session.get(url_webpage)
 
                 if response.status_code == 404:
-                    if page == 1:
-                        raise Exception('Invalid category: ' + url_extension)
+                    # if page == 1:
+                    #     raise Exception('Invalid category: ' + url_extension)
                     break
 
                 data = response.text
@@ -91,8 +92,6 @@ class EliteCenter(Store):
                 product_containers = soup.findAll('div', 'product-grid-item')
 
                 for container in product_containers:
-                    if container.find('span', 'out-of-stock'):
-                        continue
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
