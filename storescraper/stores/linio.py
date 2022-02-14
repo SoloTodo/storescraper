@@ -122,6 +122,9 @@ class Linio(Store):
             else:
                 offer_price = normal_price
 
+        if normal_price == Decimal(9999999) or offer_price == Decimal(9999999):
+            return []
+
         soup = BeautifulSoup(page_source, 'html.parser')
 
         condition_dict = {
