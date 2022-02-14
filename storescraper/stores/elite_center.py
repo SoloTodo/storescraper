@@ -59,7 +59,7 @@ class EliteCenter(Store):
             ['gabinetes', COMPUTER_CASE],
             ['disco-duro-pc-hdd', STORAGE_DRIVE],
             ['disco-estado-solido-ssd', SOLID_STATE_DRIVE],
-            # ['monitores', MONITOR],
+            ['monitores', MONITOR],
             ['sillas-gamer', GAMING_CHAIR],
             ['notebooks', NOTEBOOK],
             ['consolas', VIDEO_GAME_CONSOLE],
@@ -76,7 +76,8 @@ class EliteCenter(Store):
                     raise Exception('page overflow: ' + url_extension)
 
                 url_webpage = 'https://elitecenter.cl/product-category/a/' \
-                              '?paged={}&yith_wcan=1&product_cat={}'.format(
+                              '?paged={}&yith_wcan=1&product_cat={}' \
+                              '&instock_filter=1'.format(
                                 page, url_extension)
                 print(url_webpage)
                 response = session.get(url_webpage)
@@ -91,8 +92,6 @@ class EliteCenter(Store):
                 product_containers = soup.findAll('div', 'product-grid-item')
 
                 for container in product_containers:
-                    if container.find('span', 'out-of-stock'):
-                        continue
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
