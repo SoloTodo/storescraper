@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, VIDEO_CARD, \
     PROCESSOR, MOTHERBOARD, RAM, STORAGE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
-    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM
+    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,6 +27,7 @@ class MyBox(Store):
             MONITOR,
             HEADPHONES,
             STEREO_SYSTEM,
+            MICROPHONE
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class MyBox(Store):
             ['28-monitor', MONITOR],
             ['21-audifonos-headset', HEADPHONES],
             ['22-parlantes', STEREO_SYSTEM],
+            ['24-microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -101,7 +103,7 @@ class MyBox(Store):
             stock = 0
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'images-container').
-                        findAll('img') if tag.get('src')]
+            findAll('img') if tag.get('src')]
         p = Product(
             name,
             cls.__name__,

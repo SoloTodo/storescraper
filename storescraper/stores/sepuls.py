@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
     MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER, \
-    VIDEO_CARD, RAM, STEREO_SYSTEM
+    VIDEO_CARD, RAM, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -28,6 +28,8 @@ class Sepuls(Store):
             CPU_COOLER,
             VIDEO_CARD,
             RAM,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -45,6 +47,8 @@ class Sepuls(Store):
             ['accesorios/placa-madre', MOTHERBOARD],
             ['componentes-para-pc/fuente-de-poder', POWER_SUPPLY],
             ['accesorios/parlantes', STEREO_SYSTEM],
+            ['accesorios/escritorios', GAMING_DESK],
+            ['streaming/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

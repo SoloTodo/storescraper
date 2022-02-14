@@ -8,7 +8,7 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, TABLET, MOUSE, NOTEBOOK, \
     WEARABLE, HEADPHONES, STEREO_SYSTEM, ALL_IN_ONE, RAM, VIDEO_GAME_CONSOLE, \
     PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, TELEVISION, CELL, \
-    POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD
+    POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -43,6 +43,7 @@ class Soluservi(Store):
             VIDEO_CARD,
             MOTHERBOARD,
             PROCESSOR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -78,6 +79,7 @@ class Soluservi(Store):
             ['placas-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['tarjeta-de-video', VIDEO_CARD],
+            ['escritorio/escritorio-gamer', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

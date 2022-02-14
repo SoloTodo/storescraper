@@ -12,7 +12,7 @@ from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
 from storescraper.categories import GAMING_CHAIR, WEARABLE, \
-    EXTERNAL_STORAGE_DRIVE
+    EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
 
 
 class SpDigital(Store):
@@ -50,6 +50,8 @@ class SpDigital(Store):
             'Ups',
             GAMING_CHAIR,
             WEARABLE,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -146,7 +148,11 @@ class SpDigital(Store):
             ['554', [GAMING_CHAIR],
              'Home > Componentes para PC > Sillas Gamer', 1],
             ['574', [EXTERNAL_STORAGE_DRIVE],
-             'Home > Consolas > Accesorios XBox', 1]
+             'Home > Consolas > Accesorios XBox', 1],
+            ['564', [GAMING_DESK],
+             'Home > Componentes Para PC > Escritorio Gamer', 1],
+            ['338', [MICROPHONE],
+             'Home > Audio y Video > Microfonos y Manos Libres', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
@@ -186,7 +192,7 @@ class SpDigital(Store):
 
                 for container in product_containers:
                     product_url = 'https://www.spdigital.cl' + \
-                           container.find('a')['href']
+                                  container.find('a')['href']
                     if product_url in local_product_urls:
                         done = True
                         break
@@ -339,6 +345,6 @@ class SpDigital(Store):
             return session.get(url, timeout=90)
         except Exception:
             if retries:
-                return cls._retrieve_page(session, url, retries-1)
+                return cls._retrieve_page(session, url, retries - 1)
             else:
                 raise

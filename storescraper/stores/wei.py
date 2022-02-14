@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -43,7 +43,8 @@ class Wei(Store):
             'Projector',
             'StereoSystem',
             'Ups',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -94,7 +95,8 @@ class Wei(Store):
             ['793', 'StereoSystem'],  # AMPLIFICADORES
             ['1209', 'VideoGameConsole'],  # CONSOLAS JUEGOS Y CONTROLES
             ['782', 'Ups'],  # UPS
-            ['809', GAMING_CHAIR]
+            ['809', GAMING_CHAIR],
+            ['1182', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

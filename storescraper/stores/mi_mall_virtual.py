@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD, MOUSE, MONITOR, \
     WEARABLE, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, RAM, GAMING_CHAIR, \
-    STEREO_SYSTEM, MOTHERBOARD, KEYBOARD_MOUSE_COMBO
+    STEREO_SYSTEM, MOTHERBOARD, KEYBOARD_MOUSE_COMBO, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -30,6 +30,8 @@ class MiMallVirtual(Store):
             STEREO_SYSTEM,
             MOTHERBOARD,
             KEYBOARD_MOUSE_COMBO,
+            GAMING_DESK,
+            MICROPHONE
 
         ]
 
@@ -56,6 +58,8 @@ class MiMallVirtual(Store):
             ['44-enfriador-liquido-cpu', CPU_COOLER],
             ['50-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
             ['49-sillas', GAMING_CHAIR],
+            ['21-escritorios', GAMING_DESK],
+            ['39-microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

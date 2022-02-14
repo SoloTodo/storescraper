@@ -5,7 +5,7 @@ import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
-    MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR, VIDEO_GAME_CONSOLE
+    MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR, VIDEO_GAME_CONSOLE, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -26,6 +26,7 @@ class LoiChile(Store):
             TABLET,
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class LoiChile(Store):
             ['17', TABLET],
             ['154', GAMING_CHAIR],
             ['207', VIDEO_GAME_CONSOLE],
+            ['155', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         products_urls = []

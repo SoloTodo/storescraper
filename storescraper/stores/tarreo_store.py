@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import VIDEO_CARD, MONITOR, \
     KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, STEREO_SYSTEM, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
-    PROCESSOR, CPU_COOLER, VIDEO_GAME_CONSOLE, GAMING_CHAIR, HEADPHONES
+    PROCESSOR, CPU_COOLER, VIDEO_GAME_CONSOLE, GAMING_CHAIR, HEADPHONES, \
+    GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -33,6 +34,8 @@ class TarreoStore(Store):
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
             HEADPHONES,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -56,6 +59,8 @@ class TarreoStore(Store):
             ['mobiliario-gamer/sillas-gamer', GAMING_CHAIR],
             ['mobiliario-gamer/sillones-gamer', GAMING_CHAIR],
             ['monitores', MONITOR],
+            ['mobiliario-gamer/mesas-y-escritorios', GAMING_DESK],
+            ['audio-y-video/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

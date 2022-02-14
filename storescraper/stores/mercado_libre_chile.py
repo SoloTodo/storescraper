@@ -12,7 +12,7 @@ from storescraper.categories import CELL, NOTEBOOK, STEREO_SYSTEM, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, VIDEO_GAME_CONSOLE, MONITOR, \
     MEMORY_CARD, GAMING_CHAIR, STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     USB_FLASH_DRIVE, RAM, TELEVISION, AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
-    ALL_IN_ONE, VACUUM_CLEANER, PRINTER
+    ALL_IN_ONE, VACUUM_CLEANER, PRINTER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -252,11 +252,11 @@ class MercadoLibreChile(Store):
                        ('MLC10871', 'Tintas', None),
                        ('MLC3560', 'Toners', None),
                        ('MLC159250', 'Repuestos', None),
-                       ('MLC191054', 'Micrófonos', None),
+                       ('MLC191054', 'Micrófonos', MICROPHONE),
                        ('MLC159229', 'Para Nintendo', None),
                        ('MLC180910', 'Fuentes de Alimentación', POWER_SUPPLY),
                        ('MLC180896', 'Headsets', HEADPHONES),
-                       ('MLC440885', 'Micrófonos', None),
+                       ('MLC440885', 'Micrófonos', MICROPHONE),
                        ('MLC40780', 'Controles Remotos', None),
                        ('MLC3581', 'Docking Stations', None),
                        ('MLC26532', 'Maletines y Bolsos', None),
@@ -493,7 +493,7 @@ class MercadoLibreChile(Store):
                        ('MLC437061', 'Trípodes para Cámaras', None),
                        ('MLC9776', 'Cargadores de Baterías', None),
                        ('MLC3542', 'Binoculares', None),
-                       ('MLC174250', 'Micrófonos', None),
+                       ('MLC174250', 'Micrófonos', MICROPHONE),
                        ('MLC70324', 'Para Cámaras Instantáneas', None),
                        ('MLC183303', 'Baterías', None),
                        ('MLC174273', 'Otros', None),
@@ -542,7 +542,7 @@ class MercadoLibreChile(Store):
                        ('MLC40697', 'Proyectores', None),
                        ('MLC18222', 'Soportes', None),
                        ('MLC440710', 'Cables Power', None),
-                       ('MLC4075', 'Micrófonos', None),
+                       ('MLC4075', 'Micrófonos', MICROPHONE),
                        ('MLC172568', 'Parlantes Portátiles', STEREO_SYSTEM),
                        ('MLC2876', 'Tornamesas', None),
                        ('MLC49668', 'Soportes', None),
@@ -574,7 +574,7 @@ class MercadoLibreChile(Store):
                        ('MLC178456', 'Alisadores', None),
                        ('MLC43660', 'Rizadores y Onduladores', None),
                        ('MLC433579', 'Filtros de Agua', None),
-                       ('MLC11094', 'Micrófonos', None),
+                       ('MLC11094', 'Micrófonos', MICROPHONE),
                        ('MLC440729', 'Reproductores de CD', None),
                        ('MLC429275', 'Correas', None),
                        ('MLC2907', 'Equipos Móviles', CELL),

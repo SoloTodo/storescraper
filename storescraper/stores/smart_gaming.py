@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import STORAGE_DRIVE, HEADPHONES, POWER_SUPPLY, \
     COMPUTER_CASE, MONITOR, RAM, MOUSE, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
-    GAMING_CHAIR, VIDEO_CARD, KEYBOARD
+    GAMING_CHAIR, VIDEO_CARD, KEYBOARD, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -29,6 +29,8 @@ class SmartGaming(Store):
             GAMING_CHAIR,
             VIDEO_CARD,
             KEYBOARD,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -47,6 +49,8 @@ class SmartGaming(Store):
             ['sillas', GAMING_CHAIR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['teclados', KEYBOARD],
+            ['escritorios', GAMING_DESK],
+            ['microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -109,7 +113,8 @@ class SmartGaming(Store):
 
         description = html_to_markdown(str(soup.find(
             'div', 'woocommerce-product-details__short-description')) +
-            str(soup.find('div', 'woocommerce-Tabs-panel--description')))
+                                       str(soup.find('div',
+                                                     'woocommerce-Tabs-panel--description')))
 
         p = Product(
             name,

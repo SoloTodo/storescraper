@@ -4,7 +4,7 @@ import logging
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -40,7 +40,9 @@ class NotebookStore(Store):
             'VideoGameConsole',
             'PowerSupply',
             'CpuCooler',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -102,7 +104,9 @@ class NotebookStore(Store):
             ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
             ['gaming/componentes/memoria-ram.html', 'Ram'],
             ['gaming/componentes/procesadores.html', 'Processor'],
-            ['gaming/accesorios/sillas.html', GAMING_CHAIR]
+            ['gaming/accesorios/sillas.html', GAMING_CHAIR],
+            ['equipos/muebles/escritorios.html', GAMING_DESK],
+            ['audio-y-video/audio-y-video/microfonos.html', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
