@@ -10,7 +10,7 @@ from storescraper.categories import HEADPHONES, MOUSE, KEYBOARD, \
     EXTERNAL_STORAGE_DRIVE, RAM, MOTHERBOARD, VIDEO_CARD, COMPUTER_CASE, \
     NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, \
     VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE, CELL, \
-    POWER_SUPPLY
+    POWER_SUPPLY, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,6 +43,7 @@ class PcLinkStore(Store):
             USB_FLASH_DRIVE,
             CELL,
             POWER_SUPPLY,
+            MICROPHONE
         ]
 
     @classmethod
@@ -72,6 +73,7 @@ class PcLinkStore(Store):
             ['tablet', TABLET],
             ['accesorios/tarjetas-de-memoria', MEMORY_CARD],
             ['accesorios/pendrive', USB_FLASH_DRIVE],
+            ['accesorios/microfono', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

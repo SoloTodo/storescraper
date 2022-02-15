@@ -8,7 +8,7 @@ from storescraper.categories import STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
     GAMING_CHAIR, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR, NOTEBOOK, \
-    POWER_SUPPLY
+    POWER_SUPPLY, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -34,6 +34,8 @@ class TecnoStoreChile(Store):
             VIDEO_CARD,
             NOTEBOOK,
             POWER_SUPPLY,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -59,6 +61,9 @@ class TecnoStoreChile(Store):
             ['hardware/refrigeracion-y-ventilacion', CPU_COOLER],
             ['monitores', MONITOR],
             ['sillas', GAMING_CHAIR],
+            ['escritorios', GAMING_DESK],
+            ['accesorios/microfonos', MICROPHONE]
+
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \

@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, GAMING_CHAIR, MONITOR, \
-    COMPUTER_CASE, VIDEO_CARD
+    COMPUTER_CASE, VIDEO_CARD, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,6 +20,7 @@ class Valrod(Store):
             MONITOR,
             COMPUTER_CASE,
             VIDEO_CARD,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -33,6 +34,7 @@ class Valrod(Store):
             ['gabinetes', COMPUTER_CASE],
             ['accesorios', COMPUTER_CASE],
             ['tarjeta-de-video-y-coolers', VIDEO_CARD],
+            ['escritorios', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

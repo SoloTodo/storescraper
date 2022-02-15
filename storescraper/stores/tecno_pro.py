@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -13,8 +12,7 @@ from storescraper.categories import VIDEO_GAME_CONSOLE, NOTEBOOK, \
     GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class TecnoPro(Store):

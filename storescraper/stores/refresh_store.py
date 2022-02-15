@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import KEYBOARD, MOUSE, HEADPHONES, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, \
-    MONITOR, MOTHERBOARD, PROCESSOR, CPU_COOLER, VIDEO_CARD
+    MONITOR, MOTHERBOARD, PROCESSOR, CPU_COOLER, VIDEO_CARD, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +29,8 @@ class RefreshStore(Store):
             MOTHERBOARD,
             PROCESSOR,
             CPU_COOLER,
-            VIDEO_CARD
+            VIDEO_CARD,
+            MICROPHONE
         ]
 
     @classmethod
@@ -48,7 +49,8 @@ class RefreshStore(Store):
             ['Placas-Madres', MOTHERBOARD],
             ['Procesadores', PROCESSOR],
             ['Cooler-Cpu', CPU_COOLER],
-            ['Tarjetas-de-video', VIDEO_CARD]
+            ['Tarjetas-de-video', VIDEO_CARD],
+            ['Accesorios/Micrófonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

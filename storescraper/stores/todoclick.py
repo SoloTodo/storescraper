@@ -8,7 +8,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
     TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, USB_FLASH_DRIVE, \
     STEREO_SYSTEM, WEARABLE, GAMING_CHAIR, CPU_COOLER, KEYBOARD_MOUSE_COMBO, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -42,6 +42,8 @@ class Todoclick(Store):
             EXTERNAL_STORAGE_DRIVE,
             STORAGE_DRIVE,
             MEMORY_CARD,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -77,6 +79,8 @@ class Todoclick(Store):
             ['externo', EXTERNAL_STORAGE_DRIVE],
             ['disco-duro-interno', STORAGE_DRIVE],
             ['tarjeta-memoria', MEMORY_CARD],
+            ['gamer/escritorio-gamer', GAMING_DESK],
+            ['accesorios/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -188,7 +192,8 @@ class Todoclick(Store):
                        'content'] == 'CLP'
             normal_price = (offer_price * Decimal('1.05')).quantize(0)
             picture_urls = [tag['src'] for tag in soup.find('div',
-                            'woocommerce-product-gallery').findAll('img')]
+                                                            'woocommerce-product-gallery').findAll(
+                'img')]
             products.append(Product(
                 base_name,
                 cls.__name__,

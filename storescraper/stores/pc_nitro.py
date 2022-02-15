@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE
+from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE, \
+    GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -40,6 +41,8 @@ class PcNitro(Store):
             'Printer',
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -78,6 +81,9 @@ class PcNitro(Store):
             ['160-impresoras-fotográficas', 'Printer'],
             ['174-sillas-gaming', GAMING_CHAIR],
             ['315-consolas-de-juegos', VIDEO_GAME_CONSOLE],
+            ['175-escritorio', GAMING_DESK],
+            ['121-microfonos', MICROPHONE]
+
         ]
 
         session = session_with_proxy(extra_args)

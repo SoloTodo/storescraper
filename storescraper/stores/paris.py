@@ -7,7 +7,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, GAMING_DESK
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -181,7 +181,9 @@ class Paris(Store):
          'Electro > Televisión > Accesorios para TV',
          1],
         ['muebles/oficina/sillas/sillas-gamer', [GAMING_CHAIR],
-         'Muebles > Oficina > Sillas de Escritorio', 1]
+         'Muebles > Oficina > Sillas de Escritorio', 1],
+        ['tecnologia/gamers/escritorios-gamer/', [GAMING_DESK],
+         'Tecno > Gamer > Escritorios Gamer', 1]
     ]
 
     @classmethod
@@ -218,7 +220,8 @@ class Paris(Store):
             'ComputerCase',
             'DishWasher',
             'CellAccesory',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            GAMING_DESK
         ]
 
     @classmethod
