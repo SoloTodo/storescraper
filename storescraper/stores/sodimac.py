@@ -287,14 +287,17 @@ class Sodimac(Store):
         print(url)
 
         session = session_with_proxy(extra_args)
-        r_url = url + "?rnd={}".format(random.randint(0, 1000))
+
+        separator = '&' if '?' in url else '?'
+
+        r_url = url + separator + "rnd={}".format(random.randint(0, 1000))
         print(r_url)
         response = session.get(r_url, timeout=30)
 
         if response.status_code in [404]:
             return []
 
-        if 'sodimac.falabella.com' in response.url:
+        if 'falabella.com' in response.url:
             ps = Falabella.products_for_url(url, category, extra_args)
             for p in ps:
                 p.store = cls.__name__
