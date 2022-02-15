@@ -286,15 +286,6 @@ class Sodimac(Store):
         from storescraper.stores import Falabella
         print(url)
 
-        if 'sodimac.falabella.com' in url:
-            ps = Falabella.products_for_url(url, category, extra_args)
-            for p in ps:
-                p.store = cls.__name__
-                p.url = url
-                if p.seller == 'SODIMAC_CHILE':
-                    p.seller = None
-            return ps
-
         session = session_with_proxy(extra_args)
         r_url = url + "?rnd={}".format(random.randint(0, 1000))
         print(r_url)
@@ -302,6 +293,15 @@ class Sodimac(Store):
 
         if response.status_code in [404]:
             return []
+
+        if 'sodimac.falabella.com' in response.url:
+            ps = Falabella.products_for_url(url, category, extra_args)
+            for p in ps:
+                p.store = cls.__name__
+                p.url = url
+                if p.seller == 'SODIMAC_CHILE':
+                    p.seller = None
+            return ps
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
