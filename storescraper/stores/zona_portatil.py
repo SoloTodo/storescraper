@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     VIDEO_GAME_CONSOLE, GAMING_CHAIR, KEYBOARD, COMPUTER_CASE, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER, STEREO_SYSTEM
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER, STEREO_SYSTEM, \
+    MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,6 +36,7 @@ class ZonaPortatil(Store):
             MONITOR,
             PRINTER,
             STEREO_SYSTEM,
+            MICROPHONE
         ]
 
     @classmethod
@@ -67,6 +69,7 @@ class ZonaPortatil(Store):
             ['zona-gamer/gabinetes-zona-gamer', COMPUTER_CASE],
             ['zona-gamer/audifonos', HEADPHONES],
             ['zona-gamer/teclados-mouse-zona-gamer', KEYBOARD],
+            ['zona-gamer/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -125,7 +128,7 @@ class ZonaPortatil(Store):
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
                                                                '-gallery').
-                        findAll('img')]
+            findAll('img')]
         p = Product(
             name,
             cls.__name__,
