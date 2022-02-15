@@ -409,8 +409,6 @@ class Sodimac(Store):
 
     @classmethod
     def _new_products_for_url(cls, url, session, soup, category):
-        import ipdb
-        ipdb.set_trace()
         sku = soup.find(
             'div', 'product-cod').text.replace('Código', '').strip()
         name = soup.find('h1', 'product-title').text.strip()
