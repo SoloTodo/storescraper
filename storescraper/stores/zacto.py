@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, POWER_SUPPLY, COMPUTER_CASE, \
-    MONITOR, MOUSE, STORAGE_DRIVE, USB_FLASH_DRIVE, PRINTER, STEREO_SYSTEM
+    MONITOR, MOUSE, STORAGE_DRIVE, USB_FLASH_DRIVE, PRINTER, STEREO_SYSTEM, \
+    MICROPHONE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -31,6 +32,8 @@ class Zacto(Store):
             USB_FLASH_DRIVE,
             PRINTER,
             STEREO_SYSTEM,
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -54,6 +57,8 @@ class Zacto(Store):
             ['impresion/impresoras-laser-y-tinta', PRINTER],
             ['impresion/multifuncionales-tinta', PRINTER],
             ['zona-outlet', NOTEBOOK],
+            ['oficina', GAMING_CHAIR],
+            ['audio-video-y-fotografia/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -116,7 +121,7 @@ class Zacto(Store):
 
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery').
-                        findAll('img')]
+                            findAll('img')]
         p = Product(
             name,
             cls.__name__,
