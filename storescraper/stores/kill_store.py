@@ -123,7 +123,12 @@ class KillStore(Store):
         product_data = json.loads(
             soup.find('template', {'data-varname': '__STATE__'}).text)
 
-        base_json_key = list(product_data.keys())[0]
+        base_json_keys = list(product_data.keys())
+
+        if not base_json_keys:
+            return []
+
+        base_json_key = base_json_keys[0]
         product_specs = product_data[base_json_key]
 
         name = product_specs['productName']
