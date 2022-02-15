@@ -213,19 +213,13 @@ class Falabella(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            category_id, local_categories, section_name, category_weight = \
-                e[:4]
-
-            if len(e) > 4:
-                extra_query_params = e[4]
-            else:
-                extra_query_params = None
+            category_id, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
                 continue
 
             category_product_urls = cls._get_product_urls(
-                session, category_id, extra_query_params)
+                session, category_id)
 
             for idx, url in enumerate(category_product_urls):
                 product_entries[url].append({
@@ -303,7 +297,7 @@ class Falabella(Store):
                 raise Exception('Invalid product type')
 
     @classmethod
-    def _get_product_urls(cls, session, category_id, extra_query_params):
+    def _get_product_urls(cls, session, category_id, variant):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
@@ -316,10 +310,11 @@ class Falabella(Store):
                 raise Exception('Page overflow: ' + category_id)
 
             pag_url = base_url.format(category_id, page)
-            print(pag_url)
 
-            if extra_query_params:
-                pag_url += '&' + extra_query_params
+            if variant:
+                pag_url += '&subdomain={}&store={}'.format(variant, variant)
+
+            print(pag_url)
 
             res = cls.retrieve_json_page(session, pag_url)
 
@@ -515,6 +510,18 @@ class Falabella(Store):
         if 'variants' not in product_data:
             return []
 
+        reviews_url = 'https://api.bazaarvoice.com/data/display/' \
+                      '0.2alpha/product/summary?PassKey=' \
+                      'm8bzx1s49996pkz12xvk6gh2e&productid={}&' \
+                      'contentType=reviews,questions&' \
+                      'reviewDistribution=primaryRating,' \
+                      'recommended&rev=0'.format(product_data['id'])
+
+        review_data = json.loads(session.get(reviews_url, timeout=30).text)
+        review_count = review_data['reviewSummary']['numReviews']
+        review_avg_score = review_data['reviewSummary']['primaryRating'][
+            'average']
+
         for model in product_data['variants']:
             sku = model['id']
             sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
@@ -569,27 +576,6 @@ class Falabella(Store):
                             ['All', 'HomeDelivery', 'SiteToStore',
                              'PickupInStore']:
                         stock = availability['quantity']
-
-            reviews_url = 'https://api.bazaarvoice.com/data/reviews.json?' \
-                          'apiversion=5.4&passkey=mk9fosfh4vxv20y8u5pcbwipl&' \
-                          'Filter=ProductId:{}&Include=Products&Stats=' \
-                          'Reviews'.format(sku)
-
-            review_data = json.loads(session.get(reviews_url, timeout=30).text)
-            review_count = review_data['TotalResults']
-
-            review_stats = review_data['Includes']
-
-            if 'Products' in review_stats:
-                if str(sku) not in review_stats['Products'].keys():
-                    key = list(review_stats['Products'].keys())[0]
-                    review_avg_score = review_stats['Products'][key][
-                        'ReviewStatistics']['AverageOverallRating']
-                else:
-                    review_avg_score = review_stats['Products'][str(sku)][
-                        'ReviewStatistics']['AverageOverallRating']
-            else:
-                review_avg_score = None
 
             if 'reacondicionado' in base_name.lower():
                 condition = 'https://schema.org/RefurbishedCondition'

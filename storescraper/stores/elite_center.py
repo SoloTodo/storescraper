@@ -1,3 +1,4 @@
+import json
 import re
 from decimal import Decimal
 
@@ -103,18 +104,23 @@ class EliteCenter(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
 
-        key_container = soup.find('input', 'current_product_id')
-        if not key_container:
-            key_container = soup.find('button', 'single_add_to_cart_button')
-        if not key_container:
-            return []
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
 
-        key = key_container['value']
+        for json_entry in json_data['@graph']:
+            if json_entry['@type'] == 'Product':
+                product_data = json_entry
+                break
+        else:
+            raise Exception('No product data found')
 
-        sku_tag = soup.find('div', {'data-id': '6897d6e'})
-        sku = sku_tag.text.split('SKU: ')[1].strip()
+        name = product_data['name']
+        sku = product_data['sku']
+        offer_price = Decimal(product_data['offers']['price'])
+        normal_price = (offer_price * Decimal('1.05')).quantize(0)
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
         if soup.find('button', 'stock_alert_button'):
             stock = 0
@@ -125,17 +131,6 @@ class EliteCenter(Store):
             else:
                 stock = -1
 
-        normal_price = Decimal(
-            remove_words(soup.find('p', 'precio-webpay').text))
-        if soup.find('p', 'precio-oferta'):
-            offer_price = Decimal(soup.find('p', 'precio-oferta').text.
-                                  split('$')[1].replace('.', ''))
-        else:
-            price_text = soup.find('p', 'precio-normal').text.strip()
-            if price_text == '$':
-                return []
-            offer_price = Decimal(
-                remove_words(soup.find('p', 'precio-normal').text))
         picture_urls = [tag['href'].split('?')[0] for tag in
                         soup.find(
                             'figure', 'woocommerce-product-gallery__wrapper')
@@ -143,7 +138,9 @@ class EliteCenter(Store):
                         if validators.url(tag['href'])
                         ]
 
-        description = soup.find('meta', {'name': 'description'})['content']
+        description = product_data['description']
+        part_number = soup.find(
+            'div', {'data-id': '1072e30'}).text.split(': ')[1].strip()
 
         p = Product(
             name,
@@ -157,7 +154,7 @@ class EliteCenter(Store):
             offer_price,
             'CLP',
             sku=sku,
-            part_number=sku,
+            part_number=part_number,
             picture_urls=picture_urls,
             description=description
 
