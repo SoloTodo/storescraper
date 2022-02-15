@@ -305,7 +305,7 @@ class Sodimac(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        if soup.find('p', 'sinStock-online-p-SEO'):
+        if soup.find('div', {'id': 'testId-product-outofstock'}):
             return []
 
         sku_container = soup.find('input', {'id': 'currentProductId'})
@@ -409,6 +409,8 @@ class Sodimac(Store):
 
     @classmethod
     def _new_products_for_url(cls, url, session, soup, category):
+        import ipdb
+        ipdb.set_trace()
         sku = soup.find(
             'div', 'product-cod').text.replace('Código', '').strip()
         name = soup.find('h1', 'product-title').text.strip()
