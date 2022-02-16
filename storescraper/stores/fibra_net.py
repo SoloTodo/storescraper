@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -8,7 +9,7 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     MOUSE, MOTHERBOARD, PROCESSOR, CPU_COOLER, GAMING_CHAIR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class FibraNet(Store):
@@ -84,16 +85,27 @@ class FibraNet(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if soup.find('h1', 'product_title'):
-            name = soup.find('h1', 'product_title').text
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+
+        for json_entry in json_data['@graph']:
+            if json_entry['@type'] == 'Product':
+                product_data = json_entry
+                break
         else:
-            name = soup.find('div', 'et_pb_module_inner').text
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
+            raise Exception('No product data found')
+
+        name = product_data['name']
+        sku = product_data['sku']
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.035')).quantize(0)
+
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        price = Decimal(remove_words(soup.find('p', 'price').find('bdi').text))
+
         picture_urls = [tag['src'] for tag in soup.find('div',
                         'woocommerce-product-gallery').findAll('img')]
         p = Product(
@@ -102,12 +114,13 @@ class FibraNet(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
 
         )
