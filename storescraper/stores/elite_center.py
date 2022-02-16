@@ -115,6 +115,9 @@ class EliteCenter(Store):
         else:
             raise Exception('No product data found')
 
+        if 'offers' not in product_data:
+            return []
+
         name = product_data['name']
         sku = product_data['sku']
         offer_price = Decimal(product_data['offers']['price'])
