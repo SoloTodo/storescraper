@@ -106,6 +106,7 @@ from .falabella_cf import FalabellaCf
 from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
 from .fama import Fama
+from .fibra_net import FibraNet
 from .fiesta_lan import FiestaLan
 from .finall import Finall
 from .fsn_store import FsnStore
