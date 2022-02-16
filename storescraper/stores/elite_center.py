@@ -138,9 +138,14 @@ class EliteCenter(Store):
                         if validators.url(tag['href'])
                         ]
 
-        description = product_data['description']
-        part_number = soup.find(
-            'div', {'data-id': '1072e30'}).text.split(': ')[1].strip()
+        description = product_data.get('description', None)
+        part_number_text = soup.find(
+            'div', {'data-id': '1072e30'}).text.strip()
+
+        if part_number_text:
+            part_number = part_number_text.split(': ')[1].strip()
+        else:
+            part_number = None
 
         p = Product(
             name,

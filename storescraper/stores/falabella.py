@@ -297,7 +297,7 @@ class Falabella(Store):
                 raise Exception('Invalid product type')
 
     @classmethod
-    def _get_product_urls(cls, session, category_id, variant):
+    def _get_product_urls(cls, session, category_id, variant=None):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
