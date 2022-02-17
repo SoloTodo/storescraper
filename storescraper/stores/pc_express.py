@@ -3,7 +3,8 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, ALL_IN_ONE, TELEVISION
+from storescraper.categories import GAMING_CHAIR, ALL_IN_ONE, TELEVISION, \
+    CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -25,7 +26,7 @@ class PcExpress(Store):
             'ExternalStorageDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Tablet',
             'MemoryCard',
             'UsbFlashDrive',
@@ -39,7 +40,8 @@ class PcExpress(Store):
             'Ups',
             GAMING_CHAIR,
             ALL_IN_ONE,
-            TELEVISION
+            TELEVISION,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -78,7 +80,8 @@ class PcExpress(Store):
             ['523', 'Monitor'],        # Monitores
             ['413', 'StorageDrive'],          # Discos Duros
             ['331', 'SolidStateDrive'],       # Unidades de estado Solido
-            ['169', 'CpuCooler'],             # Ventilacion para CPU
+            ['169', CPU_COOLER],             # Ventilacion para CPU
+            ['170', CASE_FAN],             # Ventilacion para Gabinete
             ['493', 'Printer'],               # Impresoras Hogar y Oficina
             ['282', 'Headphones'],            # Microfonos y Manos Libres
         ]

@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -19,7 +20,7 @@ class Pcmig(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -38,8 +39,8 @@ class Pcmig(Store):
             ['unidades-ssd', 'SolidStateDrive'],
             ['tarjetas-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
-            ['enfriamiento/liquido-enfriamiento', 'CpuCooler'],
-            ['enfriamiento/aire-enfriamiento', 'CpuCooler'],
+            ['enfriamiento/liquido-enfriamiento', CPU_COOLER],
+            ['enfriamiento/aire-enfriamiento', CPU_COOLER],
             ['memorias-ram', 'Ram'],
             ['tarjetas-graficas', 'VideoCard'],
             ['fuentes', 'PowerSupply'],

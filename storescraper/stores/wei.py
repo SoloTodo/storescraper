@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, MICROPHONE
+from storescraper.categories import GAMING_CHAIR, MICROPHONE, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -24,7 +24,7 @@ class Wei(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Tablet',
             'ExternalStorageDrive',
             'UsbFlashDrive',
@@ -75,8 +75,8 @@ class Wei(Store):
             ['1117', 'Processor'],  # Procesadores
             ['1238', 'Ram'],  # MEMORIAS
             ['1240', 'Ram'],  # MEMORIA PC GAMER
-            ['1162', 'CpuCooler'],  # VENTILADORES / FAN
-            ['804', 'CpuCooler'],  # REFRIGERACION E ILUMINACION
+            ['1162', CPU_COOLER],  # VENTILADORES / FAN
+            ['804', CPU_COOLER],  # REFRIGERACION E ILUMINACION
             ['784', 'Printer'],  # IMPRESORA TINTA
             ['773', 'Printer'],  # IMPRESORAS LASER
             ['775', 'Printer'],  # IMPRESORAS MULTIFUNCIONALES

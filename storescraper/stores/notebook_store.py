@@ -4,7 +4,8 @@ import logging
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE
+from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE, \
+    CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -39,7 +40,7 @@ class NotebookStore(Store):
             'Printer',
             'VideoGameConsole',
             'PowerSupply',
-            'CpuCooler',
+            CPU_COOLER,
             GAMING_CHAIR,
             GAMING_DESK,
             MICROPHONE
@@ -83,7 +84,7 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/cajas-gabinetes.html',
              'ComputerCase'],
             ['equipos/componentes-informaticos/ventiladores-y-sistemas'
-             '-de-enfriamiento.html', 'CpuCooler'],
+             '-de-enfriamiento.html', CPU_COOLER],
             # Audio Video y Foto
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
             ['audio-y-video/monitores-proyectores/'
@@ -101,7 +102,7 @@ class NotebookStore(Store):
             ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
             ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
             ['gaming/componentes/gabinetes.html', 'ComputerCase'],
-            ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
+            ['gaming/componentes/enfriamiento.html', CPU_COOLER],
             ['gaming/componentes/memoria-ram.html', 'Ram'],
             ['gaming/componentes/procesadores.html', 'Processor'],
             ['gaming/accesorios/sillas.html', GAMING_CHAIR],

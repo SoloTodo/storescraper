@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -18,7 +19,6 @@ class CNetwork(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
             'Ram',
             'VideoCard',
             'PowerSupply',

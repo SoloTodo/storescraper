@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import KEYBOARD, CELL, MONITOR, MOTHERBOARD, \
     HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, GAMING_CHAIR, RAM, VIDEO_CARD, \
-    PROCESSOR, MOUSE, POWER_SUPPLY, CPU_COOLER, MICROPHONE
+    PROCESSOR, MOUSE, POWER_SUPPLY, CPU_COOLER, MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,7 +34,8 @@ class Ampera(Store):
             MOUSE,
             POWER_SUPPLY,
             CPU_COOLER,
-            MICROPHONE
+            MICROPHONE,
+            CASE_FAN,
         }
 
     @classmethod
@@ -56,7 +57,9 @@ class Ampera(Store):
             ['gpus', VIDEO_CARD],
             ['procesadores', PROCESSOR],
             ['fuentes-de-poder', POWER_SUPPLY],
-            ['refrigeracion', CPU_COOLER],
+            ['refrigeracion/refrigeracion-aire', CPU_COOLER],
+            ['refrigeracion/refrigeracion-liquida', CPU_COOLER],
+            ['refrigeracion/ventiladores', CASE_FAN],
             ['microfonos', MICROPHONE]
         ]
 

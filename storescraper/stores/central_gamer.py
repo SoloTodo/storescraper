@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, MONITOR, HEADPHONES, MOUSE, KEYBOARD, GAMING_CHAIR, \
     PROCESSOR, VIDEO_CARD, VIDEO_GAME_CONSOLE, STORAGE_DRIVE, GAMING_DESK, \
-    MICROPHONE
+    MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,7 +30,8 @@ class CentralGamer(Store):
             VIDEO_GAME_CONSOLE,
             STORAGE_DRIVE,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -49,7 +50,9 @@ class CentralGamer(Store):
             ['sillas-gamer-y-alfombras', GAMING_CHAIR],
             ['procesadores', PROCESSOR],
             ['escritorios-gamer', GAMING_DESK],
-            ['microfonos-streamer-gamer', MICROPHONE]
+            ['microfonos-streamer-gamer', MICROPHONE],
+            ['todo-para-pc-gamer/refrigeracion/ventiladores-para-gabinete',
+             CASE_FAN],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

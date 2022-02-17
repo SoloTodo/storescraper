@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, CELL
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, CELL, CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -26,7 +26,7 @@ class AllTec(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
@@ -38,6 +38,7 @@ class AllTec(Store):
             EXTERNAL_STORAGE_DRIVE,
             MEMORY_CARD,
             CELL,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -62,8 +63,8 @@ class AllTec(Store):
             ['33-mecanicos-rigidos', 'StorageDrive'],
             ['34-ssd', 'SolidStateDrive'],
             ['27-monitores', 'Monitor'],
-            ['93-cpu-cooler', 'CpuCooler'],
-            ['92-water-cooling', 'CpuCooler'],
+            ['93-cpu-cooler', CPU_COOLER],
+            ['92-water-cooling', CPU_COOLER],
             ['25-auriculares', 'Headphones'],
             ['110-pc', 'Headphones'],
             ['111-consolas', 'Headphones'],
@@ -75,6 +76,7 @@ class AllTec(Store):
             ['95-externos-usb', EXTERNAL_STORAGE_DRIVE],
             ['59-memorias-flash-microsdsdcompac-flash', MEMORY_CARD],
             ['74-smartphone-smartwatch-smartband', CELL],
+            ['91-chassis-fan-ventiladores', CASE_FAN],
         ]
 
         session = session_with_proxy(extra_args)

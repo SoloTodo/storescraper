@@ -4,7 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -29,13 +29,14 @@ class Digiplot(Store):
             'Notebook',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
             'Ups',
             'VideoCard',
             GAMING_CHAIR,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -55,6 +56,7 @@ class Digiplot(Store):
             ['gabinetes-y-fuentes/gabinete-gamer', 'ComputerCase'],
             ['gabinetes-y-fuentes/gabinete-slim', 'ComputerCase'],
             ['gabinetes-y-fuentes/gabinete-vertical', 'ComputerCase'],
+            ['gabinetes-y-fuentes/ventilador-gabinete', CASE_FAN],
             ['impresoras/laser', 'Printer'],
             ['impresoras/multifuncion-laser', 'Printer'],
             ['impresoras/multifuncion-tinta', 'Printer'],
@@ -65,7 +67,7 @@ class Digiplot(Store):
             ['notebook-y-tablet/notebook-14"', 'Notebook'],
             ['placa-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
-            ['procesadores/ventilador-cpu', 'CpuCooler'],
+            ['procesadores/ventilador-cpu', CPU_COOLER],
             ['teclado-y-mouse/mouse-alambrico', 'Mouse'],
             ['teclado-y-mouse/mouse-bluetooth', 'Mouse'],
             ['teclado-y-mouse/mouse-gamer', 'Mouse'],

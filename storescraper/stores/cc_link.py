@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, MOUSE, KEYBOARD, TELEVISION, MONITOR, \
-    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR
+    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -35,7 +35,8 @@ class CCLink(Store):
             HEADPHONES,
             CPU_COOLER,
             UPS,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -58,7 +59,7 @@ class CCLink(Store):
             ['partes-y-piezas/componentes/tarjetas-de-video', VIDEO_CARD],
             ['partes-y-piezas/componentes/mouse', MOUSE],
             ['partes-y-piezas/componentes/teclado', KEYBOARD],
-            ['partes-y-piezas/componentes/ventiladores', CPU_COOLER],
+            ['partes-y-piezas/componentes/ventiladores', CASE_FAN],
             ['partes-y-piezas/componentes/cooler-cpu', CPU_COOLER],
             ['partes-y-piezas/tv-y-proyeccion/televisores', TELEVISION],
             ['partes-y-piezas/tv-y-proyeccion/monitores', MONITOR],

@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -15,7 +16,7 @@ class PcDigital(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -38,7 +39,7 @@ class PcDigital(Store):
             ['hardware/almacenamiento?filter=481&', 'SolidStateDrive'],
             ['hardware/tarjetas-madre?', 'Motherboard'],
             ['hardware/procesadores?', 'Processor'],
-            ['hardware/enfriamiento?filter=1023%2C1186&', 'CpuCooler'],
+            ['hardware/enfriamiento?filter=1023%2C1186&', CPU_COOLER],
             ['hardware/memorias-ram?', 'Ram'],
             ['hardware/tarjetas-de-video?', 'VideoCard'],
             ['hardware/energia?filter=993&', 'PowerSupply'],

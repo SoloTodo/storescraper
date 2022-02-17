@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -19,7 +20,7 @@ class XtremeTecPc(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -53,7 +54,7 @@ class XtremeTecPc(Store):
             ['almacenamiento/discos-duros/ssd', 'SolidStateDrive'],
             ['compo/tarjetas-madre', 'Motherboard'],
             ['compo/procesadores', 'Processor'],
-            ['accesorios/ventilacion/disipadores', 'CpuCooler'],
+            ['accesorios/ventilacion/disipadores', CPU_COOLER],
             ['compo/memorias-ram', 'Ram'],
             ['compo/tarjetas-de-video', 'VideoCard'],
             ['compo/gabinetes', 'ComputerCase'],

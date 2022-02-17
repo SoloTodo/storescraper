@@ -4,6 +4,7 @@ import re
 
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, check_ean13
@@ -18,7 +19,7 @@ class WalmartMexico(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -53,7 +54,7 @@ class WalmartMexico(Store):
             ['computadoras/componentes-de-computadoras/procesadores?',
              'Processor'],
             ['computadoras/componentes-de-computadoras/'
-             'enfriadores-y-ventiladores?', 'CpuCooler'],
+             'enfriadores-y-ventiladores?', CPU_COOLER],
             ['computadoras/componentes-de-computadoras/memoria-ram?', 'Ram'],
             ['computadoras/componentes-de-computadoras/tarjetas-de-video?',
              'VideoCard'],

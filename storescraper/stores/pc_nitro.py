@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE, \
-    GAMING_DESK, MICROPHONE
+    GAMING_DESK, MICROPHONE, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -18,7 +18,7 @@ class PcNitro(Store):
             'Notebook',
             'Tablet',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Motherboard',
             'PowerSupply',
             'Processor',
@@ -53,7 +53,7 @@ class PcNitro(Store):
             ['216-notebook-gaming', 'Notebook'],
             ['31-tablet', 'Tablet'],
             ['40-cajas-gabinetes', 'ComputerCase'],
-            ['41-ventiladores-y-sist-de-enfriamiento', 'CpuCooler'],
+            ['41-ventiladores-y-sist-de-enfriamiento', CPU_COOLER],
             ['42-tarjeta-madre-placa-madre', 'Motherboard'],
             ['43-fuentes-de-poder', 'PowerSupply'],
             ['44-procesadores', 'Processor'],

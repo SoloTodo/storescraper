@@ -12,7 +12,7 @@ from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
 from storescraper.categories import GAMING_CHAIR, WEARABLE, \
-    EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
+    EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, CPU_COOLER
 
 
 class SpDigital(Store):
@@ -31,7 +31,7 @@ class SpDigital(Store):
             'Motherboard',
             'Processor',
             'VideoCard',
-            'CpuCooler',
+            CPU_COOLER,
             'Printer',
             'Ram',
             'Monitor',
@@ -98,7 +98,7 @@ class SpDigital(Store):
              'Home > Componentes para PC > Procesadores', 1],
             ['379', ['VideoCard'],
              'Home > Componentes para PC > Tarjetas de Video', 1],
-            ['484', ['CpuCooler'],
+            ['484', [CPU_COOLER],
              'Home > Componentes para PC > Refrigeración y Ventiladores', 1],
             ['396', ['Printer'],
              'Home > Impresoras y Escáneres > Impresora a Tinta', 1],
