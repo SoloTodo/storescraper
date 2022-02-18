@@ -269,6 +269,10 @@ class Ripley(Store):
                             product_data, product_element, category)
 
                     if product:
+                        if product.normal_price == Decimal('9999999') or \
+                                product.offer_price == Decimal('9999999'):
+                            continue
+
                         if product.sku in product_dict:
                             product_to_update = product_dict[product.sku]
                         else:

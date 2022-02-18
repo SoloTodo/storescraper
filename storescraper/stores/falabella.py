@@ -405,6 +405,10 @@ class Falabella(Store):
             if not normal_price:
                 normal_price = offer_price
 
+            if normal_price == Decimal('9999999') or \
+                    offer_price == Decimal('9999999'):
+                continue
+
             stock = model['stockAvailable']
             picture_urls = cls._get_picture_urls(session, model['skuId'])
 
@@ -568,6 +572,10 @@ class Falabella(Store):
 
             if not normal_price:
                 normal_price = offer_price
+
+            if normal_price == Decimal('9999999') or \
+                    offer_price == Decimal('9999999'):
+                continue
 
             stock = 0
 
