@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, \
-    MOUSE, HEADPHONES, MONITOR, GAMING_CHAIR, PRINTER, GAMING_DESK
+    MOUSE, HEADPHONES, MONITOR, GAMING_CHAIR, PRINTER, GAMING_DESK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -28,7 +28,8 @@ class PcGamer(Store):
             MONITOR,
             GAMING_CHAIR,
             PRINTER,
-            GAMING_DESK
+            GAMING_DESK,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -41,7 +42,8 @@ class PcGamer(Store):
             ['16', VIDEO_CARD],  # Tarjetas de video
             ['14', COMPUTER_CASE],  # Gabinetes s/fuente
             ['15', POWER_SUPPLY],  # Fuentes de poder
-            ['8', CPU_COOLER],  # Refrigeracion
+            ['89', CPU_COOLER],  # WATER COOLING
+            ['90', CASE_FAN],  # VENTILADOR
             ['9', MOUSE],  # Mouse y teclados
             ['1', HEADPHONES],  # Audio
             ['6', MONITOR],  # Monitores

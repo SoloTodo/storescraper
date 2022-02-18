@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MOTHERBOARD, RAM, \
     STORAGE_DRIVE, SOLID_STATE_DRIVE, COMPUTER_CASE, POWER_SUPPLY, \
     CPU_COOLER, MONITOR, KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, HEADPHONES, \
-    GAMING_CHAIR, MICROPHONE
+    GAMING_CHAIR, MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -31,7 +31,8 @@ class GoodComputer(Store):
             KEYBOARD_MOUSE_COMBO,
             HEADPHONES,
             GAMING_CHAIR,
-            MICROPHONE
+            MICROPHONE,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -45,7 +46,10 @@ class GoodComputer(Store):
             ['componentes-informaticos/ssd', SOLID_STATE_DRIVE],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-informaticos/cooler-cpu', CPU_COOLER],
+            ['componentes-informaticos/cooler-cpu/refrigeracion-liquida',
+             CPU_COOLER],
+            ['componentes-informaticos/ventiladores-enfriamiento', CASE_FAN],
+            ['componentes-informaticos/cooler-cpu/por-aire', CASE_FAN],
             ['monitores', MONITOR],
             ['perifericos/teclados', KEYBOARD],
             ['perifericos/mouse', MOUSE],

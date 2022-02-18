@@ -49,7 +49,6 @@ class Finall(Store):
             ['pc/procesadores', PROCESSOR],
             ['pc/gabinetes', COMPUTER_CASE],
             ['pc/refrigeracion', CPU_COOLER],
-            ['pc/refrigeracion-liquida', CPU_COOLER],
             ['pc/disco-duro-mecanico', STORAGE_DRIVE],
             ['pc/monitores', MONITOR],
         ]

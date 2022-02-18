@@ -85,7 +85,7 @@ class PcFactory(Store):
             ['54', POWER_SUPPLY],
             ['16', COMPUTER_CASE],
             ['328', COMPUTER_CASE],
-            ['42', CPU_COOLER],
+            ['648', CPU_COOLER],
             ['994', TABLET],
             ['262', PRINTER],
             ['432', CELL],

@@ -126,6 +126,7 @@ class NotebookStore(Store):
 
                 url = 'https://notebookstore.cl/{}?p={}'.format(
                     category_path, page)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html5lib')
                 products = soup.findAll('li', 'product')

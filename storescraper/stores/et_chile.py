@@ -8,7 +8,7 @@ from storescraper.categories import COMPUTER_CASE, MOTHERBOARD, \
     PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     MEMORY_CARD, HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
     VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, USB_FLASH_DRIVE, POWER_SUPPLY, \
-    MICROPHONE, GAMING_DESK
+    MICROPHONE, GAMING_DESK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -38,7 +38,8 @@ class ETChile(Store):
             NOTEBOOK,
             USB_FLASH_DRIVE,
             MICROPHONE,
-            GAMING_DESK
+            GAMING_DESK,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -72,7 +73,7 @@ class ETChile(Store):
             ['productos/monitores', MONITOR],
             ['productos/teclados', KEYBOARD],
             ['productos/partes-y-piezas/refrigeracion/ventiladores',
-             CPU_COOLER],
+             CASE_FAN],
             ['productos/partes-y-piezas/refrigeracion/water-cooling',
              CPU_COOLER],
             ['productos/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],

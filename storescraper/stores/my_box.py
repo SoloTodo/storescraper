@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, VIDEO_CARD, \
     PROCESSOR, MOTHERBOARD, RAM, STORAGE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
-    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM, MICROPHONE
+    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM, MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,7 +27,8 @@ class MyBox(Store):
             MONITOR,
             HEADPHONES,
             STEREO_SYSTEM,
-            MICROPHONE
+            MICROPHONE,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -46,7 +47,8 @@ class MyBox(Store):
             ['28-monitor', MONITOR],
             ['21-audifonos-headset', HEADPHONES],
             ['22-parlantes', STEREO_SYSTEM],
-            ['24-microfonos', MICROPHONE]
+            ['24-microfonos', MICROPHONE],
+            ['89-ventiladores-fans', CASE_FAN],
         ]
 
         session = session_with_proxy(extra_args)

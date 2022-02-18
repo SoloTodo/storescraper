@@ -9,7 +9,8 @@ from storescraper.categories import VIDEO_GAME_CONSOLE, NOTEBOOK, \
     VIDEO_CARD, PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     USB_FLASH_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, COMPUTER_CASE, \
     MONITOR, MOTHERBOARD, POWER_SUPPLY, KEYBOARD, MOUSE, CPU_COOLER, \
-    GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE, PRINTER
+    GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE, PRINTER, \
+    CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -44,6 +45,7 @@ class TecnoPro(Store):
             TABLET,
             WEARABLE,
             PRINTER,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -70,7 +72,7 @@ class TecnoPro(Store):
             ['impresora-laser', PRINTER],
             ['impresora-tinta', PRINTER],
             ['refrigeracion-cpu', CPU_COOLER],
-            ['ventilador-pc', CPU_COOLER],
+            ['ventilador-pc', CASE_FAN],
             ['perifericos-pc', HEADPHONES],
             ['sillas-y-mesas-gamers', GAMING_CHAIR],
             ['televisores', TELEVISIONS],

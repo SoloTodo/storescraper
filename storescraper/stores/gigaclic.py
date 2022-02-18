@@ -67,8 +67,6 @@ class Gigaclic(Store):
             ['mas-categorias/accesorios-ups', UPS],
             ['mas-categorias/accesorios-ps4-ps5-xbox/',
              EXTERNAL_STORAGE_DRIVE],
-
-
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

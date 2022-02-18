@@ -12,7 +12,7 @@ from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
     COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL, \
     WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, USB_FLASH_DRIVE, MEMORY_CARD, \
-    MICROPHONE
+    MICROPHONE, CASE_FAN
 
 
 class InfographicsSolutions(Store):
@@ -40,7 +40,8 @@ class InfographicsSolutions(Store):
             GAMING_CHAIR,
             USB_FLASH_DRIVE,
             MEMORY_CARD,
-            MICROPHONE
+            MICROPHONE,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -60,7 +61,9 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/gabinetes', COMPUTER_CASE],
             ['pantallas-monitores', MONITOR],
             ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/refrigeracion', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/aire', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/liquida', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/audifonos-headset', HEADPHONES],
             ['accesorios/mouse', MOUSE],

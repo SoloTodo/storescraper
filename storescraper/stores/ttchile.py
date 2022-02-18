@@ -11,7 +11,7 @@ from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
     MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
     CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES, GAMING_CHAIR, \
-    USB_FLASH_DRIVE, PRINTER
+    USB_FLASH_DRIVE, PRINTER, CASE_FAN
 
 
 class TtChile(Store):
@@ -67,6 +67,7 @@ class TtChile(Store):
             ['107', PRINTER],  # Impresoras
             ['100', GAMING_CHAIR],  # Sillas y Escritorio
             ['42', EXTERNAL_STORAGE_DRIVE],  # Discos duros extenos
+            ['73', CASE_FAN],  # Ventiladores
         ]
 
         product_urls = []

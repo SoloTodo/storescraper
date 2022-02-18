@@ -11,7 +11,7 @@ from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
     MOTHERBOARD, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MEMORY_CARD, \
-    USB_FLASH_DRIVE, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
+    USB_FLASH_DRIVE, STEREO_SYSTEM, GAMING_DESK, MICROPHONE, CASE_FAN
 
 
 class PcCom(Store):
@@ -56,7 +56,9 @@ class PcCom(Store):
             ['discos-duros/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
-            ['enfriamiento', CPU_COOLER],
+            ['enfriamiento/refrigeracion-liquida', CPU_COOLER],
+            ['enfriamiento/cooler-pc', CPU_COOLER],
+            ['enfriamiento/ventiladores-pc', CASE_FAN],
             ['almacenamiento/memoriasd', MEMORY_CARD],
             ['almacenamiento/microsd', MEMORY_CARD],
             ['almacenamiento/pendrive', USB_FLASH_DRIVE],
