@@ -43,16 +43,17 @@ class GamingHouse(Store):
             ['hardware/gabinetes', COMPUTER_CASE],
             ['hardware/memorias-ram', RAM],
             ['hardware/placas-madre', MOTHERBOARD],
-            ['hardware/procesadores', PROCESSOR],
+            ['hardware/procesadores/amd-procesadores/', PROCESSOR],
+            ['hardware/procesadores/intel-procesadores/', PROCESSOR],
             ['hardware/refrigeracion-cpu', CPU_COOLER],
             ['hardware/tarjetas-graficas', VIDEO_CARD],
             ['notebooks', NOTEBOOK],
             ['perifericos/audifonos', HEADPHONES],
+            ['perifericos/microfonos', MICROPHONE],
             ['perifericos/monitores', MONITOR],
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
             ['sillas', GAMING_CHAIR],
-            ['perifericos/microfonos', MICROPHONE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

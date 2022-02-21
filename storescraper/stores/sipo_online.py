@@ -9,7 +9,7 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
     KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
     GAMING_CHAIR, CPU_COOLER, MOTHERBOARD, VIDEO_CARD, PROCESSOR, \
-    POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE
+    POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -41,7 +41,8 @@ class SipoOnline(Store):
             NOTEBOOK,
             TABLET,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -66,6 +67,7 @@ class SipoOnline(Store):
             ['computacion/teclado', KEYBOARD],
             ['computacion/mouse', MOUSE],
             ['computacion/combo-computacion', KEYBOARD_MOUSE_COMBO],
+            ['zona-gamer/consolas', VIDEO_GAME_CONSOLE],
             ['zona-gamer/silla-gamer', GAMING_CHAIR],
             ['zona-gamer/audifono-gamer', HEADPHONES],
             ['zona-gamer/teclado-gamer', KEYBOARD],

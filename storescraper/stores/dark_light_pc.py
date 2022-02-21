@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, RAM, SOLID_STATE_DRIVE
+from storescraper.categories import VIDEO_CARD, RAM, SOLID_STATE_DRIVE, \
+    PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,7 +16,8 @@ class DarkLightPc(Store):
         return [
             VIDEO_CARD,
             RAM,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
+            PROCESSOR,
         ]
 
     @classmethod
@@ -23,7 +25,8 @@ class DarkLightPc(Store):
         url_extensions = [
             ['tarjeta-grafica', VIDEO_CARD],
             ['ram', RAM],
-            ['almacenamiento', SOLID_STATE_DRIVE]
+            ['almacenamiento', SOLID_STATE_DRIVE],
+            ['procesador', PROCESSOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
