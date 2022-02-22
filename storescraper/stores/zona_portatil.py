@@ -127,8 +127,8 @@ class ZonaPortatil(Store):
         offer_price = (normal_price * Decimal('0.95')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
-                                                               '-gallery').
-            findAll('img')]
+                                                               '-gallery')
+                        .findAll('img')]
         p = Product(
             name,
             cls.__name__,

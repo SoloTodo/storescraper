@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD, MOUSE, MONITOR, \
     WEARABLE, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, RAM, GAMING_CHAIR, \
-    STEREO_SYSTEM, MOTHERBOARD, KEYBOARD_MOUSE_COMBO, GAMING_DESK, MICROPHONE, \
-    CASE_FAN
+    STEREO_SYSTEM, MOTHERBOARD, KEYBOARD_MOUSE_COMBO, GAMING_DESK, \
+    MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy

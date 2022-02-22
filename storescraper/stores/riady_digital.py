@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import CELL, EXTERNAL_STORAGE_DRIVE, MOUSE, \
-    STEREO_SYSTEM, KEYBOARD, ALL_IN_ONE, NOTEBOOK, PRINTER, TABLET, HEADPHONES, \
-    MONITOR
+    STEREO_SYSTEM, KEYBOARD, ALL_IN_ONE, NOTEBOOK, PRINTER, TABLET, \
+    HEADPHONES, MONITOR
 from storescraper.utils import session_with_proxy
 
 

@@ -112,9 +112,8 @@ class SmartGaming(Store):
                             'div', 'slider').findAll('img')]
 
         description = html_to_markdown(str(soup.find(
-            'div', 'woocommerce-product-details__short-description')) +
-                                       str(soup.find('div',
-                                                     'woocommerce-Tabs-panel--description')))
+            'div', 'woocommerce-product-details__short-description')
+        ) + str(soup.find('div', 'woocommerce-Tabs-panel--description')))
 
         p = Product(
             name,

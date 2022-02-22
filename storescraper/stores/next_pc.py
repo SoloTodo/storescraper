@@ -98,7 +98,7 @@ class NextPc(Store):
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
                                                                '-gallery')
-            .findAll('img')]
+                        .findAll('img')]
         p = Product(
             name,
             cls.__name__,

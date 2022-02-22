@@ -105,7 +105,7 @@ class MyBox(Store):
             stock = 0
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'images-container').
-            findAll('img') if tag.get('src')]
+                        findAll('img') if tag.get('src')]
         p = Product(
             name,
             cls.__name__,

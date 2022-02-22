@@ -75,7 +75,7 @@ class Sevenwin(Store):
                                                         'col-md-3 '
                                                         'product-page-thumbs '
                                                         'space mt-3')
-            .findAll('img')]
+                        .findAll('img')]
         p = Product(
             name,
             cls.__name__,

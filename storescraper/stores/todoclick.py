@@ -191,9 +191,9 @@ class Todoclick(Store):
             assert soup.find('meta', {'property': 'product:price:currency'})[
                        'content'] == 'CLP'
             normal_price = (offer_price * Decimal('1.05')).quantize(0)
-            picture_urls = [tag['src'] for tag in soup.find('div',
-                                                            'woocommerce-product-gallery').findAll(
-                'img')]
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'woocommerce-product-gallery')
+                                .findAll('img')]
             products.append(Product(
                 base_name,
                 cls.__name__,

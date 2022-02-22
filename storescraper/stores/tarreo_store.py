@@ -108,7 +108,8 @@ class TarreoStore(Store):
 
         part_number_key = '{}.properties.0'.format(base_json_key)
 
-        if part_number_key in product_data:
+        if product_data.get(part_number_key, {}).get('name', '') == \
+                'Part Number':
             part_number = product_data[part_number_key]['values']['json'][0]
         else:
             part_number = None

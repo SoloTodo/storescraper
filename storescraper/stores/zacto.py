@@ -120,8 +120,8 @@ class Zacto(Store):
         normal_price = Decimal(remove_words(price_tags[1].text))
 
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'woocommerce-product-gallery').
-                            findAll('img')]
+                        soup.find('div', 'woocommerce-product-gallery')
+                            .findAll('img')]
         p = Product(
             name,
             cls.__name__,
