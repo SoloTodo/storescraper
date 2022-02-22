@@ -155,6 +155,13 @@ class BestStore(Store):
                        soup.find('div', 'images-container').findAll('img')
                        if validators.url(tag['src'])
                        ]
+
+        condition_tag = soup.find('link', {'itemprop': 'itemCondition'})
+        if condition_tag['href'] == 'https://schema.org/NewCondition':
+            condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -168,6 +175,7 @@ class BestStore(Store):
             'CLP',
             sku=sku,
             part_number=part_number,
-            picture_urls=picture_url
+            picture_urls=picture_url,
+            condition=condition
         )
         return [p]
