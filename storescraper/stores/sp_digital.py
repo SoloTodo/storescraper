@@ -238,7 +238,8 @@ class SpDigital(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        sku = [x for x in url.split('/') if x][-1]
+        key = [x for x in url.split('/') if x][-1]
+        sku = soup.find('div', 'product-view-code').text.split(': ')[1]
 
         if soup.find('a', 'stock-amount-cero') or \
                 not soup.find('div', 'product-view-stock'):
@@ -320,7 +321,7 @@ class SpDigital(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
