@@ -7,9 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.categories import CELL, HEADPHONES, MOUSE, KEYBOARD, \
-    WEARABLE, USB_FLASH_DRIVE, MEMORY_CARD, VIDEO_GAME_CONSOLE, MONITOR, \
+from storescraper.utils import session_with_proxy
+from storescraper.categories import CELL, HEADPHONES, MOUSE, WEARABLE, \
     STEREO_SYSTEM, TABLET
 
 
@@ -21,12 +20,7 @@ class MobileHut(Store):
             HEADPHONES,
             STEREO_SYSTEM,
             MOUSE,
-            # KEYBOARD,
             WEARABLE,
-            # USB_FLASH_DRIVE,
-            # MEMORY_CARD,
-            # VIDEO_GAME_CONSOLE,
-            # MONITOR,
             TABLET
         ]
 
@@ -39,66 +33,59 @@ class MobileHut(Store):
             ['mouses', MOUSE],
             ['tablets', TABLET],
             ['wearables', WEARABLE],
-            # ['', KEYBOARD],
-            # ['', USB_FLASH_DRIVE],
-            # ['', MEMORY_CARD],
-            # ['', VIDEO_GAME_CONSOLE],
-            # ['', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
+            page = 0
             while True:
-                if page > 20:
+                if page > 200:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://mobilehut.cl/collections/{}?q=pg_:{}' \
-                    .format(url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-collection')
+                url_webpage = 'https://www.searchanise.com/getresults?' \
+                              'api_key=6p8J7s7V2j&restrictBy%5Bquantity%5D=1' \
+                              '%7C&startIndex={}&collection={}' \
+                    .format(page, url_extension)
+                data = session.get(url_webpage)
+                product_containers = data.json()['items']
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty cagtegory: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container['link']
                     product_urls.append('https://mobilehut.cl' + product_url)
-                page += 1
+                page += 10
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        json_endpoint = url + '?view=get_json'
-        json_data = json.loads(session.get(json_endpoint).text)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        json_data = json.loads(
+            re.search(r'var meta = (.+);', response.text).groups()[0])
+        picture_urls = ['https:' + tag['src'] for tag in
+                        soup.find('div', 'row theiaStickySidebar').findAll(
+                            'img', 't4s-img-noscript')]
         products = []
-
-        for variant in json_data['variants']:
-            sku = str(variant['id'])
+        for variant in json_data['product']['variants']:
             name = variant['name']
-            variant_url = '{}?variant={}'.format(url, sku)
+            sku = str(variant['id'])
             price = Decimal(variant['price'] / 100)
-
-            if 'featured_media' in variant:
-                picture_urls = [variant['featured_media'][
-                                    'preview_image']['src']]
-            else:
-                picture_urls = ['https:' + x['src']
-                                for x in json_data['images']]
-
-            if variant['available']:
-                stock = -1
-            else:
+            stock_container = soup.find('option', {'value': sku})
+            if stock_container.has_attr('class') and stock_container['class'][
+                    0] == 'nt_sold_out':
                 stock = 0
-
+            else:
+                stock = -1
             p = Product(
                 name,
                 cls.__name__,
                 category,
-                variant_url,
+                url,
                 url,
                 sku,
                 stock,
@@ -109,5 +96,4 @@ class MobileHut(Store):
                 picture_urls=picture_urls
             )
             products.append(p)
-
         return products

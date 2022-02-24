@@ -4,7 +4,8 @@ import logging
 from decimal import Decimal
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE, \
+    CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -39,8 +40,10 @@ class NotebookStore(Store):
             'Printer',
             'VideoGameConsole',
             'PowerSupply',
-            'CpuCooler',
-            GAMING_CHAIR
+            CPU_COOLER,
+            GAMING_CHAIR,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -81,7 +84,7 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/cajas-gabinetes.html',
              'ComputerCase'],
             ['equipos/componentes-informaticos/ventiladores-y-sistemas'
-             '-de-enfriamiento.html', 'CpuCooler'],
+             '-de-enfriamiento.html', CPU_COOLER],
             # Audio Video y Foto
             ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
             ['audio-y-video/monitores-proyectores/'
@@ -99,10 +102,12 @@ class NotebookStore(Store):
             ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
             ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
             ['gaming/componentes/gabinetes.html', 'ComputerCase'],
-            ['gaming/componentes/enfriamiento.html', 'CpuCooler'],
+            ['gaming/componentes/enfriamiento.html', CPU_COOLER],
             ['gaming/componentes/memoria-ram.html', 'Ram'],
             ['gaming/componentes/procesadores.html', 'Processor'],
-            ['gaming/accesorios/sillas.html', GAMING_CHAIR]
+            ['gaming/accesorios/sillas.html', GAMING_CHAIR],
+            ['equipos/muebles/escritorios.html', GAMING_DESK],
+            ['audio-y-video/audio-y-video/microfonos.html', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
@@ -121,6 +126,7 @@ class NotebookStore(Store):
 
                 url = 'https://notebookstore.cl/{}?p={}'.format(
                     category_path, page)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html5lib')
                 products = soup.findAll('li', 'product')

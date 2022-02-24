@@ -20,6 +20,7 @@ class AsusStore(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # Products URL: https://www.asus.com/cl/deals/All-Deals/
         url_extensions = [
             ['Laptops', 99, NOTEBOOK],
             ['Displays-Desktops', 197, ALL_IN_ONE]
@@ -52,7 +53,9 @@ class AsusStore(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container['Buy']['Link']
+                    product_url = container['Buy']['Link'].strip()
+                    if not product_url:
+                        continue
                     product_urls.append(product_url)
                 page += 1
         return product_urls

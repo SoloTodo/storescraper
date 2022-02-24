@@ -1,9 +1,9 @@
-import json
-import urllib
+import logging
 from decimal import Decimal
-from pydoc import html
-from storescraper.categories import STORAGE_DRIVE, STEREO_SYSTEM, CELL, \
-    ALL_IN_ONE, REFRIGERATOR, MOUSE, TELEVISION, PRINTER, VIDEO_GAME_CONSOLE
+
+from bs4 import BeautifulSoup
+
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -13,84 +13,59 @@ class Computron(Store):
     @classmethod
     def categories(cls):
         return [
-            STORAGE_DRIVE,
-            STEREO_SYSTEM,
-            CELL,
-            ALL_IN_ONE,
             TELEVISION,
-            VIDEO_GAME_CONSOLE,
-            PRINTER,
-            MOUSE,
-            REFRIGERATOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = {
-            '1476': STORAGE_DRIVE,
-            '1480': STEREO_SYSTEM,
-            '1484': CELL,
-            '1478': ALL_IN_ONE,
-            '115': TELEVISION,
-            '293': TELEVISION,
-            '81767': TELEVISION,
-            '82993': REFRIGERATOR,
-            '1841': MOUSE,
-            '1481': TELEVISION,
-            '1483': PRINTER,
-            '77603': TELEVISION,
-            '1846': VIDEO_GAME_CONSOLE,
-            '1475': TELEVISION,
-            '5': TELEVISION,
-            '11': TELEVISION,
-            '1482': TELEVISION,
-            '1486': TELEVISION,
-            '1479': TELEVISION,
-            '1477': TELEVISION
-        }
+        url_extensions = [
+            TELEVISION
+        ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        response = session.get('https://api.computron.com.ec/api/categories'
-                               '/all')
-        store_categories = json.loads(response.text)['data']['categories']
-        for store_category in store_categories:
-            store_category_id = str(store_category['id'])
-            local_category = category_paths.get(store_category_id, TELEVISION)
-
+        for local_category in url_extensions:
             if local_category != category:
                 continue
-
-            url = 'https://api.computron.com.ec/api/product/category' \
-                  '/{}'.format(store_category_id)
-            print(url)
-            products_response = session.get(url, timeout=30)
-            json_products = json.loads(products_response.text)
-            for product in json_products['data']['products']:
-                if product['manufacturer']['name'] == 'LG':
-                    name = urllib.parse.quote(
-                        product['name'].replace('/', '-'), safe='/:()-')
-                    product_url = 'https://computron.com.ec/product-' \
-                                  'detail/' + name + '/' + str(
-                                    product['productId'])
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('page overflow')
+                url_webpage = 'https://computron.com.ec/efectivo/' \
+                              'catalogsearch/' \
+                              'result/index/?p={}&q=LG+LG'.format(page)
+                print(url_webpage)
+                response = session.get(url_webpage)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('div', 'product-item-info')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('empty category')
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    if product_url in product_urls:
+                        continue
                     product_urls.append(product_url)
+                page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        product_id = url.split('/')[-1]
-        product_url = 'https://api.computron.com.ec/api/product/id/{}'.format(
-            product_id)
-        response = session.get(product_url, timeout=30).text
-        product = json.loads(response)['data']['results'][0]
-        name = product['name']
-        part_number = product['external_code']
-        sku = str(product['productId'])
-        stock = product['stock']
-        price = Decimal(product['price']['netPrice'])
-        price = price.quantize(Decimal('0.01'))
-        picture_urls = [html.escape(picture) for picture in product['images']]
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'page-title').text.strip()
+        part_number = soup.find('div', {'itemprop': 'sku'}).text
+        sku = soup.find('input', {'name': 'item'})['value']
+        if soup.find('div', 'stock available'):
+            stock = -1
+        else:
+            stock = 0
+        price = Decimal(soup.find('span', 'price').text.
+                        replace(',', '').replace('$', ''))
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'gallery-placeholder').findAll('img')]
         p = Product(
             name,
             cls.__name__,

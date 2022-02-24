@@ -11,7 +11,8 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
     COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL, \
-    WEARABLE, STEREO_SYSTEM, GAMING_CHAIR
+    WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, USB_FLASH_DRIVE, MEMORY_CARD, \
+    MICROPHONE, CASE_FAN
 
 
 class InfographicsSolutions(Store):
@@ -36,7 +37,11 @@ class InfographicsSolutions(Store):
             CELL,
             WEARABLE,
             STEREO_SYSTEM,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            MICROPHONE,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -56,13 +61,18 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/gabinetes', COMPUTER_CASE],
             ['pantallas-monitores', MONITOR],
             ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/refrigeracion', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/aire', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/liquida', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/audifonos-headset', HEADPHONES],
             ['accesorios/mouse', MOUSE],
             ['reloj-inteligente-smartwatch', WEARABLE],
             ['accesorios/parlantes', STEREO_SYSTEM],
-            ['accesorios/sillas', GAMING_CHAIR]
+            ['accesorios/sillas', GAMING_CHAIR],
+            ['accesorios/pendrive', USB_FLASH_DRIVE],
+            ['microsd', MEMORY_CARD],
+            ['accesorios/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

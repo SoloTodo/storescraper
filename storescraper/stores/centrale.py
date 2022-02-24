@@ -8,7 +8,7 @@ from storescraper.categories import SOLID_STATE_DRIVE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, \
     MONITOR, PRINTER, UPS, MOUSE, COMPUTER_CASE, HEADPHONES, STEREO_SYSTEM, \
     ALL_IN_ONE, VIDEO_GAME_CONSOLE, CELL, WEARABLE, TELEVISION, GAMING_CHAIR, \
-    KEYBOARD, CPU_COOLER
+    KEYBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,13 +43,14 @@ class Centrale(Store):
             GAMING_CHAIR,
             CPU_COOLER,
             KEYBOARD,
+            MICROPHONE
 
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tecnología/audio/audífonos', HEADPHONES],
+            ['tecnología/audio/audifonos', HEADPHONES],
             ['tecnología/audio/sistemas-de-audio', STEREO_SYSTEM],
             ['tecnología/computación/all-in-one/', ALL_IN_ONE],
             ['tecnología/computación/almacenamiento-externo/',
@@ -67,8 +68,8 @@ class Centrale(Store):
             ['tecnología/impresión-y-oficina/impresoras-tinta', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-laser', PRINTER],
             ['tecnología/impresión-y-oficina/multifuncionales-tinta', PRINTER],
-            ['tecnología/impresión-y-oficina/impresoras-fotograficas',
-             PRINTER],
+            # ['tecnología/impresión-y-oficina/impresoras-fotograficas',
+            #  PRINTER],
             ['tecnologia/monitores-y-proyectores/monitores', MONITOR],
             ['tecnologia/muebles-y-sillas/sillas-muebles-y-sillas',
              GAMING_CHAIR],
@@ -83,6 +84,7 @@ class Centrale(Store):
             ['tecnología/partes-y-piezas/refrigeración', CPU_COOLER],
             ['tecnología/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
             ['tecnología/telefonía/smartphones', CELL],
+            ['tecnologia/audio/micrófono', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -121,7 +123,7 @@ class Centrale(Store):
             part_number = None
 
         name = soup.find('h1', 'product-title').text.strip()
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
@@ -129,9 +131,9 @@ class Centrale(Store):
         offer_price = Decimal(remove_words(
             soup.find('div', {'style': 'margin-bottom: -12px;'}).text.split()[
                 0]))
-        normal_price = Decimal(remove_words(soup.find('div', {
-            'style': 'margin-bottom: -10px; margin-top:-20px'}).text.split()[
-                                                0]))
+        normal_price = Decimal(remove_words(soup.find('span', {
+            'style': 'font-size: 23px; '
+                     'font-weight: bold; color: black;'}).text.split()[0]))
         picture_urls = []
         picture_container = soup.find('div', 'product-thumbnails')
         if picture_container:
@@ -152,12 +154,12 @@ class Centrale(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=part_number,
             picture_urls=picture_urls,
             part_number=part_number
         )

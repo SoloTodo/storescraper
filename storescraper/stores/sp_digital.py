@@ -11,7 +11,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
     session_with_proxy
-from storescraper.categories import GAMING_CHAIR, WEARABLE
+from storescraper.categories import GAMING_CHAIR, WEARABLE, \
+    EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, CPU_COOLER
 
 
 class SpDigital(Store):
@@ -30,7 +31,7 @@ class SpDigital(Store):
             'Motherboard',
             'Processor',
             'VideoCard',
-            'CpuCooler',
+            CPU_COOLER,
             'Printer',
             'Ram',
             'Monitor',
@@ -49,6 +50,8 @@ class SpDigital(Store):
             'Ups',
             GAMING_CHAIR,
             WEARABLE,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -95,7 +98,7 @@ class SpDigital(Store):
              'Home > Componentes para PC > Procesadores', 1],
             ['379', ['VideoCard'],
              'Home > Componentes para PC > Tarjetas de Video', 1],
-            ['484', ['CpuCooler'],
+            ['484', [CPU_COOLER],
              'Home > Componentes para PC > Refrigeración y Ventiladores', 1],
             ['396', ['Printer'],
              'Home > Impresoras y Escáneres > Impresora a Tinta', 1],
@@ -144,6 +147,12 @@ class SpDigital(Store):
              1],
             ['554', [GAMING_CHAIR],
              'Home > Componentes para PC > Sillas Gamer', 1],
+            ['574', [EXTERNAL_STORAGE_DRIVE],
+             'Home > Consolas > Accesorios XBox', 1],
+            ['564', [GAMING_DESK],
+             'Home > Componentes Para PC > Escritorio Gamer', 1],
+            ['338', [MICROPHONE],
+             'Home > Audio y Video > Microfonos y Manos Libres', 1],
         ]
 
         product_entries = defaultdict(lambda: [])
@@ -183,7 +192,7 @@ class SpDigital(Store):
 
                 for container in product_containers:
                     product_url = 'https://www.spdigital.cl' + \
-                           container.find('a')['href']
+                                  container.find('a')['href']
                     if product_url in local_product_urls:
                         done = True
                         break
@@ -229,7 +238,8 @@ class SpDigital(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        sku = [x for x in url.split('/') if x][-1]
+        key = [x for x in url.split('/') if x][-1]
+        sku = soup.find('div', 'product-view-code').text.split(': ')[1]
 
         if soup.find('a', 'stock-amount-cero') or \
                 not soup.find('div', 'product-view-stock'):
@@ -311,7 +321,7 @@ class SpDigital(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
@@ -336,6 +346,6 @@ class SpDigital(Store):
             return session.get(url, timeout=90)
         except Exception:
             if retries:
-                return cls._retrieve_page(session, url, retries-1)
+                return cls._retrieve_page(session, url, retries - 1)
             else:
                 raise

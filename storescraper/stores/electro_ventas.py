@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     MEMORY_CARD, CELL, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, PROCESSOR, USB_FLASH_DRIVE, STEREO_SYSTEM, \
-    TELEVISION, PRINTER, GAMING_CHAIR, STORAGE_DRIVE, TABLET, NOTEBOOK
+    TELEVISION, PRINTER, GAMING_CHAIR, STORAGE_DRIVE, TABLET, NOTEBOOK, \
+    MICROPHONE, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -38,6 +39,8 @@ class ElectroVentas(Store):
             STORAGE_DRIVE,
             TABLET,
             NOTEBOOK,
+            MICROPHONE,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -63,6 +66,8 @@ class ElectroVentas(Store):
             ['celulares', CELL],
             ['teclados-gaming', KEYBOARD],
             ['notebooks', NOTEBOOK],
+            ['microfonos', MICROPHONE],
+            ['escritorios-gamer', GAMING_DESK]
         ]
 
         session = session_with_proxy(extra_args)
@@ -112,7 +117,8 @@ class ElectroVentas(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data_tag = soup.findAll(
             'script', {'type': 'application/ld+json'})[2]
-        product_data = json.loads(product_data_tag.text)
+        product_data = json.loads(product_data_tag.text
+                                  .replace('\u000a', ''))
         name = product_data['name']
         sku = product_data['mpn']
         price = Decimal(product_data['offers']['price'])

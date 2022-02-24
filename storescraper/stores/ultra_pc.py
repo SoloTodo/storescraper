@@ -44,28 +44,18 @@ class UltraPc(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.ultrapc.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-outer')
+            url_webpage = 'https://www.ultrapc.cl/categoria-producto/{}/' \
+                          '?ppp=-1'.format(url_extension)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-outer')
 
-                if not product_containers or soup.find('div', 'info-404'):
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-
-                for container in product_containers:
-                    product_url = \
-                        container.find('a', 'woocommerce-LoopProduct-link')[
-                            'href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                product_url = \
+                    container.find('a', 'woocommerce-LoopProduct-link')[
+                        'href']
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
@@ -81,10 +71,13 @@ class UltraPc(Store):
             stock = -1
         else:
             stock = 0
-        normal_price = Decimal(
-            remove_words(soup.find('div', 'precios_iva').text.split()[0]))
-        offer_price = Decimal(
-            remove_words(soup.find('span', 'electro-price').find('bdi').text))
+        iva = Decimal('1.19')
+        normal_price = (iva * Decimal(
+            remove_words(soup.find('div', 'precios_iva').text.split()[0]))). \
+            quantize(0)
+        offer_price = (iva * Decimal(remove_words(
+            soup.find('p', 'price').find('span', 'electro-price').find(
+                'bdi').text))).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll(
             'img')]

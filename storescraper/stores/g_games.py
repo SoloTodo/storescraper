@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, RAM, GAMING_CHAIR, STEREO_SYSTEM, \
-    TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, SOLID_STATE_DRIVE
+    TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, \
+    SOLID_STATE_DRIVE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -30,6 +31,7 @@ class GGames(Store):
             VIDEO_CARD,
             MOTHERBOARD,
             SOLID_STATE_DRIVE,
+            MICROPHONE
         ]
 
     @classmethod
@@ -55,6 +57,7 @@ class GGames(Store):
             ['tarjetas-de-video', VIDEO_CARD],
             ['placa-madre', MOTHERBOARD],
             ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
+            ['streaming/microfono', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

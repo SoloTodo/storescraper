@@ -1,3 +1,4 @@
+import json
 import logging
 import math
 from decimal import Decimal
@@ -53,14 +54,17 @@ class MultiAhorro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'tit').text
-        sku = soup.find('span', 'btnWishlist')['data-cod-producto']
-        stock = -1
-        price = Decimal(soup.find('strong', 'precio venta')
-                        .find('span', 'monto').text.replace('.', ''))
+
+        json_data = json.loads(
+            soup.find('div', {'id': '_jsonDataFicha_'}).text)
+        name = json_data['producto']['nombre']
+        sku = json_data['producto']['codigo']
+        stock = -1 if json_data['variante']['tieneStock'] else 0
+        price = Decimal(json_data['precioMonto'])
         picture_urls = ['http:' + tag['src'] for tag in
                         soup.find('ul', 'lst lstThumbs').findAll('img')]
         p = Product(

@@ -76,12 +76,12 @@ class HpOnline(Store):
         if not soup.find('span', 'product-available'):
             stock = 0
 
-        if not soup.find('span', {'data-price-type': 'finalPrice'}) \
-                .find('span', 'price'):
+        price_container = soup.find('span', {'data-price-type': 'finalPrice'})
+
+        if not price_container or not price_container.find('span', 'price'):
             return []
 
-        price = soup.find('span', {'data-price-type': 'finalPrice'}) \
-            .find('span', 'price').text.strip()
+        price = price_container.find('span', 'price').text.strip()
         price = Decimal(price.replace('$', '').replace('.', ''))
 
         description = html_to_markdown(str(soup.find(

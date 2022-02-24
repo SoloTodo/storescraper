@@ -81,9 +81,13 @@ class ShonenTienda(Store):
 
         price = Decimal(
             remove_words(soup.find('span', 'price-item').text.strip()))
-        picture_urls = ['https:'+tag['src'].split('?v')[0] for tag in
-                        soup.find('ul', 'product-single__thumbnails').findAll(
-                            'img')]
+        if soup.find('ul', 'product-single__thumbnails'):
+            picture_urls = ['https:' + tag['src'].split('?v')[0] for tag in
+                            soup.find('ul', 'product-single__thumbnails')
+                                .findAll('img')]
+        else:
+            picture_urls = ['https:' + soup.find('img', {
+                'id': 'FeaturedMedia-product-template'})['src'].split('?v')[0]]
         p = Product(
             name,
             cls.__name__,

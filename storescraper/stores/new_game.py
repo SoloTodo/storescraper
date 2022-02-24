@@ -4,7 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -26,7 +26,7 @@ class NewGame(Store):
             'VideoCard',
             'ComputerCase',
             'Notebook',
-            'CpuCooler',
+            CPU_COOLER,
             'PowerSupply',
             'Processor',
             GAMING_CHAIR
@@ -46,7 +46,7 @@ class NewGame(Store):
             ['especial-Master-Race-2019', 'VideoCard'],
             ['accion=hijo&plt=pc&cat=81', 'ComputerCase'],
             ['accion=hijo&plt=pc&cat=82', 'Notebook'],
-            ['accion=hijo&plt=pc&cat=84', 'CpuCooler'],
+            ['accion=hijo&plt=pc&cat=84', CPU_COOLER],
             ['accion=hijo&plt=pc&cat=85', 'PowerSupply'],
             ['accion=hijo&plt=pc&cat=86', 'Processor'],
             ['accion=hijo&plt=pc&cat=70', GAMING_CHAIR]

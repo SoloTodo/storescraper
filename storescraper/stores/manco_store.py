@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, VIDEO_CARD, PROCESSOR, \
     MOTHERBOARD, RAM, SOLID_STATE_DRIVE, POWER_SUPPLY, CPU_COOLER, KEYBOARD, \
-    MOUSE, GAMING_CHAIR, MONITOR
+    MOUSE, GAMING_CHAIR, MONITOR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -28,22 +28,25 @@ class MancoStore(Store):
             MOUSE,
             MONITOR,
             GAMING_CHAIR,
+            HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['10-gabinetes', COMPUTER_CASE],
-            ['11-almacenamiento', SOLID_STATE_DRIVE],
-            ['12-procesadores', PROCESSOR],
-            ['13-memorias', RAM],
-            ['14-fuentes-de-poder', POWER_SUPPLY],
-            ['15-placas-madre', MOTHERBOARD],
-            ['16-tarjetas-de-video', VIDEO_CARD],
-            ['18-refrigeracion', CPU_COOLER],
-            ['19-perifericos', MOUSE],
-            ['21-monitores', MONITOR],
-            ['23-sillas-gamer', GAMING_CHAIR],
+            ['gabinetes', COMPUTER_CASE],
+            ['almacenamiento', SOLID_STATE_DRIVE],
+            ['procesadores', PROCESSOR],
+            ['memorias', RAM],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['placas-madre', MOTHERBOARD],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['refrigeracion', CPU_COOLER],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/teclados', KEYBOARD],
+            ['monitores', MONITOR],
+            ['perifericos/sillas-gamer', GAMING_CHAIR],
+            ['perifericos/auriculares-y-mic', HEADPHONES]
         ]
 
         session = session_with_proxy(extra_args)
@@ -58,14 +61,12 @@ class MancoStore(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://mancostore.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://mancostore.cl/categoria-producto/{}' \
+                              '/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('section',
-                                               {'id': 'products'}).findAll(
-                    'article')
+                product_containers = soup.findAll('div', 'product-small')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -78,24 +79,28 @@ class MancoStore(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_json = json.loads(
-            soup.find('div', {'id': 'product-details'})['data-product'])
-        name = product_json['name']
-        sku = str(product_json['id'])
-        stock = max(product_json['quantity'], 0)
-        offer_price = Decimal(
-            remove_words(product_json['price'].replace('\xa0', '')))
-        normal_price = (offer_price * Decimal('1.03')).quantize(0)
-        picture_urls = [tag['src'] for tag in soup.find('ul', 'product-images '
-                                                              'js-qv-product'
-                                                              '-images'
-                                                        ).findAll('img')]
+        name = soup.find('h1', 'product-title').text.strip()
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        if soup.find('p', 'stock in-stock'):
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        elif soup.find('p', 'stock out-of-stock'):
+            stock = 0
+
+        if soup.find('p', 'price').find('ins'):
+            price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text))
+        else:
+            price = Decimal(remove_words(soup.find('p', 'price').text))
+
+        picture_urls = [tag['src'] for tag in
+                        soup.find('div', 'product-gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
@@ -104,8 +109,8 @@ class MancoStore(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -22,7 +22,7 @@ class Bip(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Tablet',
             'ExternalStorageDrive',
             'UsbFlashDrive',
@@ -74,7 +74,8 @@ class Bip(Store):
             # Gabinetes gamer
             ['707', 'ComputerCase'],
             # Coolers CPU
-            ['5', 'CpuCooler'],
+            ['5', CPU_COOLER],
+            ['790', CPU_COOLER],
             # Tablets
             ['286', 'Tablet'],
             # Discos externos 2.5

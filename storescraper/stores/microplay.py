@@ -5,7 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -21,7 +21,8 @@ class Microplay(Store):
             'Keyboard',
             'KeyboardMouseCombo',
             'Headphones',
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -39,7 +40,9 @@ class Microplay(Store):
             ['computacion', {'categorias': 'audifonos-14'},
              'Headphones'],
             ['gamer', {'categorias': 'audifonos-2'}, 'Headphones'],
-            ['gamer', {'categorias': 'sillas-gamer-2'}, GAMING_CHAIR]
+            ['gamer', {'categorias': 'sillas-gamer-2'}, GAMING_CHAIR],
+            ['gamer', {'categorias': 'microfonos-14'}, MICROPHONE],
+            ['computacion', {'categorias': 'microfonos-15'}, MICROPHONE]
         ]
 
         product_urls = []

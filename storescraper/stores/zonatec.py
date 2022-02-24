@@ -98,8 +98,8 @@ class Zonatec(Store):
         stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         price_container = soup.findAll('span',
                                        'woocommerce-Price-amount amount')
-        offer_price = Decimal(remove_words(price_container[1].text))
-        normal_price = Decimal(remove_words(price_container[2].text))
+        offer_price = Decimal(remove_words(price_container[2].text))
+        normal_price = (offer_price * Decimal('1.036')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(

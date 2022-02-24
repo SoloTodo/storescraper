@@ -26,10 +26,10 @@ class MovistarOne(Store):
         products = []
 
         plans_dict = {
-            'Plan Libre': 'Plus Libre Cod_0J3_Porta cuotas',
-            'Plan XL': 'Plus XL Cod_0J2_Porta cuotas',
-            'Plan L': 'Plus L Cod_0J1_Porta cuotas',
-            'Plan M': 'Plus M Cod_0I0_Porta cuotas',
+            'Plan Libre': 'Movistar con Todo Libre Cod_0P8_Porta cuotas',
+            'Plan XL': 'Movistar con Todo XL Cod_0O0_Porta cuotas',
+            'Plan L': 'Movistar con Todo L Cod_0O4_Porta cuotas',
+            'Plan M': 'Plus M Cod_OCE_Porta cuotas',
         }
 
         for entry in json_data:

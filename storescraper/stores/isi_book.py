@@ -42,30 +42,30 @@ class IsiBook(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
+            ['pc-y-portatiles/all-in-one', 'AllInOne'],
             ['pc-y-portatiles/notebook', 'Notebook'],
             ['pc-y-portatiles/tablet', 'Tablet'],
-            ['pc-y-portatiles/all-in-one', 'AllInOne'],
-            ['impresion/multifuncionales-tinta', 'Printer'],
-            ['impresion/impresoras-laser', 'Printer'],
-            ['almacenamiento/disco-duros', 'StorageDrive'],
-            ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
-            ['audio-video-y-fotografia/videoproyectores', 'Projector'],
-            ['partes-y-piezas/monitores', 'Monitor'],
-            ['partes-y-piezas/mouse-teclado-y-mousepad', 'Mouse'],
             ['audio-video-y-fotografia/audifonos', 'Headphones'],
             ['audio-video-y-fotografia/parlantes', 'StereoSystem'],
+            ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
+            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/monitores', 'Monitor'],
+            ['partes-y-piezas/placas-madre', MOTHERBOARD],
             ['partes-y-piezas/procesadores', 'Processor'],
             ['partes-y-piezas/fuentes-de-poder', 'PowerSupply'],
             ['partes-y-piezas/memorias-ram', 'Ram'],
-            ['partes-y-piezas/tarjeta-de-video', 'VideoCard'],
-            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
-            ['partes-y-piezas/placas-madre', MOTHERBOARD],
-            ['sillas', GAMING_CHAIR],
             ['partes-y-piezas/refrigeracion', CPU_COOLER],
+            ['almacenamiento/disco-duros', 'StorageDrive'],
+            ['almacenamiento/pendrives-y-memorias-flash', USB_FLASH_DRIVE],
+            ['impresion/multifuncionales-tinta', 'Printer'],
+            ['impresion/impresoras-laser', 'Printer'],
+            ['accesorios/sillas', GAMING_CHAIR],
+            ['accesorios/mouse-teclado-y-mousepad', 'Mouse'],
+            ['gamers', 'Motherboard'],
         ]
 
         session = session_with_proxy(extra_args)
-        base_url = 'https://www.isibook.cl/{}.html?p={}'
+        base_url = 'https://www.isibook.cl/{}.html?product_list_limit=64&p={}'
         product_urls = []
 
         for url_extension, local_category in category_paths:
@@ -81,7 +81,11 @@ class IsiBook(Store):
                     raise Exception('Page overflow')
 
                 url = base_url.format(url_extension, page)
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                print(url)
+                res = session.get(url)
+                if res.url != url:
+                    raise Exception('URL mismatch: ' + url + ' ' + res.url)
+                soup = BeautifulSoup(res.text, 'html.parser')
                 product_containers = soup.find('ol', 'products')
 
                 if not product_containers:

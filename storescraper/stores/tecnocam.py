@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, COMPUTER_CASE, PROCESSOR, RAM, MONITOR, \
-    HEADPHONES, PRINTER, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM
+    HEADPHONES, PRINTER, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM, \
+    GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,7 +28,9 @@ class Tecnocam(Store):
             PRINTER,
             NOTEBOOK,
             USB_FLASH_DRIVE,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -45,7 +48,9 @@ class Tecnocam(Store):
             ['impresoras-ecotank', PRINTER],
             ['notebook', NOTEBOOK],
             ['pendrive', USB_FLASH_DRIVE],
-            ['audio-y-video/parlante-audio-y-video', STEREO_SYSTEM]
+            ['audio-y-video/parlante-audio-y-video', STEREO_SYSTEM],
+            ['accesorios-pc', GAMING_DESK],
+            ['microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         products_urls = []

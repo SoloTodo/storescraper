@@ -5,7 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, HEADPHONES, MOUSE, KEYBOARD, \
-    GAMING_CHAIR, MONITOR
+    GAMING_CHAIR, MONITOR, MOTHERBOARD, RAM, POWER_SUPPLY, CPU_COOLER, \
+    COMPUTER_CASE, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -21,17 +22,29 @@ class Sandos(Store):
             KEYBOARD,
             GAMING_CHAIR,
             MONITOR,
+            MOTHERBOARD,
+            RAM,
+            POWER_SUPPLY,
+            CPU_COOLER,
+            COMPUTER_CASE,
+            PROCESSOR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['monitores', MONITOR],
+            ['componentes/procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
+            ['componentes/placas-madre', MOTHERBOARD],
+            ['componentes/memorias-ram', RAM],
+            ['componentes/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes/cooler', CPU_COOLER],
+            ['componentes/gabinetes', COMPUTER_CASE],
             ['accesorios/audifonos', HEADPHONES],
             ['accesorios/mouse', MOUSE],
             ['accesorios/teclados', KEYBOARD],
             ['sillas-gamer', GAMING_CHAIR],
-            ['monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -52,10 +65,16 @@ class Sandos(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                soup = BeautifulSoup(
-                    json.loads(
-                        soup.find('script', {'type': 'text/template'}).text),
-                    'html.parser')
+
+                script_tag = soup.find('script', {'type': 'text/template'})
+
+                if not script_tag:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                soup = BeautifulSoup(json.loads(script_tag.text),
+                                     'html.parser')
 
                 product_containers = soup.findAll('li', 'product-col')
 

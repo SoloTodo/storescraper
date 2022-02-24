@@ -5,27 +5,30 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import NOTEBOOK, TABLET, PRINTER, CELL, \
+    WEARABLE, TELEVISION, MOUSE, VIDEO_GAME_CONSOLE, REFRIGERATOR, \
+    WASHING_MACHINE, STEREO_SYSTEM, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Tottus(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'Cell',
-            'Wearable',
-            'Tablet',
-            'StereoSystem',
-            'Headphones',
-            'VideoGameConsole',
-            'Printer',
-            'Refrigerator',
-            'WashingMachine',
-            'Notebook',
+            TELEVISION,
+            CELL,
+            WEARABLE,
+            TABLET,
+            STEREO_SYSTEM,
+            HEADPHONES,
+            PRINTER,
+            REFRIGERATOR,
+            WASHING_MACHINE,
+            NOTEBOOK,
+            MOUSE,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -33,16 +36,24 @@ class Tottus(Store):
         url_base = 'https://www.tottus.cl'
 
         category_paths = [
-            ['televisores-cat070301', ['Television'], 'Televisores', 1],
-            ['smartphones-cat2290023', ['Cell'], 'Smartphones', 1],
-            ['smartwatch-cat3010050', ['Wearable'], 'Smartwatch', 1],
-            ['tablet-cat2360034', ['Tablet'], 'Tablet', 1],
-            ['parlantes-cat070501', ['StereoSystem'], 'Parlantes', 1],
-            ['audifonos-cat3010062', ['Headphones'], 'Audífonos', 1],
-            ['freezer-y-refrigerador-cat070104', ['Refrigerator'],
+            ['televisores-cat070301', [TELEVISION], 'Televisores', 1],
+            ['NoteBook-y-PC-cat011306', [NOTEBOOK], 'Notebook y PC', 1],
+            ['tablet-cat2360034', [TABLET], 'Tablet', 1],
+            ['impresoras-y-multifuncionales-cat070401', [PRINTER],
+             'Impresoras y Multifuncionales', 1],
+            ['accesorios-de-computacion', [MOUSE],
+             'Accesorios de Computación', 1],
+            ['consolas-y-videojuegos-cat070302', [VIDEO_GAME_CONSOLE],
+             'Consolas y Videojuegos', 1],
+            ['smartphones-cat2290023', [CELL], 'Smartphones', 1],
+            ['smartwatch-cat3010050', [WEARABLE], 'Smartwatch', 1],
+            ['freezer-y-refrigerador-cat070104', [REFRIGERATOR],
              'Freezer y Refrigerador', 1],
-            ['lavadoras-y-secadoras-cat070106', ['WashingMachine'],
-             'Lavadora', 1],
+            ['lavadoras-y-secadoras-cat070106', [WASHING_MACHINE],
+             'Lavadoras y Secadoras', 1],
+
+            ['parlantes-cat070501', [STEREO_SYSTEM], 'Parlantes', 1],
+            ['audifonos-cat3010062', [HEADPHONES], 'Audífonos', 1],
         ]
 
         session = session_with_proxy(extra_args)
@@ -55,7 +66,8 @@ class Tottus(Store):
                 continue
 
             category_url = '{}/api/product-search/by-category-slug?' \
-                           'slug={}&sort=recommended_web&perPage=1000'\
+                           'slug={}&sort=recommended_web&perPage=1000' \
+                           '&channel=Regular_Delivery_RM_4'\
                 .format(url_base, category_path)
 
             print(category_url)

@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, PROCESSOR, RAM, \
     MOTHERBOARD, VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
     KEYBOARD, MOUSE, HEADPHONES, GAMING_CHAIR, NOTEBOOK, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -33,6 +33,8 @@ class InvasionGamer(Store):
             MONITOR,
             KEYBOARD_MOUSE_COMBO,
             STEREO_SYSTEM,
+            VIDEO_GAME_CONSOLE,
+            MICROPHONE
         ]
 
     @classmethod
@@ -53,7 +55,9 @@ class InvasionGamer(Store):
             ['set', KEYBOARD_MOUSE_COMBO],
             ['sonido', STEREO_SYSTEM],
             ['portatiles', NOTEBOOK],
-            ['monitores', MONITOR]
+            ['monitores', MONITOR],
+            ['joysticks-pc', VIDEO_GAME_CONSOLE],
+            ['microfono', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -88,8 +92,8 @@ class InvasionGamer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        picture_urls = ['https:' + tag['data-src'].replace('_130x', '').
-                        split('?')[0] for tag in soup
+        picture_urls = ['https:' + tag['data-src'].replace('_130x', '')
+                        .split('?')[0] for tag in soup
                         .find('div', 'product-gallery__thumbnail-list')
                         .findAll('img')]
 

@@ -103,8 +103,8 @@ class EntercodeGaming(Store):
             part_number = json_container['sku']
             name += ' - ' + part_number
 
-        sku = str(json.loads(soup.find('div', 'yith-wcwl-add-to-wishlist')[
-                                 'data-fragment-options'])['product_id'])
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]\
+            .strip()
         normal_price = Decimal(
             round(int(json_container['offers'][0]['price']) * 1.04))
         offer_price = Decimal(int(json_container['offers'][0]['price']))

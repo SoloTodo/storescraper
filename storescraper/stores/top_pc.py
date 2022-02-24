@@ -3,6 +3,7 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -23,12 +24,13 @@ class TopPc(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Mouse',
             'Keyboard',
             'KeyboardMouseCombo',
             'StereoSystem',
             'Headphones',
+            CASE_FAN,
         ]
 
     @classmethod
@@ -45,12 +47,13 @@ class TopPc(Store):
             ['46', 'SolidStateDrive'],  # SSD
             ['27', 'PowerSupply'],  # Fuentes de poder
             ['26', 'ComputerCase'],  # Gabinetes
-            ['108', 'CpuCooler'],  # Coolers CPU
+            ['108', CPU_COOLER],  # Coolers CPU
             ['67', 'Mouse'],
             ['66', 'Keyboard'],
             ['65', 'KeyboardMouseCombo'],
             ['100', 'StereoSystem'],
             ['99', 'Headphones'],
+            ['109', CASE_FAN],
         ]
 
         product_urls = []

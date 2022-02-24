@@ -3,6 +3,7 @@ import urllib
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -22,7 +23,7 @@ class Sistemax(Store):
             'SolidStateDrive',
             'PowerSupply',
             'ComputerCase',
-            'CpuCooler',
+            CPU_COOLER,
             'Mouse',
             'Notebook',
             'Keyboard',
@@ -46,7 +47,7 @@ class Sistemax(Store):
             ['79_83', 'SolidStateDrive'],  # SSD
             ['87', 'PowerSupply'],  # Fuentes de poder
             ['88', 'ComputerCase'],  # Gabinetes c/fuente
-            ['95', 'CpuCooler'],  # Coolers CPU
+            ['95', CPU_COOLER],  # Coolers CPU
             ['93', 'Mouse'],  # Mouse
             ['115', 'Notebook'],  # Notebook
             ['92', 'Keyboard'],  # Teclados

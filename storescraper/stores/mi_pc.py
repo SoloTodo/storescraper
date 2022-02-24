@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -20,7 +21,7 @@ class MiPc(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -48,8 +49,8 @@ class MiPc(Store):
             ['gamer/tarjetas-madre.html', 'Motherboard'],
             ['hardware/procesadores.html', 'Processor'],
             ['gamer/procesadores.html', 'Processor'],
-            ['hardware/enfriamiento/disipador-cpu.html', 'CpuCooler'],
-            ['gamer/enfriamiento/liquido.html', 'CpuCooler'],
+            ['hardware/enfriamiento/disipador-cpu.html', CPU_COOLER],
+            ['gamer/enfriamiento/liquido.html', CPU_COOLER],
             ['hardware/ram.html', 'Ram'],
             ['gamer/ram.html', 'Ram'],
             ['hardware/tarjeta-de-video.html', 'VideoCard'],

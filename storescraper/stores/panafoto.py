@@ -1,17 +1,26 @@
 import json
 import logging
+import re
 import urllib
 from decimal import Decimal
 
-from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Panafoto(Store):
+    endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
+               'x-algolia-agent=Algolia%20for%20vanilla%20' \
+               'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
+               '2.10.2%3BMagento2%20integration%20(1.10.0)%3BJS%20' \
+               'Helper%202.26.0&x-algolia-application-id=WLT832EA3J&x-alg'\
+               'olia-api-key=NzQyZDYyYTYwZGRiZDBjNjg0YjJmZDEyNWMyMTAyNTNh'\
+               'MjBjMDJiNzBhY2YyZWVjYWNjNzVjNjU5M2M5ZmVhY3RhZ0ZpbHRlcnM9'
+
     @classmethod
     def categories(cls):
         return [
@@ -20,17 +29,8 @@ class Panafoto(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
-                   'x-algolia-agent=Algolia%20for%20vanilla%20' \
-                   'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
-                   '2.10.2%3BMagento2%20integration%20(1.10.0)%3BJS%20' \
-                   'Helper%202.26.0&x-algolia-application-id=WLT832EA3J&x-alg'\
-                   'olia-api-key=NzQyZDYyYTYwZGRiZDBjNjg0YjJmZDEyNWMyMTAyNTNh'\
-                   'MjBjMDJiNzBhY2YyZWVjYWNjNzVjNjU5M2M5ZmVhY3RhZ0ZpbHRlcnM9'
-
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        session.headers['Referer'] = 'https://www.panafoto.com/'
 
         product_urls = []
 
@@ -49,7 +49,7 @@ class Panafoto(Store):
                 {"indexName": "wwwpanafotocom_default_products",
                  "params": payload_params}]}
 
-            response = session.post(endpoint, data=json.dumps(payload))
+            response = session.post(cls.endpoint, data=json.dumps(payload))
             products_json = json.loads(response.text)['results'][0]['hits']
 
             if not products_json:
@@ -71,72 +71,52 @@ class Panafoto(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+
+        # Try and find the SKU in the URL
+        match = re.search(r'(\d{6})', url)
+        if match:
+            query = match.groups()[0]
+        else:
+            # The SKU is not in the url, make a search of the whole path and
+            # literally hope for the best
+            parsed_url = urlparse(url)
+            query = parsed_url.path
+
+        payload_params = "query={}".format(query)
+
+        payload = {"requests": [
+            {"indexName": "wwwpanafotocom_default_products",
+             "params": payload_params}]}
+
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.post(cls.endpoint, data=json.dumps(payload))
+        products_json = json.loads(response.text)['results'][0]['hits']
 
-        if response.status_code == 404:
-            return []
-
-        data = response.text
-        soup = BeautifulSoup(data, 'html.parser')
-        product_json = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-
-        name = product_json['name']
-        sku = product_json['sku']
-        model_label = soup.find('div', 'attibute-label', text='Modelo')
-        part_number = model_label.next.next.text.strip()
-        name = '{} - {}'.format(part_number, name)
-        price = Decimal(product_json['offers']['price'])
-
-        if product_json['offers']['availability'] == \
-                'http://schema.org/InStock':
-            stock = -1
-        else:
-            stock = 0
-
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'description'})))
-
-        pictures_tag = None
-
-        for tag in soup.findAll('script', {'type': 'text/x-magento-init'}):
-            if 'data-gallery-role=gallery-placeholder' in tag.text:
-                pictures_tag = tag
+        for product_entry in products_json:
+            if product_entry['url'] == url:
                 break
-
-        pictures = json.loads(pictures_tag.text)[
-            '[data-gallery-role=gallery-placeholder]'][
-            'mage/gallery/gallery']['data']
-
-        picture_urls = [e['full'] for e in pictures]
-
-        variants_tag = soup.find('select', 'product-custom-option')
-
-        if variants_tag:
-            suffixes = [' ' + tag.text.strip() for tag in
-                        variants_tag.findAll('option')[1:]]
         else:
-            suffixes = ['']
+            raise Exception('No product found for URL: ' + url)
 
-        products = []
+        name = product_entry['name']
+        key = product_entry['sku']
+        stock = -1 if product_entry['in_stock'] else 0
+        price = Decimal(product_entry['price']['USD']['default'])
+        part_number = product_entry.get('reference', None)
+        picture_urls = [product_entry['image_url']]
 
-        for suffix in suffixes:
-            products.append(Product(
-                name + suffix,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku + suffix,
-                stock,
-                price,
-                price,
-                'USD',
-                sku=sku,
-                part_number=part_number,
-                description=description,
-                picture_urls=picture_urls
-            ))
-
-        return products
+        return [Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            price,
+            price,
+            'USD',
+            sku=key,
+            part_number=part_number,
+            picture_urls=picture_urls
+        )]

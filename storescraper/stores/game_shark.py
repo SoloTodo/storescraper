@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, VIDEO_GAME_CONSOLE, RAM, \
     POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD, MOTHERBOARD, PROCESSOR, \
     GAMING_CHAIR, CPU_COOLER, KEYBOARD, HEADPHONES, MOUSE, MONITOR, \
-    MEMORY_CARD, STEREO_SYSTEM
+    MEMORY_CARD, STEREO_SYSTEM, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -34,6 +34,7 @@ class GameShark(Store):
             MONITOR,
             STEREO_SYSTEM,
             MEMORY_CARD,
+            MICROPHONE
         ]
 
     @classmethod
@@ -59,6 +60,7 @@ class GameShark(Store):
             ['41-gabinetes', COMPUTER_CASE],
             ['42-monitores', MONITOR],
             ['28-refrigeracion', CPU_COOLER],
+            ['37-microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

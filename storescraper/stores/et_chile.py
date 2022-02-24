@@ -4,10 +4,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import UPS, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, \
-    RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
-    HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, VIDEO_CARD, GAMING_CHAIR, \
-    NOTEBOOK, USB_FLASH_DRIVE
+from storescraper.categories import COMPUTER_CASE, MOTHERBOARD, \
+    PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
+    MEMORY_CARD, HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
+    VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, USB_FLASH_DRIVE, POWER_SUPPLY, \
+    MICROPHONE, GAMING_DESK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -18,7 +19,7 @@ class ETChile(Store):
     @classmethod
     def categories(cls):
         return [
-            UPS,
+            POWER_SUPPLY,
             COMPUTER_CASE,
             MOTHERBOARD,
             PROCESSOR,
@@ -36,41 +37,51 @@ class ETChile(Store):
             GAMING_CHAIR,
             NOTEBOOK,
             USB_FLASH_DRIVE,
+            MICROPHONE,
+            GAMING_DESK,
+            CASE_FAN,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['partes-y-piezas/psu-fuentes-de-poder', UPS],
-            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
-            ['partes-y-piezas/placas-madres', MOTHERBOARD],
-            ['partes-y-piezas/procesadores', PROCESSOR],
-            ['partes-y-piezas/memorias', RAM],
-            ['partes-y-piezas/almacenamiento/discos-duros', STORAGE_DRIVE],
-            ['almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
-            ['partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento-y-drives/discos-externos',
+            ['productos/partes-y-piezas/psu-fuentes-de-poder', POWER_SUPPLY],
+            ['productos/partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['productos/partes-y-piezas/placas-madres', MOTHERBOARD],
+            ['productos/partes-y-piezas/procesadores', PROCESSOR],
+            ['productos/partes-y-piezas/memorias', RAM],
+            ['productos/partes-y-piezas/almacenamiento/discos-duros',
+             STORAGE_DRIVE],
+            ['productos/almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
+            ['productos/partes-y-piezas/almacenamiento/ssd',
+             SOLID_STATE_DRIVE],
+            ['productos/almacenamiento-y-drives/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento-y-drives/ssd-externo',
+            ['productos/almacenamiento-y-drives/ssd-externo',
              EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento-y-drives/ssd-interno-almacenamiento-y-drives',
+            ['productos/almacenamiento-y-drives/'
+             'ssd-interno-almacenamiento-y-drives',
              SOLID_STATE_DRIVE],
-            ['partes-y-piezas/almacenamiento/ssd/ssd-interno/',
+            ['productos/partes-y-piezas/almacenamiento/ssd/ssd-interno/',
              SOLID_STATE_DRIVE],
-            ['partes-y-piezas/almacenamiento/ssd/ssd-servers/',
+            ['productos/partes-y-piezas/almacenamiento/ssd/ssd-servers/',
              SOLID_STATE_DRIVE],
-            ['accesorios-smartphones', MEMORY_CARD],
-            ['almacenamiento-y-drives/memorias-flash', MEMORY_CARD],
-            ['audio-y-streaming/audifonos', HEADPHONES],
-            ['mouse-accesorios/mouse', MOUSE],
-            ['monitores', MONITOR],
-            ['teclados', KEYBOARD],
-            ['partes-y-piezas/refrigeracion/ventiladores', CPU_COOLER],
-            ['partes-y-piezas/refrigeracion/water-cooling', CPU_COOLER],
-            ['partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
-            ['sillas', GAMING_CHAIR],
-            ['notebooks/notebooks-gamers', NOTEBOOK],
-            ['accesorios-usb', USB_FLASH_DRIVE],
+            ['productos/accesorios-smartphones', MEMORY_CARD],
+            ['productos/almacenamiento-y-drives/memorias-flash', MEMORY_CARD],
+            ['productos/audio-y-streaming/audifonos', HEADPHONES],
+            ['productos/mouse-accesorios/mouse', MOUSE],
+            ['productos/monitores', MONITOR],
+            ['productos/teclados', KEYBOARD],
+            ['productos/partes-y-piezas/refrigeracion/ventiladores',
+             CASE_FAN],
+            ['productos/partes-y-piezas/refrigeracion/water-cooling',
+             CPU_COOLER],
+            ['productos/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+            ['productos/sillas', GAMING_CHAIR],
+            ['productos/notebooks/notebooks-gamers', NOTEBOOK],
+            ['productos/accesorios-usb', USB_FLASH_DRIVE],
+            ['perifericos/audio-y-streaming/microfonos', MICROPHONE],
+            ['productos/escritorios', GAMING_DESK]
         ]
 
         session = session_with_proxy(extra_args)
@@ -82,7 +93,7 @@ class ETChile(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://etchile.net/categorias/productos/{}/' \
+                url_webpage = 'https://etchile.net/categorias/{}/' \
                               'page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
@@ -165,7 +176,8 @@ class ETChile(Store):
             picture_urls = [tag.find('img')['data-src'].split('?')[0] for tag
                             in
                             soup.findAll('li', 'product_thumbnail_item')]
-            description = html_to_markdown(str(soup.find('div', 'woocommerce-Tabs-panel--description')))
+            description = html_to_markdown(
+                str(soup.find('div', 'woocommerce-Tabs-panel--description')))
             p = Product(
                 name,
                 cls.__name__,

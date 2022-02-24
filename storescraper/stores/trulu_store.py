@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, POWER_SUPPLY, COMPUTER_CASE, \
     RAM, PROCESSOR, CPU_COOLER, VIDEO_CARD, KEYBOARD_MOUSE_COMBO, MOUSE, \
-    STEREO_SYSTEM, GAMING_CHAIR, KEYBOARD, MONITOR
+    STEREO_SYSTEM, GAMING_CHAIR, KEYBOARD, MONITOR, GAMING_DESK, MICROPHONE, \
+    SOLID_STATE_DRIVE, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -28,24 +29,33 @@ class TruluStore(Store):
             GAMING_CHAIR,
             KEYBOARD,
             MONITOR,
+            GAMING_DESK,
+            MICROPHONE,
+            SOLID_STATE_DRIVE,
+            MOTHERBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audifonos-y-accesorios', HEADPHONES],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/memoria-ram', RAM],
+            ['componentes-pc/placas-madre', MOTHERBOARD],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
-            ['kit-perifericos', KEYBOARD_MOUSE_COMBO],
-            ['mouse', MOUSE],
-            ['parlantes', STEREO_SYSTEM],
-            ['sillas', GAMING_CHAIR],
-            ['teclados', KEYBOARD],
+            ['escritorios', GAMING_DESK],
             ['monitores-gamer', MONITOR],
+            ['perifericos/audifonos-y-accesorios', HEADPHONES],
+            ['perifericos/kit-perifericos', KEYBOARD_MOUSE_COMBO],
+            ['perifericos/microfonos', MICROPHONE],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/parlantes', STEREO_SYSTEM],
+            ['perifericos/teclados', KEYBOARD],
+            ['sillas', GAMING_CHAIR],
+
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -84,7 +94,7 @@ class TruluStore(Store):
         name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('span', 'sku').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock out-of-stock'):
+        if soup.find('p', 'stock out-of-stock') or 'venta' in name.lower():
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
@@ -97,9 +107,18 @@ class TruluStore(Store):
                 remove_words(price_container.find('bdi').text))
         normal_price = Decimal(
             remove_words(soup.find('p', 'price').find('div', 'ww-price').text))
-        picture_urls = [tag.find('a')['href'] for tag in
-                        soup.findAll('div',
-                                     'woocommerce-product-gallery__image')]
+
+        picture_tags = soup.find('div', 'product-thumbnails')
+
+        if picture_tags:
+            picture_urls = [tag.find('img')['src'] for tag in
+                            soup.find('div', 'product-thumbnails').findAll(
+                                'noscript')]
+        else:
+            picture_urls = [
+                soup.find('meta', {'property': 'og:image'})['content']
+            ]
+
         p = Product(
             name,
             cls.__name__,

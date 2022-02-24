@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -18,7 +19,7 @@ class Pcx(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -39,7 +40,7 @@ class Pcx(Store):
             ['29-ssd', 'SolidStateDrive'],
             ['20-tarjetas-madre', 'Motherboard'],
             ['4-procesadores', 'Proccessor'],
-            ['7-disipadores-por-aire-para-cpu', 'CpuCooler'],
+            ['7-disipadores-por-aire-para-cpu', CPU_COOLER],
             ['80-memoria-ram', 'Ram'],
             ['21-tarjetas-de-video', 'VideoCard'],
             ['15-fuentes-de-poder', 'PowerSupply'],

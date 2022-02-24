@@ -7,7 +7,8 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, CELL, WEARABLE, \
     TABLET, MONITOR, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, RAM, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, VIDEO_CARD, \
     KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, POWER_SUPPLY, HEADPHONES, \
-    GAMING_CHAIR, VIDEO_GAME_CONSOLE, PRINTER
+    GAMING_CHAIR, VIDEO_GAME_CONSOLE, PRINTER, MEMORY_CARD, USB_FLASH_DRIVE, \
+    STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,7 +39,10 @@ class Infosep(Store):
             HEADPHONES,
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
-            PRINTER
+            PRINTER,
+            MEMORY_CARD,
+            USB_FLASH_DRIVE,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -50,12 +54,12 @@ class Infosep(Store):
             ['reloj-inteligente', WEARABLE],
             ['tablet', TABLET],
             ['monitores', MONITOR],
+            ['gabinetes', COMPUTER_CASE],
             ['impresoras-laser', PRINTER],
             ['multifuncionales-laser', PRINTER],
             ['impresoras-de-tinta', PRINTER],
             ['multifuncionales', PRINTER],
             ['plotter', PRINTER],
-            ['gabinetes', COMPUTER_CASE],
             ['placas-madres', MOTHERBOARD],
             ['procesadores-intel', PROCESSOR],
             ['procesadores-amd', PROCESSOR],
@@ -70,6 +74,7 @@ class Infosep(Store):
             ['teclado', KEYBOARD],
             ['fuente-de-poder-pc', POWER_SUPPLY],
             ['audifonos-gamer', HEADPHONES],
+            ['audifonos', HEADPHONES],
             ['fuentes-gamer', POWER_SUPPLY],
             ['gabinetes-gamer', COMPUTER_CASE],
             ['memoria-hyperx', RAM],
@@ -82,6 +87,9 @@ class Infosep(Store):
             ['teclado-gamer', KEYBOARD],
             ['tarjetas-de-video-gamer', VIDEO_CARD],
             ['consolas-y-video-juegos', VIDEO_GAME_CONSOLE],
+            ['memoria-micro-sdhc', MEMORY_CARD],
+            ['pendrive', USB_FLASH_DRIVE],
+            ['parlantes', STEREO_SYSTEM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -124,7 +132,9 @@ class Infosep(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
+        if soup.find('p', 'price').text == '':
+            return []
+        elif soup.find('p', 'price').find('ins'):
             price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
         else:

@@ -3,6 +3,7 @@ import re
 import json
 from datetime import datetime
 
+import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -31,7 +32,6 @@ class Ripley(Store):
             # 'VacuumCleaner',
             'WashingMachine',
             'Cell',
-            'Camera',
             'StereoSystem',
             'OpticalDiskPlayer',
             'ExternalStorageDrive',
@@ -145,8 +145,8 @@ class Ripley(Store):
              'Tecno > Telefonía > Xiaomi', 1],
             ['tecno/celulares/motorola', ['Cell'],
              'Tecno > Telefonía > Motorola', 1],
-            ['tecno/celulares/celulares-basicos', ['Cell'],
-             'Tecno > Telefonía > Básicos', 1],
+            # ['tecno/celulares/celulares-basicos', ['Cell'],
+            #  'Tecno > Telefonía > Básicos', 1],
             ['tecno/audio-y-musica', ['StereoSystem'],
              'Tecno > Audio y Música', 0],
             ['tecno/audio-y-musica/equipos-de-musica', ['StereoSystem'],
@@ -269,6 +269,10 @@ class Ripley(Store):
                             product_data, product_element, category)
 
                     if product:
+                        if product.normal_price == Decimal('9999999') or \
+                                product.offer_price == Decimal('9999999'):
+                            continue
+
                         if product.sku in product_dict:
                             product_to_update = product_dict[product.sku]
                         else:
@@ -478,7 +482,11 @@ class Ripley(Store):
         url = cls._get_entry_url(element)
 
         if 'image' in data:
-            picture_urls = ['https:{}'.format(data['image'])]
+            picture_url = 'https:{}'.format(data['image'])
+            if validators.url(picture_url):
+                picture_urls = [picture_url]
+            else:
+                picture_urls = None
         else:
             picture_urls = None
 
@@ -743,7 +751,8 @@ class Ripley(Store):
                 # Collage
                 desktop_container_tag = banner_tag.find('div')
                 cell_tags = desktop_container_tag.findAll('a')
-                destination_urls = [tag['href'] for tag in cell_tags]
+                destination_urls = [tag['href'] for tag in cell_tags
+                                    if 'href' in tag.attrs]
                 picture_url = desktop_container_tag.find('source')['srcset']
 
                 banners.append({

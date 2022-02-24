@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
     STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR, \
-    MOTHERBOARD, CPU_COOLER
+    MOTHERBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -26,6 +26,7 @@ class BitCenter(Store):
             GAMING_CHAIR,
             MOTHERBOARD,
             CPU_COOLER,
+            MICROPHONE
         ]
 
     @classmethod
@@ -41,6 +42,7 @@ class BitCenter(Store):
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['sillas-gamer', GAMING_CHAIR],
+            ['microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
@@ -90,10 +92,16 @@ class BitCenter(Store):
                 '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']
-        if soup.find('p', 'stock').text == 'Agotado':
-            stock = 0
+
+        stock_tag = soup.find('input', {'name': 'quantity'})
+        if stock_tag:
+            if 'max' in stock_tag.attrs:
+                stock = int(stock_tag['max'])
+            else:
+                stock = 1
         else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
+            stock = 0
+
         normal_price = Decimal(
             int(json_container['offers'][0]['price']) * 1.038 // 1)
         offer_price = Decimal(json_container['offers'][0]['price'])

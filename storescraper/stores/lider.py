@@ -8,6 +8,8 @@ from collections import OrderedDict
 from datetime import datetime
 from decimal import Decimal
 
+from storescraper.categories import GAMING_CHAIR, NOTEBOOK, MOUSE, \
+    HEADPHONES, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -47,6 +49,7 @@ class Lider(Store):
             'Wearable',
             'Stove',
             'WaterHeater',
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -194,6 +197,25 @@ class Lider(Store):
              ['Oven'],
              'Electrohogar > Electrodomésticos > Microondas',
              1.0],
+            # Supermercado
+            ['Entretenimiento/Tecnología/Televisión', ['Television'],
+             'Entretenimiento > Tecnología > Televisión', 1],
+            ['Entretenimiento/Tecnología/Telefonía', ['Cell'],
+             'Entretenimiento > Tecnología > Telefonía', 1],
+            ['Entretenimiento/Tecnología/Computación', ['Notebook'],
+             'Entretenimiento > Tecnología > Computación', 1],
+            ['Computación/Mundo Gamer/Sillas Gamer', [GAMING_CHAIR],
+             'Computación > Mundo Gamer > Sillas Gamer', 1],
+            ['Computación/Mundo Gamer/Computación Gamer', [NOTEBOOK],
+             'Computación > Mundo Gamer > Computación Gamer', 1],
+            ['Computación/Mundo Gamer/Mouse y Teclados', [MOUSE],
+             'Computación > Mundo Gamer > Mouse y Teclados', 1],
+            ['Computación/Mundo Gamer/Controles y Accesorios', [GAMING_CHAIR],
+             'Computación > Mundo Gamer > Controles y Accesorios', 1],
+            ['Computación/Mundo Gamer/Audífonos', [HEADPHONES],
+             'Computación > Mundo Gamer > Audífonos', 1],
+            ['Computación/Mundo Gamer/Consolas', [VIDEO_GAME_CONSOLE],
+             'Computación > Mundo Gamer > Consolas', 1],
         ]
 
         session = session_with_proxy(extra_args)
@@ -323,6 +345,9 @@ class Lider(Store):
         if offer_price_container:
             offer_price = Decimal(offer_price_container)
             if not offer_price:
+                offer_price = normal_price
+
+            if offer_price > normal_price:
                 offer_price = normal_price
         else:
             offer_price = normal_price

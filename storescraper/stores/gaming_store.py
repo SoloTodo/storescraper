@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, KEYBOARD, MOUSE, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, CPU_COOLER, HEADPHONES, PROCESSOR, \
-    MOTHERBOARD, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, MONITOR
+    MOTHERBOARD, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, MONITOR, \
+    CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,6 +30,7 @@ class GamingStore(Store):
             SOLID_STATE_DRIVE,
             MONITOR,
             VIDEO_CARD,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -41,7 +43,8 @@ class GamingStore(Store):
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-pc/refrigeracion', CPU_COOLER],
+            ['componentes-pc/refrigeracion/refrigeracion-liquida', CPU_COOLER],
+            ['componentes-pc/refrigeracion/ventiladores', CASE_FAN],
             ['accesorios-gaming/teclado-mouse/teclados', KEYBOARD],
             ['accesorios-gaming/teclado-mouse/mouse', MOUSE],
             ['accesorios-gaming/teclado-mouse/kit-teclado-mouse',

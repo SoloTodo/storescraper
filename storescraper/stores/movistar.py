@@ -105,9 +105,9 @@ class Movistar(Store):
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
-            plan_url = plan_link['href']
+            plan_url = 'https://ww2.movistar.cl' + plan_link['href']
 
-            base_plan_name = 'Plan ' + plan_link.find('h3').text.strip()
+            base_plan_name = 'Plan ' + plan_link.find('h2').text.strip()
             base_plan_name = base_plan_name.replace('&nbsp;', '')
 
             price_text = plan_container.find('div', 'mb-parrilla_price').find(
@@ -143,6 +143,13 @@ class Movistar(Store):
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         print(url)
+
+        # Movistar has a bug when selecting the grey color in
+        # https://catalogo.movistar.cl/equipomasplan/xiaomi-11t-256gb-5g.html
+        # Remove this condition if they fix it
+        if 'xiaomi-11t-256gb-5g.html' in url:
+            return []
+
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)
@@ -161,8 +168,6 @@ class Movistar(Store):
 
         soup = BeautifulSoup(page.text, 'html.parser')
         base_name = soup.find('h1').text.strip()
-
-        is_movistar_one = soup.find('p', text='+ cuotas Movistar One')
 
         sku_color_choices = []
         for color_container in soup.find('ul', 'colorEMP').findAll('li'):
@@ -185,11 +190,8 @@ class Movistar(Store):
 
             return json.loads(_response.text)
 
-        if is_movistar_one:
-            payload_params = 'current%5BhasMovistar1%5D=1&' \
-                             'current%5Bmovistar1%5D=1'
-        else:
-            payload_params = ''
+        payload_params = 'current%5BhasMovistar1%5D=1&' \
+                         'current%5Bmovistar1%5D=1'
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
@@ -204,7 +206,8 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
                               'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=Plus+Libre+Cod_0J3_Porta' \
+                              'current%5Bplan%5D=' \
+                              'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
                     json_response = get_json_response(payload)
@@ -223,13 +226,8 @@ class Movistar(Store):
 
                     # Movistar one phones do not have this pricing option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', ''))
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             cell_plan_name = container['data-id']
@@ -322,14 +320,8 @@ class Movistar(Store):
 
                     # Movistar one only phones do not have this option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', '')
-                        )
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             # break
