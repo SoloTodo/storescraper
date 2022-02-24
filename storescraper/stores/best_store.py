@@ -157,7 +157,8 @@ class BestStore(Store):
                        ]
 
         condition_tag = soup.find('link', {'itemprop': 'itemCondition'})
-        if condition_tag and condition_tag['href'] != 'https://schema.org/NewCondition':
+        if condition_tag and condition_tag['href'] != \
+                'https://schema.org/NewCondition':
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
