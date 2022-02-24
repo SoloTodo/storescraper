@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import KEYBOARD, MOUSE, HEADPHONES, \
-    COMPUTER_CASE, CPU_COOLER
+    COMPUTER_CASE, CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,7 +18,8 @@ class ElCofreDeShepard(Store):
             MOUSE,
             HEADPHONES,
             COMPUTER_CASE,
-            CPU_COOLER
+            CPU_COOLER,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -28,7 +29,7 @@ class ElCofreDeShepard(Store):
             ['mouses', MOUSE],
             ['audifonos', HEADPHONES],
             ['gabinetes', COMPUTER_CASE],
-            ['ventiladores', CPU_COOLER]
+            ['ventiladores', CASE_FAN]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -77,9 +78,11 @@ class ElCofreDeShepard(Store):
         offer_price = Decimal(remove_words(
             soup.findAll('font', {'color': 'ff0000'})[0].text.strip().split()[
                 0]))
-        picture_urls = [tag['src'].replace('resize/100/100', 'resize/500/500')
-                        for tag in
-                        soup.find('div', 'owl-thumbs').findAll('img')]
+        picture_urls = [
+            tag['src'].replace('resize/100/100', 'resize/500/500')
+            .split('?')[0]
+            for tag in soup.find('div', 'owl-thumbs').findAll('img')
+        ]
         p = Product(
             name,
             cls.__name__,
