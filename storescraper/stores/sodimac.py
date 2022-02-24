@@ -292,7 +292,11 @@ class Sodimac(Store):
 
         r_url = url + separator + "rnd={}".format(random.randint(0, 1000))
         print(r_url)
-        response = session.get(r_url, timeout=30)
+
+        try:
+            response = session.get(r_url, timeout=30)
+        except UnicodeDecodeError:
+            return []
 
         if response.status_code in [404]:
             return []
