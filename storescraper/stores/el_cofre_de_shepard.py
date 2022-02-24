@@ -10,7 +10,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class ElCofredeShepard(Store):
+class ElCofreDeShepard(Store):
     @classmethod
     def categories(cls):
         return [
