@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, POWER_SUPPLY, COMPUTER_CASE, \
     RAM, PROCESSOR, CPU_COOLER, VIDEO_CARD, KEYBOARD_MOUSE_COMBO, MOUSE, \
-    STEREO_SYSTEM, GAMING_CHAIR, KEYBOARD, MONITOR, GAMING_DESK, MICROPHONE
+    STEREO_SYSTEM, GAMING_CHAIR, KEYBOARD, MONITOR, GAMING_DESK, MICROPHONE, \
+    SOLID_STATE_DRIVE, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,27 +30,32 @@ class TruluStore(Store):
             KEYBOARD,
             MONITOR,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            SOLID_STATE_DRIVE,
+            MOTHERBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audifonos-y-accesorios', HEADPHONES],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/memoria-ram', RAM],
+            ['componentes-pc/placas-madre', MOTHERBOARD],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/refrigeracion', CPU_COOLER],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
-            ['kit-perifericos', KEYBOARD_MOUSE_COMBO],
-            ['mouse', MOUSE],
-            ['parlantes', STEREO_SYSTEM],
-            ['sillas', GAMING_CHAIR],
-            ['teclados', KEYBOARD],
-            ['monitores-gamer', MONITOR],
             ['escritorios', GAMING_DESK],
-            ['perifericos/microfonos', MICROPHONE]
+            ['monitores-gamer', MONITOR],
+            ['perifericos/audifonos-y-accesorios', HEADPHONES],
+            ['perifericos/kit-perifericos', KEYBOARD_MOUSE_COMBO],
+            ['perifericos/microfonos', MICROPHONE],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/parlantes', STEREO_SYSTEM],
+            ['perifericos/teclados', KEYBOARD],
+            ['sillas', GAMING_CHAIR],
+
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
