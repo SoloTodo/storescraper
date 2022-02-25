@@ -221,9 +221,14 @@ class Wom(Store):
                         installment_price = Decimal(
                             related_price['price']['value'])
 
-                assert price_without_installments is not None
-                assert initial_price_with_installments is not None
-                assert installment_price is not None
+                if price_without_installments is None \
+                        or initial_price_with_installments is None \
+                        or installment_price is None:
+                    return []
+
+                # assert price_without_installments is not None
+                # assert initial_price_with_installments is not None
+                # assert installment_price is not None
 
                 for plan in plans:
                     # Without installments
