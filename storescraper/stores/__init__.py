@@ -35,6 +35,7 @@ from .casa_musa import CasaMusa
 from .casa_royal import CasaRoyal
 from .casas_bahia import CasasBahia
 from .cc_link import CCLink
+from .cesa_pro import CesaPro
 from .cetrogar import Cetrogar
 from .centrale import Centrale
 from .central_gamer import CentralGamer
