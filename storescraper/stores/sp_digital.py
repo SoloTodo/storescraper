@@ -223,9 +223,13 @@ class SpDigital(Store):
             condition = 'https://schema.org/NewCondition'
 
         description_json = json.loads(page_data['content']['description'])
-        description_tag = BeautifulSoup(
-            description_json['blocks'][0]['data']['text'], 'html.parser')
-        description = html_to_markdown(description_tag.text)
+
+        if description_json['blocks'][0]['data']['text']:
+            description_tag = BeautifulSoup(
+                description_json['blocks'][0]['data']['text'], 'html.parser')
+            description = html_to_markdown(description_tag.text)
+        else:
+            description = None
 
         picture_urls = [x['url'] for x in page_data['content']['media']]
 
