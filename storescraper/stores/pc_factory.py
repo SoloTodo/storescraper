@@ -187,6 +187,10 @@ class PcFactory(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         sku_tag = soup.find('input', {'name': 'data_id_producto'})
 
+        # 503 error most likely
+        if not sku_tag:
+            return []
+
         if 'value' not in sku_tag.attrs:
             return []
 

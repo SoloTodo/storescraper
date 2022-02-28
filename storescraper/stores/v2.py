@@ -39,6 +39,7 @@ class V2(Store):
             ['36-headsets', HEADPHONES],
             ['39-tarjetas-de-video', VIDEO_CARD],
             ['40-almacenamiento', SOLID_STATE_DRIVE],
+            ['44-audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
