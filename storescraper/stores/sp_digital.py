@@ -209,7 +209,13 @@ class SpDigital(Store):
         slug = re.search('https://www.spdigital.cl/(.+)/$', url).groups()[0]
         page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
                         'page-data.json'.format(slug)
-        page_data = session.get(page_data_url).json()['result']['pageContext']
+        response = session.get(page_data_url)
+
+        if response.status_code == 403:
+            return []
+
+        page_data = response.json()['result']['pageContext']
+
         name = page_data['content']['name']
         normal_price = Decimal(page_data['content']['pricing']['priceRange']
                                ['start']['gross']['amount'])
