@@ -38,8 +38,14 @@ class ClaroUp(Store):
         endpoint = 'https://digital.clarochile.cl/wcm-inyect/' \
                    'landing-claroup/mas-ofertas/index.php?' + url.split('?')[1]
         res = session.get(endpoint)
+
         soup = BeautifulSoup(res.text, 'html.parser')
-        cell_name = soup.find('h4').text.strip()
+        cell_name_tag = soup.find('h4')
+
+        if not cell_name_tag:
+            return []
+
+        cell_name = cell_name_tag.text.strip()
         plan_rows = soup.find('table', {'id': 'tabla-ofertas'}).findAll(
             'tr')[1:]
         products = []

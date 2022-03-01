@@ -144,12 +144,6 @@ class Movistar(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
 
-        # Movistar has a bug when selecting the grey color in
-        # https://catalogo.movistar.cl/equipomasplan/xiaomi-11t-256gb-5g.html
-        # Remove this condition if they fix it
-        if 'xiaomi-11t-256gb-5g.html' in url:
-            return []
-
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)
@@ -210,7 +204,10 @@ class Movistar(Store):
                               'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    json_response = get_json_response(payload)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
@@ -261,7 +258,11 @@ class Movistar(Store):
                                   'Plus+Libre+Cod_0J3_Porta' \
                                   '&{}&current%5Bcode%5D=' \
                                   ''.format(sku, payload_params)
-                        json_response = get_json_response(payload)
+                        try:
+                            json_response = get_json_response(payload)
+                        except Exception:
+                            return []
+
                         json_soup = BeautifulSoup(
                             json_response['planes']['html'],
                             'html5lib')
@@ -304,7 +305,11 @@ class Movistar(Store):
                               'current%5Bplan%5D=&current%5Bmovistar1%5D=0&' \
                               '{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    json_response = get_json_response(payload)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
+
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)

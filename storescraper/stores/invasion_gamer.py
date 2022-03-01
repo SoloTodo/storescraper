@@ -111,7 +111,7 @@ class InvasionGamer(Store):
         for variant in product_data['offers']:
             variant_name = '{} ({})'.format(base_name, variant['name'])
             variant_price = Decimal(variant['price'])
-            variant_url = 'https://invasiongamer.com/' + variant['url']
+            variant_url = 'https://invasiongamer.com' + variant['url']
             variant_sku = variant['url'].split('?variant=')[1]
 
             if force_unavailable:
