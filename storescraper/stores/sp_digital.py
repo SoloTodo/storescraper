@@ -217,14 +217,27 @@ class SpDigital(Store):
         page_data = response.json()['result']['pageContext']
 
         name = page_data['content']['name']
-        normal_price = Decimal(page_data['content']['pricing']['priceRange']
-                               ['start']['gross']['amount'])
         part_number = page_data['productId']
-        offer_price = normal_price / Decimal('1.035')
 
-        # Catch both "SELECCION" and "SELECCIÓN"
-        if 'SEGUNDA SELECCI' in name:
-            condition = 'https://schema.org/RefurbishedCondition'
+        for metadata_entry in page_data['content']['metadata']:
+            if metadata_entry['key'] == 'pricing':
+                pricing_json = json.loads(metadata_entry['value'])
+                offer_price = Decimal(pricing_json['sp-digital']['cash'])
+                normal_price = Decimal(pricing_json['sp-digital']['other'])
+                break
+        else:
+            raise Exception('No pricing entry found')
+
+        refurbished_blacklist = [
+            'CAJA ABIERTA',
+            'SEGUNDA SELECCI',
+            'DAÑADA'
+        ]
+
+        for keyword in refurbished_blacklist:
+            if keyword in name:
+                condition = 'https://schema.org/RefurbishedCondition'
+                break
         else:
             condition = 'https://schema.org/NewCondition'
 
@@ -242,8 +255,8 @@ class SpDigital(Store):
         products = []
 
         for variant in page_data['content']['variants']:
-            key = variant['sku']
-            sku = variant['id']
+            sku = variant['sku']
+            key = variant['id']
             stock = variant['quantityAvailable']
 
             p = Product(
