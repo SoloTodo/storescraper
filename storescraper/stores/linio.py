@@ -157,7 +157,7 @@ class Linio(Store):
                 'span', 'badge-pill-international-shipping'):
             stock = 0
             description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
-        elif availability_container['href'] == 'http://schema.org/InStock':
+        elif availability_container['href'] == 'https://schema.org/InStock':
             stock = -1
         else:
             stock = 0

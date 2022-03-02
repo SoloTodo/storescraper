@@ -85,7 +85,7 @@ class FibraNet(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
         json_data = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
 
