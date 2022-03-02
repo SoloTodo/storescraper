@@ -87,19 +87,23 @@ class MovistarOne(Movistar):
                         json_response = get_json_response(payload)
                     except Exception:
                         return []
+
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
+
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+
+                    # Doesn't have a Movistar one price
+                    if not price_tag:
+                        continue
+
+                    price = Decimal(price_tag.attrs['data-price'])
+
                     json_soup = BeautifulSoup(json_response['planes']['html'],
                                               'html.parser')
-
-
-                    installment = Decimal(remove_words(
-                        cell_soup.findAll(
-                            'p', 'boxEMPlan-int-meses')[-1].find('b').text))
-                    price = installment * Decimal(24)
 
                     for container in json_soup.findAll('article'):
                         cell_plan_name = container['data-id']
@@ -143,10 +147,13 @@ class MovistarOne(Movistar):
                     json_soup = BeautifulSoup(json_response['planes']['html'],
                                               'html.parser')
 
-                    installment = Decimal(remove_words(
-                        cell_soup.find('p', 'boxEMPlan-int-meses').find(
-                            'b').text))
-                    price = installment * Decimal(24)
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+
+                    # Doesn't have a Movistar one price
+                    if not price_tag:
+                        continue
+
+                    price = Decimal(price_tag.attrs['data-price'])
 
                     for container in json_soup.findAll('article'):
                         cell_plan_name = container['data-id']
