@@ -1,5 +1,4 @@
 import json
-import re
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
@@ -15,6 +14,7 @@ class Movistar(Store):
     preferred_products_for_url_concurrency = 3
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
+    cell_catalog_suffix = ''
     portability_choices = [
         (3, ''),
         (1, ' Portabilidad'),
@@ -45,7 +45,7 @@ class Movistar(Store):
             })
         elif category == 'Cell':
             catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
-                           'catalogo.html?limit=1000'
+                           'catalogo.html?limit=1000' + cls.cell_catalog_suffix
             session = session_with_proxy(extra_args)
             session.headers['user-agent'] = 'python-requests/2.21.0'
             soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
@@ -185,7 +185,7 @@ class Movistar(Store):
             return json.loads(_response.text)
 
         payload_params = 'current%5BhasMovistar1%5D=1&' \
-                         'current%5Bmovistar1%5D=1'
+                         'current%5Bmovistar1%5D=0'
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
@@ -211,8 +211,6 @@ class Movistar(Store):
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
-
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
                     json_soup = BeautifulSoup(json_response['planes']['html'],
@@ -277,7 +275,6 @@ class Movistar(Store):
 
                         for container in plan_containers:
                             cell_plan_name = container['data-id']
-                            print(cell_plan_name)
 
                             products.append(Product(
                                 name,
@@ -302,7 +299,7 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
                               'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=&current%5Bmovistar1%5D=0&' \
+                              'current%5Bplan%5D=&' \
                               '{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
                     try:
@@ -313,8 +310,6 @@ class Movistar(Store):
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
-
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
                     json_soup = BeautifulSoup(json_response['planes']['html'],
