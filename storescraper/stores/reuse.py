@@ -5,11 +5,10 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, NOTEBOOK, ALL_IN_ONE, TABLET, \
-    HEADPHONES, MONITOR
+    HEADPHONES, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Reuse(Store):
@@ -21,18 +20,18 @@ class Reuse(Store):
             ALL_IN_ONE,
             TABLET,
             HEADPHONES,
-            MONITOR
+            WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['celulares-1', CELL],
-            ['computadores-1/tipo-de-producto_notebook', NOTEBOOK],
-            ['computadores-1/tipo-de-producto_all-in-one', ALL_IN_ONE],
-            ['tablets-1/iPad', TABLET],
+            ['celulares', CELL],
+            ['computadores/tipo-de-producto_notebook', NOTEBOOK],
+            ['computadores/tipo-de-producto_all-in-one', ALL_IN_ONE],
+            ['tablets-ipad', TABLET],
             ['accesorios-1/audifonos', HEADPHONES],
-            ['accesorios-1/pantalla', MONITOR]
+            ['accesorios-1/watch', WEARABLE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
