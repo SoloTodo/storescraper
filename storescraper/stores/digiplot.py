@@ -4,7 +4,8 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN
+from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN, \
+    MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -37,6 +38,7 @@ class Digiplot(Store):
             'VideoCard',
             GAMING_CHAIR,
             CASE_FAN,
+            MEMORY_CARD,
         ]
 
     @classmethod
@@ -45,7 +47,9 @@ class Digiplot(Store):
             ['almacenamiento/disco-duro-externo', 'ExternalStorageDrive'],
             ['almacenamiento/disco-duro-notebook', 'StorageDrive'],
             ['almacenamiento/disco-duro-pc', 'StorageDrive'],
-            ['almacenamiento/discos-rigidos-ssd', 'SolidStateDrive'],
+            ['almacenamiento/disco-ssd-2,5"', 'SolidStateDrive'],
+            ['almacenamiento/disco-ssd-m.2', 'SolidStateDrive'],
+            ['almacenamiento/memoria-flash-sd-microsd', MEMORY_CARD],
             ['almacenamiento/pendrive', 'UsbFlashDrive'],
             ['audio/audifono-alambrico', 'Headphones'],
             ['audio/audifono-bluetooth', 'Headphones'],
