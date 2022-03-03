@@ -96,6 +96,8 @@ class Sepuls(Store):
         offer_price_tag = offer_price_label_tag.parent.findAll('td')[1]
         if offer_price_tag.text.strip():
             offer_price = Decimal(offer_price_tag.text.strip())
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
