@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -89,7 +90,15 @@ class Sepuls(Store):
                 .text)
         name = product_data['name']
         sku = product_data.get('sku', key)
-        price = Decimal(product_data['offers']['price'])
+        normal_price = Decimal(product_data['offers']['price'])
+
+        offer_price_label_tag = soup.find('td', text='Precio Transferencia')
+        offer_price_tag = offer_price_label_tag.parent.findAll('td')[1]
+        if offer_price_tag.text.strip():
+            offer_price = Decimal(offer_price_tag.text.strip())
+        else:
+            offer_price = normal_price
+
         stock_tag = soup.find('span', 'product-form-stock')
         if stock_tag:
             stock = int(stock_tag.text)
@@ -107,8 +116,8 @@ class Sepuls(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
