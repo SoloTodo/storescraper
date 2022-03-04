@@ -5,7 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, COMPUTER_CASE, HEADPHONES, \
-    MONITOR, KEYBOARD, POWER_SUPPLY, GAMING_CHAIR, RAM, VIDEO_CARD
+    MONITOR, KEYBOARD, POWER_SUPPLY, GAMING_CHAIR, RAM, VIDEO_CARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -24,6 +24,7 @@ class GeneracionGamers(Store):
             GAMING_CHAIR,
             RAM,
             VIDEO_CARD,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -38,6 +39,7 @@ class GeneracionGamers(Store):
             ['sillas-gamers', GAMING_CHAIR],
             ['componentes', RAM],
             ['tarjetas-graficas', VIDEO_CARD],
+            ['refrigeracion', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -50,6 +52,7 @@ class GeneracionGamers(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://generacion-gamers.cl/categoria-prod' \
                               'ucto/{}/page/{}/'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', 'products')
