@@ -37,6 +37,7 @@ class CesaPro(Store):
             ['286055', COMPUTER_CASE],
             ['286088', RAM],
             ['268198', PROCESSOR],
+            ['621424', PROCESSOR],
             ['371788', MOTHERBOARD],
             ['621425', MOTHERBOARD],
             ['286249', VIDEO_CARD],
@@ -93,8 +94,11 @@ class CesaPro(Store):
         payload = 'productId=' + product_id
         response = session.post(product_url, data=payload)
         product_json = response.json()['product']
+        import ipdb
+        ipdb.set_trace()
         name = product_json['name']
-        sku = product_json['id']
+        key = product_json['id']
+        sku = product_json['sku']
         stock = product_json['total_stock']
         price = Decimal(product_json['right_price'].split('.')[0])
         picture_urls = [product_json['image']['big']]
@@ -104,7 +108,7 @@ class CesaPro(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
