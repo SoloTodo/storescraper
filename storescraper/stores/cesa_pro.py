@@ -94,8 +94,6 @@ class CesaPro(Store):
         payload = 'productId=' + product_id
         response = session.post(product_url, data=payload)
         product_json = response.json()['product']
-        import ipdb
-        ipdb.set_trace()
         name = product_json['name']
         key = product_json['id']
         sku = product_json['sku']
