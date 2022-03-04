@@ -265,6 +265,7 @@ from .panamericana import Panamericana
 from .paris import Paris
 from .paris_fast import ParisFast
 from .pc_boost import PcBoost
+from .pc_center_tech import PcCenterTech
 from .pc_com import PcCom
 from .pc_compu import PcCompu
 from .pc_digital import PcDigital
