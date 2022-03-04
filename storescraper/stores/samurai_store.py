@@ -85,7 +85,12 @@ class SamuraiStore(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text.strip()
+        name_tag = soup.find('h1', 'product-title')
+
+        if not name_tag:
+            return []
+
+        name = name_tag.text.strip()
 
         if 'RIFA' in name:
             return []
