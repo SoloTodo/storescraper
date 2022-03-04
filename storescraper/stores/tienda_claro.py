@@ -71,8 +71,6 @@ class TiendaClaro(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        base_name = soup.find('h1', 'main_header').text.strip()
         page_id = soup.find('meta', {'name': 'pageId'})['content']
 
         json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
@@ -86,11 +84,11 @@ class TiendaClaro(Store):
 
         for product_entry in json_data:
             sku = product_entry['catentry_id']
-            name = base_name
 
+            attributes = ''
             for attribute_key in product_entry['Attributes'].keys():
                 attribute, value = attribute_key.split('_|_')
-                name += ' {} {}'.format(attribute, value)
+                attributes += ' {} {}'.format(attribute, value)
 
             res = json.loads(session.get(
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView?'
@@ -99,6 +97,9 @@ class TiendaClaro(Store):
             if not res['catalogEntry']['offerPrice']:
                 return []
 
+            name = '{} ({})'.format(
+                res['catalogEntry']['description'][0]['name'],
+                attributes.strip())
             price = Decimal(remove_words(res['catalogEntry']['offerPrice']))
 
             picture_urls = ['https://tienda.clarochile.cl{}'.format(
@@ -112,7 +113,8 @@ class TiendaClaro(Store):
 
             if 'orderId' in stock_data:
                 stock = -1
-            elif stock_data['errorMessageKey'] == '_ERR_ITEM_INVENTORY_AVALAIBLE':
+            elif stock_data['errorMessageKey'] == \
+                    '_ERR_ITEM_INVENTORY_AVALAIBLE':
                 stock = 0
             else:
                 raise Exception('Invalid stock response')

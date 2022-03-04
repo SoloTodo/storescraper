@@ -1,63 +1,177 @@
 import json
 from decimal import Decimal
 
-from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import remove_words, session_with_proxy
+from bs4 import BeautifulSoup
+
+from storescraper.categories import CELL
+from .movistar import Movistar
+from ..product import Product
+from ..utils import session_with_proxy, remove_words
 
 
-class MovistarOne(Store):
+class MovistarOne(Movistar):
+    cell_catalog_suffix = '&movistarone=1'
+    default_payment_id = 3
+
     @classmethod
     def categories(cls):
         return [
-            'Cell'
+            CELL
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        if category == 'Cell':
-            return ['https://ww2.movistar.cl/movistarone/productos.json']
-        return []
-
-    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
         session = session_with_proxy(extra_args)
-        json_data = json.loads(session.get(url).text)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
+        ajax_session = session_with_proxy(extra_args)
+        ajax_session.headers['Content-Type'] = \
+            'application/x-www-form-urlencoded'
+        ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
+        ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
+        page = session.get(url)
+
+        if page.url == 'https://catalogo.movistar.cl/equipomasplan/' \
+                       'catalogo.html':
+            return []
+
+        if page.status_code in [404, 503]:
+            return []
+
+        soup = BeautifulSoup(page.text, 'html.parser')
+        base_name = soup.find('h1').text.strip()
+
+        sku_color_choices = []
+        for color_container in soup.find('ul', 'colorEMP').findAll('li'):
+            color_element = color_container.find('a')
+            sku = color_element['data-sku']
+            color_id = color_element['data-id']
+            color_name = color_element['data-nombre-color']
+            sku_color_choices.append((sku, color_id, color_name))
+
         products = []
 
-        plans_dict = {
-            'Plan Libre': 'Plus Libre Cod_0J3_Porta cuotas',
-            'Plan XL': 'Plus XL Cod_0J2_Porta cuotas',
-            'Plan L': 'Plus L Cod_0J1_Porta cuotas',
-            'Plan M': 'Plus M Cod_0I0_Porta cuotas',
-        }
+        base_url = url.split('?')[0]
 
-        for entry in json_data:
-            name = entry['telefono']
-            picture_urls = ['https://ww2.movistar.cl/movistarone/' +
-                            entry['imagenUrl'].replace(' ', '%20')]
+        def get_json_response(_payload):
+            print(_payload)
+            _response = ajax_session.post(
+                'https://catalogo.movistar.cl/equipomasplan/'
+                'emp_detalle/planes',
+                data=_payload)
 
-            for plan_entry in entry['planes']:
-                cell_plan_name = plans_dict[plan_entry['tipoPlan']]
+            return json.loads(_response.text)
 
-                price = Decimal(remove_words(plan_entry['pieEquipo']))
-                cell_monthly_payment = Decimal(
-                    remove_words(plan_entry['cuotaMensualEquipo']))
+        payload_params = 'current%5BhasMovistar1%5D=1&' \
+                         'current%5Bmovistar1%5D=0'
 
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    'Cell',
-                    'https://ww2.movistar.cl/movistarone/',
-                    url,
-                    '{} {}'.format(name, cell_plan_name),
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    picture_urls=picture_urls,
-                    cell_plan_name=cell_plan_name,
-                    cell_monthly_payment=cell_monthly_payment
-                ))
+        for sku, color_id, color_name in sku_color_choices:
+            name = '{} {}'.format(base_name, color_name)
+
+            for portability_type_id, portability_suffix in \
+                    cls.portability_choices:
+
+                if portability_type_id == 1:
+                    # Portabilidad
+                    # Sin arriendo
+                    print('porta sin arriendo')
+
+                    payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
+                              'current%5Bpayment%5D=3&' \
+                              'current%5Bplan%5D=' \
+                              'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
+                              '&{}&current%5Bcode%5D=' \
+                              ''.format(sku, payload_params)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
+
+                    code = json_response['codeOfferCurrent']
+
+                    cell_url = '{}?codigo={}'.format(base_url, code)
+                    cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                              'html.parser')
+
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+
+                    # Doesn't have a Movistar one price
+                    if not price_tag:
+                        continue
+
+                    price = Decimal(price_tag.attrs['data-price'])
+
+                    json_soup = BeautifulSoup(json_response['planes']['html'],
+                                              'html.parser')
+
+                    for container in json_soup.findAll('article'):
+                        cell_plan_name = container['data-id']
+
+                        products.append(Product(
+                            name,
+                            cls.__name__,
+                            'Cell',
+                            cell_url,
+                            cell_url,
+                            '{} - {} - {}'.format(sku, color_id,
+                                                  cell_plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_monthly_payment=Decimal(0)
+                        ))
+                elif portability_type_id == 3:
+                    # Nuevo
+                    # Sin arriendo
+                    print('nuevo')
+
+                    payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
+                              'current%5Bpayment%5D=3&' \
+                              'current%5Bplan%5D=&' \
+                              '{}&current%5Bcode%5D=' \
+                              ''.format(sku, payload_params)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
+
+                    code = json_response['codeOfferCurrent']
+
+                    cell_url = '{}?codigo={}'.format(base_url, code)
+                    print(cell_url)
+                    cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                              'html.parser')
+                    json_soup = BeautifulSoup(json_response['planes']['html'],
+                                              'html.parser')
+
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+
+                    # Doesn't have a Movistar one price
+                    if not price_tag:
+                        continue
+
+                    price = Decimal(price_tag.attrs['data-price'])
+
+                    for container in json_soup.findAll('article'):
+                        cell_plan_name = container['data-id']
+
+                        products.append(Product(
+                            name,
+                            cls.__name__,
+                            'Cell',
+                            cell_url,
+                            cell_url,
+                            '{} - {} - {}'.format(sku, color_id,
+                                                  cell_plan_name),
+                            -1,
+                            price,
+                            price,
+                            'CLP',
+                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_monthly_payment=Decimal(0)
+                        ))
 
         return products

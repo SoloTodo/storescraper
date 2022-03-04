@@ -21,8 +21,7 @@ class PlazaLama(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         # Only interested in LG products
         url_extensions = [
-            ['electrodomesticos/lg', TELEVISION],
-            ['all/lg+tecnologia', HEADPHONES],
+            ['lg', TELEVISION],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -47,7 +46,8 @@ class PlazaLama(Store):
                     break
 
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('a', 'product-item__title')[
+                        'href']
                     product_urls.append('https://plazalama.com.do' +
                                         product_url)
                 page += 1
@@ -67,12 +67,12 @@ class PlazaLama(Store):
             stock = 0
         price = Decimal(soup.find('span', 'price').text.strip()
                         .split()[-1].replace(',', ''))
-        picture_urls = ['https:' + tag['data-src'].split('_130')[0] + '.jpg'
-                        for
-                        tag in
-                        soup.find('div', 'product-gallery').find('div',
-                                                                 'scroller').
-                        findAll('img')]
+        picture_urls = []
+        if soup.find('div', 'product-gallery'):
+            picture_urls = ['https:' + tag['data-src'].split('_130')[0] +
+                            '.jpg' for tag in
+                            soup.find('div', 'product-gallery').find('div',
+                            'scroller').findAll('img')]
 
         p = Product(
             name,

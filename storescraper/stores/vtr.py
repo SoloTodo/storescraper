@@ -39,9 +39,18 @@ class Vtr(Store):
                 raise Exception('Empty cell category')
 
             for record in data:
+                in_stock = False
+                for variant in record['variantMatrix']:
+                    if variant['stockLevelStatus'] == 'inStock':
+                        in_stock = True
+                        break
+
+                if not in_stock:
+                    continue
+
                 product_id = record['code']
-                product_url = 'https://vtr.com/product/details?code={}'.format(
-                    product_id)
+                product_url = 'https://vtr.com/productos/details?code={}'\
+                    .format(product_id)
                 product_urls.append(product_url)
 
         return product_urls
@@ -129,7 +138,8 @@ class Vtr(Store):
         prod_id = parsed_qs['code'][0]
 
         product_data = json.loads(session.get(
-            'https://vtr.com/api/product/device?device={}'.format(prod_id)).text)
+            'https://vtr.com/api/product/device?device={}'.format(
+                prod_id)).text)
 
         for plan_entry in product_data['plans']:
             plan_entry['pricing_data'] = {x['name']: x

@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -18,7 +19,7 @@ class DdTech(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -38,8 +39,8 @@ class DdTech(Store):
             ['componentes/unidades-ssd', 'SolidStateDrive'],
             ['componentes/tarjetas-madre', 'Motherboard'],
             ['componentes/procesadores', 'Processor'],
-            ['componentes/disipador-cpu-aire', 'CpuCooler'],
-            ['componentes/enf-liquidos-aio', 'CpuCooler'],
+            ['componentes/disipador-cpu-aire', CPU_COOLER],
+            ['componentes/enf-liquidos-aio', CPU_COOLER],
             ['componentes/memoria-ram', 'Ram'],
             ['componentes/tarjetas-de-video', 'VideoCard'],
             ['componentes/fuente-de-alimentacion', 'PowerSupply'],

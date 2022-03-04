@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, HEADPHONES, MEMORY_CARD, \
-    USB_FLASH_DRIVE, ALL_IN_ONE, WEARABLE
+    USB_FLASH_DRIVE, ALL_IN_ONE, WEARABLE, CPU_COOLER
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -29,7 +29,7 @@ class Winpy(Store):
             'Motherboard',
             'ComputerCase',
             'PowerSupply',
-            'CpuCooler',
+            CPU_COOLER,
             'Printer',
             'ExternalStorageDrive',
             'Mouse',
@@ -69,7 +69,7 @@ class Winpy(Store):
             ['memorias/', 'Ram'],
             ['partes-y-piezas/gabinetes/', 'ComputerCase'],
             ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
-            ['partes-y-piezas/disipadores/', 'CpuCooler'],
+            ['partes-y-piezas/disipadores/', CPU_COOLER],
             ['zona-mouse-y-teclados-gamer/', 'Mouse'],
             ['zona-audifonos-gamer/', HEADPHONES],
             ['accesorios/sillas-y-mesas/', GAMING_CHAIR],

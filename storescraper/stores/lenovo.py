@@ -3,7 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MONITOR, NOTEBOOK, TABLET
+from storescraper.categories import MONITOR, NOTEBOOK, TABLET, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -19,74 +19,17 @@ class Lenovo(Store):
             NOTEBOOK,
             TABLET,
             MONITOR,
+            ALL_IN_ONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # Yes, each category has its own required parameters
-        category_paths = [
-            ('ch=-488288442&categories=LAPTOPS&pageSize=20&sort={}&'
-             'currency=CLP&cmsFacets=facet_Processor,facet_OperatingSystem,'
-             'facet_Series,facet_Graphics,facet_Price,facet_ScreenSize,'
-             'facet_Brand,facet_HardDriveSize,facet_Memory,facet_leadTime,'
-             'facet_Category,facet_ProductType,facet_Software',
-             NOTEBOOK),
-            ('ch=-76155580&categories=TABLETS&pageSize=20&sort={}&'
-             'currency=CLP&cmsFacets=facet_OperatingSystem,facet_Price,'
-             'facet_Color,facet_leadTime,facet_ScreenSize,facet_Software,'
-             'facet_ScreenResolution,facet_HardDriveSize', TABLET),
-            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY&'
-             'pageSize=20&sort={}&currency=CLP&cmsFacets=facet_Price,'
-             'facet_Type,facet_ScreenSize,facet_PanelType,facet_Group,'
-             'facet_Resolution',
-             MONITOR),
-        ]
-
-        sorters = ['sortBy', 'price-asc', 'price-desc', 'selling-desc']
-
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'curl/7.68.0'
-        session.headers['Accept'] = 'text/html,application/xhtml+xml,' \
-                                    'application/xml;q=0.9,image/avif,' \
-                                    'image/webp,image/apng,*/*;q=0.8,' \
-                                    'application/signed-exchange;v=b3;q=0.9'
-
-        products_urls = []
-
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
-
-            for sorter in sorters:
-                nb_path = cls.base_domain + '/search/facet/query/v3?' + \
-                    category_path.format(sorter) + \
-                    '&page={}'
-                page = 0
-
-                while True:
-                    if page >= 10:
-                        raise Exception('Page overflow')
-
-                    url = nb_path.format(page)
-                    print(url)
-                    response = session.get(url)
-
-                    if response.status_code == 500:
-                        break
-
-                    data = json.loads(response.text)
-
-                    if 'results' not in data:
-                        break
-
-                    for product_entry in data['results']:
-                        product_url = cls.base_domain + product_entry['url']
-                        if product_url not in products_urls:
-                            products_urls.append(product_url)
-
-                    page += 1
-
-        return products_urls
+        product_urls = []
+        product_urls.extend(cls._discover_urls_for_category_old(category,
+                                                                extra_args))
+        product_urls.extend(cls._discover_urls_for_category_new(category,
+                                                                extra_args))
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -98,8 +41,8 @@ class Lenovo(Store):
         response = session.get(url,  allow_redirects=False)
         if response.status_code == 301:
             return []
-        soup = BeautifulSoup(response.text, 'html.parser')
 
+        soup = BeautifulSoup(response.text, 'html5lib')
         models_containers = soup.findAll('div', 'tabbedBrowse-productListing')
         products = []
 
@@ -114,9 +57,16 @@ class Lenovo(Store):
                 else:
                     sku = soup.find('meta', {'name': 'bundleid'})['content']
 
-                price = model_container\
-                    .find('dd', 'pricingSummary-details-final-price').text\
-                    .replace('.', '').replace('$', '').replace(',', '.')
+                price_tag = model_container\
+                    .find('dd', 'pricingSummary-details-final-price')
+
+                if price_tag:
+                    price = price_tag.text\
+                        .replace('.', '').replace('$', '').replace(',', '.')
+                else:
+                    price = model_container.find(
+                        'span', 'bundleDetail_youBundlePrice_value').text \
+                        .replace('.', '').replace('$', '').replace(',', '.')
 
                 price = Decimal(price)
 
@@ -252,3 +202,113 @@ class Lenovo(Store):
             products.append(p)
 
         return products
+
+    @classmethod
+    def _discover_urls_for_category_new(cls, category, extra_args=None):
+        category_paths = [
+            ('LAPTOPS', NOTEBOOK),
+            ('TABLETS', TABLET),
+            ('DESKTOPS', ALL_IN_ONE),
+        ]
+
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.68.0'
+
+        products_urls = []
+        sorters = ['price-asc', 'price-desc', 'selling-desc', '']
+
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
+
+            for sorter in sorters:
+                nb_path = \
+                    cls.base_domain + '/api/product/graph?src=splitter&' \
+                                      'categories={}&sort={}&page='.format(
+                                        category_path, sorter)
+                page = 0
+
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
+
+                    url = nb_path + str(page)
+                    print(url)
+                    response = session.get(url)
+
+                    if response.status_code == 500:
+                        break
+
+                    data = json.loads(response.text)
+
+                    if 'results' not in data:
+                        break
+
+                    if not data['results']:
+                        break
+
+                    for product_entry in data['results']:
+                        product_url = cls.base_domain + product_entry['url']
+                        if product_url not in products_urls:
+                            products_urls.append(product_url)
+
+                    page += 1
+
+        return products_urls
+
+    @classmethod
+    def _discover_urls_for_category_old(cls, category, extra_args=None):
+        # Yes, each category has its own required parameters
+        category_paths = [
+            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY&'
+             'pageSize=20&sort={}&currency=CLP&cmsFacets=facet_Price,'
+             'facet_Type,facet_ScreenSize,facet_PanelType,facet_Group,'
+             'facet_Resolution',
+             MONITOR),
+        ]
+
+        sorters = ['sortBy', 'price-asc', 'price-desc', 'selling-desc']
+
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.68.0'
+        session.headers['Accept'] = 'text/html,application/xhtml+xml,' \
+                                    'application/xml;q=0.9,image/avif,' \
+                                    'image/webp,image/apng,*/*;q=0.8,' \
+                                    'application/signed-exchange;v=b3;q=0.9'
+
+        products_urls = []
+
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
+
+            for sorter in sorters:
+                nb_path = cls.base_domain + '/search/facet/query/v3?' + \
+                          category_path.format(sorter) + \
+                          '&page={}'
+                page = 0
+
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
+
+                    url = nb_path.format(page)
+                    print(url)
+                    response = session.get(url)
+
+                    if response.status_code == 500:
+                        break
+
+                    data = json.loads(response.text)
+
+                    if 'results' not in data:
+                        break
+
+                    for product_entry in data['results']:
+                        product_url = cls.base_domain + product_entry['url']
+                        if product_url not in products_urls:
+                            products_urls.append(product_url)
+
+                    page += 1
+
+        return products_urls

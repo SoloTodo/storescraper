@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -19,7 +20,7 @@ class Zegucom(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -52,8 +53,8 @@ class Zegucom(Store):
             ['sub=SSD', 'SolidStateDrive'],
             ['fam=TM', 'Motherboard'],
             ['fam=PR', 'Processor'],
-            ['sub=DIS', 'CpuCooler'],
-            ['sub=ENF', 'CpuCooler'],
+            ['sub=DIS', CPU_COOLER],
+            ['sub=ENF', CPU_COOLER],
             ['sub=DR3', 'Ram'],
             ['sub=DR4', 'Ram'],
             ['sub=LD3', 'Ram'],

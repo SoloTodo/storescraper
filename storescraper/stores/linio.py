@@ -122,6 +122,9 @@ class Linio(Store):
             else:
                 offer_price = normal_price
 
+        if normal_price == Decimal(9999999) or offer_price == Decimal(9999999):
+            return []
+
         soup = BeautifulSoup(page_source, 'html.parser')
 
         condition_dict = {
@@ -154,7 +157,7 @@ class Linio(Store):
                 'span', 'badge-pill-international-shipping'):
             stock = 0
             description = 'ST-INTERNATIONAL-SHIPPING {}'.format(description)
-        elif availability_container['href'] == 'http://schema.org/InStock':
+        elif availability_container['href'] == 'https://schema.org/InStock':
             stock = -1
         else:
             stock = 0

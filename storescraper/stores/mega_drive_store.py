@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
     STORAGE_DRIVE, RAM, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, KEYBOARD, \
-    HEADPHONES, PRINTER, NOTEBOOK, MONITOR, STEREO_SYSTEM
+    HEADPHONES, PRINTER, NOTEBOOK, MONITOR, STEREO_SYSTEM, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,6 +29,7 @@ class MegaDriveStore(Store):
             NOTEBOOK,
             MONITOR,
             STEREO_SYSTEM,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -42,7 +43,9 @@ class MegaDriveStore(Store):
             ['16-discos-duros', STORAGE_DRIVE],
             ['17-memorias', RAM],
             ['18-fuentes-de-poder', POWER_SUPPLY],
-            ['19-refrigeracion', CPU_COOLER],
+            ['35-ventiladores', CASE_FAN],
+            ['36-disipador-cpu', CPU_COOLER],
+            ['37-refrigeracion-liquida', CPU_COOLER],
             ['20-gabinetes', COMPUTER_CASE],
             ['22-mouse-y-teclados', KEYBOARD],
             ['74-audifonos', HEADPHONES],

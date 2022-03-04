@@ -113,14 +113,18 @@ class ElectronicaBudini(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
+
+        price_tag = soup.find('p', 'price')
+
+        if not price_tag.text.strip():
+            return []
+
+        if price_tag.find('ins'):
             container_price = int(
-                soup.find('p', 'price').find('ins').text.replace('$',
-                                                                 '').replace(
-                    '.', ''))
+                price_tag.find('ins').text.replace('$', '').replace('.', ''))
         else:
             container_price = int(
-                soup.find('p', 'price').text.replace('$', '').replace('.', ''))
+                price_tag.text.replace('$', '').replace('.', ''))
         offer_price = Decimal(container_price)
         normal_price = Decimal(container_price * 1.05)
 

@@ -8,7 +8,7 @@ from storescraper.categories import VIDEO_GAME_CONSOLE, MOUSE, KEYBOARD, \
     HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, CPU_COOLER, RAM, \
     POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, STORAGE_DRIVE, \
     MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET
+    KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,7 +38,10 @@ class Dust2(Store):
             MONITOR,
             KEYBOARD_MOUSE_COMBO,
             NOTEBOOK,
-            TABLET
+            TABLET,
+            MICROPHONE,
+            GAMING_DESK,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -86,11 +89,15 @@ class Dust2(Store):
             ['computacion-y-electronica/notebooks/memorias-ram-notebooks',
              RAM],
             ['computacion-y-electronica/tablets-e-readers', TABLET],
+            ['computacion-y-electronica/componentes-de-pc/'
+             'fans-y-controladores', CASE_FAN],
             ['apple/airpods/airpods-pro', HEADPHONES],
             ['dispositivos-inteligentes/asistentes-virtuales/'
              'amazon-asistentes-virtuales', STEREO_SYSTEM],
             ['dispositivos-inteligentes/asistentes-virtuales/'
              'google-asistente', STEREO_SYSTEM],
+            ['mundo-gamer/microfonos', MICROPHONE],
+            ['mundo-gamer/escritorios', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

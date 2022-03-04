@@ -1,5 +1,4 @@
 import json
-import re
 
 from collections import defaultdict
 from bs4 import BeautifulSoup
@@ -15,6 +14,7 @@ class Movistar(Store):
     preferred_products_for_url_concurrency = 3
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
+    cell_catalog_suffix = ''
     portability_choices = [
         (3, ''),
         (1, ' Portabilidad'),
@@ -45,7 +45,7 @@ class Movistar(Store):
             })
         elif category == 'Cell':
             catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
-                           'catalogo.html?limit=1000'
+                           'catalogo.html?limit=1000' + cls.cell_catalog_suffix
             session = session_with_proxy(extra_args)
             session.headers['user-agent'] = 'python-requests/2.21.0'
             soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
@@ -105,9 +105,9 @@ class Movistar(Store):
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
-            plan_url = plan_link['href']
+            plan_url = 'https://ww2.movistar.cl' + plan_link['href']
 
-            base_plan_name = 'Plan ' + plan_link.find('h3').text.strip()
+            base_plan_name = 'Plan ' + plan_link.find('h2').text.strip()
             base_plan_name = base_plan_name.replace('&nbsp;', '')
 
             price_text = plan_container.find('div', 'mb-parrilla_price').find(
@@ -143,6 +143,7 @@ class Movistar(Store):
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         print(url)
+
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)
@@ -161,8 +162,6 @@ class Movistar(Store):
 
         soup = BeautifulSoup(page.text, 'html.parser')
         base_name = soup.find('h1').text.strip()
-
-        is_movistar_one = soup.find('p', text='+ cuotas Movistar One')
 
         sku_color_choices = []
         for color_container in soup.find('ul', 'colorEMP').findAll('li'):
@@ -185,11 +184,8 @@ class Movistar(Store):
 
             return json.loads(_response.text)
 
-        if is_movistar_one:
-            payload_params = 'current%5BhasMovistar1%5D=1&' \
-                             'current%5Bmovistar1%5D=1'
-        else:
-            payload_params = ''
+        payload_params = 'current%5BhasMovistar1%5D=1&' \
+                         'current%5Bmovistar1%5D=0'
 
         for sku, color_id, color_name in sku_color_choices:
             name = '{} {}'.format(base_name, color_name)
@@ -204,15 +200,17 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
                               'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=Plus+Libre+Cod_0J3_Porta' \
+                              'current%5Bplan%5D=' \
+                              'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    json_response = get_json_response(payload)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
-
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
                     json_soup = BeautifulSoup(json_response['planes']['html'],
@@ -223,13 +221,8 @@ class Movistar(Store):
 
                     # Movistar one phones do not have this pricing option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', ''))
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             cell_plan_name = container['data-id']
@@ -263,7 +256,11 @@ class Movistar(Store):
                                   'Plus+Libre+Cod_0J3_Porta' \
                                   '&{}&current%5Bcode%5D=' \
                                   ''.format(sku, payload_params)
-                        json_response = get_json_response(payload)
+                        try:
+                            json_response = get_json_response(payload)
+                        except Exception:
+                            return []
+
                         json_soup = BeautifulSoup(
                             json_response['planes']['html'],
                             'html5lib')
@@ -278,7 +275,6 @@ class Movistar(Store):
 
                         for container in plan_containers:
                             cell_plan_name = container['data-id']
-                            print(cell_plan_name)
 
                             products.append(Product(
                                 name,
@@ -303,15 +299,17 @@ class Movistar(Store):
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
                               'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=&current%5Bmovistar1%5D=0&' \
+                              'current%5Bplan%5D=&' \
                               '{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    json_response = get_json_response(payload)
+                    try:
+                        json_response = get_json_response(payload)
+                    except Exception:
+                        return []
+
                     code = json_response['codeOfferCurrent']
 
                     cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
-
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
                     json_soup = BeautifulSoup(json_response['planes']['html'],
@@ -322,14 +320,8 @@ class Movistar(Store):
 
                     # Movistar one only phones do not have this option
                     if price_container:
-                        price_container_text = price_container.findAll(
-                            'b')[1].text
-                        monthly_price = Decimal(
-                            re.search(r'\$([\d+.]+)',
-                                      price_container_text
-                                      ).groups()[0].replace('.', '')
-                        )
-                        price = 24 * monthly_price
+                        price = Decimal(remove_words(price_container.find(
+                            'p', 'textoValorConDcto_EMP').text))
 
                         for container in json_soup.findAll('article'):
                             # break

@@ -9,7 +9,7 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
     KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
     GAMING_CHAIR, CPU_COOLER, MOTHERBOARD, VIDEO_CARD, PROCESSOR, \
-    POWER_SUPPLY, NOTEBOOK, TABLET
+    POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -40,6 +40,9 @@ class SipoOnline(Store):
             POWER_SUPPLY,
             NOTEBOOK,
             TABLET,
+            GAMING_DESK,
+            MICROPHONE,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -64,6 +67,7 @@ class SipoOnline(Store):
             ['computacion/teclado', KEYBOARD],
             ['computacion/mouse', MOUSE],
             ['computacion/combo-computacion', KEYBOARD_MOUSE_COMBO],
+            ['zona-gamer/consolas', VIDEO_GAME_CONSOLE],
             ['zona-gamer/silla-gamer', GAMING_CHAIR],
             ['zona-gamer/audifono-gamer', HEADPHONES],
             ['zona-gamer/teclado-gamer', KEYBOARD],
@@ -72,6 +76,8 @@ class SipoOnline(Store):
             ['smartwatch', WEARABLE],
             ['computadores/notebooks', NOTEBOOK],
             ['tablets', TABLET],
+            ['parlante-musica/microfono', MICROPHONE],
+            ['zona-gamer/escritorio-gamer', GAMING_DESK]
         ]
 
         session = session_with_proxy(extra_args)
@@ -107,8 +113,8 @@ class SipoOnline(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         product_data = json.loads(
-                soup.find('script', {'type': 'application/ld+json'})
-                    .text)
+            soup.find('script', {'type': 'application/ld+json'})
+                .text)
         if '@graph' not in product_data:
             return []
 
@@ -180,7 +186,7 @@ class SipoOnline(Store):
             picture_containers = soup.find('div',
                                            'woocommerce-product-gallery') \
                 .findAll('img')
-            picture_urls = [tag['src'] for tag in picture_containers]
+            picture_urls = [tag['data-src'] for tag in picture_containers]
             p = Product(
                 name,
                 cls.__name__,

@@ -3,6 +3,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import MICROPHONE, NOTEBOOK, TABLET, PRINTER, \
+    STEREO_SYSTEM, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
+    MEMORY_CARD, SOLID_STATE_DRIVE, PROJECTOR, MONITOR, ALL_IN_ONE, MOUSE, \
+    KEYBOARD, HEADPHONES, PROCESSOR, POWER_SUPPLY, RAM, MOTHERBOARD, \
+    VIDEO_CARD, COMPUTER_CASE, TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -12,65 +17,67 @@ class Danaus(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Tablet',
-            'Printer',
-            'StereoSystem',
-            'StorageDrive',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'SolidStateDrive',
-            'Projector',
-            'Monitor',
-            'AllInOne',
-            'Mouse',
-            'Keyboard',
-            'Headphones',
-            'Processor',
-            'PowerSupply',
-            'Ram',
-            'Motherboard',
-            'VideoCard',
-            'ComputerCase',
-            'Television',
+            NOTEBOOK,
+            TABLET,
+            PRINTER,
+            STEREO_SYSTEM,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            SOLID_STATE_DRIVE,
+            PROJECTOR,
+            MONITOR,
+            ALL_IN_ONE,
+            MOUSE,
+            KEYBOARD,
+            HEADPHONES,
+            PROCESSOR,
+            POWER_SUPPLY,
+            RAM,
+            MOTHERBOARD,
+            VIDEO_CARD,
+            COMPUTER_CASE,
+            TELEVISION,
+            MICROPHONE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computadores-y-tablets/tablets', 'Tablet'],
-            ['computadores-y-tablets/notebooks', 'Notebook'],
+            ['computadores-y-tablets/tablets', TABLET],
+            ['computadores-y-tablets/notebooks', NOTEBOOK],
             ['computadores-y-tablets/workstation/workstation-notebook.html',
-             'Notebook'],
-            ['computadores-y-tablets/macbooks-imac-ipad', 'Notebook'],
+             NOTEBOOK],
+            ['computadores-y-tablets/macbooks-imac-ipad', NOTEBOOK],
             ['computadores-y-tablets/computadoras-de-escritorio/all-in-one',
-             'AllInOne'],
-            ['computadores-y-tablets/monitores', 'Monitor'],
+             ALL_IN_ONE],
+            ['computadores-y-tablets/monitores', MONITOR],
             ['computadores-y-tablets/mouse-y-teclado/teclado-gamer',
-             'Keyboard'],
-            ['computadores-y-tablets/mouse-y-teclado/mouse-gamer', 'Mouse'],
+             KEYBOARD],
+            ['computadores-y-tablets/mouse-y-teclado/mouse-gamer', MOUSE],
             ['componentes-de-computadores/procesadores',
-             'Processor'],
-            ['componentes-de-computadores/placas-madres', 'Motherboard'],
-            ['componentes-de-computadores/memorias', 'Ram'],
-            ['componentes-de-computadores/tarjetas-graficas', 'VideoCard'],
+             PROCESSOR],
+            ['componentes-de-computadores/placas-madres', MOTHERBOARD],
+            ['componentes-de-computadores/memorias', RAM],
+            ['componentes-de-computadores/tarjetas-graficas', VIDEO_CARD],
             ['componentes-de-computadores/almacenamiento-interno',
-             'StorageDrive'],
+             STORAGE_DRIVE],
             ['componentes-de-computadores/almacenamiento-interno/'
-             'disco-duro-interno', 'StorageDrive'],
+             'disco-duro-interno', STORAGE_DRIVE],
             ['componentes-de-computadores/almacenamiento-interno/disco-'
-             'estado-solido-ssd', 'SolidStateDrive'],
-            ['componentes-de-computadores/gabinetes', 'ComputerCase'],
-            ['componentes-de-computadores/fuentes-de-poder', 'PowerSupply'],
-            ['impresoras-y-tintas/impresoras', 'Printer'],
-            ['tv-y-video/tv-y-accesorios', 'Television'],
-            ['tv-y-video/sonido', 'StereoSystem'],
-            ['audio/audifonos', 'Headphones'],
-            ['almacenamiento/discos-duros-externos', 'ExternalStorageDrive'],
-            ['almacenamiento/pendrive', 'UsbFlashDrive'],
-            ['almacenamiento/tarjetas-de-memoria', 'MemoryCard'],
-            ['smart-home/electrodomesticos-inteligentes', 'StereoSystem'],
+             'estado-solido-ssd', SOLID_STATE_DRIVE],
+            ['componentes-de-computadores/gabinetes', COMPUTER_CASE],
+            ['componentes-de-computadores/fuentes-de-poder', POWER_SUPPLY],
+            ['impresoras-y-tintas/impresoras', PRINTER],
+            ['tv-y-video/tv-y-accesorios', TELEVISION],
+            ['tv-y-video/sonido', STEREO_SYSTEM],
+            ['audio/audifonos', HEADPHONES],
+            ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
+            ['almacenamiento/tarjetas-de-memoria', MEMORY_CARD],
+            ['smart-home/electrodomesticos-inteligentes', STEREO_SYSTEM],
+            ['home-office/microfonos-y-headsets', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

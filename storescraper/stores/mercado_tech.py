@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, \
-    MEMORY_CARD, TELEVISION, CPU_COOLER
+    MEMORY_CARD, TELEVISION, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -40,6 +40,7 @@ class MercadoTech(Store):
             MEMORY_CARD,
             TELEVISION,
             CPU_COOLER,
+            MICROPHONE
         ]
 
     @classmethod
@@ -78,6 +79,7 @@ class MercadoTech(Store):
              USB_FLASH_DRIVE],
             ['tecnologia/partes-y-piezas/almacenamiento/memorias-sd',
              MEMORY_CARD],
+            ['tecnologia/accesorios/accesorios/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

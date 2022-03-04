@@ -102,6 +102,10 @@ class TecnoSaga(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.url == 'https://tecnosaga.cl/':
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h4', 'product_title').text
         sku_container = soup.find('div', 'cart_btn').find('button',

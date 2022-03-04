@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, \
@@ -16,7 +17,7 @@ class GrupoDecme(Store):
             'SolidStateDrive',
             'Motherboard',
             'Processor',
-            'CpuCooler',
+            CPU_COOLER,
             'Ram',
             'VideoCard',
             'PowerSupply',
@@ -45,7 +46,7 @@ class GrupoDecme(Store):
             ['discos-duros-internos', 'StorageDrive'],
             ['tarjetas-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
-            ['disipadores-y-ventiladores', 'CpuCooler'],
+            ['disipadores-y-ventiladores', CPU_COOLER],
             ['memorias-ram', 'Ram'],
             ['tarjetas-de-video', 'VideoCard'],
             ['fuentes-de-poder', 'PowerSupply'],

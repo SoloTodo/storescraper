@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
     MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER, \
-    VIDEO_CARD, RAM, STEREO_SYSTEM
+    VIDEO_CARD, RAM, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -28,6 +29,8 @@ class Sepuls(Store):
             CPU_COOLER,
             VIDEO_CARD,
             RAM,
+            GAMING_DESK,
+            MICROPHONE
         ]
 
     @classmethod
@@ -45,6 +48,8 @@ class Sepuls(Store):
             ['accesorios/placa-madre', MOTHERBOARD],
             ['componentes-para-pc/fuente-de-poder', POWER_SUPPLY],
             ['accesorios/parlantes', STEREO_SYSTEM],
+            ['accesorios/escritorios', GAMING_DESK],
+            ['streaming/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -85,7 +90,17 @@ class Sepuls(Store):
                 .text)
         name = product_data['name']
         sku = product_data.get('sku', key)
-        price = Decimal(product_data['offers']['price'])
+        normal_price = Decimal(product_data['offers']['price'])
+
+        offer_price_label_tag = soup.find('td', text='Precio Transferencia')
+        offer_price_tag = offer_price_label_tag.parent.findAll('td')[1]
+        if offer_price_tag.text.strip():
+            offer_price = Decimal(offer_price_tag.text.strip())
+            if offer_price > normal_price:
+                offer_price = normal_price
+        else:
+            offer_price = normal_price
+
         stock_tag = soup.find('span', 'product-form-stock')
         if stock_tag:
             stock = int(stock_tag.text)
@@ -103,8 +118,8 @@ class Sepuls(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls

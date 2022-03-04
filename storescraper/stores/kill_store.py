@@ -8,10 +8,10 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, MONITOR, KEYBOARD_MOUSE_COMBO, \
     COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, HEADPHONES, \
     CPU_COOLER, GAMING_CHAIR, NOTEBOOK, VIDEO_GAME_CONSOLE, KEYBOARD, MOUSE, \
-    MEMORY_CARD, PRINTER, STEREO_SYSTEM
+    MEMORY_CARD, PRINTER, STEREO_SYSTEM, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class KillStore(Store):
@@ -37,6 +37,7 @@ class KillStore(Store):
             MOUSE,
             MEMORY_CARD,
             STEREO_SYSTEM,
+            MICROPHONE
         ]
 
     @classmethod
@@ -71,6 +72,7 @@ class KillStore(Store):
             ['258?map=productClusterIds', PRINTER],
             ['computacion/sillas', GAMING_CHAIR],
             ['gaming', VIDEO_GAME_CONSOLE],
+            ['audio/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -112,44 +114,44 @@ class KillStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        page_state_tag = soup.find('template', {'data-varname': '__STATE__'})
-        page_state = json.loads(page_state_tag.text)
-        name = sku = normal_price = stock = picture_urls = part_number = None
 
-        for state_key, value in page_state.items():
-            if 'productId' in value:
-                sku = value['productId']
-            if 'productName' in value:
-                if not state_key.startswith('Product'):
-                    continue
-                if name:
-                    raise Exception('Repeated name entry')
-                name = value['productName']
-            if 'Price' in value and '.kit' not in state_key:
-                if normal_price:
-                    raise Exception('Repeated price entry')
-                normal_price = Decimal(value['Price'])
-            if 'AvailableQuantity' in value:
-                stock = value['AvailableQuantity']
-            if 'productReference' in value:
-                part_number = value['productReference']
-            if 'images' in value:
-                picture_urls = []
-                for image_entry in value['images']:
-                    image_id = image_entry['id'].split(':')[1]
-                    picture_url = 'https://killstorecl.vtexassets.com/' \
-                                  'arquivos/ids/' + image_id
-                    picture_urls.append(picture_url)
-
-        if normal_price is None:
+        if response.status_code == 404:
             return []
 
-        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        assert name
-        assert sku
-        assert stock is not None
+        product_data = json.loads(
+            soup.find('template', {'data-varname': '__STATE__'}).text)
+
+        base_json_keys = list(product_data.keys())
+
+        if not base_json_keys:
+            return []
+
+        base_json_key = base_json_keys[0]
+        product_specs = product_data[base_json_key]
+
+        name = product_specs['productName']
+        key = product_specs['productId']
+        sku = product_specs['productReference']
+        description = html_to_markdown(product_specs.get('description', None))
+
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        normal_price = Decimal(pricing_data['Price'])
+        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        stock = pricing_data['AvailableQuantity']
+
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
+
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -157,13 +159,15 @@ class KillStore(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
-            picture_urls=picture_urls
+            part_number=sku,
+            picture_urls=picture_urls,
+            description=description,
         )
+
         return [p]

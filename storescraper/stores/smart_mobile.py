@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, POWER_SUPPLY, CPU_COOLER, \
     COMPUTER_CASE, RAM, MONITOR, MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
-    WEARABLE, STEREO_SYSTEM, HEADPHONES
+    WEARABLE, STEREO_SYSTEM, HEADPHONES, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,7 +27,8 @@ class SmartMobile(Store):
             VIDEO_CARD,
             WEARABLE,
             STEREO_SYSTEM,
-            HEADPHONES
+            HEADPHONES,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -42,9 +43,10 @@ class SmartMobile(Store):
             ['componentes-pc/placa-madre', MOTHERBOARD],
             ['componentes-pc/procesador', PROCESSOR],
             ['componentes-pc/tarjeta-grafica', VIDEO_CARD],
+            ['componentes-pc/accesorios-componentes-pc', CASE_FAN],
             ['wearables', WEARABLE],
             ['audio/speakers', STEREO_SYSTEM],
-            ['audio/audifonos', HEADPHONES]
+            ['audio/audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

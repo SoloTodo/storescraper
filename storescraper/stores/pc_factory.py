@@ -11,7 +11,7 @@ from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, PROJECTOR, \
     VIDEO_GAME_CONSOLE, STEREO_SYSTEM, ALL_IN_ONE, MOUSE, OPTICAL_DRIVE, \
     KEYBOARD, KEYBOARD_MOUSE_COMBO, WEARABLE, UPS, AIR_CONDITIONER, \
-    GAMING_CHAIR, REFRIGERATOR, WASHING_MACHINE
+    GAMING_CHAIR, REFRIGERATOR, WASHING_MACHINE, MICROPHONE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -53,7 +53,9 @@ class PcFactory(Store):
             AIR_CONDITIONER,
             GAMING_CHAIR,
             REFRIGERATOR,
-            WASHING_MACHINE
+            WASHING_MACHINE,
+            MICROPHONE,
+            CASE_FAN
         ]
 
     @classmethod
@@ -83,7 +85,7 @@ class PcFactory(Store):
             ['54', POWER_SUPPLY],
             ['16', COMPUTER_CASE],
             ['328', COMPUTER_CASE],
-            ['42', CPU_COOLER],
+            ['648', CPU_COOLER],
             ['994', TABLET],
             ['262', PRINTER],
             ['432', CELL],
@@ -114,6 +116,8 @@ class PcFactory(Store):
             ['1007', GAMING_CHAIR],
             ['1103', REFRIGERATOR],
             ['1104', WASHING_MACHINE],
+            ['528', MICROPHONE],
+            ['647', CASE_FAN],
         ]
         product_urls = []
         for url_extension, local_category in url_extensions:
@@ -182,6 +186,10 @@ class PcFactory(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         sku_tag = soup.find('input', {'name': 'data_id_producto'})
+
+        # 503 error most likely
+        if not sku_tag:
+            return []
 
         if 'value' not in sku_tag.attrs:
             return []

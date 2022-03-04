@@ -3,14 +3,14 @@ import logging
 import re
 from decimal import Decimal
 
-import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import RAM, PROCESSOR, MOUSE, SOLID_STATE_DRIVE, \
     MONITOR, KEYBOARD, HEADPHONES, MOTHERBOARD, POWER_SUPPLY, CELL, \
-    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR, VIDEO_GAME_CONSOLE
+    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MICROPHONE, \
+    GAMING_DESK
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -32,6 +32,8 @@ class GamesLegends(Store):
             COMPUTER_CASE,
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
+            MICROPHONE,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -55,6 +57,8 @@ class GamesLegends(Store):
             ['procesadores', PROCESSOR],
             ['placasmadres', MOTHERBOARD],
             # ['telefonos-moviles', CELL],
+            ['microfonos', MICROPHONE],
+            ['escritorios', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -76,7 +80,9 @@ class GamesLegends(Store):
                     break
 
                 soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.find('div', 'row mb-md-5 mb-4 mx-n2')
+                product_containers = soup.find('div',
+                                               'row '
+                                               'product-list mx-md-n3 mx-n2')
 
                 if not product_containers:
                     if page == 1:
@@ -84,14 +90,14 @@ class GamesLegends(Store):
                     break
 
                 product_containers = product_containers.findAll(
-                    'a', 'product-image')
+                    'div', 'col-lg-3')
 
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container['href']
+                    product_url = container.find('a')['href']
                     product_urls.append(
                         'https://www.gameslegends.cl' + product_url)
                 page += 1
@@ -103,10 +109,11 @@ class GamesLegends(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-header').text
-        key_container = soup.find(
-            'meta', property='og:image')['content']
-        key = re.search(r"/(\d+)/", key_container).group(1)
+
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
+        name = json_data['name']
+        key = soup.find('form', 'product-form')['action'].split('/')[-1]
 
         part_number_match = re.search('"productID": "(.+)"', response.text)
         if part_number_match:
@@ -114,19 +121,13 @@ class GamesLegends(Store):
         else:
             part_number = None
 
-        sku_match = re.search('"sku": "(.+)"', response.text)
-        if sku_match:
-            sku = sku_match.groups()[0]
-        else:
-            sku = None
+        sku = json_data.get('sku', None)
 
         if 'VENTA' in name.upper():
             # Preventa, skip
             stock = 0
-        elif soup.find('div', 'form-group product-stock product-unavailable '
-                              'visible') or soup.find(
-            'div', 'form-group product-stock '
-                   'product-out-stock visible'):
+        elif json_data['offers']['availability'] == \
+                'http://schema.org/OutOfStock':
             stock = 0
         elif soup.find('span', 'product-form-stock'):
             stock = int(soup.find('span', 'product-form-stock').text)
@@ -134,7 +135,7 @@ class GamesLegends(Store):
             stock = -1
 
         price = Decimal(remove_words(
-            soup.find('span', 'product-form-price form-price').text))
+            soup.find('span', 'product-form_price').text))
         picture_containers = soup.find('div', 'product-images')
 
         if picture_containers:

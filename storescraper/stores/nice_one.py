@@ -3,7 +3,7 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK
+from storescraper.categories import NOTEBOOK, CPU_COOLER, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -29,8 +29,9 @@ class NiceOne(Store):
             'Ram',
             'PowerSupply',
             'Monitor',
-            'CpuCooler',
+            CPU_COOLER,
             NOTEBOOK,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -48,7 +49,9 @@ class NiceOne(Store):
             ['27-memorias', 'Ram'],
             ['23-fuentes-de-poder', 'PowerSupply'],
             ['28-monitores', 'Monitor'],
-            ['35-refrigeracion', 'CpuCooler'],
+            ['61-disipador-por-aire', CPU_COOLER],
+            ['62-watercooling', CPU_COOLER],
+            ['63-ventiladores', CASE_FAN],
             ['30-notebooks', NOTEBOOK],
         ]
 

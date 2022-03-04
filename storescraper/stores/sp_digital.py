@@ -6,49 +6,53 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
+from storescraper.utils import html_to_markdown, \
     session_with_proxy
-from storescraper.categories import GAMING_CHAIR, WEARABLE
+from storescraper.categories import GAMING_CHAIR, WEARABLE, \
+    EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, CPU_COOLER, HEADPHONES, \
+    MOUSE, KEYBOARD, MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, UPS, \
+    ALL_IN_ONE, TABLET, STEREO_SYSTEM, USB_FLASH_DRIVE, MEMORY_CARD, \
+    PROCESSOR, CASE_FAN, MOTHERBOARD, RAM, POWER_SUPPLY, STORAGE_DRIVE, \
+    SOLID_STATE_DRIVE, COMPUTER_CASE, VIDEO_CARD, PRINTER, TELEVISION, \
+    PROJECTOR, CELL
 
 
 class SpDigital(Store):
     @classmethod
     def categories(cls):
         return [
-            'ExternalStorageDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'Tablet',
-            'Notebook',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'PowerSupply',
-            'ComputerCase',
-            'Motherboard',
-            'Processor',
-            'VideoCard',
-            'CpuCooler',
-            'Printer',
-            'Ram',
-            'Monitor',
-            'MemoryCard',
-            'Mouse',
-            'Cell',
-            'UsbFlashDrive',
-            'Television',
-            'Camera',
-            'Projector',
-            'AllInOne',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'VideoGameConsole',
-            'Ups',
             GAMING_CHAIR,
+            GAMING_DESK,
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD,
+            MONITOR,
+            KEYBOARD_MOUSE_COMBO,
+            NOTEBOOK,
+            MICROPHONE,
+            UPS,
+            ALL_IN_ONE,
+            TABLET,
             WEARABLE,
+            STEREO_SYSTEM,
+            USB_FLASH_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
+            PROCESSOR,
+            CPU_COOLER,
+            CASE_FAN,
+            MOTHERBOARD,
+            RAM,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            COMPUTER_CASE,
+            VIDEO_CARD,
+            PRINTER,
+            TELEVISION,
+            PROJECTOR,
+            CELL,
         ]
 
     @classmethod
@@ -56,96 +60,65 @@ class SpDigital(Store):
         session = session_with_proxy(extra_args)
 
         category_paths = [
-            ['351', ['ExternalStorageDrive'],
-             'Home > Almacenamiento > Disco Duro Externo', 1],
-            ['348', ['ExternalStorageDrive'],
-             'Home > Almacenamiento > Almacenamiento en Red', 1],
-            ['352', ['StorageDrive'],
-             'Home > Almacenamiento > Disco Duro Interno', 1],
-            ['350', ['SolidStateDrive'],
-             'Home > Almacenamiento > Unidad Estado Solido SSD', 1],
-            ['475', ['Tablet'],
-             'Home > Apple > IPad', 1],
-            ['369', ['Tablet'],
-             'Home > Tablets y Accesorios > Tablets', 1],
-            ['365', ['Notebook'],
-             'Home > Computadores y Notebooks > '
-             'Notebook Corporativo y Comercial', 1],
-            ['474', ['Notebook'],
-             'Home > Apple > Mac', 1],
-            ['559', [WEARABLE],
-             'Home > Apple > Watch', 1],
-            ['556', ['Notebook'],
-             'Home > Computadores y Notebooks > Notebook Gamer', 1],
-            ['344', ['StereoSystem'],
-             'Home > Accesorios > Parlantes', 1],
-            ['360', ['StereoSystem'],
-             'Home > Audio y Video > Equipos de Música', 1],
-            ['362', ['StereoSystem'],
-             'Home > Audio y Video > Home Theater', 1],
-            ['359', ['OpticalDiskPlayer'],
-             'Home > Audio y Video > Reproductor Blu-Ray DVD', 1],
-            ['376', ['PowerSupply'],
-             'Home > Componentes para PC > Fuentes de Poder', 1],
-            ['375', ['ComputerCase'],
-             'Home > Componentes para PC > Gabinetes', 1],
-            ['377', ['Motherboard'],
-             'Home > Componentes para PC > Placas Madres', 1],
-            ['378', ['Processor'],
-             'Home > Componentes para PC > Procesadores', 1],
-            ['379', ['VideoCard'],
-             'Home > Componentes para PC > Tarjetas de Video', 1],
-            ['484', ['CpuCooler'],
-             'Home > Componentes para PC > Refrigeración y Ventiladores', 1],
-            ['396', ['Printer'],
-             'Home > Impresoras y Escáneres > Impresora a Tinta', 1],
-            ['398', ['Printer'],
-             'Home > Impresoras y Escáneres > Multifuncional', 1],
-            ['394', ['Printer'],
-             'Home > Impresoras y Escáneres > Impresora Láser', 1],
-            ['409', ['Ram'],
-             'Home > Memorias > Memoria RAM PC', 1],
-            ['410', ['Ram'],
-             'Home > Memorias > Memoria RAM Notebook', 1],
-            ['415', ['Monitor'],
-             'Home > Monitores y Proyectores > Monitor', 1],
-            ['411', ['MemoryCard'],
-             'Home > Memorias > Memoria Flash', 1],
-            ['341', ['Mouse'],
-             'Home > Accesorios > Mouse', 1],
-            ['459', ['Cell'],
-             'Home > Celulares y Accesorios > Teléfonos Móviles', 1],
-            ['412', ['UsbFlashDrive'],
-             'Home > Memorias > Pendrive', 1],
-            ['417', ['Television'],
-             'Home > Monitores y Proyectores > Televisor', 1],
-            ['387', ['Camera'],
-             'Home > Imagen Digital > Cámaras Digitales', 1],
-            ['416', ['Projector'],
-             'Home > Monitores y Proyectores > Proyectores', 1],
-            ['370', ['AllInOne'],
-             'Home > Computadores y Notebooks > All In One', 1],
-            ['342', ['Keyboard'],
-             'Home > Accesorios > Teclados', 1],
-            ['339', ['KeyboardMouseCombo'],
-             'Home > Accesorios > Kit Teclados Mouse', 1],
-            ['337', ['Headphones'],
-             'Home > Accesorios > Audífonos', 1],
-            ['586', ['Headphones'],
-             'Home > Sistemas para conferencias > Audífonos y micrófonos', 1],
-            ['357', ['VideoGameConsole'],
-             'Home > Audio y Video > Consolas', 1],
-            ['572', ['VideoGameConsole'],
-             'Home > Consolas > Consolas XBOX', 1],
-            ['575', ['VideoGameConsole'],
-             'Home > Consolas > Consolas PlayStation', 1],
-            ['463', ['Ups'],
-             'Home > UPS y protección de poder > UPS y respaldo de energía',
-             1],
-            ['554', [GAMING_CHAIR],
-             'Home > Componentes para PC > Sillas Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIxMQ==', [GAMING_CHAIR],
+             'Silla Gamer Profesional', 1],
+            ['Q2F0ZWdvcnk6MTIxMw==', [GAMING_DESK], 'Escritorio Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIxNQ==', [HEADPHONES], 'Audífono Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIxNg==', [MOUSE], 'Mouse Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIxOA==', [KEYBOARD], 'Teclado Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIxOQ==', [MONITOR], 'Monitor Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIyMA==', [KEYBOARD_MOUSE_COMBO],
+             'Kit Teclado + Mouse Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIyNA==', [NOTEBOOK], 'Notebook Gamer', 1],
+            ['Q2F0ZWdvcnk6MTIyNw==', [MICROPHONE], 'Micrófono Streaming', 1],
+            ['Q2F0ZWdvcnk6MTIzOA==', [NOTEBOOK], 'Notebooks', 1],
+            ['Q2F0ZWdvcnk6MTI3MQ==', [UPS], 'UPS y Respaldo Energía', 1],
+            ['Q2F0ZWdvcnk6MTI0Mw==', [ALL_IN_ONE], 'PC All in One', 1],
+            ['Q2F0ZWdvcnk6MTI0OA==', [TABLET], 'Tablets', 1],
+            ['Q2F0ZWdvcnk6MTI1Mg==', [NOTEBOOK], 'Mac', 1],
+            ['Q2F0ZWdvcnk6MTI1Mw==', [TABLET], 'iPad', 1],
+            ['Q2F0ZWdvcnk6MTI1NA==', [WEARABLE], 'Apple Watch', 1],
+            ['Q2F0ZWdvcnk6MTI1Nw==', [MOUSE], 'Mouse', 1],
+            ['Q2F0ZWdvcnk6MTI1OQ==', [KEYBOARD], 'Teclados', 1],
+            ['Q2F0ZWdvcnk6MTI2MA==', [STEREO_SYSTEM], 'Parlantes para PC', 1],
+            ['Q2F0ZWdvcnk6MTI2MQ==', [MONITOR], 'Monitores', 1],
+            ['Q2F0ZWdvcnk6MTI2Mg==', [KEYBOARD_MOUSE_COMBO],
+             'Kit Teclado + Mouse Gamer', 1],
+            ['Q2F0ZWdvcnk6MTI2Ng==', [USB_FLASH_DRIVE], 'Pendrive', 1],
+            ['Q2F0ZWdvcnk6MTI2Nw==', [EXTERNAL_STORAGE_DRIVE],
+             'Disco Duro Externo', 1],
+            ['Q2F0ZWdvcnk6MTI2OA==', [MEMORY_CARD],
+             'Tarjeta Flash Micro SD', 1],
+            ['Q2F0ZWdvcnk6MTI4Mg==', [PROCESSOR], 'Procesador', 1],
+            ['Q2F0ZWdvcnk6MTMwMA==', [CPU_COOLER], 'Refrigeración Líquida', 1],
+            ['Q2F0ZWdvcnk6MTMwMQ==', [CPU_COOLER], 'Disipador CPU', 1],
+            ['Q2F0ZWdvcnk6MTMwMg==', [CASE_FAN], 'Ventilador Gabinete', 1],
+            ['Q2F0ZWdvcnk6MTI4NQ==', [MOTHERBOARD], 'Placa madre', 1],
+            ['Q2F0ZWdvcnk6MTI4OQ==', [RAM], 'Memorias RAM', 1],
+            ['Q2F0ZWdvcnk6MTMwNg==', [POWER_SUPPLY], 'Fuente de Poder', 1],
+            ['Q2F0ZWdvcnk6MTI5Mw==', [STORAGE_DRIVE],
+             'HDD Disco Duro Mecánico', 1],
+            ['Q2F0ZWdvcnk6MTI5NA==', [SOLID_STATE_DRIVE],
+             'SSD Unidad Estado Sólido', 1],
+            ['Q2F0ZWdvcnk6MTMwOA==', [COMPUTER_CASE], 'Gabinetes', 1],
+            ['Q2F0ZWdvcnk6MTI5NQ==', [VIDEO_CARD], 'Tarjeta de Video', 1],
+            ['Q2F0ZWdvcnk6MTM5Nw==', [PRINTER], 'Plotter', 1],
+            ['Q2F0ZWdvcnk6MTM2MQ==', [TELEVISION], 'Televisores', 1],
+            ['Q2F0ZWdvcnk6MTM2MQ==', [WEARABLE], 'Smartwatch', 1],
+            ['Q2F0ZWdvcnk6MTQwMA==', [WEARABLE], 'Smartwatch', 1],
+            ['Q2F0ZWdvcnk6MTM4Mw==', [PROJECTOR], 'Proyectores', 1],
+            ['Q2F0ZWdvcnk6MTM4Nw==', [PRINTER], 'Impresoras Láser', 1],
+            ['Q2F0ZWdvcnk6MTM4OA==', [PRINTER], 'Impresoras Tinta', 1],
+            ['Q2F0ZWdvcnk6MTM5Mw==', [PRINTER], 'Multifuncionales', 1],
+            ['Q2F0ZWdvcnk6MTQwNA==', [HEADPHONES], 'Audífonos', 1],
+            ['Q2F0ZWdvcnk6MTQwNQ==', [HEADPHONES], 'Audífonos Bluetooth', 1],
+            ['Q2F0ZWdvcnk6MTQwNg==', [STEREO_SYSTEM], 'Parlante Portátil', 1],
+            ['Q2F0ZWdvcnk6MTQwNw==', [MICROPHONE],
+             'Micrófonos y Accesorios', 1],
+            ['Q2F0ZWdvcnk6MTQzMA==', [CELL], 'Smartphones', 1],
         ]
 
+        endpoint = 'https://bff.spdigital.cl/api/v1/saleor'
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -154,39 +127,65 @@ class SpDigital(Store):
             if category not in local_categories:
                 continue
 
-            p = 1
+            cursor = ''
             current_position = 1
-
             local_product_urls = []
 
             while True:
-                if p >= 80:
-                    raise Exception('Page overflow for: {}'.format(
-                        category_id))
+                payload = {
+                    "query": "query( $channel: String $first: Int $after: "
+                             "String $before: String $categories: [ID] "
+                             "$collections: [ID] $search: String $metadata: "
+                             "[MetadataFilter] $priceGte: Float $priceLte: "
+                             "Float $attributes: [AttributeInput] $sortBy: "
+                             "ProductOrder $stockAvailability: "
+                             "StockAvailability $ids: [ID] ) { products"
+                             "( first: $first after: $after before: "
+                             "$before channel: $channel filter: { "
+                             "isPublished: true, categories: "
+                             "$categories, collections: $collections "
+                             "price: { gte: $priceGte, lte: $priceLte } "
+                             "search: $search metadata: $metadata "
+                             "attributes: $attributes stockAvailability: "
+                             "$stockAvailability ids: $ids } sortBy: $sortBy "
+                             ") { totalCount pageInfo { endCursor startCursor "
+                             "hasNextPage hasPreviousPage } edges { node { "
+                             "category { id name slug parent { id } } id "
+                             "metadata { key value } name slug description "
+                             "isAvailable attributes { attribute { name } "
+                             "values { name slug } } variants { id name sku "
+                             "quantityAvailable media { id type url "
+                             "thumbnailUrl: url(size: 100) } } "
+                             "defaultVariant { id sku name media { id type "
+                             "url thumbnailUrl: url(size: 100) } } media { "
+                             "type url thumbnailUrl: url(size: 100) alt } "
+                             "thumbnail { url alt } pricing { priceRange { "
+                             "start { gross { amount currency } } } } } } } "
+                             "} ",
+                    "variables": {
+                        "channel": "sp-digital",
+                        "first": 100,
+                        "after": cursor,
+                        "before": "",
+                        "categories": [category_id],
+                        "collections": [],
+                        "metadata": [{"key": "pricing"}],
+                        "sortBy": {"direction": "ASC", "field": "PRICE"},
+                        "priceGte": None,
+                        "priceLte": 0,
+                        "attributes": [],
+                        "stockAvailability": "IN_STOCK",
+                        "ids": []
+                    }
+                }
 
-                url = 'https://www.spdigital.cl/categories/view/{}/page:' \
-                      '{}?o=withstock'.format(category_id, p)
+                print(cursor or 'first')
+                response = session.post(endpoint, json=payload)
+                products_data = response.json()['data']['products']
 
-                response = cls._retrieve_page(session, url)
-                soup = BeautifulSoup(response.text, 'html5lib')
-
-                product_containers = soup.findAll('div', 'product-item-mosaic')
-
-                if not product_containers:
-                    if p == 1:
-                        logging.warning('Empty category: {}'.format(
-                            category_id))
-                    else:
-                        break
-
-                done = False
-
-                for container in product_containers:
-                    product_url = 'https://www.spdigital.cl' + \
-                           container.find('a')['href']
-                    if product_url in local_product_urls:
-                        done = True
-                        break
+                for container in products_data['edges']:
+                    product_url = 'https://www.spdigital.cl/{}/'.format(
+                        container['node']['slug'])
 
                     product_entries[product_url].append({
                         'category_weight': category_weight,
@@ -197,137 +196,89 @@ class SpDigital(Store):
                     local_product_urls.append(product_url)
                     current_position += 1
 
-                if done:
+                if not products_data['pageInfo']['hasNextPage']:
                     break
-                p += 1
 
+                cursor = products_data['pageInfo']['endCursor']
         return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
-        response = cls._retrieve_page(session, url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        slug = re.search('https://www.spdigital.cl/(.+)/$', url).groups()[0]
+        page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
+                        'page-data.json'.format(slug)
+        response = session.get(page_data_url)
 
-        part_number = soup.find('span', {'id': '_sku'})
-
-        if not part_number:
+        if response.status_code == 403:
             return []
 
-        if soup.find('span', 'product-view-price-a-pedido'):
-            return []
+        page_data = response.json()['result']['pageContext']
 
-        part_number = part_number.text.strip()
+        name = page_data['content']['name']
+        part_number = page_data['productId']
 
-        # Remove \x9d character for this case
-        # https://www.spdigital.cl/products/view/55577
-        name = soup.find('h1').text.strip().replace('\x9d', '')
+        for metadata_entry in page_data['content']['metadata']:
+            if metadata_entry['key'] == 'pricing':
+                pricing_json = json.loads(metadata_entry['value'])
+                offer_price = Decimal(pricing_json['sp-digital']['cash'])
+                normal_price = Decimal(pricing_json['sp-digital']['other'])
+                break
+        else:
+            raise Exception('No pricing entry found')
 
-        # Catch both "SELECCION" and "SELECCIÓN"
-        if 'SEGUNDA SELECCI' in name:
-            condition = 'https://schema.org/RefurbishedCondition'
+        refurbished_blacklist = [
+            'CAJA ABIERTA',
+            'SEGUNDA SELECCI',
+            'DAÑADA'
+        ]
+
+        for keyword in refurbished_blacklist:
+            if keyword in name:
+                condition = 'https://schema.org/RefurbishedCondition'
+                break
         else:
             condition = 'https://schema.org/NewCondition'
 
-        sku = [x for x in url.split('/') if x][-1]
+        description_json = json.loads(page_data['content']['description'])
 
-        if soup.find('a', 'stock-amount-cero') or \
-                not soup.find('div', 'product-view-stock'):
-            stock = 0
+        if description_json['blocks'][0]['data']['text']:
+            description_tag = BeautifulSoup(
+                description_json['blocks'][0]['data']['text'], 'html.parser')
+            description = html_to_markdown(description_tag.text)
         else:
-            stock_text = soup.find('div', 'product-view-stock').find(
-                'span').text
+            description = None
 
-            if 'preventa' in stock_text.lower():
-                stock = -1
-            else:
-                stock_overflow, stock_value = re.match(r'(.*?)(\d+) UNIDADES',
-                                                       stock_text).groups()
+        picture_urls = [x['url'] for x in page_data['content']['media']]
 
-                if stock_overflow:
-                    stock = -1
-                else:
-                    stock = int(stock_value)
+        products = []
 
-        containers = soup.findAll('span', 'product-view-cash-price-value')
+        for variant in page_data['content']['variants']:
+            sku = variant['sku']
+            key = variant['id']
+            stock = variant['quantityAvailable']
 
-        offer_price = Decimal(remove_words(containers[0].text))
-        normal_price = Decimal(remove_words(containers[1].text))
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                part_number=part_number,
+                condition=condition,
+                description=description,
+                picture_urls=picture_urls
+            )
+            products.append(p)
 
-        if normal_price < offer_price:
-            offer_price = normal_price
-
-        tabs = [
-            soup.find('div', 'product-description-tab'),
-            soup.find('div', {'data-tab': 'specifications'})
-        ]
-
-        description = ''
-
-        for tab in tabs:
-            if not tab:
-                continue
-            description += html_to_markdown(
-                str(tab), 'https://www.spdigital.cl') + '\n\n'
-
-        picture_containers = soup.findAll('a', {'rel': 'lightbox'})
-
-        picture_urls = []
-        for container in picture_containers:
-            picture_url = container.find('img')['src'].replace(' ', '%20')
-            if 'http' not in picture_url:
-                picture_url = 'https://www.spdigital.cl' + picture_url
-            picture_urls.append(picture_url)
-
-        reviews_url = 'https://d1le22hyhj2ui8.cloudfront.net/onpage/' \
-                      'spdigital.cl/reviews.js?url_key={}'.format(sku)
-        review_data = json.loads(session.get(reviews_url).text)
-
-        if 'user_review_count' in review_data:
-            review_count = review_data['user_review_count']
-            if review_count:
-                review_avg_score = review_data['score'] / 2
-            else:
-                review_avg_score = None
-        else:
-            review_count = None
-            review_avg_score = None
-
-        flixmedia_id = None
-        video_urls = None
-        flixmedia_tag = soup.find(
-            'script', {'src': '//media.flixfacts.com/js/loader.js'})
-
-        if flixmedia_tag:
-            try:
-                flixmedia_id = flixmedia_tag['data-flix-mpn']
-                video_urls = flixmedia_video_urls(flixmedia_id)
-            except KeyError:
-                pass
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            part_number=part_number,
-            condition=condition,
-            description=description,
-            picture_urls=picture_urls,
-            review_count=review_count,
-            review_avg_score=review_avg_score,
-            flixmedia_id=flixmedia_id,
-            video_urls=video_urls
-        )
-
-        return [p]
+        return products
 
     @classmethod
     def _retrieve_page(cls, session, url, retries=5):
@@ -336,6 +287,6 @@ class SpDigital(Store):
             return session.get(url, timeout=90)
         except Exception:
             if retries:
-                return cls._retrieve_page(session, url, retries-1)
+                return cls._retrieve_page(session, url, retries - 1)
             else:
                 raise

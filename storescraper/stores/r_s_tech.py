@@ -1,11 +1,12 @@
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, \
-    RAM, PROCESSOR, CPU_COOLER, NOTEBOOK, MONITOR, VIDEO_GAME_CONSOLE, \
-    STORAGE_DRIVE
+    RAM, PROCESSOR, CPU_COOLER, NOTEBOOK, VIDEO_GAME_CONSOLE, \
+    STORAGE_DRIVE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,25 +23,25 @@ class RSTech(Store):
             PROCESSOR,
             CPU_COOLER,
             NOTEBOOK,
-            MONITOR,
             VIDEO_GAME_CONSOLE,
             STORAGE_DRIVE,
+            MOUSE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-y-componentes/tarjetas-de-video', VIDEO_CARD],
-            ['accesorios-y-componentes/placa-madre-motherboard', MOTHERBOARD],
-            ['accesorios-y-componentes/fuentes-de-poder', POWER_SUPPLY],
-            ['accesorios-y-componentes/memoria-ram', RAM],
-            ['accesorios-y-componentes/procesadores', PROCESSOR],
-            ['accesorios-y-componentes/refrigeracion', CPU_COOLER],
-            ['sin-categoria/notebook-gamer', NOTEBOOK],
-            ['monitores', MONITOR],
             ['consolas-y-videojuegos', VIDEO_GAME_CONSOLE],
-            ['accesorios-y-componentes/disco-duro-y-almacenamiento',
-             STORAGE_DRIVE],
+            ['disco-duro-y-almacenamiento', STORAGE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['memoria-ram', RAM],
+            ['notebook-gamer', NOTEBOOK],
+            ['audifonos-y-perifericos', MOUSE],
+            ['placa-madre-motherboard', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['refrigeracion', CPU_COOLER],
+            ['tarjetas-de-video', VIDEO_CARD],
+            # ['monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -75,6 +76,10 @@ class RSTech(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
@@ -90,7 +95,9 @@ class RSTech(Store):
                 remove_words(soup.find('p', 'price').text.strip()))
 
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-gallery').findAll('img')]
+                        soup.find('div', 'product-gallery').findAll('img')
+                        if validators.url(tag['src'])
+                        ]
         p = Product(
             name,
             cls.__name__,

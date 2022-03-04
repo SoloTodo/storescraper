@@ -1,10 +1,7 @@
-import json
+import re
 from collections import defaultdict
-
 from decimal import Decimal
-
 from bs4 import BeautifulSoup
-
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,6 +12,7 @@ class Claro(Store):
                  'servicios-moviles/postpago/planes-y-precios/'
     prepago_url = 'https://www.clarochile.cl/personas/servicios/' \
                   'servicios-moviles/prepago/'
+    equipos_url = 'https://www.clarochile.cl/personas/ofertaplanconequipo/'
 
     combinations = [
         ('', 'valor_contado_planes', None),
@@ -34,7 +32,6 @@ class Claro(Store):
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
-        session = session_with_proxy(extra_args)
         discovered_entries = defaultdict(lambda: [])
 
         if category == 'CellPlan':
@@ -50,24 +47,11 @@ class Claro(Store):
                 'value': 2
             })
         if category == 'Cell':
-            # Con plan
-
-            soup = BeautifulSoup(session.post(
-                'https://equipos.clarochile.cl/servicio/catalogo',
-                'destacados=destacado'
-            ).text, 'html.parser')
-
-            products_json = json.loads(soup.contents[-1])
-
-            for idx, product_entry in enumerate(products_json):
-                product_slug = product_entry['slug']
-                product_url = 'https://equipos.clarochile.cl/' \
-                              'catalogo/' + product_slug
-                discovered_entries[product_url].append({
-                    'category_weight': 1,
-                    'section_name': 'Equipos',
-                    'value': idx + 1
-                })
+            discovered_entries[cls.equipos_url].append({
+                'category_weight': 1,
+                'section_name': 'Equipos',
+                'value': 1
+            })
 
         return discovered_entries
 
@@ -94,7 +78,7 @@ class Claro(Store):
             # Plan Postpago
             planes = cls._planes(url, extra_args)
             products.extend(planes)
-        elif 'equipos.clarochile.cl' in url:
+        elif url == cls.equipos_url:
             # Equipo postpago
             products.extend(cls._celular_postpago(url, extra_args))
         else:
@@ -109,25 +93,24 @@ class Claro(Store):
 
         soup = BeautifulSoup(session.get(data_url).text,
                              'html.parser')
-        containers = soup.findAll('article', 'plan-destacado-Landing')
 
         products = []
+
         portabilidad_modes = [
             '',
             ' Portabilidad',
         ]
 
         leasing_modes = [
-            ' (con cuota de arriendo)',
-            ' (sin cuota de arriendo)'
+            ' (sin cuota de arriendo)',
+            ' (con cuota de arriendo)'
         ]
 
-        for container in containers:
-            c = container.find('div', 'tab-content').find('div')
-            plan_name = c.find('h1').text.strip()
-            plan_price_text = c.findAll('h2')[-1]\
-                .text.replace('$', '')
-            plan_price = Decimal(plan_price_text.replace('.', ''))
+        for container in soup.findAll('div', 'card-box'):
+            plan_name = container.find('h1').text.strip()
+            plan_name = ' '.join(plan_name.split())
+            plan_price = Decimal(remove_words(container.findAll(
+                'h2')[1].text.strip()))
 
             for portability_mode in portabilidad_modes:
                 for leasing_mode in leasing_modes:
@@ -152,142 +135,167 @@ class Claro(Store):
 
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        cell_id = url.split('/')[-1]
+        # 1. Obtain cell plans data
+        plans = cls._planes(cls.planes_url, extra_args)
+
+        # 2. Obtain the products
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        data = 'id={}'.format(cell_id)
-
-        response = session.post(
-            'https://equipos.clarochile.cl/servicio/detalle/equipo_plan',
-            data=data)
-
-        try:
-            product_json = json.loads(response.text)[0]
-        except json.decoder.JSONDecodeError:
-            return []
-
-        base_cell_name = '{} {} ({})'.format(product_json['marca'],
-                                             product_json['modelo_comercial'],
-                                             product_json['modelo_tecnico'])
-
+        res = session.get('https://www.clarochile.cl/'
+                          'personas/ofertaplanconequipo/')
+        soup = BeautifulSoup(res.text, 'html.parser')
         products = []
 
-        for variant in ['prepago', 'pospago']:
-            color_index = 0
-            while color_index < 10:
-                color_index += 1
-                field_name = 'sku_{}_color_{}'.format(variant, color_index)
+        # Nuevo sin cuotas
+        for cell_tag in soup.find('div', {'id': 'equipoRecambioDos'})\
+                            .findAll('div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if 'sin cuota de arriendo' in plan.name and
+                                'portabilidad' not in plan.name.lower()]
 
-                color = product_json.get(field_name, None)
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'cuotas').findAll(
+                'i')[1].text.split('$')[1]
+            price = Decimal(remove_words(price_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src'].strip().replace(' ', '%20')]
 
-                if not color:
-                    continue
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name.upper(),
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=Decimal(0)
+                )
+                products.append(product)
 
-                sku_field = 'sku_{}_{}'.format(variant, color_index)
-                sku = product_json[sku_field]
+        # Nuevo con cuotas
+        for cell_tag in soup.find('div',
+                                  {'id': 'equipoRecambioUno'}).findAll(
+                'div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if
+                                'con cuota de arriendo' in plan.name and
+                                'portabilidad' not in plan.name.lower()]
 
-                if sku == '70004672':
-                    color = 'ceramic white'
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'pie-new').find(
+                'h1').text
+            price = Decimal(remove_words(price_text))
+            monthly_payment_text = cell_tag.find('div', 'cuotas-uno')\
+                .find('h3').text.replace('*', '')
+            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src'].strip().replace(' ', '%20')]
 
-                cell_name = '{} - {}'.format(base_cell_name, color)
-                base_key = '{} {}'.format(cell_id, color)
-                pictures_field = 'sku_{}_img_{}'.format(variant, color_index)
-                picture_paths = [path for path in product_json[pictures_field]
-                                 if path]
-                picture_urls = ['https://equipos.clarochile.cl/adminequipos/'
-                                'uploads/equipo/' + path.replace(' ', '%20')
-                                for path in picture_paths]
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name.upper(),
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=cell_monthly_payment
+                )
+                products.append(product)
 
-                if cls.include_prepago_price:
-                    prepago_price = None
+        # Portabilidad sin cuotas
+        for cell_tag in soup.find('div',
+                                  {'id': 'equipoPlanDos'}).findAll(
+                'div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                               .replace(')', '')
+                                for plan in plans
+                                if
+                                'sin cuota de arriendo' in plan.name and
+                                'portabilidad' in plan.name.lower()]
 
-                    prepago_fields = [
-                        'precio_tienda_web',
-                        'precio_oferta_prepago',
-                        'precio_prepago_normal'
-                    ]
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
+            price_text = cell_tag.find('div', 'cuotas').findAll(
+                'i')[1].text.split('$')[1]
+            price = Decimal(remove_words(price_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src'].strip().replace(' ', '%20')]
 
-                    for prepago_field in prepago_fields:
-                        prepago_price = Decimal(remove_words(
-                            product_json[prepago_field]))
-                        if prepago_price:
-                            break
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name[:60].upper(),
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=Decimal(0)
+                )
+                products.append(product)
 
-                    if prepago_price:
-                        product = Product(
-                            cell_name,
-                            cls.__name__,
-                            'Cell',
-                            url,
-                            url,
-                            base_key + ' Claro Prepago',
-                            -1,
-                            prepago_price,
-                            prepago_price,
-                            'CLP',
-                            cell_plan_name='Claro Prepago',
-                            picture_urls=picture_urls,
-                            cell_monthly_payment=Decimal(0)
-                        )
-                        products.append(product)
+        # Portabilidad con cuotas
+        for cell_tag in soup.find('div', {'id': 'equipoPlanUno'})\
+                            .findAll('div', 'oferta'):
+            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
+                                                    .replace(')', '')
+                                for plan in plans
+                                if
+                                'con cuota de arriendo' in plan.name and
+                                'portabilidad' in plan.name.lower()]
 
-                for plan_entry in product_json.get('planes', []):
-                    plan_id = plan_entry['cat04_plan_id']
-                    data = 'id_plan={}&id={}'.format(plan_id,
-                                                     product_json['id'])
-                    response = session.post(
-                        'https://equipos.clarochile.cl/servicio/detalle/'
-                        'planes_equipo',
-                        data=data, verify=False)
-                    plan_data = json.loads(response.text)
-                    base_plan_name = plan_data['cat04_plan_nombre']
+            cell_name = cell_tag.find('div', 'datos-plan').find(
+                'h2').text.strip()
 
-                    for plan_suffix, price_field, cell_monthly_payment_field \
-                            in cls.combinations:
-                        plan_name = base_plan_name + plan_suffix
+            monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
+                .find('h3')
+            if not monthly_payment_tag:
+                monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
+                    .find('h4')
+            monthly_payment_text = monthly_payment_tag.text.replace('*', '')
+            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
+            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
+                'img')['src'].strip().replace(' ', '%20')]
 
-                        if plan_data[price_field]:
-                            price = Decimal(remove_words(
-                                plan_data[price_field]))
-                        else:
-                            # Equipo de la otra modalidad (ClaroUp si estamos
-                            # scrapeando Claro, Claro si estamos scrapeando
-                            # ClaroUp), ver las dos variantes de "combinations"
-                            # que hay.
-                            # Asegurarse que sea una combinación que tenga
-                            # cuota de arriendo
-                            assert cell_monthly_payment_field is not None
-                            continue
-
-                        if cell_monthly_payment_field:
-                            cell_monthly_payment_text = plan_data[
-                                cell_monthly_payment_field]
-                            if cell_monthly_payment_text:
-                                cell_monthly_payment = Decimal(remove_words(
-                                    cell_monthly_payment_text))
-                            else:
-                                # Equipo no tiene la modalidad de pago en
-                                # cuotas
-                                continue
-                        else:
-                            # Equipo con pago al contado
-                            cell_monthly_payment = Decimal(0)
-
-                        product = Product(
-                            cell_name,
-                            cls.__name__,
-                            'Cell',
-                            url,
-                            url,
-                            '{} - {}'.format(base_key, plan_name),
-                            -1,
-                            price,
-                            price,
-                            'CLP',
-                            cell_plan_name=plan_name,
-                            picture_urls=picture_urls,
-                            cell_monthly_payment=cell_monthly_payment
-                        )
-                        products.append(product)
+            for cell_plan_name in cell_plans_names:
+                product = Product(
+                    cell_name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - {}'.format(cell_name, cell_plan_name),
+                    -1,
+                    Decimal(0),
+                    Decimal(0),
+                    'CLP',
+                    cell_plan_name=cell_plan_name[:60].upper(),
+                    picture_urls=picture_urls,
+                    cell_monthly_payment=cell_monthly_payment
+                )
+                products.append(product)
 
         return products

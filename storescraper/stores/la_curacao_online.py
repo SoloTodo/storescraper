@@ -39,7 +39,8 @@ class LaCuracaoOnline(Store):
                 raise Exception('Page overflow')
 
             url = 'https://www.lacuracaonline.com/{}/catalogsearch/' \
-                  'result/index/?q=lg&p={}'.format(cls.country, page)
+                  'result/index/?q=PRODUCTOS&at_marca=LG&p={}' \
+                  ''.format(cls.country, page)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -82,8 +83,8 @@ class LaCuracaoOnline(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-        price = Decimal(soup.find('meta',
-                                  {'itemprop': 'price'})['content'].strip())
+        price = Decimal(soup.find(
+            'meta', {'property': 'product:price:amount'})['content'].strip())
         stock = -1
 
         pictures_data = re.search(r'"mage/gallery/gallery": ([\s\S]*?)\}\n',

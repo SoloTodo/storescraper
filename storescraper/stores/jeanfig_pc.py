@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -74,19 +75,22 @@ class JeanfigPc(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+
+        product_data = \
+            json.loads(soup.findAll(
+                'script', {'type': 'application/ld+json'})[1].text)[
+                '@graph'][1]
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        normal_price = Decimal(product_data['offers'][0]['price'])
+        offer_price = (normal_price * Decimal('0.95')).quantize(0)
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-        if soup.find('p', 'price').find('ins'):
-            normal_price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            normal_price = Decimal(remove_words(soup.find('p', 'price').text))
-        offer_price = Decimal(
-            remove_words(soup.find('span', 'woocommerce-Price-amount').text))
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
 

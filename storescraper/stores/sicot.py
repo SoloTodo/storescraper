@@ -6,7 +6,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MONITOR, TABLET, GAMING_CHAIR, \
-    PRINTER, ALL_IN_ONE, STEREO_SYSTEM
+    PRINTER, ALL_IN_ONE, STEREO_SYSTEM, SOLID_STATE_DRIVE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -23,6 +23,8 @@ class Sicot(Store):
             PRINTER,
             ALL_IN_ONE,
             STEREO_SYSTEM,
+            SOLID_STATE_DRIVE,
+            MOUSE,
         ]
 
     @classmethod
@@ -36,9 +38,15 @@ class Sicot(Store):
             ['gamer', GAMING_CHAIR],
             ['impresoras', PRINTER],
             ['accesorios', STEREO_SYSTEM],
+            ['almacenamiento', SOLID_STATE_DRIVE],
+            ['teclado-y-mouse', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -68,6 +76,9 @@ class Sicot(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = soup.find('main', 'bs-main').find(

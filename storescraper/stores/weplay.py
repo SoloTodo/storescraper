@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE, \
     HEADPHONES, MOUSE, KEYBOARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    MEMORY_CARD, STEREO_SYSTEM
+    MEMORY_CARD, STEREO_SYSTEM, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -21,7 +21,8 @@ class Weplay(Store):
             USB_FLASH_DRIVE,
             MEMORY_CARD,
             STEREO_SYSTEM,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -38,7 +39,8 @@ class Weplay(Store):
             ['computacion/pendrives.html', USB_FLASH_DRIVE],
             ['computacion/tarjetasdememoria.html', MEMORY_CARD],
             ['computacion/parlantescomputacion.html', STEREO_SYSTEM],
-            ['computacion/sillasgamer.html', GAMING_CHAIR]
+            ['computacion/sillasgamer.html', GAMING_CHAIR],
+            ['computacion/microfono-computacion.html', MICROPHONE]
         ]
 
         product_urls = []
@@ -86,6 +88,9 @@ class Weplay(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code == 404:
+            return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('span', {'itemprop': 'name'}).text.strip()

@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, NOTEBOOK, \
-    KEYBOARD, MOUSE, HEADPHONES, MOTHERBOARD, PROCESSOR, CPU_COOLER, VIDEO_CARD
+    KEYBOARD, MOUSE, HEADPHONES, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
+    VIDEO_CARD, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +30,8 @@ class Natcom(Store):
             MOTHERBOARD,
             PROCESSOR,
             CPU_COOLER,
-            VIDEO_CARD
+            VIDEO_CARD,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -53,7 +55,7 @@ class Natcom(Store):
             ['procesadores-amd', PROCESSOR],
             ['procesadores-intel', PROCESSOR],
             ['refrigeracion-liquida', CPU_COOLER],
-            ['ventiladores', CPU_COOLER],
+            ['ventiladores', CASE_FAN],
             ['tarjetas-de-video-amd', VIDEO_CARD],
             ['tarjetas-de-video-nvidia', VIDEO_CARD],
 

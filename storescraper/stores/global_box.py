@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
@@ -7,7 +8,8 @@ from storescraper.categories import MOTHERBOARD, POWER_SUPPLY, PROCESSOR, \
     VIDEO_CARD, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, USB_FLASH_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     KEYBOARD_MOUSE_COMBO, MONITOR, PRINTER, CELL, STEREO_SYSTEM, HEADPHONES, \
-    GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE
+    GAMING_CHAIR, COMPUTER_CASE, KEYBOARD, MOUSE, UPS, WEARABLE, CPU_COOLER, \
+    MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -41,6 +43,8 @@ class Globalbox(Store):
             KEYBOARD,
             MOUSE,
             UPS,
+            CPU_COOLER,
+            MEMORY_CARD,
         ]
 
     @classmethod
@@ -54,8 +58,9 @@ class Globalbox(Store):
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['componentes/memorias-ram', RAM],
-            ['componentes/pendrive', USB_FLASH_DRIVE],
+            ['componentes/memorias/memorias-ram', RAM],
+            ['componentes/memorias/pendrive', USB_FLASH_DRIVE],
+            ['componentes/memorias/tarjetas-de-memoria', MEMORY_CARD],
             ['componentes/almacenamiento/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
             ['componentes/almacenamiento/discos-internos', STORAGE_DRIVE],
@@ -77,6 +82,9 @@ class Globalbox(Store):
             ['gamer/mouse-gamer', MOUSE],
             ['gamer/audifonos-gamer', HEADPHONES],
             ['gamer/sillas-gamer', GAMING_CHAIR],
+            ['perifericos/teclados', KEYBOARD],
+            ['perifericos/mouse', MOUSE],
+            ['componentes/enfriamiento-y-ventilacion', CPU_COOLER]
         ]
 
         session = session_with_proxy(extra_args)
@@ -95,12 +103,19 @@ class Globalbox(Store):
             while True:
                 url_webpage = 'https://globalbox.cl/{}?p={}'.format(
                     url_extension, page)
+                print(url_webpage)
 
                 if page > 10:
                     raise Exception('page overflow: ' + url_webpage)
 
-                data = session.get(url_webpage, verify=False).text
-                soup = BeautifulSoup(data, 'html.parser')
+                response = session.get(url_webpage, verify=False)
+
+                if response.url != url_webpage:
+                    raise Exception(
+                        'URL mismatch: {} {}'.format(
+                            url_webpage, response.url))
+
+                soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'item isotope-item')
                 if not product_containers:
                     if page == 1:
@@ -130,7 +145,8 @@ class Globalbox(Store):
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('th', text='SKU').next.next.next.text.strip()
+        key = soup.find('input', {'name': 'product'})['value']
+        sku = urlparse(url).path.split('/')[1].split('-')[-1]
         part_number = soup.find('th', text='Part Number').next.next.next\
             .text.strip()
         availability_tag = soup.find('link', {'itemprop': 'availability'})
@@ -151,7 +167,7 @@ class Globalbox(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

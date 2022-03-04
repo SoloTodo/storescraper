@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -24,7 +25,7 @@ class OrbitalStore(Store):
             'Processor',
             'VideoCard',
             'Motherboard',
-            'CpuCooler'
+            CPU_COOLER,
             'Mouse',
             'Keyboard',
             # 'Headphones',
@@ -48,7 +49,7 @@ class OrbitalStore(Store):
             ['desktop-pc/componentes/tarjetas-de-video.html', 'VideoCard'],
             ['desktop-pc/componentes/motherboards.html', 'Mogherboard'],
             ['desktop-pc/componentes/efriamiento-y-ventilacion.html',
-             'CpuCooler'],
+             CPU_COOLER],
             ['perifericos/mouse.html', 'Mouse'],
             ['perifericos/teclados.html', 'Keyboard'],
             ['perifericos/audio/audifonos.html', 'Headphones'],

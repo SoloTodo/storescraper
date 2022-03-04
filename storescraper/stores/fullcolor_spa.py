@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, HEADPHONES, KEYBOARD, MONITOR, \
     POWER_SUPPLY, COMPUTER_CASE, SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, \
     PRINTER, STEREO_SYSTEM, MEMORY_CARD, USB_FLASH_DRIVE, STORAGE_DRIVE, \
-    GAMING_CHAIR
+    GAMING_CHAIR, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +29,8 @@ class FullcolorSpa(Store):
             MEMORY_CARD,
             USB_FLASH_DRIVE,
             STORAGE_DRIVE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MICROPHONE
         ]
 
     @classmethod
@@ -56,7 +57,8 @@ class FullcolorSpa(Store):
             ['subcategoria.asp?/id/30', MEMORY_CARD],
             ['segmento.asp?/id/241', STORAGE_DRIVE],
             ['subcategoria.asp?/id/31', USB_FLASH_DRIVE],
-            ['subcategoria.asp?/id/88', GAMING_CHAIR]
+            ['subcategoria.asp?/id/88', GAMING_CHAIR],
+            ['subcategoria.asp?/id/93', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)

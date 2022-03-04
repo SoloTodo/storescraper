@@ -7,7 +7,8 @@ from storescraper.categories import NOTEBOOK, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, MONITOR, MOUSE, KEYBOARD, POWER_SUPPLY, PROCESSOR, \
     MOTHERBOARD, CPU_COOLER, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     STORAGE_DRIVE, RAM, MEMORY_CARD, USB_FLASH_DRIVE, CELL, WEARABLE, \
-    PRINTER, UPS, GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, TABLET, ALL_IN_ONE
+    PRINTER, UPS, GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, TABLET, \
+    ALL_IN_ONE, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -42,6 +43,7 @@ class YouTech(Store):
             VIDEO_CARD,
             TABLET,
             ALL_IN_ONE,
+            GAMING_DESK
         ]
 
     @classmethod
@@ -75,6 +77,7 @@ class YouTech(Store):
             ['67851', PRINTER],
             ['67822_67857', UPS],
             ['67844', GAMING_CHAIR],
+            ['67845', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.52.1'
@@ -89,7 +92,7 @@ class YouTech(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.youtech.cl/tienda/index.php?route' \
-                              '=product/category&path={}&page={}'.\
+                              '=product/category&path={}&page={}'. \
                     format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage, verify=False).text
@@ -113,7 +116,7 @@ class YouTech(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-name').text.strip()
         key = soup.find('input', {'name': 'product_id'})['value']
-        sku = soup.find('td', text='Código del producto:').next.next\
+        sku = soup.find('td', text='Código del producto:').next.next \
             .text.strip()
         stock_text = soup.find(
             'td', text='Disponibilidad:').next.next.text.strip()
@@ -122,8 +125,13 @@ class YouTech(Store):
         else:
             stock = 0
 
-        price_container = soup.find('li', 'product-tax')
-        price = Decimal(remove_words(price_container.text.split(':')[1]))
+        prices_tag = soup.find('ul', 'product-price')
+        normal_price_container = prices_tag.find('li', 'product-tax')
+        normal_price = Decimal(remove_words(
+            normal_price_container.text.split(':')[1]))
+        offer_price_container = prices_tag.find('h2', 'cash-price')
+        offer__price = Decimal(remove_words(offer_price_container.text))
+
         picture_urls = [tag['data-zoom-image'] for tag in
                         soup.find('div', 'additional-images-container')
                             .findAll('img')]
@@ -136,8 +144,8 @@ class YouTech(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer__price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls

@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
-    MOUSE, CELL
+    MOUSE, CELL, CPU_COOLER, NOTEBOOK, PROCESSOR, MOTHERBOARD, \
+    EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,20 +19,35 @@ class SamuraiStore(Store):
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
             MOUSE,
-            CELL
+            CELL,
+            CPU_COOLER,
+            NOTEBOOK,
+            PROCESSOR,
+            MOTHERBOARD,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['ram', RAM],
+            ['ram-notebook', RAM],
             ['tarjetas-graficas', VIDEO_CARD],
+            ['tarjetas-de-video', VIDEO_CARD],
             ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
             ['perifericos', MOUSE],
             ['apple/iphone/iphone-13', CELL],
             ['apple/iphone/iphone-13-mini', CELL],
             ['apple/iphone/iphone-13-pro', CELL],
             ['apple/iphone/iphone-13-pro-max', CELL],
+            ['cooler-cpu', CPU_COOLER],
+            ['notebook', NOTEBOOK],
+            ['procesador', PROCESSOR],
+            ['placa-madre', MOTHERBOARD],
+            ['unidades-de-estado-solido-externas', EXTERNAL_STORAGE_DRIVE],
+            ['unidades-de-estado-solido-externas-para-mac',
+             EXTERNAL_STORAGE_DRIVE],
+            ['ram-mac', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -40,7 +56,7 @@ class SamuraiStore(Store):
                 continue
             page = 1
             while True:
-                if page > 30:
+                if page > 50:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.samuraistorejp.cl/' \
                               'product-category/{}/page/{}/'.format(
@@ -49,7 +65,7 @@ class SamuraiStore(Store):
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-small')
-                if not product_containers:
+                if not product_containers or soup.find('section', 'error-404'):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
@@ -69,7 +85,12 @@ class SamuraiStore(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text.strip()
+        name_tag = soup.find('h1', 'product-title')
+
+        if not name_tag:
+            return []
+
+        name = name_tag.text.strip()
 
         if 'RIFA' in name:
             return []
@@ -90,12 +111,14 @@ class SamuraiStore(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = -1
-        price_container = soup.find('div', 'product-stacked-info').find(
-            'table').findAll('bdi')
-        normal_price = Decimal(remove_words(price_container[0].text))
-        offer_price = Decimal(remove_words(price_container[1].text))
+        price_container = soup.find('p', 'product-page-price').findAll(
+            'span', 'woocommerce-Price-amount')[-1]
+        offer_price = Decimal(remove_words(price_container.text))
+        normal_price = (offer_price * Decimal('1.04')).quantize(0)
+
         picture_urls = [tag.find('a')['href'] for tag in soup.find('div',
-                        'product-gallery').findAll('div',
+                        'product-gallery').findAll(
+                        'div',
                         'woocommerce-product-gallery__image')]
         p = Product(
             name,
@@ -109,6 +132,7 @@ class SamuraiStore(Store):
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
