@@ -58,7 +58,8 @@ class PcCenterTech(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
+        product_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
         name = product_data['name']
         description = product_data['description']
         sku = str(product_data['sku'])
@@ -67,7 +68,7 @@ class PcCenterTech(Store):
         stock_tag = soup.find('p', 'in-stock')
 
         if stock_tag:
-            stock = int(re.search('(\d+)', stock_tag.text).groups()[0])
+            stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
         else:
             stock = 0
 

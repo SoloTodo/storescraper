@@ -99,8 +99,8 @@ class UltimateGamerStore(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', 'product-info__name').text
-        key_container = soup.find('form', {'id': 'product-form'})['action']
-        key = re.search(r"/(\d+)$", key_container).groups()[0]
+        key = re.search(r'data.content_ids = \[(\d+)];',
+                        page_source).groups()[0]
 
         if 'PREVENTA' in name.upper():
             stock = 0
