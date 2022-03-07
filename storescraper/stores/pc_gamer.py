@@ -35,21 +35,20 @@ class PcGamer(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['11', PROCESSOR],  # Procesadores
-            ['10', MOTHERBOARD],  # MB
-            ['12', RAM],  # RAM Notebook
-            ['13', SOLID_STATE_DRIVE],  # Almacenamiento
-            ['16', VIDEO_CARD],  # Tarjetas de video
-            ['14', COMPUTER_CASE],  # Gabinetes s/fuente
-            ['15', POWER_SUPPLY],  # Fuentes de poder
-            ['89', CPU_COOLER],  # WATER COOLING
-            ['90', CASE_FAN],  # VENTILADOR
-            ['9', MOUSE],  # Mouse y teclados
-            ['1', HEADPHONES],  # Audio
-            ['6', MONITOR],  # Monitores
-            ['21', GAMING_CHAIR],  # Sillas gamer
-            ['27', PRINTER],  # Impresoras
-            ['33', GAMING_DESK]  # Escritorio
+            ['1', HEADPHONES],  # AUDIO
+            ['6', MONITOR],  # MONITORES
+            ['8', CPU_COOLER],  # REFRIGERACION
+            ['9', MOUSE],  # TECLADOS/MOUSE
+            ['10', MOTHERBOARD],  # PLACAS MADRE
+            ['11', PROCESSOR],  # PROCESADORES
+            ['12', RAM],  # MEMORIAS
+            ['13', SOLID_STATE_DRIVE],  # DISCOS DUROS
+            ['14', COMPUTER_CASE],  # GABINETES
+            ['15', POWER_SUPPLY],  # FUENTES DE PODER
+            ['16', VIDEO_CARD],  # TARJETAS DE VIDEO
+            ['21', GAMING_CHAIR],  # SILLAS GAMER
+            ['33', GAMING_DESK],  # ESCRITORIOS
+            ['27', PRINTER],  # IMPRESORAS
         ]
 
         session = session_with_proxy(extra_args)
