@@ -209,6 +209,7 @@ class SpDigital(Store):
         slug = re.search('https://www.spdigital.cl/(.+)/$', url).groups()[0]
         page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
                         'page-data.json'.format(slug)
+        print(page_data_url)
         response = session.get(page_data_url)
 
         if response.status_code == 403:
@@ -219,14 +220,19 @@ class SpDigital(Store):
         name = page_data['content']['name']
         part_number = page_data['productId']
 
+        normal_price = Decimal(page_data['content']['pricing']['priceRange']['start']['gross']['amount'])
+
         for metadata_entry in page_data['content']['metadata']:
             if metadata_entry['key'] == 'pricing':
                 pricing_json = json.loads(metadata_entry['value'])
-                offer_price = Decimal(pricing_json['sp-digital']['cash'])
-                normal_price = Decimal(pricing_json['sp-digital']['other'])
+                cash_price = Decimal(pricing_json['sp-digital']['cash'])
+                other_price = Decimal(pricing_json['sp-digital']['other'])
                 break
         else:
             raise Exception('No pricing entry found')
+
+        # I have zero idea why they calculate it like this
+        offer_price = (normal_price * cash_price / other_price).quantize(0)
 
         refurbished_blacklist = [
             'CAJA ABIERTA',
