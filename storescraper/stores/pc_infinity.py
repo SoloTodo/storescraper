@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, \
     KEYBOARD, COMPUTER_CASE, CPU_COOLER, POWER_SUPPLY, RAM, MEMORY_CARD, \
-    USB_FLASH_DRIVE, GAMING_CHAIR
+    USB_FLASH_DRIVE, GAMING_CHAIR, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -30,6 +30,7 @@ class PcInfinity(Store):
             MEMORY_CARD,
             USB_FLASH_DRIVE,
             GAMING_CHAIR,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -51,6 +52,7 @@ class PcInfinity(Store):
             ['62-memorias-flash', MEMORY_CARD],
             ['64-pendrives', USB_FLASH_DRIVE],
             ['82-sillas-gamer', GAMING_CHAIR],
+            ['49-ventiladores-para-gabinetes', CASE_FAN],
         ]
 
         session = session_with_proxy(extra_args)
