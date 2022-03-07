@@ -74,7 +74,7 @@ class MovistarOne(Movistar):
 
                 if portability_type_id == 1:
                     # Portabilidad
-                    # Sin arriendo
+                    # Con arriendo
                     print('porta sin arriendo')
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
@@ -88,25 +88,21 @@ class MovistarOne(Movistar):
                     except Exception:
                         return []
 
-                    code = json_response['codeOfferCurrent']
+                    for container in json_response['planes']['dataplan']:
+                        cell_plan_name = container['name'] + ' Portabilidad'
+                        code = container['codigo']
+                        cell_url = '{}?codigo={}'.format(base_url, code)
+                        print(cell_url)
 
-                    cell_url = '{}?codigo={}'.format(base_url, code)
-                    cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                              'html.parser')
+                        cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                                  'html.parser')
+                        price_tag = cell_soup.find('div', {'data-method': '3'})
 
-                    price_tag = cell_soup.find('div', {'data-method': '3'})
-
-                    # Doesn't have a Movistar one price
-                    if not price_tag:
-                        continue
-
-                    price = Decimal(price_tag.attrs['data-price'])
-
-                    json_soup = BeautifulSoup(json_response['planes']['html'],
-                                              'html.parser')
-
-                    for container in json_soup.findAll('article'):
-                        cell_plan_name = container['data-id']
+                        price = Decimal(remove_words(price_tag.find(
+                            'p', 'boxEMPlan-int-box-pie').contents[1]))
+                        cell_monthly_payment = Decimal(remove_words(
+                            price_tag.find('p', 'boxEMPlan-int-meses').find(
+                                'b').text))
 
                         products.append(Product(
                             name,
@@ -121,11 +117,11 @@ class MovistarOne(Movistar):
                             price,
                             'CLP',
                             cell_plan_name='{}'.format(cell_plan_name),
-                            cell_monthly_payment=Decimal(0)
+                            cell_monthly_payment=cell_monthly_payment
                         ))
                 elif portability_type_id == 3:
                     # Nuevo
-                    # Sin arriendo
+                    # Con arriendo
                     print('nuevo')
 
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
@@ -138,25 +134,21 @@ class MovistarOne(Movistar):
                     except Exception:
                         return []
 
-                    code = json_response['codeOfferCurrent']
+                    for container in json_response['planes']['dataplan']:
+                        cell_plan_name = container['name']
+                        code = container['codigo']
+                        cell_url = '{}?codigo={}'.format(base_url, code)
+                        print(cell_url)
 
-                    cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
-                    cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                              'html.parser')
-                    json_soup = BeautifulSoup(json_response['planes']['html'],
-                                              'html.parser')
+                        cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                                  'html.parser')
+                        price_tag = cell_soup.find('div', {'data-method': '3'})
 
-                    price_tag = cell_soup.find('div', {'data-method': '3'})
-
-                    # Doesn't have a Movistar one price
-                    if not price_tag:
-                        continue
-
-                    price = Decimal(price_tag.attrs['data-price'])
-
-                    for container in json_soup.findAll('article'):
-                        cell_plan_name = container['data-id']
+                        price = Decimal(remove_words(price_tag.find(
+                            'p', 'boxEMPlan-int-box-pie').contents[1]))
+                        cell_monthly_payment = Decimal(remove_words(
+                            price_tag.find('p', 'boxEMPlan-int-meses').find(
+                                'b').text))
 
                         products.append(Product(
                             name,
@@ -171,7 +163,7 @@ class MovistarOne(Movistar):
                             price,
                             'CLP',
                             cell_plan_name='{}'.format(cell_plan_name),
-                            cell_monthly_payment=Decimal(0)
+                            cell_monthly_payment=cell_monthly_payment
                         ))
 
         return products
