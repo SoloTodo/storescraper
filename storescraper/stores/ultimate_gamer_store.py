@@ -99,8 +99,8 @@ class UltimateGamerStore(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         name = soup.find('h1', 'product-info__name').text
-        sku_text = soup.find('meta', {'property': 'og:image'})['content']
-        sku = re.search(r'/ultimate-gamer-store/(\d+)/', sku_text).groups()[0]
+        key_container = soup.find('form', {'id': 'product-form'})['action']
+        key = re.search(r"/(\d+)$", key_container).groups()[0]
 
         if 'PREVENTA' in name.upper():
             stock = 0
@@ -126,12 +126,12 @@ class UltimateGamerStore(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
             description=description
         )

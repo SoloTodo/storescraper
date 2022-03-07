@@ -132,9 +132,8 @@ class HardGaming(Store):
                 ))
             return products
         else:
-            sku_container = soup.find(
-                'meta', property='og:image')['content']
-            sku = re.search(r"/(\d+)/", sku_container).group(1)
+            sku_container = soup.find('form', 'product-form')['action']
+            sku = re.search(r"/(\d+)$", sku_container).groups()[0]
             stock_container = soup \
                 .find('form', 'product-form form-horizontal') \
                 .find('div',

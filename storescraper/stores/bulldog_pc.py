@@ -78,9 +78,9 @@ class BulldogPc(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-name').text
-        sku_container = soup.find(
-            'meta', property='og:image')['content']
-        sku = re.search(r"/(\d+)/", sku_container).group(1)
+        key_container = soup.find('form', 'form-horizontal')['action']
+        key = re.search(r"/(\d+)$", key_container).groups()[0]
+        sku = soup.find('span', 'sku_elem').text.strip()
         unavailable_tag = soup.find(
             'div', 'form-group product-stock product-out-stock row visible')
         if unavailable_tag:
@@ -104,7 +104,7 @@ class BulldogPc(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
