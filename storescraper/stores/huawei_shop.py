@@ -97,11 +97,14 @@ class HuaweiShop(Store):
                         product_id)
         product_json = json.loads(session.get(query_url).text)
 
-        products_price = json.loads(session.get('https://itrinity-sg.c'
-                                                '.huawei.com/eCommerce'
-                                                '/queryMinPriceAndInv'
-                                                '?productIds={}&siteCode'
-                                                '=CL'.format(product_id)).text)
+        price_res = session.get('https://itrinity-sg.c'
+                                '.huawei.com/eCommerce'
+                                '/queryMinPriceAndInv'
+                                '?productIds={}&siteCode'
+                                '=CL'.format(product_id))
+        # For some reason the encoding is detected incorrectly
+        price_res.encoding = 'UTF-8'
+        products_price = json.loads(price_res.text)
         if not products_price['data']['minPriceAndInvList']:
             return []
 
