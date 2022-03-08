@@ -16,92 +16,49 @@ class ElGalloMasGallo(Store):
     @classmethod
     def categories(cls):
         return [
-            CELL,
-            TELEVISION,
-            STEREO_SYSTEM,
-            REFRIGERATOR,
-            WASHING_MACHINE,
-            OVEN,
-            AIR_CONDITIONER,
-
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level1%3AProductos'
-                '%20%2F%2F%2F%20Celulares%20%7C%20Tablets%22%5D%5D',
-                CELL],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level1%3AProductos'
-                '%20%2F%2F%2F%20TV%20y%20Video%22%5D%5D',
-                TELEVISION],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level1%3AProductos'
-                '%20%2F%2F%2F%20Audio%22%5D%5D',
-                STEREO_SYSTEM],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level2%3AProductos'
-                '%20%2F%2F%2F%20Hogar%20y%20L%C3%ADnea%20Blanca%20%2F%2F%2F'
-                '%20Refrigeradoras%22%5D%5D',
-                REFRIGERATOR],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level2%3AProductos'
-                '%20%2F%2F%2F%20Hogar%20y%20L%C3%ADnea%20Blanca%20%2F%2F%2F'
-                '%20Lavadoras%20y%20secadoras%22%5D%5D',
-                WASHING_MACHINE],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level2%3AProductos'
-                '%20%2F%2F%2F%20Hogar%20y%20L%C3%ADnea%20Blanca%20%2F%2F%2F'
-                '%20Hornos%20y%20extractores%22%5D%5D',
-                OVEN],
-            [
-                '%5B%22marca%3ALG%22%2C%5B%22categories.level2%3AProductos'
-                '%20%2F%2F%2F%20Hogar%20y%20L%C3%ADnea%20Blanca%20%2F%2F%2F'
-                '%20Aires%20acondicionados%20%7C%20Purificadores%22%5D%5D',
-                AIR_CONDITIONER],
-        ]
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 0
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
 
-                body = json.dumps({
-                    "requests": [
-                        {
-                            "indexName": "monge_prod_elgallo_ni_products",
-                            "params": "query=&hitsPerPage=9&maxValuesPerFacet="
-                                      "40&page={}&"
-                                      "facetFilters={}".format(
-                                        page, url_extension)
-                        }
-                    ]
-                })
-                url_webpage = r'https://wlt832ea3j-dsn.algolia.net/1/indexes' \
-                              '/*/queries?x-algolia-application-id' \
-                              '=WLT832EA3J&x-algolia-api-key' \
-                              '=MjQyMGI4YWYzNWJkNzg5OTIxMmRkYTljY2ZmNDkyOD' \
-                              'NmMmZmNGU1NWRkZWU3NGE3MjNhYmNmZWZhOWFmNmQ0M3' \
-                              'RhZ0ZpbHRlcnM9'
-                print(url_webpage)
-                response = session.post(url_webpage, data=body)
-                product_json = json.loads(response.text)['results'][0]['hits']
+        page = 0
+        while True:
+            if page > 10:
+                raise Exception('page overflow')
 
-                if not product_json:
-                    if page == 1:
-                        logging.warning('empty category: ' + url_extension)
-                    break
-                for product in product_json:
-                    product_url = product['url']
-                    product_urls.append(product_url)
-                page += 1
+            body = json.dumps({
+                "requests": [
+                    {
+                        "indexName": "monge_upgrade_prod_elgallo_ni_products",
+                        "params": "facetFilters=%5B%5B%22categories.level1"
+                                  "%3AMarcas%20%2F%2F%2F%20LG%22%5D%5D&page="
+                                  "{}".format(page)
+                    }
+                ]
+            })
+            url_webpage = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/' \
+                          'queries?x-algolia-application-id=WLT832EA3J&x-' \
+                          'algolia-api-key=YTYwZjI3ODFjOTI3YWQ0MjJmYzQ3ZjB' \
+                          'iNmY1Y2FiYjRhZjNiMmM3NmMxYTMyNDUwOGUxYjhkMWFhMz' \
+                          'FlOGExNnRhZ0ZpbHRlcnM9'
+            print(url_webpage)
+            response = session.post(url_webpage, data=body)
+            product_json = json.loads(response.text)['results'][0]['hits']
+
+            if not product_json:
+                if page == 1:
+                    logging.warning('empty site')
+                break
+            for product in product_json:
+                product_url = product['url']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod

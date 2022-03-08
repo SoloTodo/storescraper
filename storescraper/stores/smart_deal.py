@@ -67,7 +67,7 @@ class SmartDeal(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find('script', 'rank-math-schema').text)
+        json_data = json.loads(soup.find('script', {'type': 'application/ld+json'}).text)
 
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
@@ -78,7 +78,7 @@ class SmartDeal(Store):
 
         name = product_data['name']
         sku = product_data['sku']
-        price = Decimal(product_data['offers']['price'])
+        price = Decimal(product_data['offers'][0]['price'])
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
         if soup.find('p', 'stock out-of-stock'):

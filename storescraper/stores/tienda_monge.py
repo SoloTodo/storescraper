@@ -28,12 +28,9 @@ class TiendaMonge(Store):
             return []
 
         endpoint = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/queries?' \
-                   'x-algolia-agent=Algolia%20for%20vanilla%20' \
-                   'JavaScript%20(lite)%203.27.0%3Binstantsearch.js%20' \
-                   '2.10.2%3BMagento2%20integration%20(1.13.0)%3BJS%20' \
-                   'Helper%202.26.0&x-algolia-application-id=WLT832EA3J&x-al' \
-                   'golia-api-key=MjQyMGI4YWYzNWJkNzg5OTIxMmRkYTljY2ZmNDkyOD' \
-                   'NmMmZmNGU1NWRkZWU3NGE3MjNhYmNmZWZhOWFmNmQ0M3RhZ0ZpbHRlcnM9'
+                   'x-algolia-application-id=WLT832EA3J&x-algolia-api-key=' \
+                   'YTYwZjI3ODFjOTI3YWQ0MjJmYzQ3ZjBiNmY1Y2FiYjRhZjNiMmM3Nm' \
+                   'MxYTMyNDUwOGUxYjhkMWFhMzFlOGExNnRhZ0ZpbHRlcnM9'
 
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/json'
@@ -42,7 +39,7 @@ class TiendaMonge(Store):
         payload_params = 'hitsPerPage=1000&facetFilters=["marca:LG"]'
         payload = {
             "requests": [
-                {"indexName": "monge_prod_default_products",
+                {"indexName": "monge_upgrade_prod_default_products",
                  "params": payload_params}
             ]
         }
