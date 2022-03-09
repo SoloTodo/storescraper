@@ -122,7 +122,7 @@ class Bip(Store):
                     url_extension, offset
                 )
 
-                data = session.get(url_webpage).text
+                data = session.get(url_webpage, verify=False).text
 
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'producto')
@@ -146,7 +146,7 @@ class Bip(Store):
         ajax_session = session_with_proxy(extra_args)
         ajax_session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded; charset=UTF-8'
-        response = session.get(url)
+        response = session.get(url, verify=False)
 
         if response.status_code in [404, 500]:
             return []
@@ -162,7 +162,7 @@ class Bip(Store):
             stock = 0
 
         price_data = ajax_session.post('https://bip.cl/home/viewProductAjax',
-                                       'idProd=' + sku).json()
+                                       'idProd=' + sku, verify=False).json()
         price = Decimal(price_data['internet_price'].replace('.', ''))
 
         description = html_to_markdown(

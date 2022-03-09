@@ -53,7 +53,6 @@ class PcLinkStore(Store):
             ['accesorios/mouse', MOUSE],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
-            ['accesorios/flash-drive-usb', USB_FLASH_DRIVE],
             ['celulares', CELL],
             ['disipador/water-cooling', CPU_COOLER],
             ['componentes/fuente-de-poder', POWER_SUPPLY],
@@ -61,7 +60,7 @@ class PcLinkStore(Store):
             ['componentes/disco-duro-ssd', SOLID_STATE_DRIVE],
             ['componentes/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['componentes/gabinete', COMPUTER_CASE],
-            ['componentes/memoria-ram', RAM],
+            ['memorias-ram', RAM],
             ['placas-madres', MOTHERBOARD],
             ['componentes/procesador', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
@@ -71,7 +70,7 @@ class PcLinkStore(Store):
             ['parlantes', STEREO_SYSTEM],
             ['sillas-gamers', GAMING_CHAIR],
             ['tablet', TABLET],
-            ['accesorios/tarjetas-de-memoria', MEMORY_CARD],
+            ['consolas/tarjeta-micro', MEMORY_CARD],
             ['accesorios/pendrive', USB_FLASH_DRIVE],
             ['accesorios/microfono', MICROPHONE]
         ]
