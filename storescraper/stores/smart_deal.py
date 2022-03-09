@@ -1,14 +1,13 @@
 import json
-import logging
 from decimal import Decimal
 
 import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, CELL, TABLET, RAM
+from storescraper.categories import NOTEBOOK, CELL, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class SmartDeal(Store):
@@ -17,29 +16,15 @@ class SmartDeal(Store):
         return [
             NOTEBOOK,
             CELL,
-            TABLET,
-            RAM,
+            MOTHERBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('lenovo', NOTEBOOK),
-            ('huawei', NOTEBOOK),
-            ('gateway', NOTEBOOK),
-            ('asus', NOTEBOOK),
-            ('acer', NOTEBOOK),
-            ('gigabyte', NOTEBOOK),
-            ('msi', NOTEBOOK),
-            ('hp', NOTEBOOK),
-            ('apple', NOTEBOOK),
-            ('dell', NOTEBOOK),
-            ('smartphones', CELL),
-            ('iphone', CELL),
-            ('google', CELL),
-            ('smartphones-y-tablets-lenovo', TABLET),
-            ('samsung', CELL),
-            ('componentes-y-otros', RAM),
+            ('computacion', NOTEBOOK),
+            ('smartphones-y-tablets', CELL),
+            ('componentes-y-otros', MOTHERBOARD),
         ]
 
         session = session_with_proxy(extra_args)
