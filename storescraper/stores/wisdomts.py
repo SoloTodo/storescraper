@@ -26,6 +26,7 @@ class Wisdomts(Store):
             ['computadores', NOTEBOOK]
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl'
         product_urls = []
 
         for url_extension, local_category in url_extensions:
@@ -65,6 +66,7 @@ class Wisdomts(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_data = json.loads(
