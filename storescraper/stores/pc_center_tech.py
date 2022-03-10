@@ -1,10 +1,10 @@
 import json
+import logging
 import re
-
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MOUSE
+from bs4 import BeautifulSoup
+from storescraper.categories import MONITOR, MOTHERBOARD, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -13,64 +13,74 @@ from storescraper.utils import session_with_proxy
 class PcCenterTech(Store):
     @classmethod
     def categories(cls):
-        return [
-            MOUSE
-        ]
+        return {
+            MOTHERBOARD,
+            MOUSE,
+            MONITOR
+        }
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        if category != MOUSE:
-            return []
+        url_extensions = [
+            ['componentes-pc', MOTHERBOARD],
+            ['perisfericos', MOUSE],
+            ['sin-categorizar', MOUSE],
+            ['monitores-y-televisores', MONITOR],
+        ]
 
-        page = 1
         session = session_with_proxy(extra_args)
         product_urls = []
-
-        while True:
-            if page >= 10:
-                raise Exception('Page overflow')
-
-            url_webpage = 'https://www.pccentertech.cl/tienda/page/{}/'.format(
-                page
-            )
-
-            res = session.get(url_webpage)
-
-            if res.status_code == 404:
-                if page == 0:
-                    raise Exception('Empty store')
-                break
-
-            soup = BeautifulSoup(res.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
-
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-
-            page += 1
-
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
+                continue
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('Page overflow: ' + url_extension)
+                url_webpage = 'https://www.pccentertech.cl/' \
+                              'categoria-producto/{}/' \
+                              'page/{}/'.format(url_extension, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('li', 'product')
+                page_not_found = soup.find('title').text
+                if 'Página no encontrada' in page_not_found:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+                for container in product_containers:
+                    product_url = container.find('a', 'woocommerce-Loop'
+                                                      'Product-link')['href']
+                    product_urls.append(product_url)
+                page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
-        name = product_data['name']
-        description = product_data['description']
-        sku = str(product_data['sku'])
-        price = Decimal(product_data['offers'][0]['price'])
-        picture_urls = [product_data['image']]
-        stock_tag = soup.find('p', 'in-stock')
 
+        soup = BeautifulSoup(response.text, 'html.parser')
+        product_json = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+
+        name = product_json['name']
+        key = str(product_json['sku'])
+        price = Decimal(product_json['offers'][0]['price'])
+        currency = product_json['offers'][0]['priceCurrency']
+        description = product_json['description']
+
+        stock_tag = soup.find('p', 'in-stock')
         if stock_tag:
             stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
         else:
-            stock = 0
+            stock = -1
+
+        image_list_as = soup.find(
+            'div', 'woocommerce-product-gallery').findAll('a')
+        image_urls = []
+        for a in image_list_as:
+            image_urls.append(a['href'])
 
         p = Product(
             name,
@@ -78,14 +88,14 @@ class PcCenterTech(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
-            'CLP',
-            sku=sku,
+            currency,
+            sku=key,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=image_urls
         )
 
         return [p]
