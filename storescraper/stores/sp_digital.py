@@ -220,7 +220,8 @@ class SpDigital(Store):
         name = page_data['content']['name']
         part_number = page_data['productId']
 
-        normal_price = Decimal(page_data['content']['pricing']['priceRange']['start']['gross']['amount'])
+        normal_price = Decimal(page_data['content']['pricing']['priceRange'][
+                                   'start']['gross']['amount'])
 
         for metadata_entry in page_data['content']['metadata']:
             if metadata_entry['key'] == 'pricing':

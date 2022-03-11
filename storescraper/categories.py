@@ -81,26 +81,42 @@ CASE_FAN = 'CaseFan'
 # Legacy (no usar)
 #########################
 
+# Lectores de DVD / Blu-ray para PCs desktop
 OPTICAL_DRIVE = 'OpticalDrive'
+# Tubos de iluminación LED
 LIGHT_TUBE = 'LightTube'
+# Proyectores de luz LED
 LIGHT_PROJECTOR = 'LightProjector'
+# Juegos de video
 VIDEO_GAME = 'VideoGame'
+# Camaras profesionales
 D_S_L_R = 'DSLR'
+# Ampolletas
 LAMP = 'Lamp'
+# Camaras de video
 VIDEO_CAMERA = 'VideoCamera'
+# Camaras digitales de fotografia
 CAMERA = 'Camera'
+# Cooler de tarjetas de video
 VGA_COOLER = 'VgaCooler'
 # Aspiradoras
 VACUUM_CLEANER = 'VacuumCleaner'
+# Calefones
 WATER_HEATER = 'WaterHeater'
 
 #########################
 # Reservados (no usar normalmente)
 #########################
 
+# Reproductores de DVD y Blu-ray para televisores
 OPTICAL_DISK_PLAYER = 'OpticalDiskPlayer'
+# Proyectores (como para hacer presentaciones)
 PROJECTOR = 'Projector'
+# Lavavajillas
 DISH_WASHER = 'DishWasher'
+# Accesorios de celular (carcasas, cables)
 CELL_ACCESORY = 'CellAccesory'
+# Productos para empresas (solo usado como placeholder para LG)
 B_2_B = 'B2B'
+# Cocinas
 STOVE = 'Stove'
