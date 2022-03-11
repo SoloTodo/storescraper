@@ -116,8 +116,7 @@ class InfographicsSolutions(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
 
         product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)[
-            '@graph'][1]
+            'script', {'type': 'application/ld+json'})[1].text)
 
         name = product_data['name']
         sku = str(product_data['sku'])
