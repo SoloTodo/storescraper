@@ -16,7 +16,7 @@ from storescraper.utils import session_with_proxy, remove_words
 class Nemz(Store):
     @classmethod
     def categories(cls):
-        return {
+        return [
             HEADPHONES,
             MONITOR,
             KEYBOARD,
@@ -27,7 +27,7 @@ class Nemz(Store):
             CPU_COOLER,
             MOTHERBOARD,
             POWER_SUPPLY,
-        }
+        ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
