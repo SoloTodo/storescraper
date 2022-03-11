@@ -16,7 +16,7 @@ from storescraper.utils import session_with_proxy, remove_words
 class Ampera(Store):
     @classmethod
     def categories(cls):
-        return {
+        return [
             KEYBOARD,
             CELL,
             MONITOR,
@@ -36,7 +36,7 @@ class Ampera(Store):
             CPU_COOLER,
             MICROPHONE,
             CASE_FAN,
-        }
+        ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):

@@ -13,11 +13,11 @@ from storescraper.utils import session_with_proxy
 class PcCenterTech(Store):
     @classmethod
     def categories(cls):
-        return {
+        return [
             MOTHERBOARD,
             MOUSE,
             MONITOR
-        }
+        ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
