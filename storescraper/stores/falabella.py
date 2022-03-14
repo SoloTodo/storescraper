@@ -595,8 +595,8 @@ class Falabella(Store):
 
             seller = None
             if model['offerings'] and 'falabella' not in \
-                    model['offerings'][0]['sellerId'].lower():
-                seller = model['offerings'][0]['sellerId']
+                    model['offerings'][0]['sellerName'].lower():
+                seller = model['offerings'][0]['sellerName']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
 
