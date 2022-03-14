@@ -143,11 +143,13 @@ class TecnoStoreChile(Store):
             json_product = json_product['@graph'][1]
             name = json_product['name']
             sku = str(json_product['sku'])
-            stock_tag = soup.find('span', 'stock in-stock')
-            if stock_tag:
-                stock = int(stock_tag.text.split()[0])
+            quantity_input = soup.find('input', {'name': 'quantity'})
+            if quantity_input and quantity_input['type'] == 'number':
+                stock = int(quantity_input['max'])
+            elif quantity_input and quantity_input['type'] == 'hidden':
+                stock = 1
             else:
-                stock = -1
+                stock = 0
             normal_price = Decimal(
                 round(int(json_product['offers'][0]['price']) * 1.05))
             offer_price = Decimal(json_product['offers'][0]['price'])

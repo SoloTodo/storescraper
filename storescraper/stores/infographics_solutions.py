@@ -8,11 +8,11 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
-    NOTEBOOK, TABLET, HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, \
-    COMPUTER_CASE, MONITOR, STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, CELL, \
-    WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, USB_FLASH_DRIVE, MEMORY_CARD, \
-    MICROPHONE, CASE_FAN
+from storescraper.categories import KEYBOARD_MOUSE_COMBO, MOTHERBOARD, RAM, \
+    PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, HEADPHONES, MOUSE, \
+    SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, MONITOR, STORAGE_DRIVE, \
+    POWER_SUPPLY, CPU_COOLER, CELL, WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, \
+    USB_FLASH_DRIVE, MEMORY_CARD, MICROPHONE, CASE_FAN
 
 
 class InfographicsSolutions(Store):
@@ -54,9 +54,9 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/memorias-ram', RAM],
             ['componentes-de-pc/procesadores', PROCESSOR],
             ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-de-pc/almacenamiento/discos-solidos',
+            ['computacion/almacenamiento/discos-solidos',
              SOLID_STATE_DRIVE],
-            ['componentes-de-pc/almacenamiento/discos-duros',
+            ['computacion/almacenamiento/discos-duros',
              STORAGE_DRIVE],
             ['componentes-de-pc/gabinetes', COMPUTER_CASE],
             ['pantallas-monitores', MONITOR],
@@ -64,15 +64,21 @@ class InfographicsSolutions(Store):
             ['componentes-de-pc/refrigeracion/aire', CPU_COOLER],
             ['componentes-de-pc/refrigeracion/liquida', CPU_COOLER],
             ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
-            ['accesorios/teclados', KEYBOARD],
-            ['accesorios/audifonos-headset', HEADPHONES],
-            ['accesorios/mouse', MOUSE],
+            ['accesorios/ofimatica-accesorios/teclados', KEYBOARD],
+            ['accesorios/mundo-gamer/teclados-gamer/', KEYBOARD],
+            ['accesorios/ofimatica-accesorios/audifonos-headset', HEADPHONES],
+            ['accesorios/mundo-gamer/audifonos-gamer', HEADPHONES],
+            ['accesorios/ofimatica-accesorios/mouse', MOUSE],
+            ['accesorios/mundo-gamer/mouse-gamer/', MOUSE],
             ['reloj-inteligente-smartwatch', WEARABLE],
-            ['accesorios/parlantes', STEREO_SYSTEM],
-            ['accesorios/sillas', GAMING_CHAIR],
-            ['accesorios/pendrive', USB_FLASH_DRIVE],
-            ['microsd', MEMORY_CARD],
-            ['accesorios/microfonos', MICROPHONE]
+            ['accesorios/ofimatica-accesorios/parlantes', STEREO_SYSTEM],
+            ['accesorios/mundo-gamer/sillas/', GAMING_CHAIR],
+            ['accesorios/ofimatica-accesorios/pendrive', USB_FLASH_DRIVE],
+            ['computacion/almacenamiento/microsd', MEMORY_CARD],
+            ['accesorios/ofimatica-accesorios/microfonos/', MICROPHONE],
+            ['accesorios/mundo-gamer/microfonos-condensadores/', MICROPHONE],
+            ['accesorios/ofimatica-accesorios/kit-teclado-mouse/',
+             KEYBOARD_MOUSE_COMBO]
         ]
 
         session = session_with_proxy(extra_args)
@@ -118,9 +124,22 @@ class InfographicsSolutions(Store):
         product_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[1].text)
 
-        name = product_data['name']
-        sku = str(product_data['sku'])
-        key = soup.find('div', 'wd-wishlist-btn').find('a')['data-product-id']
+        if 'name' in product_data:
+            name = product_data['name']
+            key = str(product_data['sku'])
+            offer_price = Decimal(product_data['offers'][0]['price'])
+            normal_price = round(
+                (offer_price * Decimal('1.06')).quantize(0), -1)
+        else:
+            product_data_2 = json.loads(soup.findAll(
+                'script', {'type': 'application/ld+json'}
+            )[0].text)['@graph']
+            name = product_data_2[3]['name']
+            price = soup.find('p', 'price').text.split(
+                ' $')[-1].replace('.', '')
+            offer_price = normal_price = Decimal(price)
+            key = soup.find('link', {'rel': 'shortlink'})[
+                'href'].split('?p=')[-1]
 
         stock_container = soup.find('p', 'stock')
 
@@ -143,9 +162,6 @@ class InfographicsSolutions(Store):
         else:
             part_number = None
 
-        offer_price = Decimal(product_data['offers'][0]['price'])
-        normal_price = (offer_price * Decimal('1.05')).quantize(0)
-
         picture_containers = soup.findAll('div', 'product-image-wrap')
         picture_urls = [
             p.find('a')['href'] for p in picture_containers
@@ -154,6 +170,10 @@ class InfographicsSolutions(Store):
 
         description = html_to_markdown(
             str(soup.find('div', {'id': 'tab-description'})))
+        if description == 'None\n':
+            description = html_to_markdown(
+                str(soup.find('div',
+                    'woocommerce-product-details__short-description')))
 
         p = Product(
             name,
@@ -166,7 +186,7 @@ class InfographicsSolutions(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
             description=description,
             part_number=part_number
