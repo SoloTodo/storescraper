@@ -1,6 +1,7 @@
 import json
 import logging
 from decimal import Decimal
+from re import S
 
 from bs4 import BeautifulSoup
 
@@ -116,7 +117,7 @@ class TecnoStoreChile(Store):
                     'attribute_pa_color']
                 sku = str(product['variation_id'])
                 stock = product['max_qty']
-                normal_price = Decimal(round(product['display_price'] * 1.05))
+                normal_price = Decimal(round(product['display_price'] * 1.03))
                 offer_price = Decimal(product['display_price'])
                 picture_url = [product['image']['url']]
                 p = Product(
@@ -145,13 +146,16 @@ class TecnoStoreChile(Store):
             sku = str(json_product['sku'])
             quantity_input = soup.find('input', {'name': 'quantity'})
             if quantity_input and quantity_input['type'] == 'number':
-                stock = int(quantity_input['max'])
+                if quantity_input['max']:
+                    stock = int(quantity_input['max'])
+                else: 
+                    stock = -1
             elif quantity_input and quantity_input['type'] == 'hidden':
                 stock = 1
             else:
                 stock = 0
             normal_price = Decimal(
-                round(int(json_product['offers'][0]['price']) * 1.05))
+                round(int(json_product['offers'][0]['price']) * 1.03))
             offer_price = Decimal(json_product['offers'][0]['price'])
             picture_url = [tag['src'] for tag in
                            soup.find('div',
