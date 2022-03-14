@@ -120,13 +120,14 @@ class InfographicsSolutions(Store):
 
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
-
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split(
+            '?p=')[1].strip()
         product_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[1].text)
 
         if 'name' in product_data:
             name = product_data['name']
-            key = str(product_data['sku'])
+            sku = str(product_data['sku'])
             offer_price = Decimal(product_data['offers'][0]['price'])
             normal_price = round(
                 (offer_price * Decimal('1.06')).quantize(0), -1)
@@ -138,8 +139,7 @@ class InfographicsSolutions(Store):
             price = soup.find('p', 'price').text.split(
                 ' $')[-1].replace('.', '')
             offer_price = normal_price = Decimal(price)
-            key = soup.find('link', {'rel': 'shortlink'})[
-                'href'].split('?p=')[-1]
+            sku = key
 
         stock_container = soup.find('p', 'stock')
 
@@ -186,7 +186,7 @@ class InfographicsSolutions(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=key,
+            sku=sku,
             picture_urls=picture_urls,
             description=description,
             part_number=part_number
