@@ -7,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     VIDEO_GAME_CONSOLE, GAMING_CHAIR, KEYBOARD, COMPUTER_CASE, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER, STEREO_SYSTEM, \
-    MICROPHONE
+    MICROPHONE, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,7 +36,8 @@ class ZonaPortatil(Store):
             MONITOR,
             PRINTER,
             STEREO_SYSTEM,
-            MICROPHONE
+            MICROPHONE,
+            CPU_COOLER
         ]
 
     @classmethod
@@ -69,7 +70,8 @@ class ZonaPortatil(Store):
             ['zona-gamer/gabinetes-zona-gamer', COMPUTER_CASE],
             ['zona-gamer/audifonos', HEADPHONES],
             ['zona-gamer/teclados-mouse-zona-gamer', KEYBOARD],
-            ['zona-gamer/microfonos', MICROPHONE]
+            ['zona-gamer/microfonos', MICROPHONE],
+            ['zona-gamer/refrigeracion', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)
