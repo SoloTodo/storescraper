@@ -63,7 +63,7 @@ class SmartDeal(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = product_data['sku']
+        sku = str(product_data['sku'])
         price = Decimal(product_data['offers'][0]['price'])
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 

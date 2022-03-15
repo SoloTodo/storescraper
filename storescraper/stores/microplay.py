@@ -5,7 +5,9 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, MICROPHONE
+from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
+    KEYBOARD, MEMORY_CARD, MICROPHONE, MONITOR, MOUSE, POWER_SUPPLY, \
+    STORAGE_DRIVE, USB_FLASH_DRIVE, VIDEO_CAMERA, VIDEO_GAME_CONSOLE, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -16,33 +18,59 @@ class Microplay(Store):
     @classmethod
     def categories(cls):
         return [
-            'Mouse',
-            'VideoGameConsole',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
+            COMPUTER_CASE,
             GAMING_CHAIR,
-            MICROPHONE
+            HEADPHONES,
+            KEYBOARD,
+            MEMORY_CARD,
+            MICROPHONE,
+            MONITOR, STORAGE_DRIVE,
+            MOUSE,
+            POWER_SUPPLY,
+            USB_FLASH_DRIVE,
+            VIDEO_GAME_CONSOLE,
+            VIDEO_CAMERA,
+            WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computacion', {'categorias': 'mouse'}, 'Mouse'],
-            ['gamer', {'categorias': 'mouse-2'}, 'Mouse'],
-            ['juegos', {'consolas': 'consola'},
-             'VideoGameConsole'],
-            ['computacion', {'categorias': 'teclados-3'}, 'Keyboard'],
-            ['gamer', {'categorias': 'teclados-4'}, 'Keyboard'],
+            ['juegos', {'consolas': 'consola'}, VIDEO_GAME_CONSOLE],
+            ['juegos', {'accesorios': 'audifonos-16'}, HEADPHONES],  # Play 5
+            ['juegos', {'accesorios': 'audifonos-11'}, HEADPHONES],  # Play 4
+            ['juegos', {'accesorios': 'audifonos-13'}, HEADPHONES],  # Switch
+            ['juegos', {'accesorios': 'audifonos-5'}, HEADPHONES],  # Xbox
+            ['juegos', {'accesorios': 'audifonos-3'}, HEADPHONES],  # Play 3
+            ['juegos', {'accesorios': 'audifonos-7'}, HEADPHONES],  # PC
             ['juegos', {'plataformas': 'pc',
-                        'accesorios': 'mouse-teclados'},
-             'Keyboard'],
-            ['computacion', {'categorias': 'audifonos-14'},
-             'Headphones'],
-            ['gamer', {'categorias': 'audifonos-2'}, 'Headphones'],
+                        'accesorios': 'microfonos-13'}, MICROPHONE],
+            ['juegos', {'plataformas': 'pc', 'accesorios': 'mouse-3'}, MOUSE],
+            ['juegos', {'plataformas': 'pc',
+                        'accesorios': 'sillas-gamer'}, GAMING_CHAIR],
+            ['juegos', {'plataformas': 'pc',
+                        'accesorios': 'teclados-5'}, KEYBOARD],
+            ['gamer', {'categorias': 'audifonos-2'}, HEADPHONES],
+            ['gamer', {'categorias': 'fuentes-de-poder-2'}, POWER_SUPPLY],
+            ['gamer', {'categorias': 'monitores'}, MONITOR],
+            ['gamer', {'categorias': 'gabinetes'}, COMPUTER_CASE],
+            ['gamer', {'categorias': 'teclados-4'}, KEYBOARD],
+            ['gamer', {'categorias': 'mouse-2'}, MOUSE],
             ['gamer', {'categorias': 'sillas-gamer-2'}, GAMING_CHAIR],
-            ['gamer', {'categorias': 'microfonos-14'}, MICROPHONE],
-            ['computacion', {'categorias': 'microfonos-15'}, MICROPHONE]
+            ['computacion', {'categorias': 'discos-duros'}, STORAGE_DRIVE],
+            ['computacion', {
+                'categorias': 'memorias-sdmicro-sd-2'}, MEMORY_CARD],
+            ['computacion', {'categorias': 'audifonos-14'}, HEADPHONES],
+            ['computacion', {'categorias': 'microfonos-15'}, MICROPHONE],
+            ['computacion', {'categorias': 'fuentes-de-poder'}, POWER_SUPPLY],
+            ['computacion', {'categorias': 'monitores-2'}, MONITOR],
+            ['computacion', {'categorias': 'gabinetes-2'}, COMPUTER_CASE],
+            ['computacion', {'categorias': 'teclados-3'}, KEYBOARD],
+            ['computacion', {'categorias': 'pendrive'}, USB_FLASH_DRIVE],
+            ['computacion', {'categorias': 'mouse'}, MOUSE],
+            ['computacion', {'categorias': 'mouse'}, MOUSE],
+            ['audiovideo', {'categorias': 'audifonos-15'}, HEADPHONES],
+            ['audiovideo', {'categorias': 'smartwatch'}, WEARABLE],
         ]
 
         product_urls = []

@@ -148,7 +148,7 @@ class TecnoStoreChile(Store):
             if quantity_input and quantity_input['type'] == 'number':
                 if quantity_input['max']:
                     stock = int(quantity_input['max'])
-                else: 
+                else:
                     stock = -1
             elif quantity_input and quantity_input['type'] == 'hidden':
                 stock = 1
