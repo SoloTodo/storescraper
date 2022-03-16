@@ -76,10 +76,9 @@ class EliteCenter(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://elitecenter.cl/product-category/a/' \
-                              '?paged={}&yith_wcan=1&product_cat={}' \
-                              '&instock_filter=1'.format(
-                                page, url_extension)
+                url_webpage = 'https://elitecenter.cl/product-category/{}/' \
+                              '?paged={}'.format(
+                                url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
 
