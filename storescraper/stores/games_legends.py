@@ -10,7 +10,7 @@ from storescraper.store import Store
 from storescraper.categories import RAM, PROCESSOR, MOUSE, SOLID_STATE_DRIVE, \
     MONITOR, KEYBOARD, HEADPHONES, MOTHERBOARD, POWER_SUPPLY, CELL, \
     VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MICROPHONE, \
-    GAMING_DESK
+    GAMING_DESK, CASE_FAN
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -33,31 +33,28 @@ class GamesLegends(Store):
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
             MICROPHONE,
-            GAMING_DESK
+            GAMING_DESK,
+            CASE_FAN,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extension = [
-            ['gabinetes', COMPUTER_CASE],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['audifonos', HEADPHONES],
-            ['teclados', KEYBOARD],
-            ['mouse', MOUSE],
-            ['discos-internos-y-externos', SOLID_STATE_DRIVE],
-            ['monitores-proyectores', MONITOR],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['sillasgamer', GAMING_CHAIR],
-            ['zona-xbox', VIDEO_GAME_CONSOLE],
-            ['playstation', VIDEO_GAME_CONSOLE],
-            ['playstation5', VIDEO_GAME_CONSOLE],
-            ['nintendo', VIDEO_GAME_CONSOLE],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['memorias-ram', RAM],
-            ['procesadores', PROCESSOR],
-            ['placasmadres', MOTHERBOARD],
-            # ['telefonos-moviles', CELL],
             ['microfonos', MICROPHONE],
+            ['discos-ssd', SOLID_STATE_DRIVE],
+            ['gabinetes', COMPUTER_CASE],
+            ['ventiladores', CASE_FAN],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['procesadores', PROCESSOR],
+            ['placas-madres', MOTHERBOARD],
+            ['sillasgamer', GAMING_CHAIR],
+            ['audifonos', HEADPHONES],
+            ['mouse-gamer', MOUSE],
+            ['teclados', KEYBOARD],
+            ['consolas-xbox', VIDEO_GAME_CONSOLE],
+            ['consolas-ps4', VIDEO_GAME_CONSOLE],
+            ['consolas-ps5', VIDEO_GAME_CONSOLE],
             ['escritorios', GAMING_DESK]
         ]
         session = session_with_proxy(extra_args)
