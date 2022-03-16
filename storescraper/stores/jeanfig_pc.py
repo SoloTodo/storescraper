@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, \
     CPU_COOLER, HEADPHONES, MOUSE, STEREO_SYSTEM, SOLID_STATE_DRIVE, RAM, \
-    MONITOR, KEYBOARD
+    MONITOR, KEYBOARD, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,6 +27,7 @@ class JeanfigPc(Store):
             RAM,
             MONITOR,
             KEYBOARD,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -38,6 +39,7 @@ class JeanfigPc(Store):
             ['componentes/memorias', RAM],
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/ventiladores', CPU_COOLER],
+            ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['monitores', MONITOR],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/mouse', MOUSE],
