@@ -594,9 +594,14 @@ class Falabella(Store):
                 condition = 'https://schema.org/NewCondition'
 
             seller = None
-            if model['offerings'] and 'falabella' not in \
-                    model['offerings'][0]['sellerName'].lower():
-                seller = model['offerings'][0]['sellerName']
+            if model['offerings'] and 'sellerName' in model['offerings'][0]:
+                if 'falabella' not in \
+                        model['offerings'][0]['sellerName'].lower():
+                    seller = model['offerings'][0]['sellerName']
+            elif model['offerings'] and 'sellerId' in model['offerings'][0]:
+                if 'falabella' not in \
+                        model['offerings'][0]['sellerId'].lower():
+                    seller = model['offerings'][0]['sellerId']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
 
@@ -842,7 +847,7 @@ class Falabella(Store):
         for picture_entry in picture_entries:
             picture_url = 'https://falabella.scene7.com/is/image/{}?' \
                           'wid=1500&hei=1500&qlt=70'.format(
-                            picture_entry['i']['n'])
+                              picture_entry['i']['n'])
             picture_urls.append(picture_url)
 
         return picture_urls
