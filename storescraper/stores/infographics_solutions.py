@@ -136,9 +136,13 @@ class InfographicsSolutions(Store):
                 'script', {'type': 'application/ld+json'}
             )[0].text)['@graph']
             name = product_data_2[3]['name']
-            price = soup.find('p', 'price').text.split(
-                ' $')[-1].replace('.', '')
-            offer_price = normal_price = Decimal(price)
+            price_p = soup.find('p', 'price')
+            if price_p:
+                price = price_p.text.split(
+                    ' $')[-1].replace('.', '')
+                offer_price = normal_price = Decimal(price)
+            else:
+                return []
             sku = key
 
         stock_container = soup.find('p', 'stock')
