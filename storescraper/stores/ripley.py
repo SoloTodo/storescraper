@@ -215,7 +215,8 @@ class Ripley(Store):
 
                 category_url = url_base.format(category_path, page)
                 print(category_url)
-                response = session.get(category_url, allow_redirects=False)
+                response = session.get(category_url, allow_redirects=False,
+                                       timeout=30)
 
                 if response.status_code != 200 and page == 1:
                     raise Exception('Invalid section: ' + category_url)
@@ -310,7 +311,7 @@ class Ripley(Store):
             session.headers['user-agent'] = extra_args['user-agent']
 
         print(url)
-        page_source = session.get(url).text
+        page_source = session.get(url, timeout=30).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
