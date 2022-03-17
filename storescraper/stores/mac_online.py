@@ -93,8 +93,11 @@ class MacOnline(Store):
                 description += '\n\n' + html_to_markdown(
                     json_product['description'])
 
-                stock = sum(json.loads(
-                    json_product['stock_locations']).values())
+                if json_product['in_stock']:
+                    stock = sum(json.loads(
+                        json_product['stock_locations']).values())
+                else:
+                    stock = 0
 
                 price = Decimal(remove_words(json_product['price']))
 
