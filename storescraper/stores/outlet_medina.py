@@ -69,11 +69,11 @@ class OutletMedina(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        sku = re.search(r'(\d+)', soup.find('h3').text).groups()[0]
 
         product_json = json.loads(
             soup.find('div', {'id': 'product-details'})['data-product'])
@@ -101,7 +101,7 @@ class OutletMedina(Store):
             price,
             price,
             'CLP',
-            sku=sku,
+            sku=key,
             description=description,
             picture_urls=image_urls,
             condition='https://schema.org/RefurbishedCondition'
