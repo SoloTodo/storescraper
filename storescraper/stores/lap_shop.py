@@ -62,6 +62,12 @@ class LapShop(Store):
         offer_price = (normal_price * Decimal('0.96')).quantize(0)
         picture_urls = ['https:' + image_url.split('?')[0] for image_url in
                         json_info['images']]
+
+        if 'SEGUNDA' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -74,6 +80,7 @@ class LapShop(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
