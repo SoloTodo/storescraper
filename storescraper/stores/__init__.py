@@ -140,6 +140,7 @@ from .good_game import GoodGame
 from .gorilla_setups import GorillaSetups
 from .grupo_cva import GrupoCva
 from .grupo_decme import GrupoDecme
+from .gsm_pro import GsmPro
 from .gtd import Gtd
 from .g_w_store import GWStore
 from .hard_gaming import HardGaming
