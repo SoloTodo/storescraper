@@ -79,8 +79,8 @@ class Ripley(Store):
              'Tecno > Computación > Notebooks gamer', 1],
             ['tecno/computacion/tablets-y-e-readers', ['Tablet'],
              'Tecno > Computación > Tablets y E-readers', 1],
-            ['tecno/impresoras-y-tintas', ['Printer'],
-             'Tecno > Computación > Impresoras y Tintas', 1],
+            ['tecno/impresoras-y-tintas/impresoras', ['Printer'],
+             'Tecno > Computación > Impresoras', 1],
             ['tecno/computacion/almacenamiento',
              ['UsbFlashDrive', 'ExternalStorageDrive'],
              'Tecno > Computación > Almacenamiento', 0.5],
@@ -216,7 +216,7 @@ class Ripley(Store):
                 category_url = url_base.format(category_path, page)
                 print(category_url)
                 response = session.get(category_url, allow_redirects=False,
-                                       timeout=30)
+                                       timeout=60)
 
                 if response.status_code != 200 and page == 1:
                     raise Exception('Invalid section: ' + category_url)
