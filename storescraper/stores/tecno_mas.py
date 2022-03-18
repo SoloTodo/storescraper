@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MONITOR, \
     ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, \
-    MOTHERBOARD, TELEVISION
+    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -23,7 +23,9 @@ class TecnoMas(Store):
             PROCESSOR,
             STORAGE_DRIVE,
             MOTHERBOARD,
-            TELEVISION
+            TELEVISION,
+            RAM,
+            SOLID_STATE_DRIVE
         ]
 
     @classmethod
@@ -32,8 +34,12 @@ class TecnoMas(Store):
             ['all-in-one-aio', ALL_IN_ONE],
             ['componentes-de-computador/gabinetes', COMPUTER_CASE],
             ['componentes-de-computador/procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['componentes-de-computador/hdd-disco-duro', STORAGE_DRIVE],
+            ['componentes-de-computador/almacenamiento/hdd-disco-duro',
+             STORAGE_DRIVE],
+            ['componentes-de-computador/almacenamiento/ssd-disco-solido',
+             SOLID_STATE_DRIVE],
+            ['componentes-de-computador/tarjetas-de-video', VIDEO_CARD],
+            ['ram', RAM],
             ['componentes-de-computador/placas-madre', MOTHERBOARD],
             ['monitores', MONITOR],
             ['notebooks', NOTEBOOK],
