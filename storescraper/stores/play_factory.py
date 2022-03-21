@@ -2,7 +2,8 @@ import logging
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, COMPUTER_CASE
+from storescraper.categories import MONITOR, MOTHERBOARD, MOUSE, KEYBOARD, \
+    HEADPHONES, COMPUTER_CASE
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
@@ -15,7 +16,10 @@ class PlayFactory(Store):
             MOUSE,
             KEYBOARD,
             HEADPHONES,
-            COMPUTER_CASE
+            COMPUTER_CASE,
+
+            MOTHERBOARD,
+            MONITOR
         ]
 
     @classmethod
@@ -24,7 +28,11 @@ class PlayFactory(Store):
             ['computacion/perifericos-accesorios/teclados', KEYBOARD],
             ['computacion/perifericos-accesorios/mouses', MOUSE],
             ['accesorios-pc-gaming-audifonos', HEADPHONES],
-            ['componentes-pc-gabinetes-soportes', COMPUTER_CASE]
+            ['componentes-pc-gabinetes-soportes', COMPUTER_CASE],
+
+            ['componentes', MOTHERBOARD],
+            ['gaming-y-streaming', HEADPHONES],
+            ['monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

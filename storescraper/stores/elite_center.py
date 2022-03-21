@@ -117,7 +117,7 @@ class EliteCenter(Store):
         if 'offers' not in product_data:
             return []
 
-        name = product_data['name']
+        name = product_data['name'][:256]
         sku = product_data['sku']
         offer_price = Decimal(product_data['offers']['price'])
         normal_price = (offer_price * Decimal('1.05')).quantize(0)

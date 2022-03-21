@@ -47,8 +47,10 @@ class GsmPro(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.findAll(
-                        'button', 'product-item__action-button')[-1]['data-product-url']
+                    product_url = \
+                        container.findAll(
+                            'button', 'product-item__action-button'
+                        )[-1]['data-product-url']
                     product_urls.append(
                         'https://www.gsmpro.cl{}'.format(product_url))
                 page += 1
