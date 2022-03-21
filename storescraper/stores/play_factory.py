@@ -2,7 +2,8 @@ import logging
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MONITOR, MOTHERBOARD, MOUSE, KEYBOARD, HEADPHONES, COMPUTER_CASE
+from storescraper.categories import MONITOR, MOTHERBOARD, MOUSE, KEYBOARD, \
+    HEADPHONES, COMPUTER_CASE
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 
