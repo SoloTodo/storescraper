@@ -113,7 +113,7 @@ class GGames(Store):
 
         for variant in json_container['variants']:
             variant_name = '{} {}'.format(name, variant['title']).strip()
-            part_number = variant['sku']
+            part_number = variant['sku'].strip()
             sku = str(variant['id'])
             price = Decimal(variant['price'] / 100)
             p = Product(

@@ -12,7 +12,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
     GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class EliteCenter(Store):
@@ -129,7 +129,11 @@ class EliteCenter(Store):
         else:
             stock_tag = soup.find('p', 'stock')
             if stock_tag:
-                stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
+                stock_match = re.search(r'(\d+)', stock_tag.text)
+                if stock_match:
+                    stock = int(stock_match.groups()[0])
+                else:
+                    stock = -1
             else:
                 stock = -1
 
