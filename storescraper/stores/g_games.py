@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, RAM, GAMING_CHAIR, STEREO_SYSTEM, \
     TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, \
-    SOLID_STATE_DRIVE, MICROPHONE
+    SOLID_STATE_DRIVE, MICROPHONE, POWER_SUPPLY, CPU_COOLER, MEMORY_CARD, \
+    ALL_IN_ONE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -31,33 +32,37 @@ class GGames(Store):
             VIDEO_CARD,
             MOTHERBOARD,
             SOLID_STATE_DRIVE,
-            MICROPHONE
+            MICROPHONE,
+            POWER_SUPPLY,
+            MEMORY_CARD,
+            ALL_IN_ONE,
+            NOTEBOOK,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['mouse/gamer', MOUSE],
-            ['mouse/homeoffice', MOUSE],
-            ['teclado/gamer', KEYBOARD],
-            ['teclado/homeoffice', KEYBOARD],
+            ['mouse', MOUSE],
             ['monitores', MONITOR],
-            ['headsets/gamer', HEADPHONES],
-            ['lifestyle/audífonos', HEADPHONES],
-            ['headsets/homeoffice', HEADPHONES],
-            ['combos/gamer', KEYBOARD_MOUSE_COMBO],
-            ['combos/homeoffice', KEYBOARD_MOUSE_COMBO],
-            ['componentes-pc', RAM],
-            ['gabinete', COMPUTER_CASE],
+            ['headsets', HEADPHONES],
             ['sillas-gamers', GAMING_CHAIR],
+            ['accesorios-gamer', MONITOR],
+            ['teclado', KEYBOARD],
+            ['combos', KEYBOARD_MOUSE_COMBO],
             ['parlantes-1', STEREO_SYSTEM],
-            ['lifestyle/parlante+bluetooth', STEREO_SYSTEM],
-            ['tablet', TABLET],
-            ['hd-portatil', EXTERNAL_STORAGE_DRIVE],
+            ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
             ['tarjetas-de-video', VIDEO_CARD],
+            ['refrigeracion', CPU_COOLER],
+            ['almacenamiento', SOLID_STATE_DRIVE],
+            ['gabinete', COMPUTER_CASE],
+            ['memoria-sd', MEMORY_CARD],
             ['placa-madre', MOTHERBOARD],
-            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
-            ['streaming/microfono', MICROPHONE]
+            ['memoria-ram', RAM],
+            ['all-in-one', ALL_IN_ONE],
+            ['notebook', NOTEBOOK],
+            ['tablet', TABLET],
+            ['accesorio-homeoffice', NOTEBOOK],
+            ['hd-portatil', EXTERNAL_STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

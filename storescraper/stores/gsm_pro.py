@@ -84,7 +84,7 @@ class GsmPro(Store):
             price = Decimal(
                 offer['price'])
             key = offer['url'].split('variant=')[1]
-            if 'Bajo Pedido' in name or 'días' in name:
+            if 'bajo pedido' in name.lower() or 'días' in name.lower():
                 stock = 0
             elif 'InStock' in offer['availability']:
                 stock = -1
