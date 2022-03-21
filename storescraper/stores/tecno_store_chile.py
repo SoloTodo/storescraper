@@ -1,7 +1,6 @@
 import json
 import logging
 from decimal import Decimal
-from re import S
 
 from bs4 import BeautifulSoup
 
@@ -9,7 +8,7 @@ from storescraper.categories import STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
     GAMING_CHAIR, COMPUTER_CASE, \
     VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR, NOTEBOOK, \
-    POWER_SUPPLY, GAMING_DESK, MICROPHONE
+    POWER_SUPPLY, GAMING_DESK, MICROPHONE, EXTERNAL_STORAGE_DRIVE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -36,35 +35,35 @@ class TecnoStoreChile(Store):
             NOTEBOOK,
             POWER_SUPPLY,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            EXTERNAL_STORAGE_DRIVE,
+            CASE_FAN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios/audifonos-clasicos', HEADPHONES],
-            ['accesorios/mouse-de-escrtorio', MOUSE],
-            ['accesorios/parlantes-y-equipos-de-audio', STEREO_SYSTEM],
-            ['gamer/perifericos/audifono', HEADPHONES],
-            ['gamer/perifericos/teclados', KEYBOARD],
-            ['gamer/perifericos/mouse', MOUSE],
-            ['notebooks', NOTEBOOK],
-            ['hardware/procesadores', PROCESSOR],
-            ['hardware/almacenamiento/hdd-disco-duro', STORAGE_DRIVE],
-            ['hardware/almacenamiento/ssd-unidad-de-estado-solido',
-             SOLID_STATE_DRIVE],
-            ['hardware/almacenamiento/m-2-sata-y-nvme', SOLID_STATE_DRIVE],
+            ['hardware/almacenamiento/disco-duro-externo',
+             EXTERNAL_STORAGE_DRIVE],
+            ['hardware/almacenamiento/disco-duro-mecanico', STORAGE_DRIVE],
+            ['hardware/almacenamiento/m-2-sata-nvme', SOLID_STATE_DRIVE],
+            ['hardware/almacenamiento/ssd', SOLID_STATE_DRIVE],
             ['hardware/fuente-de-poder', POWER_SUPPLY],
-            ['hardware/gabinetes', COMPUTER_CASE],
-            ['hardware/gpu', VIDEO_CARD],
+            ['hardware/gabinete', COMPUTER_CASE],
             ['hardware/memoria-ram', RAM],
             ['hardware/placa-madre', MOTHERBOARD],
-            ['hardware/refrigeracion-y-ventilacion', CPU_COOLER],
+            ['hardware/procesadores', PROCESSOR],
+            ['hardware/refrigeracion-por-aire', CPU_COOLER],
+            ['hardware/regrigeracion-liquida', CPU_COOLER],
+            ['hardware/ventiladores', CASE_FAN],
+            ['hardware/tarjeta-de-video', VIDEO_CARD],
             ['monitores', MONITOR],
-            ['sillas', GAMING_CHAIR],
-            ['escritorios', GAMING_DESK],
-            ['accesorios/microfonos', MICROPHONE]
-
+            ['notebooks', NOTEBOOK],
+            ['perifericos/audifonos', HEADPHONES],
+            ['perifericos/microfonos', MICROPHONE],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/teclados', KEYBOARD],
+            ['silla', GAMING_CHAIR],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
