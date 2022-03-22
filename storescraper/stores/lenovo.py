@@ -226,8 +226,8 @@ class Lenovo(Store):
                 nb_path = \
                     cls.base_domain + '/api/product/graph?src=splitter&' \
                                       'categories={}&currency={}&sort={}' \
-                                      '&page='.format(
-                        category_path, cls.currency, sorter)
+                                      '&page='.format(category_path,
+                                                      cls.currency, sorter)
                 page = 0
 
                 while True:
