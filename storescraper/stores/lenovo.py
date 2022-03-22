@@ -12,6 +12,7 @@ from storescraper.utils import remove_words, html_to_markdown, \
 
 class Lenovo(Store):
     base_domain = 'https://www.lenovo.com'
+    currency = 'USD'
 
     @classmethod
     def categories(cls):
@@ -94,7 +95,7 @@ class Lenovo(Store):
                     stock,
                     price,
                     price,
-                    'CLP',
+                    cls.currency,
                     sku=sku,
                     part_number=sku,
                     description=description,
@@ -224,8 +225,9 @@ class Lenovo(Store):
             for sorter in sorters:
                 nb_path = \
                     cls.base_domain + '/api/product/graph?src=splitter&' \
-                                      'categories={}&sort={}&page='.format(
-                                        category_path, sorter)
+                                      'categories={}&currency={}&sort={}' \
+                                      '&page='.format(
+                        category_path, cls.currency, sorter)
                 page = 0
 
                 while True:
