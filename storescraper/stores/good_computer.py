@@ -105,7 +105,7 @@ class GoodComputer(Store):
         else:
             price = Decimal(remove_words(price_container.find('ins').text))
         picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'product-thumbnails').findAll(
+                        soup.find('div', 'main-images').findAll(
                             'img')
                         ]
         p = Product(
