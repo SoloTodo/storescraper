@@ -106,7 +106,9 @@ class PcMasterGames(Store):
         second_json = json.loads(json_htmls[1].text)['@graph'][0]
         name = second_json['name']
         description = second_json['description']
-        sku = second_json['sku']
+        sku = None
+        if 'sku' in second_json:
+            sku = second_json['sku']
         offer_price = Decimal(second_json['offers'][0]['price'])
         normal_price = offer_price * Decimal(1.035)
         normal_price = normal_price.quantize(Decimal("0.0"))
