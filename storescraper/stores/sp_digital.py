@@ -16,7 +16,7 @@ from storescraper.categories import GAMING_CHAIR, WEARABLE, \
     ALL_IN_ONE, TABLET, STEREO_SYSTEM, USB_FLASH_DRIVE, MEMORY_CARD, \
     PROCESSOR, CASE_FAN, MOTHERBOARD, RAM, POWER_SUPPLY, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, COMPUTER_CASE, VIDEO_CARD, PRINTER, TELEVISION, \
-    PROJECTOR, CELL
+    PROJECTOR, CELL, VIDEO_GAME_CONSOLE
 
 
 class SpDigital(Store):
@@ -53,6 +53,7 @@ class SpDigital(Store):
             TELEVISION,
             PROJECTOR,
             CELL,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -116,6 +117,7 @@ class SpDigital(Store):
             ['Q2F0ZWdvcnk6MTQwNw==', [MICROPHONE],
              'Micrófonos y Accesorios', 1],
             ['Q2F0ZWdvcnk6MTQzMA==', [CELL], 'Smartphones', 1],
+            ['Q2F0ZWdvcnk6MTIzNQ==', [VIDEO_GAME_CONSOLE], 'Consolas y Accesorios', 1],
         ]
 
         endpoint = 'https://bff.spdigital.cl/api/v1/saleor'
