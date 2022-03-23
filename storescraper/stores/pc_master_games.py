@@ -103,6 +103,8 @@ class PcMasterGames(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[-1]
         json_htmls = soup.findAll('script', {'type': 'application/ld+json'})
+        if len(json_htmls) < 2:
+            return []
         second_json = json.loads(json_htmls[1].text)['@graph'][0]
         name = second_json['name']
         description = second_json['description']
