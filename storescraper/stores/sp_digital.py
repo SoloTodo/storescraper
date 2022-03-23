@@ -117,7 +117,8 @@ class SpDigital(Store):
             ['Q2F0ZWdvcnk6MTQwNw==', [MICROPHONE],
              'Micrófonos y Accesorios', 1],
             ['Q2F0ZWdvcnk6MTQzMA==', [CELL], 'Smartphones', 1],
-            ['Q2F0ZWdvcnk6MTIzNQ==', [VIDEO_GAME_CONSOLE], 'Consolas y Accesorios', 1],
+            ['Q2F0ZWdvcnk6MTIzNQ==', [VIDEO_GAME_CONSOLE],
+             'Consolas y Accesorios', 1],
         ]
 
         endpoint = 'https://bff.spdigital.cl/api/v1/saleor'
@@ -223,7 +224,7 @@ class SpDigital(Store):
         part_number = page_data['productId']
 
         normal_price = Decimal(page_data['content']['pricing']['priceRange'][
-                                   'start']['gross']['amount'])
+            'start']['gross']['amount'])
 
         for metadata_entry in page_data['content']['metadata']:
             if metadata_entry['key'] == 'pricing':
