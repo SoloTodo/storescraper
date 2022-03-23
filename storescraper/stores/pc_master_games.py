@@ -87,8 +87,7 @@ class PcMasterGames(Store):
                     break
                 for container in product_containers:
                     product_url = container['href']
-                    product_urls.append(
-                        'https://www.pcmastergames.cl' + product_url)
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
