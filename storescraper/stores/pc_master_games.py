@@ -1,10 +1,11 @@
+import json
 import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOTHERBOARD, SOLID_STATE_DRIVE, NOTEBOOK, \
-    RAM, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
+from storescraper.categories import MOTHERBOARD, PRINTER, SOLID_STATE_DRIVE, \
+    NOTEBOOK, RAM, POWER_SUPPLY, COMPUTER_CASE, MONITOR, GAMING_CHAIR, \
     WEARABLE, HEADPHONES, MOUSE, KEYBOARD, PROCESSOR, STORAGE_DRIVE, \
     VIDEO_CARD, CPU_COOLER, KEYBOARD_MOUSE_COMBO, UPS, MICROPHONE
 from storescraper.product import Product
@@ -34,7 +35,8 @@ class PcMasterGames(Store):
             CPU_COOLER,
             KEYBOARD_MOUSE_COMBO,
             UPS,
-            MICROPHONE
+            MICROPHONE,
+            PRINTER
         ]
 
     @classmethod
@@ -61,7 +63,8 @@ class PcMasterGames(Store):
             ['ventiladores-y-sistema-de-enfriamiento-componentes', CPU_COOLER],
             ['combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
             ['ups', UPS],
-            ['microfonos', MICROPHONE]
+            ['microfonos', MICROPHONE],
+            ['impresoras-y-escaneres', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -72,20 +75,20 @@ class PcMasterGames(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://pcmastergames.cl/{}/page/{}/' \
-                    .format(url_extension, page)
+                url_webpage = 'https://www.pcmastergames.cl/' \
+                              '{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'products')
+                product_containers = soup.findAll('a', 'product-image-link')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll(
-                        'div', 'product-grid-item'):
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+                for container in product_containers:
+                    product_url = container['href']
+                    product_urls.append(
+                        'https://www.pcmastergames.cl' + product_url)
                 page += 1
         return product_urls
 
@@ -99,27 +102,28 @@ class PcMasterGames(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku_tag = soup.find('meta', {'property': 'product:retailer_item_id'})
-        if sku_tag:
-            sku = sku_tag['content']
-        else:
-            sku = None
-        if not soup.find('p', 'stock'):
-            stock = -1
-        elif soup.find('p', 'stock').text == 'Agotado':
-            stock = 0
-        else:
-            stock = int(soup.find('p', 'stock').text.split()[0])
-        if soup.find('p', 'price').text == '':
-            return []
-        elif soup.find('p', 'price').find('ins'):
-            price = Decimal(remove_words(soup.find('p').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p').text))
-        picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'woocommerce-product-gallery').findAll('img')]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[-1]
+        json_htmls = soup.findAll('script', {'type': 'application/ld+json'})
+        second_json = json.loads(json_htmls[1].text)['@graph'][0]
+        name = second_json['name']
+        description = second_json['description']
+        sku = second_json['sku']
+        offer_price = Decimal(second_json['offers'][0]['price'])
+        normal_price = offer_price * Decimal(1.035)
+        normal_price = normal_price.quantize(Decimal("0.0"))
+
+        picture_urls = []
+        figure = soup.find('figure', 'woocommerce-product-gallery__wrapper')
+        images = figure.findAll('img')
+        for i in images:
+            picture_urls.append(i['src'])
+
+        stock = 0
+        inStock = 'http://schema.org/InStock'
+        if second_json['offers'][0]['availability'] == inStock:
+            stock = int(
+                soup.find('p', 'stock in-stock').text.split(' disponibles')[0])
+
         p = Product(
             name,
             cls.__name__,
@@ -128,13 +132,12 @@ class PcMasterGames(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
-            part_number=sku,
             picture_urls=picture_urls,
-
+            description=description
         )
 
         return [p]
