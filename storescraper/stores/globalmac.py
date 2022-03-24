@@ -3,7 +3,8 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MONITOR, KEYBOARD
+from storescraper.categories import EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
+    MONITOR, KEYBOARD, RAM, SOLID_STATE_DRIVE, STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -17,34 +18,35 @@ class GlobalMac(Store):
             'Notebook',
             'StorageDrive',
             'ExternalStorageDrive',
-            'SolidStateDrive',
             'UsbFlashDrive',
-            'MemoryCard',
             'Ram',
             MONITOR,
             KEYBOARD,
+            SOLID_STATE_DRIVE,
+            STORAGE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['lacie-chile/discos-externos', 'ExternalStorageDrive'],
-            ['lacie-chile/discos-portatiles', 'ExternalStorageDrive'],
-            ['lacie-chile/discos-thunderbolt', 'ExternalStorageDrive'],
-            ['discos-duros-externos',
-             'ExternalStorageDrive'],
-            ['discos-duros-portatiles', 'ExternalStorageDrive'],
+            # ['lacie-chile/discos-externos', 'ExternalStorageDrive'],
+            # ['lacie-chile/discos-portatiles', 'ExternalStorageDrive'],
+            # ['lacie-chile/discos-thunderbolt', 'ExternalStorageDrive'],
+            ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['discos-portatiles', EXTERNAL_STORAGE_DRIVE],
             ['monitores-lcd-tv-led', MONITOR],
             ['teclados-mac', KEYBOARD],
-            ['discos-duros-notebook-sata-2.5', 'SolidStateDrive'],
-            ['discos-duros-sata-3.5', 'SolidStateDrive'],
-            ['discos-duros-ssd-sata-2.5', 'SolidStateDrive'],
-            ['SSD-M-2-PCie-NVMe', 'SolidStateDrive'],
-            ['SSD-M2-SATA', 'SolidStateDrive'],
-            ['SSD-mSATA', 'SolidStateDrive'],
-            ['memorias-ram', 'Ram'],
-            ['Tarjetas-Expansion-Flashdrive-SDCard-y-SSD-para-Apple-Mac',
-             'MemoryCard'],
+            # ['discos-duros-notebook-sata-2.5', SOLID_STATE_DRIVE],
+            ['discos-duros-sata-3_5', STORAGE_DRIVE],
+            ['discos-duros-ssd-sata-2_5', STORAGE_DRIVE],
+            ['SSD-M-2-PCie-NVMe', SOLID_STATE_DRIVE],
+            ['SSD-M2-SATA', SOLID_STATE_DRIVE],
+            ['SSD-mSATA', SOLID_STATE_DRIVE],
+            ['memorias-ram', RAM],
+            ['tarjetas-de-expansion-para-mac', MEMORY_CARD],
         ]
 
         product_urls = []
@@ -54,12 +56,13 @@ class GlobalMac(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.globalmac.cl/' + category_path
+            category_url = 'https://www.globalmac.cl/index.php?' + \
+                'category_rewrite=' + category_path + '&controller=category'
             print(category_url)
             soup = BeautifulSoup(session.get(category_url).text,
                                  'html.parser')
 
-            items = soup.findAll('div', 'product-layout')
+            items = soup.findAll('article', 'product-miniature')
 
             for item in items:
                 product_urls.append(item.find('a')['href'])
@@ -80,31 +83,37 @@ class GlobalMac(Store):
                              'html.parser')
 
         name = soup.find('title').text.strip()
-        sku = soup.find('input', {'name': 'product_id'})['value']
+        key = soup.find('input', {'id': 'product_page_product_id'})['value']
+        sku = soup.find('span', {'itemprop': 'sku'}).text
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
-        pictures_container = soup.find('ul', 'thumbnails')
+            str(soup.find('div', {'id': 'product-description-short-260'})))
 
+        pictures_container = soup.find('div', 'js-qv-mask')
         if pictures_container:
-            picture_urls = [tag['href'] for tag in pictures_container.findAll(
-                'a', 'thumbnail') if tag['href']]
+            picture_urls = [tag['data-image-large-src'] for tag in pictures_container.findAll(
+                'img') if tag['data-image-large-src']]
         else:
             picture_urls = None
 
-        add_to_cart_button = soup.find('button', {'id': 'button-cart'})
-        if 'btn-primary' in add_to_cart_button.attrs.get('class', []):
-            stock = -1
-        else:
-            stock = 0
+        stock = 0
+        stock_number = soup.find('div', 'product-quantities').find('span')['data-stock']
+        if stock_number:
+            stock = int(stock_number)
 
-        price_text = soup.findAll('h2')[-1].text.replace('.', '')
+        # add_to_cart_button = soup.find('button', {'id': 'button-cart'})
+        # if 'btn-primary' in add_to_cart_button.attrs.get('class', []):
+        #     stock = -1
+        # else:
+        #     stock = 0
 
-        normal_price = re.search(r'Webpay: \$(\d+)', price_text)
-        normal_price = Decimal(normal_price.groups()[0])
+        price = Decimal(soup.find('div', 'current-price').find('span')['content'])
 
-        offer_price = re.search(r'Transferencia: \$(\d+)', price_text)
-        offer_price = Decimal(offer_price.groups()[0])
+        # normal_price = re.search(r'Webpay: \$(\d+)', price_text)
+        # normal_price = Decimal(normal_price.groups()[0])
+
+        # offer_price = re.search(r'Transferencia: \$(\d+)', price_text)
+        # offer_price = Decimal(offer_price.groups()[0])
 
         p = Product(
             name,
@@ -112,13 +121,12 @@ class GlobalMac(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
-            part_number=sku,
             description=description,
             picture_urls=picture_urls
         )
