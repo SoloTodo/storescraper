@@ -91,29 +91,20 @@ class GlobalMac(Store):
 
         pictures_container = soup.find('div', 'js-qv-mask')
         if pictures_container:
-            picture_urls = [tag['data-image-large-src'] for tag in pictures_container.findAll(
-                'img') if tag['data-image-large-src']]
+            picture_urls = [tag['data-image-large-src']
+                            for tag in pictures_container.findAll(
+                                'img') if tag['data-image-large-src']]
         else:
             picture_urls = None
 
         stock = 0
-        stock_number = soup.find('div', 'product-quantities').find('span')['data-stock']
+        stock_number = soup.find(
+            'div', 'product-quantities').find('span')['data-stock']
         if stock_number:
             stock = int(stock_number)
 
-        # add_to_cart_button = soup.find('button', {'id': 'button-cart'})
-        # if 'btn-primary' in add_to_cart_button.attrs.get('class', []):
-        #     stock = -1
-        # else:
-        #     stock = 0
-
-        price = Decimal(soup.find('div', 'current-price').find('span')['content'])
-
-        # normal_price = re.search(r'Webpay: \$(\d+)', price_text)
-        # normal_price = Decimal(normal_price.groups()[0])
-
-        # offer_price = re.search(r'Transferencia: \$(\d+)', price_text)
-        # offer_price = Decimal(offer_price.groups()[0])
+        price = Decimal(
+            soup.find('div', 'current-price').find('span')['content'])
 
         p = Product(
             name,
