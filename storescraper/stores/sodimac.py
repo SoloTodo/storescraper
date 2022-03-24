@@ -306,7 +306,7 @@ class Sodimac(Store):
             for p in ps:
                 p.store = cls.__name__
                 p.url = url
-                if p.seller == 'SODIMAC_CHILE':
+                if p.seller in ['SODIMAC_CHILE', 'SODIMAC']:
                     p.seller = None
             return ps
 
