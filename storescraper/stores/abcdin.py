@@ -170,7 +170,10 @@ class AbcDin(Store):
                                           'products list items product-items')
 
                 if not products_grid:
-                    raise Exception('Empty section: {}'.format(url))
+                    if page == 1:
+                        raise Exception('Empty section: {}'.format(url))
+                    else:
+                        break
 
                 product_cells = products_grid.findAll('li')
 
