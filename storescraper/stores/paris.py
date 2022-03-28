@@ -355,17 +355,10 @@ class Paris(Store):
         name = ' '.join(name.text.strip().split())
         sku = soup.find('div', 'pdp-main')['data-pid'].strip()
 
-        if soup.find('div', 'out-of-stock') or \
-                soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
-                                         'dwdbab8891/marketing/home/promotext/'
-                                         'promotext-plp-event3-SF.png'}) or \
-                soup.find('img', {'src': '/on/demandware.static/-/Sites/es_CL/'
-                                         'dw69d02840/marketing/home/promotext/'
-                                         'promotext_temporalmente_no_'
-                                         'disponible.png'}):
-            stock = 0
-        else:
+        if soup.find('button', 'buy-it-now'):
             stock = -1
+        else:
+            stock = 0
 
         price_tags = soup.findAll('div', 'price__text')
         if len(price_tags) == 2:
