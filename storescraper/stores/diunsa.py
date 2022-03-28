@@ -6,6 +6,7 @@ import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
+from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -16,14 +17,14 @@ class Diunsa(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television'
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # Only gets LG products
 
-        if category != 'Television':
+        if category != TELEVISION:
             return []
 
         session = session_with_proxy(extra_args)
@@ -35,10 +36,9 @@ class Diunsa(Store):
             if page > 30:
                 raise Exception('Page overflow')
 
-            url = 'https://www.diunsa.hn/buscapagina?fq=C%3a%2f1%2f&' \
-                  'fq=H%3a284&PS=12&sl=47de5394-cc68-404f-93ee-' \
-                  'dca7e0b26b7f&cc=12&sm=0&PageNumber={}'.format(
-                   page)
+            url = 'https://www.diunsa.hn/buscapagina?fq=C%3a%2f1%2f&' + \
+                'ft=televisores+marca+lg&PS=12&sl=47de5394-cc68-404f-' + \
+                '93ee-dca7e0b26b7f&cc=12&sm=0&PageNumber={}'.format(page)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products = soup.findAll('div', 'contentShelve')

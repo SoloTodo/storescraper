@@ -11,7 +11,8 @@ from storescraper.categories import VIDEO_GAME_CONSOLE, MOUSE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    remove_words
 
 
 class Dust2(Store):
@@ -130,10 +131,14 @@ class Dust2(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h3', 'product_title').text
+        name = soup.find(
+            'div',
+            'productDetails__productModel--info-productName'
+        ).text.strip()
 
         picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'woocommerce-product-gallery').findAll('img')]
+            'div', 'productDetails__productModel--image-moreImages'
+            ).findAll('img')]
         variants = soup.find('form', 'variations_form cart')
         if variants:
             products = []
@@ -175,16 +180,28 @@ class Dust2(Store):
         else:
             key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
                 1]
-            sku = soup.find('span', 'sku').text.strip()
-            if soup.find('p', 'stock out-of-stock'):
+            sku = soup.find(
+                'div', 'productDetails__productModel--info-productSKU'
+                ).find('h5').text.strip()
+            stock_text = soup.find(
+                'div', 'productDetails__productModel--info-productInStock'
+                ).find('span').text
+            if stock_text == '':
                 stock = 0
             else:
-                stock = int(soup.find(
-                    'span', 'woostify-single-product-stock-progress-bar')[
-                                'data-number'])
-            normal_price = Decimal(remove_words(soup.find('p', 'price').text))
-            offer_price = Decimal(
-                remove_words(soup.find('h3', {'id': 'precio2'}).text))
+                stock = int(stock_text)
+            normal_price = Decimal(remove_words(soup.find(
+                'div', 'productDetails__productModel--info-productCardPrice'
+                ).find('h3').text))
+            offer_price = Decimal(remove_words(
+                soup.find(
+                    'div',
+                    'productDetails__productModel--info-productTransferPrice'
+                    ).find('h3').text))
+
+            description = html_to_markdown(
+                str(soup.find(
+                    'div', 'productDetails__productData--specs-info')))
 
             p = Product(
                 name,
@@ -199,6 +216,6 @@ class Dust2(Store):
                 'CLP',
                 sku=sku,
                 picture_urls=picture_urls,
-
+                description=description
             )
             return [p]

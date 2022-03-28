@@ -123,7 +123,10 @@ class TechniDiseno(Store):
 
             return products
         else:
-            sku = json_data['sku']
+            if 'sku' in json_data:
+                sku = json_data['sku']
+            else:
+                sku = ''
 
             stock_tag = soup.find('span', 'product-form-stock')
             if stock_tag:
