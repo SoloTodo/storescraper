@@ -95,7 +95,7 @@ class CesaPro(Store):
         response = session.post(product_url, data=payload)
         product_json = response.json()['product']
         name = product_json['name']
-        key = product_json['id']
+        key = str(product_json['id'])
         sku = product_json['sku']
         stock = product_json['total_stock']
         price = Decimal(product_json['right_price'].split('.')[0])
