@@ -97,7 +97,7 @@ class PcNitro(Store):
             page = 1
 
             while True:
-                if page > 30:
+                if page > 40:
                     raise Exception('Page overflow')
 
                 url = 'https://pcnitro.cl/{}?page={}'\
