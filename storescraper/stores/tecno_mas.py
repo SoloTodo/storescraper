@@ -93,7 +93,8 @@ class TecnoMas(Store):
         else:
             stock_tag = soup.find('span', 'product-form-stock')
             if stock_tag:
-                stock = int(stock_tag.text)
+                stock_value = soup.find('input', {'id': 'input-qty'})['max']
+                stock = int(stock_value)
             else:
                 stock = 0
 

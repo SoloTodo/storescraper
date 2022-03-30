@@ -183,13 +183,17 @@ class Dust2(Store):
             sku = soup.find(
                 'div', 'productDetails__productModel--info-productSKU'
                 ).find('h5').text.strip()
-            stock_text = soup.find(
-                'div', 'productDetails__productModel--info-productInStock'
-                ).find('span').text
-            if stock_text == '':
+            agotado_btn = soup.find('div', 'productModel__info--productAgotado')
+            if agotado_btn:
                 stock = 0
             else:
-                stock = int(stock_text)
+                stock_text = soup.find(
+                    'div', 'productDetails__productModel--info-productInStock'
+                    ).find('span').text
+                if stock_text == '':
+                    stock = 0
+                else:
+                    stock = int(stock_text)
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'productDetails__productModel--info-productCardPrice'
                 ).find('h3').text))
