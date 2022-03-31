@@ -9,7 +9,7 @@ from storescraper.categories import STEREO_SYSTEM, HEADPHONES, NOTEBOOK, \
     TABLET, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     CPU_COOLER, KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, MONITOR, PRINTER, \
-    GAMING_CHAIR
+    GAMING_CHAIR, UPS, WEARABLE, MEMORY_CARD, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -38,13 +38,18 @@ class Spider(Store):
             KEYBOARD,
             MONITOR,
             PRINTER,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            UPS,
+            WEARABLE,
+            MEMORY_CARD,
+            ALL_IN_ONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['257-parlantes', STEREO_SYSTEM],
+            ['271-audio', STEREO_SYSTEM],
             ['23-audifonos', HEADPHONES],
             ['41-notebooks-portatiles', NOTEBOOK],
             ['25-tablets', TABLET],
@@ -60,10 +65,15 @@ class Spider(Store):
             ['34-refrigeracion', CPU_COOLER],
             ['57-kits-teclados-mouse', KEYBOARD_MOUSE_COMBO],
             ['55-mouse', MOUSE],
+            ['242-mouse', MOUSE],
             ['56-teclados', KEYBOARD],
             ['21-monitores', MONITOR],
             ['47-impresoras', PRINTER],
-            ['59-sillas-gamer', GAMING_CHAIR]
+            ['59-sillas-gamer', GAMING_CHAIR],
+            ['269-upsrespaldo-de-energia', UPS],
+            ['273-smartwatch', WEARABLE],
+            ['274-memoria-flashpendrive', MEMORY_CARD],
+            ['40-pc-fijos', ALL_IN_ONE],
         ]
         product_urls = []
         session = session_with_proxy(extra_args)
