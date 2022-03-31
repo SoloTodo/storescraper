@@ -25,7 +25,7 @@ class TecnoMas(Store):
             MOTHERBOARD,
             TELEVISION,
             RAM,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
@@ -48,6 +48,7 @@ class TecnoMas(Store):
             ['equipos-reacondicionados/monitores-reacondicionados', MONITOR],
             ['equipos-reacondicionados/televisores-reacondicionados',
              TELEVISION],
+            ['apple', NOTEBOOK],
             # ['aio-preconfigurados', ALL_IN_ONE],
             # ['notebooks-preconfigurados', NOTEBOOK],
         ]

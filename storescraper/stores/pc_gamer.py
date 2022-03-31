@@ -5,7 +5,8 @@ from decimal import Decimal
 
 from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     SOLID_STATE_DRIVE, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, \
-    MOUSE, HEADPHONES, MONITOR, GAMING_CHAIR, PRINTER, GAMING_DESK, CASE_FAN
+    MOUSE, HEADPHONES, MONITOR, GAMING_CHAIR, PRINTER, GAMING_DESK, CASE_FAN, \
+    NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -30,6 +31,7 @@ class PcGamer(Store):
             PRINTER,
             GAMING_DESK,
             CASE_FAN,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -49,6 +51,7 @@ class PcGamer(Store):
             ['21', GAMING_CHAIR],  # SILLAS GAMER
             ['33', GAMING_DESK],  # ESCRITORIOS
             ['27', PRINTER],  # IMPRESORAS
+            ['17', NOTEBOOK],  # Computadores
         ]
 
         session = session_with_proxy(extra_args)
