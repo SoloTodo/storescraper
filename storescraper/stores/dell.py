@@ -1,5 +1,3 @@
-import urllib
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from storescraper.categories import MONITOR
