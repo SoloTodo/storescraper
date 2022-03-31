@@ -1,7 +1,7 @@
 from decimal import Decimal
 import json
 import logging
-from turtle import pos
+
 from bs4 import BeautifulSoup
 from storescraper.categories import GAMING_CHAIR, GAMING_DESK, HEADPHONES, \
     KEYBOARD, MEMORY_CARD, MICROPHONE, MOUSE, RAM, STEREO_SYSTEM, TABLET, \
