@@ -28,6 +28,7 @@ from .bulldog_pc import BulldogPc
 from .byp import Byp
 from .c_network import CNetwork
 from .cafe_digital import CafeDigital
+from .campcom import Campcom
 from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
 from .casa_confort import CasaConfort
@@ -208,6 +209,7 @@ from .loi_chile import LoiChile
 from .loi_uruguay import LoiUruguay
 from .lucila import Lucila
 from .mac_online import MacOnline
+from .macrotel import Macrotel
 from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
 from .martin_arismendi import MartinArismendi
