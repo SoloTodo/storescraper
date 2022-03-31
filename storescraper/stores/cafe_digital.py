@@ -89,6 +89,8 @@ class CafeDigital(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
         product_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[1].text)
 
@@ -128,7 +130,7 @@ class CafeDigital(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
             description=description
         )
