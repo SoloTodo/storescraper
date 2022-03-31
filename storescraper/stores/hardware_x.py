@@ -1,14 +1,14 @@
+import json
 import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PROCESSOR, MOTHERBOARD, RAM, \
-    SOLID_STATE_DRIVE, COMPUTER_CASE, POWER_SUPPLY, CPU_COOLER, MOUSE, \
-    KEYBOARD, MONITOR, HEADPHONES
+    SOLID_STATE_DRIVE, MOUSE, KEYBOARD, MONITOR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class HardwareX(Store):
@@ -20,9 +20,6 @@ class HardwareX(Store):
             MOTHERBOARD,
             RAM,
             SOLID_STATE_DRIVE,
-            COMPUTER_CASE,
-            POWER_SUPPLY,
-            CPU_COOLER,
             MOUSE,
             KEYBOARD,
             MONITOR,
@@ -32,18 +29,14 @@ class HardwareX(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['notebooks', NOTEBOOK],
-            ['procesadores', PROCESSOR],
-            ['placas-madre', MOTHERBOARD],
-            ['memorias-ram', RAM],
-            ['ssd-unidades-de-estado-solido', SOLID_STATE_DRIVE],
-            ['gabinetes', COMPUTER_CASE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['cooler-cpu', CPU_COOLER],
-            ['mouse-gamer', MOUSE],
-            ['teclados-mecanicos-gamer', KEYBOARD],
-            ['monitores-gamer-profesionales', MONITOR],
-            ['audifonos-headsets-gamer', HEADPHONES]
+            ['componentes-pc/procesadores', PROCESSOR],
+            ['componentes-pc/placas-madres', MOTHERBOARD],
+            ['componentes-pc/memorias-ram', RAM],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
+            ['perifericos/monitores', MONITOR],
+            ['perifericos/teclados', KEYBOARD],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/audifonos', HEADPHONES]
         ]
 
         session = session_with_proxy(extra_args)
@@ -55,12 +48,12 @@ class HardwareX(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.hardwarex.cl/collections/{}' \
-                              '?page={}'.format(url_extension, page)
+                url_webpage = 'https://www.hardwarex.cl/wp/categoria-producto/' \
+                              '{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-item')
+                product_containers = soup.findAll('li', 'product')
 
                 if not product_containers:
                     if page == 1:
@@ -68,8 +61,7 @@ class HardwareX(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.hardwarex.cl' + product_url)
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -79,30 +71,44 @@ class HardwareX(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-meta__title').text
-        sku = soup.find('input', {'name': 'id'})['value']
-        if soup.find('span',
-                     'product-form__inventory').text == 'En Stock':
-            stock = -1
+
+        key = soup.find('link', {'rel': 'shortlink'})[
+            'href'].split('=')[-1]
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[1].text)
+
+        name = json_data['name']
+        sku = str(json_data['sku'])[50:]
+        price = Decimal(json_data['offers'][0]['price'])
+
+        max_input = soup.find('input', 'input-text qty text')
+        if max_input:
+            stock = int(max_input['max'])
         else:
             stock = 0
-        price = Decimal(soup.find('span', 'price').text.split('$')[-1].
-                        replace('.', ''))
-        picture_urls = ['https:' + tag['data-zoom'].split('?')[0] for tag in
-                        soup.find('div', 'product-gallery')
-                            .findAll('img', 'product-gallery__image')]
+
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'tab-description'})))
+
+        pictures_urls = []
+        image_containers = soup.find('div', 'wpgs-for')
+        for i in image_containers.findAll('img'):
+            pictures_urls.append(i['src'])
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=pictures_urls,
+            description=description
         )
         return [p]
