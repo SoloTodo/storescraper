@@ -86,7 +86,8 @@ class Absolutec(Store):
         data = ini_soup.find('script', {'type': 'text/template'})
         try:
             soup = BeautifulSoup(json.loads(data.text), 'html.parser')
-        except:
+        except Exception as e:
+            print(e)
             traceback.print_exc()
             return []
         json_data = json.loads(ini_soup.findAll(
@@ -106,7 +107,7 @@ class Absolutec(Store):
             stock = 0
 
         picture_urls = []
-        image_containers = soup.find( 'div', 'product-images')
+        image_containers = soup.find('div', 'product-images')
         if image_containers:
             images = image_containers.findAll('img', 'img-responsive')
             for i in images:

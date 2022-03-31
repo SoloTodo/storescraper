@@ -24,8 +24,8 @@ def flixmedia_video_urls(mpn):
         if not product_id:
             return None
 
-        url = 'https://media.flixcar.com/delivery/inpage/show/4800/cl/{}/html' \
-            ''.format(product_id)
+        url = 'https://media.flixcar.com/delivery/inpage/show/4800/cl/{}/' \
+            'html'.format(product_id)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         video_containers = soup.findAll('input', 'flix-jw')
@@ -37,6 +37,7 @@ def flixmedia_video_urls(mpn):
                 video_urls.append('https:' + entry['file'])
 
         return video_urls
-    except:
+    except Exception as e:
+        print(e)
         traceback.print_exc()
         return None
