@@ -48,8 +48,8 @@ class HardwareX(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.hardwarex.cl/wp/categoria-producto/' \
-                              '{}/page/{}/'.format(url_extension, page)
+                url_webpage = 'https://www.hardwarex.cl/wp/categoria-pro' \
+                    'ducto/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')

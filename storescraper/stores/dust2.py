@@ -183,7 +183,8 @@ class Dust2(Store):
             sku = soup.find(
                 'div', 'productDetails__productModel--info-productSKU'
                 ).find('h5').text.strip()
-            agotado_btn = soup.find('div', 'productModel__info--productAgotado')
+            agotado_btn = soup.find('div',
+                                    'productModel__info--productAgotado')
             if agotado_btn:
                 stock = 0
             else:
