@@ -61,8 +61,8 @@ class Macrotel(Store):
                     raise Exception('Page overflow: ' + url_extension)
                 url_webpage = 'https://www.macrotel.cl/{}' \
                               '?page={}'.format(url_extension, page)
-                max_tries = 0
-                while max_tries < 3:
+                retries = 3
+                while retries:
                     try:
                         data = session.get(url_webpage).text
                         soup = BeautifulSoup(data, 'html.parser')
@@ -70,10 +70,11 @@ class Macrotel(Store):
                             'script', {'type': 'application/ld+json'})[1].text)
                         break
                     except Exception as e:
-                        # import ipdb
-                        # ipdb.set_trace()
-                        print(e)
-                        max_tries += 1
+                        if retries:
+                            retries -= 1
+                        else:
+                            raise
+
                 item_list = json_data['itemListElement']
                 if len(item_list) == 0:
                     if page == 1:
@@ -91,15 +92,18 @@ class Macrotel(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[0].text)
+        json_tags = soup.findAll('script', {'type': 'application/ld+json'})
 
+        if not json_tags:
+            return []
+
+        json_data = json.loads(json_tags[0].text)
         name = json_data['name']
         sku = str(json_data['sku'])
         price = Decimal(json_data['offers']['offers'][0]['price'])
         description = json_data['description']
 
-        if 'preventa' in soup.text:
+        if 'preventa' in name.lower():
             stock = 0
         elif soup.find('input', 'vtex-numeric-stepper__input'):
             stock = -1
