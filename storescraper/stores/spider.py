@@ -1,7 +1,4 @@
-import json
 import logging
-import re
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -109,15 +106,11 @@ class Spider(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        product_data_match = re.search(
-            r'rcAnalyticsEvents.productsListCache = (.+);', response.text)
-        product_data = json.loads(product_data_match.groups()[0])
-        assert len(product_data) == 1
-        product_data = list(product_data.values())[0]
-        part_number = product_data['reference']
-        name = product_data['name']
-        key = str(product_data['id'])
-        sku = product_data['ean13']
+        part_number = soup.find('div', 'product-additional-info')\
+            .findAll('span')[1].text.split('Referencia: ')[1].strip()
+        name = soup.find('h1', 'product-detail-name').text.strip()
+        key = soup.find('meta',
+                        {'property': 'product:retailer_item_id'})['content']
 
         if soup.find('div', 'product-quantities'):
             stock = int(soup.find('div', 'product-quantities').find('span')[
@@ -149,7 +142,7 @@ class Spider(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             part_number=part_number,
             picture_urls=picture_urls
         )
