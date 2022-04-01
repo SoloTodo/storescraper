@@ -1,6 +1,9 @@
+import json
 import re
 from collections import defaultdict
 from decimal import Decimal
+
+import demjson
 from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
@@ -47,13 +50,50 @@ class Claro(Store):
                 'value': 2
             })
         if category == 'Cell':
-            discovered_entries[cls.equipos_url].append({
-                'category_weight': 1,
-                'section_name': 'Equipos',
-                'value': 1
-            })
+            cell_urls = cls._discover_cells(extra_args)
+            for idx, cell_url in enumerate(cell_urls):
+                discovered_entries[cell_url].append({
+                    'category_weight': 1,
+                    'section_name': 'Equipos',
+                    'value': idx + 1
+                })
 
         return discovered_entries
+
+    @classmethod
+    def _discover_cells(cls, extra_args=None):
+        product_urls = []
+        session = session_with_proxy(extra_args)
+        offset = 0
+
+        while True:
+            category_url = 'https://tienda.clarochile.cl/CategoryDisplay' \
+                           '?facet_1=ads_f11503_ntk_cs%3A%22Portando+un' \
+                           '+Plan%22&categoryId=3074457345616686668&' \
+                           'storeId=10151&beginIndex={}'.format(offset)
+            print(category_url)
+            soup = BeautifulSoup(
+                session.get(category_url, verify=False).text,
+                'html5lib'
+            )
+
+            containers = soup.find(
+                'div', 'product_listing_container').findAll(
+                'div', 'product')[1:]
+
+            if not containers:
+                if offset == 0:
+                    raise Exception('Empty list')
+
+                break
+
+            for container in containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+
+            offset += 12
+
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -78,11 +118,10 @@ class Claro(Store):
             # Plan Postpago
             planes = cls._planes(url, extra_args)
             products.extend(planes)
-        elif url == cls.equipos_url:
-            # Equipo postpago
-            products.extend(cls._celular_postpago(url, extra_args))
         else:
-            raise Exception('Invalid URL: ' + url)
+            # Celular
+            cells = cls._celular_postpago(url, extra_args)
+            products.extend(cells)
         return products
 
     @classmethod
@@ -133,173 +172,126 @@ class Claro(Store):
 
         return products
 
+
+
     @classmethod
     def _celular_postpago(cls, url, extra_args):
-        # 1. Obtain cell plans data
-        plans = cls._planes(cls.planes_url, extra_args)
-
-        # 2. Obtain the products
+        print(url)
         session = session_with_proxy(extra_args)
-        res = session.get('https://www.clarochile.cl/'
-                          'personas/ofertaplanconequipo/')
-        soup = BeautifulSoup(res.text, 'html.parser')
+        res = session.get(url, verify=False)
+        soup = BeautifulSoup(res.text, 'html5lib')
+        product_id = soup.find('meta', {'name': 'pageId'})['content']
+        name = soup.find('h1', 'main_header').text.strip()
+        picture_tag_id = 'ProductInfoImage_' + product_id
+        picture_urls = ['https://tienda.clarochile.cl' + soup.find('input', {'id': picture_tag_id})['value'].replace(' ', '%20')]
+
+        category_entries_tag = soup.find('div', {'id': 'entitledItem_' + product_id})
+        category_entries = json.loads(category_entries_tag.text)
+
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
         products = []
 
-        # Nuevo sin cuotas
-        for cell_tag in soup.find('div', {'id': 'equipoRecambioDos'})\
-                            .findAll('div', 'oferta'):
-            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
-                                               .replace(')', '')
-                                for plan in plans
-                                if 'sin cuota de arriendo' in plan.name and
-                                'portabilidad' not in plan.name.lower()]
+        for c in category_entries:
+            payload = 'storeId=10151&langId=-5' \
+                      '&catalogId=10052&catalogEntryId={}' \
+                      '&productId={}&requesttype=ajax'.format(
+                c['catentry_id'], product_id)
+            res = session.post(
+                'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView',
+                payload)
+            data = demjson.decode(res.text)['catalogEntry']
 
-            cell_name = cell_tag.find('div', 'datos-plan').find(
-                'h2').text.strip()
-            price_text = cell_tag.find('div', 'cuotas').findAll(
-                'i')[1].text.split('$')[1]
-            price = Decimal(remove_words(price_text))
-            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip().replace(' ', '%20')]
+            combination_type = data['attrSwatchFlujo']
+            price = Decimal(remove_words(data['offerPrice']))
 
-            for cell_plan_name in cell_plans_names:
-                product = Product(
-                    cell_name,
+            if combination_type in ['REB', 'RET', '']:
+                # Renovación or Default
+                continue
+            elif combination_type == 'PRE':
+                # Prepago
+                products.append(Product(
+                    name,
                     cls.__name__,
                     'Cell',
                     url,
                     url,
-                    '{} - {}'.format(cell_name, cell_plan_name),
+                    '{} - {}'.format(product_id, 'Claro Prepago'),
                     -1,
                     price,
                     price,
                     'CLP',
-                    cell_plan_name=cell_plan_name.upper(),
-                    picture_urls=picture_urls,
-                    cell_monthly_payment=Decimal(0)
-                )
-                products.append(product)
+                    cell_plan_name='Claro Prepago',
+                    picture_urls=picture_urls
+                ))
+            elif combination_type == 'PE_LN':
+                # Línea nueva
+                assert data['planAssociate']
 
-        # Nuevo con cuotas
-        for cell_tag in soup.find('div',
-                                  {'id': 'equipoRecambioUno'}).findAll(
-                'div', 'oferta'):
-            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
-                                               .replace(')', '')
-                                for plan in plans
-                                if
-                                'con cuota de arriendo' in plan.name and
-                                'portabilidad' not in plan.name.lower()]
+                for plan_entry in data['planAssociate']:
+                    cell_plan_name = plan_entry['name']
 
-            cell_name = cell_tag.find('div', 'datos-plan').find(
-                'h2').text.strip()
-            price_text = cell_tag.find('div', 'pie-new').find(
-                'h1').text
-            price = Decimal(remove_words(price_text))
-            monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
-                .find('h3')
-            if not monthly_payment_tag:
-                monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
-                    .find('h4')
-            monthly_payment_text = monthly_payment_tag.text.replace('*', '')
-            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
-            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip().replace(' ', '%20')]
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {}'.format(product_id, cell_plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_monthly_payment=Decimal(0),
+                        picture_urls=picture_urls
+                    ))
+            elif combination_type == 'PEB':
+                # Portabildiad arriendo
+                assert data['planAssociate']
+                num_cuotas = Decimal(data['catentry_field2'])
+                cell_monthly_payment = (price / num_cuotas).quantize(0)
 
-            for cell_plan_name in cell_plans_names:
-                product = Product(
-                    cell_name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} - {}'.format(cell_name, cell_plan_name),
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    cell_plan_name=cell_plan_name.upper(),
-                    picture_urls=picture_urls,
-                    cell_monthly_payment=cell_monthly_payment
-                )
-                products.append(product)
+                for plan_entry in data['planAssociate']:
+                    cell_plan_name = plan_entry['name'] + ' Portabilidad Cuotas'
 
-        # Portabilidad sin cuotas
-        for cell_tag in soup.find('div',
-                                  {'id': 'equipoPlanDos'}).findAll(
-                'div', 'oferta'):
-            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
-                                               .replace(')', '')
-                                for plan in plans
-                                if
-                                'sin cuota de arriendo' in plan.name and
-                                'portabilidad' in plan.name.lower()]
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {}'.format(product_id, cell_plan_name),
+                        -1,
+                        Decimal(0),
+                        Decimal(0),
+                        'CLP',
+                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_monthly_payment=cell_monthly_payment,
+                        picture_urls=picture_urls
+                    ))
+            elif combination_type == 'PE_PORTA':
+                # Portabildiad sin arriendo
+                assert data['planAssociate']
 
-            cell_name = cell_tag.find('div', 'datos-plan').find(
-                'h2').text.strip()
-            price_text = cell_tag.find('div', 'cuotas').findAll(
-                'i')[1].text.split('$')[1]
-            price = Decimal(remove_words(price_text))
-            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip().replace(' ', '%20')]
+                for plan_entry in data['planAssociate']:
+                    cell_plan_name = plan_entry['name'] + ' Portabilidad'
 
-            for cell_plan_name in cell_plans_names:
-                product = Product(
-                    cell_name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} - {}'.format(cell_name, cell_plan_name),
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    cell_plan_name=cell_plan_name[:60].upper(),
-                    picture_urls=picture_urls,
-                    cell_monthly_payment=Decimal(0)
-                )
-                products.append(product)
-
-        # Portabilidad con cuotas
-        for cell_tag in soup.find('div', {'id': 'equipoPlanUno'})\
-                            .findAll('div', 'oferta'):
-            cell_plans_names = ['Claro ' + plan.name.replace('(', '')
-                                                    .replace(')', '')
-                                for plan in plans
-                                if
-                                'con cuota de arriendo' in plan.name and
-                                'portabilidad' in plan.name.lower()]
-
-            cell_name = cell_tag.find('div', 'datos-plan').find(
-                'h2').text.strip()
-
-            monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
-                .find('h3')
-            if not monthly_payment_tag:
-                monthly_payment_tag = cell_tag.find('div', 'cuotas-uno') \
-                    .find('h4')
-            monthly_payment_text = monthly_payment_tag.text.replace('*', '')
-            cell_monthly_payment = Decimal(remove_words(monthly_payment_text))
-            picture_urls = [cell_tag.find('div', 'imagen-equipo').find(
-                'img')['src'].strip().replace(' ', '%20')]
-
-            for cell_plan_name in cell_plans_names:
-                product = Product(
-                    cell_name,
-                    cls.__name__,
-                    'Cell',
-                    url,
-                    url,
-                    '{} - {}'.format(cell_name, cell_plan_name),
-                    -1,
-                    Decimal(0),
-                    Decimal(0),
-                    'CLP',
-                    cell_plan_name=cell_plan_name[:60].upper(),
-                    picture_urls=picture_urls,
-                    cell_monthly_payment=cell_monthly_payment
-                )
-                products.append(product)
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {}'.format(product_id, cell_plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_monthly_payment=Decimal(0),
+                        picture_urls=picture_urls
+                    ))
+            else:
+                raise Exception('Invalid switch:' + combination_type)
 
         return products
