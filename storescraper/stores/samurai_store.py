@@ -120,6 +120,8 @@ class SamuraiStore(Store):
                         'product-gallery').findAll(
                         'div',
                         'woocommerce-product-gallery__image')]
+        picture_urls = list(filter(None, picture_urls))
+
         p = Product(
             name,
             cls.__name__,
