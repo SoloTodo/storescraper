@@ -228,10 +228,13 @@ class LaPolar(Store):
         prices = soup.find('div', 'prices')
         la_polar_card = prices.find('p', 'js-tlp-price')
 
-        highlighted_price = prices.find('p', 'la-polar').find(
+        if prices.find('p', 'la-polar'):
+            highlighted_price = prices.find('p', 'la-polar')
+        else:
+            highlighted_price = prices.find('p', 'internet')
+        highlighted_price = highlighted_price.find(
             'span', 'price-value') \
             .text.strip().replace('$', '').replace('.', '')
-
         highlighted_price = Decimal(highlighted_price)
 
         if la_polar_card:

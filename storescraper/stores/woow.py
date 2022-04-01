@@ -1,5 +1,6 @@
 import json
 from decimal import Decimal
+import logging
 
 from bs4 import BeautifulSoup
 
@@ -30,20 +31,29 @@ class Woow(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
-                url_webpage = 'https://ultimate-dot-acp-magento.appspot.com/' \
-                              'full_text_search?q=lg&page_num={}&store_id=1&' \
-                              'UUID=3a30338d-e35f-42e8-b98c-9ea16cca9012&' \
-                              'sort_by=price_min_to_max&facets_required=1&' \
-                              'related_search=1&with_product_attributes=1'. \
-                    format(page)
-                data = session.get(url_webpage).text
-                product_containers = json.loads(data)
-                if not product_containers or product_containers[
-                        'total_results'] == 0:
+                url_webpage = 'https://shop.tata.com.uy/lg/lg?_q=lg&fuzzy=0' \
+                    '&initialMap=ft&initialQuery=lg&map=brand,ft&operator=a' \
+                    'nd&page={}'.format(page)
+                max_tries = 0
+                while max_tries < 3:
+                    try:
+                        data = session.get(url_webpage).text
+                        soup = BeautifulSoup(data, 'html.parser')
+                        json_data = json.loads(soup.findAll(
+                            'script', {'type': 'application/ld+json'})[1].text)
+                        break
+                    except Exception as e:
+                        print(e)
+                        max_tries += 1
+                item_list = json_data['itemListElement']
+                if len(item_list) == 0:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers['items']:
-                    product_url = container['u']
-                    product_urls.append(product_url)
+                else:
+                    for i in item_list:
+                        product_urls.append(i['url'].replace(
+                            'https://portal.vtexcommercestable.com.br/', ''))
                 page += 1
         return product_urls
 
@@ -51,25 +61,29 @@ class Woow(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
-        if not response.ok:
-            return []
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
-        sku = soup.find('div', 'price-box')['data-product-id']
+        soup_jsons = soup.findAll(
+            'script', {'type': 'application/ld+json'})
+        if len(soup_jsons) == 0 or not soup_jsons[0].text:
+            return []
+        json_data = json.loads(soup_jsons[0].text)
+        name = json_data['name']
+        sku = str(json_data['sku'])
 
-        if soup.find('div', 'unavailable'):
-            stock = 0
-        else:
+        stock = 0
+        if soup.find('div', 'vtex-add-to-cart-button-0-x-buttonDataContainer'):
             stock = -1
 
-        price = Decimal(soup.find('span', 'price').text.
-                        split('\xa0')[1].replace('.', '').replace(',', '.'))
+        price = Decimal(
+            json_data['offers']['offers'][0]['price']
+        )
         picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product media').findAll('img')
+                        soup.find(
+                            'div',
+                            'vtex-store-components-3-x-'
+                            'productImagesGallerySlide'
+                            ).findAll('img')
                         ]
         p = Product(
             name,
@@ -81,7 +95,7 @@ class Woow(Store):
             stock,
             price,
             price,
-            'USD',
+            'UYU',
             sku=sku,
             picture_urls=picture_urls
         )

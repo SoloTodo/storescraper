@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
+from urllib.parse import urlparse, parse_qs
 from storescraper.categories import MONITOR
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Dell(Store):
@@ -52,7 +52,14 @@ class Dell(Store):
                 tds = tr.findAll('td', 'gridCell')
                 name = tds[0].text.strip()
                 p_url = tds[0].find('a')['href']
-                sku = p_url.split('sku=')[-1]
+                query = parse_qs(urlparse(p_url).query)
+                if 'sku' in query:
+                    sku = query['sku'][0]
+                elif 'oc' in query:
+                    sku = query['oc'][0]
+                else:
+                    continue
+                sku = str(sku)
                 picture_urls = [tds[0].find('img')['src']]
                 price_span_sale = tds[-1].find('span', 'pricing_sale_price')
                 price_span_nodiscount = tds[-1].find(

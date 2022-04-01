@@ -102,7 +102,10 @@ class PlayFactory(Store):
         price = Decimal(json_data['offers'][0]['price'])
 
         sku = soup.find('div', 'product-sku').text.split('SKU:')[-1]
-        stock = int(soup.find('p', 'stock in-stock').text.split('disp')[0])
+
+        stock = 0
+        if soup.find('p', 'stock in-stock'):
+            stock = int(soup.find('p', 'stock in-stock').text.split('disp')[0])
 
         picture_urls = []
         figures = soup.find('figure', 'woocommerce-product-gallery__wrapper')
