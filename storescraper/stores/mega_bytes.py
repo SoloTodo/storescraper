@@ -26,6 +26,7 @@ class MegaBytes(Store):
             MOUSE,
             POWER_SUPPLY,
             HEADPHONES,
+            CPU_COOLER,
         ]
 
     @classmethod
