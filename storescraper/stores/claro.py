@@ -241,7 +241,7 @@ class Claro(Store):
                         price,
                         price,
                         'CLP',
-                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=Decimal(0),
                         picture_urls=picture_urls
                     ))
@@ -265,7 +265,7 @@ class Claro(Store):
                         Decimal(0),
                         Decimal(0),
                         'CLP',
-                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=cell_monthly_payment,
                         picture_urls=picture_urls
                     ))
@@ -287,7 +287,7 @@ class Claro(Store):
                         price,
                         price,
                         'CLP',
-                        cell_plan_name='{}'.format(cell_plan_name),
+                        cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=Decimal(0),
                         picture_urls=picture_urls
                     ))
