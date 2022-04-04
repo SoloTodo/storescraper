@@ -51,7 +51,7 @@ class Omnisport(Store):
                       ''.format(page)
                 print(url)
 
-                res = session.get(url)
+                res = session.get(url, verify=False)
 
                 if res.url != url:
                     break
@@ -75,7 +75,7 @@ class Omnisport(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, verify=False)
 
         soup = BeautifulSoup(response.text, 'html.parser')
         sku = soup.find('p', 'text-gray-700').contents[1].split('|')[0].strip()
