@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD, COMPUTER_CASE, CPU_COOLER, \
     HEADPHONES, KEYBOARD_MOUSE_COMBO, KEYBOARD, MOUSE, MONITOR, GAMING_CHAIR, \
-    PROCESSOR
+    PROCESSOR, NOTEBOOK, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -31,22 +31,26 @@ class CafeDigital(Store):
             KEYBOARD,
             MOUSE,
             MONITOR,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            NOTEBOOK,
+            CASE_FAN,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['notebooks', NOTEBOOK],
             ['almacenamiento-pc/discos-ssd', SOLID_STATE_DRIVE],
             ['almacenamiento-pc/disco-duro-pc-hdd', STORAGE_DRIVE],
             ['placas-madre', MOTHERBOARD],
-            ['memorias-pc', RAM],
             ['procesadores', PROCESSOR],
+            ['memorias-pc', RAM],
             ['fuentes-de-poder-certificadas', POWER_SUPPLY],
             ['tarjetas-de-video', VIDEO_CARD],
             ['gabinetes-pc', COMPUTER_CASE],
             ['refrigeracion-para-pc/cooler-cpu', CPU_COOLER],
             ['refrigeracion-para-pc/refrigeracion-liquida', CPU_COOLER],
+            ['refrigeracion-para-pc/ventiladores', CASE_FAN],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/combo-kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['perifericos/teclados', KEYBOARD],
