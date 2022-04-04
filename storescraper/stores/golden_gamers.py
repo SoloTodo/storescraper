@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, COMPUTER_CASE, STORAGE_DRIVE, RAM, GAMING_CHAIR, MOUSE, \
-    KEYBOARD, MONITOR, NOTEBOOK, CPU_COOLER, POWER_SUPPLY, MICROPHONE, TABLET
+    KEYBOARD, MONITOR, NOTEBOOK, CPU_COOLER, POWER_SUPPLY, MICROPHONE, TABLET, \
+    STEREO_SYSTEM, SOLID_STATE_DRIVE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,7 +21,6 @@ class GoldenGamers(Store):
             PROCESSOR,
             VIDEO_CARD,
             COMPUTER_CASE,
-            STORAGE_DRIVE,
             RAM,
             GAMING_CHAIR,
             MOUSE,
@@ -31,6 +31,9 @@ class GoldenGamers(Store):
             POWER_SUPPLY,
             MICROPHONE,
             TABLET,
+            STEREO_SYSTEM,
+            SOLID_STATE_DRIVE,
+            CASE_FAN
         ]
 
     @classmethod
@@ -38,20 +41,22 @@ class GoldenGamers(Store):
         url_extensions = [
             ['notebooks', NOTEBOOK],
             ['silla-gamer', GAMING_CHAIR],
+            ['monitores', MONITOR],
             ['teclados', KEYBOARD],
             ['mouse-gamer', MOUSE],
+            ['tablets', TABLET],
             ['audifonos', HEADPHONES],
-            ['monitores', MONITOR],
+            ['accesorios/tipo-de-producto_microfonos', MICROPHONE],
+            ['accesorios/tipo-de-producto_parlantes', STEREO_SYSTEM],
+            ['accesorios/tipo-de-producto_refrigeracion', CASE_FAN],
+            ['componentes/tipo-de-producto_almacenamiento', SOLID_STATE_DRIVE],
             ['componentes/tipo-de-producto_cpu', PROCESSOR],
+            ['componentes/tipo-de-producto_fuente-de-poder', POWER_SUPPLY],
             ['componentes/tipo-de-producto_gabinete', COMPUTER_CASE],
             ['componentes/tipo-de-producto_memoria-ram', RAM],
             ['componentes/tipo-de-producto_placa-madre', MOTHERBOARD],
             ['componentes/tipo-de-producto_refrigeracion', CPU_COOLER],
             ['componentes/tipo-de-producto_tarjeta-de-video', VIDEO_CARD],
-            ['componentes/Tipo-de-Producto_disco-duro', STORAGE_DRIVE],
-            ['componentes/tipo-de-producto_fuente-de-poder', POWER_SUPPLY],
-            ['accesorios/tipo-de-producto_microfonos', MICROPHONE],
-            ['tablets', TABLET],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -71,6 +76,8 @@ class GoldenGamers(Store):
                     .findAll('div', 'col-md-4')
                 if not product_containers:
                     if page == 1:
+                        import ipdb
+                        ipdb.set_trace()
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
