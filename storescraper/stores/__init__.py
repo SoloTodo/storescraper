@@ -79,6 +79,7 @@ from .dimercom import Dimercom
 from .diunsa import Diunsa
 from .do_it_center import DoItCenter
 from .dust2 import Dust2
+from .e_forest import EForest
 from .e_vision import EVision
 from .easy import Easy
 from .easy_argentina import EasyArgentina

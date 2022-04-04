@@ -9,7 +9,7 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class PcGamer(Store):
@@ -64,11 +64,11 @@ class PcGamer(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://tienda.pc-gamer.cl/categories.php?' \
-                          'search_cat={}'.format(url_extension)
-            data = session.get(url_webpage).text
+            data = session.post(
+                'https://tienda.pc-gamer.cl/php/traer_productos.php',
+                data={'search_cat': url_extension}).text
             soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('div', 'product_item')
+            product_containers = soup.findAll('div', 'product-wrapper')
             if not product_containers:
                 logging.warning('Empty category: ' + url_extension)
                 break
@@ -93,21 +93,21 @@ class PcGamer(Store):
 
         stock = 0
 
-        for row in soup.find('div', 'product_description').find(
+        for row in soup.find('div', {'id': 'prices-product'}).find(
                 'table', 'table').findAll('tr')[1:]:
             stock += int(row.findAll('td')[-1].text)
 
         normal_price = Decimal(
-            soup.find('div', 'price-normal').find('h3').text.split()[1]
+            soup.find('div', 'price-normal').find('h2').text.split()[1]
                 .replace('.', ''))
         offer_price = Decimal(
-            soup.find('div', 'price-oferta').find('h2').text.split()[1]
+            soup.find('div', 'price-oferta').find('h3').text.split()[1]
                 .replace('.', ''))
-        picture_urls = []
-        for tag in soup.find('ul', 'image_list').findAll('img'):
-            if 'sinimagen' in tag['src']:
-                continue
-            picture_urls.append('https://tienda.pc-gamer.cl/' + tag['src'])
+        image = soup.find('div', 'single_product').findAll('img')[0]['src']
+        picture_urls = [f'https://tienda.pc-gamer.cl/{image}']
+
+        description = html_to_markdown(
+            str(soup.find('div', {'id': 'product-description'})))
 
         p = Product(
             name,
@@ -121,7 +121,8 @@ class PcGamer(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
 
         return [p]
