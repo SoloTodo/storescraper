@@ -76,8 +76,6 @@ class GoldenGamers(Store):
                     .findAll('div', 'col-md-4')
                 if not product_containers:
                     if page == 1:
-                        import ipdb
-                        ipdb.set_trace()
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
