@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, \
     OPTICAL_DISK_PLAYER, CELL, WASHING_MACHINE, REFRIGERATOR, OVEN, \
-    AIR_CONDITIONER, VACUUM_CLEANER, HEADPHONES
+    AIR_CONDITIONER, VACUUM_CLEANER, HEADPHONES, MONITOR
 
 
 class Llevatelo(Store):
@@ -25,6 +25,7 @@ class Llevatelo(Store):
             AIR_CONDITIONER,
             VACUUM_CLEANER,
             HEADPHONES,
+            MONITOR,
         ]
 
     @classmethod
@@ -41,6 +42,7 @@ class Llevatelo(Store):
             ('linea-blanca/lavadoras', WASHING_MACHINE),
             ('linea-blanca/secadoras-de-ropa', WASHING_MACHINE),
             ('linea-blanca/refrigeradores', REFRIGERATOR),
+            ('computacion/monitores', MONITOR),
         ]
 
         session = session_with_proxy(extra_args)
