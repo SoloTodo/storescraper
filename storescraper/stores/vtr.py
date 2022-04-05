@@ -88,7 +88,7 @@ class Vtr(Store):
         session = session_with_proxy(extra_args)
 
         json_data = json.loads(session.get(
-            'https://vtr.com/cms/product-catalog?category=plans').text)
+            'https://vtr.com/cms/product/catalog?category=plans').text)
         cuotas_suffixes = [
             (' Portabilidad (con cuota de arriendo)', Decimal('1.0')),
             (' Portabilidad (sin cuota de arriendo)', Decimal('0.7')),
