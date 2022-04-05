@@ -172,8 +172,6 @@ class Claro(Store):
 
         return products
 
-
-
     @classmethod
     def _celular_postpago(cls, url, extra_args):
         print(url)
@@ -183,31 +181,37 @@ class Claro(Store):
         product_id = soup.find('meta', {'name': 'pageId'})['content']
         name = soup.find('h1', 'main_header').text.strip()
         picture_tag_id = 'ProductInfoImage_' + product_id
-        picture_urls = ['https://tienda.clarochile.cl' + soup.find('input', {'id': picture_tag_id})['value'].replace(' ', '%20')]
+        picture_urls = ['https://tienda.clarochile.cl' +
+                        soup.find('input', {'id': picture_tag_id})['value']
+                        .replace(' ', '%20')]
 
-        category_entries_tag = soup.find('div', {'id': 'entitledItem_' + product_id})
+        category_entries_tag = soup.find(
+            'div', {'id': 'entitledItem_' + product_id})
         category_entries = json.loads(category_entries_tag.text)
 
-        session.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded' \
+                                          '; charset=UTF-8'
         products = []
 
         for c in category_entries:
             payload = 'storeId=10151&langId=-5' \
                       '&catalogId=10052&catalogEntryId={}' \
                       '&productId={}&requesttype=ajax'.format(
-                c['catentry_id'], product_id)
+                          c['catentry_id'], product_id)
             res = session.post(
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView',
                 payload)
             data = demjson.decode(res.text)['catalogEntry']
 
             combination_type = data['attrSwatchFlujo']
-            price = Decimal(remove_words(data['offerPrice']))
 
             if combination_type in ['REB', 'RET', '']:
                 # Renovación or Default
                 continue
-            elif combination_type == 'PRE':
+
+            price = Decimal(remove_words(data['offerPrice']))
+
+            if combination_type == 'PRE':
                 # Prepago
                 products.append(Product(
                     name,
@@ -252,7 +256,8 @@ class Claro(Store):
                 cell_monthly_payment = (price / num_cuotas).quantize(0)
 
                 for plan_entry in data['planAssociate']:
-                    cell_plan_name = plan_entry['name'] + ' Portabilidad Cuotas'
+                    cell_plan_name = plan_entry['name'] + \
+                        ' Portabilidad Cuotas'
 
                     products.append(Product(
                         name,
