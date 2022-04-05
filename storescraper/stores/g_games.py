@@ -116,6 +116,12 @@ class GGames(Store):
             part_number = variant['sku'].strip()
             sku = str(variant['id'])
             price = Decimal(variant['price'] / 100)
+
+            # https://ggames.cl/collections/headsets/products/
+            # audifonos-thrustmaster-t-racing-scud-ferrari
+            if price > Decimal('10000000'):
+                continue
+
             p = Product(
                 variant_name,
                 cls.__name__,

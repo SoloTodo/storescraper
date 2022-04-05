@@ -31,6 +31,11 @@ class Product:
         assert len(key) <= 256
         assert offer_price <= normal_price
 
+        for price in [normal_price, offer_price]:
+            price_metadata = price.as_tuple()
+            assert price_metadata.exponent <= 2
+            assert (len(price_metadata.digits) - price_metadata.exponent) <= 10
+
         if cell_plan_name:
             assert len(cell_plan_name) <= 60
 
