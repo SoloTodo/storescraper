@@ -87,7 +87,7 @@ class Siman(Store):
             base_json_key)
         pricing_data = product_data[pricing_key]
 
-        price = Decimal(pricing_data['Price'])
+        price = Decimal(str(pricing_data['Price']))
         stock = pricing_data['AvailableQuantity']
 
         picture_list_key = '{}.items.0'.format(base_json_key)

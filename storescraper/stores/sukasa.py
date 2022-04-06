@@ -26,7 +26,7 @@ class Sukasa(Store):
 
         soup = BeautifulSoup(session.get(
             'https://www.sukasa.com/busqueda?controller=search&s=LG')
-                             .text, 'html.parser')
+            .text, 'html.parser')
         products = soup.findAll('div', 'product-container')
 
         if not products:
@@ -63,7 +63,7 @@ class Sukasa(Store):
             for variant_id, variant_label in variant_ids.items():
                 endpoint = 'https://www.sukasa.com/index.php?controller=' \
                            'product?id_product={}&group%5B246%5D={}'.format(
-                            product_id, variant_id)
+                               product_id, variant_id)
                 res = ajax_session.post(endpoint, 'ajax=1&action=refresh')
 
                 if res.status_code == 502:
@@ -75,9 +75,11 @@ class Sukasa(Store):
                 variant_url = variant_data['product_url']
 
                 normal_price = Decimal(variant_soup.find(
-                    'span', 'product-unit-price').text.split('$')[-1])
+                    'span', 'product-unit-price').text.split('$')[-1]
+                    ).quantize(Decimal('.01'))
                 offer_price = Decimal(variant_soup.find(
-                    'input', {'id': 'basepricesks'})['value'])
+                    'input', {'id': 'basepricesks'})['value']
+                    ).quantize(Decimal('.01'))
 
                 key = '{}_{}'.format(sku, variant_id)
                 variant_name = '{} ({})'.format(name, variant_label)

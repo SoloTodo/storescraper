@@ -51,7 +51,7 @@ class Dell(Store):
             if tr.find('td', 'gridCell'):
                 tds = tr.findAll('td', 'gridCell')
                 name = tds[0].text.strip()
-                p_url = tds[0].find('a')['href']
+                p_url = tds[-1].find('a')['href']
                 query = parse_qs(urlparse(p_url).query)
                 if 'sku' in query:
                     sku = query['sku'][0]

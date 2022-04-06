@@ -98,7 +98,8 @@ class Jetstereo(Store):
             stock = -1
         else:
             stock = 0
-        price = Decimal(product_json['price']['sale'])
+        price = Decimal(product_json['price']['sale']).quantize(
+            Decimal('.01'))
         picture_urls = [urllib.parse.quote(picture_url, safe='://') for
                         picture_url in
                         product_json['allImages']['full']]

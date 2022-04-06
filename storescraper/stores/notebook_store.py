@@ -167,8 +167,10 @@ class NotebookStore(Store):
             stock = int(stock_container.text.strip().split(' ')[1])
 
         offer_price = Decimal(soup.find('span', 'efectivo').find(
-            'span', 'price').text.replace('$', '').replace('.', ''))
-        normal_price = offer_price * Decimal(1.034)
+            'span', 'price').text.replace('$', '').replace('.', '')
+            ).quantize(Decimal('1.'))
+        normal_price = (offer_price * Decimal(1.034)
+                        ).quantize(Decimal('1.'))
 
         image_scripts = soup.findAll('script', {'type': 'text/x-magento-init'})
         picture_urls = []

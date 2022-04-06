@@ -61,9 +61,9 @@ class Geant(Store):
         name = product_info['productName']
         stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
             'AvailableQuantity']
-        price = Decimal(
+        price = Decimal(str(
             product_info['items'][0]['sellers'][0]['commertialOffer'][
-                'Price'])
+                'Price']))
         picture_urls = [
             product_info['items'][0]['images'][0]['imageUrl'].split('?')[0]]
         p = Product(

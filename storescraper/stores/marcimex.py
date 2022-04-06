@@ -54,7 +54,7 @@ class Marcimex(Store):
                 url = 'https://www.marcimex.com/buscapagina?fq={}&' \
                       'PS=12&sl=2d6db67e-7134-4424-be62-6bbea419c476&cc=12&' \
                       'sm=0&PageNumber={}&fq=B:2000002'.format(
-                       urllib.parse.quote_plus(category_path), page)
+                          urllib.parse.quote_plus(category_path), page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
@@ -97,10 +97,10 @@ class Marcimex(Store):
         if not product_json['available']:
             # Products with no stock have wrong prices for some reason
             return []
-
-        tax = Decimal('1.12')
-        normal_price = Decimal(product_json['skus'][0]['listPrice']/100)*tax
-        offer_price = Decimal(product_json['skus'][0]['bestPrice']/100)*tax
+        price = (
+            Decimal(product_json['skus'][0]['bestPrice']/100.0) +
+            Decimal(product_json['skus'][0]['taxAsInt']/100.0)
+            ).quantize(Decimal('.01'))
         picture_urls = [product_json['skus'][0]['image']]
 
         description = html_to_markdown(
@@ -114,8 +114,8 @@ class Marcimex(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'USD',
             sku=sku,
             picture_urls=picture_urls,
