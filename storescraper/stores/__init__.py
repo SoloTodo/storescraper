@@ -295,6 +295,7 @@ from .plaza_lama import PlazaLama
 from .play_factory import PlayFactory
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
+from .power_play import PowerPlay
 from .pro_gamer_afta import ProGamerAfta
 from .pro_movil import ProMovil
 from .proglobal import Proglobal
