@@ -1,22 +1,18 @@
-from decimal import Decimal
-import json
 import logging
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import EXTERNAL_STORAGE_DRIVE, HEADPHONES, \
-    KEYBOARD, MONITOR, PROCESSOR, RAM, WEARABLE
-from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.categories import HEADPHONES, KEYBOARD, MEMORY_CARD, \
+    MONITOR, PROCESSOR, RAM, SOLID_STATE_DRIVE, WEARABLE
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class EForest(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [
-            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
             KEYBOARD,
             RAM,
             PROCESSOR,
@@ -28,13 +24,14 @@ class EForest(MercadoLibreChile):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['perifericos-pc-mouses-teclados', EXTERNAL_STORAGE_DRIVE],
-            ['componentes-pc-memorias-ram', KEYBOARD],
-            ['componentes-pc-procesadores', RAM],
-            ['componentes-pc-discos-accesorios', PROCESSOR],
+            ['perifericos-pc-mouses-teclados', KEYBOARD],
+            ['componentes-pc-memorias-ram', RAM],
+            ['componentes-pc-procesadores', PROCESSOR],
+            ['componentes-pc-discos-accesorios', SOLID_STATE_DRIVE],
             ['monitores-accesorios', MONITOR],
             ['relojes-joyas', WEARABLE],
             ['electronica', HEADPHONES],
+            ['celulares-telefonia/accesorios-celulares/memorias', MEMORY_CARD]
         ]
 
         session = session_with_proxy(extra_args)
