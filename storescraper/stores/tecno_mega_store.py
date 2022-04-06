@@ -56,7 +56,7 @@ class TecnoMegaStore(Store):
         name = part_number + ' - ' + json_product['description']
         sku = json_product['sku']
         stock = json_product['stock'][0]['S3']
-        price = Decimal(json_product['priceW'])
+        price = Decimal(str(json_product['priceW']))
         picture_urls = [json_product['image']]
         p = Product(
             name,
