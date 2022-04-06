@@ -97,7 +97,10 @@ class Enarix(Store):
             offer_price = remove_words(price_container.find('ins').text)
         else:
             offer_price = remove_words(price_container.find('bdi').text)
-        normal_price = Decimal(int(offer_price) * 1.04)
+
+        offer_price = Decimal(offer_price)
+        normal_price = offer_price * Decimal('1.04')
+
         picture_urls = []
         description = html_to_markdown(str(soup.find(
             'div', 'woocommerce-Tabs-panel--description')))

@@ -82,7 +82,7 @@ class Diunsa(Store):
         if product_json['available']:
             stock = -1
 
-        price = Decimal(product_json['skus'][0]['bestPrice']/100)
+        price = Decimal(product_json['skus'][0]['bestPrice']) / Decimal(100)
         picture_urls = [
             a['zoom'] for a in soup.findAll('a', {'id': 'botaoZoom'})]
 

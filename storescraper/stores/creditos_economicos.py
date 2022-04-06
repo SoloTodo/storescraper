@@ -89,8 +89,8 @@ class CreditosEconomicos(Store):
         if product_json['available']:
             stock = -1
 
-        tax = Decimal('1.12')
-        price = Decimal(product_json['skus'][0]['bestPrice']/100)*tax
+        price = Decimal(product_json['skus'][0]['bestPrice'] +
+                        product_json['skus'][0]['taxAsInt']) / Decimal(100)
 
         picture_urls = [
             a['zoom'] for a in soup.findAll('a', {'id': 'botaoZoom'})]
