@@ -51,9 +51,7 @@ class TecnoPro(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['playstation', VIDEO_GAME_CONSOLE],
-            ['xbox', VIDEO_GAME_CONSOLE],
-            ['nintendo', VIDEO_GAME_CONSOLE],
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['notebook-y-computadores', NOTEBOOK],
             ['tarjetas-de-video', VIDEO_CARD],
             ['procesadores', PROCESSOR],
