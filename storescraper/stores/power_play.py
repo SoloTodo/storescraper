@@ -7,7 +7,7 @@ from storescraper.categories import COMPUTER_CASE, CPU_COOLER, \
     EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, HEADPHONES, KEYBOARD, \
     MEMORY_CARD, MICROPHONE, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, \
     POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, TABLET, \
-    USB_FLASH_DRIVE, VIDEO_CARD
+    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -36,7 +36,8 @@ class PowerPlay(Store):
             MONITOR,
             GAMING_DESK,
             GAMING_CHAIR,
-            HEADPHONES
+            HEADPHONES,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -59,6 +60,7 @@ class PowerPlay(Store):
             ['accesorios-perifericos-pc/microfonos', MICROPHONE],
             ['accesorios-perifericos-pc/teclados-estandar-gamer', KEYBOARD],
             ['accesorios-perifericos-pc/mouse-estandar-gamer', MOUSE],
+            ['consolas', VIDEO_GAME_CONSOLE],
             ['monitores-proyectores', MONITOR],
             ['escritorio-sillas-gamer/escritorios', GAMING_DESK],
             ['escritorio-sillas-gamer/sillas-gamer', GAMING_CHAIR],
