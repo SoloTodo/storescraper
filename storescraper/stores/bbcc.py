@@ -141,7 +141,9 @@ class BookComputer(Store):
             stock = int(soup.find('input', {'id': 'input-qty'})['max'])
 
             price = Decimal(json_info['offers']['price'])
-            picture_urls = [json_info['image'].split('?')[0]]
+            picture_urls = []
+            if 'image' in json_info:
+                picture_urls = [json_info['image'].split('?')[0]]
             p = Product(
                 name,
                 cls.__name__,
