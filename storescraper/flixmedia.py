@@ -1,6 +1,7 @@
 import json
 import re
 import traceback
+import validators
 
 import requests
 from bs4 import BeautifulSoup
@@ -34,7 +35,10 @@ def flixmedia_video_urls(mpn):
         for container in video_containers:
             data = json.loads(container['value'])
             for entry in data['playlist']:
-                video_urls.append('https:' + entry['file'])
+                if (validators.url(entry['file'])):
+                    video_urls.append(entry['file'])
+                else:
+                    video_urls.append('https:' + entry['file'])
 
         return video_urls
     except Exception as e:
