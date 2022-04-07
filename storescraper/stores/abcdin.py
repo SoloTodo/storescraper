@@ -260,10 +260,10 @@ class AbcDin(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_data = json.loads(
             soup.find('script', {'type': 'application/ld+json'}).text)
-        brand_tag = json_data['brand']
         model = json_data['model']
 
-        if brand_tag:
+        if 'brand' in json_data:
+            brand_tag = json_data['brand']
             name = '{} {}'.format(brand_tag.strip(), model)
         else:
             name = model
