@@ -6,10 +6,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, TABLET, CELL, PRINTER, \
-    ALL_IN_ONE, TELEVISION, PROCESSOR, CPU_COOLER, MOTHERBOARD, HEADPHONES, \
-    VIDEO_CARD, COMPUTER_CASE, RAM, POWER_SUPPLY, SOLID_STATE_DRIVE, \
-    MEMORY_CARD, USB_FLASH_DRIVE, MONITOR
+from storescraper.categories import GAMING_CHAIR, MOUSE, NOTEBOOK, \
+    STORAGE_DRIVE, TABLET, CELL, PRINTER, ALL_IN_ONE, TELEVISION, PROCESSOR, \
+    CPU_COOLER, MOTHERBOARD, HEADPHONES, VIDEO_CARD, COMPUTER_CASE, RAM, \
+    POWER_SUPPLY, SOLID_STATE_DRIVE, MEMORY_CARD, USB_FLASH_DRIVE, MONITOR, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -36,7 +37,11 @@ class BookComputer(Store):
             SOLID_STATE_DRIVE,
             MEMORY_CARD,
             USB_FLASH_DRIVE,
-            MONITOR
+            MONITOR,
+            GAMING_CHAIR,
+            STORAGE_DRIVE,
+            VIDEO_GAME_CONSOLE,
+            MOUSE
         ]
 
     @classmethod
@@ -44,10 +49,14 @@ class BookComputer(Store):
         url_extensions = [
             ['notebook-outlet', NOTEBOOK],
             ['computadores-y-tablets/notebooks', NOTEBOOK],
+            ['notebook-1', NOTEBOOK],
             ['tablet-outlet', TABLET],
             ['tablets-1', TABLET],
             ['celulares-outlet', CELL],
+            ['celulares', CELL],
             ['outlet/impresoras', PRINTER],
+            ['impresoras-y-suministros', PRINTER],
+            ['impresoras-y-escaneres', PRINTER],
             ['outlet/all-in-one', ALL_IN_ONE],
             ['all-in-one', ALL_IN_ONE],
             ['outlet/televisores', TELEVISION],
@@ -57,15 +66,20 @@ class BookComputer(Store):
             ['componentes-1/placas-madre', MOTHERBOARD],
             ['tarjeta-madre', MOTHERBOARD],
             ['gamers/perifericos', HEADPHONES],
+            ['audio-y-video', HEADPHONES],
             ['gamers/tarjetas-de-video', VIDEO_CARD],
             ['tarjeta-de-video', VIDEO_CARD],
             ['gabinetes', COMPUTER_CASE],
-            ['memorias-ram', RAM],
+            ['memorias', RAM],
             ['fuente-de-poder', POWER_SUPPLY],
-            ['almacenamiento/ssd/hdd', SOLID_STATE_DRIVE],
+            ['almacenamiento/ssd', SOLID_STATE_DRIVE],
+            ['almacenamiento/ssd/hdd', STORAGE_DRIVE],
             ['almacenamiento/memorias-sd', MEMORY_CARD],
             ['almacenamiento/pendrive', USB_FLASH_DRIVE],
-            ['monitores', MONITOR]
+            ['monitores', MONITOR],
+            ['gamers/sillas', GAMING_CHAIR],
+            ['consolas', VIDEO_GAME_CONSOLE],
+            ['perifericos', MOUSE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -74,7 +88,7 @@ class BookComputer(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 30:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.bookcomputer.cl/{}?page={}'.format(
                     url_extension, page)
