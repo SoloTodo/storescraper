@@ -258,11 +258,13 @@ class AbcDin(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        brand_tag = soup.find('div', {'itemprop': 'marca'})
-        model = soup.find('span', {'itemprop': 'name'}).text.strip()
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+        brand_tag = json_data['brand']
+        model = json_data['model']
 
         if brand_tag:
-            name = '{} {}'.format(brand_tag.text.strip(), model)
+            name = '{} {}'.format(brand_tag.strip(), model)
         else:
             name = model
 
@@ -284,7 +286,7 @@ class AbcDin(Store):
         else:
             stock = 0
 
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        sku = json_data['sku']
         description = ''
         for tag in soup.findAll('div', 'item-content-container'):
             description += '\n\n' + html_to_markdown(str(tag))
