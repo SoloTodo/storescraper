@@ -179,7 +179,7 @@ class Claro(Store):
         res = session.get(url, verify=False)
         soup = BeautifulSoup(res.text, 'html5lib')
         product_id = soup.find('meta', {'name': 'pageId'})['content']
-        name = soup.find('h1', 'main_header').text.strip()
+        base_name = soup.find('h1', 'main_header').text.strip()
         picture_tag_id = 'ProductInfoImage_' + product_id
         picture_urls = ['https://tienda.clarochile.cl' +
                         soup.find('input', {'id': picture_tag_id})['value']
@@ -210,6 +210,15 @@ class Claro(Store):
                 continue
 
             price = Decimal(remove_words(data['offerPrice']))
+
+            attributes = []
+            for key, value in c['Attributes'].items():
+                attr_label, attr_value = key.split('_|_')
+                if attr_label == 'Flujo':
+                    continue
+                attributes.append('{} {}'.format(attr_label, attr_value))
+
+            name = '{} ({})'.format(base_name, ' / '.join(attributes))
 
             if combination_type == 'PRE':
                 # Prepago
