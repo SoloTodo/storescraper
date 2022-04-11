@@ -284,6 +284,13 @@ class Ripley(Store):
 
                     position += 1
 
+                pagination_tag = soup\
+                    .find('div', 'catalog-page__footer-pagination')\
+                    .find('ul', 'pagination')
+                next_page_link_tag = pagination_tag.findAll('a')[-1]
+                if next_page_link_tag['href'] == '#':
+                    break
+
                 if fast_mode and page >= 50:
                     break
 
