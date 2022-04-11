@@ -114,7 +114,9 @@ class FsnStore(Store):
         key = soup.find('form', {'id': 'addtocart'})['action'].split('/')[-1]
         sku = soup.find('h2', {'id': 'product-sku'}).text
         stock_container = soup.find('div', 'product_stock_info')
-        stock = int(stock_container.findAll('span')[-1].text)
+        stock = 0
+        if stock_container:
+            stock = int(stock_container.findAll('span')[-1].text)
         price = Decimal(
             remove_words(soup.find('span', {'id': 'product-price'}).text))
         picture_urls = [tag['src'] for tag in
