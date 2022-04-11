@@ -101,7 +101,7 @@ class Digiplot(Store):
 
                 data = session.get(url, verify=False).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-container')
+                product_containers = soup.findAll('div', 'single-product')
 
                 if not product_containers:
                     break
