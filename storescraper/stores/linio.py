@@ -30,6 +30,9 @@ class Linio(Store):
 
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
         sortings = ['relevance', 'price_asc', 'price_desc']
 
@@ -80,6 +83,9 @@ class Linio(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
 
         if response.status_code in [404, 500] or response.url != url:
