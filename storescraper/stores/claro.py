@@ -238,7 +238,6 @@ class Claro(Store):
                 ))
             elif combination_type == 'PE_LN':
                 # Línea nueva
-                assert data['planAssociate']
 
                 for plan_entry in data['planAssociate']:
                     cell_plan_name = plan_entry['name']
@@ -260,7 +259,6 @@ class Claro(Store):
                     ))
             elif combination_type == 'PEB':
                 # Portabildiad arriendo
-                assert data['planAssociate']
                 num_cuotas = Decimal(data['catentry_field2'])
                 cell_monthly_payment = (price / num_cuotas).quantize(0)
 
@@ -285,7 +283,6 @@ class Claro(Store):
                     ))
             elif combination_type == 'PE_PORTA':
                 # Portabildiad sin arriendo
-                assert data['planAssociate']
 
                 for plan_entry in data['planAssociate']:
                     cell_plan_name = plan_entry['name'] + ' Portabilidad'
