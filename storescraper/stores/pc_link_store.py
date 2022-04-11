@@ -50,6 +50,7 @@ class PcLinkStore(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['accesorios/audifono-gamers', HEADPHONES],
+            ['accesorios/audifono', HEADPHONES],
             ['accesorios/mouse', MOUSE],
             ['accesorios/teclados', KEYBOARD],
             ['accesorios/kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
