@@ -128,7 +128,8 @@ class Alfaomega(Store):
         if stock_container:
             stock_text = stock_container.text.strip()
             stock = 0
-            if stock_text != 'Agotado' and stock_text != 'Disponible para reserva':
+            if stock_text != 'Agotado' and \
+                    stock_text != 'Disponible para reserva':
                 stock = int(stock_text.split(' ')[0])
         else:
             stock = -1
