@@ -444,8 +444,12 @@ class AbcDin(Store):
                     else:
                         destination_urls = []
 
-                    picture_url = slider_tag.find('img')['data-src-desktop']
+                    image_tag = slider_tag.find('img')
 
+                    if 'data-src-desktop' not in image_tag.attrs:
+                        continue
+
+                    picture_url = image_tag['data-src-desktop']
                     banners.append({
                         'url': url,
                         'picture_url': picture_url,
