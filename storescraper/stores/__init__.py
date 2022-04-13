@@ -1,6 +1,7 @@
 from .abcdin import AbcDin
 from .absolutec import Absolutec
 from .acer_store import AcerStore
+from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .aire_center import AireCenter
 from .al_kosto import AlKosto
