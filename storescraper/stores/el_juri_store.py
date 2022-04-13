@@ -63,8 +63,12 @@ class ElJuriStore(Store):
         stock_tag_container = soup.find('div', 'product-quantities')
         stock = int(stock_tag_container.find('span')['data-stock'])
         price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product-images').findAll('img')]
+        picture_urls = []
+        for tag in soup.find('div', 'product-images').findAll('img'):
+            if tag.has_attr('src'):
+                picture_urls.append(tag['src'])
+            elif tag.has_attr('data-image-large-data-src'):
+                picture_urls.append(tag['data-image-large-data-src'])
         p = Product(
             name,
             cls.__name__,
