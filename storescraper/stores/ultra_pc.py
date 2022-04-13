@@ -29,15 +29,13 @@ class UltraPc(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes-para-pc/kits', KEYBOARD_MOUSE_COMBO],
-            ['computadores-de-escritorio/all-in-one', ALL_IN_ONE],
-            ['impresoras', PRINTER],
-            ['laptop', NOTEBOOK],
+            ['equipos-de-computo/computadores-de-escritorio-equipos-'
+             'de-computo/all-in-one-computadores-de-escritorio-equipos-'
+             'de-computo', ALL_IN_ONE],
+            ['equipos-de-computo/laptop-equipos-de-computo', NOTEBOOK],
+            ['equipos-de-computo/tablet-windows-equipos-de-computo', NOTEBOOK],
+            ['accesorios/mouses-teclados', KEYBOARD_MOUSE_COMBO],
             ['tablets-e-ipads', TABLET],
-            ['smartphones', CELL],
-            ['almacenamiento-solido', SOLID_STATE_DRIVE],
-            ['procesadores', PROCESSOR],
-            ['memorias-ram', RAM],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
