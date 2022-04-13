@@ -141,27 +141,3 @@ class PowerPlay(Store):
             description=description
         )
         return [p]
-
-
-'''
-https://power-play.cl/product-category/computadores-tablets/notebook/
-https://power-play.cl/product-category/computadores-tablets/tablets/
-https://power-play.cl/product-category/componentes-partes-piezas/procesadores/
-https://power-play.cl/product-category/componentes-partes-piezas/placas-madres/
-https://power-play.cl/product-category/componentes-partes-piezas/memorias/
-https://power-play.cl/product-category/componentes-partes-piezas/almacenamiento-pc/
-https://power-play.cl/product-category/componentes-partes-piezas/gabinetes-estandar-gamer/
-https://power-play.cl/product-category/componentes-partes-piezas/fuentes-de-poder/
-https://power-play.cl/product-category/componentes-partes-piezas/tarjetas-graficas/
-https://power-play.cl/product-category/componentes-partes-piezas/refrigeracion/
-https://power-play.cl/product-category/almacenamiento/pendrive/
-https://power-play.cl/product-category/almacenamiento/microsd-sd/
-https://power-play.cl/product-category/almacenamiento/disco-duro-externo/
-https://power-play.cl/product-category/accesorios-perifericos-pc/microfonos/
-https://power-play.cl/product-category/accesorios-perifericos-pc/teclados-estandar-gamer/
-https://power-play.cl/product-category/accesorios-perifericos-pc/mouse-estandar-gamer/
-https://power-play.cl/product-category/monitores-proyectores/
-https://power-play.cl/product-category/escritorio-sillas-gamer/escritorios/
-https://power-play.cl/product-category/escritorio-sillas-gamer/sillas-gamer/
-https://power-play.cl/product-category/audio/
-'''
