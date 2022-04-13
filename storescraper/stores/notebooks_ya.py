@@ -82,7 +82,13 @@ class NotebooksYa(Store):
                                     'et_pb_wc_title_0 '
                                     'et_pb_bg_layout_light').text.strip()
         sku = soup.find('button', {'name': 'add-to-cart'})['value']
-        stock = int(soup.find('p', 'stock').text.split()[0])
+        stock = 0
+        qty_input = soup.find('input', 'input-text qty text')
+        if qty_input:
+            if qty_input['max']:
+                stock = int(qty_input['max'])
+            else:
+                stock = -1
         price_container = soup.find('div', 'wds').findAll('bdi')
         normal_price = Decimal(remove_words(price_container[0].text))
         offer_price = Decimal(remove_words(price_container[1].text))
