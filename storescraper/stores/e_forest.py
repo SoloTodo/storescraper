@@ -18,7 +18,8 @@ class EForest(MercadoLibreChile):
             PROCESSOR,
             MONITOR,
             WEARABLE,
-            HEADPHONES
+            HEADPHONES,
+            SOLID_STATE_DRIVE
         ]
 
     @classmethod
