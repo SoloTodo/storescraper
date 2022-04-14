@@ -79,22 +79,27 @@ class AdisStore(Store):
             'script', {'type': 'application/ld+json'}).text)['@graph'][-1]
         name = json_data['name'][:256]
         sku = json_data['sku']
-        description = ""
+
         if 'description' in json_data:
             description = json_data['description']
+        else:
+            description = None
 
         price = Decimal(str(soup.find(
             'span', 'woocommerce-Price-amount')
             .find('bdi').text.replace('$', '').replace('.', '')))
+        part_number = soup.find('span', 'stl_codenum').text.strip()
 
-        input_stock = soup.find('div', 'qty-box').find('input')
-        if input_stock:
+        quantity_tag = soup.find('div', 'qty-box')
+
+        if quantity_tag:
+            input_stock = quantity_tag.find('input')
             if input_stock['max']:
                 stock = int(input_stock['max'])
             else:
                 stock = -1
         else:
-            stock = 0
+            stock = -1
 
         picture_urls = []
         picture_container = soup.find(
@@ -115,6 +120,7 @@ class AdisStore(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            part_number=part_number
         )
         return [p]
