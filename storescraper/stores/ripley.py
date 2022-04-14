@@ -501,14 +501,14 @@ class Ripley(Store):
         if data['offers']['price'] == 'undefined':
             return None
 
-        offer_price = Decimal(data['offers']['price'])
+        offer_price = Decimal(data['offers']['price']).quantize(0)
         normal_price_container = element.find(
             'li', 'catalog-prices__offer-price')
 
         if normal_price_container:
             normal_price = Decimal(
                 element.find('li', 'catalog-prices__offer-price')
-                .text.replace('$', '').replace('.', ''))
+                .text.replace('$', '').replace('.', '')).quantize(0)
         else:
             normal_price = offer_price
 
