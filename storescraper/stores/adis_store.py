@@ -89,7 +89,10 @@ class AdisStore(Store):
 
         input_stock = soup.find('div', 'qty-box').find('input')
         if input_stock:
-            stock = int(input_stock['max'])
+            if input_stock['max']:
+                stock = int(input_stock['max'])
+            else:
+                stock = -1
         else:
             stock = 0
 

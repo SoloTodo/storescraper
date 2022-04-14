@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, HEADPHONES, MOUSE, KEYBOARD, \
     GAMING_CHAIR, MONITOR, MOTHERBOARD, RAM, POWER_SUPPLY, CPU_COOLER, \
-    COMPUTER_CASE, PROCESSOR
+    COMPUTER_CASE, PROCESSOR, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -28,12 +28,14 @@ class Sandos(Store):
             CPU_COOLER,
             COMPUTER_CASE,
             PROCESSOR,
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['monitores', MONITOR],
+            ['componentes/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes/procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['componentes/placas-madre', MOTHERBOARD],
