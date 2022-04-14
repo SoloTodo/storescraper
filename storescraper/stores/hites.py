@@ -369,7 +369,7 @@ class Hites(Store):
             .findAll('div', 'carousel-item')
 
         picture_urls = [i.find('img')['src'].replace(' ', '%20')
-                        for i in images]
+                        for i in images if i.find('img') is not None]
 
         p = Product(
             name,
