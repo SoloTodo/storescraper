@@ -87,10 +87,11 @@ class AdisStore(Store):
             'span', 'woocommerce-Price-amount')
             .find('bdi').text.replace('$', '').replace('.', '')))
 
-        stock = 0
-        input_stock = soup.find('input', {'id': 'quantity_625573bd1d374'})
-        if (input_stock):
+        input_stock = soup.find('div', 'qty-box').find('input')
+        if input_stock:
             stock = int(input_stock['max'])
+        else:
+            stock = 0
 
         picture_urls = []
         picture_container = soup.find(
