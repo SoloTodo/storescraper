@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -55,19 +56,21 @@ class BulldogPc(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.bulldogpc.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://www.bulldogpc.cl/categoria-producto/' \
+                    '{}/?product-page={}'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-holder')
+                product_containers = soup.findAll('li', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.bulldogpc.cl' + product_url)
+                    product_url = \
+                        container.find('a', 'woocommerce-LoopProduct-link '
+                                            'woocommerce-loop-product__link'
+                                       )['href']
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -77,39 +80,62 @@ class BulldogPc(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-name').text
-        key_container = soup.find('form', 'form-horizontal')['action']
-        key = re.search(r"/(\d+)$", key_container).groups()[0]
-        sku = soup.find('span', 'sku_elem').text.strip()
-        unavailable_tag = soup.find(
-            'div', 'form-group product-stock product-out-stock row visible')
-        if unavailable_tag:
-            stock = 0
-        else:
-            stock = int(soup.find('div', {'id': 'stock'}).
-                        find('span', 'product-form-stock').text)
-        price = Decimal(
-            remove_words(soup.find("span", "product-form-price").text))
-        picture_containers = soup.find("div", "col-12 product-page-thumbs "
-                                              "space no-padding")
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[1].text)['@graph'][0]
+        name = json_data['name']
+        sku = str(json_data['sku'])
+        description = json_data['description']
+
+        stock = 0
+        qty_div = soup.find('div', 'quantity')
+        if qty_div:
+            qty_input = qty_div.find('input')
+            if qty_input.has_attr('max'):
+                if qty_input['max'] is not "":
+                    stock = int(qty_input['max'])
+                else:
+                    stock = -1
+            else:
+                stock = 1
+
+        price = Decimal(json_data['offers'][0]['price'])
+
+        # name = soup.find('h1', 'product-name').text
+        # key_container = soup.find('form', 'form-horizontal')['action']
+        # key = re.search(r"/(\d+)$", key_container).groups()[0]
+        # sku = soup.find('span', 'sku_elem').text.strip()
+        # unavailable_tag = soup.find(
+        #     'div', 'form-group product-stock product-out-stock row visible')
+        # if unavailable_tag:
+        #     stock = 0
+        # else:
+        #     stock = int(soup.find('div', {'id': 'stock'}).
+        #                 find('span', 'product-form-stock').text)
+        # price = Decimal(
+        #     remove_words(soup.find("span", "product-form-price").text))
+        picture_containers = soup.find(
+            "figure", "woocommerce-product-gallery__wrapper")
         if picture_containers:
-            picture_urls = [tag['src'].split("?")[0] for tag in
-                            picture_containers.findAll('img')]
+            picture_urls = [tag['href'] for tag in
+                            picture_containers.findAll('a')]
         else:
-            picture_urls = [soup.find('div', 'main-product-image')
-                                .find('img')['src']]
+            picture_urls = [json_data['image']]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             price,
             price,
             'CLP',
-            sku=sku,
-            picture_urls=picture_urls
+            sku=key,
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
