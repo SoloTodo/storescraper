@@ -94,7 +94,7 @@ class BulldogPc(Store):
         if qty_div:
             qty_input = qty_div.find('input')
             if qty_input.has_attr('max'):
-                if qty_input['max'] is not "":
+                if qty_input['max'] != "":
                     stock = int(qty_input['max'])
                 else:
                     stock = -1
@@ -103,19 +103,6 @@ class BulldogPc(Store):
 
         price = Decimal(json_data['offers'][0]['price'])
 
-        # name = soup.find('h1', 'product-name').text
-        # key_container = soup.find('form', 'form-horizontal')['action']
-        # key = re.search(r"/(\d+)$", key_container).groups()[0]
-        # sku = soup.find('span', 'sku_elem').text.strip()
-        # unavailable_tag = soup.find(
-        #     'div', 'form-group product-stock product-out-stock row visible')
-        # if unavailable_tag:
-        #     stock = 0
-        # else:
-        #     stock = int(soup.find('div', {'id': 'stock'}).
-        #                 find('span', 'product-form-stock').text)
-        # price = Decimal(
-        #     remove_words(soup.find("span", "product-form-price").text))
         picture_containers = soup.find(
             "figure", "woocommerce-product-gallery__wrapper")
         if picture_containers:
@@ -129,12 +116,12 @@ class BulldogPc(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
-            sku=key,
+            sku=sku,
             picture_urls=picture_urls,
             description=description
         )
