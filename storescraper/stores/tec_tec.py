@@ -91,6 +91,17 @@ class TecTec(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+
+        price_tag = soup.find('p', 'price')
+
+        if not price_tag.text.strip():
+            return []
+        if price_tag.find('ins'):
+            price = Decimal(
+                remove_words(price_tag.find('ins').text))
+        else:
+            price = Decimal(remove_words(price_tag.find('bdi').text))
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         else:
@@ -101,12 +112,7 @@ class TecTec(Store):
                 stock = int(stock_tag['max'])
             else:
                 stock = int(stock_tag['value'])
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').find('bdi').
-                                         text))
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
         p = Product(
