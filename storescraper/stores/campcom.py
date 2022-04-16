@@ -29,6 +29,7 @@ class Campcom(Store):
             if page > 10:
                 raise Exception('Page overflow: ' + url_extension)
             url_webpage = '{}/page/{}/'.format(url_extension, page)
+            print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
             product_containers = soup.findAll('li', 'product')

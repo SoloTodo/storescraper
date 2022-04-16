@@ -1,3 +1,4 @@
+import functools
 import importlib
 import logging
 from decimal import Decimal
@@ -119,6 +120,7 @@ def check_ean13(ean):
 
 def session_with_proxy(extra_args):
     session = requests.Session()
+    session.request = functools.partial(session.request, timeout=30)
 
     if extra_args and 'proxy' in extra_args:
         proxy = extra_args['proxy']
