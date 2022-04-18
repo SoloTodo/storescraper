@@ -259,6 +259,7 @@ from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notebooks_ya import NotebooksYa
 from .notetop import Notetop
+from .nuevatec import Nuevatec
 from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
