@@ -1,10 +1,10 @@
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, CELL, \
-    SOLID_STATE_DRIVE, PROCESSOR, RAM, KEYBOARD_MOUSE_COMBO, PRINTER
+    SOLID_STATE_DRIVE, PROCESSOR, RAM, KEYBOARD_MOUSE_COMBO, PRINTER, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -23,7 +23,8 @@ class UltraPc(Store):
             PROCESSOR,
             RAM,
             KEYBOARD_MOUSE_COMBO,
-            PRINTER
+            PRINTER,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -36,6 +37,7 @@ class UltraPc(Store):
             ['equipos-de-computo/tablet-windows-equipos-de-computo', NOTEBOOK],
             ['accesorios/mouses-teclados', KEYBOARD_MOUSE_COMBO],
             ['tablets-e-ipads', TABLET],
+            ['consolas-videojuegos', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
@@ -50,11 +52,15 @@ class UltraPc(Store):
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'product-outer')
 
-            for container in product_containers:
+            products_container = soup.find('ul', 'products')
+
+            if not products_container:
+                return []
+
+            for cont in products_container.findAll('div', 'product-outer'):
                 product_url = \
-                    container.find('a', 'woocommerce-LoopProduct-link')[
+                    cont.find('a', 'woocommerce-LoopProduct-link')[
                         'href']
                 product_urls.append(product_url)
         return product_urls
