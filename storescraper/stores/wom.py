@@ -111,7 +111,7 @@ class Wom(Store):
 
             while retries:
                 plan_containers = driver.find_elements_by_class_name(
-                    'index-module--listWrapper--1PNCu')
+                    'index-module--planItemWrapper--1HvWb')
                 if plan_containers:
                     break
                 time.sleep(2)
@@ -122,8 +122,8 @@ class Wom(Store):
 
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        plan_containers = soup.find(
-            'div', 'index-module--listWrapper--1PNCu')
+        plan_containers = soup.findAll(
+            'div', 'index-module--planItemWrapper--1HvWb')
         products = []
 
         variants = [

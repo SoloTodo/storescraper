@@ -141,8 +141,8 @@ class AbcDin(Store):
              'Computación / Almacenamiento', 1],
             ['computacion/impresoras-y-multifuncionales', [PRINTER],
              'Computación / Impresoras y Multifuncionales', 1],
-            ['entretenimiento/videojuegos', [VIDEO_GAME_CONSOLE],
-             'Entretenimiento / Videojuegos', 1],
+            # ['entretenimiento/videojuegos', [VIDEO_GAME_CONSOLE],
+            #  'Entretenimiento / Videojuegos', 1],
         ]
 
         discovered_entries = defaultdict(lambda: [])
