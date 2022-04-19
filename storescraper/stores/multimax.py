@@ -1,4 +1,5 @@
 import logging
+import json
 
 from decimal import Decimal
 
@@ -26,26 +27,23 @@ class Multimax(Store):
         product_urls = []
         page = 1
         while True:
-            if page >= 10:
+            if page >= 20:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.multimax.net/search?page={}&q=lg' \
-                .format(page)
-            print(url_webpage)
+            url_webpage = 'https://www.searchanise.com/getresults?q=lg&' \
+                'startIndex={}&api_key=8b0u9V5d8D'.format(page*15)
 
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.find('div', 'search__results-list')
-            if not product_containers:
+            items = json.loads(data)['items']
+
+            if len(items) == 0:
                 if page == 1:
                     logging.warning('Empty category')
                 break
-            for container in product_containers.findAll('div',
-                                                        'search__item')[1:]:
-                product_url = container.find(
-                    'a')['href']
-                product_urls.append(
-                    'https://www.multimax.net' + product_url)
+
+            for item in items:
+                product_urls.append('https://www.multimax.net' + item['link'])
+
             page += 1
 
         return product_urls
