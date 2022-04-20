@@ -81,7 +81,7 @@ class NotebooksYa(Store):
             name = soup.find('div', 'et_pb_module et_pb_wc_title '
                                     'et_pb_wc_title_0 '
                                     'et_pb_bg_layout_light').text.strip()
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
         stock = 0
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
@@ -97,18 +97,25 @@ class NotebooksYa(Store):
         description = soup.find(
             'meta', {'property': 'og:description'})['content']
 
+        sku_tag = soup.find('span', 'sku')
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )
