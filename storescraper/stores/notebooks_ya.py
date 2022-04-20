@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
-    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE
+    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,6 +22,7 @@ class NotebooksYa(Store):
             KEYBOARD,
             WEARABLE,
             ALL_IN_ONE,
+            TABLET,
         ]
 
     @classmethod
@@ -37,6 +38,10 @@ class NotebooksYa(Store):
             ['audio-y-video/?', HEADPHONES],
             ['teclados-mouse/?', KEYBOARD],
             ['relojes/?', WEARABLE],
+            ['macbook/?', NOTEBOOK],
+            ['imac-ya/?', ALL_IN_ONE],
+            ['ipads-ya/?', TABLET],
+            ['apple-watch/?', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
