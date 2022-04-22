@@ -97,7 +97,7 @@ class Todoclick(Store):
                     raise Exception('Page overflow')
 
                 page_url = 'https://www.todoclick.cl/{}?page=' \
-                            '{}'.format(url_extension, page)
+                    '{}'.format(url_extension, page)
 
                 print(page_url)
                 response = session.get(page_url)
@@ -126,7 +126,7 @@ class Todoclick(Store):
             str(soup.find('div', 'product-description')))
 
         products = []
-        
+
         sku_tag = soup.find('div', 'reference-detail')
 
         if not sku_tag:
