@@ -98,16 +98,15 @@ class Nuevatec(Store):
             'script', {'type': 'application/ld+json'}).text, strict=False)
 
         name = json_data['name']
-        sku = None
-        if 'sku' in json_data:
-            sku = json_data['sku']
+        sku = json_data.get('sku', None)
         description = json_data['description']
         price = Decimal(json_data['offers']['price'])
 
-        stock = 0
         stock_span = soup.find('span', 'product-form-stock')
         if stock_span:
             stock = int(stock_span.text)
+        else:
+            stock = 0
 
         picture_urls = []
         image_container = soup.find('div', 'product-images')
