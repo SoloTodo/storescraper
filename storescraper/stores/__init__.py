@@ -188,6 +188,7 @@ from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_curacao_online_honduras import LaCuracaoOnlineHonduras
 from .la_polar import LaPolar
+from .lab_snake import LabSnake
 from .lady_lee import LadyLee
 from .lap_shop import LapShop
 from .led_light_chile import LedLightChile
