@@ -4,8 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, PROCESSOR, MOTHERBOARD, RAM, \
-    SOLID_STATE_DRIVE, MOUSE, KEYBOARD, MONITOR, HEADPHONES
+from storescraper.categories import MONITOR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -15,13 +14,6 @@ class HardwareX(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK,
-            PROCESSOR,
-            MOTHERBOARD,
-            RAM,
-            SOLID_STATE_DRIVE,
-            MOUSE,
-            KEYBOARD,
             MONITOR,
             HEADPHONES
         ]
@@ -29,14 +21,8 @@ class HardwareX(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes-pc/procesadores', PROCESSOR],
-            ['componentes-pc/placas-madres', MOTHERBOARD],
-            ['componentes-pc/memorias-ram', RAM],
-            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
-            ['perifericos/monitores', MONITOR],
-            ['perifericos/teclados', KEYBOARD],
-            ['perifericos/mouse', MOUSE],
-            ['perifericos/audifonos', HEADPHONES]
+            ['65', MONITOR],
+            ['64', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
@@ -48,19 +34,19 @@ class HardwareX(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.hardwarex.cl/wp/categoria-pro' \
-                    'ducto/{}/page/{}/'.format(url_extension, page)
+                url_webpage = 'https://www.hardwarex.cl/index.php?route=prod' \
+                    'uct/category&path={}&page={}'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+                product_container = soup.find('div', 'main-products')
 
-                if not product_containers:
+                if not product_container:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
+                for container in product_container.findAll('div', 'product-layout'):
+                    product_url = container.find('a', 'product-img')['href']
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -72,27 +58,24 @@ class HardwareX(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})[
-            'href'].split('=')[-1]
+        key = url.split('product_id=')[-1]
 
         json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
+            'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']
+        description = json_data['description']
         sku = str(json_data['sku'])[50:]
-        price = Decimal(json_data['offers'][0]['price'])
+        price = Decimal(json_data['offers']['price'])
 
-        max_input = soup.find('input', 'input-text qty text')
+        max_input = soup.find('li', 'product-stock in-stock')
         if max_input:
-            stock = int(max_input['max'])
+            stock = -1
         else:
             stock = 0
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
-
         pictures_urls = []
-        image_containers = soup.find('div', 'wpgs-for')
+        image_containers = soup.find('div', 'product-image')
         for i in image_containers.findAll('img'):
             pictures_urls.append(i['src'])
 
