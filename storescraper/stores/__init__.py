@@ -202,6 +202,7 @@ from .lg_cac_en import LgCacEn
 from .lg_ec import LgEc
 from .lg_uruguay_store import LgUruguayStore
 from .lider import Lider
+from .lider_supermarket import LiderSupermarket
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
 from .litnor_hogar import LitnorHogar
