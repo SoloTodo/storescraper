@@ -35,25 +35,26 @@ class PlayFactory(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['monitores', MONITOR],
-            ['gaming-y-streaming/monitor-gamer', MONITOR],
-            ['gaming-y-streaming/sillas-y-escritorios', GAMING_CHAIR],
-            ['gaming-y-streaming/perifericos-gamer/teclados-gamer', KEYBOARD],
             ['computacion/perifericos/teclados', KEYBOARD],
+            ['componentes/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes/procesadores', PROCESSOR],
+            ['gaming-y-streaming/streaming/microfonos', MICROPHONE],
+            ['computacion/componentes-de-pc/gabinetes', COMPUTER_CASE],
+            ['computacion/placas-madre', MOTHERBOARD],
+            ['computacion/perifericos/mouses', MOUSE],
+            ['computacion/audifonos', HEADPHONES],
+            ['computacion/sillas-gamer', GAMING_CHAIR],
+
+            ['gaming-y-streaming/monitor-gamer', MONITOR],
+            ['gaming-y-streaming/perifericos-gamer/teclados-gamer', KEYBOARD],
             ['gaming-y-streaming/perifericos-gamer/mouse-gamer', MOUSE],
-            ['computacion/perifericos/mouse', MOUSE],
             ['gaming-y-streaming/perifericos-gamer/kit-gamer',
                 KEYBOARD_MOUSE_COMBO],
             ['gaming-y-streaming/consolas-y-controles', VIDEO_GAME_CONSOLE],
             ['criptomineria/fuente-de-poder', POWER_SUPPLY],
-            ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-pc-gabinetes-soportes', COMPUTER_CASE],
-            ['componentes/gabinete', COMPUTER_CASE],
-            ['componentes/placa-madre', MOTHERBOARD],
-            ['componentes/procesadores', PROCESSOR],
             ['componentes/refrigeracion-y-ventilacion/ventilador-gabinete',
                 CASE_FAN],
-            ['gaming-y-streaming/streaming/microfonos', MICROPHONE],
-            ['audio/audifonos-bluetooth', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -64,7 +65,7 @@ class PlayFactory(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.playfactory.cl/categoria-producto' \
+                url_webpage = 'https://www.playfactory.cl/product-category' \
                               '/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text

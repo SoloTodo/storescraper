@@ -78,7 +78,7 @@ class EliteCenter(Store):
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
                               '?paged={}'.format(
-                                url_extension, page)
+                                  url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
 
@@ -122,7 +122,8 @@ class EliteCenter(Store):
         offer_price = Decimal(product_data['offers']['price'])
         normal_price = (offer_price * Decimal('1.05')).quantize(0)
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        key = soup.find(
+            'a', 'add-request-quote-button button')['data-product_id']
 
         if soup.find('button', 'stock_alert_button'):
             stock = 0
