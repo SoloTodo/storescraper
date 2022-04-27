@@ -170,7 +170,7 @@ class Ripley(Store):
             ['electro/climatizacion/purificadores-y-humificadores',
              ['AirConditioner'],
              'Electro > Climatización > Purificadores y humidificadores', 1],
-            ['electro/climatizacion/estufas-y-calefactores',
+            ['electro/especial-calefaccion',
              ['SpaceHeater'],
              'Electro > Climatización > Estufas y calefactores', 1],
             ['tecno/smartwatches-y-smartbands/garmin', ['Wearable'],
