@@ -449,8 +449,8 @@ class Lider(Store):
             return {}
 
         with HeadlessChrome() as driver:
-            sku_url = 'https://www.lider.cl/catalogo/product/sku/' + \
-                      livechat_sku
+            sku_url = 'https://www.lider.cl/catalogo/product/sku/{}/a'.format(
+                livechat_sku)
             driver.get(sku_url)
 
             for i in range(10):
