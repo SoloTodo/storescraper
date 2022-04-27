@@ -263,7 +263,7 @@ class Lider(Store):
                 for idx, entry in enumerate(data['products']):
                     product_url = 'https://www.lider.cl/catalogo/' \
                                   'product/sku/{}/{}'.format(
-                                    entry['sku'], entry['slug'])
+                                    entry['sku'], entry.get('slug', 'a'))
                     if product_url not in local_product_entries:
                         local_product_entries[product_url] = {
                             'category_weight': category_weight,
@@ -299,7 +299,7 @@ class Lider(Store):
 
         for entry in data['results'][0]['hits']:
             product_url = 'https://www.lider.cl/catalogo/product/sku/{}/{}'\
-                        .format(entry['sku'], entry['slug'])
+                        .format(entry['sku'], entry.get('slug', 'a'))
             product_urls.append(product_url)
 
             if len(product_urls) == threshold:
