@@ -71,6 +71,8 @@ class TokStock(Store):
                 sku = variation['sku']
                 price = Decimal(variation['display_price'])
                 stock = variation['max_qty']
+                if stock == "" and not variation['is_in_stock']:
+                    stock = 0
                 picture_urls = [image['url'] for image in
                                 variation['variation_gallery_images']]
                 p = Product(
