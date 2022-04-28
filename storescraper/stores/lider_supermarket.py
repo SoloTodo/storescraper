@@ -28,7 +28,8 @@ class LiderSupermarket(Store):
         url = 'https://www.lider.cl/supermercado/category/a/_/N-qs16h7'
         res = session.get(url)
         soup = BeautifulSoup(res.text, 'html.parser')
-        sections = soup.find('div', 'sidebar-categorias').findAll('div', 'panel-group')
+        sections = soup.find(
+            'div', 'sidebar-categorias').findAll('div', 'panel-group')
 
         product_urls = []
 
@@ -49,7 +50,8 @@ class LiderSupermarket(Store):
                 if section_href.startswith('https://'):
                     url = section_href
                 else:
-                    url = 'https://www.lider.cl{}?Nrpp=1000'.format(section_href)
+                    url = 'https://www.lider.cl{}?Nrpp=1000'.format(
+                        section_href)
 
                 # print(url)
                 res = session.get(url)
@@ -57,7 +59,8 @@ class LiderSupermarket(Store):
 
                 product_entries = soup.findAll('div', 'box-product')
                 for product_entry in product_entries:
-                    product_urls.append('https://www.lider.cl' + product_entry.find('a')['href'])
+                    product_urls.append('https://www.lider.cl' +
+                                        product_entry.find('a')['href'])
 
         return product_urls
 
@@ -75,7 +78,9 @@ class LiderSupermarket(Store):
         sku = json_data['sku']
         description = json_data['description']
 
-        ean = json_data['gtin13']
+        ean = None
+        if 'gtin13' in json_data:
+            ean = json_data['gtin13']
         if not check_ean13(ean):
             ean = None
 
