@@ -45,7 +45,8 @@ class HardwareX(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_container.findAll('div', 'product-layout'):
+                containers = product_container.findAll('div', 'product-layout')
+                for container in containers:
                     product_url = container.find('a', 'product-img')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -65,7 +66,8 @@ class HardwareX(Store):
 
         name = json_data['name']
         description = json_data['description']
-        sku = str(json_data['sku'])[50:]
+        # sku = str(json_data['sku'])[50:]
+        sku = soup.find('input', {'id': 'product-id'})['value']
         price = Decimal(json_data['offers']['price'])
 
         max_input = soup.find('li', 'product-stock in-stock')
