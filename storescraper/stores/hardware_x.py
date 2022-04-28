@@ -58,15 +58,12 @@ class HardwareX(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
         key = soup.find('input', {'id': 'product-id'})['value']
-
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']
         description = json_data['description']
-        sku = str(json_data['sku'])[50:]
         price = Decimal(json_data['offers']['price'])
 
         max_input = soup.find('li', 'product-stock in-stock')
@@ -91,7 +88,7 @@ class HardwareX(Store):
             price,
             price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=pictures_urls,
             description=description
         )
