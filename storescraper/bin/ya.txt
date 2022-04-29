@@ -1,0 +1,137 @@
+INFO:storescraper.store:Discovering URLs for: NotebooksYa
+INFO:storescraper.store:Using sync method
+https://notebooksya.cl/portatiles/?&wpf_page=1
+https://notebooksya.cl/portatiles/?&wpf_page=2
+https://notebooksya.cl/macbook/?&wpf_page=1
+https://notebooksya.cl/macbook/?&wpf_page=2
+https://notebooksya.cl/macbook/?&wpf_page=3
+https://notebooksya.cl/macbook/?&wpf_page=4
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-vostro-3400/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/asus-b9450fa/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/wacom-cintiq-16/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-38/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/nokia-225/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-thinkpad-l14-i5-1135g7-pantalla-14-8gb-256gb-ssd-win10-pro-garantia-3-anos-on-site/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-thinkpad-2/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-vostro-3400-i5-1135g7-8gb-256gb-ssd-14-hd-linux/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-latitude-3420-i5-1135g7-8gb-256gb-ssd-win10pro/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-vostro-3400-3/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-53/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-thinkbook/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-yoga-slim-7/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-inspiron-3505-2/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-thinkpad-3/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-inspiron-3501/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-55/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-v14/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-v14-2/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-t14x/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/dell-latitude-5420-14fhd-i5-1135g7-16gb-512gb-ssd-win10-pro/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/lenovo-thinkbook-i7-1165g7-16gb-512gb-ssd-pantalla-14-fhd-win10pro/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-macbook-air-m1-ram-8gb-ssd-512gb-led-13-3-retina-gold/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-ipad-mini-8-3-6o-generacion-wi-fi-256gb-space-gray/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/imac-retina-5k-de-27-intel-core-i5-33-ghz-8gb-512gb-ssd-radeon-pro-5300-mxwu2ci-a/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-mac-mini-m1-8gb-ram-512gb-ssd-thunderbolt-hdmi-color-silver/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-magic-keyboard-con-keypad-numerico-espanol-mq052e-a/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-ipad-mini-64-gb-211-cm-8-3-pulgadas-wi-fi-blanco-mk7p3ci-a/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-imac-retina-4-5k-de-24-chip-m1-gpu-7c-8gb-256gb-green/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-magic-keyboard-con-touch-id-para-mac-con-chip-de-apple-espanol-america-latina-mk293la-a/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-macbook-pro-de-14-2-chip-m1-pro-16gb-ram-ssd-1tb-plateado/ (Notebook)
+INFO:storescraper.store:Discovered URL: https://notebooksya.cl/producto/apple-watch-nike-series-7-45mm-case-aluminio-media-noche-correa-deportiva-antracita-negro/ (Notebook)
+
+https://notebooksya.cl/producto/dell-vostro-3400/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/asus-b9450fa/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/wacom-cintiq-16/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-38/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/nokia-225/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-thinkpad-l14-i5-1135g7-pantalla-14-8gb-256gb-ssd-win10-pro-garantia-3-anos-on-site/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-thinkpad-2/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-vostro-3400-i5-1135g7-8gb-256gb-ssd-14-hd-linux/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-latitude-3420-i5-1135g7-8gb-256gb-ssd-win10pro/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-vostro-3400-3/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-53/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-thinkbook/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-yoga-slim-7/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-inspiron-3505-2/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-thinkpad-3/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-inspiron-3501/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-55/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-v14/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-v14-2/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-t14x/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/dell-latitude-5420-14fhd-i5-1135g7-16gb-512gb-ssd-win10-pro/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/lenovo-thinkbook-i7-1165g7-16gb-512gb-ssd-pantalla-14-fhd-win10pro/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-macbook-air-m1-ram-8gb-ssd-512gb-led-13-3-retina-gold/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-ipad-mini-8-3-6o-generacion-wi-fi-256gb-space-gray/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/imac-retina-5k-de-27-intel-core-i5-33-ghz-8gb-512gb-ssd-radeon-pro-5300-mxwu2ci-a/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-mac-mini-m1-8gb-ram-512gb-ssd-thunderbolt-hdmi-color-silver/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-magic-keyboard-con-keypad-numerico-espanol-mq052e-a/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-ipad-mini-64-gb-211-cm-8-3-pulgadas-wi-fi-blanco-mk7p3ci-a/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-imac-retina-4-5k-de-24-chip-m1-gpu-7c-8gb-256gb-green/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-magic-keyboard-con-touch-id-para-mac-con-chip-de-apple-espanol-america-latina-mk293la-a/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-macbook-pro-de-14-2-chip-m1-pro-16gb-ram-ssd-1tb-plateado/ (Notebook - 1)
+No positions given
+
+https://notebooksya.cl/producto/apple-watch-nike-series-7-45mm-case-aluminio-media-noche-correa-deportiva-antracita-negro/ (Notebook - 1)
+No positions given
+Total: 32 URLs

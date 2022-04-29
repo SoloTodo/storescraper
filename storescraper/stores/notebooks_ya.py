@@ -28,20 +28,20 @@ class NotebooksYa(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['portatiles/?', NOTEBOOK],
-            ['computadores/?', ALL_IN_ONE],
-            ['impresion/?', PRINTER],
-            ['pantallas-y-tvs/?', MONITOR],
-            ['almacenamiento/?', STORAGE_DRIVE],
-            ['partes-y-piezas/?', STORAGE_DRIVE],
-            ['audifonos/?', HEADPHONES],
-            ['audio-y-video/?', HEADPHONES],
-            ['teclados-mouse/?', KEYBOARD],
-            ['relojes/?', WEARABLE],
-            ['macbook/?', NOTEBOOK],
-            ['imac-ya/?', ALL_IN_ONE],
-            ['ipads-ya/?', TABLET],
-            ['apple-watch/?', WEARABLE],
+            ['portatiles', NOTEBOOK],
+            ['computadores', ALL_IN_ONE],
+            ['impresion', PRINTER],
+            ['pantallas-y-tvs', MONITOR],
+            ['almacenamiento', STORAGE_DRIVE],
+            ['partes-y-piezas', STORAGE_DRIVE],
+            ['audifonos', HEADPHONES],
+            ['audio-y-video', HEADPHONES],
+            ['teclados-mouse', KEYBOARD],
+            ['relojes', WEARABLE],
+            ['product-category/macbook', NOTEBOOK],
+            ['product-category/imac-ya', ALL_IN_ONE],
+            ['product-category/ipads-ya', TABLET],
+            ['product-category/apple-watch', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -50,11 +50,13 @@ class NotebooksYa(Store):
             if local_category != category:
                 continue
             page = 1
-            while True:
+            local_product_urls = []
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://notebooksya.cl/{}&wpf_page={}'.format(
+                url_webpage = 'https://notebooksya.cl/{}/page/{}'.format(
                     url_extension, page)
                 print(url_webpage)
 
@@ -68,10 +70,12 @@ class NotebooksYa(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
+                    if product_url in local_product_urls:
+                        done = True
+                        break
+                    local_product_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_product_urls)
         return product_urls
 
     @classmethod
