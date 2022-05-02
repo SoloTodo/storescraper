@@ -11,7 +11,9 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE
+    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, \
+    ALL_IN_ONE, TABLET, TELEVISION, MEMORY_CARD, USB_FLASH_DRIVE, \
+    KEYBOARD_MOUSE_COMBO, UPS, PRINTER, CELL, WEARABLE
 from storescraper.utils import session_with_proxy
 
 
@@ -38,32 +40,54 @@ class EliteCenter(Store):
             NOTEBOOK,
             EXTERNAL_STORAGE_DRIVE,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            ALL_IN_ONE,
+            TABLET,
+            TELEVISION,
+            MEMORY_CARD,
+            CELL,
+            WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audifonos', HEADPHONES],
-            ['teclados', KEYBOARD],
-            ['mouse', MOUSE],
-            ['escritorios', GAMING_DESK],
-            ['microfonos', MICROPHONE],
-            ['parlantes', STEREO_SYSTEM],
-            ['disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['procesadores', PROCESSOR],
-            ['placas-madres', MOTHERBOARD],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['memorias-ram', RAM],
-            ['fuente-de-poder', POWER_SUPPLY],
-            ['refrigeracion', CPU_COOLER],
-            ['gabinetes', COMPUTER_CASE],
-            ['disco-duro-pc-hdd', STORAGE_DRIVE],
-            ['disco-estado-solido-ssd', SOLID_STATE_DRIVE],
-            ['monitores', MONITOR],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['notebooks', NOTEBOOK],
-            ['consolas', VIDEO_GAME_CONSOLE],
+            ['computadores/todo-en-uno', ALL_IN_ONE],
+            ['computadores/portatiles', NOTEBOOK],
+            ['computadores/tableta', TABLET],
+            ['componentes-informaticos/cajas-gabinetes', COMPUTER_CASE],
+            ['componentes-informaticos/ventiladores-y-sistemas-de-'
+             'enfriamiento', CPU_COOLER],
+            ['componentes-informaticos/tarjetas-madre-placas-madre',
+             MOTHERBOARD],
+            ['componentes-informaticos/procesadores-componentes-informaticos',
+             PROCESSOR],
+            ['componentes-informaticos/tarjetas-de-video-componentes-'
+             'informaticos', VIDEO_CARD],
+            ['almacenamiento/discos-de-estado-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento/discos-duros-internos', STORAGE_DRIVE],
+            ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['monitores/monitores-monitores', MONITOR],
+            ['monitores/televisores', TELEVISION],
+            ['memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
+            ['memorias/modulos-ram-genericos', RAM],
+            ['memorias/modulos-ram-propietarios', RAM],
+            ['memorias/unidades-flash-usb', USB_FLASH_DRIVE],
+            ['audio-y-video/audifonos-total', HEADPHONES],
+            ['perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
+            ['perifericos/combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
+            ['perifericos/ratones', MOUSE],
+            ['audio-y-video/parlantes', STEREO_SYSTEM],
+            ['proteccion-de-poder/ups-respaldo-de-energia', UPS],
+            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
+            ['videojuegos/consolas-videojuegos', VIDEO_GAME_CONSOLE],
+            ['muebles/sillas-muebles', GAMING_CHAIR],
+            ['impresoras-y-escaneres/impresoras-ink-jet', PRINTER],
+            ['impresoras-y-escaneres/impresoras-laser', PRINTER],
+            ['impresoras-y-escaneres/impresoras-multifuncionales', PRINTER],
+            ['celulares/celulares-desbloqueados', CELL],
+            ['tecnologia-portatil/trackers-de-actividad', WEARABLE],
+            ['tecnologia-portatil/relojes', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -73,7 +97,7 @@ class EliteCenter(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 30:
                     raise Exception('page overflow: ' + url_extension)
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
