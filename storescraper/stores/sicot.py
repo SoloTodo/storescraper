@@ -32,7 +32,7 @@ class Sicot(Store):
         url_extensions = [
             ['notebook', NOTEBOOK],
             ['chromebook', NOTEBOOK],
-            ['aio', ALL_IN_ONE],
+            ['desktop-aio', ALL_IN_ONE],
             ['monitores', MONITOR],
             ['tablets', TABLET],
             ['gamer', GAMING_CHAIR],
