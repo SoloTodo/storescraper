@@ -4,10 +4,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, COMPUTER_CASE, \
-    SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, KEYBOARD, \
-    POWER_SUPPLY, MOTHERBOARD, PROCESSOR, VIDEO_CARD, CPU_COOLER, \
-    EXTERNAL_STORAGE_DRIVE, VIDEO_GAME_CONSOLE
+from storescraper.categories import GAMING_DESK, HEADPHONES, COMPUTER_CASE, \
+    MICROPHONE, SOLID_STATE_DRIVE, RAM, MONITOR, MOUSE, GAMING_CHAIR, \
+    KEYBOARD, POWER_SUPPLY, MOTHERBOARD, PROCESSOR, STEREO_SYSTEM, \
+    USB_FLASH_DRIVE, VIDEO_CARD, CPU_COOLER, EXTERNAL_STORAGE_DRIVE, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -32,33 +33,38 @@ class CrazyGamesenChile(Store):
             CPU_COOLER,
             EXTERNAL_STORAGE_DRIVE,
             VIDEO_GAME_CONSOLE,
+            MICROPHONE,
+            STEREO_SYSTEM,
+            GAMING_DESK,
+            USB_FLASH_DRIVE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['acc-ps5', HEADPHONES],
+            ['audifonos-gamers', HEADPHONES],
             ['audifonos', HEADPHONES],
-            ['audifonos-ps4-xbox-one-y-switch', HEADPHONES],
-            ['audifonos-home-oficce', HEADPHONES],
-            # ['accesorios-para-pc-pc-gamer', HEADPHONES],
-            ['gabinetes-gamer', COMPUTER_CASE],
-            ['gabinetes-pc', COMPUTER_CASE],
-            ['memorias-pendrives-disco-duro', SOLID_STATE_DRIVE],
-            ['memorias-ram', RAM],
-            ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['mouse-ps4-xbox-one', MOUSE],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['teclados', KEYBOARD],
+            ['audifonos-home-office', HEADPHONES],
+            ['microfonos', MICROPHONE],
+            ['parlantes', STEREO_SYSTEM],
             ['teclados-ps4-y-xbox-one', KEYBOARD],
+            ['teclados', KEYBOARD],
+            ['mouse-gamer', MOUSE],
+            ['mouse', MOUSE],
+            ['monitores', MONITOR],
+            ['escritorios-gamer', GAMING_DESK],
+            ['sillas-gamer', GAMING_CHAIR],
             ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes-pc', COMPUTER_CASE],
+            ['gabinetes-gamer', COMPUTER_CASE],
+            ['memorias-ram', RAM],
             ['placas-madres', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
             ['fan-cooler-pc', CPU_COOLER],
             ['discos-duros-internos', SOLID_STATE_DRIVE],
             ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['memorias-pendrives', USB_FLASH_DRIVE],
             ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
