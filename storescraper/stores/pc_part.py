@@ -6,7 +6,7 @@ from storescraper.categories import CASE_FAN, COMPUTER_CASE, GAMING_CHAIR, \
     PROCESSOR, SOLID_STATE_DRIVE, USB_FLASH_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class PcPart(Store):
