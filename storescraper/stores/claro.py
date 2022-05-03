@@ -259,6 +259,8 @@ class Claro(Store):
                     ))
             elif combination_type == 'PEB':
                 # Portabildiad arriendo
+                if data['catentry_field2'] == "":
+                    continue
                 num_cuotas = Decimal(data['catentry_field2'])
                 cell_monthly_payment = (price / num_cuotas).quantize(0)
 
