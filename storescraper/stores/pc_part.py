@@ -75,18 +75,18 @@ class PcPart(Store):
 
         key = url.split('id=')[-1]
 
-        detailsItems = soup.find('div', 'details-items')
-        name = detailsItems.find('h2').text
+        details_items = soup.find('div', 'details-items')
+        name = details_items.find('h2').text
 
-        offer_price = Decimal(remove_words(detailsItems.find(
+        offer_price = Decimal(remove_words(details_items.find(
             'h3', 'price-detail').text.split('Efectivo')[0]))
-        normal_price = Decimal(remove_words(detailsItems.find(
+        normal_price = Decimal(remove_words(details_items.find(
             'h4', 'subprice-detail').text.split('Otros')[0]))
 
-        stock = int(detailsItems.find('h3', 'hurry-title').find('span').text)
+        stock = int(details_items.find('h3', 'hurry-title').find('span').text)
 
         picture_urls = []
-        picture_container = detailsItems.find(
+        picture_container = details_items.find(
             'div', {'id': 'imagenes-galeria'})
         for i in picture_container.findAll('img'):
             picture_urls.append(i['src'])
