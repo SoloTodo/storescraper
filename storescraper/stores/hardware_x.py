@@ -4,10 +4,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MONITOR, HEADPHONES
+from storescraper.categories import KEYBOARD, MONITOR, HEADPHONES, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class HardwareX(Store):
@@ -15,14 +15,18 @@ class HardwareX(Store):
     def categories(cls):
         return [
             MONITOR,
-            HEADPHONES
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['65', MONITOR],
-            ['64', HEADPHONES],
+            ['monitores-gamer-esports', MONITOR],
+            ['audifonos-headset-gamer-esports', HEADPHONES],
+            ['mouse-gamer-esports', MOUSE],
+            ['teclados-gamer-esports', KEYBOARD],
         ]
 
         session = session_with_proxy(extra_args)
@@ -34,8 +38,7 @@ class HardwareX(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.hardwarex.cl/index.php?route=prod' \
-                    'uct/category&path={}&page={}'.format(url_extension, page)
+                url_webpage = 'https://www.hardwarex.cl/{}/?page={}'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
