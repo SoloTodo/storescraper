@@ -9,7 +9,8 @@ from storescraper.categories import HEADPHONES, MOTHERBOARD, PROCESSOR, \
     STEREO_SYSTEM, SOLID_STATE_DRIVE, CASE_FAN, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class GoldenGamers(Store):
@@ -112,6 +113,10 @@ class GoldenGamers(Store):
             in product_container.find('div', 'swiper-horiz-'
                                              'thumbnails-main-container').
             findAll('img')]
+
+        description = html_to_markdown(
+            str(soup.find('div', 'product-item-caption-desc')))
+
         p = Product(
             name,
             cls.__name__,
@@ -124,6 +129,7 @@ class GoldenGamers(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
