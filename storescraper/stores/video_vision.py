@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MONITOR, STORAGE_DRIVE, RAM, UPS
+from storescraper.categories import MONITOR, STORAGE_DRIVE, RAM, UPS, \
+    SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -16,7 +17,10 @@ class VideoVision(Store):
             MONITOR,
             STORAGE_DRIVE,
             RAM,
-            UPS
+            UPS,
+            SOLID_STATE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MEMORY_CARD,
         ]
 
     @classmethod
@@ -24,7 +28,13 @@ class VideoVision(Store):
         url_extensions = [
             ['monitores-accesorios-cctv', MONITOR],
             ['discos-duros-accesorios', STORAGE_DRIVE],
+            ['discos-duros-ssd-internos', SOLID_STATE_DRIVE],
+            ['disco-duro-ssd-externo', EXTERNAL_STORAGE_DRIVE],
+            ['disco-duro-videovigilancia', STORAGE_DRIVE],
             ['memorias', RAM],
+            ['memorias-notebook', RAM],
+            ['memorias-pc', RAM],
+            ['micro-sd', MEMORY_CARD],
             ['ups', UPS]
         ]
 
@@ -61,7 +71,8 @@ class VideoVision(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('span', 'sku').text.strip()
         part_number = soup.find('div',
                                 'woocommerce-product-details__short'
                                 '-description').text.strip()
@@ -81,7 +92,7 @@ class VideoVision(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
