@@ -8,7 +8,7 @@ from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, RAM, GAMING_CHAIR, STEREO_SYSTEM, \
     TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, \
     SOLID_STATE_DRIVE, MICROPHONE, POWER_SUPPLY, CPU_COOLER, MEMORY_CARD, \
-    ALL_IN_ONE, NOTEBOOK
+    ALL_IN_ONE, NOTEBOOK, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -37,6 +37,7 @@ class GGames(Store):
             MEMORY_CARD,
             ALL_IN_ONE,
             NOTEBOOK,
+            WEARABLE
         ]
 
     @classmethod
@@ -50,6 +51,7 @@ class GGames(Store):
             ['teclado', KEYBOARD],
             ['combos', KEYBOARD_MOUSE_COMBO],
             ['parlantes-1', STEREO_SYSTEM],
+            ['smart-home/asistente-de-voz', STEREO_SYSTEM],
             ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
             ['tarjetas-de-video', VIDEO_CARD],
             ['refrigeracion', CPU_COOLER],
@@ -63,6 +65,7 @@ class GGames(Store):
             ['tablet', TABLET],
             ['accesorio-homeoffice', NOTEBOOK],
             ['hd-portatil', EXTERNAL_STORAGE_DRIVE],
+            ['smart-home/smartwatch', WEARABLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
