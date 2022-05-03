@@ -13,40 +13,13 @@ class Jumbo(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Refrigerator',
-            'WashingMachine',
-            'Oven',
-            'Printer',
-            'MemoryCard',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'Headphones',
-            'StereoSystem',
-            'Television',
-            'Mouse'
+            'Groceries'
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['electro-y-tecnologia/tecnologia/celulares', ['Cell'],
-             'Electro y Tecnología > Teconología > Celulares', 1],
-            ['electro-y-tecnologia/tecnologia/almacenamiento', ['MemoryCard'],
-             'Electro y Tecnología > Tecnología > Almacenamiento', 1],
-            ['electro-y-tecnologia/tecnologia/audifonos', ['Headphones'],
-             'Electro y Tecnología > Tecnología > Audífonos', 1],
-            ['electro-y-tecnologia/tecnologia/impresoras', ['Printer'],
-             'Electro y Tecnología > Tecnología > Impresoras', 1],
-            ['electro-y-tecnologia/electronica/equipos-de-musica',
-             ['StereoSystem'],
-             'Electro y Tecnología > Electrónica > Equipos de Música', 1],
-            ['electro-y-tecnologia/electronica/parlantes', ['StereoSystem'],
-             'Electro y Tecnología > Electrónica > Parlantes', 1],
-            ['electro-y-tecnologia/electronica/televisores', ['Television'],
-             'Electro y Tecnología > Electrónica > Televisores', 1],
-            ['electro-y-tecnologia/electrohogar/cocina-y-microondas', ['Oven'],
-             'Electro y Tecnología > Electrohogar > Cocina y Microondas', 1],
+            ['despensa', ['Groceries'], 'Despensa', 1],
         ]
 
         session = session_with_proxy(extra_args)
@@ -62,19 +35,22 @@ class Jumbo(Store):
             page = 1
 
             while True:
-                if page >= 10:
+                if page >= 75:
                     raise Exception('Page overflow: ' + url_extension)
 
-                api_url = 'https://api.smdigital.cl:8443/v0/cl/jumbo/vtex/' \
-                          'front/prod/proxy/api/v2/products/search/{}?page=' \
-                          '{}'.format(url_extension, page)
+                api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v2/' \
+                          'products/{}?page={}'.format(
+                              url_extension, page)
+                print(api_url)
 
-                json_data = json.loads(session.get(api_url).text)
+                response = session.get(api_url)
 
-                if not json_data:
+                json_data = json.loads(response.text)
+
+                if "status" in json_data and json_data["status"] == 500:
                     break
 
-                for idx, product in enumerate(json_data):
+                for idx, product in enumerate(json_data['products']):
                     product_url = 'https://www.jumbo.cl/{}/p' \
                         .format(product['linkText'])
 
@@ -92,32 +68,25 @@ class Jumbo(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        product_container = json.loads(
-            soup.findAll('script', {'type': 'application/ld+json'})[1].text)
-        name = product_container['name']
         api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v1' \
                   '/catalog_system/pub/products/search/{}/p?sc=11'. \
             format(url.split('/')[3])
         session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
         api_request = session.get(api_url)
-        sku = api_request.json()[0]['productReference']
-        price = Decimal(product_container['offers']['price'])
 
-        pictures_tag = soup.find('ul', 'product-image-thumbs-list')
+        api_json = api_request.json()[0]
+        name = api_json['brand'] + ' - ' + api_json['productName']
+        sku = api_json['productReference']
+        description = api_json['categories'][0]
+        stock = int(json.loads(api_json['ProductData'][0])['cart_limit'])
 
-        if pictures_tag:
-            picture_urls = [tag['src'].split('?')[0] for tag in
-                            pictures_tag.findAll('img')]
-        else:
-            picture_urls = None
+        product_item = api_json['items'][0]
+        ean = product_item['ean']
+        price = Decimal(product_item['sellers'][0]['commertialOffer']['Price'])
 
-        if soup.find('meta', {'property': 'product:availability'})['content'] \
-                == 'out of stock':
-            stock = 0
-        else:
-            stock = -1
+        picture_urls = []
+        for i in product_item['images']:
+            picture_urls.append(i['imageUrl'])
 
         p = Product(
             name,
@@ -131,7 +100,9 @@ class Jumbo(Store):
             price,
             'CLP',
             sku=sku,
+            ean=ean,
             picture_urls=picture_urls,
+            description=description
         )
 
         return [p]
