@@ -288,6 +288,7 @@ from .pc_infinity import PcInfinity
 from .pc_link_store import PcLinkStore
 from .pc_master_games import PcMasterGames
 from .pc_ofertas import PcOfertas
+from .pc_part import PcPart
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
 from .pcmig import Pcmig
