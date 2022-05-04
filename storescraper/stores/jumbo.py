@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, check_ean13
 
 
 class Jumbo(Store):
@@ -78,15 +78,19 @@ class Jumbo(Store):
         name = api_json['brand'] + ' - ' + api_json['productName']
         sku = api_json['productReference']
         description = api_json['categories'][0]
-        stock = int(json.loads(api_json['ProductData'][0])['cart_limit'])
 
         product_item = api_json['items'][0]
-        ean = product_item['ean']
-        price = Decimal(product_item['sellers'][0]['commertialOffer']['Price'])
+        seller_info = product_item['sellers'][0]['commertialOffer']
+        ean = product_item.get('ean', None)
+
+        if ean and not check_ean13(ean):
+            ean = None
+
+        price = Decimal(seller_info['Price'])
 
         picture_urls = []
         for i in product_item['images']:
-            picture_urls.append(i['imageUrl'])
+            picture_urls.append(i['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -95,7 +99,7 @@ class Jumbo(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             price,
             price,
             'CLP',
