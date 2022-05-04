@@ -52,11 +52,10 @@ class UltraPc(Store):
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
-
             products_container = soup.find('ul', 'products')
 
             if not products_container:
-                return []
+                continue
 
             for cont in products_container.findAll('div', 'product-outer'):
                 product_url = \

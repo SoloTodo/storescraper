@@ -39,8 +39,8 @@ class TecnoMegaStore(Store):
                     break
                 for container in json_container['Products']:
                     product_urls.append(
-                        'https://www.tecnomegastore.ec/product/' + container[
-                            'sku'])
+                        'https://www.tecnomegastore.ec/product/{}?code={}'
+                        ''.format(container['URL'], container['sku']))
                 page += 1
         return product_urls
 
@@ -48,7 +48,7 @@ class TecnoMegaStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        product_extension = url.split('/')[-1]
+        product_extension = url.split('?code=')[-1]
         response = session.get('https://coretms.tecnomegastore.ec/admin/'
                                'api/product/{}'.format(product_extension))
         json_product = json.loads(response.text)['Product'][0]
