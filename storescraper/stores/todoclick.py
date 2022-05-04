@@ -120,6 +120,9 @@ class Todoclick(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        for r in response.history:
+            if r.status_code == 301:
+                return []
         soup = BeautifulSoup(response.text, 'html5lib')
         base_name = soup.find('h4', 'name_detail').text
         description = html_to_markdown(
