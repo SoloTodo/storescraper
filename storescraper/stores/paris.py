@@ -351,11 +351,13 @@ class Paris(Store):
 
         if not model:
             return []
-
-        brand = soup.find('a', {'id': 'GTM_pdp_brand'}).text.strip()
-        model = ' '.join(model.text.strip().split())
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text,
+            strict=False)
+        brand = json_data['brand']
+        model = json_data['name']
         name = '{} - {}'.format(brand, model)
-        sku = soup.find('div', 'pdp-main')['data-pid'].strip()
+        sku = json_data['sku']
 
         if soup.find('button', 'buy-it-now'):
             stock = -1
