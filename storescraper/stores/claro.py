@@ -208,8 +208,11 @@ class Claro(Store):
             if combination_type in ['REB', 'RET', '']:
                 # Renovación or Default
                 continue
-
-            price = Decimal(remove_words(data['offerPrice']))
+            
+            priceText = remove_words(data['offerPrice'])
+            if not priceText:
+                return []
+            price = Decimal(priceText)
 
             attributes = []
             for key, value in c['Attributes'].items():
