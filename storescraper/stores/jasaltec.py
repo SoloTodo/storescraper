@@ -7,7 +7,7 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR, \
-    ALL_IN_ONE, STORAGE_DRIVE, GAMING_DESK, MICROPHONE
+    ALL_IN_ONE, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,7 +18,6 @@ class Jasaltec(Store):
     def categories(cls):
         return [
             EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
             USB_FLASH_DRIVE,
             SOLID_STATE_DRIVE,
             POWER_SUPPLY,
@@ -45,9 +44,6 @@ class Jasaltec(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-de-datos/disco-duro-interno', STORAGE_DRIVE],
-            ['almacenamiento-de-datos/disco-duro-externo',
-             EXTERNAL_STORAGE_DRIVE],
             ['almacenamiento-de-datos/pendrive', USB_FLASH_DRIVE],
             ['almacenamiento-de-datos/disco-estado-solido-interno',
              SOLID_STATE_DRIVE],
