@@ -225,7 +225,7 @@ class PcFactory(Store):
             'div', 'price-xl')
         normal_price = Decimal(remove_words(price_container[1].text))
         offer_price = Decimal(remove_words(price_container[0].text))
-        picture_urls = ['https://www.pcfactory.cl' + tag['src'].split('?t')[0]
+        picture_urls = [tag['src'].split('?t')[0]
                         for tag in
                         soup.find('div', 'product-single__gallery').findAll(
                             'img')]
