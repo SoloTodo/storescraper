@@ -208,7 +208,7 @@ class Claro(Store):
             if combination_type in ['REB', 'RET', '']:
                 # Renovación or Default
                 continue
-            
+
             priceText = remove_words(data['offerPrice'])
             if not priceText:
                 return []

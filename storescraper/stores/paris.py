@@ -355,7 +355,7 @@ class Paris(Store):
         if not json_script:
             return []
         json_data = json.loads(json_script.text, strict=False)
-        
+
         brand = json_data['brand']
         model = json_data['name']
         name = '{} - {}'.format(brand, model)
