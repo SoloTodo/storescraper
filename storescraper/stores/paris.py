@@ -351,9 +351,11 @@ class Paris(Store):
 
         if not model:
             return []
-        json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text,
-            strict=False)
+        json_script = soup.find('script', {'type': 'application/ld+json'})
+        if not json_script:
+            return []
+        json_data = json.loads(json_script.text, strict=False)
+        
         brand = json_data['brand']
         model = json_data['name']
         name = '{} - {}'.format(brand, model)
