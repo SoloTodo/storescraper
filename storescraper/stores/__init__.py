@@ -54,6 +54,7 @@ from .comercial_net import ComercialNet
 from .compumundo import Compumundo
 from .computron import Computron
 from .conelectric import Conelectric
+from .conexion_digital import ConexionDigital
 from .coppel import Coppel
 from .corona import Corona
 from .costco_mexico import CostcoMexico
