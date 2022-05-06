@@ -48,7 +48,7 @@ class Spaceman(Store):
                 url_webapge = 'https://www.spaceman.cl/categoria-producto/' \
                               '{}/page/{}/'.format(url_extension, page)
                 print(url_webapge)
-                data = session.get(url_webapge).text
+                data = session.get(url_webapge, timeout=120).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', 'products')
                 if not product_containers:
@@ -67,7 +67,7 @@ class Spaceman(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
-        response = session.get(url)
+        response = session.get(url, timeout=120)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
 
