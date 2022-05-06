@@ -1,5 +1,4 @@
 import json
-import logging
 import re
 
 from collections import defaultdict
@@ -54,6 +53,7 @@ class SpDigital(Store):
             PROJECTOR,
             CELL,
             VIDEO_GAME_CONSOLE,
+            POWER_SUPPLY
         ]
 
     @classmethod
