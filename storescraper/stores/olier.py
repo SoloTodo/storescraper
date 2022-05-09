@@ -89,8 +89,11 @@ class Olier(Store):
         if 'LG' not in name.upper().split(' '):
             stock = 0
 
+        p_price = soup.find('p', 'price')
+        if not p_price:
+            return []
         price = Decimal(
-            soup.find('p', 'price').find('span', 'amount')
+            p_price.find('span', 'amount')
                 .text.replace('₲.', '').replace('.', ''))
 
         picture_urls = [soup.find('meta', {'name': 'og:image'})['content']]
