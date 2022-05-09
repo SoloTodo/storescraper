@@ -56,6 +56,7 @@ class TravelTienda(Store):
             ('1095159098', STEREO_SYSTEM),
             ('3514911626', STEREO_SYSTEM),
             ('3551610308', STEREO_SYSTEM),
+            ('1479054651', STEREO_SYSTEM),  # Audio HiFi
             ('2620100069', WASHING_MACHINE),
             ('306745319', REFRIGERATOR),
             ('394354836', WASHING_MACHINE),
@@ -87,7 +88,7 @@ class TravelTienda(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
+        # print(url)
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
@@ -105,7 +106,7 @@ class TravelTienda(Store):
                     time.sleep(2)
                     return cls.products_for_url(url, category, extra_args)
                 else:
-                    raise Exception('Empty product page: ' + url)
+                    return []
             else:
                 extra_args = {'retries': 5}
                 time.sleep(2)
@@ -122,7 +123,6 @@ class TravelTienda(Store):
                 'products'].values())[0]
         name = product_json['name']
         sku = product_json['sku']
-        stock = -1
         normal_price = Decimal(product_json['offers']['price'])
 
         offer_price_text = json_container['listPrices']['tiendaBancoDeChile']
@@ -134,6 +134,10 @@ class TravelTienda(Store):
         picture_urls = ['https://tienda.travel.cl' +
                         picture.replace(' ', '%20') for picture in
                         json_container['fullImageURLs']]
+
+        stock_endpoint = 'https://tienda.travel.cl/ccstore/v1/stockStatus?products={}&actualStockStatus=true'.format(sku)
+        stock_res = session.get(stock_endpoint)
+        stock = stock_res.json()['items'][0]['productSkuInventoryStatus'][sku]
 
         p = Product(
             name,
