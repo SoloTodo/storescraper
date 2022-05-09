@@ -4,11 +4,12 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
-    POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, \
-    TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, USB_FLASH_DRIVE, \
-    STEREO_SYSTEM, WEARABLE, GAMING_CHAIR, CPU_COOLER, KEYBOARD_MOUSE_COMBO, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, GAMING_DESK, MICROPHONE
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK, SOLID_STATE_DRIVE, \
+    STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, \
+    VIDEO_CARD, RAM, TABLET, HEADPHONES, MOUSE, KEYBOARD, MONITOR, PRINTER, \
+    USB_FLASH_DRIVE, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, WEARABLE, \
+    GAMING_CHAIR, CPU_COOLER, KEYBOARD_MOUSE_COMBO, EXTERNAL_STORAGE_DRIVE, \
+    MEMORY_CARD, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -43,44 +44,47 @@ class Todoclick(Store):
             STORAGE_DRIVE,
             MEMORY_CARD,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            SOLID_STATE_DRIVE,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['notebooks', NOTEBOOK],
-            ['notebook-gamer', NOTEBOOK],
-            ['all-in-one', ALL_IN_ONE],
-            ['disco-duro', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['placa-madre', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['memoria-ram', RAM],
-            ['tablet', TABLET],
-            ['audifonos', HEADPHONES],
-            ['audifonos-gamer', HEADPHONES],
-            ['mouse-accesorios', MOUSE],
-            ['mouse-gamer', MOUSE],
-            ['teclados', KEYBOARD],
-            ['teclado-gamer', KEYBOARD],
-            ['kit-gamer', KEYBOARD_MOUSE_COMBO],
-            ['monitores', MONITOR],
-            ['monitor-gamer', MONITOR],
-            ['impresoras', PRINTER],
-            ['pendrive', USB_FLASH_DRIVE],
-            ['parlantes', STEREO_SYSTEM],
-            ['soundbar', STEREO_SYSTEM],
-            ['smartwatch', WEARABLE],
-            ['sillas-gaming', GAMING_CHAIR],
-            ['ventilador', CPU_COOLER],
-            ['externo', EXTERNAL_STORAGE_DRIVE],
-            ['disco-duro-interno', STORAGE_DRIVE],
-            ['tarjeta-memoria', MEMORY_CARD],
-            ['gamer/escritorio-gamer', GAMING_DESK],
-            ['accesorios/microfonos', MICROPHONE]
+            ['486-all-in-one', ALL_IN_ONE],
+            ['483-notebooks', NOTEBOOK],
+            ['496-tablets', TABLET],
+            ['495-tableta-digitalizadora', TABLET],
+            ['491-mouse', MOUSE],
+            ['554-teclados', KEYBOARD],
+            ['490-combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+            ['489-audifono', HEADPHONES],
+            ['485-parlantes', STEREO_SYSTEM],
+            ['493-soundbar', STEREO_SYSTEM],
+            ['445-ssd-unidad-de-estado-solido', SOLID_STATE_DRIVE],
+            ['443-pendrives', USB_FLASH_DRIVE],
+            ['444-tarjetas-de-memoria', MEMORY_CARD],
+            ['442-disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+            ['555-hdd-disco-duro-mecanico', STORAGE_DRIVE],
+            ['534-teclado-gamer', KEYBOARD],
+            ['533-mouse-gamer', MOUSE],
+            ['532-kit-gamer', KEYBOARD_MOUSE_COMBO],
+            ['571-consolas', VIDEO_GAME_CONSOLE],
+            ['513-audifonos-over-ear', HEADPHONES],
+            ['552-audifonos-in-ear', HEADPHONES],
+            ['514-parlantes-gamer', STEREO_SYSTEM],
+            ['524-sillas-gamer', GAMING_CHAIR],
+            ['523-escritorios-gamer', GAMING_DESK],
+            ['528-microfono', MICROPHONE],
+            ['543-monitor', MONITOR],
+            ['450-procesadores', PROCESSOR],
+            ['448-memoria-ram', RAM],
+            ['549-tarjetas-de-video', VIDEO_CARD],
+            ['446-fuentes-de-poder', POWER_SUPPLY],
+            ['451-refrigeracion', CPU_COOLER],
+            ['449-placa-madre', MOTHERBOARD],
+            ['535-impresoras', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -92,22 +96,14 @@ class Todoclick(Store):
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                if page == 1:
-                    page_url = 'https://www.todoclick.cl/categoria/{}/'.format(
-                        url_extension)
-                else:
-                    page_url = 'https://www.todoclick.cl/categoria/{}/page/' \
-                               '{}/'.format(url_extension, page)
+                page_url = 'https://www.todoclick.cl/{}?page=' \
+                    '{}'.format(url_extension, page)
 
                 print(page_url)
                 response = session.get(page_url)
 
-                if response.url != page_url:
-                    raise Exception('Mismatch: ' + response.url + ' ' +
-                                    page_url)
-
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('li', 'product')
+                products = soup.findAll('div', 'item')
 
                 if not products:
                     break
@@ -124,91 +120,45 @@ class Todoclick(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        for r in response.history:
+            if r.status_code == 301:
+                return []
         soup = BeautifulSoup(response.text, 'html5lib')
-        base_name = soup.find('h1', 'w-post-elm').text
+        base_name = soup.find('h4', 'name_detail').text
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
+            str(soup.find('div', 'product-description')))
 
         products = []
-        variants = soup.find('form', 'variations_form')
 
-        if variants:
-            container_products = json.loads(
-                html.unescape(variants['data-product_variations']))
-            is_variant = True
-            for product in container_products:
-                if not product['attributes']:
-                    is_variant = False
-                    variant_name = base_name
-                else:
-                    variant_name = base_name + " - " + next(
-                        iter(product['attributes'].values()))
-                if product['is_in_stock']:
-                    stock = int(product['max_qty'])
-                else:
-                    stock = 0
-                key = str(product['variation_id'])
-                sku = str(product['sku'])
-                price = Decimal(product['display_price'])
-                if product['image']['src'] == '':
-                    picture_urls = [tag['src'] for tag in soup.find(
-                        'div', 'woocommerce-product-gallery').findAll('img')]
-                else:
-                    picture_urls = [product['image']['src']]
+        sku_tag = soup.find('div', 'reference-detail')
 
-                p = Product(
-                    variant_name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    key,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    part_number=sku,
-                    picture_urls=picture_urls,
-                    description=description
-                )
-                if not is_variant:
-                    return [p]
-                products.append(p)
-        else:
-            sku_tag = soup.find('span', 'sku')
+        if not sku_tag:
+            return []
 
-            if not sku_tag:
-                return []
-
-            sku = sku_tag.text.strip()
-            stock = 0
-            stock_container = soup.find('p', 'stock in-stock')
-            if stock_container:
-                stock = int(stock_container.text.split(' ')[0])
-            offer_price = Decimal(soup.find(
-                'meta', {'property': 'product:price:amount'})['content'])
-            assert soup.find('meta', {'property': 'product:price:currency'})[
-                       'content'] == 'CLP'
-            normal_price = (offer_price * Decimal('1.05')).quantize(0)
-            picture_urls = [tag['src'] for tag in
-                            soup.find('div', 'woocommerce-product-gallery')
-                                .findAll('img')]
-            products.append(Product(
-                base_name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                part_number=sku,
-                picture_urls=picture_urls,
-                description=description
-            ))
+        sku = sku_tag.text.strip()
+        stock = 0
+        stock_container = soup.find('div', 'product-quantities')
+        if stock_container:
+            stock = int(stock_container.find('span')['data-stock'])
+        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
+        picture_urls = [tag['data-image-large-src'] for tag in
+                        soup.find('ul', 'product-images')
+                            .findAll('img')]
+        products.append(Product(
+            base_name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            part_number=sku,
+            picture_urls=picture_urls,
+            description=description
+        ))
 
         return products

@@ -42,6 +42,7 @@ from .cesa_pro import CesaPro
 from .cetrogar import Cetrogar
 from .centrale import Centrale
 from .central_gamer import CentralGamer
+from .chelnovix import Chelnovix
 from .chile_gamerr import ChileGamerr
 from .cintegral import Cintegral
 from .claro import Claro
@@ -54,6 +55,7 @@ from .comercial_net import ComercialNet
 from .compumundo import Compumundo
 from .computron import Computron
 from .conelectric import Conelectric
+from .conexion_digital import ConexionDigital
 from .coppel import Coppel
 from .corona import Corona
 from .costco_mexico import CostcoMexico
@@ -70,6 +72,7 @@ from .dd_tech import DdTech
 from .dell import Dell
 from .deltron import Deltron
 from .demasled import Demasled
+from .deuva import Deuva
 from .de_prati import DePrati
 from .dc_computer import DcComputer
 from .dgital import Dgital
@@ -188,6 +191,7 @@ from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_curacao_online_honduras import LaCuracaoOnlineHonduras
 from .la_polar import LaPolar
+from .lab_snake import LabSnake
 from .lady_lee import LadyLee
 from .lap_shop import LapShop
 from .led_light_chile import LedLightChile
@@ -201,6 +205,7 @@ from .lg_cac_en import LgCacEn
 from .lg_ec import LgEc
 from .lg_uruguay_store import LgUruguayStore
 from .lider import Lider
+from .lider_supermarket import LiderSupermarket
 from .linio_chile import LinioChile
 from .linio_mexico import LinioMexico
 from .litnor_hogar import LitnorHogar
@@ -259,6 +264,7 @@ from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notebooks_ya import NotebooksYa
 from .notetop import Notetop
+from .nuevatec import Nuevatec
 from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
@@ -284,6 +290,7 @@ from .pc_infinity import PcInfinity
 from .pc_link_store import PcLinkStore
 from .pc_master_games import PcMasterGames
 from .pc_ofertas import PcOfertas
+from .pc_part import PcPart
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
 from .pcmig import Pcmig
@@ -373,7 +380,6 @@ from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
 from .tienda_toyotomi import TiendaToyotomi
 from .travel_tienda import TravelTienda
-from .travel_tienda_full import TravelTiendaFull
 from .travim import Travim
 from .trulu_store import TruluStore
 from .todo_juegos import TodoJuegos

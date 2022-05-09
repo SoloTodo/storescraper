@@ -76,6 +76,8 @@ MICROPHONE = 'Microphone'
 GAMING_DESK = 'GamingDesk'
 # Ventiladores para gabinetes de PC desktop
 CASE_FAN = 'CaseFan'
+# Abarrotes
+GROCERIES = 'Groceries'
 
 #########################
 # Legacy (no usar)

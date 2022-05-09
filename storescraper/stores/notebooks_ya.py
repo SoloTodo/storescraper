@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
-    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE
+    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,21 +22,26 @@ class NotebooksYa(Store):
             KEYBOARD,
             WEARABLE,
             ALL_IN_ONE,
+            TABLET,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['portatiles/?', NOTEBOOK],
-            ['computadores/?', ALL_IN_ONE],
-            ['impresion/?', PRINTER],
-            ['pantallas-y-tvs/?', MONITOR],
-            ['almacenamiento/?', STORAGE_DRIVE],
-            ['partes-y-piezas/?', STORAGE_DRIVE],
-            ['audifonos/?', HEADPHONES],
-            ['audio-y-video/?', HEADPHONES],
-            ['teclados-mouse/?', KEYBOARD],
-            ['relojes/?', WEARABLE],
+            ['portatiles', NOTEBOOK],
+            ['computadores', ALL_IN_ONE],
+            ['impresion', PRINTER],
+            ['pantallas-y-tvs', MONITOR],
+            ['almacenamiento', STORAGE_DRIVE],
+            ['partes-y-piezas', STORAGE_DRIVE],
+            ['audifonos', HEADPHONES],
+            ['audio-y-video', HEADPHONES],
+            ['teclados-mouse', KEYBOARD],
+            ['relojes', WEARABLE],
+            ['product-category/macbook', NOTEBOOK],
+            ['product-category/imac-ya', ALL_IN_ONE],
+            ['product-category/ipads-ya', TABLET],
+            ['product-category/apple-watch', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -45,11 +50,13 @@ class NotebooksYa(Store):
             if local_category != category:
                 continue
             page = 1
-            while True:
+            local_product_urls = []
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://notebooksya.cl/{}&wpf_page={}'.format(
+                url_webpage = 'https://notebooksya.cl/{}/page/{}'.format(
                     url_extension, page)
                 print(url_webpage)
 
@@ -63,10 +70,12 @@ class NotebooksYa(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    if product_url in product_urls:
-                        return product_urls
-                    product_urls.append(product_url)
+                    if product_url in local_product_urls:
+                        done = True
+                        break
+                    local_product_urls.append(product_url)
                 page += 1
+            product_urls.extend(local_product_urls)
         return product_urls
 
     @classmethod
@@ -81,7 +90,7 @@ class NotebooksYa(Store):
             name = soup.find('div', 'et_pb_module et_pb_wc_title '
                                     'et_pb_wc_title_0 '
                                     'et_pb_bg_layout_light').text.strip()
-        sku = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
         stock = 0
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
@@ -97,18 +106,25 @@ class NotebooksYa(Store):
         description = soup.find(
             'meta', {'property': 'og:description'})['content']
 
+        sku_tag = soup.find('span', 'sku')
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )

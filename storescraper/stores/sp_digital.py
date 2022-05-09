@@ -1,5 +1,4 @@
 import json
-import logging
 import re
 
 from collections import defaultdict
@@ -54,6 +53,7 @@ class SpDigital(Store):
             PROJECTOR,
             CELL,
             VIDEO_GAME_CONSOLE,
+            POWER_SUPPLY
         ]
 
     @classmethod
@@ -215,7 +215,7 @@ class SpDigital(Store):
         print(page_data_url)
         response = session.get(page_data_url)
 
-        if response.status_code == 403:
+        if response.status_code == 403 or response.status_code == 404:
             return []
 
         page_data = response.json()['result']['pageContext']

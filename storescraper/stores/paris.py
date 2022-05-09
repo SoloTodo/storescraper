@@ -347,13 +347,19 @@ class Paris(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        name = soup.find('h1', {'itemprop': 'name'})
+        model = soup.find('h1', {'itemprop': 'name'})
 
-        if not name:
+        if not model:
             return []
+        json_script = soup.find('script', {'type': 'application/ld+json'})
+        if not json_script:
+            return []
+        json_data = json.loads(json_script.text, strict=False)
 
-        name = ' '.join(name.text.strip().split())
-        sku = soup.find('div', 'pdp-main')['data-pid'].strip()
+        brand = json_data['brand']
+        model = json_data['name']
+        name = '{} - {}'.format(brand, model)
+        sku = json_data['sku']
 
         if soup.find('button', 'buy-it-now'):
             stock = -1

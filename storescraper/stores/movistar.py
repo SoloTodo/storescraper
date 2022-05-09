@@ -159,7 +159,10 @@ class Movistar(Store):
             return []
 
         soup = BeautifulSoup(page.text, 'html.parser')
-        base_name = soup.find('h1').text.strip()
+        if soup.find('h1'):
+            base_name = soup.find('h1').text.strip()
+        else:
+            return []
 
         sku_color_choices = []
         for color_container in soup.find('ul', 'colorEMP').findAll('li'):

@@ -88,7 +88,8 @@ class PcFactory(Store):
             ['648', CPU_COOLER],
             ['994', TABLET],
             ['262', PRINTER],
-            ['432', CELL],
+            ['5', CELL],
+            ['655', CELL],
             ['6', CAMERA],
             ['620', CAMERA],
             ['422', EXTERNAL_STORAGE_DRIVE],
@@ -105,7 +106,7 @@ class PcFactory(Store):
             ['34', STEREO_SYSTEM],
             ['797', STEREO_SYSTEM],
             ['748', STEREO_SYSTEM],
-            ['475', ALL_IN_ONE],
+            ['999', ALL_IN_ONE],
             ['22', MOUSE],
             ['286', OPTICAL_DRIVE],
             ['36', KEYBOARD],
@@ -224,7 +225,7 @@ class PcFactory(Store):
             'div', 'price-xl')
         normal_price = Decimal(remove_words(price_container[1].text))
         offer_price = Decimal(remove_words(price_container[0].text))
-        picture_urls = ['https://www.pcfactory.cl' + tag['src'].split('?t')[0]
+        picture_urls = [tag['src'].split('?t')[0]
                         for tag in
                         soup.find('div', 'product-single__gallery').findAll(
                             'img')]

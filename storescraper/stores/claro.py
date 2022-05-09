@@ -209,7 +209,10 @@ class Claro(Store):
                 # Renovación or Default
                 continue
 
-            price = Decimal(remove_words(data['offerPrice']))
+            priceText = remove_words(data['offerPrice'])
+            if not priceText:
+                return []
+            price = Decimal(priceText)
 
             attributes = []
             for key, value in c['Attributes'].items():
@@ -259,6 +262,8 @@ class Claro(Store):
                     ))
             elif combination_type == 'PEB':
                 # Portabildiad arriendo
+                if data['catentry_field2'] == "":
+                    continue
                 num_cuotas = Decimal(data['catentry_field2'])
                 cell_monthly_payment = (price / num_cuotas).quantize(0)
 

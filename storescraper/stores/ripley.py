@@ -170,7 +170,7 @@ class Ripley(Store):
             ['electro/climatizacion/purificadores-y-humificadores',
              ['AirConditioner'],
              'Electro > Climatización > Purificadores y humidificadores', 1],
-            ['electro/climatizacion/estufas-y-calefactores',
+            ['electro/especial-calefaccion',
              ['SpaceHeater'],
              'Electro > Climatización > Estufas y calefactores', 1],
             ['tecno/smartwatches-y-smartbands/garmin', ['Wearable'],
@@ -352,14 +352,16 @@ class Ripley(Store):
             stock = -1
 
         if 'offerPrice' in specs_json['prices']:
-            normal_price = Decimal(specs_json['prices']['offerPrice'])
+            normal_price = Decimal(
+                specs_json['prices']['offerPrice']).quantize(0)
         elif 'listPrice' in specs_json['prices']:
-            normal_price = Decimal(specs_json['prices']['listPrice'])
+            normal_price = Decimal(
+                specs_json['prices']['listPrice']).quantize(0)
         else:
             return []
 
-        offer_price = Decimal(specs_json['prices'].get('cardPrice',
-                                                       normal_price))
+        offer_price = Decimal(specs_json['prices'].get(
+            'cardPrice', normal_price)).quantize(0)
 
         if offer_price > normal_price:
             offer_price = normal_price
@@ -438,6 +440,8 @@ class Ripley(Store):
             seller = 'Mercado R'
         else:
             seller = None
+
+        print(url)
 
         p = Product(
             name,

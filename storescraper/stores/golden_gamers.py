@@ -6,10 +6,11 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, MOTHERBOARD, PROCESSOR, \
     VIDEO_CARD, COMPUTER_CASE, RAM, GAMING_CHAIR, MOUSE, KEYBOARD, \
     MONITOR, NOTEBOOK, CPU_COOLER, POWER_SUPPLY, MICROPHONE, TABLET, \
-    STEREO_SYSTEM, SOLID_STATE_DRIVE, CASE_FAN
+    STEREO_SYSTEM, SOLID_STATE_DRIVE, CASE_FAN, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class GoldenGamers(Store):
@@ -33,7 +34,8 @@ class GoldenGamers(Store):
             TABLET,
             STEREO_SYSTEM,
             SOLID_STATE_DRIVE,
-            CASE_FAN
+            CASE_FAN,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -57,6 +59,7 @@ class GoldenGamers(Store):
             ['componentes/tipo-de-producto_placa-madre', MOTHERBOARD],
             ['componentes/tipo-de-producto_refrigeracion', CPU_COOLER],
             ['componentes/tipo-de-producto_tarjeta-de-video', VIDEO_CARD],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -110,6 +113,10 @@ class GoldenGamers(Store):
             in product_container.find('div', 'swiper-horiz-'
                                              'thumbnails-main-container').
             findAll('img')]
+
+        description = html_to_markdown(
+            str(soup.find('div', 'product-item-caption-desc')))
+
         p = Product(
             name,
             cls.__name__,
@@ -122,6 +129,7 @@ class GoldenGamers(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
