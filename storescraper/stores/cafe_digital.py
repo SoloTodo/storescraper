@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD, COMPUTER_CASE, CPU_COOLER, \
     HEADPHONES, KEYBOARD_MOUSE_COMBO, KEYBOARD, MOUSE, MONITOR, GAMING_CHAIR, \
-    PROCESSOR, NOTEBOOK, CASE_FAN
+    PROCESSOR, NOTEBOOK, CASE_FAN, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -34,6 +34,7 @@ class CafeDigital(Store):
             GAMING_CHAIR,
             NOTEBOOK,
             CASE_FAN,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -56,7 +57,8 @@ class CafeDigital(Store):
             ['perifericos/teclados', KEYBOARD],
             ['perifericos/mouse', MOUSE],
             ['monitores-pc', MONITOR],
-            ['sillas-gamer', GAMING_CHAIR]
+            ['sillas-gamer', GAMING_CHAIR],
+            ['parlantes', STEREO_SYSTEM],
         ]
 
         session = session_with_proxy(extra_args)
