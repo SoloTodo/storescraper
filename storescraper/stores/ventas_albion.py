@@ -110,10 +110,12 @@ class VentasAlbion(Store):
                 soup.find('script', {'type': 'application/ld+json'}).text)
             key = str(product_data['sku'])
             stock_tag = soup.find('input', {'name': 'quantity'})
+            stock = 0
             if stock_tag:
-                stock = int(stock_tag.get('max', 1))
-            else:
-                stock = 0
+                if 'max' in stock_tag.attrs and stock_tag['max']:
+                    stock = int(stock_tag['max'])
+                else:
+                    stock = -1
             price = Decimal(product_data['offers'][0]['price'])
             picture_urls = [tag['src'] for tag in soup.find(
                 'div', 'woocommerce-product-gallery').findAll('img')]

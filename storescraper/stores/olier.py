@@ -94,7 +94,7 @@ class Olier(Store):
             return []
         price = Decimal(
             p_price.find('span', 'amount')
-                .text.replace('₲.', '').replace('.', ''))
+                   .text.replace('₲.', '').replace('.', ''))
 
         picture_urls = [soup.find('meta', {'name': 'og:image'})['content']]
 

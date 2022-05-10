@@ -139,7 +139,8 @@ class TravelTienda(Store):
                         picture.replace(' ', '%20') for picture in
                         json_container['fullImageURLs']]
 
-        stock_endpoint = 'https://tienda.travel.cl/ccstore/v1/stockStatus?products={}&actualStockStatus=true'.format(sku)
+        stock_endpoint = 'https://tienda.travel.cl/ccstore/v1/stockStatus?' \
+            'products={}&actualStockStatus=true'.format(sku)
         stock_res = session.get(stock_endpoint)
         stock = stock_res.json()['items'][0]['productSkuInventoryStatus'][sku]
 
