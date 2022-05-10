@@ -7,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     VIDEO_GAME_CONSOLE, GAMING_CHAIR, KEYBOARD, COMPUTER_CASE, RAM, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, MONITOR, PRINTER, STEREO_SYSTEM, \
-    MICROPHONE, CPU_COOLER
+    MICROPHONE, CPU_COOLER, POWER_SUPPLY
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -37,7 +37,8 @@ class ZonaPortatil(Store):
             PRINTER,
             STEREO_SYSTEM,
             MICROPHONE,
-            CPU_COOLER
+            CPU_COOLER,
+            POWER_SUPPLY,
         ]
 
     @classmethod
@@ -65,6 +66,7 @@ class ZonaPortatil(Store):
             ['almacenamiento/memorias-flash', MEMORY_CARD],
             ['monitores-proyectores/monitores', MONITOR],
             ['impresoras', PRINTER],
+            ['zona-gamer/fuente-de-poder', POWER_SUPPLY],
             ['zona-gamer/monitores-zona-gamer', MONITOR],
             ['zona-gamer/sillas-gamer', GAMING_CHAIR],
             ['zona-gamer/gabinetes-zona-gamer', COMPUTER_CASE],
@@ -72,6 +74,9 @@ class ZonaPortatil(Store):
             ['zona-gamer/teclados-mouse-zona-gamer', KEYBOARD],
             ['zona-gamer/microfonos', MICROPHONE],
             ['zona-gamer/refrigeracion', CPU_COOLER],
+            ['zona-gamer/placas-madres-zona-gamer', MOTHERBOARD],
+            ['zona-gamer/procesadores-zona-gamer', PROCESSOR],
+            ['zona-gamer/tarjetas-graficas-zona-gamer', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
