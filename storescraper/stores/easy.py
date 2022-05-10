@@ -1,12 +1,15 @@
+import base64
 import json
 import logging
-import re
+import urllib
 from collections import defaultdict
 from decimal import Decimal
 
+from bs4 import BeautifulSoup
+
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Easy(Store):
@@ -65,7 +68,8 @@ class Easy(Store):
              'Termos y calderas', 1],
 
             # Refrigeración
-            ['refrigeracion-refrigeradores', ['Refrigerator'],
+            ['electrohogar-y-climatizacion/refrigeracion/refrigeradores',
+             ['Refrigerator'],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Refrigeradores', 1],
             ['refrigeracion-freezer', ['Refrigerator'],
@@ -121,9 +125,6 @@ class Easy(Store):
              'Purificadores y humidificadores', 1],
         ]
 
-        base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
-        cat_url = 'https://www.easy.cl/api/cateasy/_search'
-        prods_url = 'https://www.easy.cl/api/prodeasy/_search'
         product_entries = defaultdict(lambda: [])
         session = session_with_proxy(extra_args)
 
@@ -133,57 +134,67 @@ class Easy(Store):
             if category not in local_categories:
                 continue
 
-            cat_data = {
-                "query": {
-                    "term":
-                        {"seo_url.keyword": category_path}
-                }
-            }
+            offset = 0
 
-            cat_response = session.post(cat_url, json=cat_data)
-            cat_json = json.loads(cat_response.content.decode('utf-8'))
-            cat_hits = cat_json['hits']['hits']
+            while True:
+                if offset > 1000:
+                    raise Exception('Page overflow')
 
-            if not cat_hits:
-                logging.warning('Empty category: {}'.format(category_path))
-                continue
-
-            cat_value = cat_hits[0]['_source']['value']
-            cat_field = cat_hits[0]['_source']['field'] + ".raw"
-
-            prods_data = {
-                "query": {
-                    "function_score": {
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "term": {
-                                            cat_field: cat_value
-                                        }
-                                    }
-                                ]
-                            }
+                graphql_variables = {
+                    "hideUnavailableItems": False,
+                    "skusFilter": "FIRST_AVAILABLE",
+                    "simulationBehavior": "default",
+                    "installmentCriteria": "MAX_WITHOUT_INTEREST",
+                    "productOriginVtex": False,
+                    "map": "c,c,c",
+                    "query": category_path,
+                    "orderBy": "",
+                    "from": offset,
+                    "to": offset + 99,
+                    "selectedFacets": [
+                        {
+                            "key": "c", "value": ""
                         }
-                    }
-                },
-                "size": 10000
-            }
+                    ],
+                    "facetsBehavior": "Static",
+                    "categoryTreeBehavior": "default",
+                    "withFacets": False
+                }
 
-            prods_response = session.post(prods_url, json=prods_data)
-            prods_json = json.loads(prods_response.text)
-            prods_hits = prods_json['hits']['hits']
+                encoded_graphql_variables = base64.b64encode(
+                    json.dumps(graphql_variables).encode(
+                        'utf-8')).decode('utf-8')
 
-            if not prods_hits:
-                logging.warning('Empty section {}'.format(category_path))
+                query_extensions = {
+                    "persistedQuery": {
+                        "version": 1,
+                        "sha256Hash": "6869499be99f20964918e2fe0d1166fdf"
+                                      "6c006b1766085db9e5a6bc7c4b957e5"
+                    },
+                    "variables": encoded_graphql_variables
+                }
+                encoded_query_extensions = urllib.parse.quote(json.dumps(
+                    query_extensions))
+                endpoint = 'https://www.easy.cl/_v/segment/' \
+                           'graphql/v1?extensions=' + encoded_query_extensions
 
-            for idx, prods_hit in enumerate(prods_hits):
-                product_url = base_prod_url.format(prods_hit['_source']['url'])
-                product_entries[product_url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+                res = session.get(endpoint).json()
+                raw_product_entries = res['data']['productSearch']['products']
+
+                if not raw_product_entries:
+                    if not offset:
+                        logging.warning('Empty category: ' + category_path)
+                    break
+
+                for idx, prods_hit in enumerate(raw_product_entries):
+                    product_url = 'https://www.easy.cl' + prods_hit['link']
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': idx + 1
+                    })
+
+                offset += 100
 
         return product_entries
 
@@ -258,71 +269,54 @@ class Easy(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        prod_url = 'https://www.easy.cl/api/prodeasy*/_search'
-        prod_keyword = url.split('/')[-1]
-        prod_data = {
-            "query": {
-                "bool": {
-                    "minimum_should_match": 1,
-                    "should": [
-                        {"term": {"url.keyword": prod_keyword}},
-                        {"term": {"children.url.keyword": prod_keyword}}]}}}
-
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        product_data = json.loads(soup.find(
+            'template', {'data-varname': '__STATE__'}).text)
 
-        prod_response = session.post(prod_url, data=json.dumps(prod_data))
-        prod_json = json.loads(prod_response.text)
+        base_json_keys = list(product_data.keys())
 
-        if not prod_json['hits']['hits']:
+        if not base_json_keys:
             return []
 
-        prod_hit = prod_json['hits']['hits'][0]
+        base_json_key = base_json_keys[0]
+        product_specs = product_data[base_json_key]
 
-        name = prod_hit['_source']['name'].strip()
-        sku = prod_hit['_source']['partNumber']
-        stock = prod_hit['_source']['stock']
+        name = product_specs['productName']
+        # Use the 'productReference' field and add the P to have the
+        # same current key in the DB
+        key = product_specs['productReference'] + 'P'
+        # Store the new key to use in the SKU field for now, after running this
+        # scraper, swap the keys and skus in the DB and edit this scraper to
+        # make it finally correct
+        sku = product_specs['productId']
+        description = html_to_markdown(product_specs.get('description', None))
 
-        normal_price = prod_hit['_source']['price_internet']
-        offer_price = prod_hit['_source']['price_tc']
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
 
-        if not normal_price:
-            return []
+        normal_price = Decimal(pricing_data['Price'])
+
+        offer_price_key = '{}.teasers.0.effects.parameters.0'.format(
+            pricing_key)
+        offer_price_json_value = product_data.get(offer_price_key, None)
+        if offer_price_json_value:
+            offer_price = Decimal(offer_price_json_value['value']) \
+                          / Decimal(100)
         else:
-            normal_price = Decimal(normal_price)
+            offer_price =normal_price
 
-        if not offer_price:
-            offer_price = normal_price
-        else:
-            offer_price = Decimal(offer_price)
-
-        description = '| Caracteristica | Valor | \n' \
-                      '| -------------- | ----- | \n'
-
-        for spec in prod_hit['_source']['specs_open']:
-            description += '| {} | {} |\n'.format(spec['key'], spec['value'])
-
-        images_base_url = 'https://s7d2.scene7.com/is/image/EasySA/{}?' \
-                          'req=set,json&callback=s7jsonResponse'
-
-        images_key = sku.replace('P', '')
-        images_response = session.get(images_base_url.format(images_key))
+        stock = pricing_data['AvailableQuantity']
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
 
         picture_urls = []
-
-        if 's7jsonResponse' in images_response.text:
-            images_json = json.loads(
-                re.search(r's7jsonResponse\((.+),""\);',
-                          images_response.text).groups()[0])
-            picture_entries = images_json['set']['item']
-            if not isinstance(picture_entries, list):
-                picture_entries = [picture_entries]
-
-            for picture_entry in picture_entries:
-                if 'i' in picture_entry:
-                    picture_url = 'https://s7d2.scene7.com/is/image/' \
-                                  '{}?scl=1.0'.format(picture_entry['i']['n'])
-                    picture_urls.append(picture_url)
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -330,14 +324,14 @@ class Easy(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            picture_urls=picture_urls,
             description=description,
-            picture_urls=picture_urls
         )
 
         return [p]
