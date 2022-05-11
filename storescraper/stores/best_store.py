@@ -104,7 +104,7 @@ class BestStore(Store):
                 continue
             page = 1
             while True:
-                if page > 25:
+                if page > 30:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.beststore.cl/{}?page={}'.format(
                     url_extension, page)
