@@ -73,7 +73,7 @@ class Spaceman(Store):
 
         if soup.find('form', 'variations_form'):
             product_variants = json.loads(soup.find('form', 'variations_form')[
-                                              'data-product_variations'])
+                'data-product_variations'])
             products = []
 
             if not product_variants:
@@ -113,7 +113,10 @@ class Spaceman(Store):
                 products.append(p)
             return products
         add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
-        sku = soup.find('input', {'name': 'comment_post_ID'})['value']
+        json_data = json.loads(
+            soup.find('script',
+                      {'type': 'application/ld+json'}).text)['@graph'][-1]
+        sku = str(json_data['sku'])
 
         if add_to_cart_button and soup.find('p', 'stock'):
             stock = int(soup.find('p', 'stock').text.split()[0])
@@ -122,7 +125,8 @@ class Spaceman(Store):
         else:
             stock = 0
 
-        price = Decimal(remove_words(soup.findAll('bdi')[-1].text))
+        price = Decimal(json_data['offers'][0]['price'])
+
         picture_urls = []
         for tag in soup.find('div', 'woocommerce-product-gallery').findAll(
                 'img'):
