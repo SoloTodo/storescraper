@@ -84,7 +84,7 @@ class BulldogPc(Store):
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
         json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)['@graph'][0]
+            'script', {'type': 'application/ld+json'})[-1].text)['@graph'][0]
         name = json_data['name']
         sku = str(json_data['sku'])
         description = json_data['description']
