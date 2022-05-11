@@ -110,7 +110,7 @@ class Dust2(Store):
                 if page > 20:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://dust2.gg/categoria-producto/{}/page' \
-                              '/{}/'.format(url_extension, page)
+                              '/{}/?orderby=price'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')

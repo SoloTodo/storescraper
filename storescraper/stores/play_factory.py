@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import CASE_FAN, GAMING_CHAIR, \
     KEYBOARD_MOUSE_COMBO, MICROPHONE, MONITOR, MOTHERBOARD, MOUSE, KEYBOARD, \
-    HEADPHONES, COMPUTER_CASE, POWER_SUPPLY, PROCESSOR, VIDEO_GAME_CONSOLE
+    HEADPHONES, COMPUTER_CASE, PROCESSOR, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -17,44 +17,38 @@ class PlayFactory(Store):
     @classmethod
     def categories(cls):
         return [
-            KEYBOARD_MOUSE_COMBO,
-            MOUSE,
-            KEYBOARD,
+            CASE_FAN,
+            MOTHERBOARD,
+            PROCESSOR,
+            VIDEO_CARD,
+            SOLID_STATE_DRIVE,
+            RAM,
+            COMPUTER_CASE,
             MONITOR,
             GAMING_CHAIR,
-            VIDEO_GAME_CONSOLE,
-            POWER_SUPPLY,
-            MOTHERBOARD,
-            CASE_FAN,
-            COMPUTER_CASE,
-            MICROPHONE,
             HEADPHONES,
+            KEYBOARD_MOUSE_COMBO,
+            MOUSE,
+            MICROPHONE,
+            KEYBOARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['monitores', MONITOR],
-            ['computacion/perifericos/teclados', KEYBOARD],
-            ['componentes/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes/procesadores', PROCESSOR],
-            ['gaming-y-streaming/streaming/microfonos', MICROPHONE],
-            ['computacion/componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['computacion/placas-madre', MOTHERBOARD],
-            ['computacion/perifericos/mouses', MOUSE],
-            ['computacion/audifonos', HEADPHONES],
-            ['computacion/sillas-gamer', GAMING_CHAIR],
-
-            ['gaming-y-streaming/monitor-gamer', MONITOR],
-            ['gaming-y-streaming/perifericos-gamer/teclados-gamer', KEYBOARD],
-            ['gaming-y-streaming/perifericos-gamer/mouse-gamer', MOUSE],
-            ['gaming-y-streaming/perifericos-gamer/kit-gamer',
-                KEYBOARD_MOUSE_COMBO],
-            ['gaming-y-streaming/consolas-y-controles', VIDEO_GAME_CONSOLE],
-            ['criptomineria/fuente-de-poder', POWER_SUPPLY],
-            ['componentes-pc-gabinetes-soportes', COMPUTER_CASE],
-            ['componentes/refrigeracion-y-ventilacion/ventilador-gabinete',
-                CASE_FAN],
+            ['componentes/placa-madre', MOTHERBOARD],
+            ['componentes/procesadores-componentes', PROCESSOR],
+            ['componentes/tarjeta-de-video', VIDEO_CARD],
+            ['componentes/almacenamiento', SOLID_STATE_DRIVE],
+            ['componentes/memoria-ram', RAM],
+            ['computacion/gabinetes-pc', COMPUTER_CASE],
+            ['computacion/monitores-computacion', MONITOR],
+            ['mobiliario/sillas-gamer-mobiliario', GAMING_CHAIR],
+            ['zona-gamer/audifonos-zona-gamer', HEADPHONES],
+            ['zona-gamer/kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+            ['zona-gamer/mouse', MOUSE],
+            ['zona-gamer/streaming/microfonos-streaming', MICROPHONE],
+            ['zona-gamer/teclados-zona-gamer', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -65,7 +59,7 @@ class PlayFactory(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.playfactory.cl/product-category' \
+                url_webpage = 'https://www.playfactory.cl/categoria-producto' \
                               '/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
@@ -73,7 +67,7 @@ class PlayFactory(Store):
                 if '404!' in soup.text:
                     break
                 product_containers = soup.findAll(
-                    'div', 'product-inner product-item__inner')
+                    'li', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -95,37 +89,43 @@ class PlayFactory(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[-1]
-
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[1].text)['@graph'][0]
-        name = json_data['name']
-        price = Decimal(json_data['offers'][0]['price'])
+        base_name = json_data['name']
 
-        sku = soup.find('div', 'product-sku').text.split('SKU:')[-1]
+        products = []
+        varaints_json = json.loads(soup.find('form', 'variations_form cart')[
+                                   'data-product_variations'])
+        for variant in varaints_json:
+            var_name = ""
+            for key in variant['attributes']:
+                var_name += ' - ' + variant['attributes'][key]
+            name = base_name + var_name
+            price = Decimal(variant['display_price'])
 
-        stock = 0
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split('disp')[0])
+            sku = variant['sku']
+            stock = variant['max_qty']
 
-        picture_urls = []
-        figures = soup.find('figure', 'woocommerce-product-gallery__wrapper')
-        for a in figures.findAll('img'):
-            picture_urls.append(a['src'])
+            picture_urls = []
+            figures = soup.find(
+                'figure', 'woocommerce-product-gallery__wrapper')
+            for a in figures.findAll('img'):
+                picture_urls.append(a['src'])
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-        )
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+            )
+            products.append(p)
 
-        return [p]
+        return products

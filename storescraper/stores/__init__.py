@@ -42,6 +42,7 @@ from .cesa_pro import CesaPro
 from .cetrogar import Cetrogar
 from .centrale import Centrale
 from .central_gamer import CentralGamer
+from .chelnovix import Chelnovix
 from .chile_gamerr import ChileGamerr
 from .cintegral import Cintegral
 from .claro import Claro

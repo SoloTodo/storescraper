@@ -4,8 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, MONITOR, COMPUTER_CASE, \
-    GAMING_CHAIR, HEADPHONES
+from storescraper.categories import CPU_COOLER, MOUSE, KEYBOARD, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -17,24 +16,25 @@ class Spaceman(Store):
         return [
             MOUSE,
             KEYBOARD,
-            MONITOR,
-            COMPUTER_CASE,
-            GAMING_CHAIR,
             HEADPHONES,
+            CPU_COOLER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['gabinetes', COMPUTER_CASE],
-            ['monitores', MONITOR],
-            ['mouse', MOUSE],
-            ['teclados', KEYBOARD],
-            ['sillas', GAMING_CHAIR],
-            ['audifonos', HEADPHONES],
+            ['home-office/mouse-ofimatica', MOUSE],
+            ['home-office/teclado-ofimatica', KEYBOARD],
+            ['perifericos-gaming/audifonos', HEADPHONES],
+            ['perifericos-gaming/mouse', MOUSE],
+            ['perifericos-gaming/teclado', KEYBOARD],
+            ['refrigeracion-pc/ventiladores', CPU_COOLER],
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -45,31 +45,29 @@ class Spaceman(Store):
             while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webapge = 'https://www.spaceman.cl/catergoria-producto/' \
-                              '{}/page/{}'.format(url_extension, page)
+                url_webapge = 'https://www.spaceman.cl/categoria-producto/' \
+                              '{}/page/{}/'.format(url_extension, page)
                 print(url_webapge)
-                data = session.get(url_webapge).text
+                data = session.get(url_webapge, timeout=120).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', 'products')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('li'):
-                    product_url = container.find('a')['href']
-                    if product_url in local_urls:
-                        done = True
-                        break
-                    local_urls.append(product_url)
+                for container in product_containers.findAll('li', 'product'):
+                    product_urls.append(container.find('a')['href'])
                 page += 1
-            product_urls.extend(local_urls)
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        response = session.get(url, timeout=120)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
 
@@ -88,7 +86,7 @@ class Spaceman(Store):
                     variant['attributes'].values())
                 sku = str(variant['variation_id'])
                 stock_container = BeautifulSoup(variant['availability_html'],
-                                                'html.parser').find('span',
+                                                'html.parser').find('p',
                                                                     'stock')
                 if stock_container:
                     stock = int(stock_container.text.split()[0])
@@ -117,8 +115,8 @@ class Spaceman(Store):
         add_to_cart_button = soup.find('button', {'name': 'add-to-cart'})
         sku = soup.find('input', {'name': 'comment_post_ID'})['value']
 
-        if add_to_cart_button and soup.find('span', 'stock'):
-            stock = int(soup.find('span', 'stock').text.split()[0])
+        if add_to_cart_button and soup.find('p', 'stock'):
+            stock = int(soup.find('p', 'stock').text.split()[0])
         elif add_to_cart_button:
             stock = -1
         else:
@@ -128,9 +126,10 @@ class Spaceman(Store):
         picture_urls = []
         for tag in soup.find('div', 'woocommerce-product-gallery').findAll(
                 'img'):
-            picture_url = tag['src'].replace('-100x100', '')
-            if picture_url not in picture_urls:
-                picture_urls.append(picture_url)
+            if 'src' in tag.attrs:
+                picture_url = tag['src'].replace('-100x100', '')
+                if picture_url not in picture_urls:
+                    picture_urls.append(picture_url)
         p = Product(
             name,
             cls.__name__,

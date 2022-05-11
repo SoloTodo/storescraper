@@ -11,7 +11,8 @@ from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, PROJECTOR, \
     VIDEO_GAME_CONSOLE, STEREO_SYSTEM, ALL_IN_ONE, MOUSE, OPTICAL_DRIVE, \
     KEYBOARD, KEYBOARD_MOUSE_COMBO, WEARABLE, UPS, AIR_CONDITIONER, \
-    GAMING_CHAIR, REFRIGERATOR, WASHING_MACHINE, MICROPHONE, CASE_FAN
+    GAMING_CHAIR, REFRIGERATOR, WASHING_MACHINE, MICROPHONE, CASE_FAN, \
+    HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -55,7 +56,8 @@ class PcFactory(Store):
             REFRIGERATOR,
             WASHING_MACHINE,
             MICROPHONE,
-            CASE_FAN
+            CASE_FAN,
+            HEADPHONES
         ]
 
     @classmethod
@@ -119,6 +121,7 @@ class PcFactory(Store):
             ['1104', WASHING_MACHINE],
             ['528', MICROPHONE],
             ['647', CASE_FAN],
+            ['850', HEADPHONES],
         ]
         product_urls = []
         for url_extension, local_category in url_extensions:
