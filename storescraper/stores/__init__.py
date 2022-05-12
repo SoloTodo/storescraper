@@ -367,6 +367,7 @@ from .tecno_site import TecnoSite
 from .tecno_store_chile import TecnoStoreChile
 from .tekstore import Tekstore
 from .terabyte import Terabyte
+from .tic_online_store import TicOnlineStore
 from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
