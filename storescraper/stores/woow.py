@@ -1,6 +1,8 @@
 import json
 from decimal import Decimal
 import logging
+import re
+import time
 
 from bs4 import BeautifulSoup
 
@@ -34,26 +36,23 @@ class Woow(Store):
                 url_webpage = 'https://shop.tata.com.uy/lg/lg?_q=lg&fuzzy=0' \
                     '&initialMap=ft&initialQuery=lg&map=brand,ft&operator=a' \
                     'nd&page={}'.format(page)
-                max_tries = 0
-                while max_tries < 3:
-                    try:
-                        data = session.get(url_webpage).text
-                        soup = BeautifulSoup(data, 'html.parser')
-                        json_data = json.loads(soup.findAll(
-                            'script', {'type': 'application/ld+json'})[1].text)
-                        break
-                    except Exception as e:
-                        print(e)
-                        max_tries += 1
-                item_list = json_data['itemListElement']
-                if len(item_list) == 0:
+                print(url_webpage)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+
+                if 'oops!' in soup.text:
                     if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                        logging.warning('Empty category: ' + local_category)
                     break
-                else:
-                    for i in item_list:
-                        product_urls.append(i['url'].replace(
-                            'https://portal.vtexcommercestable.com.br/', ''))
+
+                template = soup.find('template', {'data-varname': '__STATE__'})
+                item_list = json.loads(template.text)
+                for k in item_list.keys():
+                    if 'linkText' in item_list[k]:
+                        product = item_list[k]['linkText']
+                        product_urls.append(
+                            f"https://shop.tata.com.uy/{product}/p")
+
                 page += 1
         return product_urls
 
@@ -83,8 +82,8 @@ class Woow(Store):
                             'div',
                             'vtex-store-components-3-x-'
                             'productImagesGallerySlide'
-                            ).findAll('img')
-                        ]
+        ).findAll('img')
+        ]
         p = Product(
             name,
             cls.__name__,
