@@ -6,7 +6,8 @@ from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, WATER_HEATER
+from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, \
+    SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, WATER_HEATER
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -32,22 +33,29 @@ class Easy(Store):
             # Electrohogar y climatización
 
             # Calefacción
-            ['electrohogar-y-climatizacion/calefaccion/estufas-electricas', [SPACE_HEATER],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-electricas',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas Eléctricas', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-pellet', [SPACE_HEATER],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-pellet',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-gas', [SPACE_HEATER],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-gas',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Gas', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-parafina', [SPACE_HEATER],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-parafina',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Parafina', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-lena', [SPACE_HEATER],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-lena',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a leña', 1],
 
             # Calefont y Termos
-            ['electrohogar-y-climatizacion/calefont-y-termos/calefont', [WATER_HEATER],
+            ['electrohogar-y-climatizacion/calefont-y-termos/calefont',
+             [WATER_HEATER],
              'Inicio > Electrohogar y Climatización > Calefont y Termos > '
              'Calefont', 1],
-            ['electrohogar-y-climatizacion/calefont-y-termos/termos-y-calderas', [WATER_HEATER],
+            ['electrohogar-y-climatizacion/calefont-y-termos/termos-y-'
+             'calderas', [WATER_HEATER],
              'Inicio > Electrohogar y Climatización > Calefont y Termos > '
              'Termos y calderas', 1],
 
@@ -56,55 +64,69 @@ class Easy(Store):
              [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Refrigeradores', 1],
-            ['electrohogar-y-climatizacion/refrigeracion/freezer', [REFRIGERATOR],
+            ['electrohogar-y-climatizacion/refrigeracion/freezer',
+             [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Freezer', 1],
-            ['electrohogar-y-climatizacion/refrigeracion/frigobar', [REFRIGERATOR],
+            ['electrohogar-y-climatizacion/refrigeracion/frigobar',
+             [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Frigobar', 1],
 
             # Cocina
-            ['electrohogar-y-climatizacion/cocina/hornos-empotrables', [OVEN],
+            ['electrohogar-y-climatizacion/cocina/hornos-empotrables',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Cocina > '
              'Hornos Empotrables', 1],
-            ['electrohogar-y-climatizacion/electrodomesticos/microondas', [OVEN],
+            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Cocina > Microondas', 1],
 
             # Lavado y planchado
-            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras', [WASHING_MACHINE],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras',
+             [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Lavadoras', 1],
-            ['electrohogar-y-climatizacion/lavado-y-planchado/secadoras', [WASHING_MACHINE],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/secadoras',
+             [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Secadoras', 1],
-            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras-secadoras', [WASHING_MACHINE],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras-'
+             'secadoras', [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Lava - seca', 1],
 
             # Aspirado y limpieza
-            ['electrohogar-y-climatizacion/aspirado-y-limpieza/aspiradoras', [VACUUM_CLEANER],
+            ['electrohogar-y-climatizacion/aspirado-y-limpieza/aspiradoras',
+             [VACUUM_CLEANER],
              'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
              'Aspiradoras', 1],
-            ['electrohogar-y-climatizacion/aspirado-y-limpieza/robots-de-limpieza', [VACUUM_CLEANER],
+            ['electrohogar-y-climatizacion/aspirado-y-limpieza/robots-de-'
+             'limpieza', [VACUUM_CLEANER],
              'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
              'Robots de limpieza', 1],
 
             # Electrodomésticos
-            ['electrohogar-y-climatizacion/electrodomesticos/hornos-electricos', [OVEN],
+            ['electrohogar-y-climatizacion/electrodomesticos/hornos-'
+             'electricos', [OVEN],
              'Inicio > Electrohogar y Climatización > Electrodomésticos > '
              'Hornos eléctricos', 1],
-            ['electrohogar-y-climatizacion/electrodomesticos/microondas', [OVEN],
+            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Electrodomésticos > '
              'Microondas', 1],
 
             # Ventilación
-            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-portatil', [AIR_CONDITIONER],
+            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
+             'portatil', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Aire acondicionado portátil', 1],
-            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-split', [AIR_CONDITIONER],
+            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
+             'split', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Aire Acondicionado split', 1],
-            ['electrohogar-y-climatizacion/ventilacion/purificadores-y-humidificadores', [AIR_CONDITIONER],
+            ['electrohogar-y-climatizacion/ventilacion/purificadores-y-'
+             'humidificadores', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Purificadores y humidificadores', 1],
         ]
