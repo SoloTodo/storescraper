@@ -29,7 +29,7 @@ class Woow(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow: ' + local_category)
                 url_webpage = 'https://shop.tata.com.uy/lg/lg?_q=lg&fuzzy=0' \
                     '&initialMap=ft&initialQuery=lg&map=brand,ft&operator=a' \
