@@ -1,5 +1,4 @@
 import json
-import re
 from collections import defaultdict
 from decimal import Decimal
 
@@ -187,7 +186,8 @@ class Claro(Store):
 
         category_entries_tag = soup.find(
             'div', {'id': 'entitledItem_' + product_id})
-        category_entries = json.loads(category_entries_tag.text)
+        category_entries = json.loads(
+            category_entries_tag.text.replace('\'', '\"'))
 
         session.headers['Content-Type'] = 'application/x-www-form-urlencoded' \
                                           '; charset=UTF-8'
