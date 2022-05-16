@@ -69,8 +69,11 @@ class Ripley(Store):
         # of the library. We patch it by detecting this call and calling
         # a function that actually uses the URL PDP page of the product.
         if extra_args and extra_args.get('source', None) == 'keyword_search':
-            return [cls._assemble_full_product(
-                url, category, extra_args)]
+            product = cls._assemble_full_product(
+                url, category, extra_args)
+            if not product:
+                return []
+            return [product]
 
         category_paths = [
             ['tecno/computacion/notebooks', ['Notebook'],
@@ -332,9 +335,13 @@ class Ripley(Store):
                 return cls._assemble_full_product(url, category, extra_args,
                                                   retries=retries - 1)
             else:
-                return []
+                return None
 
         product_json = json.loads(product_data.groups()[0])
+
+        if 'product' not in product_json:
+            return None
+
         specs_json = product_json['product']['product']
 
         sku = specs_json['partNumber']
