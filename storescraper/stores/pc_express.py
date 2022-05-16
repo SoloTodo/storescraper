@@ -2,6 +2,7 @@ import logging
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
+import validators
 
 from storescraper.categories import GAMING_CHAIR, ALL_IN_ONE, TELEVISION, \
     CPU_COOLER, CASE_FAN
@@ -173,7 +174,7 @@ class PcExpress(Store):
 
         thumbnails = soup.find('ul', 'thumbnails')
 
-        if thumbnails:
+        if thumbnails and validators.url(thumbnails.a['href']):
             picture_urls = [thumbnails.a['href']]
 
         p = Product(

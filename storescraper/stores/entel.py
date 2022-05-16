@@ -1,7 +1,6 @@
 import json
 
 import demjson
-import math
 import re
 
 from collections import defaultdict
@@ -39,7 +38,7 @@ class Entel(Store):
             for endpoint in endpoints:
                 json_url = 'https://miportal.entel.cl/personas/catalogo/{}?' \
                            'No=0&Nrpp=1000&subPath=main%5B1%5D'.format(
-                            endpoint)
+                               endpoint)
                 response = session.get(json_url)
 
                 json_product_list = json.loads(
@@ -48,7 +47,7 @@ class Entel(Store):
                 for idx, device in enumerate(json_product_list):
                     product_url = 'https://miportal.entel.cl/personas/' \
                                   'producto{}'.format(
-                                    device['detailsAction']['recordState'])
+                                      device['detailsAction']['recordState'])
 
                     # We mostly don't care about the exact position, just
                     # merge the endpoints data
@@ -107,9 +106,10 @@ class Entel(Store):
         endpoint = 'https://www.entel.cl/planes/includes/includes-planes/' \
                    'new-card/public/js/data-planes.js?v=66.10'
         res = session.get(endpoint)
-        raw_plans = re.search(r'Planes_TP_25dcto = ([\s\S]*?)\];',
+        raw_plans = re.search(r'Planes_TP_25dcto=([\s\S]*?),Planes_TP_50dcto=',
                               res.text).groups()[0]
-        plans = demjson.decode(raw_plans + ']')
+        print(raw_plans)
+        plans = demjson.decode(raw_plans)
 
         products = []
 
