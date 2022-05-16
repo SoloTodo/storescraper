@@ -94,11 +94,12 @@ class SipoOnline(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'nv-product-content')
-                if not product_containers:
+                main = soup.find('main', 'site-main')
+                if not main:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+                product_containers = soup.findAll('li', 'product')
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
