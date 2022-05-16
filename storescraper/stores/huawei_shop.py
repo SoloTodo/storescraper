@@ -96,21 +96,6 @@ class HuaweiShop(Store):
                     'DisplayDetailInfo?productId={}&siteCode=CL'.format(
                         product_id)
         product_json = json.loads(session.get(query_url).text)
-
-        price_res = session.get('https://itrinity-sg.c'
-                                '.huawei.com/eCommerce'
-                                '/queryMinPriceAndInv'
-                                '?productIds={}&siteCode'
-                                '=CL'.format(product_id))
-        # For some reason the encoding is detected incorrectly
-        price_res.encoding = 'UTF-8'
-        products_price = json.loads(price_res.text)
-        if not products_price['data']['minPriceAndInvList']:
-            return []
-
-        products_price = products_price['data']['minPriceAndInvList'][0][
-            'minPriceByColors']
-
         sbom_codes = []
         for product_entry in product_json['data']['sbomList']:
             sbom_codes.append(product_entry['sbomCode'])
@@ -125,6 +110,16 @@ class HuaweiShop(Store):
                                                 products_id)).text)
         stock_dict = {x['skuCode']: x['inventoryQty']
                       for x in json_stock['data']['inventoryReqVOs']}
+
+        prices_endpoint = 'https://itrinity-sg.c.huawei.com/convert/' \
+                          'querySkuDetailDispAndInv?skuCodes={}&' \
+                          'groupFlag=true&siteCode=CL&loginFrom=1'.format(
+            products_id)
+        prices_res = session.get(prices_endpoint).json()
+        price_per_sbom = {x['skuPriceInfo']['sbomCode']:
+                          Decimal(x['skuPriceInfo']['salePrice'])
+                          for x in prices_res['data']['detailDispInfos']}
+
         products = []
 
         for product in product_json['data']['sbomList']:
@@ -162,10 +157,7 @@ class HuaweiShop(Store):
 
             else:
                 sku = product['sbomCode']
-                price_value = product['gbomAttrList'][0]['attrValue']
-                price = Decimal([price['unitPrice']
-                                 for price in products_price if
-                                 price_value in price.values()][0])
+                price = price_per_sbom[sku]
 
                 p = Product(
                     name,
