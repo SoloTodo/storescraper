@@ -114,7 +114,7 @@ class HuaweiShop(Store):
         prices_endpoint = 'https://itrinity-sg.c.huawei.com/convert/' \
                           'querySkuDetailDispAndInv?skuCodes={}&' \
                           'groupFlag=true&siteCode=CL&loginFrom=1'.format(
-            products_id)
+                                products_id)
         prices_res = session.get(prices_endpoint).json()
         price_per_sbom = {x['skuPriceInfo']['sbomCode']:
                           Decimal(x['skuPriceInfo']['salePrice'])
