@@ -138,6 +138,10 @@ class LgV5(Store):
         content = requests.get(url).text
 
         section_data = re.search(r'_dl =([{\S\s]+\});', content)
+
+        if not section_data:
+            return None
+
         section_data = demjson.decode(section_data.groups()[0])
 
         field_candidates = [
