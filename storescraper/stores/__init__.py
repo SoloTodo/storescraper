@@ -324,6 +324,7 @@ from .samsung_shop import SamsungShop
 from .samurai_store import SamuraiStore
 from .sanborns import Sanborns
 from .sandos import Sandos
+from .santa_isabel import SantaIsabel
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
