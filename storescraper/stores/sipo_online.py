@@ -127,9 +127,6 @@ class SipoOnline(Store):
         if not variants:
             variants = soup.find('div', 'variations_form')
 
-        gallery_tag = soup.find('div', 'woocommerce-product-gallery')
-        is_preorder = 'VENTA' in gallery_tag.text.upper()
-
         if variants:
             products = []
             container_products = json.loads(
@@ -142,16 +139,18 @@ class SipoOnline(Store):
                     variant_name = name
                 sku = str(product['variation_id'])
 
-                if is_preorder:
-                    stock = 0
-                elif product['availability_html'] != '':
+                if product['availability_html'] != '':
                     stock = int(
                         BeautifulSoup(product['availability_html'],
                                       'html.parser').text.split()[0])
                 else:
                     stock = -1
                 normal_price = Decimal(product['display_price'])
-                offer_price = (normal_price * Decimal('0.97')).quantize(0)
+                if soup.find('p', 'price').text == '':
+                    offer_price = (
+                        normal_price * Decimal('0.98004')).quantize(0)
+                else:
+                    offer_price = normal_price
                 picture_urls = [product['image']['src']]
                 p = Product(
                     variant_name,
@@ -172,9 +171,7 @@ class SipoOnline(Store):
             return products
         else:
             stock_container = soup.find('p', 'stock in-stock')
-            if is_preorder:
-                stock = 0
-            elif stock_container:
+            if stock_container:
                 stock = int(stock_container.text.split()[0])
             elif soup.find('p', 'stock out-of-stock'):
                 stock = 0
@@ -183,11 +180,14 @@ class SipoOnline(Store):
             sku = soup.find(
                 'link', {'rel': 'shortlink'})['href'].split('p=')[1]
             normal_price = Decimal(product_data['offers'][0]['price'])
-            offer_price = (normal_price * Decimal('0.97')).quantize(0)
-            picture_containers = soup.find('div',
-                                           'woocommerce-product-gallery') \
+            if soup.find('p', 'price').text == '':
+                offer_price = (normal_price * Decimal('0.98004')).quantize(0)
+            else:
+                offer_price = normal_price
+            picture_containers = soup.find('ul',
+                                           'swiper-wrapper') \
                 .findAll('img')
-            picture_urls = [tag['data-src'] for tag in picture_containers]
+            picture_urls = [tag['src'] for tag in picture_containers]
             p = Product(
                 name,
                 cls.__name__,
