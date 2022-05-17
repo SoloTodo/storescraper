@@ -97,6 +97,9 @@ class SantaIsabel(Store):
 
         price = Decimal(seller_info['Price'])
 
+        if seller_info['AvailableQuantity'] == 0:
+            return []
+
         picture_urls = []
         for i in product_item['images']:
             picture_urls.append(i['imageUrl'].split('?')[0])
