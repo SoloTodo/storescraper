@@ -394,6 +394,7 @@ from .tottus import Tottus
 from .ttchile import TtChile
 from .tupi import Tupi
 from .ultra_pc import UltraPc
+from .unimarc import Unimarc
 from .updatech import Updatech
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
