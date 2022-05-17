@@ -84,8 +84,8 @@ class ConexionDigital(Store):
 
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('=')[-1]
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']
         sku = json_data['sku']
