@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import GROCERIES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import check_ean13, session_with_proxy
 
 
 class Unimarc(Store):
@@ -73,6 +73,8 @@ class Unimarc(Store):
 
         item = json_data['items'][0]
         ean = item.get('ean', None)
+        if not check_ean13(ean):
+            ean = None
 
         picture_urls = []
         for i in item['images']:
