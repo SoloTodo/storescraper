@@ -44,18 +44,18 @@ class SendTech(Store):
         url_extensions = [
             ['climatizacion/aire-acondicionado', AIR_CONDITIONER],
             ['climatizacion/purificador-de-aire', AIR_CONDITIONER],
-            ['electro-hogas/aspiradoras/', VACUUM_CLEANER],
-            ['electro-hogas/microondas/hornos-electricos', OVEN],
-            ['electro-hogas/microondas/microondas-microondas', OVEN],
-            ['linea-blanca/empotrados/hornos-empotrados', OVEN],
-            ['electrodomesticos/lavadora/lavadoras', WASHING_MACHINE],
-            ['electrodomesticos/lavavajillas', DISH_WASHER],
-            ['electrodomesticos/refrigerador', REFRIGERATOR],
-            ['gaming/accesorios-gaming', POWER_SUPPLY],
-            ['gaming/auriculares', HEADPHONES],
-            ['gaming/disco-duro-solidos', SOLID_STATE_DRIVE],
-            ['gaming/mouse', MOUSE],
-            ['gaming/teclados', KEYBOARD],
+            ['electro-hogar/aspiradoras', VACUUM_CLEANER],
+            ['electro-hogar/hornos-electricos', OVEN],
+            ['electro-hogar/microondas', OVEN],
+            ['linea-blanca/lavadora/', WASHING_MACHINE],
+            ['linea-blanca/lavavajillas', DISH_WASHER],
+            ['linea-blanca/refrigerador', REFRIGERATOR],
+            ['gamer/accesorios-gaming', POWER_SUPPLY],
+            ['gamer/auriculares', HEADPHONES],
+            ['electro-tecno/almacenamiento/disco-duro-solidos',
+             SOLID_STATE_DRIVE],
+            ['gamer/mouse', MOUSE],
+            ['gamer/teclados', KEYBOARD],
             ['tecnologia/audio-video/monitores', MONITOR],
             ['tecnologia/audio-video/parlantes', STEREO_SYSTEM],
             ['tecnologia/audio-video/smart-tv', TELEVISION],
@@ -67,7 +67,7 @@ class SendTech(Store):
             ['tecnologia/perifericos/auriculares-y-manos-libres', HEADPHONES],
             ['tecnologia/perifericos/mouse-accesorios', MOUSE],
             ['tecnologia/perifericos/tarjeta-de-memoria', MEMORY_CARD],
-            ['tecnologia/perifericos/teclado/', KEYBOARD],
+            ['tecnologia/perifericos/teclado', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         products_urls = []
@@ -84,7 +84,7 @@ class SendTech(Store):
                 soup = BeautifulSoup(data, 'html.parser')
                 products_containers = soup.find('ul', 'products')
                 if not products_containers:
-                    if page == 0:
+                    if page == 1:
                         logging.warning('Empty category: ' + local_category)
                     break
                 for container in products_containers.findAll('li'):
