@@ -28,7 +28,8 @@ class Reuse(Store):
         url_extensions = [
             ['celulares', CELL],
             ['computadores/tipo-de-producto_notebook', NOTEBOOK],
-            ['computadores/tipo-de-producto_all-in-one', ALL_IN_ONE],
+            ['computadores/tipo-de-producto_chromebook', NOTEBOOK],
+            ['computadores/tipo-de-producto_imac', ALL_IN_ONE],
             ['tablets-ipad', TABLET],
             ['accesorios-1/audifonos', HEADPHONES],
             ['accesorios-1/watch', WEARABLE]

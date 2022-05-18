@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, KEYBOARD, \
     MICROPHONE, MOTHERBOARD, MOUSE, POWER_SUPPLY, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_CARD
+    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_CARD, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -26,7 +26,8 @@ class ConexionDigital(Store):
             MICROPHONE,
             MOUSE,
             STEREO_SYSTEM,
-            KEYBOARD
+            KEYBOARD,
+            HEADPHONES
         ]
 
     @classmethod
@@ -41,6 +42,7 @@ class ConexionDigital(Store):
             ['componentes/procesadores', PROCESSOR],
             ['componentes/refrigeracion', CASE_FAN],
             ['componentes/tarjetas-video', VIDEO_CARD],
+            ['perifericos/audifonos', HEADPHONES],
             ['perifericos/microfonos', MICROPHONE],
             ['perifericos/mouse', MOUSE],
             ['perifericos/parlantes', STEREO_SYSTEM],
@@ -82,8 +84,8 @@ class ConexionDigital(Store):
 
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('=')[-1]
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']
         sku = json_data['sku']

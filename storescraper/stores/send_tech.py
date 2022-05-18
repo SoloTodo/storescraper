@@ -47,7 +47,7 @@ class SendTech(Store):
             ['electro-hogas/aspiradoras/', VACUUM_CLEANER],
             ['electro-hogas/microondas/hornos-electricos', OVEN],
             ['electro-hogas/microondas/microondas-microondas', OVEN],
-            ['electrodomesticos/empotrados', OVEN],
+            ['linea-blanca/empotrados/hornos-empotrados', OVEN],
             ['electrodomesticos/lavadora/lavadoras', WASHING_MACHINE],
             ['electrodomesticos/lavavajillas', DISH_WASHER],
             ['electrodomesticos/refrigerador', REFRIGERATOR],

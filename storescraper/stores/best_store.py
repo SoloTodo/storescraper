@@ -104,7 +104,7 @@ class BestStore(Store):
                 continue
             page = 1
             while True:
-                if page > 25:
+                if page > 30:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.beststore.cl/{}?page={}'.format(
                     url_extension, page)
@@ -134,10 +134,13 @@ class BestStore(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'itemprop': 'name'}).text
-        part_number = soup.find('div', 'product-reference-supplier').find(
+        container = soup.find('div', 'product-container')
+        key = container.find('meta', {'itemprop': 'sku'})['content']
+        name = container.find('h1', {'itemprop': 'name'}).text
+        part_number = container.find('div', 'product-reference-supplier').find(
             'span').text
-        sku = soup.find('span', {'itemprop': 'sku'}).text
+        sku = container.find(
+            'div', 'product-reference').find('span').text.strip()
 
         add_to_cart_button = soup.find('button', 'btn btn-primary add-to-cart')
 
@@ -174,7 +177,7 @@ class BestStore(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             part_number=part_number,
             picture_urls=picture_url,
             condition=condition

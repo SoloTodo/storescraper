@@ -17,6 +17,8 @@ from storescraper import banner_sections as bs
 
 
 class Paris(Store):
+    USER_AGENT = 'solotodobot'
+
     category_paths = [
         ['electro/television', ['Television'], 'Electro > Televisión', 1],
         ['electro/television/smart-tv', ['Television'],
@@ -229,6 +231,7 @@ class Paris(Store):
         category_paths = cls.category_paths
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = cls.USER_AGENT
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
@@ -290,6 +293,7 @@ class Paris(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = cls.USER_AGENT
         product_urls = []
 
         page = 0
@@ -340,6 +344,7 @@ class Paris(Store):
     def _get_product(cls, url, category, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = cls.USER_AGENT
         response = session.get(url)
 
         if response.status_code in [410, 404]:
@@ -531,6 +536,7 @@ class Paris(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = cls.USER_AGENT
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:

@@ -6,6 +6,8 @@ from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
+from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, \
+    SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, WATER_HEATER
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -16,21 +18,13 @@ class Easy(Store):
     @classmethod
     def categories(cls):
         return [
-            'Refrigerator',
-            'Television',
-            'Oven',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'Lamp',
-            'LightTube'
-            'LightProjector',
-            'WaterHeater',
-            'SpaceHeater',
-            'AirConditioner',
-            'Headphones'
+            REFRIGERATOR,
+            OVEN,
+            VACUUM_CLEANER,
+            WASHING_MACHINE,
+            AIR_CONDITIONER,
+            SPACE_HEATER,
+            WATER_HEATER
         ]
 
     @classmethod
@@ -39,88 +33,100 @@ class Easy(Store):
             # Electrohogar y climatización
 
             # Calefacción
-            ['estufas-electricas-', ['SpaceHeater'],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-electricas',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas Eléctricas', 1],
-            ['estufas-a-pellet-', ['SpaceHeater'],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-pellet',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
-            ['estufas-a-gas-', ['SpaceHeater'],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-gas',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Gas', 1],
-            ['estufas-a-parafina-', ['SpaceHeater'],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-parafina',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a Parafina', 1],
-            ['calefont-8', ['WaterHeater'],
-             'Inicio > Electrohogar y Climatización > Calefacción > '
-             'Calefont', 1],
-            ['estufas-a-lena', ['SpaceHeater'],
+            ['electrohogar-y-climatizacion/calefaccion/estufas-a-lena',
+             [SPACE_HEATER],
              'Inicio > Electrohogar > Calefacción > Estufas a leña', 1],
-            ['termos-calderas', ['WaterHeater'],
-             'Inicio > Electrohogar y Climatización > Calefacción > '
-             'Termos y calderas', 1],
-            ['purificadores-y-humificadores', ['AirConditioner'],
-             'Inicio > Electrohogar y Climatización > Calefacción > '
-             'Purificadores y humidificadores', 1],
 
             # Calefont y Termos
-            ['calefont-8', ['WaterHeater'],
+            ['electrohogar-y-climatizacion/calefont-y-termos/calefont',
+             [WATER_HEATER],
              'Inicio > Electrohogar y Climatización > Calefont y Termos > '
              'Calefont', 1],
-            ['termos-calderas', ['WaterHeater'],
+            ['electrohogar-y-climatizacion/calefont-y-termos/termos-y-'
+             'calderas', [WATER_HEATER],
              'Inicio > Electrohogar y Climatización > Calefont y Termos > '
              'Termos y calderas', 1],
 
             # Refrigeración
             ['electrohogar-y-climatizacion/refrigeracion/refrigeradores',
-             ['Refrigerator'],
+             [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Refrigeradores', 1],
-            ['refrigeracion-freezer', ['Refrigerator'],
+            ['electrohogar-y-climatizacion/refrigeracion/freezer',
+             [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Freezer', 1],
-            ['refrigeracion-frigobar', ['Refrigerator'],
+            ['electrohogar-y-climatizacion/refrigeracion/frigobar',
+             [REFRIGERATOR],
              'Inicio > Electrohogar y Climatización > Refrigeración > '
              'Frigobar', 1],
 
             # Cocina
-            ['hornos-empotrables-8', ['Oven'],
+            ['electrohogar-y-climatizacion/cocina/hornos-empotrables',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Cocina > '
              'Hornos Empotrables', 1],
-            ['microondas-8', ['Oven'],
+            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Cocina > Microondas', 1],
 
             # Lavado y planchado
-            ['lavadoras-8', ['WashingMachine'],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras',
+             [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Lavadoras', 1],
-            ['secadoras-8', ['WashingMachine'],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/secadoras',
+             [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Secadoras', 1],
-            ['lava-seca', ['WashingMachine'],
+            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras-'
+             'secadoras', [WASHING_MACHINE],
              'Inicio > Electrohogar y Climatización > Lavado y planchado > '
              'Lava - seca', 1],
 
             # Aspirado y limpieza
-            ['aspiradoras-', ['VacuumCleaner'],
+            ['electrohogar-y-climatizacion/aspirado-y-limpieza/aspiradoras',
+             [VACUUM_CLEANER],
              'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
              'Aspiradoras', 1],
-            ['robots-de-limpieza', ['VacuumCleaner'],
+            ['electrohogar-y-climatizacion/aspirado-y-limpieza/robots-de-'
+             'limpieza', [VACUUM_CLEANER],
              'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
              'Robots de limpieza', 1],
 
             # Electrodomésticos
-            ['hornos-electricos-8', ['Oven'],
+            ['electrohogar-y-climatizacion/electrodomesticos/hornos-'
+             'electricos', [OVEN],
              'Inicio > Electrohogar y Climatización > Electrodomésticos > '
              'Hornos eléctricos', 1],
-            ['microondas-8', ['Oven'],
+            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
+             [OVEN],
              'Inicio > Electrohogar y Climatización > Electrodomésticos > '
              'Microondas', 1],
 
             # Ventilación
-            ['ventilacion-aire-acondicionado-portatil', ['AirConditioner'],
+            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
+             'portatil', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Aire acondicionado portátil', 1],
-            ['ventilacion-aire-acondicionado-split', ['AirConditioner'],
+            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
+             'split', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Aire Acondicionado split', 1],
-            ['purificadores-y-humificadores', ['AirConditioner'],
+            ['electrohogar-y-climatizacion/ventilacion/purificadores-y-'
+             'humidificadores', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Purificadores y humidificadores', 1],
         ]
@@ -304,9 +310,9 @@ class Easy(Store):
         offer_price_json_value = product_data.get(offer_price_key, None)
         if offer_price_json_value:
             offer_price = Decimal(offer_price_json_value['value']) \
-                          / Decimal(100)
+                / Decimal(100)
         else:
-            offer_price =normal_price
+            offer_price = normal_price
 
         stock = pricing_data['AvailableQuantity']
         picture_list_key = '{}.items.0'.format(base_json_key)

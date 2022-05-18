@@ -93,27 +93,59 @@ class PlayFactory(Store):
             'script', {'type': 'application/ld+json'})[1].text)['@graph'][0]
         base_name = json_data['name']
 
+        picture_urls = []
+        figures = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        for a in figures.findAll('img'):
+            picture_urls.append(a['src'])
+
         products = []
-        varaints_json = json.loads(soup.find('form', 'variations_form cart')[
-                                   'data-product_variations'])
-        for variant in varaints_json:
-            var_name = ""
-            for key in variant['attributes']:
-                var_name += ' - ' + variant['attributes'][key]
-            name = base_name + var_name
-            price = Decimal(variant['display_price'])
+        variants_form = soup.find('form', 'variations_form cart')
+        if variants_form:
+            varaints_json = json.loads(
+                variants_form['data-product_variations'])
+            for variant in varaints_json:
+                var_name = ""
+                for key in variant['attributes']:
+                    var_name += ' - ' + variant['attributes'][key]
+                name = base_name + var_name
+                price = Decimal(variant['display_price'])
 
-            sku = variant['sku']
-            stock = variant['max_qty']
+                sku = variant['sku']
+                stock = variant['max_qty']
 
-            picture_urls = []
-            figures = soup.find(
-                'figure', 'woocommerce-product-gallery__wrapper')
-            for a in figures.findAll('img'):
-                picture_urls.append(a['src'])
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+
+            return products
+        else:
+            sku = json_data['sku']
+            price = Decimal(json_data['offers'][0]['price'])
+            stock = 0
+            qty_input = soup.find('input', 'qty')
+            if qty_input:
+                if 'type' in qty_input.attrs and qty_input['type'] == "hidden":
+                    stock = 1
+                elif 'max' in qty_input.attrs and qty_input['max'] != "":
+                    stock = int(qty_input['max'])
+                else:
+                    stock = 1
 
             p = Product(
-                name,
+                base_name,
                 cls.__name__,
                 category,
                 url,
@@ -126,6 +158,4 @@ class PlayFactory(Store):
                 sku=sku,
                 picture_urls=picture_urls,
             )
-            products.append(p)
-
-        return products
+            return [p]

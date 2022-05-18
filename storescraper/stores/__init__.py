@@ -324,6 +324,7 @@ from .samsung_shop import SamsungShop
 from .samurai_store import SamuraiStore
 from .sanborns import Sanborns
 from .sandos import Sandos
+from .santa_isabel import SantaIsabel
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
@@ -367,6 +368,7 @@ from .tecno_site import TecnoSite
 from .tecno_store_chile import TecnoStoreChile
 from .tekstore import Tekstore
 from .terabyte import Terabyte
+from .tic_online_store import TicOnlineStore
 from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
@@ -392,6 +394,7 @@ from .tottus import Tottus
 from .ttchile import TtChile
 from .tupi import Tupi
 from .ultra_pc import UltraPc
+from .unimarc import Unimarc
 from .updatech import Updatech
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers

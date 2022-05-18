@@ -1,15 +1,17 @@
 import json
 from collections import defaultdict
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
+import re
+
+from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, check_ean13
 
 
-class Jumbo(Store):
+class SantaIsabel(Store):
     @classmethod
     def categories(cls):
         return [
@@ -24,6 +26,7 @@ class Jumbo(Store):
 
         session = session_with_proxy(extra_args)
         session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
+        session.headers['x-consumer'] = 'santaisabel'
         product_entries = defaultdict(lambda: [])
 
         for url_extension, local_categories, section_name, category_weight in \
@@ -35,11 +38,11 @@ class Jumbo(Store):
             page = 1
 
             while True:
-                if page >= 75:
+                if page >= 30:
                     raise Exception('Page overflow: ' + url_extension)
 
                 api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v2/' \
-                          'products/{}?page={}'.format(
+                          'pedrofontova/products/{}?page={}'.format(
                               url_extension, page)
                 print(api_url)
 
@@ -47,11 +50,11 @@ class Jumbo(Store):
 
                 json_data = json.loads(response.text)
 
-                if "status" in json_data and json_data["status"] == 500:
+                if len(json_data["products"]) == 0:
                     break
 
                 for idx, product in enumerate(json_data['products']):
-                    product_url = 'https://www.jumbo.cl/{}/p' \
+                    product_url = 'https://www.santaisabel.cl/{}/p' \
                         .format(product['linkText'])
 
                     product_entries[product_url].append({
@@ -68,13 +71,19 @@ class Jumbo(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v1' \
-                  '/catalog_system/pub/products/search/{}/p?sc=11'. \
-            format(url.split('/')[3])
         session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
-        api_request = session.get(api_url)
+        response = session.get(url)
 
-        api_json = api_request.json()[0]
+        main_page_json = re.search(r'window.__renderData = (.+);',
+                                   response.text)
+
+        main_page_json = json.loads(main_page_json.groups()[0])
+        api_json = json.loads(main_page_json)['pdp']['product']
+
+        if len(api_json) == 0:
+            return []
+        api_json = api_json[0]
+
         name = api_json['brand'] + ' - ' + api_json['productName']
         sku = api_json['productReference']
         description = api_json['categories'][0]

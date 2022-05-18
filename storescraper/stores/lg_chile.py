@@ -1,4 +1,6 @@
 from .lg_v5 import LgV5
+from ..categories import TELEVISION, OPTICAL_DISK_PLAYER, STEREO_SYSTEM, \
+    HEADPHONES, CELL, REFRIGERATOR, WASHING_MACHINE, OVEN, MONITOR, PROJECTOR
 
 
 class LgChile(LgV5):
@@ -8,86 +10,67 @@ class LgChile(LgV5):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'OpticalDiskPlayer',
-            'StereoSystem',
-            'Projector',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'VacuumCleaner',
-            'Monitor',
-            'CellAccesory',
-            'Notebook',
-            'OpticalDrive',
-            'B2B',
-            'Headphones',
-            'Stove',
-            'AirConditioner'
+            TELEVISION,
+            OPTICAL_DISK_PLAYER,
+            STEREO_SYSTEM,
+            PROJECTOR,
+            CELL,
+            REFRIGERATOR,
+            OVEN,
+            WASHING_MACHINE,
+            MONITOR,
+            HEADPHONES
         ]
 
     @classmethod
     def _category_paths(cls):
         return [
             # Televisores
-            ('CT20106005', 'Television', True),
-            ('CT20106005', 'Television', False),
+            ('CT20106005', TELEVISION, True),
+            ('CT20106005', TELEVISION, False),
             # Video
-            ('CT20106017', 'OpticalDiskPlayer', False),
-            ('CT20106019', 'OpticalDiskPlayer', True),
+            ('CT20106017', OPTICAL_DISK_PLAYER, False),
+            ('CT20106019', OPTICAL_DISK_PLAYER, True),
             # Equipos de música
-            ('CT20106020', 'StereoSystem', True),
-            ('CT20106020', 'StereoSystem', False),
+            ('CT40012703', STEREO_SYSTEM, True),
+            ('CT40012703', STEREO_SYSTEM, False),
             # Minicomponentes
-            ('CT20106021', 'StereoSystem', True),
-            ('CT20106021', 'StereoSystem', False),
+            ('CT40012705', STEREO_SYSTEM, True),
+            ('CT40012705', STEREO_SYSTEM, False),
             # Audio portable
-            ('CT40005301', 'StereoSystem', True),
-            ('CT40005301', 'StereoSystem', False),
+            ('CT40012723', STEREO_SYSTEM, True),
+            ('CT40012723', STEREO_SYSTEM, False),
             # Sound bar
-            ('CT40005303', 'StereoSystem', True),
-            ('CT40005303', 'StereoSystem', False),
+            ('CT40012725', STEREO_SYSTEM, True),
+            ('CT40012725', STEREO_SYSTEM, False),
             # Audífonos
-            ('CT30011860', 'Headphones', True),
-            ('CT30011860', 'Headphones', False),
-            # Audio Hi-Fi
-            ('CT30016640', 'StereoSystem', True),
-            ('CT30016640', 'StereoSystem', False),
+            ('CT40012727', HEADPHONES, True),
+            ('CT40012727', HEADPHONES, False),
+            # Audífonos con UV Nano
+            ('CT40012729', HEADPHONES, True),
+            ('CT40012729', HEADPHONES, False),
+            # Accesorios de audio
+            ('CT40013665', STEREO_SYSTEM, True),
+            ('CT40013665', STEREO_SYSTEM, False),
             # Celulares (code sale en la vista de descontinuados)
-            ('CT20106027', 'Cell', True),
-            ('CT20106027', 'Cell', False),
+            ('CT20106027', CELL, True),
+            ('CT20106027', CELL, False),
             # Refrigeradores
-            ('CT20106034', 'Refrigerator', True),
-            ('CT20106034', 'Refrigerator', False),
+            ('CT20106034', REFRIGERATOR, True),
+            ('CT20106034', REFRIGERATOR, False),
             # Secadoras
-            ('CT20106044', 'WashingMachine', True),
-            ('CT20106044', 'WashingMachine', False),
+            ('CT20106044', WASHING_MACHINE, True),
+            ('CT20106044', WASHING_MACHINE, False),
             # Lavadoras
-            ('CT20106040', 'WashingMachine', True),
-            ('CT20106040', 'WashingMachine', False),
+            ('CT20106040', WASHING_MACHINE, True),
+            ('CT20106040', WASHING_MACHINE, False),
             # Microondas
-            ('CT20106039', 'Oven', True),
-            ('CT20106039', 'Oven', False),
+            ('CT20106039', OVEN, True),
+            ('CT20106039', OVEN, False),
             # Monitores
-            ('CT20106054', 'Monitor', True),
-            ('CT20106054', 'Monitor', False),
+            ('CT20106054', MONITOR, True),
+            ('CT20106054', MONITOR, False),
             # Proyectores
-            ('CT30006480', 'Projector', True),
-            ('CT30006480', 'Projector', False),
-
-            # Desaparecidos de la navegacion pero aun con
-            # urls validas en LG.com
-
-            # LG Friends (accesorios LG G5 SE)
-            # ('CT31903594', 'CellAccesory', True),
-            # Aspiradoras
-            # ('CT20106045', 'VacuumCleaner', False),
-            # Computador All In One
-            # ('CT30018920', 'AllInOne', True),
-            # Notebooks
-            # ('CT32002362', 'Notebook', True),
-            # Grabadores Blu-Ray DVD
-            # ('CT20106055', 'OpticalDrive', True),
-            # ('CT20106055', 'OpticalDrive', False),
+            ('CT30006480', PROJECTOR, True),
+            ('CT30006480', PROJECTOR, False),
         ]
