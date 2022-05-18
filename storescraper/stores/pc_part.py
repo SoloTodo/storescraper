@@ -82,7 +82,7 @@ class PcPart(Store):
             'h3', 'price-detail').text.split('Efectivo')[0]))
         normal_price = Decimal(remove_words(details_items.find(
             'h4', 'subprice-detail').text.split('Otros')[0]))
-
+        model = details_items.find('li', 'd-block').contents[2].strip()
         stock = int(details_items.find('h3', 'hurry-title').find('span').text)
 
         picture_urls = []
@@ -102,6 +102,8 @@ class PcPart(Store):
             normal_price,
             offer_price,
             'CLP',
+            sku=key,
+            part_number=model,
             picture_urls=picture_urls,
         )
         return [p]
