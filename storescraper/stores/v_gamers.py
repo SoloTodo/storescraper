@@ -5,10 +5,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, STEREO_SYSTEM, \
-    USB_FLASH_DRIVE, KEYBOARD, MONITOR, POWER_SUPPLY, COMPUTER_CASE, MOUSE, \
+from storescraper.categories import HEADPHONES, KEYBOARD_MOUSE_COMBO, \
+    STEREO_SYSTEM, KEYBOARD, MONITOR, POWER_SUPPLY, COMPUTER_CASE, MOUSE, \
     GAMING_CHAIR, CPU_COOLER, VIDEO_CARD, STORAGE_DRIVE, MOTHERBOARD, \
-    PROCESSOR, RAM, GAMING_DESK, MICROPHONE
+    PROCESSOR, RAM, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,7 +20,6 @@ class VGamers(Store):
         return [
             HEADPHONES,
             STEREO_SYSTEM,
-            USB_FLASH_DRIVE,
             KEYBOARD,
             MONITOR,
             POWER_SUPPLY,
@@ -33,30 +32,27 @@ class VGamers(Store):
             MOTHERBOARD,
             RAM,
             GAMING_DESK,
-            MICROPHONE
+            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-gamer', MOUSE],
-            ['audifonos-gamer', HEADPHONES],
-            ['monitores-gamer', MONITOR],
-            ['mouse-gamer', MOUSE],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['teclados-gamer', KEYBOARD],
-            ['almacenamiento', USB_FLASH_DRIVE],
-            ['fuente-de-poder', POWER_SUPPLY],
-            ['gabinete-gamer', COMPUTER_CASE],
-            ['enfriamiento', CPU_COOLER],
-            ['discos-duros', STORAGE_DRIVE],
-            ['placamadre', MOTHERBOARD],
-            ['procesador', PROCESSOR],
-            ['tarjetas-de-video-gpu', VIDEO_CARD],
-            ['memoria-ram', RAM],
-            ['water-cooling', CPU_COOLER],
-            ['escritorio-gamer', GAMING_DESK],
-            ['microfonos', MICROPHONE]
+            ['audifonos', HEADPHONES],
+            ['teclados', KEYBOARD],
+            ['zona-gamer/mouse', MOUSE],
+            ['escritorio', GAMING_DESK],
+            ['sillas', GAMING_CHAIR],
+            ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
+            ['hardware/almacenamiento', STORAGE_DRIVE],
+            ['hardware/fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['hardware/memorias-ram', RAM],
+            ['hardware/placas-madres', MOTHERBOARD],
+            ['hardware/procesadores', PROCESSOR],
+            ['hardware/refrigeracion', CPU_COOLER],
+            ['hardware/tarjetas-graficas', VIDEO_CARD],
+            ['monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -67,20 +63,19 @@ class VGamers(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://vgamers.cl/collections/' \
-                              '{}?page={}'.format(url_extension, page)
+                url_webpage = 'https://vgamers.cl/categoria-producto/' \
+                              '{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-card')
+                product_containers = soup.findAll('div', 'wf-cell')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find(
-                        'a', 'product-card__link')['href']
-                    product_urls.append('https://vgamers.cl' + product_url)
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -89,32 +84,49 @@ class VGamers(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_info = json.loads(html.unescape(soup.find('script', {
-            'id': 'ProductJson-product-template-2'}).text))
-        picture_containers = product_info['images']
-        picture_urls = ['https:' + url.split('?')[0] for url in
-                        picture_containers]
-        products = []
-        for variant in product_info['variants']:
-            name = variant['name']
-            key = str(variant['id'])
-            sku = variant['sku']
-            stock = -1 if variant['available'] else 0
-            price = Decimal(variant['price'] / 100)
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls
 
-            )
-            products.append(p)
-        return products
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
+
+        name = json_data['name']
+        sku = json_data['sku']
+        description = json_data['description']
+        offer_price = Decimal(json_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal(1.04)).quantize(Decimal("0.0"))
+
+        if not soup.find('button', 'single_add_to_cart_button'):
+            stock = 0
+        else:
+            qty_input = soup.find('input', 'qty')
+            if qty_input['type'] == 'hidden':
+                stock = 1
+            elif 'max' in qty_input.attrs and qty_input['max'] != '':
+                stock = int(qty_input['max'])
+            else:
+                stock = -1
+
+        picture_urls = []
+        picture_container = soup.find('div', 'woocommerce-product-gallery')
+        for p in picture_container.findAll('a', 'wcgs-slider-image'):
+            if p['href'] not in picture_urls:
+                picture_urls.append(p['href'])
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=key,
+            picture_urls=picture_urls,
+            description=description
+
+        )
+        return [p]
