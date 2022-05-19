@@ -124,7 +124,7 @@ class Microplay(Store):
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, 'html.parser')
 
-        if 'Producto no disponible' in page_source:
+        if 'Producto no disponible' in page_source or 'h1' not in page_source:
             return []
 
         name = soup.find('h1').text.strip()
