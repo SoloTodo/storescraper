@@ -1,3 +1,4 @@
+import logging
 import re
 import json
 
@@ -5,12 +6,13 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK, TABLET, PRINTER, CELL, \
-    WEARABLE, TELEVISION, MOUSE, VIDEO_GAME_CONSOLE, REFRIGERATOR, \
+from storescraper.categories import GROCERIES, NOTEBOOK, TABLET, PRINTER, \
+    CELL, WEARABLE, TELEVISION, MOUSE, VIDEO_GAME_CONSOLE, REFRIGERATOR, \
     WASHING_MACHINE, STEREO_SYSTEM, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import check_ean13, session_with_proxy, \
+    html_to_markdown
 
 
 class Tottus(Store):
@@ -29,6 +31,7 @@ class Tottus(Store):
             NOTEBOOK,
             MOUSE,
             VIDEO_GAME_CONSOLE,
+            GROCERIES
         ]
 
     @classmethod
@@ -54,6 +57,7 @@ class Tottus(Store):
 
             ['parlantes-cat070501', [STEREO_SYSTEM], 'Parlantes', 1],
             ['audifonos-cat3010062', [HEADPHONES], 'Audífonos', 1],
+            ['despensa-cat0103', [GROCERIES], 'Despensa', 1]
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,23 +69,33 @@ class Tottus(Store):
             if category not in local_categories:
                 continue
 
-            category_url = '{}/api/product-search/by-category-slug?' \
-                           'slug={}&sort=recommended_web&perPage=1000' \
-                           '&channel=Regular_Delivery_RM_4'\
-                .format(url_base, category_path)
+            page = 1
+            while True:
+                category_url = '{}/api/product-search/by-category-slug?' \
+                    'slug={}&sort=recommended_web&perPage=1000' \
+                    '&channel=Regular_Delivery_RM_4&page={}'\
+                    .format(url_base, category_path, page)
 
-            print(category_url)
+                print(category_url)
 
-            data = json.loads(session.get(category_url).text)['results']
+                data = json.loads(session.get(category_url).text)['results']
 
-            for idx, product_data in enumerate(data):
-                product_url = '{}/{}/p/'.format(url_base, product_data['slug'])
+                if len(data) == 0:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_path)
+                    break
 
-                product_entries[product_url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+                for idx, product_data in enumerate(data):
+                    product_url = '{}/{}/p/'.format(url_base,
+                                                    product_data['slug'])
+
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': idx + 1
+                    })
+
+                page += 1
 
         return product_entries
 
@@ -97,52 +111,40 @@ class Tottus(Store):
                 break
 
         soup = BeautifulSoup(response.text, 'html5lib')
-        data_options = soup.findAll('script', {'type': 'application/ld+json'})
-        data = None
-        for d in data_options:
-            data = json.loads(d.text)
-            if data['@type'] == "Product":
-                break
 
-        if not data or data['@type'] != "Product":
+        with open('foo.json', 'w') as f:
+            f.write(soup.find('script', {'id': '__NEXT_DATA__'}).text)
+
+        template = json.loads(
+            soup.find('script', {'id': '__NEXT_DATA__'}).text)
+        page_props = template['props']['pageProps']
+
+        with open('foo.json', 'w') as f:
+            f.write(json.dumps(template))
+
+        if 'data' in page_props:
+            data = page_props['data']
+        else:
             return []
 
         name = data['name']
         sku = data['sku']
 
-        if data['offers']['availability'] == "https://schema.org/InStock":
-            stock = -1
+        if 'ean' in data['attributes'] and \
+                check_ean13(data['attributes']['ean']):
+            ean = data['attributes']['ean']
         else:
-            stock = 0
+            ean = None
 
-        special_price = soup.find('span', 'cmrPrice')
-        data_price = None
-
-        if 'price' in data['offers']:
-            data_price = data['offers']['price']
-        elif 'lowPrice' in data['offers']:
-            data_price = data['offers']['lowPrice']
+        normal_price = Decimal(data['prices']['currentPrice'])
+        if 'cmrPrice' in data['prices']:
+            offer_price = Decimal(data['prices']['cmrPrice'])
         else:
-            raise Exception('No data price')
-
-        if special_price:
-            offer_price = Decimal(
-                special_price.text.replace('$', '').replace('.', '')
-                .replace('UN', '').strip())
-            normal_price = Decimal(data_price)
-        else:
-            offer_price = Decimal(data_price)
-            normal_price = offer_price
-
-        if offer_price > normal_price:
             offer_price = normal_price
 
-        description = html_to_markdown(str(soup.find('div', 'react-tabs')))
+        description = html_to_markdown(data['description'])
 
-        picture_containers = [b.find('img') for b in soup.findAll(
-            'button', 'product-gallery-thumbnails-item')]
-        picture_urls = [i['src'] for i in picture_containers]
-        picture_urls = [p for p in picture_urls if 'placeholder' not in p]
+        picture_urls = data['images']
 
         p = Product(
             name,
@@ -151,13 +153,14 @@ class Tottus(Store):
             url,
             url,
             sku,
-            stock,
+            -1,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            ean=ean
         )
 
         return [p]
