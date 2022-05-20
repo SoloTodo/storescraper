@@ -111,7 +111,13 @@ class TecnoSite(Store):
             return []
 
         name = soup.find('h1', 'product_title').text.strip()[:256]
-        part_number = soup.find('span', 'sku').text
+        part_number_tag = soup.find('span', 'sku')
+
+        if part_number_tag:
+            part_number = part_number_tag.text
+        else:
+            part_number = None
+
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
 
         stock_tag = soup.find('input', {'name': 'quantity'})
