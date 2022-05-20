@@ -3,11 +3,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import TABLET, NOTEBOOK, ALL_IN_ONE, CELL, \
-    WEARABLE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, \
-    VIDEO_CARD, HEADPHONES, KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, MEMORY_CARD, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    USB_FLASH_DRIVE, MONITOR, PRINTER, CPU_COOLER, TELEVISION, GAMING_CHAIR
+from storescraper.categories import CPU_COOLER, STEREO_SYSTEM, COMPUTER_CASE, \
+    GAMING_CHAIR, TABLET, NOTEBOOK, WEARABLE, VIDEO_CARD, POWER_SUPPLY, RAM, \
+    MOTHERBOARD, PROCESSOR, HEADPHONES, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, USB_FLASH_DRIVE, \
+    MONITOR, PRINTER, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,7 +20,6 @@ class TecnoSite(Store):
             TABLET,
             NOTEBOOK,
             ALL_IN_ONE,
-            CELL,
             WEARABLE,
             POWER_SUPPLY,
             COMPUTER_CASE,
@@ -39,19 +38,21 @@ class TecnoSite(Store):
             MONITOR,
             PRINTER,
             CPU_COOLER,
-            TELEVISION,
             GAMING_CHAIR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tablets-3', TABLET],
+            ['gamer/refrigeracion', CPU_COOLER],
+            ['gamer/audio', STEREO_SYSTEM],
+            ['gamer/gabinetes', COMPUTER_CASE],
+            ['gamer/sillas', GAMING_CHAIR],
+            ['tablets-en-oferta', TABLET],
             ['portatiles/notebooks', NOTEBOOK],
-            ['all-in-one', ALL_IN_ONE],
-            ['tablets/celulares', CELL],
-            ['tablets/tablets-tablets', TABLET],
-            ['tablets/wearables', WEARABLE],
+            ['pc-escritorio/all-in-one', ALL_IN_ONE],
+            ['smartwatch-chile/smartwatch', WEARABLE],
+            ['componentes/bundles', VIDEO_CARD],
             ['componentes/fuentes', POWER_SUPPLY],
             ['componentes/gabinete', COMPUTER_CASE],
             ['componentes/memorias', RAM],
@@ -67,13 +68,8 @@ class TecnoSite(Store):
             ['almacenamiento/hdd', STORAGE_DRIVE],
             ['almacenamiento/ssd-m-2', SOLID_STATE_DRIVE],
             ['almacenamiento/pendrive-usb', USB_FLASH_DRIVE],
-            ['monitores-y-pantallas/monitores', MONITOR],
-            ['monitores-y-pantallas/televisores', TELEVISION],
+            ['monitores-y-pantallas', MONITOR],
             ['impresion-e-imagen', PRINTER],
-            ['gamer/refrigeracin', CPU_COOLER],
-            ['gamer/audio', STEREO_SYSTEM],
-            ['gamer/gabinetes', COMPUTER_CASE],
-            ['gamer/sillas', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
