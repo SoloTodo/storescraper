@@ -57,24 +57,26 @@ class TicOnlineStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        name = soup.find('h1', 'namne_details')
+        name = soup.find('h1', 'namne_details').text.strip()
         key = soup.find('input', {'id': 'product_page_product_id'})['value']
 
         sku_p = soup.find('p', 'reference')
-        sku = None
         if sku_p:
             sku = sku_p.find('span').text.strip()
+        else:
+            sku = None
 
         price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
 
         cart_btn = soup.find('button', 'add-to-cart')
-        stock = 0
         if cart_btn:
             qty_div = soup.find('div', 'product-quantities')
             if qty_div:
                 stock = int(qty_div.find('span')['data-stock'])
             else:
                 stock = -1
+        else:
+            stock = 0
 
         picture_urls = []
         container = soup.find('div', 'product-view_content')
@@ -93,6 +95,7 @@ class TicOnlineStore(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
