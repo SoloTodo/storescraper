@@ -10,7 +10,7 @@ from storescraper.categories import COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, \
     VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Lifemax(Store):
@@ -119,7 +119,7 @@ class Lifemax(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         json_container = soup.find('main', 'bs-main').find(
             'script').text.strip()
@@ -140,7 +140,8 @@ class Lifemax(Store):
         picture_urls = product_data['image']
 
         base_name = json_container['product']['title']
-        description = json_container['product']['description']
+        description = html_to_markdown(
+            json_container['product']['description'])
 
         products = []
         for variant in json_container['variants']:
