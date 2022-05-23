@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CPU_COOLER, STEREO_SYSTEM, COMPUTER_CASE, \
     GAMING_CHAIR, TABLET, NOTEBOOK, WEARABLE, VIDEO_CARD, POWER_SUPPLY, RAM, \
     MOTHERBOARD, PROCESSOR, HEADPHONES, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, USB_FLASH_DRIVE, \
-    MONITOR, PRINTER, ALL_IN_ONE
+    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    USB_FLASH_DRIVE, MONITOR, PRINTER, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy

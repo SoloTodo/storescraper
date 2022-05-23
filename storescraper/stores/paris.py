@@ -361,9 +361,12 @@ class Paris(Store):
             return []
         json_data = json.loads(json_script.text, strict=False)
 
-        brand = json_data['brand']
         model = json_data['name']
-        name = '{} - {}'.format(brand, model)
+        if 'brand' in json_data:
+            brand = json_data['brand']
+            name = '{} - {}'.format(brand, model)
+        else:
+            name = 'Unknown - {}'.format(model)
         sku = json_data['sku']
 
         if soup.find('button', 'buy-it-now'):

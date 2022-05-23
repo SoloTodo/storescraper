@@ -1,4 +1,3 @@
-import html
 import json
 import logging
 from decimal import Decimal
@@ -94,8 +93,8 @@ class GameShark(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(html.unescape(
-            soup.find('div', {'id': 'product-details'})['data-product']))
+        product_data = json.loads(
+            soup.find('div', {'id': 'product-details'})['data-product'])
         name = product_data['name']
         description = product_data['description_short']
         key = str(product_data['id'])
