@@ -3,7 +3,7 @@ import logging
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, KEYBOARD, MEMORY_CARD, \
-    MONITOR, PROCESSOR, RAM, SOLID_STATE_DRIVE, WEARABLE
+    MONITOR, PROCESSOR, RAM, SOLID_STATE_DRIVE, WEARABLE, NOTEBOOK
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -19,7 +19,8 @@ class EForest(MercadoLibreChile):
             MONITOR,
             WEARABLE,
             HEADPHONES,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
+            NOTEBOOK
         ]
 
     @classmethod
@@ -32,7 +33,8 @@ class EForest(MercadoLibreChile):
             ['monitores-accesorios', MONITOR],
             ['relojes-joyas', WEARABLE],
             ['electronica', HEADPHONES],
-            ['celulares-telefonia/accesorios-celulares/memorias', MEMORY_CARD]
+            ['celulares-telefonia/accesorios-celulares/memorias', MEMORY_CARD],
+            ['apple', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
