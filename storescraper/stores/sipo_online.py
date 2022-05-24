@@ -9,7 +9,8 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, RAM, HEADPHONES, \
     KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, MONITOR, WEARABLE, \
     GAMING_CHAIR, CPU_COOLER, MOTHERBOARD, VIDEO_CARD, PROCESSOR, \
-    POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE, VIDEO_GAME_CONSOLE
+    POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE, \
+    VIDEO_GAME_CONSOLE, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -42,7 +43,8 @@ class SipoOnline(Store):
             TABLET,
             GAMING_DESK,
             MICROPHONE,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            SOLID_STATE_DRIVE,
         ]
 
     @classmethod
@@ -53,14 +55,16 @@ class SipoOnline(Store):
             ['componentes-pc/tarjeta_de_video', VIDEO_CARD],
             ['componentes-pc/procesadores', PROCESSOR],
             ['componentes-pc/fuente_poder', POWER_SUPPLY],
-            ['componentes-pc/monitores', MONITOR],
+            ['gamers-y-streaming/monitor-gamer', MONITOR],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
             ['componentes-pc/memoria-ram', RAM],
             ['parlante-musica', STEREO_SYSTEM],
             ['almacenamiento/memorias', MEMORY_CARD],
             ['almacenamiento/pendrives', USB_FLASH_DRIVE],
             ['almacenamiento/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/disco-duro-interno', STORAGE_DRIVE],
+            ['componentes-pc/disco-interno/hdd-disco-duro', STORAGE_DRIVE],
+            ['componentes-pc/disco-interno/ssd-unidad-estado-solido',
+             SOLID_STATE_DRIVE],
             ['audifonos', HEADPHONES],
             ['computacion/parlantes-pc', STEREO_SYSTEM],
             ['computacion/audifono-pc', HEADPHONES],
@@ -97,6 +101,9 @@ class SipoOnline(Store):
                 main = soup.find('main', 'site-main')
                 if not main:
                     if page == 1:
+                        print(url_webpage)
+                        import ipdb
+                        ipdb.set_trace()
                         logging.warning('Empty category: ' + url_extension)
                     break
                 product_containers = soup.findAll('li', 'product')
