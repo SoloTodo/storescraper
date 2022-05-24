@@ -123,7 +123,8 @@ class TecnoMaster(Store):
             return []
 
         name = name_tag.text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        sku = soup.find('span', 'sku').text.strip()
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
@@ -145,7 +146,7 @@ class TecnoMaster(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
