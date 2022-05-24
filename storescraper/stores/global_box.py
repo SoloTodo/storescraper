@@ -60,7 +60,7 @@ class Globalbox(Store):
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['componentes/memorias/memorias-ram', RAM],
             ['componentes/memorias/pendrive', USB_FLASH_DRIVE],
-            ['componentes/memorias/tarjetas-de-memoria', MEMORY_CARD],
+            ['componentes/memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
             ['componentes/almacenamiento/discos-externos',
              EXTERNAL_STORAGE_DRIVE],
             ['componentes/almacenamiento/discos-internos', STORAGE_DRIVE],
