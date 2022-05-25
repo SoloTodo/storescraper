@@ -43,6 +43,7 @@ class VGamers(Store):
             ['zona-gamer/mouse', MOUSE],
             ['escritorio', GAMING_DESK],
             ['sillas', GAMING_CHAIR],
+            ['sillones', GAMING_CHAIR],
             ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
             ['hardware/almacenamiento', STORAGE_DRIVE],
             ['hardware/fuentes-de-poder', POWER_SUPPLY],

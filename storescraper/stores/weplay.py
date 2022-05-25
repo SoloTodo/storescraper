@@ -28,18 +28,17 @@ class Weplay(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ['consolas/consolas3ds.html', VIDEO_GAME_CONSOLE'],
-            ['consolas/consolas-switch.html', VIDEO_GAME_CONSOLE],
-            # ['consolas/consolasps4.html', VIDEO_GAME_CONSOLE'],
-            # ['consolas/consolasxboxone.html', VIDEO_GAME_CONSOLE'],
-            ['computacion/audifonosgamer.html', HEADPHONES],
+            ['consolas.html', VIDEO_GAME_CONSOLE],
+            ['computacion/audifonos-gamer.html', HEADPHONES],
+            ['tecnologia/audifonos.html', HEADPHONES],
             ['computacion/teclados.html', KEYBOARD],
-            ['computacion/discosdurosexternos.html', EXTERNAL_STORAGE_DRIVE],
+            ['tecnologia/teclados-tecnologia.html', KEYBOARD],
+            ['computacion/discos-duros-externos.html', EXTERNAL_STORAGE_DRIVE],
             ['computacion/mouse.html', MOUSE],
             ['computacion/pendrives.html', USB_FLASH_DRIVE],
-            ['computacion/tarjetasdememoria.html', MEMORY_CARD],
-            ['computacion/parlantescomputacion.html', STEREO_SYSTEM],
-            ['computacion/sillasgamer.html', GAMING_CHAIR],
+            ['computacion/tarjetas-de-memoria.html', MEMORY_CARD],
+            ['tecnologia/parlantes.html', STEREO_SYSTEM],
+            ['computacion/sillas-gamer.html', GAMING_CHAIR],
             ['computacion/microfono-computacion.html', MICROPHONE]
         ]
 
