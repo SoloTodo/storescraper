@@ -55,7 +55,7 @@ class PcMasterGames(Store):
             ['monitores', MONITOR],
             ['disco-duro', STORAGE_DRIVE],
             ['disco-ssd', SOLID_STATE_DRIVE],
-            ['equipos', NOTEBOOK],
+            ['computadores', NOTEBOOK],
             ['memoria-ram', RAM],
             ['sillas-gamer', GAMING_CHAIR],
             ['smartwatch', WEARABLE],
