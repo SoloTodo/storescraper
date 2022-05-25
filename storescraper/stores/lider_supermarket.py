@@ -73,6 +73,10 @@ class LiderSupermarket(Store):
         name = soup.find('h1').text.strip()
 
         json_tag = soup.find('script', {'type': 'application/ld+json'})
+
+        if not json_tag:
+            return []
+
         json_data = demjson.decode(json_tag.text)
 
         sku = json_data['sku']
