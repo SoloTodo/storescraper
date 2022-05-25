@@ -124,7 +124,13 @@ class TecnoMaster(Store):
 
         name = name_tag.text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('span', 'sku').text.strip()
+        sku_tag = soup.find('span', 'sku')
+
+        if sku_tag:
+            sku = soup.find('span', 'sku').text.strip()
+        else:
+            sku = None
+
         if soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
@@ -132,8 +138,10 @@ class TecnoMaster(Store):
         else:
             stock = -1
         price_container = soup.find('p', 'price')
+
         if not price_container.text:
             return []
+
         elif price_container.find('ins'):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:

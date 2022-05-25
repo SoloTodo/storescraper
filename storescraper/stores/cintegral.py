@@ -1,3 +1,4 @@
+import json
 import logging
 
 from bs4 import BeautifulSoup
@@ -10,7 +11,7 @@ from storescraper.categories import NOTEBOOK, ALL_IN_ONE, TABLET, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
     USB_FLASH_DRIVE, PROCESSOR, COMPUTER_CASE, POWER_SUPPLY, MOTHERBOARD, \
     RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, KEYBOARD, PROJECTOR
+    KEYBOARD_MOUSE_COMBO, KEYBOARD, PROJECTOR, GAMING_CHAIR
 
 
 class Cintegral(Store):
@@ -40,41 +41,48 @@ class Cintegral(Store):
             KEYBOARD_MOUSE_COMBO,
             KEYBOARD,
             PROJECTOR,
+            GAMING_CHAIR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://www.cintegral.cl/index.php?' \
-                   'id_category={}&controller=category&page={}'
+        url_base = 'https://cintegral.cl/{}-?page={}'
 
         url_extensions = [
             ['24', NOTEBOOK],  # Notebooks
             ['25', ALL_IN_ONE],  # All in One
             ['27', TABLET],  # Tablet
+            ['94', GAMING_CHAIR],
             ['66', STORAGE_DRIVE],  # Discos duros PC
             ['67', EXTERNAL_STORAGE_DRIVE],  # Discos duros externos
             ['68', SOLID_STATE_DRIVE],  # Unidades de estado sólido
             ['69', MEMORY_CARD],  # Memorias Flash
             ['70', USB_FLASH_DRIVE],  # Pendrive
             ['31', PROCESSOR],  # Procesadores
-            ['32', COMPUTER_CASE],  # Gabinetes
             ['33', POWER_SUPPLY],  # Fuentes de poder
             ['34', MOTHERBOARD],  # Placas madre
-            ['71', RAM],  # Memorias PC
-            ['72', RAM],  # Memorias Notebook
             ['36', VIDEO_CARD],  # Tarjetas de video
-            ['39', KEYBOARD_MOUSE_COMBO],  # Combos teclado mouse
-            ['40', MOUSE],  # Mouse
-            ['38', KEYBOARD],  # Teclados
-            ['45', PRINTER],  # Impresoras tinta
-            ['46', PRINTER],  # Impresoras láser
-            ['47', PRINTER],  # Multifuncionales tinta
-            ['48', PRINTER],  # Multifuncionales láser
+            ['35', RAM],
+            ['32', COMPUTER_CASE],  # Gabinetes
+            ['18', MONITOR],  # Monitores
+            ['56', PROJECTOR],  # Proyectores
+            ['15', PRINTER],
             ['59', HEADPHONES],  # Audífonos / Micrófonos
             ['60', STEREO_SYSTEM],  # Parlantes
             ['61', UPS],  # UPS
-            ['18', MONITOR],  # Monitores
-            ['56', PROJECTOR],  # Proyectores
+            ['38', KEYBOARD],  # Teclados
+            ['40', MOUSE],  # Mouse
+            ['39', KEYBOARD_MOUSE_COMBO],  # Combos teclado mouse
+            ['112', NOTEBOOK],  # Notebooks gamer
+            ['124', MONITOR],  # Monitores gamer
+            ['113', GAMING_CHAIR],
+            ['114', MOUSE],  # Periféricos gamer
+            ['115', VIDEO_CARD],  # Tarjetas de video gamer
+            ['116', PROCESSOR],  # Procesadores gamer
+            ['117', RAM],  # RAM gamer
+            ['118', MOTHERBOARD],  # Placas madre gamer
+            ['119', COMPUTER_CASE],  # Gabinetes gamer
+            ['120', SOLID_STATE_DRIVE],  # Almacenamiento gamer
         ]
 
         product_urls = []
@@ -93,19 +101,15 @@ class Cintegral(Store):
                 url = url_base.format(url_extension, page)
                 source = session.get(url, verify=False).text
                 soup = BeautifulSoup(source, 'html.parser')
+                product_tags = soup.findAll('article', 'item')
 
-                products = soup.find('div', 'products row')
-
-                if not products:
+                if not product_tags:
                     if page == 1:
                         logging.warning('Empty category: ' + url)
                     break
 
-                containers = soup.find('div', 'products row') \
-                    .findAll('a', 'product-thumbnail')
-
-                for product_link in containers:
-                    product_url = product_link['href']
+                for product_tag in product_tags:
+                    product_url = product_tag.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -116,32 +120,17 @@ class Cintegral(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-
         page_source = session.get(url, verify=False).text
         soup = BeautifulSoup(page_source, 'html.parser')
-        name = soup.find('h1', 'product-detail-title').text.strip()
-        sku = soup.find('input', {'name': 'id_product'})['value']
-
-        part_number = None
-        part_number_container = soup.find('span', {'itemprop': 'sku'})
-        if part_number_container:
-            part_number = part_number_container.text.strip()
-
-        description = html_to_markdown(
-            str(soup.find('div', 'product-description')))
-
-        add_to_cart_button = soup.find('button', 'add-to-cart')
-
-        if 'disabled' in add_to_cart_button.attrs:
-            stock = 0
-        else:
-            stock = -1
-
-        price = Decimal(soup.find('div', 'current-price')
-                        .find('span', {'itemprop': 'price'})['content'])
-
-        pictures = soup.find('ul', 'product-images').findAll('img')
-        picture_urls = [p['data-image-large-src'] for p in pictures]
+        product_json_tag = soup.find('div', {'id': 'product-details'})
+        product_json = json.loads(product_json_tag['data-product'])
+        stock = product_json['quantity']
+        key = str(product_json['id'])
+        description = html_to_markdown(product_json['description'])
+        sku = product_json['reference']
+        name = product_json['name']
+        price = Decimal(product_json['price_amount'])
+        picture_urls = [x['large']['url'] for x in product_json['images']]
 
         p = Product(
             name,
@@ -149,13 +138,13 @@ class Cintegral(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=sku,
             description=description,
             picture_urls=picture_urls
         )
