@@ -12,7 +12,8 @@ from storescraper.categories import KEYBOARD_MOUSE_COMBO, MOTHERBOARD, RAM, \
     PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, HEADPHONES, MOUSE, \
     SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, MONITOR, STORAGE_DRIVE, \
     POWER_SUPPLY, CPU_COOLER, CELL, WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, \
-    USB_FLASH_DRIVE, MEMORY_CARD, MICROPHONE, CASE_FAN
+    USB_FLASH_DRIVE, MEMORY_CARD, MICROPHONE, CASE_FAN, \
+    TELEVISION, VIDEO_GAME_CONSOLE, GAMING_DESK
 
 
 class InfographicsSolutions(Store):
@@ -42,43 +43,50 @@ class InfographicsSolutions(Store):
             MEMORY_CARD,
             MICROPHONE,
             CASE_FAN,
+            TELEVISION,
+            VIDEO_GAME_CONSOLE,
+            GAMING_DESK,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['portatiles-notebook', NOTEBOOK],
-            ['celulares-smarthphones', CELL],
-            # ['tecnologia/tablet', TABLET],
-            ['componentes-de-pc/placas-madres', MOTHERBOARD],
-            ['componentes-de-pc/memorias-ram', RAM],
-            ['componentes-de-pc/procesadores', PROCESSOR],
-            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
-            ['computacion/almacenamiento/discos-solidos',
-             SOLID_STATE_DRIVE],
             ['computacion/almacenamiento/discos-duros',
              STORAGE_DRIVE],
-            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['pantallas-monitores', MONITOR],
+            ['computacion/almacenamiento/discos-solidos',
+             SOLID_STATE_DRIVE],
+            ['computacion/almacenamiento/microsd', MEMORY_CARD],
             ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-de-pc/memorias-ram', RAM],
+            ['componentes-de-pc/procesadores', PROCESSOR],
+            ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
             ['componentes-de-pc/refrigeracion/aire', CPU_COOLER],
             ['componentes-de-pc/refrigeracion/liquida', CPU_COOLER],
-            ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
-            ['accesorios/ofimatica-accesorios/teclados', KEYBOARD],
-            ['accesorios/mundo-gamer/teclados-gamer/', KEYBOARD],
-            ['accesorios/ofimatica-accesorios/audifonos-headset', HEADPHONES],
-            ['accesorios/mundo-gamer/audifonos-gamer', HEADPHONES],
-            ['accesorios/ofimatica-accesorios/mouse', MOUSE],
-            ['accesorios/mundo-gamer/mouse-gamer/', MOUSE],
+            ['componentes-de-pc/placas-madres', MOTHERBOARD],
+            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
+            ['pantallas-monitores', MONITOR],
+            ['portatiles-notebook', NOTEBOOK],
+            ['tecnologia/television', TELEVISION],
+            ['celulares-smarthphones', CELL],
             ['reloj-inteligente-smartwatch', WEARABLE],
-            ['accesorios/ofimatica-accesorios/parlantes', STEREO_SYSTEM],
-            ['accesorios/mundo-gamer/sillas/', GAMING_CHAIR],
-            ['accesorios/ofimatica-accesorios/pendrive', USB_FLASH_DRIVE],
-            ['computacion/almacenamiento/microsd', MEMORY_CARD],
-            ['accesorios/ofimatica-accesorios/microfonos/', MICROPHONE],
-            ['accesorios/mundo-gamer/microfonos-condensadores/', MICROPHONE],
+            ['tecnologia/fitnesstracker', WEARABLE],
+            ['tecnologia/consolas', VIDEO_GAME_CONSOLE],
+            ['accesorios/ofimatica-accesorios/audifonos-headset', HEADPHONES],
             ['accesorios/ofimatica-accesorios/kit-teclado-mouse/',
-             KEYBOARD_MOUSE_COMBO]
+             KEYBOARD_MOUSE_COMBO],
+            ['accesorios/ofimatica-accesorios/microfonos/', MICROPHONE],
+            ['accesorios/ofimatica-accesorios/mouse', MOUSE],
+            ['accesorios/ofimatica-accesorios/parlantes', STEREO_SYSTEM],
+            ['accesorios/ofimatica-accesorios/pendrive', USB_FLASH_DRIVE],
+            ['accesorios/ofimatica-accesorios/teclados', KEYBOARD],
+            ['accesorios/mundo-gamer/audifonos-gamer', HEADPHONES],
+            ['accesorios/mundo-gamer/escritorios-gamer', GAMING_DESK],
+            ['accesorios/mundo-gamer/microfonos-condensadores/', MICROPHONE],
+            ['accesorios/mundo-gamer/mouse-gamer/', MOUSE],
+            ['accesorios/mundo-gamer/sillas/', GAMING_CHAIR],
+            ['accesorios/mundo-gamer/teclados-gamer/', KEYBOARD],
+            ['tecnologia', TABLET],
         ]
 
         session = session_with_proxy(extra_args)
