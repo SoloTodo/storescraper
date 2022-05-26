@@ -114,7 +114,7 @@ class ElectronicaBudini(Store):
         else:
             stock = 0
 
-        price_tag = soup.find('p', 'price')
+        price_tag = soup.find('p', 'price').find('span', 'amount')
 
         if not price_tag.text.strip():
             return []
