@@ -112,8 +112,7 @@ class Weplay(Store):
         else:
             stock = 0
         price = Decimal(
-            soup.find('span', 'price')
-                .text.replace('$', '').replace('.', ''))
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
 
         picture_urls = [tag['src'] for tag in
                         soup.findAll('img', 'gallery-placeholder__image')]
