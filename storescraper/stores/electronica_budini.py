@@ -90,7 +90,7 @@ class ElectronicaBudini(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll('li'):
+                for container in product_containers.findAll('li', 'product'):
                     product_url = container.find('a')['href']
                     if 'categoria-producto' in product_url:
                         continue
@@ -125,8 +125,7 @@ class ElectronicaBudini(Store):
         else:
             container_price = int(
                 price_tag.text.replace('$', '').replace('.', ''))
-        offer_price = Decimal(container_price)
-        normal_price = Decimal(container_price * 1.05)
+        price = Decimal(container_price)
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
@@ -152,8 +151,8 @@ class ElectronicaBudini(Store):
             url,
             sku,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
