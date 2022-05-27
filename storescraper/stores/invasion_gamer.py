@@ -42,6 +42,8 @@ class InvasionGamer(Store):
         url_extensions = [
             ['gabinetes', COMPUTER_CASE],
             ['procesadores', PROCESSOR],
+            ['procesador-intel', PROCESSOR],
+            ['procesador-amd', PROCESSOR],
             ['memoria-ram', RAM],
             ['placas-madre', MOTHERBOARD],
             ['tarjetas-de-video', VIDEO_CARD],
