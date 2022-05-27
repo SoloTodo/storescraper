@@ -1,4 +1,3 @@
-import json
 from decimal import Decimal
 
 import demjson
@@ -23,6 +22,7 @@ class LiderSupermarket(Store):
             return []
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
 
         # Get a starting page just to get the section IDs
         url = 'https://www.lider.cl/supermercado/category/a/_/N-qs16h7'
@@ -68,6 +68,7 @@ class LiderSupermarket(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
         res = session.get(url)
         soup = BeautifulSoup(res.text, 'html.parser')
         name = soup.find('h1').text.strip()

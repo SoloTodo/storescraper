@@ -219,6 +219,7 @@ class Lider(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
         product_entries = defaultdict(lambda: [])
 
         # It's important that the empty one goes first to ensure that the
@@ -254,6 +255,7 @@ class Lider(Store):
                 }
 
                 session.headers['content-type'] = 'application/json'
+                session.headers['User-Agent'] = 'solotodobot'
                 response = session.post(query_url, json.dumps(query_params))
                 data = json.loads(response.text)
 
@@ -279,6 +281,7 @@ class Lider(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
         product_urls = []
 
         query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
@@ -311,6 +314,7 @@ class Lider(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
         sku_id = url.split('/')[-2]
 
         query_url = 'https://buysmart-bff-production.lider.cl/buysmart-bff/' \
@@ -406,6 +410,7 @@ class Lider(Store):
                          'landing/banners/{}'
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'solotodobot'
         banners = []
 
         url = base_url.format(datetime.now().timestamp())
