@@ -109,6 +109,10 @@ class ParisFast(Store):
                         continue
 
                     product = cls._get_product(container, category)
+
+                    if not product:
+                        continue
+
                     if product.sku in products_dict:
                         product_to_update = products_dict[product.sku]
                     else:
@@ -120,6 +124,9 @@ class ParisFast(Store):
 
                 page += 1
 
+                if page > 30:
+                    break
+
         products_list = [p for p in products_dict.values()]
         return products_list
 
@@ -129,8 +136,12 @@ class ParisFast(Store):
         if 'https' not in product_url:
             product_url = 'https://www.paris.cl' + product_url
 
-        data = json.loads(
-            container.find('div', 'product-tile')['data-product'])
+        product_tile = container.find('div', 'product-tile')
+
+        if 'data-product' not in product_tile.attrs:
+            return None
+
+        data = json.loads(product_tile['data-product'])
         name = data['name']
         sku = data['variant']
 
