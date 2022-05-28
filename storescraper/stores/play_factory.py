@@ -132,7 +132,7 @@ class PlayFactory(Store):
 
             return products
         else:
-            sku = json_data['sku']
+            sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
             price = Decimal(json_data['offers'][0]['price'])
             stock = 0
             qty_input = soup.find('input', 'qty')

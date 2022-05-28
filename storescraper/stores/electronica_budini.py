@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -107,25 +108,19 @@ class ElectronicaBudini(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+
+        json_data = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[1].text)
+        product_data = json_data['@graph'][1]
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        price = Decimal(product_data['offers'][0]['price'])
+
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-
-        price_tag = soup.find('p', 'price').find('span', 'amount')
-
-        if not price_tag.text.strip():
-            return []
-
-        if price_tag.find('ins'):
-            container_price = int(
-                price_tag.find('ins').text.replace('$', '').replace('.', ''))
-        else:
-            container_price = int(
-                price_tag.text.replace('$', '').replace('.', ''))
-        price = Decimal(container_price)
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
