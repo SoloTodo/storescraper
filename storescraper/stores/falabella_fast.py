@@ -106,7 +106,7 @@ class FalabellaFast(Store):
         page = 1
 
         while True:
-            if page > 150:
+            if page > 200:
                 raise Exception('Page overflow: ' + category_id)
 
             pag_url = base_url.format(category_id, page)
@@ -126,6 +126,9 @@ class FalabellaFast(Store):
                 products_data.append(result)
 
             page += 1
+
+            if page > 50:
+                break
 
         return products_data
 
