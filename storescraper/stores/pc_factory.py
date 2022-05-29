@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from decimal import Decimal
 
 import requests.utils
@@ -15,7 +16,7 @@ from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
     HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class PcFactory(Store):
@@ -67,6 +68,16 @@ class PcFactory(Store):
         if extra_args and 'cookies' in extra_args:
             session.cookies = requests.utils.cookiejar_from_dict(
                 extra_args['cookies'])
+
+        product_urls = []
+
+        if extra_args and extra_args['file']:
+            with open(extra_args['file']) as f:
+                product_entries = json.loads(f.read())
+                for entry in product_entries:
+                    if entry[1] == category:
+                        product_urls.append(entry[0])
+            return product_urls
 
         # Productos normales
         url_extensions = [
@@ -123,7 +134,7 @@ class PcFactory(Store):
             ['647', CASE_FAN],
             ['850', HEADPHONES],
         ]
-        product_urls = []
+        
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
@@ -187,19 +198,8 @@ class PcFactory(Store):
             session.cookies = requests.utils.cookiejar_from_dict(
                 extra_args['cookies'])
 
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        sku_tag = soup.find('input', {'name': 'data_id_producto'})
-
-        # 503 error most likely
-        if not sku_tag:
-            return []
-
-        if 'value' not in sku_tag.attrs:
-            return []
-
-        sku = sku_tag['value']
-
+        sku = re.match(r'https://www.pcfactory.cl/producto/(\d+)-',
+                       url).groups()[0]
         body = json.dumps(
             {'requests': [{'indexName': 'productos_sort_price_asc',
                            'params': 'hitsPerPage=1000&query={}'.format(
@@ -224,14 +224,11 @@ class PcFactory(Store):
         part_number = product_json['partno']
         name = product_json['nombre']
         stock = sum(stock['stock'] for stock in product_json['stockSucursal'])
-        price_container = soup.find('div', 'product-single__price').findAll(
-            'div', 'price-xl')
-        normal_price = Decimal(remove_words(price_container[1].text))
-        offer_price = Decimal(remove_words(price_container[0].text))
-        picture_urls = [tag['src'].split('?t')[0]
-                        for tag in
-                        soup.find('div', 'product-single__gallery').findAll(
-                            'img')]
+        offer_price = Decimal(product_json['precio'])
+        normal_price = (offer_price / Decimal('0.97')).quantize(0)
+
+        picture_urls = ['https://www.pcfactory.cl/public/foto/{}/'
+                        '1_1000.jpg'.format(sku)]
 
         if 'LIQ' in name:
             condition = 'https://schema.org/RefurbishedCondition'
