@@ -71,7 +71,7 @@ class PcFactory(Store):
 
         product_urls = []
 
-        if extra_args and extra_args['file']:
+        if extra_args and 'file' in extra_args:
             with open(extra_args['file']) as f:
                 product_entries = json.loads(f.read())
                 for entry in product_entries:
@@ -134,7 +134,7 @@ class PcFactory(Store):
             ['647', CASE_FAN],
             ['850', HEADPHONES],
         ]
-        
+
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
