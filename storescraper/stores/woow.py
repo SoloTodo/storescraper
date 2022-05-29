@@ -77,6 +77,7 @@ class Woow(Store):
         price = Decimal(
             json_data['offers']['offers'][0]['price']
         )
+        price = price.quantize(Decimal('0.01'))
         picture_urls = [tag['src'] for tag in
                         soup.find(
                             'div',
