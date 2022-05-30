@@ -115,7 +115,8 @@ class ElectronicaBudini(Store):
 
         name = product_data['name']
         sku = str(product_data['sku'])
-        price = Decimal(product_data['offers'][0]['price'])
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.04')).quantize(0)
 
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
@@ -146,8 +147,8 @@ class ElectronicaBudini(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
