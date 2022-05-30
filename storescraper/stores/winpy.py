@@ -33,8 +33,6 @@ class Winpy(Store):
             'Printer',
             'ExternalStorageDrive',
             'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
             'Television',
             'StereoSystem',
             'Headphones',
