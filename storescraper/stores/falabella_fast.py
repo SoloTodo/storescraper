@@ -146,7 +146,7 @@ class FalabellaFast(Store):
         normal_price = None
 
         for price in prices:
-            if price['label'] == '(Oferta)':
+            if price['label'] == '(Oferta)' or price['type'] == 'eventPrice':
                 normal_price = Decimal(remove_words(price['price'][0]))
                 break
             if price['icons'] == 'cmr-icon':
