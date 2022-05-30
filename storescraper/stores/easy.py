@@ -311,6 +311,8 @@ class Easy(Store):
         if offer_price_json_value:
             offer_price = Decimal(offer_price_json_value['value']) \
                 / Decimal(100)
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
 
