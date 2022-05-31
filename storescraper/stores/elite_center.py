@@ -136,7 +136,7 @@ class EliteCenter(Store):
                             json_data).groups()[0] + '}')
 
         json_data = json_data['ecommerce']['detail']['products'][0]
-        name = json_data['name']
+        name = json_data['name'][:256]
         sku = json_data['sku']
 
         offer_price = Decimal(json_data['price']).quantize(0)
