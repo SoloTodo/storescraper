@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from decimal import Decimal
 
@@ -14,7 +15,7 @@ from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, \
     ALL_IN_ONE, TABLET, TELEVISION, MEMORY_CARD, USB_FLASH_DRIVE, \
     KEYBOARD_MOUSE_COMBO, UPS, PRINTER, CELL, WEARABLE
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class EliteCenter(Store):
@@ -101,19 +102,19 @@ class EliteCenter(Store):
                     raise Exception('page overflow: ' + url_extension)
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
-                              '?paged={}'.format(
+                              'page/{}/'.format(
                                   url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
 
-                if response.status_code == 404:
-                    # if page == 1:
-                    #     raise Exception('Invalid category: ' + url_extension)
-                    break
-
                 data = response.text
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-grid-item')
+
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
@@ -128,23 +129,18 @@ class EliteCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        json_data = soup.findAll(
+            'script', {'data-cfasync': 'false'})[1].text.strip()
         json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            '{' + re.search(r"var dataLayer_content = {([\s\S]+)};",
+                            json_data).groups()[0] + '}')
 
-        for json_entry in json_data['@graph']:
-            if json_entry['@type'] == 'Product':
-                product_data = json_entry
-                break
-        else:
-            raise Exception('No product data found')
+        json_data = json_data['ecommerce']['detail']['products'][0]
+        name = json_data['name']
+        sku = json_data['sku']
 
-        if 'offers' not in product_data:
-            return []
-
-        name = product_data['name'][:256]
-        sku = product_data['sku']
-        offer_price = Decimal(product_data['offers']['price'])
-        normal_price = (offer_price * Decimal('1.05')).quantize(0)
+        offer_price = Decimal(json_data['price']).quantize(0)
+        normal_price = (offer_price * Decimal('1.04999')).quantize(0)
 
         key = soup.find(
             'a', 'add-request-quote-button button')['data-product_id']
@@ -169,7 +165,11 @@ class EliteCenter(Store):
                         if validators.url(tag['href'])
                         ]
 
-        description = product_data.get('description', None)
+        description_div = soup.find('div', {'id': 'tab-description'})
+        if description_div:
+            description = html_to_markdown(description_div.text)
+        else:
+            description = None
         part_number_text = soup.find(
             'div', {'data-id': '1072e30'}).text.strip()
 
