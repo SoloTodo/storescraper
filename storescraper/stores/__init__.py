@@ -120,6 +120,7 @@ from .fama import Fama
 from .fibra_net import FibraNet
 from .fiesta_lan import FiestaLan
 from .finall import Finall
+from .flexacomp import Flexacomp
 from .fsn_store import FsnStore
 from .fnac import Fnac
 from .fravega import Fravega
@@ -160,6 +161,7 @@ from .hites import Hites
 from .house_of_gamers import HouseOfGamers
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
+from .ibeam import Ibeam
 from .ibyte import Ibyte
 from .igoa import Igoa
 from .ilumina_led import IluminaLed
