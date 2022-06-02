@@ -99,9 +99,13 @@ class NotebooksYa(Store):
                 stock = int(qty_input['max'])
             else:
                 stock = -1
-        price_container = soup.find('div', 'wds').findAll('bdi')
-        normal_price = Decimal(remove_words(price_container[0].text))
-        offer_price = Decimal(remove_words(price_container[1].text))
+        price_container = soup.find('div', 'wds')
+        normal_container = price_container.find('div', 'wds-first')
+        normal_price = Decimal(remove_words(
+            normal_container.findAll('bdi')[-1].text))
+        offer_container = price_container.find('div', 'wds-second')
+        offer_price = Decimal(remove_words(
+            offer_container.findAll('bdi')[-1].text))
         picture_urls = [tag['src'] for tag in soup.find('div',
                         'woocommerce-product-gallery').findAll('img')]
         description = soup.find(

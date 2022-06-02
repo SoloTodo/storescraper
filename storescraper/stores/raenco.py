@@ -3,6 +3,9 @@ import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
+from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
+    HEADPHONES, MONITOR, NOTEBOOK, OVEN, PRINTER, REFRIGERATOR, \
+    STEREO_SYSTEM, TABLET, TELEVISION, WASHING_MACHINE, WEARABLE
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -13,61 +16,48 @@ class Raenco(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'AirConditioner',
-            'WashingMachine',
-            'Stove',
-            'Projector',
+            REFRIGERATOR,
+            WASHING_MACHINE,
+            OVEN,
+            AIR_CONDITIONER,
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            ALL_IN_ONE,
+            NOTEBOOK,
+            MONITOR,
+            TABLET,
+            WEARABLE,
+            PRINTER,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ('tecnologia/tv.html', 'Television'),
-            ('tecnologia/tv/tv-led-hd-fhd.html', 'Television'),
-            ('tecnologia/tv/tv-4k.html', 'Television'),
-            ('tecnologia/tv/tv-qled.html', 'Television'),
-            ('tecnologia/audio-hogar/equipos-de-sonido.html', 'StereoSystem'),
-            ('tecnologia/celulares.html', 'Cell'),
-            ('tecnologia/celulares/8-gb.html', 'Cell'),
-            ('tecnologia/celulares/16-gb.html', 'Cell'),
-            ('tecnologia/celulares/32-gb.html', 'Cell'),
-            ('tecnologia/celulares/64-gb.html', 'Cell'),
-            ('tecnologia/celulares/128-gb.html', 'Cell'),
-            ('tecnologia/celulares/256-gb.html', 'Cell'),
-            ('hogar/linea-blanca/refrigeradoras.html', 'Refrigerator'),
-            ('hogar/linea-blanca/refrigeradoras/puerta-horizontal.html',
-             'Refrigerator'),
-            ('hogar/linea-blanca/refrigeradoras/puerta-vertical.html',
-             'Refrigerator'),
-            ('hogar/linea-blanca/lavadoras.html', 'WashingMachine'),
-            ('hogar/linea-blanca/lavadoras/semi-automatica.html',
-             'WashingMachine'),
-            ('hogar/linea-blanca/lavadoras/centro-de-lavado.html',
-             'WashingMachine'),
-            ('hogar/linea-blanca/lavadoras/automatica.html',
-             'WashingMachine'),
-            ('hogar/linea-blanca/secadoras.html', 'WashingMachine'),
-            ('hogar/linea-blanca/secadoras/secadoras-a-gas.html',
-             'WashingMachine'),
-            ('hogar/linea-blanca/secadoras/secadoras-electricas.html',
-             'WashingMachine'),
-            ('hogar/aires-acondicionados.html', 'AirConditioner'),
-            ('hogar/linea-blanca/electrodomesticos/microondas.html', 'Oven'),
-            ('hogar/linea-blanca/hornos-empotrables.html', 'Oven'),
-            ('hogar/linea-blanca/estufas.html', 'Stove'),
-            ('hogar/linea-blanca/estufas/estufas-electricas.html', 'Stove'),
-            ('hogar/linea-blanca/estufas/estufas-empotrables.html', 'Stove'),
-            ('hogar/linea-blanca/estufas/de-mesa-a-gas-y-electricas.html',
-             'Stove'),
-            ('hogar/linea-blanca/estufas/a-gas-de-20-y-24-pulgadas.html',
-             'Stove'),
-            ('hogar/linea-blanca/estufas/a-gas-de-30-y-36-pulgadas.html',
-             'Stove'),
+            ["hogar/linea-blanca/refrigeradoras.html", REFRIGERATOR],
+            ["hogar/linea-blanca/lavadora.html", WASHING_MACHINE],
+            ["hogar/linea-blanca/secadoras.html", WASHING_MACHINE],
+            ["hogar/electrodomesticos/microondas.html", OVEN],
+            ["aires-acondicionado.html", AIR_CONDITIONER],
+            ["audio-y-video/tv/tv-led-hd-fhd.html", TELEVISION],
+            ["audio-y-video/tv/tv-4k.html", TELEVISION],
+            ["audio-y-video/tv/tv-crystal-uhd.html", TELEVISION],
+            ["audio-y-video/tv/tv-nanocell.html", TELEVISION],
+            ["audio-y-video/tv/tv-qled.html", TELEVISION],
+            ["audio-y-video/equipos-de-sonido.html", STEREO_SYSTEM],
+            ["audio-y-video/sound-bar.html", STEREO_SYSTEM],
+            ["tecnologia/celulares.html", CELL],
+            ["tecnologia/computadoras/desktop.html", ALL_IN_ONE],
+            ["tecnologia/computadoras/core-i3-ryzen-3.html", NOTEBOOK],
+            ["tecnologia/computadoras/core-i5-ryzen-5.html", NOTEBOOK],
+            ["tecnologia/computadoras/core-i7-ryzen-7.html", NOTEBOOK],
+            ["tecnologia/computadoras/celeron", NOTEBOOK],
+            ["tecnologia/computadoras/monitores", MONITOR],
+            ["tecnologia/tablet.html", TABLET],
+            ["tecnologia/reloj-smartwatch.html", WEARABLE],
+            ["tecnologia/impresora-y-escaner.html", PRINTER],
+            ["tecnologia/audifonos-y-bocinas.html", HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
@@ -91,7 +81,7 @@ class Raenco(Store):
                     .format(category_path, page)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('div', 'border-products')
+                product_containers = soup.findAll('li', 'product')
 
                 if not product_containers and page == 1:
                     logging.warning('Empty section {}'.format(category_path))
@@ -104,7 +94,7 @@ class Raenco(Store):
                         break
 
                     if 'LG' in container.find(
-                            'p', 'product-name').text.upper():
+                            'strong', 'product-item-name').text.upper():
                         lg_urls.append(product_url)
 
                     local_urls.append(product_url)
@@ -133,28 +123,16 @@ class Raenco(Store):
 
         soup = BeautifulSoup(data, 'html.parser')
 
-        name = soup.find('div', 'product-name').find('h1').text.strip()
-        sku = soup.find('div', 'product-name').find('p')\
-            .text.replace('Código del producto', '').strip()
-        stock = -1
+        name = soup.find('h1', 'page-title').text.strip()
+        stock_and_sku = soup.find('div', 'product-info-stock-sku')
+        sku = stock_and_sku.find('div', {'itemprop': 'sku'}).text.strip()
+        stock_div = stock_and_sku.find('div', 'stock')
+        stock = int(stock_div.text.replace(
+            stock_div.find('span').text, '').strip())
 
-        price_container = soup.find('div', 'price-box')\
-            .find('span', 'regular-price')
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
 
-        if not price_container:
-            price_container = soup.find('div', 'price-box')
-
-        if price_container.find('del'):
-            price = price_container.find(
-                'span', 'price').text.strip().split(' ')[-1]
-        else:
-            price = price_container.find('span', 'price').text
-
-        price = Decimal(price.replace('$', '').replace(',', ''))
-
-        images = soup.find('div', 'product-image-gallery').findAll('img')
-
-        picture_urls = [i['src'] for i in images]
+        image = soup.find('img', 'gallery-placeholder__image')['src']
 
         p = Product(
             name,
@@ -168,7 +146,7 @@ class Raenco(Store):
             price,
             'USD',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=[image]
         )
 
         return [p]
