@@ -1,4 +1,6 @@
 import logging
+from decimal import Decimal
+
 from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, KEYBOARD, \
     KEYBOARD_MOUSE_COMBO, MOUSE, POWER_SUPPLY, VIDEO_CARD
@@ -51,21 +53,27 @@ class DacDigital(MercadoLibreChile):
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a', 'ui-search-link')['href']
+                    product_url = container.find(
+                        'a', 'ui-search-link')['href'].split('#')[0].split('?')[0]
                     product_urls.append(product_url)
                 page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        # Remove the seller because we consider MecadoLibreLg to be a
-        # standalone retailer, in particular because the LG WTB system
-        # only displays entries without a seller (not from marketplaces)
-        # and we want to consider MercadoLibreLG for that.
+        session = session_with_proxy(extra_args)
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+
         products = super().products_for_url(
             url, category=category, extra_args=extra_args)
 
         for product in products:
+            product.url = url
+            product.discovery_url = url
+            product.offer_price = price
+            product.normal_price = price
             product.seller = None
 
         return products
