@@ -82,6 +82,9 @@ class AgenciasWayOnline(Store):
 
         product_container = soup.find('div', 'detail-product')
 
+        if not product_container:
+            return []
+
         sku = product_container['id'].split('-')[1]
 
         model = product_container.find(
