@@ -6,9 +6,9 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, \
-    PROCESSOR, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, \
-    EXTERNAL_STORAGE_DRIVE, TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD, \
-    VIDEO_GAME_CONSOLE
+    PROCESSOR, USB_FLASH_DRIVE, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, \
+    ALL_IN_ONE, HEADPHONES, EXTERNAL_STORAGE_DRIVE, TABLET, \
+    KEYBOARD_MOUSE_COMBO, KEYBOARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,12 +38,13 @@ class ElectronicaBudini(Store):
             KEYBOARD,
             KEYBOARD_MOUSE_COMBO,
             VIDEO_GAME_CONSOLE,
+            USB_FLASH_DRIVE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['auriculares-gamer', HEADPHONES],
+            ['audio', HEADPHONES],
             ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['discos-de-estado-solido-ssd', SOLID_STATE_DRIVE],
@@ -65,6 +66,7 @@ class ElectronicaBudini(Store):
             ['todo-en-uno-aio', ALL_IN_ONE],
             ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
             ['consolas', VIDEO_GAME_CONSOLE],
+            ['pendrive', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
