@@ -109,7 +109,7 @@ class HuaweiShop(Store):
                                             'skuCodes={}&siteCode=CL'.format(
                                                 products_id)).text)
 
-        if 'inventoryQty' not in json_stock['data']:
+        if 'inventoryReqVOs' not in json_stock['data']:
             return []
 
         stock_dict = {x['skuCode']: x['inventoryQty']
