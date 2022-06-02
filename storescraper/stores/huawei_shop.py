@@ -108,13 +108,17 @@ class HuaweiShop(Store):
                                             'com/eCommerce/querySkuInventory?'
                                             'skuCodes={}&siteCode=CL'.format(
                                                 products_id)).text)
+
+        if 'inventoryQty' not in json_stock['data']:
+            return []
+
         stock_dict = {x['skuCode']: x['inventoryQty']
                       for x in json_stock['data']['inventoryReqVOs']}
 
         prices_endpoint = 'https://itrinity-sg.c.huawei.com/convert/' \
                           'querySkuDetailDispAndInv?skuCodes={}&' \
                           'groupFlag=true&siteCode=CL&loginFrom=1'.format(
-                                products_id)
+                              products_id)
         prices_res = session.get(prices_endpoint).json()
         price_per_sbom = {x['skuPriceInfo']['sbomCode']:
                           Decimal(x['skuPriceInfo']['salePrice'])
