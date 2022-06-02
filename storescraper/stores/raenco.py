@@ -126,8 +126,9 @@ class Raenco(Store):
         name = soup.find('h1', 'page-title').text.strip()
         stock_and_sku = soup.find('div', 'product-info-stock-sku')
         sku = stock_and_sku.find('div', {'itemprop': 'sku'}).text.strip()
-        stock = int(stock_and_sku.find(
-            'div', 'stock').text.replace('Disponible', '').strip())
+        stock_div = stock_and_sku.find('div', 'stock')
+        stock = int(stock_div.text.replace(
+            stock_div.find('span').text, '').strip())
 
         price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
 
