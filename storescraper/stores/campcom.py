@@ -72,7 +72,8 @@ class Campcom(Store):
         picture_container = soup.find(
             'figure', 'woocommerce-product-gallery__wrapper')
         for a in picture_container.findAll('a'):
-            picture_urls.append(a['href'])
+            if a['href'] != "":
+                picture_urls.append(a['href'])
 
         p = Product(
             name,
