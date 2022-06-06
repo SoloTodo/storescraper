@@ -54,7 +54,8 @@ class DacDigital(MercadoLibreChile):
                     break
                 for container in product_containers:
                     product_url = container.find(
-                        'a', 'ui-search-link')['href'].split('#')[0].split('?')[0]
+                        'a', 'ui-search-link')
+                    ['href'].split('#')[0].split('?')[0]
                     product_urls.append(product_url)
                 page += 1
         return product_urls
