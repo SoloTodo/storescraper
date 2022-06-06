@@ -54,7 +54,12 @@ class Campcom(Store):
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('=')[-1]
         json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)['@graph'][1]
+            'script', {'type': 'application/ld+json'}).text)
+
+        if '@graph' not in json_data:
+            return []
+
+        json_data = json_data['@graph'][1]
 
         name = json_data['name']
         sku = str(json_data['sku'])
