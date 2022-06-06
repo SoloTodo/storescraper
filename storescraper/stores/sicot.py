@@ -5,8 +5,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MONITOR, TABLET, GAMING_CHAIR, \
-    PRINTER, ALL_IN_ONE, STEREO_SYSTEM, SOLID_STATE_DRIVE, MOUSE
+from storescraper.categories import NOTEBOOK, MONITOR, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -18,28 +17,15 @@ class Sicot(Store):
         return [
             NOTEBOOK,
             MONITOR,
-            TABLET,
-            GAMING_CHAIR,
-            PRINTER,
             ALL_IN_ONE,
-            STEREO_SYSTEM,
-            SOLID_STATE_DRIVE,
-            MOUSE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['notebook', NOTEBOOK],
-            ['chromebook', NOTEBOOK],
-            ['desktop-aio', ALL_IN_ONE],
+            ['computadores/notebook-y-tablets', NOTEBOOK],
+            ['computadores/desktop-aio', ALL_IN_ONE],
             ['monitores', MONITOR],
-            ['tablets', TABLET],
-            ['gamer', GAMING_CHAIR],
-            ['impresoras', PRINTER],
-            ['accesorios', STEREO_SYSTEM],
-            ['almacenamiento', SOLID_STATE_DRIVE],
-            ['teclado-y-mouse', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -56,19 +42,20 @@ class Sicot(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://www.sicot.cl/collection/{}' \
-                              '?page={}'.format(url_extension, page)
+                url_webpage = 'https://www.sicot.cl/tienda-online/{}' \
+                              '?p={}'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'bs-product')
+                product_containers = soup.findAll(
+                    'div', 'jet-woo-products__item')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append('https://www.sicot.cl' + product_url)
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -81,41 +68,47 @@ class Sicot(Store):
             '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_container = soup.find('main', 'bs-main').find(
-            'script').text.strip()
-        json_container = json.loads(
-            re.search(r"window.INIT.products.push\(([\s\S]+)\);",
-                      json_container).groups()[0])
-        name = json_container['product']['title']
-        picture_urls = [tag['data-lazy'] for tag in
-                        soup.find('section', 'col-12 relative').findAll('img')]
-        description = html_to_markdown(
-            json_container['product']['description'])
 
-        products = []
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
 
-        for variant in json_container['variants']:
-            variant_name = '{} {}'.format(name, variant['title']).strip()
-            part_number = variant['sku']
-            sku = str(variant['id'])
-            stock = int(
-                variant['stock'][0]['quantityAvailable'])
-            price = Decimal(variant['finalPrice'])
-            p = Product(
-                variant_name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                part_number=part_number,
-                picture_urls=picture_urls,
-                description=description
-            )
-            products.append(p)
-        return products
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+
+        name = json_data['name']
+        sku = str(json_data['sku'])
+        description = json_data['description']
+        price = Decimal(json_data['offers'][0]['price'])
+
+        if soup.find('button', {'name': 'add-to-cart'}):
+            stock_p = soup.find('p', 'stock in-stock')
+            if stock_p:
+                stock = int(stock_p.text.split('disponible')[0].strip())
+            else:
+                stock = -1
+        else:
+            stock = 0
+
+        picture_urls = []
+        picture_container = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        for a in picture_container.findAll('a'):
+            picture_urls.append(a['href'])
+
+        # TODO: invert key with sku
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=key,
+            part_number=sku,
+            picture_urls=picture_urls,
+            description=description
+        )
+        return [p]

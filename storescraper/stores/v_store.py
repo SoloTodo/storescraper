@@ -74,32 +74,23 @@ class VStore(Store):
         json_container = json.loads(soup.find('script', {
             'id': 'ProductJson-product-template-2'}).text.strip())
         name = json_container['title']
-        sku = str(json_container['id'])
-        stock_container = json.loads(
-            soup.findAll('script', {'type': 'application/ld+json'})[1].text)[
-            'offers'][0]
-        if stock_container['availability'] == 'http://schema.org/InStock':
+        key = str(json_container['id'])
+        json_product = json_container['variants'][0]
+        sku = json_product['sku']
+        if json_product['available']:
             stock = -1
         else:
             stock = 0
-        price = Decimal(stock_container['price'])
-        picture_urls = []
-        picture_containers = soup.find('div', 'thumbnails-wrapper')
-        if picture_containers:
-            for tag in picture_containers.findAll('img'):
-                if 'https:' + tag['srcset'].split('?')[0] not in picture_urls:
-                    picture_urls.append('https:' + tag['srcset'].split('?')[0])
-        else:
-            picture_urls = ['https:' +
-                            soup.find('div', 'product-single__photos').find(
-                                'img')['srcset']]
+        price = (Decimal(json_product['price']) / Decimal(100)).quantize(0)
+        picture_urls = [m['src'] for m in json_container['media']]
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
