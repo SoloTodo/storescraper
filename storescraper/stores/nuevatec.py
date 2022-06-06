@@ -1,6 +1,7 @@
 from decimal import Decimal
 import json
 import logging
+from socket import timeout
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
@@ -78,8 +79,7 @@ class Nuevatec(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.nuevatec.cl' + product_url)
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
