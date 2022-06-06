@@ -1,18 +1,14 @@
-import json
 import logging
 from decimal import Decimal
 
-import demjson
 from bs4 import BeautifulSoup
 
-from storescraper.categories import SOLID_STATE_DRIVE, HEADPHONES, \
-    COMPUTER_CASE, RAM, PROCESSOR, VIDEO_CARD, MOTHERBOARD, GAMING_CHAIR, \
-    KEYBOARD, POWER_SUPPLY, CPU_COOLER, MONITOR, MOUSE, USB_FLASH_DRIVE, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, KEYBOARD_MOUSE_COMBO, MICROPHONE, \
-    CASE_FAN
+from storescraper.categories import SOLID_STATE_DRIVE, COMPUTER_CASE, RAM, \
+    PROCESSOR, VIDEO_CARD, MOTHERBOARD, KEYBOARD, POWER_SUPPLY, CPU_COOLER, \
+    MONITOR, MOUSE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class GWStore(Store):
@@ -24,44 +20,41 @@ class GWStore(Store):
             COMPUTER_CASE,
             POWER_SUPPLY,
             RAM,
-            USB_FLASH_DRIVE,
             MOUSE,
             KEYBOARD,
-            HEADPHONES,
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
             STORAGE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
             MONITOR,
             CPU_COOLER,
-            GAMING_CHAIR,
-            KEYBOARD_MOUSE_COMBO,
             MICROPHONE,
-            CASE_FAN,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['4-procesadores', PROCESSOR],
-            ['3-placas-madre', MOTHERBOARD],
-            ['6-gabinetes', COMPUTER_CASE],
-            ['10-fuentes-de-poder', POWER_SUPPLY],
-            ['8-memorias', RAM],
-            ['26-mouse', MOUSE],
-            ['27-teclados', KEYBOARD],
-            ['29-audifonos', HEADPHONES],
-            ['30-sillas-gamer', GAMING_CHAIR],
-            ['32-combos', KEYBOARD_MOUSE_COMBO],
-            ['5-tarjetas-de-video', VIDEO_CARD],
-            ['9-almacenamiento', SOLID_STATE_DRIVE],
-            ['14-monitores', MONITOR],
-            ['45-refrigeracion-liquida', CPU_COOLER],
-            ['47-ventiladores-cpu', CPU_COOLER],
-            ['48-ventiladores-120', CASE_FAN],
-            ['33-microfonos', MICROPHONE]
+            ['16-procesadores', PROCESSOR],
+            ['36-refrigeracion-', CPU_COOLER],
+            ['21-placas-madres', MOTHERBOARD],
+            ['27-memorias-ram', RAM],
+            ['11-hdd', STORAGE_DRIVE],
+            ['12-sdd', SOLID_STATE_DRIVE],
+            ['13-ssd-m2', SOLID_STATE_DRIVE],
+            ['14-nvme', SOLID_STATE_DRIVE],
+            ['15-disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['35-tarjetas-de-video', VIDEO_CARD],
+            ['26-fuentes-de-poder', POWER_SUPPLY],
+            ['28-gabinete', COMPUTER_CASE],
+            ['30-mouse', MOUSE],
+            ['31-teclados', KEYBOARD],
+            ['32-microfonos', MICROPHONE],
+            ['58-monitor', MONITOR],
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -91,23 +84,40 @@ class GWStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_data = json.loads(
-            soup.findAll('script', {'type': 'application/ld+json'})[2]
-                .text.replace('\n', ' '))
-        name = json_data['name']
-        key = soup.find('input', {'name': 'id_product'})['value']
-        sku = json_data.get('sku', None)
 
-        if json_data['offers']['availability'] == 'http://schema.org/InStock':
-            stock = -1
+        key_input = soup.find('input', {'id': 'product_page_product_id'})
+        print(key_input)
+        if not key_input:
+            return []
+
+        key = key_input['value']
+
+        name = soup.find('h1', 'product-name').text.strip()
+        price = Decimal(soup.find('span', 'price')['content'])
+
+        if soup.find('button', 'add-to-cart'):
+            stock_div = soup.find('div', 'product-quantities')
+            if stock_div:
+                stock = int(stock_div.find('span')['data-stock'])
+            else:
+                stock = -1
         else:
             stock = 0
-        price = Decimal(json_data['offers']['price'])
-        description = json_data.get('description', None)
-        part_number = json_data.get('mpn', None)
-        picture_urls = json_data['offers']['image']
+
+        description = html_to_markdown(
+            soup.find('div', 'product-description').text)
+        sku = soup.find('span', {'itemprop': 'sku'}).text
+
+        picture_urls = []
+        picture_container = soup.find('ul', 'product-images')
+        for image in picture_container.findAll('img'):
+            picture_urls.append(image['data-image-large-src'])
+
         p = Product(
             name,
             cls.__name__,
@@ -122,6 +132,5 @@ class GWStore(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
-            part_number=part_number
         )
         return [p]

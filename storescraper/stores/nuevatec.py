@@ -1,12 +1,11 @@
 from decimal import Decimal
-import demjson
+import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
-    MOTHERBOARD, MOUSE, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    VIDEO_CARD
+    MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
+    SOLID_STATE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -33,31 +32,30 @@ class Nuevatec(Store):
             PRINTER,
             MICROPHONE,
             HEADPHONES,
-            STEREO_SYSTEM
+            NOTEBOOK
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['monitores', MONITOR],
-            ['componentes-pc/placas-madres', MOTHERBOARD],
-            ['componentes-pc/procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['componentes-pc/memorias-ram', RAM],
-            ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['refrigeracion', CASE_FAN],
-            ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['almacenamiento/discos-duros', STORAGE_DRIVE],
+            ['procesadores', PROCESSOR],
+            ['placas-madres', MOTHERBOARD],
+            ['memorias-ram', RAM],
+            ['discos-duros', STORAGE_DRIVE],
             ['unidades-de-estado-solido-ssd', SOLID_STATE_DRIVE],
-            ['discos-duro-externo', EXTERNAL_STORAGE_DRIVE],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['refrigeracion', CASE_FAN],
+            ['gabinetes', COMPUTER_CASE],
+            ['notebook', NOTEBOOK],
+            ['impresoras', PRINTER],
             ['mouses', MOUSE],
             ['teclados', KEYBOARD],
-            ['pendrive', USB_FLASH_DRIVE],
-            ['accesorios-1/impresoras', PRINTER],
+            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
+            ['pendrives', USB_FLASH_DRIVE],
+            ['audifonos', HEADPHONES],
             ['microfonos', MICROPHONE],
-            ['accesorios-1/audifonos', HEADPHONES],
-            ['accesorios-1/parlantes', STEREO_SYSTEM],
-            ['cables-y-accesorios/memoria-ram-notebook', RAM],
         ]
 
         session = session_with_proxy(extra_args)
@@ -69,11 +67,11 @@ class Nuevatec(Store):
             while True:
                 if page > 10:
                     raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.nuevatec.cl/{}?' \
-                              'page={}'.format(url_extension, page)
+                url_webpage = 'https://www.nuevatec.cl/{}/' \
+                              'page/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-block')
+                product_containers = soup.findAll('div', 'product-grid-item')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -92,39 +90,54 @@ class Nuevatec(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('form', 'product-form')['action'].split('/')[-1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
 
-        json_data = demjson.decode(soup.find(
-            'script', {'type': 'application/ld+json'}).text, strict=False)
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
 
-        name = json_data['name']
-        sku = json_data.get('sku', None)
-        description = json_data['description']
-        price = Decimal(json_data['offers']['price'])
-
-        stock_span = soup.find('span', 'product-form-stock')
-        if stock_span:
-            stock = int(stock_span.text)
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
         else:
-            stock = 0
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        description = product_data['description']
+        normal_price = Decimal(product_data['offers'][0]['price'])
+        offer_price = (normal_price * Decimal(1.06)).quantize(0)
+
+        qty_input = soup.find('input', 'input-text qty text')
+        if qty_input:
+            if qty_input['max']:
+                stock = int(qty_input['max'])
+            else:
+                stock = -1
+        else:
+            if soup.find('button', 'single_add_to_cart_button'):
+                stock = 1
+            else:
+                stock = 0
 
         picture_urls = []
         image_container = soup.find('div', 'product-images')
-        for image in image_container.findAll('img'):
-            picture_urls.append(image['src'])
+        for image in image_container.findAll('div', 'product-image-wrap'):
+            picture_urls.append(image.find('img')['src'])
 
+        # TODO: invert key with sku
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            key,
+            sku,
             stock,
-            price,
-            price,
+            offer_price,
+            normal_price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
             description=description
         )
