@@ -94,19 +94,18 @@ class Sicot(Store):
         for a in picture_container.findAll('a'):
             picture_urls.append(a['href'])
 
-        # TODO: invert key with sku
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
-            sku=key,
+            sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
             description=description
