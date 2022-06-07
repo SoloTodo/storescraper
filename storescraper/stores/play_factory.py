@@ -1,6 +1,7 @@
 from decimal import Decimal
 import json
 import logging
+import validators
 
 from bs4 import BeautifulSoup
 
@@ -97,7 +98,8 @@ class PlayFactory(Store):
         figures = soup.find(
             'figure', 'woocommerce-product-gallery__wrapper')
         for a in figures.findAll('img'):
-            picture_urls.append(a['src'])
+            if validators.url(a['src']):
+                picture_urls.append(a['src'])
 
         products = []
         variants_form = soup.find('form', 'variations_form cart')
