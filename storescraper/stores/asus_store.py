@@ -64,7 +64,10 @@ class AsusStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=30)
+        try:
+            response = session.get(url, timeout=30)
+        except Exception as e:
+            return []
 
         if response.status_code == 401:
             return []
