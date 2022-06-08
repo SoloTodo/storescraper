@@ -117,7 +117,8 @@ class GGames(Store):
         for variant in json_container['variants']:
             variant_name = '{} {}'.format(name, variant['title']).strip()
             part_number = variant['sku'].strip()
-            sku = str(variant['id'])
+            key = str(variant['id'])
+            sku = str(variant['sku'])
             price = Decimal(variant['price'] / 100)
 
             # https://ggames.cl/collections/headsets/products/
@@ -131,7 +132,7 @@ class GGames(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,

@@ -1,8 +1,9 @@
 from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import KEYBOARD, MONITOR, MOTHERBOARD, PRINTER, \
-    VIDEO_CARD
+from storescraper.categories import CASE_FAN, COMPUTER_CASE, CPU_COOLER, \
+    GAMING_CHAIR, KEYBOARD, MONITOR, MOTHERBOARD, NOTEBOOK, POWER_SUPPLY, \
+    PRINTER, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -16,7 +17,14 @@ class Chelnovix(Store):
             MONITOR,
             MOTHERBOARD,
             VIDEO_CARD,
-            KEYBOARD
+            KEYBOARD,
+            NOTEBOOK,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            CPU_COOLER,
+            CASE_FAN,
+            PROCESSOR,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -24,9 +32,16 @@ class Chelnovix(Store):
         url_extensions = [
             ['impresoras', PRINTER],
             ['monitores', MONITOR],
-            ['partes-y-piezas', MOTHERBOARD],
+            ['partes-y-piezas/placa-madre', MOTHERBOARD],
             ['tarjeta-de-video', VIDEO_CARD],
             ['accesorios-gamer', KEYBOARD],
+            ['computadores/notebook', NOTEBOOK],
+            ['partes-y-piezas/fuentes', POWER_SUPPLY],
+            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/refrigeracion-liquida', CPU_COOLER],
+            ['partes-y-piezas/disipador', CASE_FAN],
+            ['partes-y-piezas/procesadores', PROCESSOR],
+            ['accesorios-gamer/silla-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)

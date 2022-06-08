@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -29,27 +30,29 @@ class GWStore(Store):
             MONITOR,
             CPU_COOLER,
             MICROPHONE,
+            RAM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['16-procesadores', PROCESSOR],
-            ['36-refrigeracion-', CPU_COOLER],
-            ['21-placas-madres', MOTHERBOARD],
+            ['3-procesadores', PROCESSOR],
+            ['12-refrigeracion-', CPU_COOLER],
+            ['6-placas-madres', MOTHERBOARD],
             ['27-memorias-ram', RAM],
-            ['11-hdd', STORAGE_DRIVE],
-            ['12-sdd', SOLID_STATE_DRIVE],
-            ['13-ssd-m2', SOLID_STATE_DRIVE],
-            ['14-nvme', SOLID_STATE_DRIVE],
-            ['15-disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['35-tarjetas-de-video', VIDEO_CARD],
-            ['26-fuentes-de-poder', POWER_SUPPLY],
-            ['28-gabinete', COMPUTER_CASE],
-            ['30-mouse', MOUSE],
-            ['31-teclados', KEYBOARD],
-            ['32-microfonos', MICROPHONE],
-            ['58-monitor', MONITOR],
+            ['25-hdd', STORAGE_DRIVE],
+            ['23-sdd', SOLID_STATE_DRIVE],
+            ['24-ssd-m2', SOLID_STATE_DRIVE],
+            ['26-nvme', SOLID_STATE_DRIVE],
+            ['27-disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['10-memorias-ram', RAM],
+            ['11-tarjetas-de-video', VIDEO_CARD],
+            ['14-fuentes-de-poder', POWER_SUPPLY],
+            ['13-gabinete', COMPUTER_CASE],
+            ['44-mouse', MOUSE],
+            ['45-teclados', KEYBOARD],
+            ['47-microfonos', MICROPHONE],
+            ['16-monitor', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
@@ -91,14 +94,18 @@ class GWStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         key_input = soup.find('input', {'id': 'product_page_product_id'})
-        print(key_input)
         if not key_input:
             return []
 
         key = key_input['value']
 
-        name = soup.find('h1', 'product-name').text.strip()
-        price = Decimal(soup.find('span', 'price')['content'])
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+
+        name = json_data['name']
+        sku = json_data['sku']
+        price = Decimal(json_data['offers']['price'])
+        picture_urls = json_data['offers']['image']
 
         if soup.find('button', 'add-to-cart'):
             stock_div = soup.find('div', 'product-quantities')
@@ -111,12 +118,6 @@ class GWStore(Store):
 
         description = html_to_markdown(
             soup.find('div', 'product-description').text)
-        sku = soup.find('span', {'itemprop': 'sku'}).text
-
-        picture_urls = []
-        picture_container = soup.find('ul', 'product-images')
-        for image in picture_container.findAll('img'):
-            picture_urls.append(image['data-image-large-src'])
 
         p = Product(
             name,
