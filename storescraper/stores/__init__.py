@@ -405,6 +405,7 @@ from .updatech import Updatech
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
 from .valrod import Valrod
+from .venelectronics import Venelectronics
 from .ventas_albion import VentasAlbion
 from .video_vision import VideoVision
 from .virtual_drakon import VirtualDrakon
