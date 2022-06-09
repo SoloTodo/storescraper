@@ -18,7 +18,7 @@ class Unimarc(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['despensa', GROCERIES]
+            ['355', GROCERIES]
         ]
 
         session = session_with_proxy(extra_args)
@@ -27,30 +27,28 @@ class Unimarc(Store):
             if category not in local_categories:
                 continue
 
-            page = 1
+            page = 0
             while True:
                 if page >= 50:
                     raise Exception('Page overflow ' + url_extension)
 
-                url_webpage = 'https://www.unimarc.cl/{}' \
-                    '?page={}'.format(url_extension, page)
+                url_webpage = 'https://bff-unimarc-web.unimarc.cl/bff-api/' \
+                    'products/?from={}&to={}&fq=C:{}'.format(
+                        page * 50, (page + 1) * 50 - 1, url_extension)
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
 
-                template = soup.find(
-                    'template', {'data-varname': '__STATE__'}).text
-                if 'linkText' not in template:
+                product_data = json.loads(data)['data']['products']
+
+                if len(product_data) == 0:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
 
-                product_data = json.loads(template)
-                for item in product_data.values():
-                    if 'linkText' in item:
-                        products_urls.append(
-                            'https://www.unimarc.cl/'
-                            + item['linkText'] + '/p')
+                for item in product_data:
+                    products_urls.append(
+                        'https://www.unimarc.cl/product/'
+                        + item['detailUrl'])
                 page += 1
 
         return products_urls
@@ -59,31 +57,33 @@ class Unimarc(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         linkText = url.split('https://www.unimarc.cl/')[-1]
-        api_url = 'https://www.unimarc.cl/api/catalog_system/pub/products/' \
-            'search/{}'.format(linkText)
+        api_url = 'https://www.unimarc.cl/_next/data/EPXLTQZVv8e9C2NXIi9vU/' \
+            '{}.json'.format(linkText)
 
         session = session_with_proxy(extra_args)
         response = session.get(api_url)
 
-        json_data = json.loads(response.text)[0]
+        json_data = json.loads(response.text)['pageProps']['product']
+
+        if 'data' not in json_data:
+            return []
+        json_data = json_data['data']
+
         key = json_data['productId']
-        name = json_data['brand'] + ' - ' + json_data['productName']
-        sku = json_data['productReference']
+        name = json_data['brand'] + ' - ' + json_data['name']
+        sku = json_data['refId']
         description = json_data['description']
 
-        item = json_data['items'][0]
-        ean = item.get('ean', None)
+        ean = json_data.get('ean', None)
         if not check_ean13(ean):
             ean = None
 
-        picture_urls = []
-        for i in item['images']:
-            picture_urls.append(i['imageUrl'])
+        picture_urls = json_data['images']
 
-        seller = item['sellers'][0]['commertialOffer']
-        price = Decimal(seller['Price'])
-        if seller['IsAvailable']:
-            stock = int(seller['AvailableQuantity'])
+        seller = json_data['sellers'][0]
+        price = Decimal(seller['price'])
+        if seller['availableQuantity']:
+            stock = int(seller['availableQuantity'])
         else:
             stock = 0
 
