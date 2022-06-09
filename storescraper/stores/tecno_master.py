@@ -149,7 +149,7 @@ class TecnoMaster(Store):
         else:
             price = Decimal(remove_words(soup.find('p', 'price').text))
         picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'woocommerce-product-gallery').findAll('img')]
+            'div', 'elementor-widget-image').findAll('img')]
         p = Product(
             name,
             cls.__name__,
