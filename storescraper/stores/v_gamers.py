@@ -86,7 +86,7 @@ class VGamers(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find('button', {'name': 'add-to-cart'})['value']
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
@@ -95,7 +95,7 @@ class VGamers(Store):
         sku = json_data['sku']
         description = json_data['description']
         offer_price = Decimal(json_data['offers'][0]['price'])
-        normal_price = (offer_price * Decimal(1.04)).quantize(Decimal("0.0"))
+        normal_price = (offer_price * Decimal(1.05)).quantize(Decimal("0.0"))
 
         if not soup.find('button', 'single_add_to_cart_button'):
             stock = 0
