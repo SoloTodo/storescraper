@@ -1,5 +1,9 @@
+import json
+import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
+from storescraper.categories import AIR_CONDITIONER, CELL, OVEN, \
+    REFRIGERATOR, STEREO_SYSTEM, STOVE, TELEVISION, WASHING_MACHINE
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -13,37 +17,44 @@ class Olier(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
-            'StereoSystem',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'Stove',
-            'WashingMachine',
-            'AirConditioner'
+            OVEN,
+            TELEVISION,
+            STEREO_SYSTEM,
+            CELL,
+            REFRIGERATOR,
+            STOVE,
+            WASHING_MACHINE,
+            AIR_CONDITIONER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        return [category]
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
         category_paths = [
-            ['tv-c148', 'Television'],
-            ['reproductores-portatiles-c140', 'StereoSystem'],
-            ['equipo-de-sonido-c138', 'StereoSystem'],
-            ['celulares-c142', 'Cell'],
-            ['heladeras-c42', 'Refrigerator'],
-            ['freezer-c40', 'Refrigerator'],
-            ['horno-electrico-c16', 'Oven'],
-            ['microondas-c20', 'Oven'],
-            ['encimeras-c13', 'Stove'],
-            ['cocinas-c12', 'Stove'],
-            ['lavarropas-c18', 'WashingMachine'],
-            ['secarropas-c22', 'WashingMachine'],
-            ['aire-split-c28', 'AirConditioner'],
+            ['163', STOVE],
+            ['169', OVEN],
+            ['173', OVEN],
+            ['171', WASHING_MACHINE],
+            ['192', WASHING_MACHINE],
+            ['175', WASHING_MACHINE],
+            ['197', STEREO_SYSTEM],
+            ['98', TELEVISION],
+            ['97', STEREO_SYSTEM],
+            ['99', STEREO_SYSTEM],
+            ['187', CELL],
+            ['148', REFRIGERATOR],
+            ['146', REFRIGERATOR],
+            ['193', STOVE],
+            ['91', AIR_CONDITIONER],
         ]
 
         session = session_with_proxy(extra_args)
-        product_urls = []
-        base_url = 'https://www.olier.com.py/catalogo/{}.{}'
+        products = []
+        base_url = 'https://www.olier.com.py/get-productos' \
+            '?page={}&categoria={}'
 
         for c in category_paths:
             category_path, local_category = c
@@ -54,61 +65,49 @@ class Olier(Store):
             page = 1
 
             while True:
-                url = base_url.format(category_path, page)
+                url = base_url.format(page, category_path)
 
                 if page >= 15:
                     raise Exception('Page overflow: ' + url)
 
                 print(url)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-                product_containers = soup.findAll('div', 'product')
+                data = session.get(url).text
+                product_containers = json.loads(data)['paginacion']['data']
 
-                if not product_containers:
+                if len(product_containers) == 0:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_path)
                     break
 
                 for product in product_containers:
-                    product_url = 'https://olier.com.py/{}'.format(
-                        product.find('a')['href'])
-                    product_urls.append(product_url)
+                    name = product['nombre']
+                    sku = product['codigo_articulo']
+                    ean = product.get('ean', None)
+                    url_ver = product['url_ver']
+                    price = Decimal(product['precio_retail'])
+                    stock = product['existencia']
+                    picture_urls = [
+                        'https://www.olier.com.py/storage/sku/' +
+                        i['url_imagen'] for i in product['imagenes']]
+
+                    p = Product(
+                        name,
+                        cls.__name__,
+                        category,
+                        url_ver,
+                        url_ver,
+                        sku,
+                        stock,
+                        price,
+                        price,
+                        'PYG',
+                        sku=sku,
+                        ean=ean,
+                        picture_urls=picture_urls
+                    )
+                    products.append(p)
 
                 page += 1
 
-        return product_urls
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-        name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find('span', 'sku').text.strip()
-        stock = -1
-
-        if 'LG' not in name.upper().split(' '):
-            stock = 0
-
-        p_price = soup.find('p', 'price')
-        if not p_price:
-            return []
-        price = Decimal(
-            p_price.find('span', 'amount')
-                   .text.replace('₲.', '').replace('.', ''))
-
-        picture_urls = [soup.find('meta', {'name': 'og:image'})['content']]
-
-        return [Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'PYG',
-            sku=sku,
-            picture_urls=picture_urls
-        )]
+        return products

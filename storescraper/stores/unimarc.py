@@ -17,12 +17,16 @@ class Unimarc(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        return [category]
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
         url_extensions = [
             ['355', GROCERIES]
         ]
 
         session = session_with_proxy(extra_args)
-        products_urls = []
+        products = []
         for url_extension, local_categories in url_extensions:
             if category not in local_categories:
                 continue
@@ -46,62 +50,41 @@ class Unimarc(Store):
                     break
 
                 for item in product_data:
-                    products_urls.append(
-                        'https://www.unimarc.cl/product/'
-                        + item['detailUrl'])
+                    product_url = 'https://www.unimarc.cl/product/' + \
+                        item['detailUrl']
+                    key = item['productId']
+                    name = item['brand'] + ' - ' + item['name']
+                    sku = item['refId']
+                    ean = item.get('ean', None)
+                    if not check_ean13(ean):
+                        ean = None
+                    description = item['description']
+                    picture_urls = [i.split('?')[0] for i in item['images']]
+
+                    seller = item['sellers'][0]
+                    price = Decimal(seller['price'])
+                    if seller['availableQuantity']:
+                        stock = int(seller['availableQuantity'])
+                    else:
+                        stock = 0
+
+                    p = Product(
+                        name,
+                        cls.__name__,
+                        category,
+                        product_url,
+                        product_url,
+                        key,
+                        stock,
+                        price,
+                        price,
+                        'CLP',
+                        sku=sku,
+                        ean=ean,
+                        picture_urls=picture_urls,
+                        description=description
+                    )
+                    products.append(p)
                 page += 1
 
-        return products_urls
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        linkText = url.split('https://www.unimarc.cl/')[-1]
-        api_url = 'https://www.unimarc.cl/_next/data/EPXLTQZVv8e9C2NXIi9vU/' \
-            '{}.json'.format(linkText)
-
-        session = session_with_proxy(extra_args)
-        response = session.get(api_url)
-
-        json_data = json.loads(response.text)['pageProps']['product']
-
-        if 'data' not in json_data:
-            return []
-        json_data = json_data['data']
-
-        key = json_data['productId']
-        name = json_data['brand'] + ' - ' + json_data['name']
-        sku = json_data['refId']
-        description = json_data['description']
-
-        ean = json_data.get('ean', None)
-        if not check_ean13(ean):
-            ean = None
-
-        picture_urls = json_data['images']
-
-        seller = json_data['sellers'][0]
-        price = Decimal(seller['price'])
-        if seller['availableQuantity']:
-            stock = int(seller['availableQuantity'])
-        else:
-            stock = 0
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            ean=ean,
-            picture_urls=picture_urls,
-            description=description
-        )
-
-        return [p]
+        return products
