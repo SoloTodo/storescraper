@@ -70,13 +70,9 @@ class TecnoBoss(Store):
 
         key = soup.find('form', {'name': 'buy'})['action'].split('/')[-1]
 
-        # json_data = json.loads(
-        #     soup.find('script', {'type': 'application/ld+json'}).text)
-
-        # name = json_data['name']
-        # description = json_data['description']
         name = soup.find('meta', {'property': 'og:title'})['content']
-        description = soup.find('meta', {'property': 'og:description'})['content']
+        description = soup.find(
+            'meta', {'property': 'og:description'})['content']
 
         price = Decimal(remove_words(soup.find('span', 'form-price').text))
         sku_span = soup.find('span', 'sku_elem')
