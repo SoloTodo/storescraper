@@ -7,7 +7,7 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
-    USB_FLASH_DRIVE, GAMING_CHAIR, GAMING_DESK, ALL_IN_ONE
+    USB_FLASH_DRIVE, GAMING_CHAIR, GAMING_DESK, ALL_IN_ONE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -42,6 +42,7 @@ class TecnoMaster(Store):
             GAMING_CHAIR,
             GAMING_DESK,
             ALL_IN_ONE,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -73,6 +74,7 @@ class TecnoMaster(Store):
             ['sillasgamer', GAMING_CHAIR],
             ['productos/perifericos/microfonosystreaming', GAMING_DESK],
             ['pc_armados/pc-escritorio', ALL_IN_ONE],
+            ['pc_armados/notebook-laptop', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
