@@ -365,6 +365,7 @@ from .tarreo_store import TarreoStore
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal
+from .tecno_boss import TecnoBoss
 from .tecno_king import TecnoKing
 from .tecno_mas import TecnoMas
 from .tecno_mega_store import TecnoMegaStore
