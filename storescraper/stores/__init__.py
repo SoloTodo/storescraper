@@ -410,6 +410,7 @@ from .venelectronics import Venelectronics
 from .ventas_albion import VentasAlbion
 from .video_vision import VideoVision
 from .virtual_drakon import VirtualDrakon
+from .vist import Vist
 from .vitel import Vitel
 from .vivelo import Vivelo
 from .volans import Volans
