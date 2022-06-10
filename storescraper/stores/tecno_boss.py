@@ -1,7 +1,7 @@
 from decimal import Decimal
-import json
 import logging
 from bs4 import BeautifulSoup
+
 from storescraper.categories import HEADPHONES, MONITOR, MOUSE, POWER_SUPPLY, \
     RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
@@ -108,7 +108,6 @@ class TecnoBoss(Store):
             price,
             'CLP',
             sku=sku,
-            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )
