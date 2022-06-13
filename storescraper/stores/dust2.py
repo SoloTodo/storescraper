@@ -138,7 +138,7 @@ class Dust2(Store):
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'productDetails__productModel--image-moreImages'
-            ).findAll('img')]
+            ).findAll('img') if tag['src'] != ""]
         variants = soup.find('form', 'variations_form cart')
         if variants:
             products = []
