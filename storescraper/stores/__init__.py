@@ -25,6 +25,7 @@ from .best_store import BestStore
 from .bip import Bip
 from .bit_center import BitCenter
 from .bgod_gaming import BgodGaming
+from .bios_play import BiosPlay
 from .bristol import Bristol
 from .bulldog_pc import BulldogPc
 from .byp import Byp
@@ -428,6 +429,7 @@ from .wisdomts import Wisdomts
 from .winpy import Winpy
 from .woow import Woow
 from .wom import Wom
+from .x_com import XCom
 from .xenex import Xenex
 from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
