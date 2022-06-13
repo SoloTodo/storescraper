@@ -73,8 +73,12 @@ class Jumbo(Store):
             format(url.split('/')[3])
         session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
         api_request = session.get(api_url)
+        data = api_request.json()
 
-        api_json = api_request.json()[0]
+        if len(data) == 0:
+            return []
+
+        api_json = data[0]
         name = api_json['brand'] + ' - ' + api_json['productName']
         sku = api_json['productReference']
         description = api_json['categories'][0]
