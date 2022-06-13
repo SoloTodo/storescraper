@@ -38,7 +38,7 @@ class SantaIsabel(Store):
             page = 1
 
             while True:
-                if page >= 30:
+                if page >= 40:
                     raise Exception('Page overflow: ' + url_extension)
 
                 api_url = 'https://apijumboweb.smdigital.cl/catalog/api/v2/' \
