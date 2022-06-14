@@ -4,11 +4,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import STORAGE_DRIVE, \
+from storescraper.categories import PRINTER, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, KEYBOARD, MOUSE, \
-    GAMING_CHAIR, COMPUTER_CASE, \
-    VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, PROCESSOR, MONITOR, NOTEBOOK, \
-    POWER_SUPPLY, GAMING_DESK, MICROPHONE, EXTERNAL_STORAGE_DRIVE, CASE_FAN
+    GAMING_CHAIR, COMPUTER_CASE, VIDEO_CARD, MOTHERBOARD, RAM, CPU_COOLER, \
+    PROCESSOR, MONITOR, NOTEBOOK, POWER_SUPPLY, GAMING_DESK, MICROPHONE, \
+    EXTERNAL_STORAGE_DRIVE, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -37,7 +37,8 @@ class TecnoStoreChile(Store):
             GAMING_DESK,
             MICROPHONE,
             EXTERNAL_STORAGE_DRIVE,
-            CASE_FAN
+            CASE_FAN,
+            PRINTER
         ]
 
     @classmethod
@@ -64,6 +65,7 @@ class TecnoStoreChile(Store):
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
             ['silla', GAMING_CHAIR],
+            ['impresoras', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
