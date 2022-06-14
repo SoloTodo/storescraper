@@ -87,9 +87,12 @@ class Olier(Store):
                     url_ver = product['url_ver']
                     price = Decimal(product['precio_retail'])
                     stock = product['existencia']
-                    picture_urls = [
-                        'https://www.olier.com.py/storage/sku/' +
-                        i['url_imagen'] for i in product['imagenes']]
+                    picture_urls = []
+                    for i in product['imagenes']:
+                        if i['url_imagen']:
+                            picture_urls.append(
+                                'https://www.olier.com.py/storage/sku/' +
+                                i['url_imagen'])
 
                     p = Product(
                         name,
