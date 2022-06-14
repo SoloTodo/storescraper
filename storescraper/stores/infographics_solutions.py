@@ -138,19 +138,21 @@ class InfographicsSolutions(Store):
             sku = str(product_data['sku'])
             offer_price = Decimal(product_data['offers'][0]['price'])
             normal_price = round(
-                (offer_price * Decimal('1.06')).quantize(0), -1)
+                (offer_price * Decimal('1.05')).quantize(0), -1)
         else:
             product_data_2 = json.loads(soup.findAll(
                 'script', {'type': 'application/ld+json'}
             )[0].text)['@graph']
             name = product_data_2[3]['name']
-            price_p = soup.find('p', 'price')
-            if price_p:
-                price = price_p.text.split(
-                    ' $')[-1].replace('.', '')
-                offer_price = normal_price = Decimal(price)
-            else:
-                return []
+            wds = soup.find('div', 'wd-single-price')
+            offer_price = Decimal(
+                wds.find(
+                    'div', 'wds-first'
+                ).find('ins').text.split('$')[-1].replace('.', ''))
+            normal_price = Decimal(
+                wds.find(
+                    'div', 'wds-second'
+                ).find('p').text.split('$')[-1].replace('.', ''))
             sku = key
 
         stock_container = soup.find('p', 'stock')
