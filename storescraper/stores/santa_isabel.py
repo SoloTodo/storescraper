@@ -72,10 +72,19 @@ class SantaIsabel(Store):
         print(url)
         session = session_with_proxy(extra_args)
         session.headers['x-api-key'] = 'IuimuMneIKJd3tapno2Ag1c1WcAES97j'
-        response = session.get(url)
 
-        main_page_json = re.search(r'window.__renderData = (.+);',
-                                   response.text)
+        max_tries = 0
+        while True:
+            response = session.get(url)
+
+            main_page_json = re.search(r'window.__renderData = (.+);',
+                                       response.text)
+            if main_page_json:
+                break
+            else:
+                if max_tries == 2:
+                    return []
+                max_tries += 1
 
         main_page_json = json.loads(main_page_json.groups()[0])
         api_json = json.loads(main_page_json)['pdp']['product']
