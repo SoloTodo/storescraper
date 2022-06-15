@@ -18,6 +18,7 @@ from .americanas import Americanas
 from .ampera import Ampera
 from .artefacta import Artefacta
 from .asus_store import AsusStore
+from .aufbau import Aufbau
 from .bbcc import BookComputer
 from .belight import Belight
 from .best_buy_mexico import BestBuyMexico
@@ -85,6 +86,7 @@ from .digitalife import Digitalife
 from .dimercom import Dimercom
 from .diunsa import Diunsa
 from .do_it_center import DoItCenter
+from .dreamtec import Dreamtec
 from .dust2 import Dust2
 from .e_forest import EForest
 from .e_vision import EVision
