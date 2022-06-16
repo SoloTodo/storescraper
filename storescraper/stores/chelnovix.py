@@ -95,6 +95,13 @@ class Chelnovix(Store):
         if span_sku:
             sku = span_sku.text.strip()
 
+        elementors = soup.findAll('h2', 'elementor-heading-title')
+        part_number = None
+        for elementor in elementors:
+            if 'de parte' in elementor.text:
+                part_number = elementor.text.split(':')[-1].strip()
+                break
+
         span_price = soup.find('p', 'price').findAll(
             'span', 'woocommerce-Price-amount')
         if len(span_price) == 0:
@@ -122,6 +129,7 @@ class Chelnovix(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls
         )
         return [p]
