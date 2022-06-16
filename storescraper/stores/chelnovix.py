@@ -2,8 +2,8 @@ from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, CPU_COOLER, \
-    GAMING_CHAIR, KEYBOARD, MONITOR, MOTHERBOARD, NOTEBOOK, POWER_SUPPLY, \
-    PRINTER, PROCESSOR, VIDEO_CARD
+    GAMING_CHAIR, KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, \
+    POWER_SUPPLY, PRINTER, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -24,7 +24,8 @@ class Chelnovix(Store):
             CPU_COOLER,
             CASE_FAN,
             PROCESSOR,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            MOUSE
         ]
 
     @classmethod
@@ -34,7 +35,6 @@ class Chelnovix(Store):
             ['monitores', MONITOR],
             ['partes-y-piezas/placa-madre', MOTHERBOARD],
             ['tarjeta-de-video', VIDEO_CARD],
-            ['accesorios-gamer', KEYBOARD],
             ['computadores/notebook', NOTEBOOK],
             ['partes-y-piezas/fuentes', POWER_SUPPLY],
             ['partes-y-piezas/gabinetes', COMPUTER_CASE],
@@ -42,6 +42,8 @@ class Chelnovix(Store):
             ['partes-y-piezas/disipador', CASE_FAN],
             ['partes-y-piezas/procesadores', PROCESSOR],
             ['accesorios-gamer/silla-gamer', GAMING_CHAIR],
+            ['accesorios-gamer/teclados-gamer', KEYBOARD],
+            ['accesorios-gamer/mouse-gamer', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
