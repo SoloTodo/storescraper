@@ -54,9 +54,8 @@ class LgV5(Store):
                     category_id, is_active))
 
             for product_entry in product_entries:
-                if product_entry['whereToBuyFlag'] == 'Y':
-                    product_url = cls.base_url + product_entry['modelUrlPath']
-                    discovered_urls.append(product_url)
+                product_url = cls.base_url + product_entry['modelUrlPath']
+                discovered_urls.append(product_url)
 
         return discovered_urls
 
