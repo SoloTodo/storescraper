@@ -729,7 +729,7 @@ class MercadoLibreChile(Store):
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
 
-        official_store_filter = data['initialState'].get('filters', None)
+        # official_store_filter = data['initialState'].get('filters', None)
 
         if pickers:
             for picker in pickers:
@@ -742,35 +742,31 @@ class MercadoLibreChile(Store):
 
         for variation in variations:
             sku = variation
-            endpoint = 'https://www.mercadolibre.cl/p/api/products/' \
+            endpoint = 'https://api.mercadolibre.com/products/' \
                        '{}'.format(variation)
-            if official_store_filter:
-                endpoint += '?pdp_filters={}'.format(official_store_filter)
+            print(endpoint)
 
             variation_data = json.loads(session.get(endpoint).text)
 
-            if variation_data.get('status', None) == 404:
+            if variation_data.get('status', None) != 'active':
                 continue
 
-            if variation_data['schema'][0]['offers']['availability'] == \
-                    'https://schema.org/OutOfStock':
-                # No price information in this case, so skip it
+            box_winner = variation_data['buy_box_winner']
+
+            if not box_winner:
                 continue
 
-            if variation_data['components']['seller']['state'] == 'HIDDEN':
-                continue
-            name = variation_data['components']['header']['title']
-            if 'title_value' not in variation_data['components']['seller']:
-                continue
-            seller = variation_data['components']['seller']['title_value']
-            url = variation_data['components']['metadata']['url_canonical']
-            price = Decimal(variation_data['components']['price']['price']
-                            ['value'])
-            picture_template = variation_data['components']['gallery'][
-                'picture_config']['template']
-            picture_urls = []
-            for picture in variation_data['components']['gallery']['pictures']:
-                picture_urls.append(picture_template.format(id=picture['id']))
+            name = variation_data['name']
+            url = variation_data['permalink']
+            price = Decimal(box_winner['price'])
+            stock = int(box_winner['available_quantity'])
+
+            seller_endpoint = 'https://api.mercadolibre.com/users/' \
+                '{}'.format(box_winner['seller_id'])
+            seller_info = json.loads(session.get(seller_endpoint).text)
+            seller = seller_info['nickname']
+
+            picture_urls = [p['url'] for p in variation_data['pictures']]
 
             products.append(Product(
                 name,
@@ -779,7 +775,7 @@ class MercadoLibreChile(Store):
                 url,
                 url,
                 sku,
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',
@@ -801,7 +797,7 @@ class MercadoLibreChile(Store):
         base_name = data['initialState']['components'][
             'short_description'][0]['title']
         price = Decimal(data['initialState']['schema'][0][
-                            'offers']['price'])
+            'offers']['price'])
 
         picker = None
         for x in data['initialState']['components']['short_description']:
@@ -886,7 +882,7 @@ class MercadoLibreChile(Store):
         while offset < threshold:
             endpoint = 'https://api.mercadolibre.com/sites/MLC/search?q={}' \
                        '&offset={}&official_store=all'.format(
-                        urllib.parse.quote(keyword), offset)
+                           urllib.parse.quote(keyword), offset)
             json_results = json.loads(session.get(endpoint).text)
             for product_entry in json_results['results']:
                 result.append(product_entry['permalink'])
