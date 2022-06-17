@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -72,7 +73,7 @@ class GoodComputer(Store):
                     .format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product-warp-item')
+                product_containers = soup.findAll('div', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -88,8 +89,24 @@ class GoodComputer(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[1]
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        description = product_data['description']
+        price = Decimal(product_data['offers'][0]['price'])
+
         stock_container = soup.find('p', 'stock')
         if not stock_container:
             stock = -1
@@ -97,16 +114,9 @@ class GoodComputer(Store):
             stock = 0
         else:
             stock = int(stock_container.text.split()[0])
-        price_container = soup.find('p', 'price')
-        if not price_container.text.strip():
-            return []
-        if not price_container.find('ins'):
-            price = Decimal(remove_words(price_container.text))
-        else:
-            price = Decimal(remove_words(price_container.find('ins').text))
-        picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'main-images').findAll(
-                            'img')
+
+        picture_urls = [tag.find('a')['href'].split('?')[0] for tag in
+                        soup.findAll('div', 'product-image-item')
                         ]
         p = Product(
             name,
@@ -114,13 +124,14 @@ class GoodComputer(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
 
         return [p]
