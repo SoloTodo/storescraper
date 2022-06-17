@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, MONITOR, \
     ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, \
-    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM
+    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -26,6 +26,7 @@ class TecnoMas(Store):
             TELEVISION,
             RAM,
             SOLID_STATE_DRIVE,
+            PRINTER,
         ]
 
     @classmethod
@@ -49,6 +50,7 @@ class TecnoMas(Store):
             ['equipos-reacondicionados/televisores-reacondicionados',
              TELEVISION],
             ['apple', NOTEBOOK],
+            ['impresoras', PRINTER],
             # ['aio-preconfigurados', ALL_IN_ONE],
             # ['notebooks-preconfigurados', NOTEBOOK],
         ]
