@@ -73,8 +73,7 @@ class TokStock(Store):
                 stock = variation['max_qty']
                 if stock == "" and not variation['is_in_stock']:
                     stock = 0
-                picture_urls = [image['url'] for image in
-                                variation['variation_gallery_images']]
+                picture_urls = [variation['image']['src']]
                 p = Product(
                     variation_name,
                     cls.__name__,
