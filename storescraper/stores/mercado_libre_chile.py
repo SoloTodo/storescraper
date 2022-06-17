@@ -729,7 +729,7 @@ class MercadoLibreChile(Store):
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
 
-        # official_store_filter = data['initialState'].get('filters', None)
+        official_store_filter = data['initialState'].get('filters', None)
 
         if pickers:
             for picker in pickers:
@@ -744,7 +744,9 @@ class MercadoLibreChile(Store):
             sku = variation
             endpoint = 'https://api.mercadolibre.com/products/' \
                        '{}'.format(variation)
-            print(endpoint)
+
+            if official_store_filter:
+                endpoint += '?{}'.format(official_store_filter.replace(':', '='))
 
             variation_data = json.loads(session.get(endpoint).text)
 
@@ -765,7 +767,6 @@ class MercadoLibreChile(Store):
                 '{}'.format(box_winner['seller_id'])
             seller_info = json.loads(session.get(seller_endpoint).text)
             seller = seller_info['nickname']
-
             picture_urls = [p['url'] for p in variation_data['pictures']]
 
             products.append(Product(

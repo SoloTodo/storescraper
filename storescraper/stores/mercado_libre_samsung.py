@@ -102,11 +102,7 @@ class MercadoLibreSamsung(MercadoLibreChile):
 
         for product in products:
             assert product.seller
-
-            # For some reason other SKUs may get mingled with official stores,
-            # so skip those
-            if 'SAMSUNG' in product.seller.upper():
-                product.seller = None
-                filtered_products.append(product)
+            product.seller = None
+            filtered_products.append(product)
 
         return filtered_products
