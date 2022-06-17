@@ -92,16 +92,11 @@ class MegaBytes(Store):
             stock = -1
         offer_price = Decimal(
             remove_words(soup.find('p', 'price').text).split()[-1])
-        price_container = soup.find('div',
-                                    'woocommerce-product-details__short'
-                                    '-description')
-        if price_container and price_container.find('strong'):
-            normal_price = Decimal(
-                remove_words(price_container.find('strong').text
-                             .replace('-', '')))
-        elif price_container and price_container.find('span'):
-            normal_price = Decimal(
-                remove_words(price_container.find('span').text))
+        price_container = soup.find('div', 'summary-inner').find('table')
+        if price_container:
+            prices = price_container.findAll(
+                'span', 'woocommerce-Price-amount')
+            normal_price = Decimal(remove_words(prices[-1].text))
         else:
             normal_price = offer_price
 
