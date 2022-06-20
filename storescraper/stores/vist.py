@@ -115,7 +115,9 @@ class Vist(Store):
 
         picture_urls = []
         for image in soup.findAll('div', 'woocommerce-product-gallery__image'):
-            picture_urls.append(image.find('a')['href'])
+            href = image.find('a')['href']
+            if href != '':
+                picture_urls.append(href)
 
         p = Product(
             name,
