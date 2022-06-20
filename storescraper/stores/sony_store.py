@@ -70,7 +70,12 @@ class SonyStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = list(json.loads(
                 soup.find('template', {'data-varname': '__STATE__'}).find(
-                    'script').text).values())[0]
+                    'script').text).values())
+
+        if len(json_container) == 0:
+            return []
+
+        json_container = json_container[0]
         api_url = 'https://store.sony.cl/api/catalog_system/pub/products' \
                   '/search?fq=productId:{}'.format(json_container['productId'])
         api_response = session.get(api_url)
