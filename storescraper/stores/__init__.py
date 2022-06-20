@@ -145,6 +145,7 @@ from .gigaclic import Gigaclic
 from .global_box import Globalbox
 from .globalmac import GlobalMac
 from .gobantes import Gobantes
+from .golden_digital import GoldenDigital
 from .golden_gamers import GoldenGamers
 from .gollo_tienda import GolloTienda
 from .gonzalez_gimenez import GonzalezGimenez
