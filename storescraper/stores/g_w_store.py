@@ -107,14 +107,14 @@ class GWStore(Store):
         price = Decimal(json_data['offers']['price'])
         picture_urls = json_data['offers']['image']
 
-        if soup.find('button', 'add-to-cart'):
+        if json_data['offers']['availability'] == 'https://schema.org/OutOfStock':
+            stock = 0
+        else:
             stock_div = soup.find('div', 'product-quantities')
             if stock_div:
                 stock = int(stock_div.find('span')['data-stock'])
             else:
                 stock = -1
-        else:
-            stock = 0
 
         description = html_to_markdown(
             soup.find('div', 'product-description').text)
