@@ -79,10 +79,12 @@ class Notetop(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = json.loads(
-            soup.find('script', {'id': 'product-ld-json-data'}).text,
+            soup.find('script', {'id': 'product-ld-json-data'}
+                      ).text.replace('\\_', '_'),
             strict=False)
         name = product_container['name']
         sku = product_container['productID']
+        description = product_container['description']
         if product_container['offers']['availability'] == 'http://schema.org' \
                                                           '/InStock':
             stock = int(soup.find('div', 'title-description').findAll('div',
@@ -106,6 +108,7 @@ class Notetop(Store):
             price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
