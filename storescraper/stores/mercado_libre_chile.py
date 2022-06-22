@@ -746,7 +746,8 @@ class MercadoLibreChile(Store):
                        '{}'.format(variation)
 
             if official_store_filter:
-                endpoint += '?{}'.format(official_store_filter.replace(':', '='))
+                endpoint += '?{}'.format(
+                    official_store_filter.replace(':', '='))
 
             variation_data = json.loads(session.get(endpoint).text)
 
