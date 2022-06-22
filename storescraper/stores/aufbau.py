@@ -86,7 +86,8 @@ class Aufbau(Store):
         if 'variantOptions' in product_info:
             for variant in product_info['variantOptions']:
                 code = variant['code']
-                variant_url = 'https://www.aufbau.cl' + variant['url']
+                variant_url = 'https://www.aufbau.cl' + \
+                    variant['url'].replace('%2F', '--')
                 price = Decimal(variant['priceData']['value'])
                 stock = variant['stock']['stockLevel']
 
