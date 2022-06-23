@@ -130,13 +130,14 @@ from .fravega import Fravega
 from .fullcolor_spa import FullcolorSpa
 from .g_games import GGames
 from .gad_tecnology import GadTecnology
-from .garbarino import Garbarino
-from .games_legends import GamesLegends
 from .game_masters import GameMasters
 from .game_shark import GameShark
 from .gamer_lab import GamerLab
+from .games_legends import GamesLegends
 from .gaming_house import GamingHouse
 from .gaming_store import GamingStore
+from .gaming_x import GamingX
+from .garbarino import Garbarino
 from .gearbest import GearBest
 from .geant import Geant
 from .gelcom import Gelcom
