@@ -5,7 +5,7 @@ import validators
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CASE_FAN, GAMING_CHAIR, \
+from storescraper.categories import GAMING_CHAIR, \
     KEYBOARD_MOUSE_COMBO, MICROPHONE, MONITOR, MOTHERBOARD, MOUSE, KEYBOARD, \
     HEADPHONES, COMPUTER_CASE, PROCESSOR, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
@@ -14,11 +14,9 @@ from storescraper.utils import session_with_proxy
 
 
 class PlayFactory(Store):
-
     @classmethod
     def categories(cls):
         return [
-            CASE_FAN,
             MOTHERBOARD,
             PROCESSOR,
             VIDEO_CARD,

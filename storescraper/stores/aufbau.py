@@ -7,7 +7,8 @@ from storescraper.categories import ALL_IN_ONE, CELL, HEADPHONES, MOUSE, \
     NOTEBOOK, STEREO_SYSTEM, TABLET, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy, \
+    html_to_markdown
 
 
 class Aufbau(Store):
@@ -59,13 +60,13 @@ class Aufbau(Store):
             for container in product_containers:
                 url = container['url'].split('reifstore-encoding')[0]
                 product_urls.append(
-                    'https://www.aufbau.cl' + url + container['code'])
+                    'https://www.aufbau.cl' + url + container['code'].replace('/', '--'))
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        code = url.split('/p/')[-1]
+        code = url.split('/p/')[-1].replace('--', '/')
         session = session_with_proxy(extra_args)
         data = session.get(
             'https://api.cxl8rgz-articulos1-p1-public.model-t.cc.commerce.'
@@ -76,11 +77,13 @@ class Aufbau(Store):
         product_info = json.loads(data)
 
         base_name = product_info['name']
-        description = product_info['description']
+        description = html_to_markdown(product_info['description'])
         picture_urls = []
         for i in product_info['images']:
             if i['format'] == 'product':
-                picture_urls.append('https://www.aufbau.cl' + i['url'])
+                picture_urls.append('https://api.cxl8rgz-articulos1-p1-public'
+                                    '.model-t.cc.commerce.ondemand.com' +
+                                    i['url'])
 
         products = []
         if 'variantOptions' in product_info:
