@@ -32,7 +32,8 @@ class VGamers(Store):
             MOTHERBOARD,
             RAM,
             GAMING_DESK,
-            KEYBOARD_MOUSE_COMBO
+            KEYBOARD_MOUSE_COMBO,
+            PROCESSOR,
         ]
 
     @classmethod
