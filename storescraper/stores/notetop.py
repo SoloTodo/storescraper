@@ -80,7 +80,7 @@ class Notetop(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = json.loads(
             soup.find('script', {'id': 'product-ld-json-data'}
-                      ).text.replace('\\_', '_'),
+                      ).text.replace('\\_', '_').replace('\\~', '~'),
             strict=False)
         name = product_container['name']
         key = product_container['productID']
