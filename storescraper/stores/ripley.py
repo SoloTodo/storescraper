@@ -92,8 +92,6 @@ class Ripley(Store):
             ['tecno/computacion/proyectores-y-monitores',
              ['Monitor', 'Projector'],
              'Tecno > Computación > Proyectores y monitores', 0.5],
-            ['tecno/computacion-gamer/notebooks-gamer', ['Notebook'],
-             'Tecno > Computación Gamer > Notebooks gamer', 1],
             ['tecno/computacion-gamer/componentes-pc', ['Ram'],
              'Tecno > Computación Gamer > Componentes', 1],
             ['tecno/computacion-gamer/monitores', ['Monitor'],
