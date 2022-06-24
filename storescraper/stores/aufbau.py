@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 
 from storescraper.categories import ALL_IN_ONE, CELL, HEADPHONES, MOUSE, \
-    NOTEBOOK, STEREO_SYSTEM, TABLET, WEARABLE
+    NOTEBOOK, STEREO_SYSTEM, TABLET, WEARABLE, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy, \
@@ -22,7 +22,8 @@ class Aufbau(Store):
             WEARABLE,
             HEADPHONES,
             STEREO_SYSTEM,
-            MOUSE
+            MOUSE,
+            MONITOR,
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class Aufbau(Store):
             ['aufbauAudioBeats', HEADPHONES],
             ['aufbauAudioParlantes', STEREO_SYSTEM],
             ['aufbauAccesoriosMouseTeclados', MOUSE],
+            ['aufbauStudioDisplay', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
