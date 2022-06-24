@@ -60,7 +60,8 @@ class Aufbau(Store):
             for container in product_containers:
                 url = container['url'].split('reifstore-encoding')[0]
                 product_urls.append(
-                    'https://www.aufbau.cl' + url + container['code'].replace('/', '--'))
+                    'https://www.aufbau.cl' +
+                    url + container['code'].replace('/', '--'))
         return product_urls
 
     @classmethod
