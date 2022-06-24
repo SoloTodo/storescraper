@@ -80,19 +80,20 @@ class Notetop(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = json.loads(
             soup.find('script', {'id': 'product-ld-json-data'}
-                      ).text.replace('\\_', '_'),
+                      ).text.replace('\\_', '_').replace('\\~', '~'),
             strict=False)
         name = product_container['name']
-        sku = product_container['productID']
+        key = product_container['productID']
+        sku = product_container.get('sku', None)
         description = product_container['description']
-        if product_container['offers']['availability'] == 'http://schema.org' \
-                                                          '/InStock':
+        if product_container['offers']['offers'][0]['availability'] == \
+                'http://schema.org/InStock':
             stock = int(soup.find('div', 'title-description').findAll('div',
                                                                       'marca')
                         [-1].text.strip().split('Stock:')[-1].strip())
         else:
             stock = 0
-        price = Decimal(product_container['offers']['price'])
+        price = Decimal(product_container['offers']['lowPrice'])
         picture_urls = [tag['src'] for tag in
                         soup.find('div', {'id': 'product-images'}).findAll(
                             'img')]
@@ -102,7 +103,7 @@ class Notetop(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
