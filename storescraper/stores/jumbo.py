@@ -47,7 +47,8 @@ class Jumbo(Store):
 
                 json_data = json.loads(response.text)
 
-                if "status" in json_data and json_data["status"] == 500:
+                if "status" in json_data and (json_data["status"] == 500
+                                              or json_data["status"] == 400):
                     break
 
                 for idx, product in enumerate(json_data['products']):
