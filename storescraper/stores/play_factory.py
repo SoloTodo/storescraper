@@ -88,8 +88,13 @@ class PlayFactory(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)['@graph'][0]
+        soup_jsons = soup.findAll(
+            'script', {'type': 'application/ld+json'})
+
+        if len(soup_jsons) <= 1:
+            return []
+
+        json_data = json.loads(soup_jsons[1].text)['@graph'][0]
         base_name = json_data['name']
 
         picture_urls = []

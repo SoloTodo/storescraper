@@ -3,8 +3,7 @@ from collections import defaultdict
 
 from decimal import Decimal
 import re
-
-from bs4 import BeautifulSoup
+import validators
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -111,7 +110,9 @@ class SantaIsabel(Store):
 
         picture_urls = []
         for i in product_item['images']:
-            picture_urls.append(i['imageUrl'].split('?')[0])
+            image = i['imageUrl'].split('?')[0]
+            if validators.url(image):
+                picture_urls.append(image)
 
         p = Product(
             name,
