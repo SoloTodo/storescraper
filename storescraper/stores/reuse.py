@@ -72,6 +72,9 @@ class Reuse(Store):
 
         products = []
         for variant in product_json['variants']:
+            if not variant['inventory_management']:
+                continue
+
             name = variant['name']
             sku = variant['sku']
             key = str(variant['id'])
