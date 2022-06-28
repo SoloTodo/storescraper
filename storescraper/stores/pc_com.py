@@ -129,12 +129,16 @@ class PcCom(Store):
         stock_container = soup.find('p', 'stock')
 
         if not stock_container:
-            return []
-
-        if stock_container.text == 'Hay existencias':
-            stock = -1
+            input_qty = soup.find('input', 'qty')
+            if not input_qty:
+                return []
+            else:
+                stock = -1
         else:
-            stock = 0
+            if 'disponible' in stock_container.text:
+                stock = int(stock_container.text.split(' disp')[0])
+            else:
+                stock = 0
 
         price_container = soup.find('p', 'price')
         if price_container.find('ins'):
