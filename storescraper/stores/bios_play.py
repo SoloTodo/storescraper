@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 
 from storescraper.categories import HEADPHONES, MONITOR, MOTHERBOARD, MOUSE, \
-    POWER_SUPPLY, PROCESSOR, RAM, STORAGE_DRIVE
+    POWER_SUPPLY, PROCESSOR, RAM, STORAGE_DRIVE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -21,7 +21,8 @@ class BiosPlay(Store):
             MONITOR,
             MOTHERBOARD,
             PROCESSOR,
-            MOUSE
+            MOUSE,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -32,6 +33,8 @@ class BiosPlay(Store):
             ['fuente-de-poder', POWER_SUPPLY],
             ['memorias-ram', RAM],
             ['monitores-gamer', MONITOR],
+            ['mouse', MOUSE],
+            ['parlantes', STEREO_SYSTEM],
             ['placa-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['zona-gamer', MOUSE],
