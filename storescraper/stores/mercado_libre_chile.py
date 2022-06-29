@@ -736,7 +736,7 @@ class MercadoLibreChile(Store):
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
 
-        official_store_filter = data['initialState'].get('filters', None)
+        official_store_or_seller_filter = data['initialState'].get('filters', None)
 
         if pickers:
             for picker in pickers:
@@ -752,9 +752,9 @@ class MercadoLibreChile(Store):
             endpoint = 'https://api.mercadolibre.com/products/' \
                        '{}'.format(variation)
 
-            if official_store_filter:
+            if official_store_or_seller_filter:
                 endpoint += '?{}'.format(
-                    official_store_filter.replace(':', '='))
+                    official_store_or_seller_filter.replace(':', '='))
 
             variation_data = json.loads(session.get(endpoint).text)
 
@@ -768,6 +768,11 @@ class MercadoLibreChile(Store):
 
             name = variation_data['name']
             url = variation_data['permalink']
+
+            if official_store_or_seller_filter:
+                url += '?pdp_filters={}'.format(
+                    official_store_or_seller_filter)
+
             price = Decimal(box_winner['price'])
             stock = int(box_winner['available_quantity'])
 
