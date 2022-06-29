@@ -1,6 +1,7 @@
 from .lg_v5 import LgV5
-from ..categories import TELEVISION, OPTICAL_DISK_PLAYER, STEREO_SYSTEM, \
-    HEADPHONES, CELL, REFRIGERATOR, WASHING_MACHINE, OVEN, MONITOR, PROJECTOR
+from storescraper.categories import TELEVISION, OPTICAL_DISK_PLAYER, \
+    STEREO_SYSTEM, HEADPHONES, CELL, REFRIGERATOR, WASHING_MACHINE, OVEN, \
+    MONITOR, PROJECTOR, CELL_ACCESORY
 
 
 class LgChile(LgV5):
@@ -19,7 +20,8 @@ class LgChile(LgV5):
             OVEN,
             WASHING_MACHINE,
             MONITOR,
-            HEADPHONES
+            HEADPHONES,
+            CELL_ACCESORY
         ]
 
     @classmethod
@@ -73,4 +75,6 @@ class LgChile(LgV5):
             # Proyectores
             ('CT30006480', PROJECTOR, True),
             ('CT30006480', PROJECTOR, False),
+            # Styler
+            ('CT40013711', CELL_ACCESORY, True),
         ]
