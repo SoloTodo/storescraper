@@ -144,6 +144,9 @@ class PcExpress(Store):
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
+        if '¡No se encuentra el producto!' in soup.find('title').text:
+            return []
+
         name = soup.find('h1', 'rm-product-page__title').text
         sku = soup.find('div', 'rm-product__id').h3.text
         if not soup.find('p', 'rm-product__mpn'):

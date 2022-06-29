@@ -1,0 +1,124 @@
+from decimal import Decimal
+import json
+import logging
+from bs4 import BeautifulSoup
+from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
+    KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
+from storescraper.product import Product
+from storescraper.store import Store
+from storescraper.utils import session_with_proxy
+
+
+class Tecnoaxis(Store):
+    @classmethod
+    def categories(cls):
+        return [
+            SOLID_STATE_DRIVE,
+            MONITOR,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            RAM,
+            VIDEO_CARD,
+            HEADPHONES,
+            MOUSE,
+            KEYBOARD,
+            GAMING_CHAIR
+        ]
+
+    @classmethod
+    def discover_urls_for_category(cls, category, extra_args=None):
+        url_extensions = [
+            ['almacenamiento', SOLID_STATE_DRIVE],
+            ['monitores', MONITOR],
+            ['partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
+            ['partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/memorias', RAM],
+            ['partes-y-piezas/tarjeta-madre', VIDEO_CARD],
+            ['perifericos/audifonos', HEADPHONES],
+            ['perifericos/mouse', MOUSE],
+            ['perifericos/teclados', KEYBOARD],
+            ['sillas', GAMING_CHAIR],
+        ]
+
+        session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+        product_urls = []
+        for url_extension, local_category in url_extensions:
+            if local_category != category:
+                continue
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('Page overflow: ' + url_extension)
+                url_webpage = 'https://www.tecnoaxis.cl/categoria-producto/' \
+                              '{}/page/{}/'.format(url_extension, page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('div', 'product')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
+        return product_urls
+
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+        session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = product_data['sku']
+        description = product_data['description']
+        price = Decimal(product_data['offers'][0]['price'])
+
+        if soup.find('button', 'single_add_to_cart_button'):
+            stock = -1
+        else:
+            stock = 0
+
+        picture_container = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        picture_urls = []
+
+        for a in picture_container.findAll('a'):
+            picture_urls.append(a['href'])
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            price,
+            price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description
+        )
+        return [p]

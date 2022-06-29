@@ -73,7 +73,12 @@ class AdisStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        shortlink = soup.find('link', {'rel': 'shortlink'})
+
+        if not shortlink:
+            return []
+
+        key = shortlink['href'].split('p=')[1]
 
         json_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json'}).text)['@graph'][-1]

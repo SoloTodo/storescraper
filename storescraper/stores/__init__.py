@@ -367,6 +367,7 @@ from .sukasa import Sukasa
 from .supermex_digital import SupermexDigital
 from .syd import Syd
 from .tarreo_store import TarreoStore
+from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
 from .tecnoglobal import Tecnoglobal

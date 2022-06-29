@@ -129,18 +129,21 @@ class EliteCenter(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = soup.findAll(
-            'script', {'data-cfasync': 'false'})[1].text.strip()
-        json_data = json.loads(
-            '{' + re.search(r"var dataLayer_content = {([\s\S]+)};",
-                            json_data).groups()[0] + '}')
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
-        json_data = json_data['ecommerce']['detail']['products'][0]
-        name = json_data['name'][:256]
-        sku = json_data['sku']
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
 
-        offer_price = Decimal(json_data['price']).quantize(0)
-        normal_price = (offer_price * Decimal('1.04999')).quantize(0)
+        name = product_data['name'][:256]
+        sku = product_data['sku']
+
+        offer_price = Decimal(product_data['offers']['price']).quantize(0)
+        normal_price = (offer_price * Decimal('1.049996')).quantize(0)
 
         key = soup.find(
             'a', 'add-request-quote-button button')['data-product_id']
