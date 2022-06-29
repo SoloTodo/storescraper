@@ -2,7 +2,8 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
+from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
+    KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -51,12 +52,10 @@ class Tecnoaxis(Store):
             while True:
                 if page > 10:
                     raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.tecnoaxis.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
+                url_webpage = 'https://www.tecnoaxis.cl/categoria-producto/' \
+                              '{}/page/{}/'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                # with open('foo.html', 'w') as f:
-                #     f.write(soup.prettify())
                 product_containers = soup.findAll('div', 'product')
                 if not product_containers:
                     if page == 1:
