@@ -5,7 +5,7 @@ from ..utils import session_with_proxy
 
 
 class MercadoLibreLg(MercadoLibreChile):
-    official_store_id = 376
+    seller_id = 625506390
 
     @classmethod
     def categories(cls):
@@ -35,7 +35,8 @@ class MercadoLibreLg(MercadoLibreChile):
         for category_code in categories_codes[category]:
             product_urls.extend(cls.get_products(
                 session, category, category_code,
-                official_store_id=cls.official_store_id))
+                seller_id=cls.seller_id,
+                only_official_stores=False))
 
         return product_urls
 

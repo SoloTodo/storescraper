@@ -626,7 +626,8 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def get_products(cls, session, category=None, query_code=None,
-                     seller_id=None, official_store_id=None):
+                     seller_id=None, official_store_id=None,
+                     only_official_stores=True):
         offset = 0
         product_urls = []
 
@@ -641,7 +642,7 @@ class MercadoLibreChile(Store):
 
         if official_store_id:
             base_url += '&official_store_id=' + str(official_store_id)
-        else:
+        elif only_official_stores:
             base_url += '&official_store=all'
 
         while True:
@@ -674,9 +675,15 @@ class MercadoLibreChile(Store):
                 if unknown_category:
                     continue
 
-                product_official_store_id = container['official_store_id']
-                product_url = '{}?pdp_filters=official_store:{}'. \
-                    format(container['permalink'], product_official_store_id)
+                product_url = container['permalink'] + '?'
+
+                if seller_id:
+                    product_url += 'pdp_filters=seller_id:{}'.format(seller_id)
+                elif only_official_stores:
+                    product_official_store_id = container['official_store_id']
+                    product_url += 'pdp_filters=official_store:{}'. \
+                        format(product_official_store_id)
+
                 product_urls.append(product_url)
 
             offset += 50
