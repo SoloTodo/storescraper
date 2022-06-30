@@ -736,7 +736,8 @@ class MercadoLibreChile(Store):
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
 
-        official_store_or_seller_filter = data['initialState'].get('filters', None)
+        official_store_or_seller_filter = data['initialState'].get(
+            'filters', None)
 
         if pickers:
             for picker in pickers:
