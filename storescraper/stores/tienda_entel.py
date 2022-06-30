@@ -52,8 +52,8 @@ class TiendaEntel(Store):
         except json.decoder.JSONDecodeError:
             return []
 
-        if json_data['isAccessory']:
-            return []
+        # if json_data['isAccessory']:
+        #     return []
 
         for sku in json_data['renderSkusBean']['skus']:
             price_container = sku['skuPrice']
@@ -68,7 +68,8 @@ class TiendaEntel(Store):
 
             for view in json_data['skuViews']:
                 if view['skuId'] == sku_id:
-                    stock = view['stockDelivery'] + view['stockPickup']
+                    if view['visibilityButtonPdp'] != 0:
+                        stock = view['stockDelivery'] + view['stockPickup']
                     pictures_container = view['images']
                     break
 
