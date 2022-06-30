@@ -105,8 +105,13 @@ class TruluStore(Store):
         else:
             offer_price = Decimal(
                 remove_words(price_container.find('bdi').text))
-        normal_price = Decimal(
-            remove_words(soup.find('p', 'price').find('div', 'ww-price').text))
+        normal_price_container = soup.find(
+            'p', 'price').find('div', 'ww-price')
+        if normal_price_container:
+            normal_price = Decimal(
+                remove_words(normal_price_container.text))
+        else:
+            normal_price = offer_price
 
         picture_tags = soup.find('div', 'product-thumbnails')
 
