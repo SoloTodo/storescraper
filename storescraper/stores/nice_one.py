@@ -17,8 +17,8 @@ from storescraper.utils import html_to_markdown, \
 
 
 class NiceOne(Store):
-    preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 1
+    preferred_discover_urls_concurrency = 3
+    preferred_products_for_url_concurrency = 3
 
     @classmethod
     def categories(cls):
@@ -125,7 +125,7 @@ class NiceOne(Store):
 
         for stock_entry in stock_data:
             # Some SKUs have negative stocks, no idea why
-            stock += max(int(stock_entry['available_quantity']), 0)
+            stock += max(int(stock_entry.get('available_quantity', 0)), 0)
 
         price_containers = soup.find('div', 'product-prices')
         offer_price = Decimal(soup.find(
