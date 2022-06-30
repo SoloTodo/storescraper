@@ -1,9 +1,15 @@
+import html
+import json
 import logging
+import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK, CPU_COOLER, CASE_FAN
+from storescraper.categories import NOTEBOOK, CPU_COOLER, CASE_FAN, \
+    STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, \
+    HEADPHONES, MOTHERBOARD, PROCESSOR, VIDEO_CARD, TABLET, GAMING_CHAIR, \
+    ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, \
@@ -17,42 +23,44 @@ class NiceOne(Store):
     @classmethod
     def categories(cls):
         return [
-            'StorageDrive',
-            'ComputerCase',
-            'AllInOne',
-            'Keyboard',
-            'Headphones',
-            'Motherboard',
-            'Monitor',
-            'Processor',
-            'VideoCard',
-            'Ram',
-            'PowerSupply',
-            'Monitor',
+            STORAGE_DRIVE,
+            COMPUTER_CASE,
+            ALL_IN_ONE,
+            MOUSE,
+            HEADPHONES,
+            MOTHERBOARD,
+            MONITOR,
+            PROCESSOR,
+            VIDEO_CARD,
+            RAM,
+            POWER_SUPPLY,
             CPU_COOLER,
             NOTEBOOK,
             CASE_FAN,
+            TABLET,
+            GAMING_CHAIR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_urls = [
-            ['22-discos-duros', 'StorageDrive'],
-            ['24-gabinetes', 'ComputerCase'],
-            ['26-computadores-armados', 'AllInOne'],
-            ['29-mouse-teclados', 'Keyboard'],
-            ['32-parlantes-audio', 'Headphones'],
-            ['33-placas-madre', 'Motherboard'],
-            ['28-monitores', 'Monitor'],
-            ['34-procesadores', 'Processor'],
-            ['39-tarjetas-graficas', 'VideoCard'],
-            ['27-memorias', 'Ram'],
-            ['23-fuentes-de-poder', 'PowerSupply'],
-            ['28-monitores', 'Monitor'],
+            ['22-discos-duros', STORAGE_DRIVE],
+            ['24-gabinetes', COMPUTER_CASE],
+            ['26-computadores-armados', ALL_IN_ONE],
+            ['29-mouse-teclados', MOUSE],
+            ['32-parlantes-audio', HEADPHONES],
+            ['33-placas-madre', MOTHERBOARD],
+            ['34-procesadores', PROCESSOR],
+            ['39-tarjetas-graficas', VIDEO_CARD],
+            ['27-memorias', RAM],
+            ['23-fuentes-de-poder', POWER_SUPPLY],
+            ['28-monitores', MONITOR],
             ['61-disipador-por-aire', CPU_COOLER],
             ['62-watercooling', CPU_COOLER],
             ['63-ventiladores', CASE_FAN],
             ['30-notebooks', NOTEBOOK],
+            ['68-tablets', TABLET],
+            ['73-sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -110,19 +118,14 @@ class NiceOne(Store):
         name = soup.find('h1').text.strip()
         sku = soup.find('input', {'name': 'id_product'})['value']
 
-        availability_tag = soup.find(
-            'span', {'id': 'product-availability'}).find('i')
+        stock_match = re.search(r"var product_stocks_list = '(.+)';",
+                                page_source)
+        stock_data = json.loads(html.unescape(stock_match.groups()[0]))[0]
+        stock = 0
 
-        if not availability_tag:
-            stock = -1  # Normal stock
-        elif 'product-last-items' in availability_tag['class']:
-            stock = -1  # Últimas unidades en stock
-        elif 'product-unavailable' in availability_tag['class']:
-            stock = 0  # Pronto en stock
-        elif 'product-available' in availability_tag['class']:
-            stock = 0  # A PEDIDO ENTREGA 10 DIAS
-        else:
-            raise Exception('Invalid stock status')
+        for stock_entry in stock_data:
+            # Some SKUs have negative stocks, no idea why
+            stock += max(int(stock_entry['available_quantity']), 0)
 
         price_containers = soup.find('div', 'product-prices')
         offer_price = Decimal(soup.find(
