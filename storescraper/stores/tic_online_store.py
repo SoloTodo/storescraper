@@ -1,30 +1,39 @@
 from decimal import Decimal
+import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import HEADPHONES, TABLET, TELEVISION
+from storescraper.categories import HEADPHONES, NOTEBOOK, TABLET, TELEVISION, \
+    WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class TicOnlineStore(Store):
     @classmethod
     def categories(cls):
         return [
+            NOTEBOOK,
             TELEVISION,
             TABLET,
-            HEADPHONES
+            HEADPHONES,
+            WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['22-televisores', TELEVISION],
-            ['23-tablet', TABLET],
-            ['4-accesorios-para-computadores', HEADPHONES],
+            ['computacion/notebooks', NOTEBOOK],
+            ['electro/televisores', TELEVISION],
+            ['tablets', TABLET],
+            ['wearables', WEARABLE],
+            ['zona-gamer', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -33,13 +42,12 @@ class TicOnlineStore(Store):
             while True:
                 if page > 10:
                     raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://tic-online-store.cl/{}?' \
-                              'page={}'.format(url_extension, page)
+                url_webpage = 'https://tic-online-store.cl/categoria-prod' \
+                              'ucto/{}/page/{}'.format(url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_section = soup.find('section', {'id': 'products-list'})
-                product_containers = product_section.findAll(
-                    'div', 'item-product')
+                product_containers = soup.findAll(
+                    'li', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -54,32 +62,45 @@ class TicOnlineStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        name = soup.find('h1', 'namne_details').text.strip()
-        key = soup.find('input', {'id': 'product_page_product_id'})['value']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
-        sku_p = soup.find('p', 'reference')
-        if sku_p:
-            sku = sku_p.find('span').text.strip()
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
         else:
-            sku = None
+            raise Exception('No JSON product data found')
 
-        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
+        name = product_data['name']
+        sku = str(product_data['sku'])
+        description = product_data['description']
 
-        cart_btn = soup.find('button', 'add-to-cart')
+        price = Decimal(remove_words(
+            soup.find('p', 'price').findAll('bdi')[-1].text))
+
+        cart_btn = soup.find('button', {'name': 'add-to-cart'})
         if cart_btn:
-            qty_div = soup.find('div', 'product-quantities')
-            if qty_div:
-                stock = int(qty_div.find('span')['data-stock'])
+            input_qty = soup.find('input', 'input-text qty text')
+            if input_qty:
+                if 'max' in input_qty.attrs and input_qty['max']:
+                    stock = int(input_qty['max'])
+                else:
+                    stock = -1
             else:
-                stock = -1
+                stock = 1
         else:
             stock = 0
 
         picture_urls = []
-        container = soup.find('div', 'product-view_content')
+        container = soup.find('figure', 'woocommerce-product-gallery__wrapper')
         for a in container.findAll('a'):
             picture_urls.append(a['href'])
 
@@ -96,6 +117,7 @@ class TicOnlineStore(Store):
             'CLP',
             sku=sku,
             part_number=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]

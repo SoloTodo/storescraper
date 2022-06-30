@@ -1,7 +1,7 @@
 import json
+import logging
 import re
 
-from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -57,159 +57,113 @@ class SpDigital(Store):
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
 
         category_paths = [
-            ['Q2F0ZWdvcnk6MTIxMQ==', [GAMING_CHAIR],
-             'Silla Gamer Profesional', 1],
-            ['Q2F0ZWdvcnk6MTIxMw==', [GAMING_DESK], 'Escritorio Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIxNQ==', [HEADPHONES], 'Audífono Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIxNg==', [MOUSE], 'Mouse Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIxOA==', [KEYBOARD], 'Teclado Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIxOQ==', [MONITOR], 'Monitor Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIyMA==', [KEYBOARD_MOUSE_COMBO],
-             'Kit Teclado + Mouse Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIyNA==', [NOTEBOOK], 'Notebook Gamer', 1],
-            ['Q2F0ZWdvcnk6MTIyNw==', [MICROPHONE], 'Micrófono Streaming', 1],
-            ['Q2F0ZWdvcnk6MTIzOA==', [NOTEBOOK], 'Notebooks', 1],
-            ['Q2F0ZWdvcnk6MTI3MQ==', [UPS], 'UPS y Respaldo Energía', 1],
-            ['Q2F0ZWdvcnk6MTI0Mw==', [ALL_IN_ONE], 'PC All in One', 1],
-            ['Q2F0ZWdvcnk6MTI0OA==', [TABLET], 'Tablets', 1],
-            ['Q2F0ZWdvcnk6MTI1Mg==', [NOTEBOOK], 'Mac', 1],
-            ['Q2F0ZWdvcnk6MTI1Mw==', [TABLET], 'iPad', 1],
-            ['Q2F0ZWdvcnk6MTI1NA==', [WEARABLE], 'Apple Watch', 1],
-            ['Q2F0ZWdvcnk6MTI1Nw==', [MOUSE], 'Mouse', 1],
-            ['Q2F0ZWdvcnk6MTI1OQ==', [KEYBOARD], 'Teclados', 1],
-            ['Q2F0ZWdvcnk6MTI2MA==', [STEREO_SYSTEM], 'Parlantes para PC', 1],
-            ['Q2F0ZWdvcnk6MTI2MQ==', [MONITOR], 'Monitores', 1],
-            ['Q2F0ZWdvcnk6MTI2Mg==', [KEYBOARD_MOUSE_COMBO],
-             'Kit Teclado + Mouse Gamer', 1],
-            ['Q2F0ZWdvcnk6MTI2Ng==', [USB_FLASH_DRIVE], 'Pendrive', 1],
-            ['Q2F0ZWdvcnk6MTI2Nw==', [EXTERNAL_STORAGE_DRIVE],
-             'Disco Duro Externo', 1],
-            ['Q2F0ZWdvcnk6MTI2OA==', [MEMORY_CARD],
-             'Tarjeta Flash Micro SD', 1],
-            ['Q2F0ZWdvcnk6MTI4Mg==', [PROCESSOR], 'Procesador', 1],
-            ['Q2F0ZWdvcnk6MTMwMA==', [CPU_COOLER], 'Refrigeración Líquida', 1],
-            ['Q2F0ZWdvcnk6MTMwMQ==', [CPU_COOLER], 'Disipador CPU', 1],
-            ['Q2F0ZWdvcnk6MTMwMg==', [CASE_FAN], 'Ventilador Gabinete', 1],
-            ['Q2F0ZWdvcnk6MTI4NQ==', [MOTHERBOARD], 'Placa madre', 1],
-            ['Q2F0ZWdvcnk6MTI4OQ==', [RAM], 'Memorias RAM', 1],
-            ['Q2F0ZWdvcnk6MTMwNg==', [POWER_SUPPLY], 'Fuente de Poder', 1],
-            ['Q2F0ZWdvcnk6MTI5Mw==', [STORAGE_DRIVE],
-             'HDD Disco Duro Mecánico', 1],
-            ['Q2F0ZWdvcnk6MTI5NA==', [SOLID_STATE_DRIVE],
-             'SSD Unidad Estado Sólido', 1],
-            ['Q2F0ZWdvcnk6MTMwOA==', [COMPUTER_CASE], 'Gabinetes', 1],
-            ['Q2F0ZWdvcnk6MTI5NQ==', [VIDEO_CARD], 'Tarjeta de Video', 1],
-            ['Q2F0ZWdvcnk6MTM5Nw==', [PRINTER], 'Plotter', 1],
-            ['Q2F0ZWdvcnk6MTM2MQ==', [TELEVISION], 'Televisores', 1],
-            ['Q2F0ZWdvcnk6MTM2MQ==', [WEARABLE], 'Smartwatch', 1],
-            ['Q2F0ZWdvcnk6MTQwMA==', [WEARABLE], 'Smartwatch', 1],
-            ['Q2F0ZWdvcnk6MTM4Mw==', [PROJECTOR], 'Proyectores', 1],
-            ['Q2F0ZWdvcnk6MTM4Nw==', [PRINTER], 'Impresoras Láser', 1],
-            ['Q2F0ZWdvcnk6MTM4OA==', [PRINTER], 'Impresoras Tinta', 1],
-            ['Q2F0ZWdvcnk6MTM5Mw==', [PRINTER], 'Multifuncionales', 1],
-            ['Q2F0ZWdvcnk6MTQwNA==', [HEADPHONES], 'Audífonos', 1],
-            ['Q2F0ZWdvcnk6MTQwNQ==', [HEADPHONES], 'Audífonos Bluetooth', 1],
-            ['Q2F0ZWdvcnk6MTQwNg==', [STEREO_SYSTEM], 'Parlante Portátil', 1],
-            ['Q2F0ZWdvcnk6MTQwNw==', [MICROPHONE],
-             'Micrófonos y Accesorios', 1],
-            ['Q2F0ZWdvcnk6MTQzMA==', [CELL], 'Smartphones', 1],
-            ['Q2F0ZWdvcnk6MTIzNQ==', [VIDEO_GAME_CONSOLE],
-             'Consolas y Accesorios', 1],
+            ['gaming-y-streaming-sillas-y-escritorios-silla-gamer-profesional',
+                GAMING_CHAIR],
+            ['gaming-y-streaming-sillas-y-escritorios-escritorio-gamer',
+                GAMING_DESK],
+            ['monitor-gamer', MONITOR],
+            ['gaming-y-streaming-perifericos-gamer-audifonos-gamer',
+                HEADPHONES],
+            ['gaming-y-streaming-perifericos-gamer-mouse-gamer', MOUSE],
+            ['gaming-y-streaming-perifericos-gamer-teclado-gamer', KEYBOARD],
+            ['gaming-y-streaming-perifericos-gamer-kit-teclado--mouse-gamer',
+                KEYBOARD_MOUSE_COMBO],
+            ['gaming-y-streaming-pc-y-notebook-gamer-notebook-gamer',
+                NOTEBOOK],
+            ['gaming-y-streaming-streaming-microfono-streaming', MICROPHONE],
+            ['gaming-y-streaming-consolas-y-controles-controles-y-accesorios',
+                VIDEO_GAME_CONSOLE],
+            ['computacion-notebook-notebooks', NOTEBOOK],
+            ['computacion-pc-pc-all-in-one', ALL_IN_ONE],
+            ['computacion-tablet-tablets', TABLET],
+            ['computacion-apple-mac', NOTEBOOK],
+            ['computacion-apple-ipad', TABLET],
+            ['computacion-apple-apple-watch', WEARABLE],
+            ['computacion-perifericos-mouse', MOUSE],
+            ['computacion-perifericos-teclados', KEYBOARD],
+            ['computacion-perifericos-parlantes-para-pc', STEREO_SYSTEM],
+            ['computacion-almacenamiento-datos-pendrive', USB_FLASH_DRIVE],
+            ['computacion-almacenamiento-datos-disco-duro-externo',
+                EXTERNAL_STORAGE_DRIVE],
+            ['computacion-almacenamiento-datos-tarjeta-flash-micro-sd',
+                MEMORY_CARD],
+            ['computacion-ups-y-energia-ups-y-respaldo-energia', UPS],
+            ['monitor', MONITOR],
+            ['componentes-procesador', PROCESSOR],
+            ['componentes-placa-madre', MOTHERBOARD],
+            ['componentes-memorias-ram', RAM],
+            ['componentes-almacenamiento-hdd-disco-duro-mecanico',
+                STORAGE_DRIVE],
+            ['componentes-almacenamiento-ssd-unidad-estado-solido',
+                SOLID_STATE_DRIVE],
+            ['componentes-tarjeta-de-video', VIDEO_CARD],
+            ['componentes-refrigeracion-y-ventilacion-refrigeracion-liquida',
+                CPU_COOLER],
+            ['componentes-refrigeracion-y-ventilacion-disipador-cpu',
+                CPU_COOLER],
+            ['componentes-refrigeracion-y-ventilacion-ventilador-gabinete',
+                CASE_FAN],
+            ['componentes-fuente-de-poder', POWER_SUPPLY],
+            ['componentes-gabinetes', COMPUTER_CASE],
+            ['hogar-y-oficina-television-televisores', TELEVISION],
+            ['hogar-y-oficina-equipamiento-oficina-proyectores', PROJECTOR],
+            ['hogar-y-oficina-impresoras-impresoras-laser', PRINTER],
+            ['hogar-y-oficina-impresoras-impresoras-tinta', PRINTER],
+            ['hogar-y-oficina-smartwatches-smartwatch', WEARABLE],
+            ['audio-y-musica-audio-audifonos', HEADPHONES],
+            ['audio-y-musica-audio-audifonos-bluetooth', HEADPHONES],
+            ['audio-y-musica-audio-parlante-portatil', STEREO_SYSTEM],
+            ['audio-y-musica-audio-microfonos-y-accesorios', MICROPHONE],
+            ['barra-y-sistema-de-sonido', STEREO_SYSTEM],
+            ['audio-y-musica-audio-profesional-microfono-profesional',
+                MICROPHONE],
+            ['otras-categorias-celular-y-accesorios-smartphones', CELL],
         ]
 
-        endpoint = 'https://bff.spdigital.cl/api/v1/saleor'
-        product_entries = defaultdict(lambda: [])
-
-        for e in category_paths:
-            category_id, local_categories, section_name, category_weight = e
-
-            if category not in local_categories:
+        product_urls = []
+        for url_extension, local_category in category_paths:
+            if local_category != category:
                 continue
-
-            cursor = ''
-            current_position = 1
-            local_product_urls = []
-
+            page = 1
             while True:
-                payload = {
-                    "query": "query( $channel: String $first: Int $after: "
-                             "String $before: String $categories: [ID] "
-                             "$collections: [ID] $search: String $metadata: "
-                             "[MetadataFilter] $priceGte: Float $priceLte: "
-                             "Float $attributes: [AttributeInput] $sortBy: "
-                             "ProductOrder $stockAvailability: "
-                             "StockAvailability $ids: [ID] ) { products"
-                             "( first: $first after: $after before: "
-                             "$before channel: $channel filter: { "
-                             "isPublished: true, categories: "
-                             "$categories, collections: $collections "
-                             "price: { gte: $priceGte, lte: $priceLte } "
-                             "search: $search metadata: $metadata "
-                             "attributes: $attributes stockAvailability: "
-                             "$stockAvailability ids: $ids } sortBy: $sortBy "
-                             ") { totalCount pageInfo { endCursor startCursor "
-                             "hasNextPage hasPreviousPage } edges { node { "
-                             "category { id name slug parent { id } } id "
-                             "metadata { key value } name slug description "
-                             "isAvailable attributes { attribute { name } "
-                             "values { name slug } } variants { id name sku "
-                             "quantityAvailable media { id type url "
-                             "thumbnailUrl: url(size: 100) } } "
-                             "defaultVariant { id sku name media { id type "
-                             "url thumbnailUrl: url(size: 100) } } media { "
-                             "type url thumbnailUrl: url(size: 100) alt } "
-                             "thumbnail { url alt } pricing { priceRange { "
-                             "start { gross { amount currency } } } } } } } "
-                             "} ",
-                    "variables": {
-                        "channel": "sp-digital",
-                        "first": 100,
-                        "after": cursor,
-                        "before": "",
-                        "categories": [category_id],
-                        "collections": [],
-                        "metadata": [{"key": "pricing"}],
-                        "sortBy": {"direction": "ASC", "field": "PRICE"},
-                        "priceGte": None,
-                        "priceLte": 0,
-                        "attributes": [],
-                        "stockAvailability": "IN_STOCK",
-                        "ids": []
-                    }
-                }
+                if page > 100:
+                    raise Exception('Page overflow: ' + url_extension)
 
-                print(cursor or 'first')
-                response = session.post(endpoint, json=payload)
-                products_data = response.json()['data']['products']
+                if page == 1:
+                    url_webpage = 'https://www.spdigital.cl/page-data/' \
+                        'categories/{}/page-data.json'.format(url_extension)
+                else:
+                    url_webpage = 'https://www.spdigital.cl/page-data/' \
+                        'categories/{}/{}/page-data.json'.format(
+                            url_extension, page)
 
-                for container in products_data['edges']:
-                    product_url = 'https://www.spdigital.cl/{}/'.format(
-                        container['node']['slug'])
+                response = session.get(url_webpage)
 
-                    product_entries[product_url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': current_position
-                    })
-
-                    local_product_urls.append(product_url)
-                    current_position += 1
-
-                if not products_data['pageInfo']['hasNextPage']:
+                if response.status_code != 200:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
                     break
 
-                cursor = products_data['pageInfo']['endCursor']
-        return product_entries
+                json_data = json.loads(response.text)[
+                    'result']['pageContext']['content']
+
+                for item in json_data['items']:
+                    product_urls.append(
+                        'https://www.spdigital.cl/' + item['slug'])
+
+                page += 1
+
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        slug = re.search('https://www.spdigital.cl/(.+)/$', url).groups()[0]
+        slug = url.split('/')[-1]
         page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
                         'page-data.json'.format(slug)
         print(page_data_url)
@@ -223,8 +177,27 @@ class SpDigital(Store):
         name = page_data['content']['name']
         part_number = page_data['productId']
 
-        normal_price = Decimal(page_data['content']['pricing']['priceRange'][
-            'start']['gross']['amount'])
+        payload = {
+            "query": "\n  query($id: ID, $channel: String) {\n      product(id"
+            ": $id, channel: $channel) {\n          metadata {\n              "
+            "key\n              value\n          }\n          pricing {\n     "
+            "         priceRange {\n                  start {\n               "
+            "       gross {\n                          amount\n               "
+            "           currency\n                      }\n                  }"
+            "\n              }\n          }\n          variants {\n           "
+            "   id\n              quantityAvailable\n          }\n      }\n  }"
+            "\n  ",
+            "variables": {
+                "channel": "sp-digital",
+                "id": page_data['content']['id']
+            }
+        }
+        sale_response = session.post(
+            'https://bff.spdigital.cl/api/v1/saleor', json=payload)
+        sale_json = json.loads(sale_response.text)
+
+        normal_price = Decimal(sale_json['data']['product']['pricing'][
+            'priceRange']['start']['gross']['amount'])
 
         for metadata_entry in page_data['content']['metadata']:
             if metadata_entry['key'] == 'pricing':
