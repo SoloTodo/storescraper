@@ -163,7 +163,7 @@ class SpDigital(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        slug = re.search('https://www.spdigital.cl/(.+)/$', url).groups()[0]
+        slug = url.split('/')[-1]
         page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
                         'page-data.json'.format(slug)
         print(page_data_url)
