@@ -17,9 +17,6 @@ from storescraper.utils import html_to_markdown, \
 
 
 class NiceOne(Store):
-    preferred_discover_urls_concurrency = 3
-    preferred_products_for_url_concurrency = 3
-
     @classmethod
     def categories(cls):
         return [
@@ -120,12 +117,13 @@ class NiceOne(Store):
 
         stock_match = re.search(r"var product_stocks_list = '(.+)';",
                                 page_source)
-        stock_data = json.loads(html.unescape(stock_match.groups()[0]))[0]
         stock = 0
+        if stock_match:
+            stock_data = json.loads(html.unescape(stock_match.groups()[0]))[0]
 
-        for stock_entry in stock_data:
-            # Some SKUs have negative stocks, no idea why
-            stock += max(int(stock_entry.get('available_quantity', 0)), 0)
+            for stock_entry in stock_data:
+                # Some SKUs have negative stocks, no idea why
+                stock += max(int(stock_entry.get('available_quantity', 0)), 0)
 
         price_containers = soup.find('div', 'product-prices')
         offer_price = Decimal(soup.find(
