@@ -98,7 +98,6 @@ class RSTech(Store):
         offer_price = Decimal(product_data['offers'][0]['price'])
         normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
-
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'product-gallery').findAll('img')
                         if validators.url(tag['src'])
