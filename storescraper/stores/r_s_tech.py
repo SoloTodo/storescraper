@@ -1,4 +1,3 @@
-import json
 import logging
 from decimal import Decimal
 
@@ -82,20 +81,26 @@ class RSTech(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', 'product-title').text
+        sku_tag = soup.find('span', 'sku')
 
-        json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-        product_data = json_data['@graph'][1]
-        sku = product_data['sku']
+        if sku_tag:
+            sku = sku_tag.text.strip()
+        else:
+            sku = None
 
-        name = product_data['name']
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        if product_data['offers'][0]['availability'] == 'http://schema.org/InStock':
+        if soup.find('p', 'stock in-stock'):
             stock = -1
         else:
             stock = 0
+        if soup.find('p', 'price').find('ins'):
+            offer_price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text.strip()))
+        else:
+            offer_price = Decimal(
+                remove_words(soup.find('p', 'price').text.strip()))
 
-        offer_price = Decimal(product_data['offers'][0]['price'])
         normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
         picture_urls = [tag['src'] for tag in
