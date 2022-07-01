@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -81,18 +82,22 @@ class RSTech(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        if soup.find('p', 'stock in-stock'):
+
+        json_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
+        product_data = json_data['@graph'][1]
+        sku = product_data['sku']
+
+        name = product_data['name']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        if product_data['offers'][0]['availability'] == 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text.strip()))
-        else:
-            price = Decimal(
-                remove_words(soup.find('p', 'price').text.strip()))
+
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
+
 
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'product-gallery').findAll('img')
@@ -104,10 +109,10 @@ class RSTech(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
