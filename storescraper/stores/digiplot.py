@@ -8,7 +8,7 @@ from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN, \
     MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, \
+from storescraper.utils import html_to_markdown, remove_words, \
     session_with_proxy
 
 
@@ -134,7 +134,7 @@ class Digiplot(Store):
         for container in stock_containers:
             stock_text = container.text.split(':')[1].split('unid')[0].strip()
             if stock_text != '':
-                stock += int(stock_text)
+                stock += int(remove_words(stock_text))
 
         offer_price = Decimal(data['precioweb1'])
         normal_price = Decimal(data['precioweb2'])
