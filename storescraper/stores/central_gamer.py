@@ -89,8 +89,9 @@ class CentralGamer(Store):
         name = soup.find('h1', 'product-form_title').text
         sku = soup.find('form', 'product-form')['action'].split('/')[-1]
 
-        if soup.find('div', {'id': 'stock'}):
-            stock = int(soup.find('div', {'id': 'stock'}).find('span').text)
+        stock_tag = soup.find('meta', {'property': 'product:availability'})
+        if stock_tag['content'] == 'instock':
+            stock = -1
         else:
             stock = 0
 
