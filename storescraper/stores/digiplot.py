@@ -133,7 +133,10 @@ class Digiplot(Store):
             'div', 'product-single__availability-item')
         for container in stock_containers:
             stock_text = container.text.split(':')[1].split('unid')[0].strip()
-            if stock_text != '':
+            if 'Mas de' in stock_text:
+                stock = -1
+                break
+            elif stock_text != '':
                 stock += int(remove_words(stock_text))
 
         offer_price = Decimal(data['precioweb1'])
