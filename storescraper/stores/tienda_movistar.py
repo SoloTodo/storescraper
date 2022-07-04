@@ -114,19 +114,14 @@ class TiendaMovistar(Store):
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        ajax_session = session_with_proxy(extra_args)
-        ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
-        ajax_session.headers['content-type'] = \
-            'application/x-www-form-urlencoded'
-        # The header just needs to be set with anything
-        ajax_session.headers['referer'] = 'foo'
-
-        stock_data = json.loads(ajax_session.post(
-            'https://catalogo.movistar.cl/fullprice/stockproducto/validar/',
-            'sku=' + sku
-        ).text)
-
-        stock = int(stock_data['respuesta']['cantidad'])
+        input_qty = soup.find('input', 'qty')
+        if input_qty:
+            if 'max' in input_qty.attrs and input_qty['max']:
+                stock = int(input_qty['max'])
+            else:
+                stock = -1
+        else:
+            stock = 0
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
