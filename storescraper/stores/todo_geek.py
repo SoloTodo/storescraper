@@ -4,10 +4,10 @@ import logging
 import re
 from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR, PROCESSOR, STEREO_SYSTEM, \
-    VIDEO_CARD
+    VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class TodoGeek(Store):
@@ -17,7 +17,10 @@ class TodoGeek(Store):
             PROCESSOR,
             VIDEO_CARD,
             MONITOR,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            NOTEBOOK,
+            GAMING_CHAIR,
+            WEARABLE,
         ]
 
     @classmethod
@@ -27,6 +30,9 @@ class TodoGeek(Store):
             ['tarjetas-graficas', VIDEO_CARD],
             ['monitores', MONITOR],
             ['parlantes-inteligentes', STEREO_SYSTEM],
+            ['laptops-computer', NOTEBOOK],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['watches', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -69,8 +75,12 @@ class TodoGeek(Store):
 
         picture_urls = []
         picture_container = soup.find('div', 'slider-main-image')
+
         for picture in picture_container.findAll('div', 'slick-slide'):
             picture_urls.append(picture.find('a')['href'])
+
+        description_tag = soup.find('div', {'id': 'tabs-description'})
+        description = html_to_markdown(str(description_tag))
 
         products = []
         for variant in json_container['variants']:
@@ -79,7 +89,9 @@ class TodoGeek(Store):
             price = (Decimal(variant['price']) /
                      Decimal(100)).quantize(Decimal("0.0"))
 
-            if soup.find('button', 'add-to-cart'):
+            if 'RESERVA' in description.upper():
+                stock = 0
+            elif soup.find('button', 'add-to-cart'):
                 stock = -1
             else:
                 stock = 0
@@ -95,7 +107,8 @@ class TodoGeek(Store):
                 price,
                 price,
                 'CLP',
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                description=description
             )
             products.append(p)
         return products
