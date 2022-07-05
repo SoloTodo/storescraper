@@ -131,12 +131,12 @@ class Nuevatec(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=key,
+            sku=sku,
             picture_urls=picture_urls,
             description=description
         )
