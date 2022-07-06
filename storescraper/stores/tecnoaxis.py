@@ -6,7 +6,7 @@ from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
     KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class Tecnoaxis(Store):
@@ -80,19 +80,24 @@ class Tecnoaxis(Store):
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
         json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
+            'script', {'type': 'application/ld+json'})[0].text)
 
         for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
+            if entry['@type'] == 'ItemPage':
                 product_data = entry
                 break
         else:
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = product_data['sku']
         description = product_data['description']
-        price = Decimal(product_data['offers'][0]['price'])
+
+        sku = soup.find('span', 'sku').text.strip()
+        price_p = soup.find('p', 'price')
+        if price_p.find('ins'):
+            price = Decimal(remove_words(price_p.find('ins').text))
+        else:
+            price = Decimal(remove_words(price_p.find('bdi').text))
 
         if soup.find('button', 'single_add_to_cart_button'):
             stock = -1

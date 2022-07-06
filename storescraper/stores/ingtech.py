@@ -100,19 +100,24 @@ class Ingtech(Store):
         prices_tag = soup.find('p', 'price')
         normal_price = Decimal(remove_words(prices_tag.find(
             'bdi').text.split('$')[1]))
-        if '$' in prices_tag.find('span', 'pro_price_extra_info').text:
-            offer_price = Decimal(remove_words(prices_tag.find(
-                'span', 'pro_price_extra_info').text.split('$')[1]))
-        else:
-            offer_price = Decimal(
-                prices_tag.find('span', 'pro_price_extra_info').text.split(
+        if prices_tag.find('span', 'pro_price_extra_info'):
+            if '$' in prices_tag.find('span', 'pro_price_extra_info').text:
+                offer_price = Decimal(remove_words(prices_tag.find(
+                    'span', 'pro_price_extra_info').text.split('$')[1]))
+            else:
+                offer_price = Decimal(
+                    prices_tag.find('span', 'pro_price_extra_info').text.split(
 
-                )[-1].replace('.', ''))
+                    )[-1].replace('.', ''))
+        else:
+            offer_price = normal_price
 
         stock_tag = soup.find('input', {'name': 'quantity'})
         if stock_tag:
-            if 'max' in stock_tag.attrs:
+            if 'max' in stock_tag.attrs and stock_tag['max'] != "":
                 stock = int(stock_tag['max'])
+            elif 'max' in stock_tag.attrs:
+                stock = -1
             else:
                 stock = 1
         else:

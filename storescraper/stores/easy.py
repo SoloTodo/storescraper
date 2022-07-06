@@ -1,7 +1,5 @@
-import base64
 import json
 import logging
-import urllib
 from collections import defaultdict
 from decimal import Decimal
 
@@ -140,67 +138,40 @@ class Easy(Store):
             if category not in local_categories:
                 continue
 
-            offset = 0
-
+            page = 1
             while True:
-                if offset > 1000:
-                    raise Exception('Page overflow')
+                if page > 20:
+                    raise Exception('page overflow: ' + category_path)
 
-                graphql_variables = {
-                    "hideUnavailableItems": False,
-                    "skusFilter": "FIRST_AVAILABLE",
-                    "simulationBehavior": "default",
-                    "installmentCriteria": "MAX_WITHOUT_INTEREST",
-                    "productOriginVtex": False,
-                    "map": "c,c,c",
-                    "query": category_path,
-                    "orderBy": "",
-                    "from": offset,
-                    "to": offset + 99,
-                    "selectedFacets": [
-                        {
-                            "key": "c", "value": ""
-                        }
-                    ],
-                    "facetsBehavior": "Static",
-                    "categoryTreeBehavior": "default",
-                    "withFacets": False
-                }
+                url_webpage = 'https://www.easy.cl/{}?page={}'.format(
+                    category_path, page)
+                print(url_webpage)
 
-                encoded_graphql_variables = base64.b64encode(
-                    json.dumps(graphql_variables).encode(
-                        'utf-8')).decode('utf-8')
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                page_state_tag = soup.find(
+                    'template', {'data-varname': '__STATE__'})
+                page_state = json.loads(page_state_tag.text)
+                done = True
 
-                query_extensions = {
-                    "persistedQuery": {
-                        "version": 1,
-                        "sha256Hash": "6869499be99f20964918e2fe0d1166fdf"
-                                      "6c006b1766085db9e5a6bc7c4b957e5"
-                    },
-                    "variables": encoded_graphql_variables
-                }
-                encoded_query_extensions = urllib.parse.quote(json.dumps(
-                    query_extensions))
-                endpoint = 'https://www.easy.cl/_v/segment/' \
-                           'graphql/v1?extensions=' + encoded_query_extensions
+                idx = 0
+                for key, value in page_state.items():
+                    if key.startswith('Product:') and 'linkText' in value:
+                        product_url = 'https://www.easy.cl/' + \
+                            value['linkText'] + '/p'
+                        product_entries[product_url].append({
+                            'category_weight': category_weight,
+                            'section_name': section_name,
+                            'value': idx + 1
+                        })
+                        idx += 1
+                        done = False
 
-                res = session.get(endpoint).json()
-                raw_product_entries = res['data']['productSearch']['products']
-
-                if not raw_product_entries:
-                    if not offset:
+                if done:
+                    if page == 1:
                         logging.warning('Empty category: ' + category_path)
                     break
-
-                for idx, prods_hit in enumerate(raw_product_entries):
-                    product_url = 'https://www.easy.cl' + prods_hit['link']
-                    product_entries[product_url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': idx + 1
-                    })
-
-                offset += 100
+                page += 1
 
         return product_entries
 

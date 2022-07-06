@@ -130,8 +130,14 @@ class InfographicsSolutions(Store):
         soup = BeautifulSoup(page_source, 'html.parser')
         key = soup.find('link', {'rel': 'shortlink'})['href'].split(
             '?p=')[1].strip()
-        product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
+
+        soup_jsons = soup.findAll(
+            'script', {'type': 'application/ld+json'})
+
+        if len(soup_jsons) < 2:
+            return []
+
+        product_data = json.loads(soup_jsons[1].text)
 
         if 'name' in product_data:
             name = product_data['name']
