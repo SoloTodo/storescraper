@@ -16,7 +16,7 @@ ipython==7.15.0
 ipython-genutils==0.2.0
 jedi==0.10.2
 kombu==4.6.11
-lxml==4.3.3
+lxml==4.9.1
 pexpect==4.6.0
 pickleshare==0.7.4
 Pillow==8.4.0
