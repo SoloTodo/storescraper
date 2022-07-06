@@ -84,6 +84,8 @@ class LoiChile(Store):
         picture_urls = []
 
         for tag in soup.find('div', 'swiper-wrapper').findAll('img'):
+            if tag['src'] == "":
+                continue
             picture_url = 'https://{}.cloudfront.net/_img_productos/{}'.format(
                 cls.IMAGE_DOMAIN, tag['src'].split('_img_productos/')[1])
             if validators.url(picture_url):
