@@ -41,20 +41,20 @@ class TravelTienda(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ('3842720512', CELL),
-            ('444586937', WEARABLE),
+            ('816923966', WEARABLE),
             ('2234300147', STEREO_SYSTEM),
             ('2722336774', TELEVISION),
-            ('3415774358', NOTEBOOK),
+            ('2611045626', NOTEBOOK),
             ('375810843', MONITOR),
-            ('2306324657', EXTERNAL_STORAGE_DRIVE),
-            ('2934181475', TABLET),
+            ('3807770934', EXTERNAL_STORAGE_DRIVE),
+            ('2114119513', TABLET),
             ('1226813193', HEADPHONES),
             ('2547146328', MOUSE),
             ('3767139073', MOUSE),  # Accesorios Computación
             ('714969430', GAMING_CHAIR),
-            ('326296390', STEREO_SYSTEM),
-            ('3121709090', HEADPHONES),
-            ('1345767085', STEREO_SYSTEM),
+            ('501025199', STEREO_SYSTEM),  # Audio Portátil
+            ('4174846274', HEADPHONES),
+            ('1345767085', STEREO_SYSTEM),  # Sistemas de Sonido
             ('1095159098', STEREO_SYSTEM),
             ('3514911626', STEREO_SYSTEM),
             ('3551610308', STEREO_SYSTEM),
@@ -62,7 +62,7 @@ class TravelTienda(Store):
             ('1479054651', STEREO_SYSTEM),  # Audio HiFi
             ('2620100069', WASHING_MACHINE),
             ('306745319', REFRIGERATOR),
-            ('394354836', WASHING_MACHINE),
+            ('196972798', WASHING_MACHINE),
             ('831669398', OVEN),
             ('628735343', AIR_CONDITIONER),
             ('2881216585', VIDEO_GAME_CONSOLE),
@@ -70,8 +70,6 @@ class TravelTienda(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-
-        print(category)
 
         for category_path, local_category in category_paths:
             if local_category != category:
@@ -83,6 +81,12 @@ class TravelTienda(Store):
                           ''.format(category_path)
             response = session.get(url_webpage)
             json_data = response.json()
+
+            if not json_data['results']['records']:
+                # Consider empty categories to be errors because Travel
+                # Tienda has changed category ids in the past
+                raise Exception('Empty category: ', category, category_path)
+
             for product_entry in json_data['results']['records']:
                 product_path = product_entry['attributes']['product.route'][0]
                 product_url = 'https://tienda.travel.cl' + product_path
