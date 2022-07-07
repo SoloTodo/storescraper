@@ -219,7 +219,6 @@ class Lider(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'solotodobot'
         product_entries = defaultdict(lambda: [])
 
         # It's important that the empty one goes first to ensure that the
@@ -231,8 +230,7 @@ class Lider(Store):
             'discount_asc',
             'discount_desc',
         ]
-        query_url = 'https://buysmart-bff-production.lider.cl/' \
-                    'buysmart-bff/category'
+        query_url = 'https://apps.lider.cl/catalogo/bff/category'
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
@@ -254,9 +252,12 @@ class Lider(Store):
                     "hitsPerPage": 1000
                 }
 
-                session.headers['content-type'] = 'application/json'
-                session.headers['User-Agent'] = 'solotodobot'
+                session.headers['Content-Type'] = 'application/json'
                 response = session.post(query_url, json.dumps(query_params))
+
+                if response.status_code != 200:
+                    continue
+
                 data = json.loads(response.text)
 
                 if not data['products']:
@@ -314,11 +315,10 @@ class Lider(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'solotodobot'
         sku_id = url.split('/')[-2]
 
-        query_url = 'https://buysmart-bff-production.lider.cl/buysmart-bff/' \
-                    'products/{}?appId=BuySmart'.format(sku_id)
+        query_url = 'https://apps.lider.cl/catalogo/bff/products/{}' \
+                    .format(sku_id)
 
         response = session.get(query_url)
 
