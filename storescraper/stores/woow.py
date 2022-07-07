@@ -62,29 +62,41 @@ class Woow(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        soup_jsons = soup.findAll(
-            'script', {'type': 'application/ld+json'})
-        if len(soup_jsons) == 0 or not soup_jsons[0].text:
+
+        product_data = json.loads(soup.find(
+            'template', {'data-varname': '__STATE__'}).text)
+
+        base_json_keys = list(product_data.keys())
+
+        if not base_json_keys:
             return []
-        json_data = json.loads(soup_jsons[0].text)
-        name = json_data['name']
-        sku = str(json_data['sku'])
 
-        stock = 0
-        if soup.find('div', 'vtex-add-to-cart-button-0-x-buttonDataContainer'):
-            stock = -1
+        base_json_key = base_json_keys[0]
 
-        price = Decimal(
-            json_data['offers']['offers'][0]['price']
-        )
-        price = price.quantize(Decimal('0.01'))
-        picture_urls = [tag['src'] for tag in
-                        soup.find(
-                            'div',
-                            'vtex-store-components-3-x-'
-                            'productImagesGallerySlide'
-        ).findAll('img')
-        ]
+        item_key = '{}.items.0'.format(
+            base_json_key)
+
+        product_specs = product_data[item_key]
+
+        name = product_specs['name']
+        sku = str(product_specs['itemId'])
+
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        price = Decimal(str(pricing_data['Price']))
+
+        stock = pricing_data['AvailableQuantity']
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
+
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
+
         p = Product(
             name,
             cls.__name__,
