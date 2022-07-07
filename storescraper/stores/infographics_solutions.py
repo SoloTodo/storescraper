@@ -151,10 +151,16 @@ class InfographicsSolutions(Store):
             )[0].text)['@graph']
             name = product_data_2[3]['name']
             wds = soup.find('div', 'wd-single-price')
-            offer_price = Decimal(
-                wds.find(
-                    'div', 'wds-first'
-                ).find('ins').text.split('$')[-1].replace('.', ''))
+            if wds.find('div', 'wds-first').find('ins'):
+                offer_price = Decimal(
+                    wds.find(
+                        'div', 'wds-first'
+                    ).find('ins').text.split('$')[-1].replace('.', ''))
+            else:
+                offer_price = Decimal(
+                    wds.find(
+                        'div', 'wds-first'
+                    ).find('bdi').text.split('$')[-1].replace('.', ''))
             normal_price = Decimal(
                 wds.find(
                     'div', 'wds-second'
