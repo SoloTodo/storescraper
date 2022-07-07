@@ -164,7 +164,7 @@ class InfographicsSolutions(Store):
             normal_price = Decimal(
                 wds.find(
                     'div', 'wds-second'
-                ).find('p').text.split('$')[-1].replace('.', ''))
+                ).find('span', 'amount').text.split('$')[-1].replace('.', ''))
             sku = key
 
         stock_container = soup.find('p', 'stock')
