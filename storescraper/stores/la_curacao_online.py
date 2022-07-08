@@ -35,11 +35,11 @@ class LaCuracaoOnline(Store):
         done = False
 
         while not done:
-            if page >= 10:
+            if page >= 15:
                 raise Exception('Page overflow')
 
             url = 'https://www.lacuracaonline.com/{}/catalogsearch/' \
-                  'result/index/?q=PRODUCTOS&at_marca=LG&p={}' \
+                  'result/index/?q=marca+lg&p={}' \
                   ''.format(cls.country, page)
 
             response = session.get(url)
@@ -50,9 +50,10 @@ class LaCuracaoOnline(Store):
                 raise Exception('Empty section: {}'.format(url))
 
             for container in product_containers:
+                brand = container.find('strong', 'product-item-category')
+                if brand is None or "LG" != brand.text.strip():
+                    continue
                 product_url = container.find('a')['href']
-                product_name = container.find(
-                    'a', 'product-item-link').text
 
                 if product_url in product_urls:
                     done = True

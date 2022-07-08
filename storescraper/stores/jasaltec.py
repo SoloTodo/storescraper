@@ -3,11 +3,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
+from storescraper.categories import EXTERNAL_STORAGE_DRIVE, TABLET, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR, \
-    ALL_IN_ONE, GAMING_DESK, MICROPHONE
+    GAMING_DESK, MICROPHONE, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -36,39 +36,41 @@ class Jasaltec(Store):
             UPS,
             VIDEO_GAME_CONSOLE,
             GAMING_CHAIR,
-            ALL_IN_ONE,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
+            TABLET
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-de-datos/pendrive', USB_FLASH_DRIVE],
+            ['componentes-informaticos/memoria-ram/modulos-ram-notebook', RAM],
+            ['componentes-informaticos/memoria-ram/modulos-ram-pc-escritorio',
+             RAM],
+            ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['almacenamiento-de-datos/disco-estado-solido-interno',
              SOLID_STATE_DRIVE],
             ['almacenamiento-de-datos/disco-estado-solido-externo',
              EXTERNAL_STORAGE_DRIVE],
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
-            ['componentes-informaticos/memoria-ram', RAM],
-            ['componentes-informaticos/placas-madres', MOTHERBOARD],
+            ['componentes-informaticos/tarjeta-madre', MOTHERBOARD],
             ['componentes-informaticos/procesadores', PROCESSOR],
             ['componentes-informaticos/tarjetas-de-videos', VIDEO_CARD],
             ['componentes-informaticos/ventiladores-y-enfriadores',
              CPU_COOLER],
-            ['computadores/notebook', NOTEBOOK],
-            ['computadores/all-in-one', ALL_IN_ONE],
-            ['monitores', MONITOR],
             ['perifericos/audifonos', HEADPHONES],
+            ['perifericos/microfonos', MICROPHONE],
             ['perifericos/mouses', MOUSE],
             ['perifericos/parlantes', STEREO_SYSTEM],
             ['perifericos/teclados', KEYBOARD],
+            ['monitores', MONITOR],
+            ['notebook', NOTEBOOK],
+            ['tabletas', TABLET],
             ['respaldo-energia/ups', UPS],
             ['videojuegos/consola', VIDEO_GAME_CONSOLE],
             ['sillas', GAMING_CHAIR],
             ['escritorios', GAMING_DESK],
-            ['perifericos/microfonos', MICROPHONE]
         ]
 
         session = session_with_proxy(extra_args)
