@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MONITOR, ALL_IN_ONE
+from storescraper.categories import NOTEBOOK, MONITOR, ALL_IN_ONE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -18,6 +18,7 @@ class Sicot(Store):
             NOTEBOOK,
             MONITOR,
             ALL_IN_ONE,
+            MOUSE,
         ]
 
     @classmethod
@@ -25,7 +26,9 @@ class Sicot(Store):
         url_extensions = [
             ['computadores/notebook-y-tablets', NOTEBOOK],
             ['computadores/desktop-aio', ALL_IN_ONE],
+            ['computadores/accesorios-notebooks', MOUSE],
             ['monitores', MONITOR],
+            ['tienda-online/gamer', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
