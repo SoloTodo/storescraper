@@ -260,14 +260,9 @@ class Easy(Store):
         base_json_key = base_json_keys[0]
         product_specs = product_data[base_json_key]
 
+        key = product_specs['productId']
         name = product_specs['productName']
-        # Use the 'productReference' field and add the P to have the
-        # same current key in the DB
-        key = product_specs['productReference'] + 'P'
-        # Store the new key to use in the SKU field for now, after running this
-        # scraper, swap the keys and skus in the DB and edit this scraper to
-        # make it finally correct
-        sku = product_specs['productId']
+        sku = product_specs['productReference']
         description = html_to_markdown(product_specs.get('description', None))
 
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
