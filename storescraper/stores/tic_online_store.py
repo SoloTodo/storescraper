@@ -3,7 +3,7 @@ import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, NOTEBOOK, TABLET, TELEVISION, \
-    WEARABLE
+    WEARABLE, USB_FLASH_DRIVE, UPS, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -13,19 +13,27 @@ class TicOnlineStore(Store):
     @classmethod
     def categories(cls):
         return [
+            USB_FLASH_DRIVE,
             NOTEBOOK,
             TELEVISION,
             TABLET,
             HEADPHONES,
-            WEARABLE
+            WEARABLE,
+            UPS,
+            ALL_IN_ONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/notebooks', NOTEBOOK],
+            ['accesorios/categoria-removibles', USB_FLASH_DRIVE],
+            ['audiovisual/categoria-audifonos', HEADPHONES],
+            ['audiovisual/audio-y-video', HEADPHONES],
+            ['computacion/categoria-computadores-de-mesa', UPS],
+            ['computacion/portatiles', NOTEBOOK],
+            ['computacion/tabletas', TABLET],
+            ['computacion/categoria-todo-en-uno', ALL_IN_ONE],
             ['electro/televisores', TELEVISION],
-            ['tablets', TABLET],
             ['wearables', WEARABLE],
             ['zona-gamer', HEADPHONES],
         ]
@@ -68,8 +76,6 @@ class TicOnlineStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
-
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
         for entry in json_data['@graph']:
@@ -80,44 +86,80 @@ class TicOnlineStore(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = str(product_data['sku'])
         description = product_data['description']
 
-        price = Decimal(remove_words(
-            soup.find('p', 'price').findAll('bdi')[-1].text))
-
-        cart_btn = soup.find('button', {'name': 'add-to-cart'})
-        if cart_btn:
-            input_qty = soup.find('input', 'input-text qty text')
-            if input_qty:
-                if 'max' in input_qty.attrs and input_qty['max']:
-                    stock = int(input_qty['max'])
+        products = []
+        if soup.find('form', 'variations_form'):
+            variations = json.loads(soup.find('form', 'variations_form')[
+                                        'data-product_variations'])
+            for product in variations:
+                variation_name = name + ' - ' + product['attributes'][
+                    'attribute_pa_color']
+                sku = str(product['variation_id'])
+                if product['max_qty'] == '':
+                    stock = 0
                 else:
-                    stock = -1
-            else:
-                stock = 1
+                    stock = product['max_qty']
+                price = Decimal(product['display_price'])
+                picture_urls = [product['image']['url']]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls,
+                    description=description
+                )
+                products.append(p)
         else:
-            stock = 0
+            key = soup.find(
+                'link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+            sku = str(product_data['sku'])
 
-        picture_urls = []
-        container = soup.find('figure', 'woocommerce-product-gallery__wrapper')
-        for a in container.findAll('a'):
-            picture_urls.append(a['href'])
+            price = Decimal(remove_words(
+                soup.find('p', 'price').findAll('bdi')[-1].text))
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=sku,
-            picture_urls=picture_urls,
-            description=description
-        )
-        return [p]
+            cart_btn = soup.find('button', {'name': 'add-to-cart'})
+            if cart_btn:
+                input_qty = soup.find('input', 'input-text qty text')
+                if input_qty:
+                    if 'max' in input_qty.attrs and input_qty['max']:
+                        stock = int(input_qty['max'])
+                    else:
+                        stock = -1
+                else:
+                    stock = 1
+            else:
+                stock = 0
+
+            picture_urls = []
+            container = soup.find('figure',
+                                  'woocommerce-product-gallery__wrapper')
+            for a in container.findAll('a'):
+                picture_urls.append(a['href'])
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=sku,
+                picture_urls=picture_urls,
+                description=description
+            )
+            products.append(p)
+        return products
