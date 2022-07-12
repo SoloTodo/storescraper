@@ -254,6 +254,7 @@ from .mi_mall_virtual import MiMallVirtual
 from .mi_store import MiStore
 from .mi_pc import MiPc
 from .microplay import Microplay
+from .mining_store import MiningStore
 from .mis_beneficios import MisBeneficios
 from .mi_tienda_damasco import MiTiendaDamasco
 from .mobile_hut import MobileHut
