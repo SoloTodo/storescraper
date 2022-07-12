@@ -325,6 +325,9 @@ class Falabella(Store):
 
             for result in res['results']:
                 product_url = result['url']
+                # Remove weird special characters
+                product_url = product_url.encode(
+                    'ascii', 'ignore').decode('ascii')
 
                 discovered_urls.append(product_url)
 
@@ -508,6 +511,8 @@ class Falabella(Store):
         publication_id = product_data['id']
         brand = product_data['brandName'] or 'Genérico'
         base_name = '{} {}'.format(brand, product_data['name'])
+        # Remove weird unicode characters
+        base_name = base_name.encode('ascii', 'ignore').decode('ascii')
 
         products = []
 
@@ -601,9 +606,11 @@ class Falabella(Store):
                     seller = model['offerings'][0]['sellerId']
 
             picture_urls = cls._get_picture_urls(session, model['id'])
+            model_name = model['name'].encode(
+                'ascii', 'ignore').decode('ascii')
 
             p = Product(
-                '{} ({})'.format(base_name, model['name'])[:200],
+                '{} ({})'.format(base_name, model_name)[:200],
                 cls.__name__,
                 category,
                 sku_url,
