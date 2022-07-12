@@ -214,10 +214,10 @@ class Lider(Store):
                 }
 
                 session.headers['Content-Type'] = 'application/json'
-                response = session.post(query_url, json.dumps(query_params))
-
-                if response.status_code != 200:
-                    continue
+                serialized_params = json.dumps(query_params,
+                                               ensure_ascii=False)
+                response = session.post(query_url,
+                                        serialized_params.encode('utf-8'))
 
                 data = json.loads(response.text)
 
