@@ -2,8 +2,7 @@ import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import COMPUTER_CASE, KEYBOARD, \
-    KEYBOARD_MOUSE_COMBO, MOUSE, POWER_SUPPLY, VIDEO_CARD
+from storescraper.categories import KEYBOARD, VIDEO_CARD
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -13,23 +12,14 @@ class DacDigital(MercadoLibreChile):
     def categories(cls):
         return [
             KEYBOARD,
-            MOUSE,
-            KEYBOARD_MOUSE_COMBO,
             VIDEO_CARD,
-            POWER_SUPPLY,
-            COMPUTER_CASE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/perifericos-accesorios/teclados', KEYBOARD],
-            ['computacion/perifericos-accesorios/mouses', MOUSE],
-            ['mouses-teclados-controles-kits-mouse-teclado',
-                KEYBOARD_MOUSE_COMBO],
-            ['componentes-pc-tarjetas', VIDEO_CARD],
-            ['componentes-pc-fuentes-alimentacion', POWER_SUPPLY],
-            ['componentes-pc-gabinetes-soportes', COMPUTER_CASE],
+            ['perifericos-pc', KEYBOARD],
+            ['componentes-pc', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)

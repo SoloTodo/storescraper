@@ -82,7 +82,7 @@ class Macrotel(Store):
                     break
                 else:
                     for i in item_list:
-                        product_urls.append(i['url'])
+                        product_urls.append(i['item']['@id'])
                 page += 1
         return product_urls
 
