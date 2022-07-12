@@ -297,6 +297,9 @@ class Lider(Store):
 
         entry = json.loads(response.text)
 
+        if not entry.get('success', True):
+            return []
+
         name = '{} {}'.format(entry['brand'], entry['displayName'])
         ean = entry['gtin13']
 
