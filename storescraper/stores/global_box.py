@@ -146,9 +146,9 @@ class Globalbox(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         key = soup.find('input', {'name': 'product'})['value']
-        sku = urlparse(url).path.split('/')[1].split('-')[-1]
-        part_number = soup.find('th', text='Part Number').next.next.next\
-            .text.strip()
+        sku = soup.find('th', text='SKU').parent.find('td').text.strip()
+        part_number = soup.find('th', text='Part Number').parent.find(
+            'td').text.strip()
         availability_tag = soup.find('link', {'itemprop': 'availability'})
 
         if not availability_tag or availability_tag['href'] != \
