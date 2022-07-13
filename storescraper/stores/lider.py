@@ -213,12 +213,14 @@ class Lider(Store):
                     "hitsPerPage": 1000
                 }
 
-                session.headers['Content-Type'] = 'application/json'
+                session.headers = {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'PostmanRuntime/7.28.4'
+                }
                 serialized_params = json.dumps(query_params,
                                                ensure_ascii=False)
                 response = session.post(query_url,
                                         serialized_params.encode('utf-8'))
-
                 data = json.loads(response.text)
 
                 if not data['products']:
@@ -243,7 +245,7 @@ class Lider(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'solotodobot'
+        session.headers['User-Agent'] = 'PostmanRuntime/7.28.4'
         product_urls = []
 
         query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
@@ -276,6 +278,9 @@ class Lider(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers = {
+            'User-Agent': 'PostmanRuntime/7.28.4'
+        }
         sku_id = url.split('/')[-2]
 
         query_url = 'https://apps.lider.cl/catalogo/bff/products/{}' \
