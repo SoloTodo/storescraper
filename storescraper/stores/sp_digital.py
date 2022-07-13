@@ -230,12 +230,16 @@ class SpDigital(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        description_json = json.loads(page_data['content']['description'])
+        if page_data['content']['description']:
+            description_json = json.loads(page_data['content']['description'])
 
-        if description_json['blocks'][0]['data']['text']:
-            description_tag = BeautifulSoup(
-                description_json['blocks'][0]['data']['text'], 'html.parser')
-            description = html_to_markdown(description_tag.text)
+            if description_json['blocks'][0]['data']['text']:
+                description_tag = BeautifulSoup(
+                    description_json['blocks'][0]['data']['text'],
+                    'html.parser')
+                description = html_to_markdown(description_tag.text)
+            else:
+                description = None
         else:
             description = None
 

@@ -113,8 +113,8 @@ class Chelnovix(Store):
 
         picture_urls = []
         picture_container = soup.find(
-            'div', 'woocommerce-product-gallery__image')
-        for i in picture_container.findAll('img'):
+            'div', 'woocommerce-product-gallery').find('div', 'wpgs-image')
+        for i in picture_container.findAll('img', 'wp-post-image'):
             picture_urls.append(i['src'])
 
         p = Product(
