@@ -54,8 +54,9 @@ class RSTech(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://rstech.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
+                url_webpage = 'https://rstech.cl/categoria-producto/' \
+                              'productos/{}/page/{}/'.format(url_extension,
+                                                            page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -82,6 +83,11 @@ class RSTech(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text
+
+        bundle_tag = soup.find('span', 'bundled_product_title_inner')
+        if bundle_tag:
+            name += ' + ' + bundle_tag.text.strip()
+
         sku_tag = soup.find('span', 'sku')
 
         if sku_tag:
