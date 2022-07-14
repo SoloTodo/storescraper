@@ -7,10 +7,9 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.categories import RAM, PROCESSOR, MOUSE, SOLID_STATE_DRIVE, \
-    MONITOR, KEYBOARD, HEADPHONES, MOTHERBOARD, POWER_SUPPLY, CELL, \
-    VIDEO_CARD, COMPUTER_CASE, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MICROPHONE, \
-    GAMING_DESK, CASE_FAN, NOTEBOOK
+from storescraper.categories import EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
+    MOUSE, KEYBOARD, HEADPHONES, STEREO_SYSTEM, TABLET, USB_FLASH_DRIVE, \
+    GAMING_CHAIR, VIDEO_GAME_CONSOLE, MICROPHONE
 from storescraper.utils import session_with_proxy, remove_words
 
 
@@ -18,46 +17,35 @@ class GamesLegends(Store):
     @classmethod
     def categories(cls):
         return [
-            RAM,
-            PROCESSOR,
             MOUSE,
-            SOLID_STATE_DRIVE,
-            MONITOR,
             KEYBOARD,
             HEADPHONES,
-            MOTHERBOARD,
-            POWER_SUPPLY,
-            CELL,
-            VIDEO_CARD,
-            COMPUTER_CASE,
             GAMING_CHAIR,
             VIDEO_GAME_CONSOLE,
             MICROPHONE,
-            GAMING_DESK,
-            CASE_FAN,
-            NOTEBOOK,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            STEREO_SYSTEM,
+            TABLET,
+            MEMORY_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extension = [
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['microfonos', MICROPHONE],
-            ['discos-ssd', SOLID_STATE_DRIVE],
-            ['gabinetes', COMPUTER_CASE],
-            ['ventiladores', CASE_FAN],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['procesadores', PROCESSOR],
-            ['placas-madres', MOTHERBOARD],
-            ['sillasgamer', GAMING_CHAIR],
-            ['audifonos', HEADPHONES],
-            ['mouse-gamer', MOUSE],
-            ['teclados', KEYBOARD],
-            ['consolas-xbox', VIDEO_GAME_CONSOLE],
-            ['consolas-ps4', VIDEO_GAME_CONSOLE],
-            ['consolas-ps5', VIDEO_GAME_CONSOLE],
-            ['escritorios', GAMING_DESK],
-            ['computacion', NOTEBOOK],
+            ['9-consolas', VIDEO_GAME_CONSOLE],
+            ['85-discos-externos', EXTERNAL_STORAGE_DRIVE],
+            ['88-pendrives', USB_FLASH_DRIVE],
+            ['90-tarjetas-de-memoria-', MEMORY_CARD],
+            ['92-audifonos-', HEADPHONES],
+            ['97-parlantes-', STEREO_SYSTEM],
+            ['99-teclados-', KEYBOARD],
+            ['100-audifonos-gamers-', HEADPHONES],
+            ['102-teclados-gamers-', KEYBOARD],
+            ['103-mouse', MOUSE],
+            ['105-sillas', GAMING_CHAIR],
+            ['106-microfonos-', MICROPHONE],
+            ['120-tablets', TABLET],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -79,9 +67,7 @@ class GamesLegends(Store):
                     break
 
                 soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.find('div',
-                                               'row '
-                                               'product-list mx-md-n3 mx-n2')
+                product_containers = soup.find('div', 'products')
 
                 if not product_containers:
                     if page == 1:
@@ -89,7 +75,7 @@ class GamesLegends(Store):
                     break
 
                 product_containers = product_containers.findAll(
-                    'div', 'col-lg-3')
+                    'article', 'product-miniature')
 
                 if not product_containers:
                     if page == 1:
@@ -97,8 +83,7 @@ class GamesLegends(Store):
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.gameslegends.cl' + product_url)
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -109,41 +94,22 @@ class GamesLegends(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
-        name = json_data['name']
-        key = soup.find('form', 'product-form')['action'].split('/')[-1]
+        key = soup.find('input', {'id': 'product_page_product_id'})['value']
+        name = soup.find('title').text.strip()
+        sku = soup.find('span', {'itemprop': 'sku'}).text.replace('SKU: ', '')
 
-        part_number_match = re.search('"productID": "(.+)"', response.text)
-        if part_number_match:
-            part_number = part_number_match.groups()[0]
-        else:
-            part_number = None
-
-        sku = json_data.get('sku', None)
-
-        if 'VENTA' in name.upper():
-            # Preventa, skip
+        if 'disabled' in soup.find('button', 'add-to-cart').attrs:
             stock = 0
-        elif json_data['offers']['availability'] == \
-                'http://schema.org/OutOfStock':
-            stock = 0
-        elif soup.find('span', 'product-form-stock'):
-            stock = int(soup.find('span', 'product-form-stock').text)
         else:
             stock = -1
 
-        price = Decimal(remove_words(
-            soup.find('span', 'product-form_price').text))
-        picture_containers = soup.find('div', 'product-images')
+        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
 
-        if picture_containers:
-            picture_urls = [tag['src'].split('?')[0] for tag in
-                            picture_containers.findAll('img')]
-        else:
-            picture_urls = [
-                soup.find('div', 'main-product-image').find('img')[
-                    'src'].split('?')[0]]
+        picture_urls = []
+        picture_container = soup.find('div', 'swiper-wrapper')
+        for i in picture_container.findAll('img'):
+            picture_urls.append(i['content'])
+
         p = Product(
             name,
             cls.__name__,
@@ -157,6 +123,6 @@ class GamesLegends(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            part_number=part_number
+            part_number=sku
         )
         return [p]
