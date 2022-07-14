@@ -56,7 +56,7 @@ class RSTech(Store):
 
                 url_webpage = 'https://rstech.cl/categoria-producto/' \
                               'productos/{}/page/{}/'.format(url_extension,
-                                                            page)
+                                                             page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
