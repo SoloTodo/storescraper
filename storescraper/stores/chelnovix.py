@@ -1,9 +1,9 @@
 from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import CASE_FAN, COMPUTER_CASE, CPU_COOLER, \
+from storescraper.categories import COMPUTER_CASE, CPU_COOLER, \
     GAMING_CHAIR, KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, \
-    POWER_SUPPLY, PRINTER, PROCESSOR, VIDEO_CARD
+    POWER_SUPPLY, PROCESSOR, VIDEO_CARD, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -13,7 +13,6 @@ class Chelnovix(Store):
     @classmethod
     def categories(cls):
         return [
-            PRINTER,
             MONITOR,
             MOTHERBOARD,
             VIDEO_CARD,
@@ -22,28 +21,28 @@ class Chelnovix(Store):
             POWER_SUPPLY,
             COMPUTER_CASE,
             CPU_COOLER,
-            CASE_FAN,
             PROCESSOR,
             GAMING_CHAIR,
-            MOUSE
+            MOUSE,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['impresoras', PRINTER],
-            ['monitores', MONITOR],
-            ['partes-y-piezas/placa-madre', MOTHERBOARD],
-            ['tarjeta-de-video', VIDEO_CARD],
             ['computadores/notebook', NOTEBOOK],
             ['partes-y-piezas/fuentes', POWER_SUPPLY],
             ['partes-y-piezas/gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/placa-madre', MOTHERBOARD],
             ['partes-y-piezas/refrigeracion-liquida', CPU_COOLER],
-            ['partes-y-piezas/disipador', CASE_FAN],
+            ['partes-y-piezas/disipador', CPU_COOLER],
             ['partes-y-piezas/procesadores', PROCESSOR],
             ['accesorios-gamer/silla-gamer', GAMING_CHAIR],
             ['accesorios-gamer/teclados-gamer', KEYBOARD],
             ['accesorios-gamer/mouse-gamer', MOUSE],
+            ['accesorios-gamer/audifonos-gamer', HEADPHONES],
+            ['monitores', MONITOR],
+            ['tarjeta-de-video', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
