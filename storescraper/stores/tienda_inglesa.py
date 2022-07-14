@@ -33,8 +33,8 @@ class TiendaInglesa(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
-                url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?0,' \
-                              '0,*:*,302,0,0,rel,%5B%22LG%22%5D,true,' \
+                url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?' \
+                              '0,0,LG,0,0,0,rel,%5B%22Lg%22%5D,false,' \
                               '%5B%5D,%5B%5D,,{}'.format(page)
                 print(url_webpage)
                 data = session.get(url_webpage).text

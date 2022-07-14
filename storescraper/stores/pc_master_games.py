@@ -127,11 +127,13 @@ class PcMasterGames(Store):
         for i in images:
             picture_urls.append(i['src'])
 
-        stock = 0
-        inStock = 'http://schema.org/InStock'
-        if second_json['offers'][0]['availability'] == inStock:
+        if second_json['offers'][0]['availability'] == \
+                'http://schema.org/InStock':
             stock = int(
-                soup.find('p', 'stock in-stock').text.split(' disponibles')[0])
+                soup.find('p', 'stock in-stock wd-style-default').text.split(
+                    ' disponibles')[0])
+        else:
+            stock = 0
 
         p = Product(
             name,
