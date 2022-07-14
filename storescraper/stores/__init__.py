@@ -389,6 +389,7 @@ from .techni_diseno import TechniDiseno
 from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
+from .tienda_fensa import TiendaFensa
 from .tienda_inglesa import TiendaInglesa
 from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
