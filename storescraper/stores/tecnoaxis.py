@@ -3,7 +3,8 @@ import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
-    KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
+    KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, \
+    PROCESSOR, MOTHERBOARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -22,7 +23,10 @@ class Tecnoaxis(Store):
             HEADPHONES,
             MOUSE,
             KEYBOARD,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            PROCESSOR,
+            MOTHERBOARD,
+            CPU_COOLER,
         ]
 
     @classmethod
@@ -33,7 +37,10 @@ class Tecnoaxis(Store):
             ['partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
             ['partes-y-piezas/gabinetes', COMPUTER_CASE],
             ['partes-y-piezas/memorias', RAM],
-            ['partes-y-piezas/tarjeta-madre', VIDEO_CARD],
+            ['partes-y-piezas/procesadores', PROCESSOR],
+            ['partes-y-piezas/tarjeta-de-video', VIDEO_CARD],
+            ['partes-y-piezas/tarjeta-madre', MOTHERBOARD],
+            ['partes-y-piezas/ventilador-y-enfriadores', CPU_COOLER],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
