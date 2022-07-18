@@ -141,6 +141,10 @@ class Digiplot(Store):
 
         offer_price = Decimal(data['precioweb1'])
         normal_price = Decimal(data['precioweb2'])
+
+        if offer_price > normal_price:
+            return []
+
         description = None
         if data['long_descrip']:
             description = html_to_markdown(data['long_descrip'])
