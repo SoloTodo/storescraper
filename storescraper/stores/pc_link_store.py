@@ -124,26 +124,39 @@ class PcLinkStore(Store):
 
             token = soup.find('meta', {'name': 'csrf-token'})['content']
             query_url = 'https://www.pclinkstore.cl/productos'
-            query_params = {
-                "_token": token,
-                "id_category": id_category,
-                "register": 1000,
-            }
 
-            product_data = session.post(query_url, query_params).text
-            product_json = json.loads(product_data)['data']
-            product_soup = BeautifulSoup(product_json, 'html.parser')
+            page = 1
+            done = False
+            while not done:
+                if page > 50:
+                    raise Exception('Page overflow')
 
-            product_containers = product_soup.findAll('div', 'sv-producto-mod')
-            if not product_containers:
-                logging.warning('Empty category: ' + url_extension)
-                continue
+                query_params = {
+                    "_token": token,
+                    "id_category": id_category,
+                    "register": 48,
+                    "page": page
+                }
 
-            for container in product_containers:
-                if 'Avisame' in container.text:
+                product_data = session.post(query_url, query_params).text
+                product_json = json.loads(product_data)['data']
+                product_soup = BeautifulSoup(product_json, 'html.parser')
+
+                product_containers = product_soup.findAll('div', 'sv-producto-mod')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    done = True
                     break
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+
+                for container in product_containers:
+                    if 'Avisame' in container.text:
+                        done = True
+                        break
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
