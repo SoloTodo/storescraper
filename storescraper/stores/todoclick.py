@@ -106,6 +106,10 @@ class Todoclick(Store):
                 products = soup.findAll('div', 'item')
 
                 if not products:
+                    if page == 1:
+                        print(page_url)
+                        import ipdb
+                        ipdb.set_trace()
                     break
 
                 for product in products:
@@ -117,6 +121,7 @@ class Todoclick(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        # TODO invert key and sku
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
@@ -125,6 +130,7 @@ class Todoclick(Store):
                 return []
         soup = BeautifulSoup(response.text, 'html5lib')
         base_name = soup.find('h4', 'name_detail').text
+        key = soup.find('input', {'id': 'product_page_product_id'})['value']
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
 
@@ -155,7 +161,7 @@ class Todoclick(Store):
             price,
             price,
             'CLP',
-            sku=sku,
+            sku=key,
             part_number=sku,
             picture_urls=picture_urls,
             description=description
