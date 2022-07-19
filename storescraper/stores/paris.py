@@ -1,4 +1,5 @@
 import json
+import demjson
 import logging
 import re
 from collections import defaultdict
@@ -359,7 +360,7 @@ class Paris(Store):
         json_script = soup.find('script', {'type': 'application/ld+json'})
         if not json_script:
             return []
-        json_data = json.loads(json_script.text, strict=False)
+        json_data = demjson.decode(json_script.text, strict=False)
 
         model = json_data['name']
         if 'brand' in json_data:
