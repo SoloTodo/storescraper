@@ -371,42 +371,32 @@ class Lider(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = 'https://buysmartstatic.lider.cl/' \
-                   'landing/json/banners.json?ts={}'
-
-        destination_url_base = 'https://www.lider.cl{}'
-        image_url_base = 'https://buysmartstatic.lider.cl/' \
-                         'landing/banners/{}'
-
+        base_url = 'https://apps.lider.cl/catalogo/bff/banners'
+        destination_url_base = 'https://www.lider.cl/{}'
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'solotodobot'
+        session.headers = {
+            'User-Agent': 'PostmanRuntime/7.28.4'
+        }
         banners = []
-
-        url = base_url.format(datetime.now().timestamp())
-        response = session.get(url)
+        response = session.get(base_url)
 
         banners_json = json.loads(response.text)
-        sliders = banners_json['Slider']
+        sliders = banners_json['bannersHome']
 
-        index = 0
+        for idx, slider in enumerate(sliders):
+            destination_urls = [destination_url_base.format(slider['link'])]
+            picture_url = slider['backgroundDesktop']
 
-        for slider in sliders:
-            if not slider['mobile']:
-                destination_urls = [destination_url_base.format(slider['url'])]
-                picture_url = image_url_base.format(slider['image'])
-
-                banners.append({
-                    'url': destination_url_base.format(''),
-                    'picture_url': picture_url,
-                    'destination_urls': destination_urls,
-                    'key': picture_url,
-                    'position': index + 1,
-                    'section': bs.HOME,
-                    'subsection': 'Home',
-                    'type': bs.SUBSECTION_TYPE_HOME
-                })
-
-                index += 1
+            banners.append({
+                'url': destination_url_base.format(''),
+                'picture_url': picture_url,
+                'destination_urls': destination_urls,
+                'key': picture_url,
+                'position': idx + 1,
+                'section': bs.HOME,
+                'subsection': 'Home',
+                'type': bs.SUBSECTION_TYPE_HOME
+            })
 
         return banners
 
