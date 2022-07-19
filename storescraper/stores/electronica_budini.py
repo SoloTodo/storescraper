@@ -4,11 +4,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import PRINTER, SOLID_STATE_DRIVE, STORAGE_DRIVE,\
-    POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, \
-    PROCESSOR, USB_FLASH_DRIVE, VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, \
-    ALL_IN_ONE, HEADPHONES, EXTERNAL_STORAGE_DRIVE, TABLET, \
-    KEYBOARD_MOUSE_COMBO, KEYBOARD, VIDEO_GAME_CONSOLE
+from storescraper.categories import GAMING_DESK, PRINTER, SOLID_STATE_DRIVE, \
+    STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, \
+    MOTHERBOARD, NOTEBOOK, PROCESSOR, USB_FLASH_DRIVE, VIDEO_CARD, \
+    GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, EXTERNAL_STORAGE_DRIVE, \
+    TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -39,7 +39,8 @@ class ElectronicaBudini(Store):
             KEYBOARD_MOUSE_COMBO,
             VIDEO_GAME_CONSOLE,
             USB_FLASH_DRIVE,
-            PRINTER
+            PRINTER,
+            GAMING_DESK,
         ]
 
     @classmethod
@@ -60,11 +61,12 @@ class ElectronicaBudini(Store):
             ['placas-madre-intel', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['silla-gamer', GAMING_CHAIR],
+            ['escritorio-gamer', GAMING_DESK],
             ['tarjetas-de-video', VIDEO_CARD],
             ['teclado-gamer', KEYBOARD],
             ['todo-en-uno-aio', ALL_IN_ONE],
             ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
-            ['consolas', VIDEO_GAME_CONSOLE],
+            ['consola', VIDEO_GAME_CONSOLE],
             ['pendrive', USB_FLASH_DRIVE],
             ['tablet', TABLET],
             ['impresoras', PRINTER],
