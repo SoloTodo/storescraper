@@ -339,8 +339,7 @@ class Paris(Store):
                 return cls._products_for_url(url, category, extra_args,
                                              retries=retries - 1)
             else:
-                # raise
-                return []
+                raise
 
     @classmethod
     def _get_product(cls, url, category, extra_args):
@@ -361,7 +360,10 @@ class Paris(Store):
         json_script = soup.find('script', {'type': 'application/ld+json'})
         if not json_script:
             return []
-        json_data = demjson.decode(json_script.text, strict=False)
+        try:
+            json_data = json.loads(json_script.text, strict=False)
+        except Exception:
+            json_data = demjson.decode(json_script.text, strict=False)
 
         model = json_data['name']
         if 'brand' in json_data:
