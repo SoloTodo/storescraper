@@ -339,7 +339,8 @@ class Paris(Store):
                 return cls._products_for_url(url, category, extra_args,
                                              retries=retries - 1)
             else:
-                raise
+                # raise
+                return []
 
     @classmethod
     def _get_product(cls, url, category, extra_args):
