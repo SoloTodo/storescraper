@@ -114,14 +114,8 @@ class TiendaMovistar(Store):
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        input_qty = soup.find('input', 'qty')
-        if input_qty:
-            if 'max' in input_qty.attrs and input_qty['max']:
-                stock = int(input_qty['max'])
-            else:
-                stock = -1
-        else:
-            stock = 0
+        stock_match = re.search(r'stockMagento: (\d+),', page_source)
+        stock = int(stock_match.groups()[0])
 
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))

@@ -1,13 +1,12 @@
 from decimal import Decimal
 import json
-import demjson
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
     MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    VIDEO_CARD
+    SOLID_STATE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, \
+    VIDEO_CARD, CPU_COOLER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -34,7 +33,9 @@ class Nuevatec(Store):
             PRINTER,
             MICROPHONE,
             HEADPHONES,
-            NOTEBOOK
+            NOTEBOOK,
+            CPU_COOLER,
+            CASE_FAN,
         ]
 
     @classmethod
@@ -45,7 +46,7 @@ class Nuevatec(Store):
             ['placas-madres', MOTHERBOARD],
             ['memorias-ram', RAM],
             ['discos-duros', STORAGE_DRIVE],
-            ['unidades-de-estado-solido-ssd', SOLID_STATE_DRIVE],
+            ['unidades-de-estado-solido-ssd-m2-y-nvme', SOLID_STATE_DRIVE],
             ['tarjetas-de-video', VIDEO_CARD],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['refrigeracion', CASE_FAN],
@@ -58,6 +59,9 @@ class Nuevatec(Store):
             ['pendrives', USB_FLASH_DRIVE],
             ['audifonos', HEADPHONES],
             ['microfonos', MICROPHONE],
+            ['refrigeracion-aire-cpu', CPU_COOLER],
+            ['refrigeracion-liquida-cpu', CPU_COOLER],
+            ['ventiladores-gabinete', CASE_FAN],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
