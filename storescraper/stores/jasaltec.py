@@ -56,7 +56,7 @@ class Jasaltec(Store):
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
             ['componentes-informaticos/tarjeta-madre', MOTHERBOARD],
             ['componentes-informaticos/procesadores', PROCESSOR],
-            ['componentes-informaticos/tarjetas-de-videos', VIDEO_CARD],
+            ['componentes-informaticos/tarjetas-graficas', VIDEO_CARD],
             ['componentes-informaticos/ventiladores-y-enfriadores',
              CPU_COOLER],
             ['perifericos/audifonos', HEADPHONES],
