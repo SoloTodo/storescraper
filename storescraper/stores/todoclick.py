@@ -1,6 +1,5 @@
-import html
-import json
 from decimal import Decimal
+import logging
 
 from bs4 import BeautifulSoup
 
@@ -107,9 +106,7 @@ class Todoclick(Store):
 
                 if not products:
                     if page == 1:
-                        print(page_url)
-                        import ipdb
-                        ipdb.set_trace()
+                        logging.warning('Empty category: ' + page_url)
                     break
 
                 for product in products:
