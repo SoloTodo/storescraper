@@ -311,7 +311,8 @@ class Lider(Store):
         if not check_ean13(ean):
             ean = None
 
-        sku = str(entry['sku'])
+        key = str(entry['sku'])
+        sku = entry['itemNumber']
         stock = -1 if entry['available'] else 0
         normal_price = Decimal(entry['price']['BasePriceSales'])
         offer_price_container = entry['price']['BasePriceTLMC']
@@ -356,7 +357,7 @@ class Lider(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,

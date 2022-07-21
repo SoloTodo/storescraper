@@ -96,6 +96,10 @@ class GoodGame(Store):
         offer_price = Decimal(remove_words(soup.find('ul',
                                                      'multipleprices').find(
             'span').text))
+
+        if offer_price > normal_price:
+            return []
+
         picture_urls = [tag['src'] for tag in
                         soup.find('div', {'id': 'views_block'}).findAll('img')]
         p = Product(
