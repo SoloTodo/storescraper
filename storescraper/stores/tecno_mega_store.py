@@ -29,7 +29,7 @@ class TecnoMegaStore(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
                 url_webpage = 'https://coretms.tecnomegastore.ec/admin/api/' \
-                              'marcas/LG/ALL/{}/20/0'.format(page)
+                              'marcas/LG/ALL/{}/20/1/7'.format(page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 json_container = json.loads(response.text)
