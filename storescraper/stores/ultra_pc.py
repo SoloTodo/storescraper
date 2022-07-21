@@ -2,8 +2,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, CELL, \
-    SOLID_STATE_DRIVE, PROCESSOR, RAM, KEYBOARD_MOUSE_COMBO, PRINTER, \
+from storescraper.categories import ALL_IN_ONE, MONITOR, NOTEBOOK, TABLET, \
+    CELL, SOLID_STATE_DRIVE, PROCESSOR, RAM, KEYBOARD_MOUSE_COMBO, PRINTER, \
     VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
@@ -24,7 +24,8 @@ class UltraPc(Store):
             RAM,
             KEYBOARD_MOUSE_COMBO,
             PRINTER,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            MONITOR
         ]
 
     @classmethod
@@ -38,6 +39,7 @@ class UltraPc(Store):
             ['accesorios/mouses-teclados', KEYBOARD_MOUSE_COMBO],
             ['tablets-e-ipads', TABLET],
             ['consolas-videojuegos', VIDEO_GAME_CONSOLE],
+            ['monitores', MONITOR],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \

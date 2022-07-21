@@ -142,7 +142,8 @@ class PcLinkStore(Store):
                 product_json = json.loads(product_data)['data']
                 product_soup = BeautifulSoup(product_json, 'html.parser')
 
-                product_containers = product_soup.findAll('div', 'sv-producto-mod')
+                product_containers = product_soup.findAll(
+                    'div', 'sv-producto-mod')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
