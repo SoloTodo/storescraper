@@ -5,7 +5,11 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE, \
-    CPU_COOLER
+    CPU_COOLER, CELL, TABLET, WEARABLE, NOTEBOOK, ALL_IN_ONE, MEMORY_CARD, \
+    RAM, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    USB_FLASH_DRIVE, UPS, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, PROCESSOR, \
+    VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, COMPUTER_CASE, MONITOR, \
+    TELEVISION, HEADPHONES, STEREO_SYSTEM, PRINTER, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -15,99 +19,105 @@ class NotebookStore(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
-            'Tablet',
-            'Wearable',
-            'Notebook',
-            'AllInOne',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Ram',
-            'ExternalStorageDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'Processor',
-            'VideoCard',
-            'Motherboard',
-            'ComputerCase',
-            'Monitor',
-            'Television',
-            'StereoSystem',
-            'Printer',
-            'VideoGameConsole',
-            'PowerSupply',
+            CELL,
+            TABLET,
+            WEARABLE,
+            NOTEBOOK,
+            ALL_IN_ONE,
+            MEMORY_CARD,
+            RAM,
+            EXTERNAL_STORAGE_DRIVE,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            USB_FLASH_DRIVE,
+            UPS,
+            MOUSE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
+            PROCESSOR,
+            VIDEO_CARD,
+            MOTHERBOARD,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            MONITOR,
+            TELEVISION,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            PRINTER,
+            VIDEO_GAME_CONSOLE,
             CPU_COOLER,
             GAMING_CHAIR,
             GAMING_DESK,
-            MICROPHONE
+            MICROPHONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             # Portabilidad
-            ['tecnologia-portatil/celulares/'
-             'celulares-desbloqueados.html', 'Cell'],
-            ['tecnologia-portatil/celulares/tableta-2.html', 'Tablet'],
-            ['tecnologia-portatil/relojes-y-trackers/'
-             'trackers-de-actividad.html', 'Wearable'],
+            ['tecnologia-portatil/celulares/celulares-desbloqueados', CELL],
+            ['tecnologia-portatil/celulares/tableta-2', TABLET],
+            ['tecnologia-portatil/relojes-y-trackers/trackers-de-actividad',
+             WEARABLE],
             # Equipos
-            ['equipos/computadores-1/portatiles-1.html', 'Notebook'],
-            ['equipos/computadores-1/ultrabooks.html', 'Notebook'],
-            ['equipos/computadores-1/todo-en-uno.html', 'AllInOne'],
-            ['equipos/memorias/unidades-flash-usb.html', 'UsbFlashDrive'],
-            ['equipos/memorias/tarjetas-de-memoria-flash.html', 'MemoryCard'],
-            ['equipos/memorias/modulos-ram-genericos.html', 'Ram'],
-            ['equipos/memorias/memoria-ram.html', 'Ram'],
-            ['equipos/alm/discos-duros-externos.html', 'ExternalStorageDrive'],
-            ['equipos/alm/discos-duros-internos.html', 'StorageDrive'],
-            ['equipos/alm/discos-de-estado-solido.html', 'SolidStateDrive'],
-            ['equipos/perifericos/ratones.html', 'Mouse'],
-            ['equipos/perifericos/'
-             'teclados-y-teclados-de-numeros.html', 'Keyboard'],
-            ['equipos/perifericos/'
-             'combos-de-teclado-y-raton.html', 'KeyboardMouseCombo'],
-            ['equipos/perifericos/'
-             'auriculares-y-manos-libres.html', 'Headphones'],
-            ['equipos/componentes-informaticos/procesadores.html',
-             'Processor'],
-            ['equipos/componentes-informaticos/tarjetas-de-video.html',
-             'VideoCard'],
-            ['equipos/componentes-informaticos/tarjetas-madre-'
-             'placas-madre.html', 'Motherboard'],
-            ['equipos/componentes-informaticos/fuentes-de-poder.html',
-             'PowerSupply'],
-            ['equipos/componentes-informaticos/cajas-gabinetes.html',
-             'ComputerCase'],
-            ['equipos/componentes-informaticos/ventiladores-y-sistemas'
-             '-de-enfriamiento.html', CPU_COOLER],
+            ['equipos/computadores-1/portatiles-1', NOTEBOOK],
+            ['equipos/computadores-1/ultrabooks', NOTEBOOK],
+            ['equipos/computadores-1/todo-en-uno', ALL_IN_ONE],
+            ['equipos/memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
+            ['equipos/memorias/ram-para-notebooks', RAM],
+            ['equipos/memorias/ram-para-pc-y-servidores', RAM],
+            ['equipos/alm/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['equipos/alm/discos-duros-internos', STORAGE_DRIVE],
+            ['equipos/alm/discos-de-estado-solido', SOLID_STATE_DRIVE],
+            ['equipos/alm/unidades-flash-usb', USB_FLASH_DRIVE],
+            ['equipos/seguridad/ups-respaldo-de-energia', UPS],
+            ['equipos/perifericos/ratones', MOUSE],
+            ['equipos/perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
+            ['equipos/perifericos/combos-de-teclado-y-raton',
+             KEYBOARD_MOUSE_COMBO],
+            ['equipos/muebles/sillas', GAMING_CHAIR],
+            ['equipos/muebles/escritorios', GAMING_DESK],
+            ['equipos/componentes-informaticos/procesadores', PROCESSOR],
+            ['equipos/componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
+            ['equipos/componentes-informaticos/tarjetas-madre-placas-madre',
+             MOTHERBOARD],
+            ['equipos/componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
+            ['equipos/componentes-informaticos/cajas-gabinetes', COMPUTER_CASE],
+            ['equipos/componentes-informaticos/'
+             'ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
             # Audio Video y Foto
-            ['audio-y-video/monitores-proyectores/monitores.html', 'Monitor'],
-            ['audio-y-video/monitores-proyectores/'
-             'televisores.html', 'Television'],
-            ['audio-y-video/audio-y-video/auriculares.html', 'Headphones'],
-            ['audio-y-video/audio-y-video/'
-             'parlantes-bocinas-cornetas-1.html', 'StereoSystem'],
+            ['audio-y-video/monitores-proyectores/monitores', MONITOR],
+            ['audio-y-video/monitores-proyectores/televisores', TELEVISION],
+            ['audio-y-video/audio-y-video/auriculares', HEADPHONES],
+            ['audio-y-video/audio-y-video/parlantes-bocinas-cornetas-1',
+             STEREO_SYSTEM],
+            ['audio-y-video/audio-y-video/microfonos', MICROPHONE],
             # Impresion
-            ['impresion/impresoras-y-escaneres.html', 'Printer'],
+            ['impresion/impresoras-y-escaneres', PRINTER],
             # Gaming
-            ['gaming/equipos/notebooks.html', 'Notebook'],
-            ['gaming/equipos/monitores.html', 'Monitor'],
-            ['gaming/accesorios/audifonos.html', 'Headphones'],
-            ['gaming/accesorios/teclados-y-mouse.html', 'Mouse'],
-            ['gaming/componentes/fuentes-de-poder.html', 'PowerSupply'],
-            ['gaming/componentes/tarjetas-madre.html', 'Motherboard'],
-            ['gaming/componentes/gabinetes.html', 'ComputerCase'],
-            ['gaming/componentes/enfriamiento.html', CPU_COOLER],
-            ['gaming/componentes/memoria-ram.html', 'Ram'],
-            ['gaming/componentes/procesadores.html', 'Processor'],
-            ['gaming/accesorios/sillas.html', GAMING_CHAIR],
-            ['equipos/muebles/escritorios.html', GAMING_DESK],
-            ['audio-y-video/audio-y-video/microfonos.html', MICROPHONE]
+            ['gaming/equipos/notebooks', NOTEBOOK],
+            ['gaming/equipos/monitores', MONITOR],
+            ['gaming/componentes/procesadores', PROCESSOR],
+            ['gaming/componentes/tarjetas-madre', MOTHERBOARD],
+            ['gaming/componentes/tarjetas-de-video', VIDEO_CARD],
+            ['gaming/componentes/almacenamiento', SOLID_STATE_DRIVE],
+            ['gaming/componentes/memoria-ram', RAM],
+            ['gaming/componentes/enfriamiento', CPU_COOLER],
+            ['gaming/componentes/fuentes-de-poder', POWER_SUPPLY],
+            ['gaming/componentes/gabinetes', COMPUTER_CASE],
+            ['gaming/accesorios/audifonos', HEADPHONES],
+            ['gaming/accesorios/teclados-y-mouse', MOUSE],
+            ['gaming/accesorios/sillas', GAMING_CHAIR],
+            ['gaming/accesorios/accesorios', KEYBOARD],
+            ['gaming/videojuegos/consolas', VIDEO_GAME_CONSOLE],
+            # Apple
+            ['apple/computadores/macbook', NOTEBOOK],
+            ['apple/computadores/imac', ALL_IN_ONE],
+            ['apple/computadores/ipad', TABLET],
+            ['apple/accesorios/apple-watch', WEARABLE],
+            ['apple/accesorios/teclados-y-mouse', MOUSE],
+            ['apple/accesorios/apple-tv', HEADPHONES],
+            ['apple/accesorios/monitores-studio', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -124,7 +134,7 @@ class NotebookStore(Store):
                 if page > 15:
                     raise Exception('Page overflow')
 
-                url = 'https://notebookstore.cl/{}?p={}'.format(
+                url = 'https://notebookstore.cl/{}.html?p={}'.format(
                     category_path, page)
                 print(url)
 
@@ -132,7 +142,8 @@ class NotebookStore(Store):
                 products = soup.findAll('li', 'product')
 
                 if not products:
-                    logging.warning('Empty category: ' + url)
+                    if page == 1:
+                        logging.warning('Empty category: ' + url)
                     break
 
                 for product in products:
