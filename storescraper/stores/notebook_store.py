@@ -81,8 +81,10 @@ class NotebookStore(Store):
             ['equipos/componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
             ['equipos/componentes-informaticos/tarjetas-madre-placas-madre',
              MOTHERBOARD],
-            ['equipos/componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
-            ['equipos/componentes-informaticos/cajas-gabinetes', COMPUTER_CASE],
+            ['equipos/componentes-informaticos/fuentes-de-poder',
+             POWER_SUPPLY],
+            ['equipos/componentes-informaticos/cajas-gabinetes',
+             COMPUTER_CASE],
             ['equipos/componentes-informaticos/'
              'ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
             # Audio Video y Foto
@@ -179,7 +181,7 @@ class NotebookStore(Store):
 
         offer_price = Decimal(soup.find('span', 'efectivo').find(
             'span', 'price').text.replace('$', '').replace('.', '')
-            ).quantize(Decimal('1.'))
+        ).quantize(Decimal('1.'))
         normal_price = (offer_price * Decimal(1.034)
                         ).quantize(Decimal('1.'))
 
