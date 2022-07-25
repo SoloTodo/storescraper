@@ -46,8 +46,8 @@ class Linio(Store):
                 while True:
                     category_url = '{}/c/{}?is_international=0&sortBy={}' \
                                    '&page={}'.format(
-                                    cls.base_domain, category_path, sorting,
-                                    page)
+                                       cls.base_domain, category_path, sorting,
+                                       page)
                     print(category_url)
 
                     if page >= 40:
@@ -111,7 +111,7 @@ class Linio(Store):
 
         name = name[0:256]
 
-        normal_price = Decimal(pricing_data['special_price'])
+        normal_price = Decimal(str(pricing_data['special_price']))
 
         pricing_container = soup.find('div', 'product-price-lg')
 
