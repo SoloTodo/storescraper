@@ -7,8 +7,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, WEARABLE, TELEVISION, \
-    STEREO_SYSTEM, NOTEBOOK, MONITOR, EXTERNAL_STORAGE_DRIVE, TABLET, \
-    HEADPHONES, MOUSE, GAMING_CHAIR, WASHING_MACHINE, REFRIGERATOR, OVEN, \
+    STEREO_SYSTEM, NOTEBOOK, MONITOR, TABLET, \
+    HEADPHONES, MOUSE, GAMING_CHAIR, REFRIGERATOR, OVEN, \
     AIR_CONDITIONER, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
@@ -25,12 +25,10 @@ class TravelTienda(Store):
             TELEVISION,
             NOTEBOOK,
             MONITOR,
-            EXTERNAL_STORAGE_DRIVE,
             TABLET,
             HEADPHONES,
             MOUSE,
             GAMING_CHAIR,
-            WASHING_MACHINE,
             REFRIGERATOR,
             OVEN,
             AIR_CONDITIONER,
@@ -46,7 +44,6 @@ class TravelTienda(Store):
             ('2722336774', TELEVISION),
             ('2611045626', NOTEBOOK),
             ('375810843', MONITOR),
-            ('3807770934', EXTERNAL_STORAGE_DRIVE),
             ('2114119513', TABLET),
             ('1226813193', HEADPHONES),
             ('2547146328', MOUSE),
@@ -60,9 +57,7 @@ class TravelTienda(Store):
             ('3551610308', STEREO_SYSTEM),
             ('4064311224', STEREO_SYSTEM),  # Audio
             ('1479054651', STEREO_SYSTEM),  # Audio HiFi
-            ('2620100069', WASHING_MACHINE),
             ('306745319', REFRIGERATOR),
-            ('196972798', WASHING_MACHINE),
             ('831669398', OVEN),
             ('628735343', AIR_CONDITIONER),
             ('2881216585', VIDEO_GAME_CONSOLE),
