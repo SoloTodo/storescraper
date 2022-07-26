@@ -385,7 +385,8 @@ class Lider(Store):
         sliders = banners_json['bannersHome']
 
         for idx, slider in enumerate(sliders):
-            destination_urls = [destination_url_base.format(slider['link'])]
+            destination_urls = [destination_url_base.format(
+                slider['link'])[:250]]
             picture_url = slider['backgroundDesktop']
 
             banners.append({
