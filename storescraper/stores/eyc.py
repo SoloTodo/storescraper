@@ -3,9 +3,9 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, TABLET, STORAGE_DRIVE, RAM, \
-    PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, MOTHERBOARD, POWER_SUPPLY, \
-    MEMORY_CARD, USB_FLASH_DRIVE, HEADPHONES
+from storescraper.categories import KEYBOARD, NOTEBOOK, TABLET, \
+    STORAGE_DRIVE, RAM, PROCESSOR, PRINTER, UPS, ALL_IN_ONE, MONITOR, \
+    MOTHERBOARD, POWER_SUPPLY, MEMORY_CARD, USB_FLASH_DRIVE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -28,7 +28,8 @@ class Eyc(Store):
             POWER_SUPPLY,
             MEMORY_CARD,
             USB_FLASH_DRIVE,
-            HEADPHONES
+            HEADPHONES,
+            KEYBOARD
         ]
 
     @classmethod
@@ -51,6 +52,7 @@ class Eyc(Store):
             ['351-microsd', MEMORY_CARD],
             ['350-pendrives', USB_FLASH_DRIVE],
             ['353-audifonos', HEADPHONES],
+            ['392-teclados', KEYBOARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
