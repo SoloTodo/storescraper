@@ -67,7 +67,9 @@ class Digiplot(Store):
             ['memorias/memoria-gamer-y-grafica', 'Ram'],
             ['memorias/memoria-notebook-%28sodimm%29', 'Ram'],
             ['memorias/memoria-pc-%28udimm%29', 'Ram'],
+            ['monitor-y-televisor/monitor-gamer', 'Monitor'],
             ['monitor-y-televisor/monitor-led', 'Monitor'],
+            ['monitor-y-televisor/monitor-segunda-seleccion', 'Monitor'],
             ['notebook-y-tablet/notebook-14"', 'Notebook'],
             ['placa-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
@@ -150,6 +152,13 @@ class Digiplot(Store):
             description = html_to_markdown(data['long_descrip'])
         picture_urls = [x['href'] for x in soup.findAll('a', 'fancybox')]
 
+        condition_span = soup.find(
+            'p', {'id': 'product_condition'}).find('span', 'editable')
+        if condition_span.text == 'Nuevo':
+            condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -163,6 +172,7 @@ class Digiplot(Store):
             'CLP',
             sku=sku,
             description=description,
+            condition=condition,
             picture_urls=picture_urls
         )
 

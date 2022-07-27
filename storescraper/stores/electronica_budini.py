@@ -4,11 +4,12 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_DESK, PRINTER, SOLID_STATE_DRIVE, \
-    STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, MOUSE, \
-    MOTHERBOARD, NOTEBOOK, PROCESSOR, USB_FLASH_DRIVE, VIDEO_CARD, \
-    GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, EXTERNAL_STORAGE_DRIVE, \
-    TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD, VIDEO_GAME_CONSOLE
+from storescraper.categories import CELL, GAMING_DESK, PRINTER, \
+    SOLID_STATE_DRIVE,  STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, \
+    MONITOR, MOUSE, MOTHERBOARD, NOTEBOOK, PROCESSOR, USB_FLASH_DRIVE, \
+    VIDEO_CARD, GAMING_CHAIR, CPU_COOLER, ALL_IN_ONE, HEADPHONES, \
+    EXTERNAL_STORAGE_DRIVE, TABLET, KEYBOARD_MOUSE_COMBO, KEYBOARD, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -41,6 +42,7 @@ class ElectronicaBudini(Store):
             USB_FLASH_DRIVE,
             PRINTER,
             GAMING_DESK,
+            CELL
         ]
 
     @classmethod
@@ -70,6 +72,7 @@ class ElectronicaBudini(Store):
             ['pendrive', USB_FLASH_DRIVE],
             ['tablet', TABLET],
             ['impresoras', PRINTER],
+            ['celulares', CELL],
         ]
 
         session = session_with_proxy(extra_args)

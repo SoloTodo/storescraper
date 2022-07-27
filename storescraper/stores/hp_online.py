@@ -38,10 +38,13 @@ class HpOnline(Store):
                     raise Exception('page overflow: ' + category_path)
                 category_url = 'https://store.hp.com/cl-es/default' \
                                '/{}.html?product_list_limit=36&p={}'.format(
-                                category_path, page)
+                                   category_path, page)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
                 product_cells = soup.findAll('div', 'product-item-info')
+                if int(soup.find('span', 'toolbar-number').text) == 1 \
+                        and page != 1:
+                    break
                 if not product_cells:
                     if page == 1:
                         logging.warning('Empty category: ' + category_url)
