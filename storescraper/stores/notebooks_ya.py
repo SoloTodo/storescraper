@@ -4,7 +4,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
-    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET
+    STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET, CELL, \
+    GAMING_CHAIR, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -23,25 +24,33 @@ class NotebooksYa(Store):
             WEARABLE,
             ALL_IN_ONE,
             TABLET,
+            CELL,
+            GAMING_CHAIR,
+            UPS,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['portatiles', NOTEBOOK],
+            ['product-category/accesorios-apple', KEYBOARD],
+            ['product-category/apple-watch', WEARABLE],
+            ['product-category/ipads-ya', TABLET],
+            ['product-category/imac-ya', ALL_IN_ONE],
+            ['product-category/macbook', NOTEBOOK],
+            ['product-category/notebooks-ya', NOTEBOOK],
+            ['product-category/tablets-ya', TABLET],
+            ['product-category/celulares-ya', CELL],
             ['computadores', ALL_IN_ONE],
-            ['impresion', PRINTER],
             ['pantallas-y-tvs', MONITOR],
             ['almacenamiento', STORAGE_DRIVE],
-            ['partes-y-piezas', STORAGE_DRIVE],
             ['audifonos', HEADPHONES],
-            ['audio-y-video', HEADPHONES],
             ['teclados-mouse', KEYBOARD],
             ['relojes', WEARABLE],
-            ['product-category/macbook', NOTEBOOK],
-            ['product-category/imac-ya', ALL_IN_ONE],
-            ['product-category/ipads-ya', TABLET],
-            ['product-category/apple-watch', WEARABLE],
+            ['partes-y-piezas', STORAGE_DRIVE],
+            ['impresion', PRINTER],
+            ['sillas', GAMING_CHAIR],
+            ['audio-y-video', HEADPHONES],
+            ['ups', UPS],
         ]
 
         session = session_with_proxy(extra_args)
