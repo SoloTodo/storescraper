@@ -66,7 +66,7 @@ class Lenovo(Store):
                         .replace('.', '').replace('$', '').replace(',', '.')
                 else:
                     price = model_container.find(
-                        'span', 'bundleDetail_youBundlePrice_value').text \
+                        'div', 'saleprice').text \
                         .replace('.', '').replace('$', '').replace(',', '.')
 
                 price = Decimal(price)
