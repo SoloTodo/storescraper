@@ -101,13 +101,14 @@ class NotebooksYa(Store):
                                     'et_pb_bg_layout_light').text.strip()
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('=')[-1]
-        stock = 0
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
             if qty_input['max']:
                 stock = int(qty_input['max'])
             else:
                 stock = -1
+        else:
+            stock = 1
         price_container = soup.find('div', 'wds')
         offer_container = price_container.find('div', 'wds-first')
         offer_price = Decimal(remove_words(
