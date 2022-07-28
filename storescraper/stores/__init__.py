@@ -171,6 +171,7 @@ from .ibyte import Ibyte
 from .igoa import Igoa
 from .ilumina_led import IluminaLed
 from .imp_dali import ImpDali
+from .index_store import IndexStore
 from .infographics_solutions import InfographicsSolutions
 from .infosep import Infosep
 from .infor_ingen import InforIngen
