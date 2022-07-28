@@ -2,8 +2,10 @@ import logging
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, KEYBOARD, MEMORY_CARD, \
-    MONITOR, PROCESSOR, RAM, SOLID_STATE_DRIVE, WEARABLE, NOTEBOOK
+from storescraper.categories import HEADPHONES, KEYBOARD, MONITOR, \
+    SOLID_STATE_DRIVE, WEARABLE, NOTEBOOK, GAMING_CHAIR, USB_FLASH_DRIVE, \
+    COMPUTER_CASE, POWER_SUPPLY, CASE_FAN, ALL_IN_ONE, MOUSE, \
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, TABLET, TELEVISION
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -12,29 +14,50 @@ class EForest(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [
-            MEMORY_CARD,
             KEYBOARD,
-            RAM,
-            PROCESSOR,
             MONITOR,
             WEARABLE,
             HEADPHONES,
             SOLID_STATE_DRIVE,
-            NOTEBOOK
+            NOTEBOOK,
+            GAMING_CHAIR,
+            USB_FLASH_DRIVE,
+            CASE_FAN,
+            MOUSE,
+            KEYBOARD_MOUSE_COMBO,
+            TABLET,
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['perifericos-pc-mouses-teclados', KEYBOARD],
-            ['componentes-pc-memorias-ram', RAM],
-            ['componentes-pc-procesadores', PROCESSOR],
-            ['componentes-pc-discos-accesorios', SOLID_STATE_DRIVE],
-            ['monitores-accesorios', MONITOR],
-            ['relojes-joyas', WEARABLE],
-            ['electronica', HEADPHONES],
-            ['celulares-telefonia/accesorios-celulares/memorias', MEMORY_CARD],
+            ['computacion/accesorios-pc-gaming/audifonos', HEADPHONES],
+            ['computacion/accesorios-pc-gaming/sillas-gamer', GAMING_CHAIR],
+            ['computacion/almacenamiento/discos-accesorios', SOLID_STATE_DRIVE],
+            ['computacion/almacenamiento/pen-drives', USB_FLASH_DRIVE],
+            ['computacion/componentes-pc/discos-accesorios', SOLID_STATE_DRIVE],
+            ['computacion/componentes-pc/gabinetes-soportes-pc', COMPUTER_CASE],
+            ['computacion/componentes-pc/fuentes-alimentacion', POWER_SUPPLY],
+            ['computacion/componentes-pc/coolers-ventiladores', CASE_FAN],
+            ['computacion/componentes-pc/otros', COMPUTER_CASE],
+            ['computacion/monitores-accesorios', MONITOR],
+            ['computacion/notebooks-accesorios/notebooks', NOTEBOOK],
+            ['computacion/pc-escritorio', ALL_IN_ONE],
+            ['computacion/perifericos-accesorios/teclados', KEYBOARD],
+            ['computacion/perifericos-accesorios/mouses', MOUSE],
+            ['mouses-teclados-controles-kits-mouse-teclado', KEYBOARD_MOUSE_COMBO],
+            ['perifericos-pc-parlantes', STEREO_SYSTEM],
+            ['computacion/tablets-accesorios/tablets', TABLET],
             ['apple', NOTEBOOK],
+            ['relojes-joyas', WEARABLE],
+            ['electronica-audio-video/audio/audio-portatil-accesorios', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/audifonos', HEADPHONES],
+            ['electronica-audio-video/audio/parlantes-subwoofers', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/home-theater', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/asistentes-virtuales', STEREO_SYSTEM],
+            ['electronica-audio-video/televisores', TELEVISION],
+            ['consolas-videojuegos', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
@@ -59,7 +82,7 @@ class EForest(MercadoLibreChile):
                     break
                 for container in product_containers:
                     product_url = container.find('a', 'ui-search-link')['href']
-                    product_urls.append(product_url)
+                    product_urls.append(product_url.split('#')[0])
                 page += 1
         return product_urls
 

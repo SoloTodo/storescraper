@@ -814,6 +814,8 @@ class MercadoLibreChile(Store):
         price = Decimal(data['initialState']['schema'][0][
             'offers']['price'])
 
+        description = data['initialState']['components']['description']['content']
+
         picker = None
         for x in data['initialState']['components']['short_description']:
             if x['id'] == 'variations' and 'pickers' in x:
@@ -864,7 +866,7 @@ class MercadoLibreChile(Store):
                     'CLP',
                     sku=sku,
                     seller=seller,
-                    description='Type2'
+                    description='{} Type2'.format(description)
                 ))
         else:
             picture_urls = [x['data-zoom'] for x in
@@ -884,7 +886,7 @@ class MercadoLibreChile(Store):
                 sku=sku,
                 seller=seller,
                 picture_urls=picture_urls,
-                description='Type2'
+                description='{} Type2'.format(description)
             ))
         return products
 
