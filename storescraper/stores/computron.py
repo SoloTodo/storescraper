@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -30,19 +31,19 @@ class Computron(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow')
-                url_webpage = 'https://computron.com.ec/efectivo/' \
-                              'catalogsearch/' \
-                              'result/index/?p={}&q=LG+LG'.format(page)
+                url_webpage = 'https://computron.ec/brand/lg/' \
+                    'page/{}/'.format(page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-item-info')
+                product_containers = soup.findAll('div', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('empty category')
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find(
+                        'a', 'woocommerce-LoopProduct-link')['href']
                     if product_url in product_urls:
                         continue
                     product_urls.append(product_url)
@@ -55,17 +56,29 @@ class Computron(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
-        part_number = soup.find('div', {'itemprop': 'sku'}).text
-        sku = soup.find('input', {'name': 'item'})['value']
-        if soup.find('div', 'stock available'):
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+
+        name = json_data['name']
+        sku = json_data['sku']
+        description = json_data['description']
+
+        price = Decimal(json_data['offers'][0]['price'])
+
+        if soup.find('button', {'name': 'add-to-cart'}):
             stock = -1
         else:
             stock = 0
-        price = Decimal(soup.find('span', 'price').text.
-                        replace(',', '').replace('$', ''))
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'gallery-placeholder').findAll('img')]
+
+        picture_container = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        picture_urls = [tag['href']
+                        for tag in picture_container.findAll('a')
+                        if tag['href'] != '#']
+
         p = Product(
             name,
             cls.__name__,
@@ -77,8 +90,9 @@ class Computron(Store):
             price,
             price,
             'USD',
-            sku=sku,
-            part_number=part_number,
+            sku=key,
+            part_number=sku,
+            description=description,
             picture_urls=picture_urls
         )
         return [p]
