@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, KEYBOARD, MONITOR, \
     SOLID_STATE_DRIVE, WEARABLE, NOTEBOOK, GAMING_CHAIR, USB_FLASH_DRIVE, \
     COMPUTER_CASE, POWER_SUPPLY, CASE_FAN, ALL_IN_ONE, MOUSE, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, TABLET, TELEVISION
+    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, TABLET, TELEVISION, MEMORY_CARD, CELL
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -27,6 +27,11 @@ class EForest(MercadoLibreChile):
             KEYBOARD_MOUSE_COMBO,
             TABLET,
             TELEVISION,
+            MEMORY_CARD,
+            CELL,
+            COMPUTER_CASE,
+            POWER_SUPPLY,
+            STEREO_SYSTEM
         ]
 
     @classmethod
@@ -34,10 +39,13 @@ class EForest(MercadoLibreChile):
         url_extensions = [
             ['computacion/accesorios-pc-gaming/audifonos', HEADPHONES],
             ['computacion/accesorios-pc-gaming/sillas-gamer', GAMING_CHAIR],
-            ['computacion/almacenamiento/discos-accesorios', SOLID_STATE_DRIVE],
+            ['computacion/almacenamiento/discos-accesorios',
+             SOLID_STATE_DRIVE],
             ['computacion/almacenamiento/pen-drives', USB_FLASH_DRIVE],
-            ['computacion/componentes-pc/discos-accesorios', SOLID_STATE_DRIVE],
-            ['computacion/componentes-pc/gabinetes-soportes-pc', COMPUTER_CASE],
+            ['computacion/componentes-pc/discos-accesorios',
+             SOLID_STATE_DRIVE],
+            ['computacion/componentes-pc/gabinetes-soportes-pc',
+             COMPUTER_CASE],
             ['computacion/componentes-pc/fuentes-alimentacion', POWER_SUPPLY],
             ['computacion/componentes-pc/coolers-ventiladores', CASE_FAN],
             ['computacion/componentes-pc/otros', COMPUTER_CASE],
@@ -46,18 +54,29 @@ class EForest(MercadoLibreChile):
             ['computacion/pc-escritorio', ALL_IN_ONE],
             ['computacion/perifericos-accesorios/teclados', KEYBOARD],
             ['computacion/perifericos-accesorios/mouses', MOUSE],
-            ['mouses-teclados-controles-kits-mouse-teclado', KEYBOARD_MOUSE_COMBO],
+            ['mouses-teclados-controles-kits-mouse-teclado',
+             KEYBOARD_MOUSE_COMBO],
             ['perifericos-pc-parlantes', STEREO_SYSTEM],
             ['computacion/tablets-accesorios/tablets', TABLET],
             ['apple', NOTEBOOK],
             ['relojes-joyas', WEARABLE],
-            ['electronica-audio-video/audio/audio-portatil-accesorios', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/audio-portatil-accesorios',
+             STEREO_SYSTEM],
             ['electronica-audio-video/audio/audifonos', HEADPHONES],
-            ['electronica-audio-video/audio/parlantes-subwoofers', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/parlantes-subwoofers',
+             STEREO_SYSTEM],
             ['electronica-audio-video/audio/home-theater', STEREO_SYSTEM],
-            ['electronica-audio-video/audio/asistentes-virtuales', STEREO_SYSTEM],
+            ['electronica-audio-video/audio/asistentes-virtuales',
+             STEREO_SYSTEM],
             ['electronica-audio-video/televisores', TELEVISION],
             ['consolas-videojuegos', HEADPHONES],
+            ['celulares-telefonia/accesorios-celulares/memorias', MEMORY_CARD],
+            ['celulares-telefonia/accesorios-celulares/parlantes',
+             STEREO_SYSTEM],
+            ['celulares-telefonia/accesorios-celulares/manos-libres',
+             HEADPHONES],
+            ['celulares-telefonia/celulares-smartphones', CELL],
+            ['celulares-telefonia/smartwatches-accesorios', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
