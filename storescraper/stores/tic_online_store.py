@@ -79,7 +79,7 @@ class TicOnlineStore(Store):
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
         for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
+            if '@type' in entry and entry['@type'] == 'Product':
                 product_data = entry
                 break
         else:
@@ -91,7 +91,7 @@ class TicOnlineStore(Store):
         products = []
         if soup.find('form', 'variations_form'):
             variations = json.loads(soup.find('form', 'variations_form')[
-                                        'data-product_variations'])
+                'data-product_variations'])
             for product in variations:
                 variation_name = name + ' - ' + product['attributes'][
                     'attribute_pa_color']
