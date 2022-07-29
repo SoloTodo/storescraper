@@ -34,13 +34,12 @@ class MisBeneficios(Store):
                           'com.uy/lg?p={}'.format(page)
             response = session.get(url_webpage).text
             soup = BeautifulSoup(response, 'html.parser')
-            product_containers = soup.find('ol', 'products').findAll('li',
-                                                                     'item')
+            product_containers = soup.find('ol', 'products')
             if not product_containers:
                 if page == 1:
                     logging.warning('Empty category')
                 break
-            for container in product_containers:
+            for container in product_containers.findAll('li', 'item'):
                 product_url = container.find('a')['href']
                 if product_url in product_urls:
                     return product_urls
