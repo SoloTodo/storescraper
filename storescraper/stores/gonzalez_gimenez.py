@@ -57,6 +57,10 @@ class GonzalezGimenez(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        if 'Página Principal' in soup.find('title').text:
+            return []
+
         name = soup.find('meta', {'name': 'title'})['content']
         sku = soup.find('meta', {'property': 'product:retailer_item_id'})[
             'content']
