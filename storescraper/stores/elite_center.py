@@ -146,11 +146,11 @@ class EliteCenter(Store):
         name = product_data['name'][:256]
         sku = product_data['sku']
 
-        offer_price = Decimal(product_data['offers']['price']).quantize(0)
+        offer_price = Decimal(product_data['offers'][0]['price']).quantize(0)
         normal_price = (offer_price * Decimal('1.049996')).quantize(0)
 
         key = soup.find(
-            'a', 'add-request-quote-button button')['data-product_id']
+            'button', 'single_add_to_cart_button')['value']
 
         if soup.find('button', 'stock_alert_button'):
             stock = 0
@@ -177,9 +177,9 @@ class EliteCenter(Store):
             description = html_to_markdown(description_div.text)
         else:
             description = None
-        part_number_text = soup.find(
-            'div', {'data-id': '1072e30'}).text.strip()
 
+        part_number_text = soup.find(
+            'div', {'data-id': '15dad90'}).text.strip()
         if part_number_text:
             part_number = part_number_text.split(': ')[1].strip()
         else:
