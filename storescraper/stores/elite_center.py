@@ -127,6 +127,10 @@ class EliteCenter(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         json_data = json.loads(soup.findAll(
