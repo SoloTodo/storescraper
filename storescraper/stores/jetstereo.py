@@ -75,7 +75,7 @@ class Jetstereo(Store):
                 if container['mainCategory']['id'] not in \
                         category_path[category]:
                     continue
-                product_url = 'https://www.jetstereo.com/product/' + \
+                product_url = 'https://www.jetstereo.com/' + \
                               container['url'].split('.com/')[-1]
                 product_urls.append(product_url)
             page += 1
@@ -87,9 +87,6 @@ class Jetstereo(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        if '404' in soup.find('title').text:
-            return []
 
         product_json = json.loads(
             soup.find('script', {'id': '__NEXT_DATA__'}).text)['props'][
