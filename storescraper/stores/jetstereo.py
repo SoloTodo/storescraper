@@ -87,6 +87,10 @@ class Jetstereo(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        if '404' in soup.find('title').text:
+            return []
+
         product_json = json.loads(
             soup.find('script', {'id': '__NEXT_DATA__'}).text)['props'][
             'pageProps']['product']
