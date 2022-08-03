@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN, \
-    MEMORY_CARD
+    MEMORY_CARD, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -27,7 +27,7 @@ class Digiplot(Store):
             'Printer',
             'Ram',
             'Monitor',
-            'Notebook',
+            NOTEBOOK,
             'Motherboard',
             'Processor',
             CPU_COOLER,
@@ -70,7 +70,7 @@ class Digiplot(Store):
             ['monitor-y-televisor/monitor-gamer', 'Monitor'],
             ['monitor-y-televisor/monitor-led', 'Monitor'],
             ['monitor-y-televisor/monitor-segunda-seleccion', 'Monitor'],
-            ['notebook-y-tablet/notebook-14"', 'Notebook'],
+            ['notebook-y-tablet', NOTEBOOK],
             ['placa-madre', 'Motherboard'],
             ['procesadores', 'Processor'],
             ['procesadores/ventilador-cpu', CPU_COOLER],
