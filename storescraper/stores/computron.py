@@ -57,7 +57,7 @@ class Computron(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        key = soup.find('div', 'product')['id'].split('-')[-1]
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)

@@ -80,6 +80,10 @@ class LiderSupermarket(Store):
 
         json_data = demjson.decode(json_tag.text)
 
+        if 'lowPrice' not in json_data['offers']:
+            return []
+
+        price = Decimal(json_data['offers']['lowPrice'])
         sku = json_data['sku']
         description = json_data['description']
 
@@ -89,7 +93,6 @@ class LiderSupermarket(Store):
         if not check_ean13(ean):
             ean = None
 
-        price = Decimal(json_data['offers']['lowPrice'])
         picture_urls = [json_data['image']]
 
         stock_url = 'https://www.lider.cl/supermercado/includes/inventory/' \

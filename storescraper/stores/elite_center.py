@@ -144,7 +144,7 @@ class EliteCenter(Store):
         name = product_data['name'][:256]
         sku = product_data['sku']
 
-        offer_price = Decimal(product_data['offers'][0]['price']).quantize(0)
+        offer_price = Decimal(product_data['offers']['price']).quantize(0)
         normal_price = (offer_price * Decimal('1.049996')).quantize(0)
 
         key = soup.find(
