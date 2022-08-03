@@ -102,14 +102,15 @@ class Todoclick(Store):
                 response = session.get(page_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('div', 'item')
+                products_container = soup.find(
+                    'div', {'id': 'box-product-grid'})
 
-                if not products:
+                if not products_container:
                     if page == 1:
                         logging.warning('Empty category: ' + page_url)
                     break
 
-                for product in products:
+                for product in products_container.findAll('div', 'item'):
                     product_urls.append(product.find('a')['href'])
 
                 page += 1

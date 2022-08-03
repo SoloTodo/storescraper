@@ -64,10 +64,16 @@ class Lenovo(Store):
                 if price_tag:
                     price = price_tag.text\
                         .replace('.', '').replace('$', '').replace(',', '.')
+
+                price_tag_2 = model_container.find(
+                    'dd', 'saleprice pricingSummary-details-final-price')
+                if price_tag_2:
+                    price = price_tag_2.text \
+                        .replace('.', '').replace('$', '').replace(',', '.')
                 else:
                     price = model_container.find(
-                        'div', 'saleprice').text \
-                        .replace('.', '').replace('$', '').replace(',', '.')
+                        'span', 'bundleDetail_youBundlePrice_value'
+                    ).text.replace('.', '').replace('$', '').replace(',', '.')
 
                 price = Decimal(price)
 
@@ -119,7 +125,7 @@ class Lenovo(Store):
                 price = Decimal(remove_words(
                     soup.find('dd',
                               'saleprice pricingSummary-details-final-price')
-                        .text.split(',')[0]))
+                    .text.split(',')[0]))
             else:
                 price = Decimal(remove_words(price_tag['content']
                                              .split(',')[0]))
@@ -286,8 +292,8 @@ class Lenovo(Store):
 
             for sorter in sorters:
                 nb_path = cls.base_domain + '/search/facet/query/v3?' + \
-                          category_path.format(sorter) + \
-                          '&page={}'
+                    category_path.format(sorter) + \
+                    '&page={}'
                 page = 0
 
                 while True:
