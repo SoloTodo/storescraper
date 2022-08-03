@@ -13,7 +13,7 @@ from storescraper.categories import GAMING_CHAIR, MOUSE, NOTEBOOK, \
     VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class BookComputer(Store):
@@ -107,6 +107,8 @@ class BookComputer(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        description = html_to_markdown(str(soup.find('div', 'description')))
+
         if soup.find('select', 'form-control'):
             products = []
             variations = json.loads(
@@ -132,7 +134,8 @@ class BookComputer(Store):
                     price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    description=description
                 )
                 products.append(p)
             return products
@@ -165,6 +168,7 @@ class BookComputer(Store):
                 price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                description=description
             )
             return [p]
