@@ -97,6 +97,10 @@ class HuaweiShop(Store):
                         product_id)
         product_json = json.loads(session.get(query_url).text)
         sbom_codes = []
+
+        if 'errorDetail' in product_json['data']:
+            return []
+
         for product_entry in product_json['data']['sbomList']:
             sbom_codes.append(product_entry['sbomCode'])
             for subvariant in product_entry['sbomPackageList'] or []:
