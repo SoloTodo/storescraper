@@ -52,7 +52,7 @@ class AcerStore(Store):
 
                 category_url = 'https://www.acerstore.cl/site/c/{}/' \
                                'productos?&page={}&orden=2'.format(
-                                category_id, page)
+                                   category_id, page)
                 print(category_url)
                 json_data = json.loads(session.get(category_url).text)
 
@@ -87,7 +87,7 @@ class AcerStore(Store):
         sku = re.search(r'/p/(\d+)/', url).groups()[0]
         model = soup.find('h1', 'producto-nombre').text.strip()
         part_number = soup.find('div', 'producto-subtitulo').text.strip()
-        name = '{} ({})'.format(model, part_number)
+        name = ' '.join('{} ({})'.format(model, part_number).split())
 
         stock_container = soup.find('div', 'producto-stock')
 
