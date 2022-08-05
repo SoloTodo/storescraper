@@ -101,6 +101,9 @@ class AcerStore(Store):
         price = soup.find('div', 'producto-precio').text.split('(')[0]
         price = Decimal(remove_words(price))
 
+        if 'PREVENTA' in soup.find('div', 'producto-precio').text:
+            stock = 0
+
         description = html_to_markdown(
             str(soup.find('table', 'producto-ficha-tabla')))
 
