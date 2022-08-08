@@ -75,7 +75,10 @@ class IndexStore(Store):
                 'type': 'application/json',
                 'data-product-json': True}).text)['product']
 
-        description = html_to_markdown(json_data['description'])
+        if json_data['description']:
+            description = html_to_markdown(json_data['description'])
+        else:
+            description = None
         picture_urls = [m['src'] for m in json_data['media']]
 
         products = []
