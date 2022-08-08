@@ -106,13 +106,16 @@ class TarreoStore(Store):
         sku = product_specs['productReference']
         description = html_to_markdown(product_specs.get('description', None))
 
-        part_number_key = '{}.properties.0'.format(base_json_key)
+        for i in range(13):
+            part_number_key = '{}.properties.{}'.format(base_json_key, i)
 
-        if product_data.get(part_number_key, {}).get('name', '') == \
-                'Part Number':
-            part_number = product_data[part_number_key]['values']['json'][0]
-        else:
-            part_number = None
+            if product_data.get(part_number_key, {}).get('name', '') == \
+                    'Part Number':
+                part_number = product_data[part_number_key]['values'][
+                    'json'][0]
+                break
+            else:
+                part_number = None
 
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)
