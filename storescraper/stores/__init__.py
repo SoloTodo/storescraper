@@ -130,6 +130,7 @@ from .fravega import Fravega
 from .fullcolor_spa import FullcolorSpa
 from .g_games import GGames
 from .gad_tecnology import GadTecnology
+from .game_club_store import GameClubStore
 from .game_masters import GameMasters
 from .game_shark import GameShark
 from .gamer_lab import GamerLab
