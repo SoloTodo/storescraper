@@ -1,28 +1,26 @@
+from decimal import Decimal
 import json
 import logging
 import re
-from decimal import Decimal
-
 from bs4 import BeautifulSoup
-
-from storescraper.categories import VIDEO_CARD, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, STEREO_SYSTEM, \
-    SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
-    PROCESSOR, CPU_COOLER, VIDEO_GAME_CONSOLE, GAMING_CHAIR, HEADPHONES, \
-    GAMING_DESK, MICROPHONE
+from storescraper.categories import COMPUTER_CASE, CPU_COOLER, GAMING_CHAIR, \
+    GAMING_DESK, HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MICROPHONE, \
+    MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, PROCESSOR, RAM, \
+    SOLID_STATE_DRIVE, STEREO_SYSTEM, VIDEO_CARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class TarreoStore(Store):
+class GameClubStore(Store):
     @classmethod
     def categories(cls):
         return [
-            VIDEO_CARD,
-            MONITOR,
             KEYBOARD_MOUSE_COMBO,
-            MOUSE, KEYBOARD,
+            MOUSE,
+            KEYBOARD,
+            HEADPHONES,
+            MICROPHONE,
             STEREO_SYSTEM,
             SOLID_STATE_DRIVE,
             POWER_SUPPLY,
@@ -31,37 +29,38 @@ class TarreoStore(Store):
             MOTHERBOARD,
             PROCESSOR,
             CPU_COOLER,
+            VIDEO_CARD,
             VIDEO_GAME_CONSOLE,
-            GAMING_CHAIR,
-            HEADPHONES,
             GAMING_DESK,
-            MICROPHONE
+            GAMING_CHAIR,
+            MONITOR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['audio-y-video/audifonos-y-accesorios/audifonos', HEADPHONES],
             ['accesorios-y-perifericos/combo-accesorios',
              KEYBOARD_MOUSE_COMBO],
             ['accesorios-y-perifericos/mouses-mousespads-y-accesorios', MOUSE],
             ['accesorios-y-perifericos/teclados', KEYBOARD],
+            ['audio-y-video/audifonos-y-accesorios', HEADPHONES],
+            ['audio-y-video/microfonos', MICROPHONE],
             ['audio-y-video/speakers', STEREO_SYSTEM],
             ['componentes/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes/fuentes-de-poder', POWER_SUPPLY],
             ['componentes/gabinetes', COMPUTER_CASE],
             ['componentes/memorias', RAM],
-            ['componentes/placas-madre', MOTHERBOARD],
+            ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/procesadores', PROCESSOR],
             ['componentes/refrigeracion-y-ventiladores', CPU_COOLER],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['juegos----consolas/consolas', VIDEO_GAME_CONSOLE],
+            ['mobiliario-gamer/mesas-y-escritorios', GAMING_DESK],
             ['mobiliario-gamer/sillas-gamer', GAMING_CHAIR],
             ['mobiliario-gamer/sillones-gamer', GAMING_CHAIR],
             ['monitores', MONITOR],
-            ['mobiliario-gamer/mesas-y-escritorios', GAMING_DESK],
-            ['audio-y-video/microfonos', MICROPHONE]
         ]
+
         session = session_with_proxy(extra_args)
         product_urls = []
         for url_extension, local_category in url_extensions:
@@ -71,7 +70,7 @@ class TarreoStore(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.tarreo.store/{}?page={}'.format(
+                url_webpage = 'https://www.gameclub.store/{}?page={}'.format(
                     url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
@@ -85,7 +84,7 @@ class TarreoStore(Store):
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(
-                        'https://www.tarreo.store' + product_url)
+                        'https://www.gameclub.store' + product_url)
                 page += 1
         return product_urls
 
@@ -97,6 +96,9 @@ class TarreoStore(Store):
 
         match = re.search('__STATE__ = (.+)', response.text)
         product_data = json.loads(match.groups()[0])
+
+        if not product_data.keys():
+            return []
 
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]

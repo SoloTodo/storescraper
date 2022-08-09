@@ -814,7 +814,8 @@ class MercadoLibreChile(Store):
         price = Decimal(data['initialState']['schema'][0][
             'offers']['price'])
 
-        description = data['initialState']['components']['description']['content']
+        description = data['initialState']['components']['description'][
+            'content']
 
         picker = None
         for x in data['initialState']['components']['short_description']:

@@ -26,7 +26,7 @@ class Hites(Store):
             'Printer',
             'Oven',
             'Stove',
-            'VacuumCleaner',
+            # 'VacuumCleaner',
             'WashingMachine',
             'Cell',
             'Camera',
@@ -186,10 +186,10 @@ class Hites(Store):
              'Inicio > Celulares > Smartphone > Celulares Basicos', 1],
             ['celulares/accesorios-para-celulares/smartwatch', ['Wearable'],
              'Inicio > Celulares > Accesorios para celulares > Smartwatch', 1],
-            ['electro-hogar/electrodomesticos-hogar/aspiradoras-y-enceradoras',
-             ['VacuumCleaner'],
-             'Inicio > Electro Hogar > Electrodomésticos > '
-             'Aspiradoras y Enceradoras', 1]
+            # ['electro-hogar/electrodomesticos-hogar/aspiradoras-y-enceradoras',
+            #  ['VacuumCleaner'],
+            #  'Inicio > Electro Hogar > Electrodomésticos > '
+            #  'Aspiradoras y Enceradoras', 1]
         ]
 
         product_entries = defaultdict(lambda: [])
