@@ -312,6 +312,8 @@ class LaPolar(Store):
                                         vis = sv_data[
                                             "product"]["images"]["large"]
                                         vpu = [i["url"] for i in vis]
+                                        stock = sv_data['product'][
+                                            'availability']['qty']
                                         products.append(Product(
                                             v_name,
                                             cls.__name__,
