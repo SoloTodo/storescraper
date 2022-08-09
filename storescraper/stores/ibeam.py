@@ -101,7 +101,8 @@ class Ibeam(Store):
         description = html_to_markdown(product_data['description'])
         picture_urls = []
         for image in product_data['media']:
-            picture_urls.append(image['src'])
+            if 'src' in image:
+                picture_urls.append(image['src'])
 
         products = []
         for variant in product_data['variants']:
