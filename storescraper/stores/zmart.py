@@ -3,7 +3,8 @@ import urllib
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, HEADPHONES
+from storescraper.categories import GAMING_CHAIR, HEADPHONES, \
+    VIDEO_GAME_CONSOLE, NOTEBOOK, KEYBOARD, MOUSE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -14,13 +15,11 @@ class Zmart(Store):
     @classmethod
     def categories(cls):
         return [
-            'VideoGameConsole',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'StereoSystem',
-            'Headphones',
-            'Notebook',
+            VIDEO_GAME_CONSOLE,
+            MOUSE,
+            KEYBOARD,
+            STEREO_SYSTEM,
+            NOTEBOOK,
             GAMING_CHAIR,
             HEADPHONES
         ]
@@ -30,18 +29,15 @@ class Zmart(Store):
         base_url = 'https://www.zmart.cl'
 
         category_paths = [
-            ['ConsolasPS4', 'VideoGameConsole'],
-            ['ConsolasXBOXONE', 'VideoGameConsole'],
-            ['ConsolasSwitch', 'VideoGameConsole'],
-            ['Consolas3DS', 'VideoGameConsole'],
-            ['Asus', 'Notebook'],
-            ['logitech', 'Keyboard'],
-            ['Razer', 'Mouse'],
-            [37, 'Mouse'],
-            [38, 'Keyboard'],
-            [45, 'StereoSystem'],
+            ['Consolas', VIDEO_GAME_CONSOLE],
+            ['Asus', NOTEBOOK],
+            ['logitech', KEYBOARD],
+            ['Razer', MOUSE],
+            [37, MOUSE],
+            [38, KEYBOARD],
+            [45, STEREO_SYSTEM],
             [532, GAMING_CHAIR],
-            [76, HEADPHONES]
+            [76, HEADPHONES],
         ]
 
         product_urls = []
@@ -55,23 +51,32 @@ class Zmart(Store):
                 continue
 
             if isinstance(category_path, int):
-                category_url = \
-                    '{}/scripts/prodList.asp?sinstock=0&idCategory={}' \
-                    ''.format(base_url, category_path)
+                page = 1
 
-                soup = BeautifulSoup(session.get(
-                    category_url, verify=False).text, 'html.parser')
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
 
-                link_containers = soup.findAll('div', 'ProdBox146')
+                    category_url = \
+                        '{}/scripts/prodList.asp?sinstock=0&idCategory={}&' \
+                        'curPage={}'.format(base_url, category_path, page)
 
-                if not link_containers:
-                    raise Exception('Empty category: ' + category_url)
+                    soup = BeautifulSoup(session.get(
+                        category_url, verify=False).text, 'html.parser')
 
-                for link_container in link_containers:
-                    product_url = link_container.find('a')['href']
-                    if 'http' not in product_url:
-                        product_url = base_url + product_url
-                    product_urls.append(product_url)
+                    link_containers = soup.findAll('div', 'ProdBox146')
+
+                    if not link_containers:
+                        if page == 1:
+                            raise Exception('Empty category: ' + category_url)
+                        break
+
+                    for link_container in link_containers:
+                        product_url = link_container.find('a')['href']
+                        if 'http' not in product_url:
+                            product_url = base_url + product_url
+                        product_urls.append(product_url)
+                    page += 1
             else:
                 category_url = base_url + '/' + category_path
 
