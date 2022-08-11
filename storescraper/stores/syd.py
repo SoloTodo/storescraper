@@ -4,7 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import ALL_IN_ONE, NOTEBOOK
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK, MONITOR, \
+    EXTERNAL_STORAGE_DRIVE, MOUSE, HEADPHONES, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -16,7 +17,12 @@ class Syd(Store):
     def categories(cls):
         return [
             NOTEBOOK,
-            ALL_IN_ONE
+            ALL_IN_ONE,
+            MONITOR,
+            EXTERNAL_STORAGE_DRIVE,
+            MOUSE,
+            RAM,
+            HEADPHONES
         ]
 
     @classmethod
@@ -24,12 +30,22 @@ class Syd(Store):
         url_base = 'https://syd.cl'
 
         category_paths = [
-            ['/collection/imac-m1', ALL_IN_ONE],
-            ['/collection/imac', ALL_IN_ONE],
-            ['/collection/macbook-pro-13-m1-de-apple', NOTEBOOK],
-            ['/collection/macbook-pro-13', NOTEBOOK],
-            ['/collection/macbook-pro-16', NOTEBOOK],
-            ['/collection/macbook-air-m1', NOTEBOOK],
+            ['imac-m1', ALL_IN_ONE],
+            ['macbook-pro-16-m1-de-apple', NOTEBOOK],
+            ['imac', ALL_IN_ONE],
+            ['macbook-pro-16', NOTEBOOK],
+            ['studio-display', MONITOR],
+            ['macbook-pro-13-m1-de-apple', NOTEBOOK],
+            ['macbook-pro-13-m2-nuevo', NOTEBOOK],
+            ['macbook-pro-14-m1-de-apple', NOTEBOOK],
+            ['macbook-air-m1', NOTEBOOK],
+            ['usb-c', EXTERNAL_STORAGE_DRIVE],
+            ['thunderbolt-3', EXTERNAL_STORAGE_DRIVE],
+            ['ssd', EXTERNAL_STORAGE_DRIVE],
+            ['raid', EXTERNAL_STORAGE_DRIVE],
+            ['mouse-y-teclados', MOUSE],
+            ['audio', HEADPHONES],
+            ['memorias', RAM],
         ]
 
         product_urls = []
@@ -42,7 +58,7 @@ class Syd(Store):
             if local_category != category:
                 continue
 
-            category_url = url_base + category_path
+            category_url = url_base + '/collection/' + category_path
 
             response = session.get(category_url)
 
