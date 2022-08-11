@@ -55,7 +55,7 @@ class Movistar(Store):
                 raise Exception('No cells found')
 
             for idx, container in enumerate(containers):
-                product_url = container.find('a')['href']
+                product_url = container.find('form')['action']
                 if product_url.endswith('?codigo='):
                     continue
                 product_entries[product_url].append({

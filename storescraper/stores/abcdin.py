@@ -273,7 +273,10 @@ class AbcDin(Store):
 
         if 'brand' in json_data:
             brand_tag = json_data['brand']
-            name = '{} {}'.format(brand_tag.strip(), model)
+            if 'name' in brand_tag:
+                name = '{} {}'.format(brand_tag['name'], model)
+            else:
+                name = '{} {}'.format(brand_tag.strip(), model)
         else:
             name = model
 
