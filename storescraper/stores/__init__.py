@@ -434,6 +434,7 @@ from .walmart_mexico import WalmartMexico
 from .web_redes import WebRedes
 from .wei import Wei
 from .weplay import Weplay
+from .winia import Winia
 from .wisdomts import Wisdomts
 from .winpy import Winpy
 from .woow import Woow
