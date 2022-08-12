@@ -1,4 +1,4 @@
-import json
+import demjson
 import logging
 from decimal import Decimal
 
@@ -78,9 +78,9 @@ class Notetop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_container = json.loads(
+        product_container = demjson.decode(
             soup.find('script', {'id': 'product-ld-json-data'}
-                      ).text.replace('\\_', '_').replace('\\~', '~'),
+                      ).text,
             strict=False)
         name = product_container['name']
         key = product_container['productID']

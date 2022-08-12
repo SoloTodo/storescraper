@@ -1,7 +1,6 @@
 import logging
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
+import validators
 
 from storescraper.categories import CELL, STORAGE_DRIVE, POWER_SUPPLY, \
     COMPUTER_CASE, RAM, PROCESSOR, MOTHERBOARD, VIDEO_CARD, CPU_COOLER, \
@@ -99,7 +98,11 @@ class CesaPro(Store):
         sku = product_json['sku']
         stock = product_json['total_stock']
         price = Decimal(product_json['right_price'].split('.')[0])
-        picture_urls = [product_json['image']['big']]
+        image = product_json['image']['big']
+        picture_urls = []
+        if validators.url(image):
+            picture_urls.append(image)
+
         p = Product(
             name,
             cls.__name__,
