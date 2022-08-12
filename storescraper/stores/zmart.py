@@ -93,7 +93,8 @@ class Zmart(Store):
 
                 for link_container in link_containers:
                     product_url = base_url + link_container.find('a')['href']
-                    product_urls.append(product_url)
+                    if 'idProduct' in product_url:
+                        product_urls.append(product_url)
 
         return product_urls
 
