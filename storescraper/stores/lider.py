@@ -5,7 +5,6 @@ import time
 
 from collections import defaultdict
 from collections import OrderedDict
-from datetime import datetime
 from decimal import Decimal
 
 from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
@@ -22,6 +21,8 @@ from storescraper import banner_sections as bs
 
 
 class Lider(Store):
+    DEFAULT_USER_AGENT = 'PostmanRuntime/7.28.4'
+
     @classmethod
     def categories(cls):
         return [
@@ -179,7 +180,14 @@ class Lider(Store):
              1.0],
         ]
 
+        extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
+
+        session.headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT)
+        }
+
         product_entries = defaultdict(lambda: [])
 
         # It's important that the empty one goes first to ensure that the
@@ -213,10 +221,6 @@ class Lider(Store):
                     "hitsPerPage": 1000
                 }
 
-                session.headers = {
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'PostmanRuntime/7.28.4'
-                }
                 serialized_params = json.dumps(query_params,
                                                ensure_ascii=False)
                 response = session.post(query_url,
@@ -244,8 +248,10 @@ class Lider(Store):
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
+        extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'PostmanRuntime/7.28.4'
+        session.headers['User-Agent'] = extra_args.get('user_agent',
+                                                       cls.DEFAULT_USER_AGENT)
         product_urls = []
 
         query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
@@ -277,9 +283,10 @@ class Lider(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
         session.headers = {
-            'User-Agent': 'PostmanRuntime/7.28.4'
+            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT)
         }
         sku_id = url.split('/')[-2]
 
@@ -372,11 +379,12 @@ class Lider(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
+        extra_args = extra_args or {}
         base_url = 'https://apps.lider.cl/catalogo/bff/banners'
         destination_url_base = 'https://www.lider.cl/{}'
         session = session_with_proxy(extra_args)
         session.headers = {
-            'User-Agent': 'PostmanRuntime/7.28.4'
+            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT)
         }
         banners = []
         response = session.get(base_url)
