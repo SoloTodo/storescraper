@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -126,33 +127,39 @@ class Infosep(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        json_data = json.loads(
+            soup.findAll('script', {'type': 'application/ld+json'})[-1]
+            .text)
+
+        if '@type' not in json_data:
+            return []
+
+        name = json_data['name']
+        sku = json_data['sku']
+        price = Decimal(json_data['offers'][0]['price'])
+
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').text == '':
-            return []
-        elif soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
