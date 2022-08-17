@@ -35,7 +35,6 @@ class Vivelo(Store):
             ['smartphones/por-modelo/ver-todos.html', 'Cell'],
             ['smartphones/por-modelo/galaxy-a.html', CELL],
             ['smartphones/por-modelo/galaxy-s.html', CELL],
-            ['smartphones/por-modelo/galaxy-note.html', CELL],
             ['smartphones/por-modelo/galaxy-fold.html', CELL],
             ['smartphones/accesorios-para-tu-smartphone/ver-todos.html',
              CELL_ACCESORY],
