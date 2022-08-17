@@ -293,8 +293,30 @@ class AbcDin(Store):
         else:
             offer_price = normal_price
 
-        if soup.find('button', {'id': 'product-addtocart-button'}):
-            stock = -1
+        product_form = soup.find('form', {'id': 'product_addtocart_form'})
+        if product_form:
+            product = str(product_form.find(
+                'input', {'name': 'product'})['value'])
+            item = str(product_form.find('input', {'name': 'item'})['value'])
+            form_key = str(product_form.find(
+                'input', {'name': 'form_key'})['value'])
+
+            session.headers['x-requested-with'] = 'XMLHttpRequest'
+            cookies = {
+                'form_key': form_key,
+            }
+
+            stock_res = session.post(product_form['action'], {
+                'product': product,
+                'item': item,
+                'form_key': form_key,
+                'qty': "1"
+            }, cookies=cookies)
+
+            if 'Producto no tiene stock disponible' in stock_res.text:
+                stock = 0
+            else:
+                stock = -1
         else:
             stock = 0
 
