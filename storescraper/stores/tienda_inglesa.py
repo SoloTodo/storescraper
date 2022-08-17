@@ -62,21 +62,18 @@ class TiendaInglesa(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html5lib')
-        json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
-        name = json_data['name']
-        description = json_data['description']
-        sku = json_data['offers']['sku']
-        price = Decimal(json_data['offers']['price'])
 
-        if json_data['offers']['availability'] == 'https://schema.org/InStock':
-            stock = -1
-        else:
-            stock = 0
+        i = soup.find('input', {'name': 'GXState'})['value']
+        json_data = json.loads(i)['vPRODUCTUI']
 
-        picture_urls = [
-            soup.find('div', {'id': 'SECTION2'}).findAll('img')[1][
-                'src'].split('?')[0]]
+        name = json_data['Info']['Name']
+        description = json_data['Info']['ProductObs']
+        sku = json_data['Info']['ProductCode']
+        ean = json_data['Info']['ProductBarCode']
+        price = Decimal(json_data['Prices'][0]['Price'])
+        stock = json_data['QuickBuy']['StockMax']
+
+        picture_urls = [i['ProductImageUrl'] for i in json_data['Pictures']]
         p = Product(
             name,
             cls.__name__,
@@ -89,6 +86,7 @@ class TiendaInglesa(Store):
             price,
             'USD',
             sku=sku,
+            ean=ean,
             picture_urls=picture_urls,
             description=description,
         )
