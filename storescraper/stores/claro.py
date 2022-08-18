@@ -264,8 +264,10 @@ class Claro(Store):
                 # Portabildiad arriendo
                 if data['catentry_field2'] == "":
                     continue
+                init_pay = Decimal(data['attrAbonoInit'])
                 num_cuotas = Decimal(data['catentry_field2'])
-                cell_monthly_payment = (price / num_cuotas).quantize(0)
+                cell_monthly_payment = (
+                    (price - init_pay) / num_cuotas).quantize(0)
 
                 for plan_entry in data['planAssociate']:
                     cell_plan_name = plan_entry['name'] + \
@@ -279,8 +281,8 @@ class Claro(Store):
                         url,
                         '{} - {}'.format(product_id, cell_plan_name),
                         -1,
-                        Decimal(0),
-                        Decimal(0),
+                        init_pay,
+                        init_pay,
                         'CLP',
                         cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=cell_monthly_payment,
