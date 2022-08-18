@@ -65,36 +65,34 @@ class TodoGeek(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        json_container = json.loads(
-            "{" +
-            re.search(r"var meta = \{([\s\S]*)\};\nfor", soup.text).groups()[0]
-            + "}")['product']
+        match = re.search('product: (.+), onVariantSelected', response.text)
+        json_data = json.loads(match.groups()[0])
 
         picture_urls = []
-        picture_container = soup.find('div', 'slider-main-image')
 
-        for picture in picture_container.findAll('div', 'slick-slide'):
-            picture_urls.append(picture.find('a')['href'])
+        for picture in json_data['images']:
+            picture_urls.append('https:' + picture)
 
-        description_tag = soup.find('div', {'id': 'tabs-description'})
-        description = html_to_markdown(str(description_tag))
+        description = html_to_markdown(json_data['description'])
 
         products = []
-        for variant in json_container['variants']:
+        for variant in json_data['variants']:
             key = str(variant['id'])
             name = variant['name']
             price = (Decimal(variant['price']) /
-                     Decimal(100)).quantize(Decimal("0.0"))
+                     Decimal(100)).quantize(0)
 
             if 'RESERVA' in description.upper():
                 stock = 0
-            elif soup.find('button', 'add-to-cart'):
+            elif variant['available']:
                 stock = -1
             else:
                 stock = 0
+
+            if 'OPEN BOX' in name.upper() or 'OPEN BOX' in description.upper():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
 
             p = Product(
                 name,
@@ -108,7 +106,8 @@ class TodoGeek(Store):
                 price,
                 'CLP',
                 picture_urls=picture_urls,
-                description=description
+                description=description,
+                condition=condition
             )
             products.append(p)
         return products
