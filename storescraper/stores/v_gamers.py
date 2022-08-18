@@ -87,7 +87,7 @@ class VGamers(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('button', {'name': 'add-to-cart'})['value']
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
