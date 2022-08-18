@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, \
+from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, RAM, SOLID_STATE_DRIVE, \
     STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR, \
     MOTHERBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
@@ -26,7 +26,9 @@ class BitCenter(Store):
             GAMING_CHAIR,
             MOTHERBOARD,
             CPU_COOLER,
-            MICROPHONE
+            MICROPHONE,
+            RAM,
+            SOLID_STATE_DRIVE
         ]
 
     @classmethod
@@ -36,6 +38,8 @@ class BitCenter(Store):
             ['teclados', KEYBOARD],
             ['headset', HEADPHONES],
             ['parlantes', STEREO_SYSTEM],
+            ['componentes-pc/memorias-ram', RAM],
+            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes-pc/placa-madre', MOTHERBOARD],
             ['componentes-pc/tarjetas-de-video', VIDEO_CARD],
             ['componentes-pc/gabinetes', COMPUTER_CASE],
