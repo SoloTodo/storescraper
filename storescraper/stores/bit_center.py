@@ -1,12 +1,13 @@
 import json
 import logging
 from decimal import Decimal
+import re
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, RAM, SOLID_STATE_DRIVE, \
-    STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, POWER_SUPPLY, GAMING_CHAIR, \
-    MOTHERBOARD, CPU_COOLER, MICROPHONE
+from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, RAM, \
+    SOLID_STATE_DRIVE, STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, \
+    POWER_SUPPLY, GAMING_CHAIR, MOTHERBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -96,6 +97,12 @@ class BitCenter(Store):
                 '@graph'][1]
         name = json_container['name']
         sku = json_container['sku']
+        re_part_number = re.search(r'Número de (P|p)arte:(\s+)([^\s]+)',
+                                   json_container['description'])
+        if re_part_number:
+            part_number = re_part_number.groups()[2]
+        else:
+            part_number = None
 
         stock_tag = soup.find('input', {'name': 'quantity'})
         if stock_tag:
@@ -123,6 +130,7 @@ class BitCenter(Store):
             offer_price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls,
         )
         return [p]
