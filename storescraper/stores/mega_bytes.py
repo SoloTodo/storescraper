@@ -90,8 +90,13 @@ class MegaBytes(Store):
             stock = 0
         else:
             stock = -1
-        offer_price = Decimal(
-            remove_words(soup.find('p', 'price').text).split()[-1])
+
+        price_p = soup.find('p', 'price').text
+        if not price_p:
+            return []
+
+        offer_price = Decimal(remove_words(price_p).split()[-1])
+
         price_container = soup.find('div', 'summary-inner').find('table')
         if price_container:
             prices = price_container.findAll(
