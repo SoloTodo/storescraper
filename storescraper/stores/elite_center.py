@@ -130,6 +130,8 @@ class EliteCenter(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        key = soup.find('link', {'rel': 'shortlink'})[
+            'href'].split('?p=')[-1]
 
         try:
             json_data = json.loads(soup.findAll(
@@ -149,22 +151,8 @@ class EliteCenter(Store):
 
         offer_price = Decimal(product_data['offers']['price']).quantize(0)
         normal_price = (offer_price * Decimal('1.049996')).quantize(0)
-
-        key = soup.find(
-            'button', 'single_add_to_cart_button')['value']
-
-        if soup.find('button', 'stock_alert_button'):
-            stock = 0
-        else:
-            stock_tag = soup.find('p', 'stock')
-            if stock_tag:
-                stock_match = re.search(r'(\d+)', stock_tag.text)
-                if stock_match:
-                    stock = int(stock_match.groups()[0])
-                else:
-                    stock = -1
-            else:
-                stock = -1
+        stock = int(re.findall(r'stock_quantity_sum\":\"(\d+)\"',
+                               response.text)[1])
 
         picture_urls = [tag['href'].split('?')[0] for tag in
                         soup.find(
