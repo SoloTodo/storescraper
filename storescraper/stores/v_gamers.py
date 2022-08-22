@@ -70,7 +70,7 @@ class VGamers(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'wf-cell')
+                product_containers = soup.findAll('li', 'entry')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)

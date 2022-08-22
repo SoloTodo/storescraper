@@ -50,8 +50,8 @@ class TravelTienda(Store):
             ('3767139073', MOUSE),  # Accesorios Computación
             ('714969430', GAMING_CHAIR),
             ('501025199', STEREO_SYSTEM),  # Audio Portátil
-            ('4174846274', HEADPHONES),
-            ('1345767085', STEREO_SYSTEM),  # Sistemas de Sonido
+            ('3121709090', HEADPHONES),
+            ('1368846991', STEREO_SYSTEM),  # Sistemas de Sonido
             ('1095159098', STEREO_SYSTEM),
             ('3514911626', STEREO_SYSTEM),
             ('3551610308', STEREO_SYSTEM),
