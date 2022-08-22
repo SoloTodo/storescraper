@@ -131,8 +131,11 @@ class EliteCenter(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
+        try:
+            json_data = json.loads(soup.findAll(
+                'script', {'type': 'application/ld+json'})[-1].text)
+        except Exception:
+            return []
 
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
