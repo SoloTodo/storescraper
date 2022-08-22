@@ -11,7 +11,7 @@ from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
     VIDEO_CARD, RAM, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Sepuls(Store):
@@ -83,26 +83,27 @@ class Sepuls(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        key_tag = soup.find('form', 'product-form')
-        key = re.search(r'(\d+)', key_tag['id']).groups()[0]
         product_data = demjson.decode(
             soup.find('script', {'type': 'application/ld+json'})
-                .text)
+            .text)
+
+        if not Decimal(product_data['offers']['price']):
+            return []
+
+        key_tag = soup.find('form', 'product-form')
+        key = re.search(r'(\d+)', key_tag['id']).groups()[0]
         name = product_data['name']
         sku = product_data.get('sku', key)
-        normal_price = Decimal(product_data['offers']['price'])
 
-        offer_price_label_tag = soup.find('td', text='Precio Transferencia')
-        if offer_price_label_tag:
-            offer_price_tag = offer_price_label_tag.parent.findAll('td')[1]
-            if offer_price_tag.text.strip():
-                offer_price = Decimal(
-                    offer_price_tag.text.strip().replace('.', ''))
-                if offer_price > normal_price:
-                    offer_price = normal_price
-            else:
-                offer_price = normal_price
-        else:
+        price_containers = soup.find('div', 'form-group').findAll('span', 'product-form-price')
+        assert len(price_containers) == 2
+
+        offer_price = Decimal(remove_words(price_containers[0].text)
+                              .replace(' CLP', ''))
+        normal_price = Decimal(remove_words(price_containers[1].text)
+                               .replace(' CLP', ''))
+
+        if offer_price > normal_price:
             offer_price = normal_price
 
         stock_tag = soup.find('span', 'product-form-stock')
