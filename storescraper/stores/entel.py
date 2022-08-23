@@ -195,7 +195,7 @@ class Entel(Store):
                 if plan['planDisplayName'] == 'Conectado SIMple 7.990':
                     continue
 
-                plan_name = plan['planDisplayName'] + \
+                plan_name = plan['planDisplayName'].strip() + \
                     suffix_dict[plan['orderArea']]
 
                 price = Decimal(round(plan['priceIVA']))
