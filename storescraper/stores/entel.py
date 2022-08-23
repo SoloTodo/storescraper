@@ -103,18 +103,19 @@ class Entel(Store):
     @classmethod
     def _plans(cls, extra_args):
         session = session_with_proxy(extra_args)
-        endpoint = 'https://www.entel.cl/planes/includes/includes-planes/' \
-                   'new-card/public/js/data-planes.js?v=66.10'
+        endpoint = 'https://www.entel.cl/planes/includes/template-card/' \
+                   'public/js/data-planes.js?v=260722.1056'
         res = session.get(endpoint)
-        raw_plans = re.search(r'Planes_TP_25dcto=([\s\S]*?),Planes_TP_50dcto=',
+
+        raw_plans = re.search(r'const Planes_Parrilla_1plan=(\[[\s\S]*?])',
                               res.text).groups()[0]
-        print(raw_plans)
         plans = demjson.decode(raw_plans)
 
         products = []
 
         for plan in plans:
-            base_plan_name = plan['nombre']
+            base_plan_soup = BeautifulSoup(plan['nombre'], 'html.parser')
+            base_plan_name = base_plan_soup.text
             price = Decimal(plan['precio'])
 
             for suffix in ['', ' Portabilidad']:
