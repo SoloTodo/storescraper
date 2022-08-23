@@ -124,6 +124,9 @@ class Jasaltec(Store):
         else:
             stock = -1
 
+        if soup.find('p', 'price').text == "":
+            return []
+
         if soup.find('p', 'price').find('ins'):
             offer_price = Decimal(
                 remove_words(soup.find('p', 'price').find('ins').text))
