@@ -2,8 +2,9 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import HEADPHONES, NOTEBOOK, TABLET, TELEVISION, \
-    WEARABLE, USB_FLASH_DRIVE, UPS, ALL_IN_ONE
+from storescraper.categories import HEADPHONES, MICROPHONE, MONITOR, \
+    NOTEBOOK, PRINTER, TABLET, TELEVISION, WEARABLE, USB_FLASH_DRIVE, UPS, \
+    ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -21,6 +22,9 @@ class TicOnlineStore(Store):
             WEARABLE,
             UPS,
             ALL_IN_ONE,
+            MICROPHONE,
+            MONITOR,
+            PRINTER,
         ]
 
     @classmethod
@@ -29,10 +33,14 @@ class TicOnlineStore(Store):
             ['accesorios/categoria-removibles', USB_FLASH_DRIVE],
             ['audiovisual/categoria-audifonos', HEADPHONES],
             ['audiovisual/audio-y-video', HEADPHONES],
-            ['computacion/categoria-computadores-de-mesa', UPS],
+            ['audiovisual/categoria-microfono', MICROPHONE],
+            ['computacion/categoria-computadores-de-mesa', MONITOR],
             ['computacion/portatiles', NOTEBOOK],
             ['computacion/tabletas', TABLET],
             ['computacion/categoria-todo-en-uno', ALL_IN_ONE],
+            ['computacion/categoria-ups', UPS],
+            ['computacion/categoria-impresoras', PRINTER],
+            ['electro/categoria-de-monitores', MONITOR],
             ['electro/televisores', TELEVISION],
             ['wearables', WEARABLE],
             ['zona-gamer', HEADPHONES],
