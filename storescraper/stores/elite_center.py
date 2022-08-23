@@ -133,11 +133,8 @@ class EliteCenter(Store):
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('?p=')[-1]
 
-        try:
-            json_data = json.loads(soup.findAll(
-                'script', {'type': 'application/ld+json'})[-1].text)
-        except Exception:
-            return []
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
