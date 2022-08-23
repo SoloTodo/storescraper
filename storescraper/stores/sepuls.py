@@ -95,7 +95,8 @@ class Sepuls(Store):
         name = product_data['name']
         sku = product_data.get('sku', key)
 
-        price_containers = soup.find('div', 'form-group').findAll('span', 'product-form-price')
+        price_containers = soup.find(
+            'div', 'form-group').findAll('span', 'product-form-price')
         assert len(price_containers) == 2
 
         offer_price = Decimal(remove_words(price_containers[0].text)
