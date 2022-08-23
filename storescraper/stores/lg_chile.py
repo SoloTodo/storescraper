@@ -7,6 +7,7 @@ from storescraper.categories import TELEVISION, OPTICAL_DISK_PLAYER, \
 class LgChile(LgV5):
     region_code = 'cl'
     currency = 'CLP'
+    price_approximation = '0'
 
     @classmethod
     def categories(cls):

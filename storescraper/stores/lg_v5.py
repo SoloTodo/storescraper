@@ -17,6 +17,7 @@ class LgV5(Store):
     base_url = 'https://www.lg.com'
     region_code = property(lambda self: 'Subclasses must implement this')
     currency = 'USD'
+    price_approximation = '0.01'
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -120,7 +121,8 @@ class LgV5(Store):
         # return them by default because the Where To Buy (WTB) system
         # needs to consider all products, so use zero as default.
         if model_data['obsInventoryFlag'] == 'Y':
-            price = Decimal(model_data['obsSellingPrice'])
+            price = Decimal(model_data['obsSellingPrice']).quantize(
+                Decimal(cls.price_approximation))
             stock = -1
         else:
             price = Decimal(0)
