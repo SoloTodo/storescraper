@@ -192,7 +192,7 @@ class Entel(Store):
                 if plan['orderArea'] == 'Activacion de Linea':
                     continue
 
-                if plan['planDisplayName'] == 'Conectado SIMple 7.990':
+                if not plan['showInPlanList']:
                     continue
 
                 plan_name = plan['planDisplayName'].strip() + \
