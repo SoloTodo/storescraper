@@ -148,7 +148,7 @@ class EliteCenter(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name'][:256]
-        sku = product_data['sku']
+        sku = product_data.get('sku', None)
 
         offer_price = Decimal(product_data['offers']['price']).quantize(0)
         normal_price = (offer_price * Decimal('1.049996')).quantize(0)
