@@ -47,7 +47,11 @@ class EliteCenter(Store):
             TELEVISION,
             MEMORY_CARD,
             CELL,
-            WEARABLE
+            WEARABLE,
+            USB_FLASH_DRIVE,
+            KEYBOARD_MOUSE_COMBO,
+            UPS,
+            PRINTER
         ]
 
     @classmethod
