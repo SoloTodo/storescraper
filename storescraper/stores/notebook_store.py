@@ -183,7 +183,8 @@ class NotebookStore(Store):
         stock_container = soup.find('div', 'product-stock')
 
         if stock_container:
-            stock = int(stock_container.text.strip().split(' ')[1])
+            stock = int(stock_container.text.strip().split(
+                ' ')[1].replace('+', ''))
 
         offer_price = Decimal(soup.find('span', 'efectivo').find(
             'span', 'price').text.replace('$', '').replace('.', '')
