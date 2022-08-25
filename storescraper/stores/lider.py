@@ -349,9 +349,7 @@ class Lider(Store):
         if description:
             description = html_to_markdown(description)
 
-        picture_urls = ['https://images.lider.cl/wmtcl?source=url'
-                        '[file:/productos/{}{}]&sink'.format(sku, img)
-                        for img in entry['imagesAvailables']]
+        picture_urls = [img for img in entry['images']['availableImages']]
 
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger
