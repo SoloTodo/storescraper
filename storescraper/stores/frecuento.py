@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class Frecuento(Store):
@@ -59,13 +59,9 @@ class Frecuento(Store):
         json_data = json.loads(response.text)
         name = json_data['name']
         sku = json_data['code']
-        description = json_data['description']
+        stock = json_data['stock']
+        description = html_to_markdown(json_data['description'])
         price = Decimal(json_data['amount_total'])
-
-        if json_data['has_stock']:
-            stock = -1
-        else:
-            stock = 0
 
         picture_urls = json_data['photos']
 
@@ -81,7 +77,6 @@ class Frecuento(Store):
             price,
             'USD',
             sku=sku,
-            part_number=sku,
             description=description,
             picture_urls=picture_urls
         )
