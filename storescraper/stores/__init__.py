@@ -127,6 +127,7 @@ from .flexacomp import Flexacomp
 from .fsn_store import FsnStore
 from .fnac import Fnac
 from .fravega import Fravega
+from .frecuento import Frecuento
 from .fullcolor_spa import FullcolorSpa
 from .g_games import GGames
 from .gad_tecnology import GadTecnology
