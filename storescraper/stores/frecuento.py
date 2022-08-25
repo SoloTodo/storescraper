@@ -41,7 +41,7 @@ class Frecuento(Store):
 
             for r in json_data:
                 url = 'https://www.frecuento.com/{}/{}/'.format(
-                    r['slug_name'], r['id'])
+                    r['slug_name'].replace('”', ''), r['id'])
                 product_urls.append(url)
 
             page += 1
