@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import ALL_IN_ONE, NOTEBOOK, CELL, WEARABLE, \
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK, CELL, UPS, WEARABLE, \
     TABLET, MONITOR, COMPUTER_CASE, MOTHERBOARD, PROCESSOR, RAM, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, VIDEO_CARD, \
     KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, POWER_SUPPLY, HEADPHONES, \
@@ -44,6 +44,7 @@ class Infosep(Store):
             MEMORY_CARD,
             USB_FLASH_DRIVE,
             STEREO_SYSTEM,
+            UPS
         ]
 
     @classmethod
@@ -91,6 +92,7 @@ class Infosep(Store):
             ['memoria-micro-sdhc', MEMORY_CARD],
             ['pendrive', USB_FLASH_DRIVE],
             ['parlantes', STEREO_SYSTEM],
+            ['ups-respaldo-de-energia', UPS],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
