@@ -180,7 +180,7 @@ class Wom(Store):
 
         products = []
         plans = [
-            'WOM Plan 40 GB',
+            'WOM Plan 50 GB',
             'WOM Plan 100 GB',
             'WOM Plan 200 GB',
             'WOM Plan 300 GB',
@@ -233,9 +233,9 @@ class Wom(Store):
                         or installment_price is None:
                     return []
 
-                # assert price_without_installments is not None
-                # assert initial_price_with_installments is not None
-                # assert installment_price is not None
+                assert price_without_installments is not None
+                assert initial_price_with_installments is not None
+                assert installment_price is not None
 
                 for plan in plans:
                     # Without installments
