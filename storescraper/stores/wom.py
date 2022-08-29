@@ -171,6 +171,13 @@ class Wom(Store):
             return []
 
         json_data = response.json()
+
+        if 'SEMINUEVO' in json_data['result']['data']['contentfulProduct'][
+                'name'].upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         products = []
         plans = [
             'WOM Plan 40 GB',
@@ -243,6 +250,7 @@ class Wom(Store):
                         price_without_installments,
                         price_without_installments,
                         'CLP',
+                        condition=condition,
                         cell_plan_name='{}{}'.format(
                             plan,
                             portability_name_suffix,
@@ -263,6 +271,7 @@ class Wom(Store):
                         initial_price_with_installments,
                         initial_price_with_installments,
                         'CLP',
+                        condition=condition,
                         cell_plan_name='{}{} Cuotas'.format(
                             plan,
                             portability_name_suffix,
@@ -286,6 +295,7 @@ class Wom(Store):
                 prepaid_price,
                 prepaid_price,
                 'CLP',
+                condition=condition,
                 cell_plan_name='WOM Prepago'
             ))
 
