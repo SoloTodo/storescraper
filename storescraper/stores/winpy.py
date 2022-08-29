@@ -98,7 +98,7 @@ class Winpy(Store):
 
             page = 1
             while True:
-                if page >= 30:
+                if page >= 40:
                     raise Exception('Page overflow: ' + category_path)
 
                 url_with_page = url + 'paged/' + str(page) + '/'

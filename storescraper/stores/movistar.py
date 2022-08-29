@@ -44,25 +44,38 @@ class Movistar(Store):
                 'value': 2
             })
         elif category == 'Cell':
-            catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
-                           'catalogo.html?limit=1000' + cls.cell_catalog_suffix
-            session = session_with_proxy(extra_args)
-            session.headers['user-agent'] = 'python-requests/2.21.0'
-            soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
-            containers = soup.findAll('li', 'itemsCatalogo')
+            page = 1
+            idx = 1
 
-            if not containers:
-                raise Exception('No cells found')
+            while True:
+                if page >= 30:
+                    raise Exception('Page overflow')
 
-            for idx, container in enumerate(containers):
-                product_url = container.find('form')['action']
-                if product_url.endswith('?codigo='):
-                    continue
-                product_entries[product_url].append({
-                    'category_weight': 1,
-                    'section_name': 'Smartphones',
-                    'value': idx + 1
-                })
+                catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
+                               'catalogo.html?p={}'.format(page) + \
+                                    cls.cell_catalog_suffix
+                print(catalogo_url)
+                session = session_with_proxy(extra_args)
+                session.headers['user-agent'] = 'python-requests/2.21.0'
+                soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
+                containers = soup.findAll('li', 'itemsCatalogo')
+
+                if not containers:
+                    if page == 1:
+                        raise Exception('No cells found')
+                    break
+
+                for container in containers:
+                    product_url = container.find('form')['action']
+                    if product_url in product_entries:
+                        print(product_url)
+                    product_entries[product_url].append({
+                        'category_weight': 1,
+                        'section_name': 'Smartphones',
+                        'value': idx
+                    })
+                    idx += 1
+                page += 1
 
         return product_entries
 
