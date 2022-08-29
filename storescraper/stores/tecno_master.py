@@ -147,9 +147,12 @@ class TecnoMaster(Store):
             return []
 
         elif price_container.find('ins'):
-            price = Decimal(remove_words(price_container.find('ins').text))
+            offer_price = Decimal(remove_words(
+                price_container.find('ins').text))
         else:
-            price = Decimal(remove_words(soup.find('p', 'price').text))
+            offer_price = Decimal(remove_words(soup.find('p', 'price').text))
+        normal_price = (offer_price * Decimal(1.025)).quantize(0)
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'elementor-widget-image').findAll('img')]
         p = Product(
@@ -160,8 +163,8 @@ class TecnoMaster(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
