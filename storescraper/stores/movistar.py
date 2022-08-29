@@ -53,11 +53,12 @@ class Movistar(Store):
 
                 catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
                                'catalogo.html?p={}'.format(page) + \
-                                    cls.cell_catalog_suffix
+                    cls.cell_catalog_suffix
                 print(catalogo_url)
                 session = session_with_proxy(extra_args)
                 session.headers['user-agent'] = 'python-requests/2.21.0'
-                soup = BeautifulSoup(session.get(catalogo_url).text, 'html.parser')
+                soup = BeautifulSoup(session.get(
+                    catalogo_url).text, 'html.parser')
                 containers = soup.findAll('li', 'itemsCatalogo')
 
                 if not containers:
