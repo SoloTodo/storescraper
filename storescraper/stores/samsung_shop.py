@@ -1,157 +1,136 @@
-import logging
-import re
-import urllib
 from decimal import Decimal
-import json
-
-from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, remove_words
+
+import json
 
 
 class SamsungShop(Store):
-    preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 1
-
     @classmethod
     def categories(cls):
         return [
-            'Cell',
             'Television',
+            'OpticalDiskPlayer',
+            'StereoSystem',
+            'Cell',
+            'Tablet',
             'Refrigerator',
+            'Oven',
             'WashingMachine',
             'VacuumCleaner',
+            'Monitor',
+            'CellAccesory',
             'Headphones',
             'Wearable',
             'AirConditioner',
             'DishWasher',
-            'Tablet',
-            'Oven',
-            'CellAccesory',
-            'StereoSystem',
+            'Stove'
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_filters = [
-            ('mobile/accesorios', 'Headphones'),
-            ('mobile/smartphones', 'Cell'),
-            ('mobile/tablets', 'Tablet'),
-            ('mobile/wearables', 'Wearable'),
-            ('mobile/smartwatches', 'Wearable'),
-            ('tv-y-audio/accesorios-tv', 'CellAccesory'),
-            ('tv-y-audio/equipos-de-audio', 'StereoSystem'),
-            ('tv-y-audio/tv', 'Television'),
-            ('linea-blanca/accesorios', 'CellAccesory'),
-            ('linea-blanca/soluciones-de-aire', 'AirConditioner'),
-            ('linea-blanca/aspiradoras', 'VacuumCleaner'),
-            ('linea-blanca/empotrados', 'Oven'),
-            ('linea-blanca/lavadoras---secadoras', 'WashingMachine'),
-            ('linea-blanca/microondas', 'Oven'),
-            ('linea-blanca/refrigeradores', 'Refrigerator'),
-            ('linea-blanca/lavavajillas', 'DishWasher'),
-        ]
+        category_info = cls._category_info()
 
-        session = session_with_proxy(extra_args)
+        urls = []
 
-        product_urls = []
-
-        for category_path, local_category in category_filters:
+        for category_id, category_path, local_category \
+                in category_info:
             if local_category != category:
                 continue
 
-            page = 0
-            page_size = 50
+            url = 'https://www.samsung.com/cl/{}'.format(category_path)
+            urls.append(url)
 
-            while True:
-                url = 'https://shop.samsung.cl/api/catalog_system/pub/' \
-                      'products/search/{}?map=c,c&_from={}&_to={}'.format(
-                        category_path, page * page_size,
-                        (page + 1) * page_size - 1)
-                print(url)
-                data = session.get(url)
-
-                json_data = json.loads(data.text)
-
-                if not json_data:
-                    if page == 0:
-                        logging.warning('Empty category: ' + url)
-                    break
-
-                for entry in json_data:
-                    product_urls.append(entry['link'])
-
-                page += 1
-
-        return product_urls
+        return urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
+        category_info = cls._category_info()
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) ' \
-            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-            'Chrome/80.0.3987.149 ' \
-            'Safari/537.36'
-        res = session.get(url)
 
-        if res.status_code == 404 or urllib.parse.unquote(res.url) != url:
-            return []
+        api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/' \
+                  'finder/newhybris?siteCode=cl&start=0&num=100' \
+                  '&onlyFilterInfoYN=N'
 
-        soup = BeautifulSoup(res.text, 'html.parser')
-
-        base_sku = soup.find('input', {'id': '___rc-p-id'})['value']
-
-        endpoint = 'https://shop.samsung.cl/api/catalog_system/pub/' \
-                   'products/search?sc=1&fq=productId:' + base_sku
-        skus_data = json.loads(session.get(endpoint).text)[0]['items']
         products = []
 
-        for sku_entry in skus_data:
-            name = sku_entry['nameComplete']
-
-            if 'Promoción' in sku_entry:
-                name += ' + {}'.format(sku_entry['Promoción'][0])
-
-            name = name[:250]
-            sku = sku_entry['ean']
-            key = sku_entry['itemId']
-            stock = sku_entry['sellers'][0]['commertialOffer'][
-                'AvailableQuantity']
-
-            if not stock:
-                # Unavailable products don't have a valid price, so skip them
+        for category_id, category_path, category_name in category_info:
+            if category_name != category:
                 continue
 
-            # Mark the "trade in" offers as unavailable because they are not
-            # regular sale products with a specific price
-            if 'TradeIn' in sku_entry and \
-                    sku_entry['TradeIn'][0] == 'Con trade In':
-                stock = 0
+            category_endpoint = api_url + '&type=' + category_id
 
-            price = Decimal(sku_entry['sellers'][0]['commertialOffer'][
-                                'Price'])
-            picture_urls = [x['imageUrl'] for x in sku_entry['images']]
+            json_data = json.loads(
+                session.get(category_endpoint).text)['response']
+            product_list = json_data['resultData']['productList']
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                part_number=sku,
-                picture_urls=picture_urls
-            )
+            for product in product_list:
+                for model in product['modelList']:
+                    name = model['displayName']
+                    variant_specs = []
 
-            products.append(p)
+                    for spec_entry in model['fmyChipList']:
+                        variant_specs.append(spec_entry['fmyChipName'].strip())
+
+                    if variant_specs:
+                        name += ' ({})'.format(' / '.join(variant_specs))
+
+                    if 'www.samsung.com' in model['pdpUrl']:
+                        model_url = 'https:{}'.format(model['pdpUrl'])
+                    else:
+                        model_url = 'https://www.samsung.com{}'\
+                            .format(model['pdpUrl'])
+                    key = model['modelCode']
+                    picture_urls = ['https:' + model['thumbUrl']]
+
+                    for picture in model['galleryImage'] or []:
+                        picture_urls.append('https:' + picture)
+
+                    if model['priceDisplay']:
+                        price = Decimal(remove_words(model['priceDisplay']))
+                    else:
+                        price = Decimal(0)
+
+                    products.append(Product(
+                        '{} ({})'.format(name, key),
+                        cls.__name__,
+                        category,
+                        model_url,
+                        url,
+                        key,
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        sku=key,
+                        part_number=key,
+                        picture_urls=picture_urls
+                    ))
 
         return products
+
+    @classmethod
+    def _category_info(cls):
+        return [
+            ('01010000', 'smartphones/all-smartphones', 'Cell'),
+            ('01020000', 'tablets/all-tablets', 'Tablet'),
+            ('01030000', 'watches/all-watches', 'Wearable'),
+            ('01040000', 'audio-sound', 'Headphones'),
+            ('01050000', 'mobile-accessories/all-mobile-accessories/',
+             'CellAccesory'),
+            ('04010000', 'tvs/all-tvs', 'Television'),
+            ('05010000', 'audio-devices/all-audio-devices', 'StereoSystem'),
+            ('08030000', 'refrigerators/all-refrigerators', 'Refrigerator'),
+            ('08010000', 'washers-and-dryers/all-washers-and-dryers',
+             'WashingMachine'),
+            ('08110000', 'microwave-ovens/all-microwave-ovens', 'Oven'),
+            ('08090000', 'dishwashers/all-dishwashers', 'DishWasher'),
+            ('08070000', 'vacuum-cleaners/all-vacuum-cleaners',
+             'VacuumCleaner'),
+            ('08050000', 'air-conditioners/all-air-conditioners',
+             'AirConditioner'),
+            ('08080000', 'cooking-appliances/all-cooking-appliances', 'Oven'),
+            ('07010000', 'monitors/all-monitors', 'Monitor'),
+        ]
