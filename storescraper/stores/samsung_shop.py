@@ -94,7 +94,7 @@ class SamsungShop(Store):
                         price = Decimal(remove_words(
                             model['priceDisplay']))
                     else:
-                        price = Decimal(0)
+                        continue
 
                     products.append(Product(
                         '{} ({})'.format(name, key),
