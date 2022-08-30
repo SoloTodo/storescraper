@@ -100,7 +100,7 @@ class PcCom(Store):
                     .format(category_path, page)
                 response = session.get(url)
 
-                if response.status_code == 404:
+                if page == 1 and response.status_code == 404:
                     raise Exception('Invalid category: ' + url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
