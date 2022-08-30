@@ -132,6 +132,9 @@ class Cintegral(Store):
         price = Decimal(product_json['price_amount'])
         picture_urls = [x['large']['url'] for x in product_json['images']]
 
+        part_number = soup.find('div', {'id': 'description'})[
+            'data-part_number']
+
         p = Product(
             name,
             cls.__name__,
@@ -144,7 +147,7 @@ class Cintegral(Store):
             price,
             'CLP',
             sku=sku,
-            part_number=sku,
+            part_number=part_number,
             description=description,
             picture_urls=picture_urls
         )

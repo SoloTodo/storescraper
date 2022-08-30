@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, WEARABLE, TELEVISION, \
+from storescraper.categories import CELL, PRINTER, WEARABLE, TELEVISION, \
     STEREO_SYSTEM, NOTEBOOK, MONITOR, TABLET, \
     HEADPHONES, MOUSE, GAMING_CHAIR, REFRIGERATOR, OVEN, \
     AIR_CONDITIONER, VIDEO_GAME_CONSOLE
@@ -33,34 +33,35 @@ class TravelTienda(Store):
             OVEN,
             AIR_CONDITIONER,
             VIDEO_GAME_CONSOLE,
+            PRINTER
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('3842720512', CELL),
-            ('816923966', WEARABLE),
-            ('2234300147', STEREO_SYSTEM),
-            ('2722336774', TELEVISION),
-            ('2611045626', NOTEBOOK),
-            ('375810843', MONITOR),
-            ('2114119513', TABLET),
-            ('1226813193', HEADPHONES),
-            ('2547146328', MOUSE),
-            ('3767139073', MOUSE),  # Accesorios Computación
-            ('714969430', GAMING_CHAIR),
-            ('501025199', STEREO_SYSTEM),  # Audio Portátil
-            ('3121709090', HEADPHONES),
-            ('1368846991', STEREO_SYSTEM),  # Sistemas de Sonido
-            ('1095159098', STEREO_SYSTEM),
-            ('3514911626', STEREO_SYSTEM),
-            ('3551610308', STEREO_SYSTEM),
-            ('4064311224', STEREO_SYSTEM),  # Audio
-            ('1479054651', STEREO_SYSTEM),  # Audio HiFi
+            ('3842720512', CELL),  # Tech > Telefonía > Smartphones
+            ('816923966', WEARABLE),  # Tech > Telefonía > Smartwatch
+            ('2722336774', TELEVISION),  # Tech > TV > Televisores
+            ('2234300147', STEREO_SYSTEM),  # Tech > TV > Sistemas de Sonido TV
+            ('2114119513', TABLET),  # Tech > Comp. > Tablets & Note. > Tablets
+            ('2611045626', NOTEBOOK),  # Tech > Comp. > Tablets & Note. > Note.
+            ('375810843', MONITOR),  # Tech > Computación > Monitores
+            ('3213133197', PRINTER),  # Tech > Computación > Domótica & Acc.
+            ('714969430', GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
+            ('1226813193', HEADPHONES),  # Tech > Gamer > Audífonos Gamer
+            ('2547146328', MOUSE),  # Tech > Gamer > Periféricos
+            ('2881216585', VIDEO_GAME_CONSOLE),  # Tech > Gamer > Consolas y Ac
+            ('3121709090', HEADPHONES),  # Tech > Audio > Audífonos
+            ('326296390', STEREO_SYSTEM),  # Tech > Audio > Audio Portátil
+            ('1345767085', STEREO_SYSTEM),  # Tech > Audio > Sistemas de Sonido
+            ('1095159098', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Parlantes y
+            ('3514911626', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Soundbar
+            ('3551610308', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Subwoofer y
+            ('4064311224', STEREO_SYSTEM),  # Tech > Audio
+            ('1479054651', STEREO_SYSTEM),  # Tech > Audio HiFi
             ('306745319', REFRIGERATOR),
             ('831669398', OVEN),
             ('628735343', AIR_CONDITIONER),
-            ('2881216585', VIDEO_GAME_CONSOLE),
         ]
 
         session = session_with_proxy(extra_args)
