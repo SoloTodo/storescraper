@@ -193,6 +193,7 @@ from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
 from .jumbo_store import JumboStore
+from .k_d_tec import KDTec
 from .kabum import Kabum
 from .kalunga import Kalunga
 from .kill_store import KillStore
