@@ -49,11 +49,10 @@ class PcCom(Store):
             ['placas-madres', MOTHERBOARD],
             ['memorias-ram', RAM],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['discos-duros', STORAGE_DRIVE],
-            ['unidades-de-estado-solido', SOLID_STATE_DRIVE],
+            ['ssd-25-sata', SOLID_STATE_DRIVE],
+            ['m-2-pcie-nvme', SOLID_STATE_DRIVE],
             ['disco-duro-pc', STORAGE_DRIVE],
-            ['discos-duros/discos-duros-notebook', STORAGE_DRIVE],
-            ['discos-duros/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
             ['enfriamiento/refrigeracion-liquida', CPU_COOLER],
@@ -101,6 +100,9 @@ class PcCom(Store):
                     .format(category_path, page)
                 response = session.get(url)
 
+                if response.status_code == 404:
+                    raise Exception('Invalid category: ' + url)
+
                 soup = BeautifulSoup(response.text, 'html.parser')
                 products = soup.findAll('li', 'product')
 
@@ -124,7 +126,8 @@ class PcCom(Store):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         name = soup.find('h1', 'product_title').text.strip()
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[1]
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('=')[1]
+        sku = soup.find('span', 'sku').text.strip()
 
         stock_container = soup.find('p', 'stock')
 
@@ -152,7 +155,8 @@ class PcCom(Store):
                         if ic['data-thumb']]
 
         description = html_to_markdown(
-            str(soup.find('div', 'woocommerce-Tabs-panel--description')))
+            str(soup.find('div',
+                          'woocommerce-product-details__short-description')))
 
         p = Product(
             name,
@@ -160,7 +164,7 @@ class PcCom(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
