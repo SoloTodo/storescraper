@@ -31,7 +31,7 @@ class Computron(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow')
-                url_webpage = 'https://computron.ec/brand/lg/' \
+                url_webpage = 'https://computron.com.ec/brand/lg/' \
                     'page/{}/'.format(page)
                 print(url_webpage)
                 response = session.get(url_webpage)
