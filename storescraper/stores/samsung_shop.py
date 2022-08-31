@@ -67,6 +67,11 @@ class SamsungShop(Store):
             product_list = json_data['resultData']['productList']
 
             for product in product_list:
+                if product['simplePdYN'] == 'Y':
+                    suffix = 'buy/'
+                else:
+                    suffix = ''
+
                 for model in product['modelList']:
                     name = model['displayName']
                     variant_specs = []
@@ -82,6 +87,8 @@ class SamsungShop(Store):
                     else:
                         model_url = 'https://www.samsung.com{}'\
                             .format(model['pdpUrl'])
+                    model_url += suffix
+
                     key = model['modelCode']
                     picture_urls = ['https:' + model['thumbUrl']]
 
