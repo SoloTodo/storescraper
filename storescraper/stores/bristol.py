@@ -58,9 +58,13 @@ class Bristol(Store):
             return []
 
         soup = BeautifulSoup(res.text, 'html.parser')
-        product_id = soup.find(
-            'meta', {'property': 'product:retailer_item_id'})['content']
+        product_id_tag = soup.find(
+            'meta', {'property': 'product:retailer_item_id'})
 
+        if not product_id_tag:
+            return []
+
+        product_id = product_id_tag['content']
         response = session.get(
             'https://bristol.opentechla.com/api/opentech/martfury/products/' +
             product_id)
