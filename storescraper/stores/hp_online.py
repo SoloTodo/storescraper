@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK, PRINTER
+from storescraper.categories import MONITOR, NOTEBOOK, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -16,6 +16,7 @@ class HpOnline(Store):
         return [
             NOTEBOOK,
             PRINTER,
+            MONITOR,
             'AllInOne',
         ]
 
@@ -24,6 +25,7 @@ class HpOnline(Store):
         category_paths = [
             ['notebooks', NOTEBOOK],
             ['impresoras', PRINTER],
+            ['monitores', MONITOR],
             # ['desktops/desktops-all-in-one', 'AllInOne'],
         ]
         session = session_with_proxy(extra_args)
@@ -36,13 +38,14 @@ class HpOnline(Store):
             while do:
                 if page > 13:
                     raise Exception('page overflow: ' + category_path)
-                category_url = 'https://store.hp.com/cl-es/default' \
+                category_url = 'https://www.hp.com/cl-es/shop' \
                                '/{}.html?product_list_limit=36&p={}'.format(
                                    category_path, page)
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
                 product_cells = soup.findAll('div', 'product-item-info')
-                if int(soup.find('span', 'toolbar-number').text) == 1 \
+                toolbars = soup.findAll('span', 'toolbar-number')
+                if int(toolbars[0].text) == 1 \
                         and page != 1:
                     break
                 if not product_cells:
@@ -50,11 +53,14 @@ class HpOnline(Store):
                         logging.warning('Empty category: ' + category_url)
                     break
                 for cell in product_cells:
-                    product_url = cell.find('a')['href']
+                    product_url = cell.find(
+                        'div', 'product-item-photo-box').find('a')['href']
                     if product_url in product_urls:
                         do = False
                         break
                     product_urls.append(product_url)
+                if len(toolbars) == 2:
+                    break
                 page += 1
         return product_urls
 
