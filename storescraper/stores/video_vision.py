@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -52,7 +53,7 @@ class VideoVision(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'newstore-product')
+                product_containers = soup.findAll('li', 'product')
 
                 if not product_containers:
                     if page == 1:
@@ -70,22 +71,22 @@ class VideoVision(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku = soup.find('span', 'sku').text.strip()
-        part_number = soup.find('div',
-                                'woocommerce-product-details__short'
-                                '-description').text.strip()
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
+
+        name = json_data['name']
+        sku = json_data['sku']
+        part_number = json_data['description']
+        if soup.find('span', 'product-stock in-stock'):
+            stock = int(soup.find('span', 'stock').text.split(' ')[0])
         else:
             stock = 0
-        price = Decimal(remove_words(soup.find('p', 'price').find('bdi').text))
+        price = Decimal(json_data['offers'][0]['price'])
         price = (price * Decimal('1.19')).quantize(0)
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [json_data['image']]
         p = Product(
             name,
             cls.__name__,
