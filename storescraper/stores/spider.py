@@ -114,7 +114,7 @@ class Spider(Store):
 
         if soup.find('div', 'product-quantities'):
             stock = int(soup.find('div', 'product-quantities').find('span')[
-                            'data-stock'])
+                'data-stock'])
         else:
             stock = 0
 
@@ -123,13 +123,17 @@ class Spider(Store):
         normal_price = Decimal(remove_words(
             soup.find('div', 'methods_prices_box')
                 .find('div', 'others_methods_price').text).strip())
+
         if soup.find('div', 'MagicToolboxSelectorsContainer'):
             picture_containers = soup.find('div',
                                            'MagicToolboxSelectorsContainer')
         else:
             picture_containers = soup.find('div', 'MagicToolboxMainContainer')
-        picture_urls = [tag['src'].replace('-small_default', '') for tag in
-                        picture_containers.findAll('img')]
+        if picture_containers:
+            picture_urls = [tag['src'].replace('-small_default', '') for tag in
+                            picture_containers.findAll('img')]
+        else:
+            picture_urls = []
 
         p = Product(
             name,
