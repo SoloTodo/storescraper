@@ -52,6 +52,7 @@ class TtChile(Store):
             ['113', STORAGE_DRIVE],  # HDD
             ['114', SOLID_STATE_DRIVE],  # SSD
             ['44', RAM],  # DDR4
+            ['121', RAM],  # DDR5
             ['45', RAM],  # RAM Notebook
             ['46', USB_FLASH_DRIVE],  # Flash / USB
             ['79', POWER_SUPPLY],  # Fuentes de poder
