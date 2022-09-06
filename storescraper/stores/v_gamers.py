@@ -70,7 +70,7 @@ class VGamers(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'entry')
+                product_containers = soup.findAll('div', 'product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -92,10 +92,17 @@ class VGamers(Store):
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
 
-        name = json_data['name']
-        sku = json_data['sku']
-        description = json_data['description']
-        offer_price = Decimal(json_data['offers'][0]['price'])
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = product_data['sku']
+        description = product_data['description']
+        offer_price = Decimal(product_data['offers'][0]['price'])
         normal_price = (offer_price * Decimal(1.05)).quantize(Decimal("0.0"))
 
         if not soup.find('button', 'single_add_to_cart_button'):
@@ -110,8 +117,9 @@ class VGamers(Store):
                 stock = -1
 
         picture_urls = []
-        picture_container = soup.find('div', 'woocommerce-product-gallery')
-        for p in picture_container.findAll('a', 'wcgs-slider-image'):
+        picture_container = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        for p in picture_container.findAll('a'):
             if p['href'] not in picture_urls:
                 picture_urls.append(p['href'])
 
