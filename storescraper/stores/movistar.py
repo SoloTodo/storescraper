@@ -59,7 +59,7 @@ class Movistar(Store):
                 session.headers['user-agent'] = 'python-requests/2.21.0'
                 soup = BeautifulSoup(session.get(
                     catalogo_url).text, 'html.parser')
-                containers = soup.findAll('li', 'itemsCatalogo')
+                containers = soup.findAll('div', 'itemsCatalogo')
 
                 if not containers:
                     if page == 1:
@@ -67,7 +67,7 @@ class Movistar(Store):
                     break
 
                 for container in containers:
-                    product_url = container.find('form')['action']
+                    product_url = container.find('a')['href']
                     if product_url in product_entries:
                         print(product_url)
                     product_entries[product_url].append({
