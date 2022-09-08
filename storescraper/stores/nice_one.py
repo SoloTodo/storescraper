@@ -115,15 +115,11 @@ class NiceOne(Store):
         name = soup.find('h1').text.strip()
         sku = soup.find('input', {'name': 'id_product'})['value']
 
-        stock_match = re.search(r"var product_stocks_list = '(.+)';",
-                                page_source)
-        stock = 0
-        if stock_match:
-            stock_data = json.loads(html.unescape(stock_match.groups()[0]))[0]
-
-            for stock_entry in stock_data:
-                # Some SKUs have negative stocks, no idea why
-                stock += max(int(stock_entry.get('available_quantity', 0)), 0)
+        stock_div = soup.find('div', 'product-quantities')
+        if stock_div:
+            stock = int(stock_div.find('span')['data-stock'])
+        else:
+            stock = 0
 
         price_containers = soup.find('div', 'product-prices')
         offer_price = Decimal(soup.find(
