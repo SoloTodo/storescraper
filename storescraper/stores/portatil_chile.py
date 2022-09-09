@@ -55,15 +55,19 @@ class PortatilChile(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'h1 page-title').text
-        sku = soup.find('input', {'name': 'id_product'})['value'].strip()
-        part_number = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        json_data = json.loads(
+            soup.find('div', {'id': 'product-details'})['data-product'])
+
+        sku = str(json_data['id_product'])
+        part_number = json_data['reference']
+        name = json_data['name']
+        price = Decimal(json_data['price_amount'])
+
         stock_container = soup.find('div', 'product-quantities')
         if stock_container:
             stock = int(stock_container.find('span')['data-stock'])
         else:
             stock = 0
-        price = Decimal(remove_words(soup.find('span', 'current-price').text))
         if soup.find('div', {'id': 'product-images-thumbs'}):
             picture_urls = [tag['data-image-large-src'] for tag in
                             soup.find('div',
@@ -73,6 +77,12 @@ class PortatilChile(Store):
             picture_urls = [
                 soup.find('div', 'images-container').find('img')[
                     'data-image-large-src']]
+
+        condition = 'https://schema.org/NewCondition'
+        for f in json_data['features']:
+            if f['name'] == 'Garantia':
+                if 'Open Box' in f['value']:
+                    condition = 'https://schema.org/RefurbishedCondition'
 
         p = Product(
             name,
@@ -88,6 +98,7 @@ class PortatilChile(Store):
             sku=sku,
             part_number=part_number,
             picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
