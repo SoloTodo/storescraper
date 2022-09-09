@@ -89,7 +89,11 @@ class MancoStore(Store):
         name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
         if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+            stock_text = soup.find('p', 'stock in-stock').text
+            if 'Hay existencias' in stock_text:
+                stock = -1
+            else:
+                stock = int(stock_text.split()[0])
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
 
