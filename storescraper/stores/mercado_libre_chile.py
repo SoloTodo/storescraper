@@ -15,7 +15,7 @@ from storescraper.categories import CELL, NOTEBOOK, STEREO_SYSTEM, KEYBOARD, \
     ALL_IN_ONE, VACUUM_CLEANER, PRINTER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class MercadoLibreChile(Store):
@@ -814,8 +814,9 @@ class MercadoLibreChile(Store):
         price = Decimal(data['initialState']['schema'][0][
             'offers']['price'])
 
-        description = data['initialState']['components']['description'][
-            'content']
+        # description = data['initialState']['components']['description'][
+        #     'content']
+        description = ""
 
         picker = None
         for x in data['initialState']['components']['short_description']:
