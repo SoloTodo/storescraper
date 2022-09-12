@@ -159,7 +159,10 @@ class ETChile(Store):
             stock_tag = soup.find('input', {'name': 'quantity'})
             if stock_tag:
                 if 'max' in stock_tag.attrs:
-                    stock = int(stock_tag['max'])
+                    if '' == stock_tag['max']:
+                        stock = -1
+                    else:
+                        stock = int(stock_tag['max'])
                 else:
                     stock = 1
             else:
