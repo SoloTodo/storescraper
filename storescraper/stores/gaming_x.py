@@ -1,3 +1,4 @@
+from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import VIDEO_CARD
@@ -50,10 +51,28 @@ class GamingX(MercadoLibreChile):
         # standalone retailer, in particular because the LG WTB system
         # only displays entries without a seller (not from marketplaces)
         # and we want to consider MercadoLibreLG for that.
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+        tries = 0
+        while tries < 3:
+            try:
+                res = session.get(url)
+                soup = BeautifulSoup(res.text, 'html.parser')
+                price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+                break
+            except Exception:
+                tries += 1
+
         products = super().products_for_url(
             url, category=category, extra_args=extra_args)
 
         for product in products:
+            product.url = url
+            product.discovery_url = url
+            product.offer_price = price
+            product.normal_price = price
             product.seller = None
 
         return products
