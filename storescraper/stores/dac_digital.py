@@ -53,9 +53,15 @@ class DacDigital(MercadoLibreChile):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        res = session.get(url)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+        tries = 0
+        while tries < 3:
+            try:
+                res = session.get(url)
+                soup = BeautifulSoup(res.text, 'html.parser')
+                price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+                break
+            except Exception:
+                tries += 1
 
         products = super().products_for_url(
             url, category=category, extra_args=extra_args)

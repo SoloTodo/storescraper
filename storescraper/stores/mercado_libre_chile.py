@@ -704,12 +704,18 @@ class MercadoLibreChile(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url).text
-        soup = BeautifulSoup(page_source, 'html.parser')
+        tries = 0
+        while tries < 3:
+            try:
+                page_source = session.get(url).text
+                soup = BeautifulSoup(page_source, 'html.parser')
 
-        new_mode_data = re.search(
-            r'window.__PRELOADED_STATE__ =([\S\s]+?);\n', page_source)
-        data = json.loads(new_mode_data.groups()[0])
+                new_mode_data = re.search(
+                    r'window.__PRELOADED_STATE__ =([\S\s]+?);\n', page_source)
+                data = json.loads(new_mode_data.groups()[0])
+                break
+            except Exception:
+                tries += 1
 
         for entry in data['initialState']['components'].get('head', []):
             if entry['id'] == 'item_status_message' and 'PAUSADA' in \
