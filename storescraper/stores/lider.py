@@ -321,7 +321,8 @@ class Lider(Store):
         key = str(entry['sku'])
         sku = entry['itemNumber']
         stock = -1 if entry['available'] else 0
-        normal_price = Decimal(entry['price']['BasePriceSales'])
+        normal_price = Decimal(
+            entry['price']['BasePriceSales']).quantize(Decimal('1.00'))
         offer_price_container = entry['price']['BasePriceTLMC']
 
         if offer_price_container:
