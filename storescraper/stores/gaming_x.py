@@ -60,7 +60,8 @@ class GamingX(MercadoLibreChile):
             try:
                 res = session.get(url)
                 soup = BeautifulSoup(res.text, 'html.parser')
-                price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+                price = Decimal(
+                    soup.find('meta', {'itemprop': 'price'})['content'])
                 break
             except Exception:
                 tries += 1
