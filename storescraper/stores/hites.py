@@ -314,7 +314,7 @@ class Hites(Store):
         name = soup.find('h1', 'product-name').text
         sku = soup.find('span', 'product-id').text
 
-        availability_match = re.search(r'"availability":"(.+)"', response.text)
+        availability_match = re.search(r'"availability":"(.+)"}', response.text)
         availability_text = availability_match.groups()[0]
 
         if availability_text == 'http://schema.org/OutOfStock':
