@@ -94,6 +94,7 @@ class CreditosEconomicos(Store):
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)
         pricing_data = product_data[pricing_key]
+        # price = Decimal(str(pricing_data['Price']))
         stock = pricing_data['AvailableQuantity']
 
         variables = base64.b64encode(
@@ -101,8 +102,8 @@ class CreditosEconomicos(Store):
         payload = {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "063017c225e96ae1f83a1f97a4c7cf97348e0ae7cc746' \
-                    '97a0d026a1fe1e545d1",
+                "sha256Hash": "063017c225e96ae1f83a1f97a4c7cf97348e0ae7cc746" +
+                              "97a0d026a1fe1e545d1",
                 "sender": "crecos.sale-channel-selector@0.x",
                 "provider": "vtex.search-graphql@0.x"
             },
