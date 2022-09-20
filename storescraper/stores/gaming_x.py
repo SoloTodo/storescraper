@@ -55,21 +55,21 @@ class GamingX(MercadoLibreChile):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
-        tries = 0
-        while tries < 3:
-            try:
-                res = session.get(url)
-                soup = BeautifulSoup(res.text, 'html.parser')
-                price = Decimal(
-                    soup.find('meta', {'itemprop': 'price'})['content'])
-                break
-            except Exception:
-                tries += 1
+
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        price = Decimal(
+            soup.find('meta', {'itemprop': 'price'})['content'])
 
         products = super().products_for_url(
             url, category=category, extra_args=extra_args)
 
         for product in products:
+            if product.offer_price == price:
+                res = session.get(url)
+                soup = BeautifulSoup(res.text, 'html.parser')
+                price = Decimal(
+                    soup.find('meta', {'itemprop': 'price'})['content'])
             product.url = url
             product.discovery_url = url
             product.offer_price = price
