@@ -68,6 +68,9 @@ class CreditosEconomicos(Store):
         session = session_with_proxy(extra_args)
         new_url = '{}?sc=2'.format(url)
         response = session.get(new_url)
+        
+        if response.status_code != 200:
+            return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads('{' + re.search(r'__STATE__ = {(.+)}',
