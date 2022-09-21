@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, COMPUTER_CASE, RAM, \
     PROCESSOR, VIDEO_CARD, MOTHERBOARD, KEYBOARD, POWER_SUPPLY, CPU_COOLER, \
-    MONITOR, MOUSE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MICROPHONE
+    MONITOR, MOUSE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MICROPHONE, \
+    HEADPHONES, USB_FLASH_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -31,28 +32,33 @@ class GWStore(Store):
             CPU_COOLER,
             MICROPHONE,
             RAM,
+            HEADPHONES,
+            USB_FLASH_DRIVE,
+            GAMING_CHAIR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['3-procesadores', PROCESSOR],
-            ['12-refrigeracion-', CPU_COOLER],
             ['6-placas-madres', MOTHERBOARD],
             ['27-memorias-ram', RAM],
-            ['25-hdd', STORAGE_DRIVE],
-            ['23-sdd', SOLID_STATE_DRIVE],
-            ['24-ssd-m2', SOLID_STATE_DRIVE],
-            ['26-nvme', SOLID_STATE_DRIVE],
-            ['27-disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['10-memorias-ram', RAM],
-            ['11-tarjetas-de-video', VIDEO_CARD],
+            ['71-hdd', STORAGE_DRIVE],
+            ['72-ssd-o-m2', SOLID_STATE_DRIVE],
+            ['70-nvme', SOLID_STATE_DRIVE],
+            ['73-disco-externo', EXTERNAL_STORAGE_DRIVE],
+            ['82-memorias-ram', RAM],
+            ['74-tarjetas-de-video', VIDEO_CARD],
             ['14-fuentes-de-poder', POWER_SUPPLY],
-            ['13-gabinete', COMPUTER_CASE],
+            ['81-gabinete', COMPUTER_CASE],
             ['44-mouse', MOUSE],
             ['45-teclados', KEYBOARD],
             ['47-microfonos', MICROPHONE],
-            ['16-monitor', MONITOR],
+            ['16-monitores', MONITOR],
+            ['52-auriculares', HEADPHONES],
+            ['93-pendrive', USB_FLASH_DRIVE],
+            ['50-sillas', GAMING_CHAIR],
+            ['78-refrigeracion-', CPU_COOLER],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
