@@ -247,7 +247,12 @@ class SpDigital(Store):
 
         products = []
 
-        for variant in page_data['content']['variants']:
+        if 'variants' in page_data['content']:
+            variants = page_data['content']['variants']
+        else:
+            variants = [page_data['content']['defaultVariant']]
+
+        for variant in variants:
             sku = variant['sku']
             key = variant['id']
             stock = variant['quantityAvailable']
