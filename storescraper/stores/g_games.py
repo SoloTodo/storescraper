@@ -46,6 +46,7 @@ class GGames(Store):
             ['mouse', MOUSE],
             ['monitores', MONITOR],
             ['headsets', HEADPHONES],
+            ['lifestyle', HEADPHONES],
             ['sillas-gamers', GAMING_CHAIR],
             ['accesorios-gamer', MONITOR],
             ['teclado', KEYBOARD],
