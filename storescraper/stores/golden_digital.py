@@ -79,7 +79,7 @@ class GoldenDigital(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 15:
                     raise Exception('Page overflow: ' + url_extension)
                 url_webpage = 'https://www.goldendigital.cl/categoria/{}/' \
                               '?product-page={}'.format(url_extension, page)
