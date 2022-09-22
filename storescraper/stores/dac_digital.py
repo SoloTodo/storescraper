@@ -52,29 +52,5 @@ class DacDigital(MercadoLibreChile):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
-            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
-
-        res = session.get(url)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        price = Decimal(
-            soup.find('meta', {'itemprop': 'price'})['content'])
-
-        products = super().products_for_url(
+        return cls._products_for_url_with_custom_price(
             url, category=category, extra_args=extra_args)
-
-        for product in products:
-            if product.offer_price == price:
-                res = session.get(url)
-                soup = BeautifulSoup(res.text, 'html.parser')
-                price = Decimal(
-                    soup.find('meta', {'itemprop': 'price'})['content'])
-            product.url = url
-            product.discovery_url = url
-            product.offer_price = price
-            product.normal_price = price
-            product.seller = None
-
-        return products

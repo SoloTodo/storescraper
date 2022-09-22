@@ -919,3 +919,49 @@ class MercadoLibreChile(Store):
             offset += 50
 
         return result
+
+    @classmethod
+    def _products_for_url_with_custom_price(cls, url, category=None, extra_args=None):
+        # Custom method for e-commerce sites that use MercadoShops platform
+        # with custom domains. In those cases the price returned by
+        # MercadoLibre API does not match the listed price, so it has to be
+        # scraped manually.
+        # Also fixes the url, discovery_url and seller of the products
+        print(url)
+
+        extra_args = extra_args or {}
+        retries = extra_args.get('retries', 3)
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
+            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
+
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+
+        products = MercadoLibreChile.products_for_url(
+            url, category=category, extra_args=extra_args)
+
+        assert len(products) == 1, 'Method only supports single product'
+
+        product = products[0]
+        print(product.url)
+
+        if product.offer_price == price:
+            if retries:
+                extra_args['retries'] = retries - 1
+                return cls._products_for_url_with_custom_price(
+                    url, category=category, extra_args=extra_args)
+            else:
+                # Sometimes the ML price actually matches the original one,
+                # so keep it
+                pass
+
+        product.url = url
+        product.discovery_url = url
+        product.offer_price = price
+        product.normal_price = price
+        product.seller = None
+
+        return [product]
