@@ -22,6 +22,8 @@ from storescraper import banner_sections as bs
 class Falabella(Store):
     preferred_discover_urls_concurrency = 1
     preferred_products_for_url_concurrency = 20
+    store_and_subdomain = None
+    seller = None
 
     category_paths = [
         ['cat70057', ['Notebook'],
@@ -297,7 +299,7 @@ class Falabella(Store):
                 raise Exception('Invalid product type')
 
     @classmethod
-    def _get_product_urls(cls, session, category_id, variant=None):
+    def _get_product_urls(cls, session, category_id):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
@@ -311,8 +313,13 @@ class Falabella(Store):
 
             pag_url = base_url.format(category_id, page)
 
-            if variant:
-                pag_url += '&subdomain={}&store={}'.format(variant, variant)
+            if cls.store_and_subdomain:
+                pag_url += '&subdomain={}&store={}'.format(
+                    cls.store_and_subdomain, cls.store_and_subdomain)
+
+            if cls.seller:
+                pag_url += '&f.derived.variant.sellerId={}'.format(
+                    cls.seller)
 
             print(pag_url)
 
@@ -605,7 +612,7 @@ class Falabella(Store):
                         model['offerings'][0]['sellerId'].lower():
                     seller = model['offerings'][0]['sellerId']
 
-            picture_urls = cls._get_picture_urls(session, model['id'])
+            picture_urls = [x['url'] + '?scl=1.0' for x in model['medias']]
             model_name = model['name'].encode(
                 'ascii', 'ignore').decode('ascii')
 
