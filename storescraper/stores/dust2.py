@@ -4,11 +4,12 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_GAME_CONSOLE, MOUSE, KEYBOARD, \
-    HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, CPU_COOLER, RAM, \
-    POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, STORAGE_DRIVE, \
-    MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, CASE_FAN
+from storescraper.categories import PRINTER, VIDEO_GAME_CONSOLE, MOUSE, \
+    KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
+    CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
+    STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
+    MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, \
+    CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -43,6 +44,7 @@ class Dust2(Store):
             MICROPHONE,
             GAMING_DESK,
             CASE_FAN,
+            PRINTER
         ]
 
     @classmethod
@@ -98,7 +100,9 @@ class Dust2(Store):
             ['dispositivos-inteligentes/asistentes-virtuales/'
              'google-asistente', STEREO_SYSTEM],
             ['mundo-gamer/microfonos', MICROPHONE],
-            ['mundo-gamer/escritorios', GAMING_DESK]
+            ['mundo-gamer/escritorios', GAMING_DESK],
+            ['computacion-y-electronica/impresoras-y-escaneres/'
+             'impresoras', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -138,7 +142,7 @@ class Dust2(Store):
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'productDetails__productModel--image-moreImages'
-            ).findAll('img') if tag['src'] != ""]
+        ).findAll('img') if tag['src'] != ""]
         variants = soup.find('form', 'variations_form cart')
         if variants:
             products = []
@@ -182,7 +186,7 @@ class Dust2(Store):
                 1]
             sku = soup.find(
                 'div', 'productDetails__productModel--info-productSKU'
-                ).find('h5').text.strip()
+            ).find('h5').text.strip()
             agotado_btn = soup.find('div',
                                     'productModel__info--productAgotado')
             if agotado_btn:
@@ -190,19 +194,19 @@ class Dust2(Store):
             else:
                 stock_text = soup.find(
                     'div', 'productDetails__productModel--info-productInStock'
-                    ).find('span').text
+                ).find('span').text
                 if stock_text == '':
                     stock = 0
                 else:
                     stock = int(stock_text)
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'productDetails__productModel--info-productCardPrice'
-                ).find('h3').text))
+            ).find('h3').text))
             offer_price = Decimal(remove_words(
                 soup.find(
                     'div',
                     'productDetails__productModel--info-productTransferPrice'
-                    ).find('h3').text))
+                ).find('h3').text))
 
             description = html_to_markdown(
                 str(soup.find(

@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, RAM, MOTHERBOARD, PROCESSOR, \
-    SOLID_STATE_DRIVE, TELEVISION, VIDEO_CARD, CPU_COOLER, WEARABLE
+    SOLID_STATE_DRIVE, TABLET, TELEVISION, VIDEO_CARD, CPU_COOLER, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -22,7 +22,8 @@ class PcBoost(Store):
             CPU_COOLER,
             CELL,
             TELEVISION,
-            WEARABLE
+            WEARABLE,
+            TABLET
         ]
 
     @classmethod
@@ -37,6 +38,7 @@ class PcBoost(Store):
             ['smartphones', CELL],
             ['televisores', TELEVISION],
             ['wearables', WEARABLE],
+            ['tablets', TABLET],
         ]
 
         session = session_with_proxy(extra_args)

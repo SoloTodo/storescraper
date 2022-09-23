@@ -921,7 +921,8 @@ class MercadoLibreChile(Store):
         return result
 
     @classmethod
-    def _products_for_url_with_custom_price(cls, url, category=None, extra_args=None):
+    def _products_for_url_with_custom_price(cls, url, category=None,
+                                            extra_args=None, min_price=None):
         # Custom method for e-commerce sites that use MercadoShops platform
         # with custom domains. In those cases the price returned by
         # MercadoLibre API does not match the listed price, so it has to be
@@ -940,6 +941,9 @@ class MercadoLibreChile(Store):
         soup = BeautifulSoup(res.text, 'html.parser')
         price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
 
+        if not min_price or price < min_price:
+            min_price = price
+
         products = MercadoLibreChile.products_for_url(
             url, category=category, extra_args=extra_args)
 
@@ -948,20 +952,23 @@ class MercadoLibreChile(Store):
         product = products[0]
         print(product.url)
 
-        if product.offer_price == price:
+        if product.offer_price == min_price:
             if retries:
                 extra_args['retries'] = retries - 1
                 return cls._products_for_url_with_custom_price(
-                    url, category=category, extra_args=extra_args)
+                    url, category=category, extra_args=extra_args,
+                    min_price=min_price)
             else:
                 # Sometimes the ML price actually matches the original one,
                 # so keep it
                 pass
+        elif product.offer_price < min_price:
+            min_price = product.offer_price
 
         product.url = url
         product.discovery_url = url
-        product.offer_price = price
-        product.normal_price = price
+        product.offer_price = min_price
+        product.normal_price = min_price
         product.seller = None
 
         return [product]
