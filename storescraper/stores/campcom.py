@@ -50,6 +50,9 @@ class Campcom(Store):
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        
+        if 'Error 404: Página no encontrada' in soup.text:
+            return []
 
         key = soup.find('link', {'rel': 'shortlink'})[
             'href'].split('=')[-1]
