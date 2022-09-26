@@ -68,7 +68,8 @@ class Sodimac(Falabella):
         ['CATG19012', [COMPUTER_CASE],
          'Home > Sodimac > Tecnología-Computadores > Accesorios gamer > '
          'Gabinete gamer', 1],
-        ['cat16400010', [CELL], 'Home > Sodimac > Tecnología-Telefonía', 1],
+        ['cat2018', [CELL], 'Home > Sodimac > Tecnología-Telefonía > '
+                            'Celulares y Teléfonos', 1],
         ['cat7190148', [TELEVISION],
          'Home > Sodimac > tecnología-TV y Video > Smart TV', 1],
         ['cat202303', [VIDEO_GAME_CONSOLE],
