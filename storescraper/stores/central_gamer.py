@@ -86,7 +86,7 @@ class CentralGamer(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        
+
         name = soup.find('h1', 'product-heading__title').text
         key = soup.find('form', 'product-form')['action'].split('/')[-1]
         sku = soup.find(
@@ -99,9 +99,10 @@ class CentralGamer(Store):
             stock = 0
 
         price_tags = soup.findAll('h2', 'product-heading__pricing')
-    
+
         if len(price_tags) % 2 == 0:
-            if 'product-heading__pricing--has-discount' in price_tags[0]['class']:
+            if 'product-heading__pricing--has-discount' in \
+                    price_tags[0]['class']:
                 offer_price = Decimal(remove_words(
                     price_tags[0].find('span').text))
                 normal_price = Decimal(remove_words(
@@ -110,7 +111,8 @@ class CentralGamer(Store):
                 offer_price = Decimal(remove_words(price_tags[0].text))
                 normal_price = Decimal(remove_words(price_tags[1].text))
         elif len(price_tags) % 1 == 1:
-            if 'product-heading__pricing--has-discount' in price_tags[0]['class']:
+            if 'product-heading__pricing--has-discount' in \
+                    price_tags[0]['class']:
                 offer_price = Decimal(remove_words(
                     price_tags[0].find('span').text))
             else:
@@ -122,9 +124,10 @@ class CentralGamer(Store):
         picture_slider = soup.find('div', 'product-gallery__slider')
         if picture_slider:
             picture_urls = [tag['src'].split('?')[0] for tag in
-                        picture_slider.findAll('img')]
+                            picture_slider.findAll('img')]
         else:
-            picture_urls = [soup.find('div', 'product-gallery').find('img')['data-src']]
+            picture_urls = [
+                soup.find('div', 'product-gallery').find('img')['data-src']]
         p = Product(
             name,
             cls.__name__,

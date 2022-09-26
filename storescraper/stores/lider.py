@@ -234,9 +234,9 @@ class Lider(Store):
                     logging.warning('Empty category: ' + category_id)
 
                 for idx, entry in enumerate(data['products']):
-                    product_url = 'https://www.lider.cl/{}/' \
-                                  'product/sku/{}/{}'.format(
-                                      cls.tenant, entry['sku'], entry.get('slug', 'a'))
+                    product_url = 'https://www.lider.cl/{}/product/sku/{}/' \
+                        '{}'.format(
+                            cls.tenant, entry['sku'], entry.get('slug', 'a'))
                     if product_url not in local_product_entries:
                         local_product_entries[product_url] = {
                             'category_weight': category_weight,
