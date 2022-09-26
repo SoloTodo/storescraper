@@ -94,7 +94,8 @@ class WebRedes(Store):
         name = json_info['reference'] + ' - ' + json_info['name']
         sku = str(json_info['id_product'])
         stock = json_info['quantity']
-        price = Decimal(json_info['price_amount'])
+        normal_price = Decimal(json_info['price_amount'])
+        offer_price = (normal_price * Decimal(0.95)).quantize(0)
 
         picture_urls = [image['bySize']['large_default']['url'] for image in
                         json_info['images']]
@@ -106,8 +107,8 @@ class WebRedes(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,

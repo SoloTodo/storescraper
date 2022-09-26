@@ -68,7 +68,7 @@ class CentralGamer(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div',
-                                                  'col-lg-3 col-md-4 col-6')
+                                                  'product-block__wrapper')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -86,8 +86,11 @@ class CentralGamer(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-form_title').text
-        sku = soup.find('form', 'product-form')['action'].split('/')[-1]
+
+        name = soup.find('h1', 'product-heading__title').text
+        key = soup.find('form', 'product-form')['action'].split('/')[-1]
+        sku = soup.find(
+            'span', 'product-heading__detail--sku').text.replace('SKU: ', '')
 
         stock_tag = soup.find('meta', {'property': 'product:availability'})
         if stock_tag['content'] == 'instock':
@@ -95,31 +98,49 @@ class CentralGamer(Store):
         else:
             stock = 0
 
-        price_tags = soup.findAll('span', {'id': 'product-form-price'})
+        price_tags = soup.findAll('h2', 'product-heading__pricing')
 
-        if len(price_tags) == 2:
-            offer_price = Decimal(remove_words(price_tags[0].text))
-            normal_price = Decimal(remove_words(price_tags[1].text))
-        elif len(price_tags) == 1:
-            offer_price = Decimal(remove_words(price_tags[0].text))
+        if len(price_tags) % 2 == 0:
+            if 'product-heading__pricing--has-discount' in \
+                    price_tags[0]['class']:
+                offer_price = Decimal(remove_words(
+                    price_tags[0].find('span').text))
+                normal_price = Decimal(remove_words(
+                    price_tags[1].find('span').text))
+            else:
+                offer_price = Decimal(remove_words(price_tags[0].text))
+                normal_price = Decimal(remove_words(price_tags[1].text))
+        elif len(price_tags) % 1 == 1:
+            if 'product-heading__pricing--has-discount' in \
+                    price_tags[0]['class']:
+                offer_price = Decimal(remove_words(
+                    price_tags[0].find('span').text))
+            else:
+                offer_price = Decimal(remove_words(price_tags[0].text))
             normal_price = offer_price
         else:
             raise Exception('Invalid price tags')
 
-        picture_urls = [tag['src'].split('?')[0] for tag in
-                        soup.find('div', 'product-images').findAll('img')]
+        picture_slider = soup.find('div', 'product-gallery__slider')
+        if picture_slider:
+            picture_urls = [tag['src'].split('?')[0] for tag in
+                            picture_slider.findAll('img')]
+        else:
+            picture_urls = [
+                soup.find('div', 'product-gallery').find('img')['data-src']]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls
         )
         return [p]
