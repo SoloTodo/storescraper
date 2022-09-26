@@ -1,5 +1,5 @@
 from decimal import Decimal
-import json
+import base64
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, GAMING_CHAIR, HEADPHONES, \
@@ -88,9 +88,6 @@ class Dreamtec(Store):
         stock = int(options[-1]['value'])
 
         picture_urls = []
-        for i in soup.findAll('img', 'img-producto-miniatura'):
-            if i['src'] not in picture_urls:
-                picture_urls.append(i['src'])
 
         p = Product(
             name,
