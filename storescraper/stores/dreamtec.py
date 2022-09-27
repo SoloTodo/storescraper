@@ -77,6 +77,9 @@ class Dreamtec(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        if 'No hemos podido encontrar el contenido' in soup.text:
+            return []
+
         name = soup.find('h1').text.strip()
         description = soup.find('div', {'id': 'nav-home'}).text.strip()
         sku = str(soup.find('span', 'sku-detalle').find('strong').text)
