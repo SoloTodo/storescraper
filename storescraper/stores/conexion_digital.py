@@ -63,7 +63,8 @@ class ConexionDigital(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
-                if not product_containers:
+                if not product_containers or \
+                        'Inicio' in soup.find('title').text:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
