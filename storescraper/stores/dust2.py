@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import PRINTER, VIDEO_GAME_CONSOLE, MOUSE, \
+from storescraper.categories import PRINTER, UPS, VIDEO_GAME_CONSOLE, MOUSE, \
     KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
     CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
@@ -44,7 +44,8 @@ class Dust2(Store):
             MICROPHONE,
             GAMING_DESK,
             CASE_FAN,
-            PRINTER
+            PRINTER,
+            UPS
         ]
 
     @classmethod
@@ -103,6 +104,7 @@ class Dust2(Store):
             ['mundo-gamer/escritorios', GAMING_DESK],
             ['computacion-y-electronica/impresoras-y-escaneres/'
              'impresoras', PRINTER],
+            ['computacion-y-electronica/respaldo-energia', UPS]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
