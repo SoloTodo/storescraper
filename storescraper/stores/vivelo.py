@@ -104,6 +104,9 @@ class Vivelo(Store):
         page_source = response.text
         soup = BeautifulSoup(page_source, 'html5lib')
 
+        if '404 Página no encontrada' in soup.find('title').text:
+            return []
+
         base_name = soup.find('div', 'product-name').text.strip()
         description = html_to_markdown(
             str(soup.find(
