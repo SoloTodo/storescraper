@@ -96,7 +96,7 @@ class Tecnocam(Store):
             price = Decimal(remove_words(price_container.find('ins').text))
         else:
             price = Decimal(remove_words(price_container.text))
-        picture_urls = [tag['src'] for tag in soup.find(
+        picture_urls = [tag['data-src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
         if soup.find('span', 'sku'):
             part_number = soup.find('span', 'sku').text.strip()[:45]

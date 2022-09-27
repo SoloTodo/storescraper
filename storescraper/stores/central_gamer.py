@@ -87,6 +87,9 @@ class CentralGamer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        if 'Lo sentimos, no pudimos encontrar esa página' in soup.text:
+            return []
+
         name = soup.find('h1', 'product-heading__title').text
         key = soup.find('form', 'product-form')['action'].split('/')[-1]
         sku = soup.find(
