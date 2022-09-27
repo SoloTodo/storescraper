@@ -56,21 +56,40 @@ class Vivelo(Store):
             if local_category != category:
                 continue
 
-            category_url = 'https://www.vivelo.cl/{}?limit=all'.format(
-                category_path)
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('page overflow: ' + category_path)
 
-            print(category_url)
+                category_url = 'https://www.vivelo.cl/{}?p={}'.format(
+                    category_path, page)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            containers = soup.findAll('ul', 'products-grid')[-1].findAll(
-                'li', 'item')
+                print(category_url)
 
-            if not containers:
-                raise Exception('Empty category: ' + category_url)
+                soup = BeautifulSoup(session.get(
+                    category_url).text, 'html.parser')
 
-            for link_container in containers:
-                product_url = link_container.find('a')['href']
-                product_urls.append(product_url)
+                pages = soup.find('div', 'pages')
+                if pages:
+                    lastPage = pages.findAll('li')[-1].text.strip()
+                    if lastPage != '' and page > int(lastPage):
+                        break
+                else:
+                    if page != 1:
+                        break
+
+                containers = soup.findAll('ul', 'products-grid')[-1].findAll(
+                    'li', 'item')
+
+                if not containers:
+                    if page == 1:
+                        raise Exception('Empty category: ' + category_url)
+                    break
+
+                for link_container in containers:
+                    product_url = link_container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
 
         return product_urls
 
