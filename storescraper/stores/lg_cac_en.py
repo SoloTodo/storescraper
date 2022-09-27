@@ -34,11 +34,11 @@ class LgCacEn(LgV5):
             ('CT20273021', 'Projector', True),
             ('CT20273021', 'Projector', False),
             # Equipos de sonido
-            ('CT20273041', 'StereoSystem', True),
-            ('CT20273041', 'StereoSystem', False),
+            ('CT40011663', 'StereoSystem', True),
+            ('CT40011663', 'StereoSystem', False),
             # Audífonos inalámbricos
-            ('CT40001005', 'Headphones', True),
-            ('CT40001005', 'Headphones', False),
+            ('CT40011665', 'Headphones', True),
+            ('CT40011665', 'Headphones', False),
             # Teléfonos Celulares
             ('CT20273028', 'Cell', True),
             ('CT20273028', 'Cell', False),

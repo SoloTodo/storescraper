@@ -38,16 +38,17 @@ class LgCac(LgV5):
             ('CT20188025', 'Projector', True),
             ('CT20188025', 'Projector', False),
             # Equipos de sonido
-            ('CT20188049', 'StereoSystem', True),
-            ('CT20188049', 'StereoSystem', False),
+            ('CT40011633', 'StereoSystem', True),
+            ('CT40011633', 'StereoSystem', False),
             # Video
             ('CT20188055', 'OpticalDiskPlayer', True),
             ('CT20188055', 'OpticalDiskPlayer', False),
             # Teléfonos Celulares
             ('CT20188032', 'Cell', True),
             ('CT20188032', 'Cell', False),
-            # Accesorios para celular
-            ('CT30006720', 'Headphones', False),
+            # Audífonos
+            ('CT40011643', 'Headphones', True),
+            ('CT40011643', 'Headphones', False),
             # Refrigeradora
             ('CT20188021', 'Refrigerator', True),
             ('CT20188021', 'Refrigerator', False),
@@ -72,9 +73,6 @@ class LgCac(LgV5):
             # Aire acondicionado residencial
             ('CT30014140', 'AirConditioner', True),
             ('CT30014140', 'AirConditioner', False),
-            # SOLUCIONES DE CUIDADO DEL AIRE
-            ('CT40005165', 'AirConditioner', True),
-            ('CT40005165', 'AirConditioner', False),
             # Deshumidificador
             # ('CT32021782', 'AirConditioner', True),
             # Monitores
