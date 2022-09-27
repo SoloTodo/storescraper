@@ -87,7 +87,7 @@ class CentralGamer(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        if 'Error' == soup.find('h3', 'category-message__title').text:
+        if 'Lo sentimos, no pudimos encontrar esa página' in soup.text:
             return []
 
         name = soup.find('h1', 'product-heading__title').text
