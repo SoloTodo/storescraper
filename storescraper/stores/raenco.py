@@ -57,7 +57,8 @@ class Raenco(Store):
 
                 print(url)
 
-                soup = BeautifulSoup(session.get(url, timeout=60).text, 'html.parser')
+                soup = BeautifulSoup(session.get(
+                    url, timeout=60).text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
 
                 if not product_containers and page == 1:
