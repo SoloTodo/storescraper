@@ -1,11 +1,9 @@
 import logging
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
-    HEADPHONES, MONITOR, NOTEBOOK, OVEN, PRINTER, REFRIGERATOR, \
-    STEREO_SYSTEM, TABLET, TELEVISION, WASHING_MACHINE, WEARABLE
+from storescraper.categories import AIR_CONDITIONER, REFRIGERATOR, \
+    STEREO_SYSTEM, TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -17,53 +15,27 @@ class Raenco(Store):
     def categories(cls):
         return [
             REFRIGERATOR,
-            WASHING_MACHINE,
-            OVEN,
             AIR_CONDITIONER,
             TELEVISION,
-            STEREO_SYSTEM,
-            CELL,
-            ALL_IN_ONE,
-            NOTEBOOK,
-            MONITOR,
-            TABLET,
-            WEARABLE,
-            PRINTER,
-            HEADPHONES,
+            STEREO_SYSTEM
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ["hogar/linea-blanca/refrigeradoras.html", REFRIGERATOR],
-            ["hogar/linea-blanca/lavadora.html", WASHING_MACHINE],
-            ["hogar/linea-blanca/secadoras.html", WASHING_MACHINE],
-            ["hogar/electrodomesticos/microondas.html", OVEN],
+            ["hogar.html", REFRIGERATOR],
             ["aires-acondicionado.html", AIR_CONDITIONER],
-            ["audio-y-video/tv/tv-led-hd-fhd.html", TELEVISION],
-            ["audio-y-video/tv/tv-4k.html", TELEVISION],
-            ["audio-y-video/tv/tv-crystal-uhd.html", TELEVISION],
-            ["audio-y-video/tv/tv-nanocell.html", TELEVISION],
-            ["audio-y-video/tv/tv-qled.html", TELEVISION],
-            ["audio-y-video/equipos-de-sonido.html", STEREO_SYSTEM],
-            ["audio-y-video/sound-bar.html", STEREO_SYSTEM],
-            ["tecnologia/celulares.html", CELL],
-            ["tecnologia/computadoras/desktop.html", ALL_IN_ONE],
-            ["tecnologia/computadoras/core-i3-ryzen-3.html", NOTEBOOK],
-            ["tecnologia/computadoras/core-i5-ryzen-5.html", NOTEBOOK],
-            ["tecnologia/computadoras/core-i7-ryzen-7.html", NOTEBOOK],
-            ["tecnologia/computadoras/celeron", NOTEBOOK],
-            ["tecnologia/computadoras/monitores", MONITOR],
-            ["tecnologia/tablet.html", TABLET],
-            ["tecnologia/reloj-smartwatch.html", WEARABLE],
-            ["tecnologia/impresora-y-escaner.html", PRINTER],
-            ["tecnologia/audifonos-y-bocinas.html", HEADPHONES],
+            ["fuente-de-agua.html", TELEVISION],
+            ["oficina.html", TELEVISION],
+            ["construccion.html", TELEVISION],
+            ["audio-y-video.html", TELEVISION],
+            ["tecnologia.html", STEREO_SYSTEM],
+            ["autos.html", TELEVISION],
         ]
 
         session = session_with_proxy(extra_args)
 
         product_urls = []
-        lg_urls = []
 
         for category_path, local_category in category_filters:
             if local_category != category:
@@ -73,14 +45,19 @@ class Raenco(Store):
             local_urls = []
             done = False
 
-            while True:
+            while not done:
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                url = 'https://raenco.com/index.php/departamentos/{}?p={}'\
-                    .format(category_path, page)
+                url = 'https://www.raenco.com/departamentos/{}?' \
+                      'marca=221'.format(category_path)
 
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
+                if page != 1:
+                    url += '&p={}'.format(page)
+
+                print(url)
+
+                soup = BeautifulSoup(session.get(url, timeout=60).text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
 
                 if not product_containers and page == 1:
@@ -93,20 +70,12 @@ class Raenco(Store):
                         done = True
                         break
 
-                    if 'LG' in container.find(
-                            'strong', 'product-item-name').text.upper():
-                        lg_urls.append(product_url)
-
                     local_urls.append(product_url)
-
-                if done:
-                    break
-
-                product_urls.extend(local_urls)
-
                 page += 1
 
-        return list(set(lg_urls))
+            product_urls.extend(local_urls)
+
+        return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
