@@ -152,8 +152,9 @@ class Hites(Store):
              ['UsbFlashDrive', 'MemoryCard'],
              'Inicio > Tecnología > Accesorios y Otros > Pendrives y '
              'Tarjetas de Memoria', 1],
-            ['tecnologia/computacion/disco-duro', ['ExternalStorageDrive'],
-             'Inicio > Tecnología > Computación > Disco Duro', 1],
+            ['tecnologia/accesorios-y-otros/discos-duros-y-pendrives',
+             ['ExternalStorageDrive'],
+             'Inicio > Tecnología > Accesorios y Otros > Disco Duro', 1],
             ['tecnologia/video-juego/consolas', ['VideoGameConsole'],
              'Inicio > Tecnología > Video Juego > Consolas', 1],
             ['tecnologia/audio', ['StereoSystem', 'Headphones'],
