@@ -91,9 +91,16 @@ class CentralGamer(Store):
             return []
 
         name = soup.find('h1', 'product-heading__title').text
-        key = soup.find('form', 'product-form')['action'].split('/')[-1]
-        sku = soup.find(
-            'span', 'product-heading__detail--sku').text.replace('SKU: ', '')
+        form = soup.find('form', 'product-form')
+        if form:
+            key = form['action'].split('/')[-1]
+        else:
+            key = soup.find('meta', {'property': 'og:id'})['content']
+        span_sku = soup.find('span', 'product-heading__detail--sku')
+        if span_sku:
+            sku = span_sku.text.replace('SKU: ', '')
+        else:
+            sku = None
 
         stock_tag = soup.find('meta', {'property': 'product:availability'})
         if stock_tag['content'] == 'instock':
