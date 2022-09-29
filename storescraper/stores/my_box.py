@@ -44,7 +44,7 @@ class MyBox(Store):
             ['92-enfriamiento-refrigeracion', CPU_COOLER],
             ['63-fuentes-de-poder', POWER_SUPPLY],
             ['62-gabinetes', COMPUTER_CASE],
-            ['28-monitor', MONITOR],
+            ['28-pantallasmonitores', MONITOR],
             ['21-audifonos-headset', HEADPHONES],
             ['22-parlantes', STEREO_SYSTEM],
             ['24-microfonos', MICROPHONE],
@@ -88,7 +88,12 @@ class MyBox(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('input', {'name': 'id_product'})['value']
+        key = soup.find('input', {'name': 'id_product'})['value']
+        span_sku = soup.find('span', {'itemprop': 'sku'})
+        if span_sku:
+            sku = span_sku.text.strip()
+        else:
+            sku = None
         if soup.find('div', 'stock-disponible').text.strip() == 'No hay ' \
                                                                 'suficientes' \
                                                                 ' productos ' \
@@ -112,12 +117,13 @@ class MyBox(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
         )
         return [p]
