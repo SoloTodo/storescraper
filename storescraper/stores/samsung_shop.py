@@ -95,13 +95,15 @@ class SamsungShop(Store):
                     for picture in model['galleryImage'] or []:
                         picture_urls.append('https:' + picture)
 
-                    if model['promotionPrice']:
+                    if model['promotionPrice'] and \
+                            Decimal(model['promotionPrice']):
                         price = Decimal(model['promotionPrice'])
-                    elif model['price']:
-                        price = Decimal(remove_words(
-                            model['priceDisplay']))
+                    elif model['price'] and Decimal(model['price']):
+                        price = Decimal(model['price'])
                     else:
                         continue
+
+                    assert price
 
                     products.append(Product(
                         '{} ({})'.format(name, key),
