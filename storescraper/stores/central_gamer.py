@@ -96,8 +96,11 @@ class CentralGamer(Store):
             key = form['action'].split('/')[-1]
         else:
             key = soup.find('meta', {'property': 'og:id'})['content']
-        sku = soup.find(
-            'span', 'product-heading__detail--sku').text.replace('SKU: ', '')
+        span_sku = soup.find('span', 'product-heading__detail--sku')
+        if span_sku:
+            sku = span_sku.text.replace('SKU: ', '')
+        else:
+            sku = None
 
         stock_tag = soup.find('meta', {'property': 'product:availability'})
         if stock_tag['content'] == 'instock':
