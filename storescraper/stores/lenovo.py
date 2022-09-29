@@ -13,6 +13,8 @@ from storescraper.utils import remove_words, html_to_markdown, \
 class Lenovo(Store):
     base_domain = 'https://www.lenovo.com'
     currency = 'USD'
+    extension = ''
+    region_extension = ''
 
     @classmethod
     def categories(cls):
@@ -39,75 +41,12 @@ class Lenovo(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        response = session.get(url,  allow_redirects=False)
-        if response.status_code == 301:
-            return []
+        response = session.get(url, allow_redirects=True)
 
         soup = BeautifulSoup(response.text, 'html5lib')
-        models_containers = soup.findAll('div', 'tabbedBrowse-productListing')
         products = []
 
-        if models_containers:
-            for model_container in models_containers:
-                name = model_container\
-                    .find('h3', 'tabbedBrowse-productListing-title')\
-                    .contents[0].strip()
-                if model_container.find('div', 'partNumber'):
-                    sku = model_container.find('div', 'partNumber').text\
-                        .replace('Modelo:', '').strip()
-                else:
-                    sku = soup.find('meta', {'name': 'bundleid'})['content']
-
-                price_tag = model_container\
-                    .find('dd', 'pricingSummary-details-final-price')
-
-                if price_tag:
-                    price = price_tag.text\
-                        .replace('.', '').replace('$', '').replace(',', '.')
-
-                price_tag_2 = model_container.find(
-                    'dd', 'saleprice pricingSummary-details-final-price')
-                if price_tag_2:
-                    price = price_tag_2.text \
-                        .replace('.', '').replace('$', '').replace(',', '.')
-                else:
-                    price = model_container.find(
-                        'span', 'bundleDetail_youBundlePrice_value'
-                    ).text.replace('.', '').replace('$', '').replace(',', '.')
-
-                price = Decimal(price)
-
-                description = html_to_markdown(str(
-                    model_container
-                    .find('div', 'tabbedBrowse-productListing-featureList')))
-
-                picture_urls = ['https://www.lenovo.com' +
-                                soup.find('img', 'subSeries-Hero')['src']]
-
-                stock_msg = model_container.find('span', 'stock_message').text
-
-                if stock_msg == 'Agotado':
-                    stock = 0
-                else:
-                    stock = -1
-
-                products.append(Product(
-                    '{} ({})'.format(name, sku),
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    sku,
-                    stock,
-                    price,
-                    price,
-                    cls.currency,
-                    sku=sku,
-                    part_number=sku,
-                    description=description,
-                    picture_urls=picture_urls
-                ))
-        elif soup.find('div', 'singleModelView'):
+        if soup.find('div', 'singleModelView'):
             name = soup.find('h2', 'tabbedBrowse-title singleModelTitle')\
                 .text.strip()
             if soup.find('div', 'partNumber'):
@@ -230,10 +169,10 @@ class Lenovo(Store):
 
             for sorter in sorters:
                 nb_path = \
-                    cls.base_domain + '/api/product/graph?src=splitter&' \
-                                      'categories={}&currency={}&sort={}' \
-                                      '&page='.format(category_path,
-                                                      cls.currency, sorter)
+                    cls.base_domain + '/api/nfe/dlp/search?contextString=' \
+                                      '{}&categories={}&pageSize=30' \
+                                      '&sort={}&page='.format(
+                        cls.extension, category_path, sorter)
                 page = 0
 
                 while True:
@@ -241,22 +180,17 @@ class Lenovo(Store):
                         raise Exception('Page overflow')
 
                     url = nb_path + str(page)
-                    print(url)
                     response = session.get(url)
 
-                    if response.status_code == 500:
+                    if response.status_code == 404:
                         break
 
                     data = json.loads(response.text)
 
-                    if 'results' not in data:
-                        break
-
-                    if not data['results']:
-                        break
-
                     for product_entry in data['results']:
-                        product_url = cls.base_domain + product_entry['url']
+                        product_url = cls.base_domain + \
+                                      cls.region_extension + \
+                                      product_entry['url']
                         if product_url not in products_urls:
                             products_urls.append(product_url)
 
@@ -266,23 +200,14 @@ class Lenovo(Store):
 
     @classmethod
     def _discover_urls_for_category_old(cls, category, extra_args=None):
-        # Yes, each category has its own required parameters
         category_paths = [
-            ('ch=-926260695&categoryCode=Monitors&categories=ACCESSORY&'
-             'pageSize=20&sort={}&currency=CLP&cmsFacets=facet_Price,'
-             'facet_Type,facet_ScreenSize,facet_PanelType,facet_Group,'
-             'facet_Resolution',
-             MONITOR),
+            ('Monitors', MONITOR),
         ]
 
         sorters = ['sortBy', 'price-asc', 'price-desc', 'selling-desc']
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.68.0'
-        session.headers['Accept'] = 'text/html,application/xhtml+xml,' \
-                                    'application/xml;q=0.9,image/avif,' \
-                                    'image/webp,image/apng,*/*;q=0.8,' \
-                                    'application/signed-exchange;v=b3;q=0.9'
 
         products_urls = []
 
@@ -291,17 +216,17 @@ class Lenovo(Store):
                 continue
 
             for sorter in sorters:
-                nb_path = cls.base_domain + '/search/facet/query/v3?' + \
-                    category_path.format(sorter) + \
-                    '&page={}'
+                nb_path = cls.base_domain + cls.region_extension + \
+                          '/search/facet/query/v3?categoryCode={}' \
+                          '&categories=ACCESSORY&pageSize=20' \
+                          '&sort={}&page='.format(category_path, sorter)
                 page = 0
 
                 while True:
                     if page >= 10:
                         raise Exception('Page overflow')
 
-                    url = nb_path.format(page)
-                    print(url)
+                    url = nb_path + str(page)
                     response = session.get(url)
 
                     if response.status_code == 500:
@@ -313,7 +238,9 @@ class Lenovo(Store):
                         break
 
                     for product_entry in data['results']:
-                        product_url = cls.base_domain + product_entry['url']
+                        product_url = cls.base_domain + \
+                                      cls.region_extension + \
+                                      product_entry['url']
                         if product_url not in products_urls:
                             products_urls.append(product_url)
 
