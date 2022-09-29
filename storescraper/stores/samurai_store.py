@@ -3,8 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import RAM, VIDEO_CARD, SOLID_STATE_DRIVE, \
-    PROCESSOR
+from storescraper.categories import MOTHERBOARD, RAM, VIDEO_CARD, \
+    SOLID_STATE_DRIVE, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -18,6 +18,7 @@ class SamuraiStore(Store):
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
             PROCESSOR,
+            MOTHERBOARD
         ]
 
     @classmethod
@@ -27,6 +28,7 @@ class SamuraiStore(Store):
             ['ram', RAM],
             ['tarjetas-de-video', VIDEO_CARD],
             ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
+            ['placa-madre', MOTHERBOARD]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -39,7 +41,7 @@ class SamuraiStore(Store):
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://www.samuraistorejp.cl/' \
                               'product-category/{}/page/{}/'.format(
-                                url_extension, page)
+                                  url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
