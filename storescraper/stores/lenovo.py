@@ -172,7 +172,7 @@ class Lenovo(Store):
                     cls.base_domain + '/api/nfe/dlp/search?contextString=' \
                                       '{}&categories={}&pageSize=30' \
                                       '&sort={}&page='.format(
-                        cls.extension, category_path, sorter)
+                                          cls.extension, category_path, sorter)
                 page = 0
 
                 while True:
@@ -189,8 +189,8 @@ class Lenovo(Store):
 
                     for product_entry in data['results']:
                         product_url = cls.base_domain + \
-                                      cls.region_extension + \
-                                      product_entry['url']
+                            cls.region_extension + \
+                            product_entry['url']
                         if product_url not in products_urls:
                             products_urls.append(product_url)
 
@@ -217,9 +217,9 @@ class Lenovo(Store):
 
             for sorter in sorters:
                 nb_path = cls.base_domain + cls.region_extension + \
-                          '/search/facet/query/v3?categoryCode={}' \
-                          '&categories=ACCESSORY&pageSize=20' \
-                          '&sort={}&page='.format(category_path, sorter)
+                    '/search/facet/query/v3?categoryCode={}' \
+                    '&categories=ACCESSORY&pageSize=20' \
+                    '&sort={}&page='.format(category_path, sorter)
                 page = 0
 
                 while True:
@@ -239,8 +239,8 @@ class Lenovo(Store):
 
                     for product_entry in data['results']:
                         product_url = cls.base_domain + \
-                                      cls.region_extension + \
-                                      product_entry['url']
+                            cls.region_extension + \
+                            product_entry['url']
                         if product_url not in products_urls:
                             products_urls.append(product_url)
 
