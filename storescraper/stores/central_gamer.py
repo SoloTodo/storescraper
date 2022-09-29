@@ -91,7 +91,11 @@ class CentralGamer(Store):
             return []
 
         name = soup.find('h1', 'product-heading__title').text
-        key = soup.find('form', 'product-form')['action'].split('/')[-1]
+        form = soup.find('form', 'product-form')
+        if form:
+            key = form['action'].split('/')[-1]
+        else:
+            key = soup.find('meta', {'property': 'og:id'})['content']
         sku = soup.find(
             'span', 'product-heading__detail--sku').text.replace('SKU: ', '')
 
