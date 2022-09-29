@@ -107,8 +107,14 @@ class Entel(Store):
                    'public/js/data-planes.js?v=260722.1056'
         res = session.get(endpoint)
 
-        raw_plans = re.search(r'const Planes_Parrilla_1plan = (\[[\s\S]*?])',
-                              res.text).groups()[0]
+        try:
+            raw_plans = re.search(
+                r'const Planes_Parrilla_1plan=(\[[\s\S]*?])',
+                res.text).groups()[0]
+        except Exception:
+            raw_plans = re.search(
+                r'const Planes_Parrilla_1plan = (\[[\s\S]*?])',
+                res.text).groups()[0]
         plans = demjson.decode(raw_plans)
 
         products = []

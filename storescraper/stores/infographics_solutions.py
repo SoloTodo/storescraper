@@ -137,7 +137,11 @@ class InfographicsSolutions(Store):
         if len(soup_jsons) < 2:
             return []
 
-        product_data = json.loads(soup_jsons[1].text)
+        json_data = json.loads(soup_jsons[1].text)
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
 
         if 'name' in product_data:
             name = product_data['name']
@@ -146,10 +150,12 @@ class InfographicsSolutions(Store):
             normal_price = round(
                 (offer_price * Decimal('1.05')).quantize(0), -1)
         else:
-            product_data_2 = json.loads(soup.findAll(
-                'script', {'type': 'application/ld+json'}
-            )[0].text)['@graph']
-            name = product_data_2[3]['name']
+            json_data_2 = json.loads(soup_jsons[0].text)['@graph']
+            for entry in json_data_2['@graph']:
+                if entry['@type'] == 'WebPage':
+                    product_data_2 = entry
+                    break
+            name = product_data_2['name']
             wds = soup.find('div', 'wd-single-price')
             if wds.find('div', 'wds-first').find('ins'):
                 offer_price = Decimal(
