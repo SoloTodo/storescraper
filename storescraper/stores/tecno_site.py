@@ -3,11 +3,10 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CPU_COOLER, STEREO_SYSTEM, COMPUTER_CASE, \
-    GAMING_CHAIR, TABLET, NOTEBOOK, WEARABLE, VIDEO_CARD, POWER_SUPPLY, RAM, \
-    MOTHERBOARD, PROCESSOR, HEADPHONES, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
-    EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    USB_FLASH_DRIVE, MONITOR, PRINTER, ALL_IN_ONE
+from storescraper.categories import CPU_COOLER, COMPUTER_CASE, \
+    GAMING_CHAIR, TABLET, NOTEBOOK, VIDEO_CARD, POWER_SUPPLY, RAM, \
+    MOTHERBOARD, PROCESSOR, KEYBOARD_MOUSE_COMBO, SOLID_STATE_DRIVE, \
+    ALL_IN_ONE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -17,59 +16,43 @@ class TecnoSite(Store):
     @classmethod
     def categories(cls):
         return [
+            CPU_COOLER,
+            COMPUTER_CASE,
+            GAMING_CHAIR,
             TABLET,
             NOTEBOOK,
-            ALL_IN_ONE,
-            WEARABLE,
+            VIDEO_CARD,
             POWER_SUPPLY,
-            COMPUTER_CASE,
             RAM,
             MOTHERBOARD,
             PROCESSOR,
-            VIDEO_CARD,
-            HEADPHONES,
             KEYBOARD_MOUSE_COMBO,
-            STEREO_SYSTEM,
-            MEMORY_CARD,
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
             SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            MONITOR,
-            PRINTER,
-            CPU_COOLER,
-            GAMING_CHAIR
+            ALL_IN_ONE,
+            MOUSE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['gamer/refrigeracion', CPU_COOLER],
-            ['gamer/audio', STEREO_SYSTEM],
             ['gamer/gabinetes', COMPUTER_CASE],
+            ['gamer/mouse', MOUSE],
             ['gamer/sillas', GAMING_CHAIR],
             ['tablets-en-oferta', TABLET],
             ['portatiles/notebooks', NOTEBOOK],
             ['pc-escritorio/all-in-one', ALL_IN_ONE],
-            ['smartwatch-chile/smartwatch', WEARABLE],
             ['componentes/bundles', VIDEO_CARD],
             ['componentes/fuentes', POWER_SUPPLY],
             ['componentes/gabinete', COMPUTER_CASE],
             ['componentes/memorias', RAM],
             ['componentes/placas-madre', MOTHERBOARD],
-            ['componentes/procesadores', PROCESSOR],
+            ['componentes/procesador', PROCESSOR],
+            ['componentes/kit-procesadores', PROCESSOR],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['accesorios/audifonos', HEADPHONES],
+            ['componentes/almacenamiento', SOLID_STATE_DRIVE],
             ['accesorios/kit-tecl', KEYBOARD_MOUSE_COMBO],
-            ['accesorios/parlantes', STEREO_SYSTEM],
             ['accesorios/perifericos', KEYBOARD_MOUSE_COMBO],
-            ['almacenamiento/memoria-sd', MEMORY_CARD],
-            ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/hdd', STORAGE_DRIVE],
-            ['almacenamiento/ssd-m-2', SOLID_STATE_DRIVE],
-            ['almacenamiento/pendrive-usb', USB_FLASH_DRIVE],
-            ['monitores-y-pantallas', MONITOR],
-            ['impresion-e-imagen', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
