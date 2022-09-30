@@ -136,26 +136,8 @@ class Ripley(Store):
              'Electro > Lavandería > Lavadora-secadora', 1],
             ['electro/lavanderia/doble-carga', ['WashingMachine'],
              'Electro > Lavandería > Doble carga', 1],
-            ['tecno/celulares/iphone', ['Cell'],
-             'Tecno > Telefonía > iPhone', 1],
-            ['tecno/celulares/samsung', ['Cell'],
-             'Tecno > Telefonía > Samsung', 1],
-            ['tecno/celulares/huawei', ['Cell'],
-             'Tecno > Telefonía > Huawei', 1],
-            ['tecno/celulares/xiaomi', ['Cell'],
-             'Tecno > Telefonía > Xiaomi', 1],
-            ['tecno/celulares/motorola', ['Cell'],
-             'Tecno > Telefonía > Motorola', 1],
-            ['tecno/celulares/vivo', ['Cell'],
-             'Tecno > Telefonía > Vivo', 1],
-            ['tecno/celulares/oppo', ['Cell'],
-             'Tecno > Telefonía > Oppo', 1],
-            ['tecno/celulares/open-box', ['Cell'],
-             'Tecno > Telefonía > Open Box', 1],
-            ['tecno/celulares/otras-marcas', ['Cell'],
-             'Tecno > Telefonía > Otras Marcas', 1],
-            # ['tecno/celulares/celulares-basicos', ['Cell'],
-            #  'Tecno > Telefonía > Básicos', 1],
+            ['tecno/celulares?facet=Tipo%20de%20Producto%3ASmartphone',
+             ['Cell'], 'Tecno > Celulares', 1],
             ['tecno/audio-y-musica', ['StereoSystem'],
              'Tecno > Audio y Música', 0],
             ['tecno/audio-y-musica/equipos-de-musica', ['StereoSystem'],
@@ -206,7 +188,6 @@ class Ripley(Store):
         fast_mode = extra_args.get('fast_mode', False)
         print('fast_mode', fast_mode)
 
-        url_base = 'https://simple.ripley.cl/{}?page={}'
         product_dict = {}
 
         for e in category_paths:
@@ -222,7 +203,12 @@ class Ripley(Store):
                 if page > 200:
                     raise Exception('Page overflow')
 
-                category_url = url_base.format(category_path, page)
+                if '?' in category_path:
+                    param = '&'
+                else:
+                    param = '?'
+                url_base = 'https://simple.ripley.cl/{}{}page={}'
+                category_url = url_base.format(category_path, param, page)
                 print(category_url)
                 response = session.get(category_url, allow_redirects=True,
                                        timeout=60)
