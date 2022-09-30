@@ -77,6 +77,7 @@ class ZonaPortatil(Store):
             ['zona-gamer/placas-madres-zona-gamer', MOTHERBOARD],
             ['zona-gamer/procesadores-zona-gamer', PROCESSOR],
             ['zona-gamer/tarjetas-graficas-zona-gamer', VIDEO_CARD],
+            ['cyber-zona-portatil', MONITOR]
         ]
 
         session = session_with_proxy(extra_args)
@@ -89,8 +90,12 @@ class ZonaPortatil(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://www.zonaportatil.cl/categoria-prod' \
-                              'ucto/{}/page/{}/'.format(url_extension, page)
+                if 'cyber-zona-portatil' == url_extension:
+                    url_webpage = 'https://www.zonaportatil.cl/' \
+                        'cyber-zona-portatil/'
+                else:
+                    url_webpage = 'https://www.zonaportatil.cl/categoria-pro' \
+                        'ducto/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -103,6 +108,9 @@ class ZonaPortatil(Store):
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
+
+                if 'cyber-zona-portatil' == url_extension:
+                    break
                 page += 1
         return product_urls
 
