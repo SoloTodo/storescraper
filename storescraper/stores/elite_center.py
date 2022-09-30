@@ -100,11 +100,11 @@ class EliteCenter(Store):
                 continue
             page = 1
             while True:
-                if page > 30:
+                if page > 15:
                     raise Exception('page overflow: ' + url_extension)
 
                 url_webpage = 'https://elitecenter.cl/product-category/{}/' \
-                              'page/{}/'.format(
+                              'page/{}/?per_page=28'.format(
                                   url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
