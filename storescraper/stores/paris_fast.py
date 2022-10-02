@@ -81,7 +81,7 @@ class ParisFast(Store):
                 if page > 150:
                     raise Exception('Page overflow:' + category_path)
 
-                category_url = 'https://www.paris.cl/{}/?sz=40&start={}'\
+                category_url = 'https://www.paris.cl/{}/?start={}&sz=40'\
                     .format(category_path, page * 40)
                 print(category_url)
                 response = session.get(category_url)
