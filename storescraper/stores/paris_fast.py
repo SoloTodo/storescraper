@@ -16,38 +16,7 @@ class ParisFast(Store):
 
     @classmethod
     def categories(cls):
-        return [
-            'Notebook',
-            'Television',
-            'Tablet',
-            'Refrigerator',
-            'Printer',
-            'Oven',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            # 'Camera',
-            'StereoSystem',
-            # 'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            # 'Monitor',
-            'AllInOne',
-            'AirConditioner',
-            # 'WaterHeater',
-            # 'SolidStateDrive',
-            'SpaceHeater',
-            'Wearable',
-            'Mouse',
-            'Keyboard',
-            # 'KeyboardMouseCombo',
-            'Headphones',
-            # 'ComputerCase',
-            'DishWasher',
-        ]
+        return Paris.categories()
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -86,7 +55,7 @@ class ParisFast(Store):
                 print(category_url)
                 response = session.get(category_url)
 
-                if response.url != category_url:
+                if response.url.split('?')[0] != category_url.split('?')[0]:
                     raise Exception('Mismatching URL: {} - {}'.format(
                         response.url, category_url))
 

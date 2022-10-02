@@ -52,7 +52,7 @@ class Paris(Store):
          'Electro > HiFi > Audio HiFi', 1],
         ['electro/audio-hifi/parlantes', ['StereoSystem'],
          'Electro > HiFi > Parlantes HIFI', 1],
-        ['electro/audio-hifi/', ['StereoSystem'],
+        ['electro/audio-hifi', ['StereoSystem'],
          'Electro > HiFi > Combos HIFI', 1],
         ['electro/elige-tu-pulgada', ['Television'],
          'Electro > Elige tu pulgada', 1],
@@ -119,15 +119,15 @@ class Paris(Store):
          'Línea Blanca > Refrigeración', 1],
         ['linea-blanca/refrigeracion/refrigeradores/', ['Refrigerator'],
          'Línea Blanca > Refrigeración > Refrigeradores', 1],
-        ['linea-blanca/refrigeracion/refrigeradores/no-frost/',
+        ['linea-blanca/refrigeracion/refrigeradores/no-frost',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > No Frost', 1],
         ['linea-blanca/refrigeracion/refrigeradores/'
-         'refrigerador-top-mount/',
+         'refrigerador-top-mount',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Top Mount', 1],
         ['linea-blanca/refrigeracion/refrigeradores/'
-         'refrigerador-bottom-freezer/',
+         'refrigerador-bottom-freezer',
          ['Refrigerator'],
          'Línea Blanca > Refrigeración > Bottom Freezer', 1],
         ['linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side',
@@ -191,41 +191,13 @@ class Paris(Store):
 
     @classmethod
     def categories(cls):
-        return [
-            'Notebook',
-            'Television',
-            'Tablet',
-            'Refrigerator',
-            'Printer',
-            'Oven',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'Camera',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            'Monitor',
-            'AllInOne',
-            'AirConditioner',
-            'WaterHeater',
-            'SolidStateDrive',
-            'SpaceHeater',
-            'Wearable',
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'ComputerCase',
-            'DishWasher',
-            'CellAccesory',
-            GAMING_CHAIR,
-            GAMING_DESK
-        ]
+        cats = []
+        for entry in Paris.category_paths:
+            for cat in entry[1]:
+                if cat not in cats:
+                    cats.append(cat)
+
+        return cats
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
