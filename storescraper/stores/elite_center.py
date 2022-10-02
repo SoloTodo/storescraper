@@ -113,7 +113,7 @@ class EliteCenter(Store):
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-grid-item')
 
-                if not product_containers:
+                if response.status_code == 404:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
