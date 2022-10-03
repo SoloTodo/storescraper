@@ -117,7 +117,7 @@ class Paris(Store):
          'Tecno > Accesorios Computación > Pendrives', 1],
         ['linea-blanca/refrigeracion', ['Refrigerator'],
          'Línea Blanca > Refrigeración', 1],
-        ['linea-blanca/refrigeracion/refrigeradores/', ['Refrigerator'],
+        ['linea-blanca/refrigeracion/refrigeradores', ['Refrigerator'],
          'Línea Blanca > Refrigeración > Refrigeradores', 1],
         ['linea-blanca/refrigeracion/refrigeradores/no-frost',
          ['Refrigerator'],
