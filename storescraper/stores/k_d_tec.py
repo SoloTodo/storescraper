@@ -6,9 +6,9 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, \
     HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MICROPHONE, \
-    MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PROCESSOR, RAM, \
+    MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, TELEVISION, \
-    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE
+    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -44,7 +44,8 @@ class KDTec(Store):
             COMPUTER_CASE,
             CPU_COOLER,
             CASE_FAN,
-            TELEVISION
+            TELEVISION,
+            PRINTER
         ]
 
     @classmethod
@@ -87,6 +88,10 @@ class KDTec(Store):
             ['componentes/refrigeracion/refrigeracion-cpu', CPU_COOLER],
             ['componentes/refrigeracion/ventiladores-pc', CASE_FAN],
             ['television/smart-tv', TELEVISION],
+            ['oficina/impresoras/impresoras-laser', PRINTER],
+            ['oficina/impresoras/impresoras-tinta', PRINTER],
+            ['oficina/impresoras/impresora-multifuncional', PRINTER],
+            ['oficina/impresoras/matriz-de-punto', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
