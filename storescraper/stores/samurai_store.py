@@ -86,6 +86,8 @@ class SamuraiStore(Store):
 
         if 'preventa' in name.lower():
             stock = 0
+        elif soup.find('p', 'stock available-on-backorder'):
+            stock = 0
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
