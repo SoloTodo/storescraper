@@ -166,7 +166,7 @@ class Falabella(Store):
          'Home > Tecnología-Audio > Hi-Fi', 1],
         ['cat4061', ['DishWasher'],
          'Home > Lavado-Lavavajillas', 1],
-        ['cat12084890', [GAMING_CHAIR],
+        ['CATG19011', [GAMING_CHAIR],
          'Home > Tecnología-Computadores > Accesorios Computación > Sillas '
          'Gamer', 1]
     ]
