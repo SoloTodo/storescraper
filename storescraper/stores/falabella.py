@@ -173,36 +173,13 @@ class Falabella(Store):
 
     @classmethod
     def categories(cls):
-        return [
-            'Notebook',
-            'Television',
-            'Tablet',
-            'Refrigerator',
-            'Printer',
-            'Oven',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'Camera',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            'AllInOne',
-            'AirConditioner',
-            'Monitor',
-            'WaterHeater',
-            'Mouse',
-            'SpaceHeater',
-            'Keyboard',
-            'Wearable',
-            'Headphones',
-            'DishWasher',
-            GAMING_CHAIR
-        ]
+        cats = []
+        for entry in cls.category_paths:
+            for cat in entry[1]:
+                if cat not in cats:
+                    cats.append(cat)
+
+        return cats
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):

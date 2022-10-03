@@ -15,38 +15,7 @@ class FalabellaFast(Store):
 
     @classmethod
     def categories(cls):
-        return [
-            'Notebook',
-            'Television',
-            'Tablet',
-            'Refrigerator',
-            'Printer',
-            'Oven',
-            'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'Camera',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            # 'CellAccesory',
-            'AllInOne',
-            'AirConditioner',
-            'Monitor',
-            'WaterHeater',
-            # 'SolidStateDrive',
-            'Mouse',
-            'SpaceHeater',
-            'Keyboard',
-            # 'KeyboardMouseCombo',
-            'Wearable',
-            'Headphones',
-            'DishWasher'
-        ]
+        return Falabella.categories()
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):

@@ -192,7 +192,7 @@ class Paris(Store):
     @classmethod
     def categories(cls):
         cats = []
-        for entry in Paris.category_paths:
+        for entry in cls.category_paths:
             for cat in entry[1]:
                 if cat not in cats:
                     cats.append(cat)
