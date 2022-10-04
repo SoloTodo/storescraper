@@ -118,6 +118,10 @@ class Wei(Store):
                 soup = BeautifulSoup(
                     session.get(page_url, verify=False).text, 'html.parser')
 
+                showing = soup.find('div', 'inline-block pt5').findAll('span')
+                if showing[1].text == showing[-1].text and page != 0:
+                    break
+
                 product_cells = soup.findAll('div', 'box-producto')
 
                 if not product_cells:
