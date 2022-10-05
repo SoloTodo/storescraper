@@ -63,7 +63,7 @@ class LadyLee(Store):
         sku = url.split('/')[4]
         product_url = 'https://api.c8gqzlqont-mantenimi1-p1-public.model-t.c' \
             'c.commerce.ondemand.com/occ/v2/myshop-spa/products/{}?fields=DE' \
-            'FAULT,images(FULL,galleryIndex),ean&currentPoS=D001'.format(dsku)
+            'FAULT,images(FULL,galleryIndex),ean&currentPoS=D001'.format(sku)
         response = session.get(product_url, allow_redirects=False)
 
         json_data = json.loads(response.text)
