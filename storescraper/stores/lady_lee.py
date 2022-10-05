@@ -1,6 +1,5 @@
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
+import json
 
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
@@ -28,26 +27,31 @@ class LadyLee(Store):
         for local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
-            while True:
+            page = 0
+            ready = False
+            while not ready:
                 if page > 10:
                     raise Exception('Page overflow')
 
-                url_webpage = 'https://ladylee.net/collections/all/' \
-                              'marca_lg?page={}'.format(page)
+                url_webpage = 'https://api.c8gqzlqont-mantenimi1-p1-public.m' \
+                    'odel-t.cc.commerce.ondemand.com/occ/v2/myshop-spa/produ' \
+                    'cts/search?query=LG&pageSize=100&currentPoS=D001&curren' \
+                    'tPage={}'.format(page)
 
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'main_box')
+                json_data = json.loads(data)['products']
 
-                if not product_containers:
-                    if page == 1:
+                if len(json_data) == 0:
+                    if page == 0:
                         raise Exception('Empty category: ' + url_webpage)
                     break
-                for container in product_containers:
-                    product_url = container.find('a')['href'].split('/')[-1]
-                    product_urls.append('https://ladylee.net/products/' +
-                                        product_url)
+
+                for product in json_data:
+                    if 'LG' not in product['name']:
+                        ready = True
+                        break
+                    product_urls.append('https://ladylee.net' + product['url'])
+
                 page += 1
 
         return product_urls
@@ -56,38 +60,25 @@ class LadyLee(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, allow_redirects=False)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        sku_container = soup.find('div', 'variant-sku')
-        sku = sku_container.text.split(':')[1].strip()
-        model_name_container = soup.find('div', 'description-first-part')
-        name = soup.find('h1').text.strip()
+        sku = url.split('/')[4]
+        product_url = 'https://api.c8gqzlqont-mantenimi1-p1-public.model-t.c' \
+            'c.commerce.ondemand.com/occ/v2/myshop-spa/products/{}?fields=DE' \
+            'FAULT,images(FULL,galleryIndex),ean&currentPoS=D001'.format(dsku)
+        response = session.get(product_url, allow_redirects=False)
 
-        if model_name_container:
-            model_name = model_name_container.find('p').text.split(
-                ':')[1].strip()
-            name = '{} ({})'.format(name, model_name)
+        json_data = json.loads(response.text)
 
-        brand = soup.find('div', 'product-vendor').text.split(':')[1].strip()
+        assert sku == json_data['code']
 
-        # We're only interested in LG products
-        if brand == 'LG' and soup.find(
-                'link', {'href': 'http://schema.org/InStock'}):
+        description = json_data['description']
+        name = json_data['name']
+        price = Decimal(json_data['price']['value'])
+        if json_data['availableForPickup']:
             stock = -1
         else:
             stock = 0
 
-        price = soup.find('span', {'id': 'productPrice'})
-        price = Decimal(price.text.replace('L', '').replace(',', ''))
-
-        picture_urls = []
-
-        for picture in soup.findAll('a', 'image-slide-link'):
-            picture_url = 'https:' + picture['href']
-            picture_urls.append(picture_url)
-
-        description = html_to_markdown(str(
-            soup.find('div', 'desc_blk')))
+        picture_urls = [json_data['images'][0]['url']]
 
         p = Product(
             name,
