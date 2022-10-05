@@ -1,11 +1,15 @@
 import json
+import logging
 import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CASE_FAN, \
-    MEMORY_CARD, NOTEBOOK
+from storescraper.categories import ALL_IN_ONE, COMPUTER_CASE, \
+    EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, CPU_COOLER, CASE_FAN, HEADPHONES, \
+    KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MONITOR, MOTHERBOARD, MOUSE, \
+    NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, SOLID_STATE_DRIVE, \
+    STEREO_SYSTEM, STORAGE_DRIVE, TELEVISION, UPS, USB_FLASH_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -16,73 +20,81 @@ class Digiplot(Store):
     @classmethod
     def categories(cls):
         return [
-            'ExternalStorageDrive',
-            'StorageDrive',
-            'SolidStateDrive',
-            'UsbFlashDrive',
-            'Headphones',
-            'StereoSystem',
-            'PowerSupply',
-            'ComputerCase',
-            'Printer',
-            'Ram',
-            'Monitor',
+            EXTERNAL_STORAGE_DRIVE,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            USB_FLASH_DRIVE,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
+            PRINTER,
+            RAM,
+            MONITOR,
             NOTEBOOK,
-            'Motherboard',
-            'Processor',
+            MOTHERBOARD,
+            PROCESSOR,
             CPU_COOLER,
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Ups',
-            'VideoCard',
+            MOUSE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
+            UPS,
+            VIDEO_CARD,
             GAMING_CHAIR,
             CASE_FAN,
             MEMORY_CARD,
+            ALL_IN_ONE,
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento/disco-duro-externo', 'ExternalStorageDrive'],
-            ['almacenamiento/disco-duro-notebook', 'StorageDrive'],
-            ['almacenamiento/disco-duro-pc', 'StorageDrive'],
-            ['almacenamiento/disco-ssd-2,5"', 'SolidStateDrive'],
-            ['almacenamiento/disco-ssd-m.2', 'SolidStateDrive'],
+            ['almacenamiento/disco-duro-externo-%28sata%29',
+             EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/disco-duro-externo-%28ssd%29',
+             EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/disco-duro-notebook', STORAGE_DRIVE],
+            ['almacenamiento/disco-duro-pc', STORAGE_DRIVE],
+            ['almacenamiento/disco-ssd-2,5"', SOLID_STATE_DRIVE],
+            ['almacenamiento/disco-ssd-m.2', SOLID_STATE_DRIVE],
             ['almacenamiento/memoria-flash-sd-microsd', MEMORY_CARD],
-            ['almacenamiento/pendrive', 'UsbFlashDrive'],
-            ['audio/audifono-alambrico', 'Headphones'],
-            ['audio/audifono-bluetooth', 'Headphones'],
-            ['audio/parlantes-1.1', 'StereoSystem'],
-            ['audio/parlantes-2.0', 'StereoSystem'],
-            ['audio/parlantes-2.1', 'StereoSystem'],
-            ['gabinetes-y-fuentes/fuente-poder', 'PowerSupply'],
-            ['gabinetes-y-fuentes/gabinete-gamer', 'ComputerCase'],
-            ['gabinetes-y-fuentes/gabinete-slim', 'ComputerCase'],
-            ['gabinetes-y-fuentes/gabinete-vertical', 'ComputerCase'],
+            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
+            ['audio/audifono-alambrico', HEADPHONES],
+            ['audio/audifono-bluetooth', HEADPHONES],
+            ['audio/parlantes-1.1', STEREO_SYSTEM],
+            ['audio/parlantes-2.0', STEREO_SYSTEM],
+            ['computador-escritorio/all-in-one', ALL_IN_ONE],
+            ['gabinetes-y-fuentes/fuente-poder', POWER_SUPPLY],
+            ['gabinetes-y-fuentes/fuente-poder-gamer', POWER_SUPPLY],
+            ['gabinetes-y-fuentes/gabinete-gamer', COMPUTER_CASE],
+            ['gabinetes-y-fuentes/gabinete-slim', COMPUTER_CASE],
+            ['gabinetes-y-fuentes/gabinete-vertical', COMPUTER_CASE],
             ['gabinetes-y-fuentes/ventilador-gabinete', CASE_FAN],
-            ['impresoras/laser', 'Printer'],
-            ['impresoras/multifuncion-laser', 'Printer'],
-            ['impresoras/multifuncion-tinta', 'Printer'],
-            ['memorias/memoria-gamer-y-grafica', 'Ram'],
-            ['memorias/memoria-notebook-%28sodimm%29', 'Ram'],
-            ['memorias/memoria-pc-%28udimm%29', 'Ram'],
-            ['monitor-y-televisor/monitor-gamer', 'Monitor'],
-            ['monitor-y-televisor/monitor-led', 'Monitor'],
-            ['monitor-y-televisor/monitor-segunda-seleccion', 'Monitor'],
+            ['impresoras/laser', PRINTER],
+            ['impresoras/multifuncion-laser', PRINTER],
+            ['impresoras/multifuncion-tinta', PRINTER],
+            ['memorias/memoria-gamer-y-grafica', RAM],
+            ['memorias/memoria-notebook-%28sodimm%29', RAM],
+            ['memorias/memoria-pc-%28udimm%29', RAM],
+            ['monitor-y-televisor/monitor-gamer', MONITOR],
+            ['monitor-y-televisor/monitor-led', MONITOR],
+            ['monitor-y-televisor/monitor-segunda-seleccion', MONITOR],
+            ['monitor-y-televisor/televisor-led', TELEVISION],
             ['notebook-y-tablet', NOTEBOOK],
-            ['placa-madre', 'Motherboard'],
-            ['procesadores', 'Processor'],
+            ['placa-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
             ['procesadores/ventilador-cpu', CPU_COOLER],
-            ['teclado-y-mouse/mouse-alambrico', 'Mouse'],
-            ['teclado-y-mouse/mouse-bluetooth', 'Mouse'],
-            ['teclado-y-mouse/mouse-gamer', 'Mouse'],
-            ['teclado-y-mouse/mouse-inalambrico', 'Mouse'],
-            ['teclado-y-mouse/teclado', 'Keyboard'],
-            ['teclado-y-mouse/teclado-y-mouse', 'KeyboardMouseCombo'],
-            ['ups-y-alargador-elec/ups-hasta-900va', 'Ups'],
-            ['video/tarjetas-video', 'VideoCard'],
-            ['sillas-gamer', GAMING_CHAIR],
+            ['teclado-y-mouse/mouse-alambrico', MOUSE],
+            ['teclado-y-mouse/mouse-bluetooth', MOUSE],
+            ['teclado-y-mouse/mouse-gamer', MOUSE],
+            ['teclado-y-mouse/mouse-inalambrico', MOUSE],
+            ['teclado-y-mouse/teclado', KEYBOARD],
+            ['teclado-y-mouse/teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['ups-y-alargador-elec/ups-hasta-900va', UPS],
+            ['ups-y-alargador-elec/ups-sobre-1000va', UPS],
+            ['video/tarjetas-video', VIDEO_CARD],
+            ['sillas/sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -98,14 +110,22 @@ class Digiplot(Store):
                 if page > 10:
                     raise Exception('Page Overflow')
 
-                url = 'https://www.digiplot.cl/product/category/{}?page={}'\
-                    .format(url_extension, page)
+                if '/' in url_extension:
+                    cat = 'categorys'
+                else:
+                    cat = 'category'
 
-                data = session.get(url, verify=False).text
+                url = 'https://www.digiplot.cl/product/{}/{}?page={}'\
+                    .format(cat, url_extension, page)
+
+                data = session.get(url).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('div', 'single-product')
 
                 if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: {}'.format(
+                            url_extension))
                     break
 
                 for container in product_containers:
