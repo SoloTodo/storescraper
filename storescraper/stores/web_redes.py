@@ -72,7 +72,7 @@ class WebRedes(Store):
                 url_webpage = 'https://store.webredes.cl/{}?page={}'.format(
                     url_extension, page)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('div', 'products')
                 if not product_containers:
                     if page == 1:
