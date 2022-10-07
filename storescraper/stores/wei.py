@@ -118,6 +118,10 @@ class Wei(Store):
                 soup = BeautifulSoup(
                     session.get(page_url, verify=False).text, 'html.parser')
 
+                showing = soup.find('div', 'inline-block pt5').findAll('span')
+                if showing[1].text == showing[-1].text and page != 0:
+                    break
+
                 product_cells = soup.findAll('div', 'box-producto')
 
                 if not product_cells:
@@ -150,29 +154,23 @@ class Wei(Store):
 
         sku = sku.groups()[0]
         soup = BeautifulSoup(page_source, 'html.parser')
-        name_container = soup.find('div', 'titulo')
 
-        name = name_container.contents[-1].replace('&sol;', '').strip()
+        name = soup.find('meta', {'name': 'description'})['content']
 
         if 'IMPORTACION' in name:
             stock = 0
         else:
             stock = -1
 
-        pricing_container = soup.find('div', 'producto-precio')
+        pricing_container = soup.findAll('div', 'mb10')
 
-        if not pricing_container.find('div', 'txt18'):
+        if len(pricing_container) == 0:
             return []
 
-        offer_price = Decimal(remove_words(pricing_container.find(
-            'div', 'txt18').contents[0].split('$')[1]))
-        normal_price = None
-
-        for price_tag in pricing_container.findAll('div', 'txt14'):
-            if 'Precio Oferta' in price_tag.text:
-                normal_price = price_tag.contents[0].split('$')[1]
-                normal_price = Decimal(remove_words(normal_price))
-                break
+        offer_price = Decimal(remove_words(
+            re.search(r"\$[0-9.]*", pricing_container[0].text).group(0)))
+        normal_price = Decimal(remove_words(
+            re.search(r"\$[0-9.]*", pricing_container[1].text).group(0)))
 
         assert normal_price
 

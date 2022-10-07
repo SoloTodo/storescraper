@@ -29,7 +29,12 @@ class ElCofreDeShepard(Store):
             ['mouses', MOUSE],
             ['audifonos', HEADPHONES],
             ['gabinetes', COMPUTER_CASE],
-            ['ventiladores', CASE_FAN]
+            ['ventiladores', CASE_FAN],
+            # CYBER
+            ['teclados', KEYBOARD],
+            ['mouse', MOUSE],
+            ['audifono', HEADPHONES],
+            ['gabinete', COMPUTER_CASE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
