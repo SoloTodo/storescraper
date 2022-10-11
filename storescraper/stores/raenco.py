@@ -104,7 +104,8 @@ class Raenco(Store):
         stock = int(stock_div.text.replace(
             stock_div.find('span').text, '').strip())
 
-        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+        price = Decimal(soup.find(
+            'meta', {'property': 'product:price:amount'})['content'])
 
         image = soup.find('img', 'gallery-placeholder__image')['src']
 
