@@ -24,7 +24,7 @@ class Raenco(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
             ["hogar.html", REFRIGERATOR],
-            ["aires-acondicionado.html", AIR_CONDITIONER],
+            ["aires-acondicionados.html", AIR_CONDITIONER],
             ["fuente-de-agua.html", TELEVISION],
             ["oficina.html", TELEVISION],
             ["construccion.html", TELEVISION],
@@ -49,7 +49,7 @@ class Raenco(Store):
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                url = 'https://www.raenco.com/departamentos/{}?' \
+                url = 'https://www.raenco.com/{}?' \
                       'marca=221'.format(category_path)
 
                 if page != 1:
@@ -57,8 +57,12 @@ class Raenco(Store):
 
                 print(url)
 
-                soup = BeautifulSoup(session.get(
-                    url, timeout=60).text, 'html.parser')
+                res = session.get(url, timeout=60)
+
+                if res.status_code != 200:
+                    raise Exception('Invalid category: ' + url)
+
+                soup = BeautifulSoup(res.text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
 
                 if not product_containers and page == 1:
