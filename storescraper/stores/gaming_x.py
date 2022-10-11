@@ -16,7 +16,7 @@ class GamingX(MercadoLibreChile):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes-pc-tarjetas-video', VIDEO_CARD],
+            ['computacion', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
