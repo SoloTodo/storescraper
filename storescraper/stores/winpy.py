@@ -68,7 +68,6 @@ class Winpy(Store):
             ['partes-y-piezas/gabinetes/', 'ComputerCase'],
             ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
             ['partes-y-piezas/disipadores/', CPU_COOLER],
-            ['zona-mouse-y-teclados-gamer/', 'Mouse'],
             ['zona-audifonos-gamer/', HEADPHONES],
             ['accesorios/sillas-y-mesas/', GAMING_CHAIR],
             ['almacenamiento/nas/', 'StorageDrive'],
