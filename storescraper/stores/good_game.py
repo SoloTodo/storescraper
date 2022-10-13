@@ -86,8 +86,8 @@ class GoodGame(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
-        if soup.find('span', {
-                'id': 'availability_value'}).text == 'Producto sin stock':
+        if soup.find('span', {'id': 'availability_value'}).text in \
+                ['Producto sin stock', 'PREVENTA']:
             stock = 0
         else:
             stock = -1
