@@ -35,7 +35,7 @@ class TicOnlineStore(Store):
             ['audiovisual/audio-y-video', HEADPHONES],
             ['audiovisual/categoria-microfono', MICROPHONE],
             ['computacion/categoria-computadores-de-mesa', MONITOR],
-            ['computacion/portatiles', NOTEBOOK],
+            ['computacion/notebook', NOTEBOOK],
             ['computacion/tabletas', TABLET],
             ['computacion/categoria-todo-en-uno', ALL_IN_ONE],
             ['computacion/categoria-ups', UPS],

@@ -104,6 +104,7 @@ class SamsungShop(Store):
                         continue
 
                     assert price
+                    price = price.quantize(0)
 
                     products.append(Product(
                         '{} ({})'.format(name, key),
