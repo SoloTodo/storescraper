@@ -28,15 +28,14 @@ class LadyLee(Store):
             if local_category != category:
                 continue
             page = 0
-            ready = False
-            while not ready:
+            while True:
                 if page > 10:
                     raise Exception('Page overflow')
 
                 url_webpage = 'https://api.c8gqzlqont-mantenimi1-p1-public.m' \
                     'odel-t.cc.commerce.ondemand.com/occ/v2/myshop-spa/produ' \
-                    'cts/search?query=LG&pageSize=100&currentPoS=D001&curren' \
-                    'tPage={}'.format(page)
+                    'cts/search?query=LG:relevance:brand:LG&pageSize=100&cur' \
+                    'rentPoS=D001&currentPage={}'.format(page)
 
                 data = session.get(url_webpage).text
                 json_data = json.loads(data)['products']
@@ -47,9 +46,6 @@ class LadyLee(Store):
                     break
 
                 for product in json_data:
-                    if 'LG' not in product['name']:
-                        ready = True
-                        break
                     product_urls.append('https://ladylee.net' + product['url'])
 
                 page += 1
