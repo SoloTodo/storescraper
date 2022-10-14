@@ -86,11 +86,17 @@ class GoodGame(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         sku = soup.find('input', {'name': 'id_product'})['value']
-        if soup.find('span', {'id': 'availability_value'}).text in \
-                ['Producto sin stock', 'PREVENTA']:
-            stock = 0
+
+        availability_text = soup.find(
+            'span', {'id': 'availability_value'}).text.upper()
+
+        for unavailable_kw in ['PRODUCTO SIN STOCK', 'PREVENTA']:
+            if unavailable_kw in availability_text:
+                stock = 0
+                break
         else:
             stock = -1
+
         normal_price = Decimal(remove_words(
             soup.find('span', {'id': 'our_price_display'}).text))
         offer_price = Decimal(remove_words(soup.find('ul',
