@@ -90,7 +90,7 @@ class Tecnoaxis(Store):
             'script', {'type': 'application/ld+json'})[0].text)
 
         for entry in json_data['@graph']:
-            if entry['@type'] == 'ItemPage':
+            if entry['@type'] == 'WebPage':
                 product_data = entry
                 break
         else:
@@ -102,9 +102,13 @@ class Tecnoaxis(Store):
         sku = soup.find('span', 'sku').text.strip()
         price_p = soup.find('p', 'price')
         if price_p.find('ins'):
-            price = Decimal(remove_words(price_p.find('ins').text))
+            offer_price = Decimal(remove_words(price_p.find('ins').text))
         else:
-            price = Decimal(remove_words(price_p.find('bdi').text))
+            offer_price = Decimal(remove_words(price_p.find('bdi').text))
+
+        section = soup.find('section', 'wd-negative-gap')
+        normal_price = Decimal(remove_words(section.findAll(
+            'span', 'woocommerce-Price-amount')[-1].text))
 
         if soup.find('button', 'single_add_to_cart_button'):
             stock = -1
@@ -126,8 +130,8 @@ class Tecnoaxis(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,

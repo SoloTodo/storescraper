@@ -34,7 +34,7 @@ class TiendaInglesa(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
                 url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?' \
-                    '0,0,LG,0,0,0,,%5B%5D,false,%5B%5D,%5B%5D,,{}'.format(page)
+                    '0,0,LG,0,0,0,rel,%5B"Lg"%5D,false,%5B%5D,%5B%5D,,{}'.format(page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
