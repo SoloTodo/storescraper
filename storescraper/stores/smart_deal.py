@@ -71,6 +71,9 @@ class SmartDeal(Store):
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
 
+        if '@graph' not in json_data:
+            return []
+
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
                 product_data = entry
