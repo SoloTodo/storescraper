@@ -5,52 +5,47 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
-from storescraper.categories import TELEVISION, HEADPHONES
+from storescraper.utils import remove_words, session_with_proxy
+from storescraper.categories import TELEVISION
 
 
 class PlazaLama(Store):
     @classmethod
     def categories(cls):
         return [
-            TELEVISION,
-            HEADPHONES
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # Only interested in LG products
-        url_extensions = [
-            ['lg', TELEVISION],
-        ]
+
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow')
+        if TELEVISION != category:
+            return []
 
-                url = 'https://plazalama.com.do/collections/{}?page={}'.format(
-                    url_extension, page)
-                print(url)
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-item')
+        page = 1
+        while True:
+            if page >= 15:
+                raise Exception('Page overflow')
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category:' + url)
-                    break
+            url = 'https://www.plazalama.com.do/catalogsearch/result/index/?' \
+                'p={}&q=lg%20lg'.format(page)
+            print(url)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product-item')
 
-                for container in product_containers:
-                    product_url = container.find('a', 'product-item__title')[
-                        'href']
-                    product_urls.append('https://plazalama.com.do' +
-                                        product_url)
-                page += 1
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category:' + url)
+                break
+
+            for container in product_containers:
+                product_url = container.find('a', 'product-item-link')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -59,14 +54,14 @@ class PlazaLama(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product-meta__title').text
-        sku = soup.find('input', {'name': 'id'})['data-sku']
-        if soup.find('span', 'product-form__inventory').text == 'Disponible':
+        name = soup.find('h1', 'page-title').text
+        sku = soup.find('div', {'itemprop': 'sku'}).text
+        if soup.find('div', 'stock available').text.strip() == 'En stock':
             stock = -1
         else:
             stock = 0
         price = Decimal(soup.find('span', 'price').text.strip()
-                        .split()[-1].replace(',', ''))
+                        .split()[-1].replace('$', '').replace(',', ''))
         picture_urls = []
         if soup.find('div', 'product-gallery'):
             picture_urls = ['https:' + tag['data-src'].split('_130')[0] +
