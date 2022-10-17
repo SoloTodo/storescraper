@@ -80,8 +80,9 @@ class VideoVision(Store):
         name = json_data['name']
         sku = json_data['sku']
         part_number = json_data['description']
-        if soup.find('span', 'product-stock in-stock'):
-            stock = int(soup.find('span', 'stock').text.split(' ')[0])
+        stock_span = soup.find('span', 'in-stock')
+        if stock_span:
+            stock = int(stock_span.find('span', 'stock').text.split(' ')[0])
         else:
             stock = 0
         price = Decimal(json_data['offers'][0]['price'])
