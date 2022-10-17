@@ -129,7 +129,7 @@ class Centrale(Store):
         else:
             stock = 0
         offer_price = Decimal(remove_words(
-            soup.find('div', {'style': 'margin-bottom: -12px;'}).text.split()[
+            soup.find('div', {'style': 'margin-bottom: -4px;'}).text.split()[
                 0]))
         normal_price = Decimal(remove_words(soup.find('span', {
             'style': 'font-size: 23px; '
