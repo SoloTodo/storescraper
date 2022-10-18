@@ -67,7 +67,7 @@ class Vivelo(Store):
                 print(category_url)
 
                 soup = BeautifulSoup(session.get(
-                    category_url).text, 'html.parser')
+                    category_url, timeout=60).text, 'html.parser')
 
                 pages = soup.find('div', 'pages')
                 if pages:
@@ -96,7 +96,7 @@ class Vivelo(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=60)
 
         if response.status_code == 404:
             return []

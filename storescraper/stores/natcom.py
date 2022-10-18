@@ -75,7 +75,7 @@ class Natcom(Store):
                 url_webpage = 'https://natcomchile.cl/{}/page/{}/'.format(
                     url_extension, page)
                 print(url_webpage)
-                response = session.get(url_webpage, timeout=30)
+                response = session.get(url_webpage, timeout=60)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('article', 'w-grid-item')
 
@@ -98,7 +98,7 @@ class Natcom(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=30)
+        response = session.get(url, timeout=60)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
