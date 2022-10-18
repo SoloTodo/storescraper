@@ -84,6 +84,7 @@ class Todoclick(Store):
             ['451-refrigeracion', CPU_COOLER],
             ['449-placa-madre', MOTHERBOARD],
             ['535-impresoras', PRINTER],
+            ['gabinetes-447', COMPUTER_CASE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
