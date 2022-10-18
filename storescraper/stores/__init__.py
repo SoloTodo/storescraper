@@ -1,3 +1,4 @@
+from .a_z_tech import AZTech
 from .abcdin import AbcDin
 from .absolutec import Absolutec
 from .acer_store import AcerStore
