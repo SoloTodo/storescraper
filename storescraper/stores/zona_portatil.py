@@ -121,6 +121,17 @@ class ZonaPortatil(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
+
+        if soup.find('p', 'price').find('ins'):
+            normal_price = Decimal(
+                remove_words(soup.find('p', 'price').find('ins').text))
+        else:
+            price_text = soup.find('p', 'price').text.strip()
+            if not price_text:
+                return []
+            normal_price = Decimal(remove_words(price_text))
+        offer_price = (normal_price * Decimal('0.95')).quantize(0)
+
         if 'OPEN BOX' in name:
             condition = 'https://schema.org/RefurbishedCondition'
         else:
@@ -131,15 +142,6 @@ class ZonaPortatil(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        if soup.find('p', 'price').find('ins'):
-            normal_price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
-        else:
-            price_text = soup.find('p', 'price').text.strip()
-            if not price_text:
-                return []
-            normal_price = Decimal(remove_words(price_text))
-        offer_price = (normal_price * Decimal('0.95')).quantize(0)
         picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
                                                                '-product'
                                                                '-gallery')
