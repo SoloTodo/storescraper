@@ -38,6 +38,7 @@ class UltraPc(Store):
             ['equipos-de-computo/tablet-windows-equipos-de-computo', NOTEBOOK],
             ['accesorios/mouses-teclados', KEYBOARD_MOUSE_COMBO],
             ['tablets-e-ipads', TABLET],
+            ['equipos-de-computo/tablet', TABLET],
             ['consolas-videojuegos', VIDEO_GAME_CONSOLE],
             ['monitores', MONITOR],
         ]
