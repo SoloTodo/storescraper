@@ -99,6 +99,11 @@ class AZTech(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        extra_args = extra_args or {}
+        if 'proxy' not in extra_args:
+            raise Exception('AZTech lists prices without IVA when accessed '
+                            'from outside Chile, so a chilean proxy is '
+                            'mandatory for this scraper')
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
@@ -137,8 +142,7 @@ class AZTech(Store):
 
             name = product_data['name']
             sku = product_data['sku']
-            price = (Decimal(product_data['offers']
-                     ['price']) * Decimal(1.19)).quantize(0)
+            price = Decimal(product_data['offers']['price']).quantize(0)
         else:
             name = soup.find('h1', 'product-heading__title').text
             sku = soup.find(
@@ -150,8 +154,7 @@ class AZTech(Store):
                 price_text = price_discount_tag.find('span').text
             else:
                 price_text = soup.find('h2', 'product-heading__pricing').text
-            price = (Decimal(remove_words(price_text))
-                     * Decimal(1.19)).quantize(0)
+            price = Decimal(remove_words(price_text))
 
         p = Product(
             name,
