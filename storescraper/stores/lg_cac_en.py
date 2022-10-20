@@ -5,26 +5,6 @@ class LgCacEn(LgV5):
     region_code = 'cac_en'
 
     @classmethod
-    def categories(cls):
-        return [
-            'Television',
-            'StereoSystem',
-            'Projector',
-            'Cell',
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'VacuumCleaner',
-            'Monitor',
-            'CellAccesory',
-            'Notebook',
-            'Headphones',
-            'Stove',
-            'AirConditioner',
-            'DishWasher'
-        ]
-
-    @classmethod
     def _category_paths(cls):
         return [
             # Todos los Televisores

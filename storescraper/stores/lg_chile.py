@@ -10,22 +10,6 @@ class LgChile(LgV5):
     price_approximation = '0'
 
     @classmethod
-    def categories(cls):
-        return [
-            TELEVISION,
-            OPTICAL_DISK_PLAYER,
-            STEREO_SYSTEM,
-            PROJECTOR,
-            CELL,
-            REFRIGERATOR,
-            OVEN,
-            WASHING_MACHINE,
-            MONITOR,
-            HEADPHONES,
-            CELL_ACCESORY
-        ]
-
-    @classmethod
     def _category_paths(cls):
         return [
             # Televisores

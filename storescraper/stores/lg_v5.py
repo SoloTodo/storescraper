@@ -20,6 +20,14 @@ class LgV5(Store):
     price_approximation = '0.01'
 
     @classmethod
+    def categories(cls):
+        cats = []
+        for entry in cls._category_paths():
+            if entry[1] not in cats:
+                cats.append(entry[1])
+        return cats
+
+    @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = cls._category_paths()
         discovered_urls = []
