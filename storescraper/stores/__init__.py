@@ -309,6 +309,7 @@ from .pc_ofertas import PcOfertas
 from .pc_part import PcPart
 from .pcel import Pcel
 from .pch_mayoreo import PchMayoreo
+from .pcm_store import PcmStore
 from .pcmig import Pcmig
 from .pc_nexus import PcNexus
 from .pc_nitro import PcNitro
