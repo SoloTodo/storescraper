@@ -103,7 +103,8 @@ class CentralGamer(Store):
             sku = None
 
         stock_tag = soup.find('meta', {'property': 'product:availability'})
-        if stock_tag['content'] == 'instock':
+        if stock_tag['content'] == 'instock' and 'preventa' not in \
+                name.lower():
             stock = -1
         else:
             stock = 0

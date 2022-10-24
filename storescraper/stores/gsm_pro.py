@@ -88,7 +88,8 @@ class GsmPro(Store):
             key = offer['url'].split('variant=')[1]
             if 'bajo pedido' in name.lower() or 'días' in name.lower():
                 stock = 0
-            elif 'InStock' in offer['availability']:
+            elif 'InStock' in offer['availability'] and 'preventa' not in \
+                    offer['name'].lower():
                 stock = -1
             else:
                 stock = 0

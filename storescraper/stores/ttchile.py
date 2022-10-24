@@ -5,10 +5,10 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown
+
 from storescraper.categories import STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MEMORY_CARD, \
+    EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, \
     MONITOR, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, MOTHERBOARD, PROCESSOR, \
     CPU_COOLER, VIDEO_CARD, STEREO_SYSTEM, HEADPHONES, GAMING_CHAIR, \
     USB_FLASH_DRIVE, PRINTER, CASE_FAN
@@ -138,15 +138,16 @@ class TtChile(Store):
         base_price = Decimal(
             soup.find('meta', {'property': 'product:price:amount'})['content'])
         assert soup.find('meta', {'property': 'product:price:currency'})[
-                   'content'] == 'CLP'
+            'content'] == 'CLP'
         offer_price = (base_price * Decimal('0.95')).quantize(0)
-        normal_price = (base_price * Decimal('1.03')).quantize(0)
+        normal_price = (base_price * Decimal('1.0')).quantize(0)
 
         availability_message = soup.find(
             'span', {'id': 'product-availability'}).contents[2].strip()
 
         if availability_message in ['Producto sin Stock, solo reservas.',
-                                    'Producto fuera de stock.']:
+                                    'Producto fuera de stock.'] \
+                or 'preventa' in name.lower():
             stock = 0
         else:
             quantities_tag = soup.find('div', 'product-quantities')

@@ -65,7 +65,7 @@ class Sevenwin(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'page-header').text
         sku = soup.find('form', 'form-horizontal')['action'].split('/')[-1]
-        if soup.find('input', 'adc'):
+        if soup.find('input', 'adc') and 'preventa' not in name.lower():
             stock = -1
         else:
             stock = 0

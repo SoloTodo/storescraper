@@ -133,7 +133,8 @@ class TecnoPro(Store):
             name = variant['name']
             sku = variant['sku']
             key = str(variant['id'])
-            stock = -1 if variant['available'] else 0
+            stock = -1 if variant['available'] and 'preventa' not in \
+                name.lower() else 0
             price = Decimal(variant['price'] / 100)
             variant_url = '{}?variant={}'.format(url, key)
 
