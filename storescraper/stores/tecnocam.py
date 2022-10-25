@@ -12,7 +12,7 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, CELL, CPU_COOLER, \
     MICROPHONE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class Tecnocam(Store):

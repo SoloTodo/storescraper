@@ -7,7 +7,8 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, TABLET, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, CPU_COOLER, NOTEBOOK, MONITOR, HEADPHONES, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, UPS, VIDEO_GAME_CONSOLE, GAMING_CHAIR, \
-    GAMING_DESK, MICROPHONE, USB_FLASH_DRIVE
+    GAMING_DESK, MICROPHONE, USB_FLASH_DRIVE, ALL_IN_ONE, STORAGE_DRIVE, \
+    MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,38 +39,47 @@ class Jasaltec(Store):
             GAMING_CHAIR,
             GAMING_DESK,
             MICROPHONE,
-            TABLET
+            TABLET,
+            ALL_IN_ONE,
+            STORAGE_DRIVE,
+            MEMORY_CARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['almacenamiento-de-datos/disco-estado-solido-externo',
+             EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento-de-datos/disco-estado-solido-interno',
+             SOLID_STATE_DRIVE],
+            ['almacenamiento-de-datos/disco-mecanico-interno',
+             STORAGE_DRIVE],
+            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-informaticos/gabinetes', COMPUTER_CASE],
+            ['componentes-informaticos/procesadores', PROCESSOR],
+            ['componentes-informaticos/tarjeta-madre', MOTHERBOARD],
+            ['componentes-informaticos/tarjetas-graficas', VIDEO_CARD],
+            ['componentes-informaticos/ventiladores-y-enfriadores',
+             CPU_COOLER],
+
             ['componentes-informaticos/memoria-ram/modulos-ram-notebook', RAM],
             ['componentes-informaticos/memoria-ram/modulos-ram-pc-escritorio',
              RAM],
             ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
-            ['almacenamiento-de-datos/disco-estado-solido-interno',
-             SOLID_STATE_DRIVE],
-            ['almacenamiento-de-datos/disco-estado-solido-externo',
-             EXTERNAL_STORAGE_DRIVE],
-            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-informaticos/gabinetes', COMPUTER_CASE],
-            ['componentes-informaticos/tarjeta-madre', MOTHERBOARD],
-            ['componentes-informaticos/procesadores', PROCESSOR],
-            ['componentes-informaticos/tarjetas-graficas', VIDEO_CARD],
-            ['componentes-informaticos/ventiladores-y-enfriadores',
-             CPU_COOLER],
+            ['memoria-ram/tarjetas-de-memoria-flash', MEMORY_CARD],
+            ['computadores/all-in-one', ALL_IN_ONE],
+            ['computadores/notebook', NOTEBOOK],
+            ['computadores/notebook-gamer', NOTEBOOK],
+            ['computadores/tabletas', TABLET],
             ['perifericos/audifonos', HEADPHONES],
             ['perifericos/microfonos', MICROPHONE],
             ['perifericos/mouses', MOUSE],
             ['perifericos/parlantes', STEREO_SYSTEM],
             ['perifericos/teclados', KEYBOARD],
             ['monitores', MONITOR],
-            ['notebook', NOTEBOOK],
-            ['tabletas', TABLET],
             ['respaldo-energia/ups', UPS],
-            ['videojuegos/consola', VIDEO_GAME_CONSOLE],
             ['sillas', GAMING_CHAIR],
+            ['videojuegos/consola', VIDEO_GAME_CONSOLE],
             ['escritorios', GAMING_DESK],
         ]
 
