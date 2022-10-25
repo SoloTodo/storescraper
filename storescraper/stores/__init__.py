@@ -284,6 +284,7 @@ from .nuevatec import Nuevatec
 from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
+from .opc_store import OpcStore
 from .orbital_store import OrbitalStore
 from .office_depot import OfficeDepot
 from .office_max_mexico import OfficeMaxMexico
