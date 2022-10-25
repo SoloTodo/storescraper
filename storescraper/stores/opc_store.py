@@ -70,14 +70,19 @@ class OpcStore(Store):
         name = json_data['name']
         sku = json_data['sku']
         description = json_data['description']
-        
+
+        if 'caja abierta' in name.lower():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         price = Decimal(json_data['offers'][0]['price'])
-        
+
         if soup.find('button', 'shopify-payment-button__button'):
             stock = -1
         else:
             stock = 0
-        
+
         picture_urls = []
         picture_container = soup.find('div', 'product-media-modal__content')
         for i in picture_container.findAll('img'):
@@ -97,6 +102,7 @@ class OpcStore(Store):
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            condition=condition
         )
         return [p]
