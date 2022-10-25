@@ -64,7 +64,11 @@ class Winia(Store):
         key = soup.find('input', {'id': 'product_page_product_id'})['value']
         name = soup.find('h1', 'page-title').text.strip()
         sku = soup.find('div', 'product-reference').find('span').text.strip()
-        price = Decimal(soup.find('span', 'product-price')['content'])
+
+        price_span = soup.find('span', 'product-price')
+        if not price_span:
+            return []
+        price = Decimal(price_span['content'])
 
         add_button = soup.find('button', {'data-button-action': 'add-to-cart'})
         if add_button and 'disabled' not in add_button.attrs:
