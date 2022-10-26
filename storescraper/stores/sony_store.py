@@ -69,11 +69,16 @@ class SonyStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_container = list(json.loads(
-                soup.find('template', {'data-varname': '__STATE__'}).find(
-                    'script').text).values())
+            soup.find('template', {'data-varname': '__STATE__'}).find(
+                'script').text).values())
 
         if len(json_container) == 0:
             return []
+
+        preventa = False
+        for d in json_container:
+            if 'name' in d and d['name'] == 'Preventa':
+                preventa = True
 
         json_container = json_container[0]
         api_url = 'https://store.sony.cl/api/catalog_system/pub/products' \
@@ -83,8 +88,10 @@ class SonyStore(Store):
         name = json_product['name']
         part_number = json_product['name'].replace('|', '').strip()
         sku = json_product['itemId']
-        if json_product['sellers'][0]['commertialOffer']['AvailableQuantity'] \
-                > 10:
+        if preventa:
+            stock = 0
+        elif json_product[
+                'sellers'][0]['commertialOffer']['AvailableQuantity'] > 10:
             stock = 10
         else:
             stock = json_product['sellers'][0]['commertialOffer'][
