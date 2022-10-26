@@ -8,8 +8,8 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, CELL, CPU_COOLER, \
     EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, KEYBOARD, KEYBOARD_MOUSE_COMBO, \
     MEMORY_CARD, MOTHERBOARD, MOUSE, POWER_SUPPLY, TABLET, TELEVISION, \
     VIDEO_CARD, SOLID_STATE_DRIVE, STORAGE_DRIVE, COMPUTER_CASE, PROCESSOR, \
-    RAM, MONITOR,  HEADPHONES, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM, \
-    MICROPHONE, VIDEO_GAME_CONSOLE
+    RAM, MONITOR, HEADPHONES, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM, \
+    MICROPHONE, VIDEO_GAME_CONSOLE, PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -45,6 +45,7 @@ class Tecnocam(Store):
             ALL_IN_ONE,
             VIDEO_GAME_CONSOLE,
             NOTEBOOK,
+            PRINTER,
         ]
 
     @classmethod
@@ -79,6 +80,7 @@ class Tecnocam(Store):
             ['computadores/all-in-one', ALL_IN_ONE],
             ['computadores/consolas-de-videojuegos', VIDEO_GAME_CONSOLE],
             ['computadores/notebook', NOTEBOOK],
+            ['impresoras-y-escaner/impresoras', PRINTER],
         ]
         session = session_with_proxy(extra_args)
         products_urls = []
