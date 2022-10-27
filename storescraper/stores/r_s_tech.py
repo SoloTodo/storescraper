@@ -95,7 +95,12 @@ class RSTech(Store):
         else:
             sku = None
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
+        if soup.find('link', {'rel': 'shortlink'}):
+            key = soup.find('link', {'rel': 'shortlink'})[
+                'href'].split('p=')[-1]
+        else:
+            key = soup.find('button', {'name': 'add-to-cart'})['value']
+
         if soup.find('p', 'stock in-stock'):
             stock = -1
         else:
