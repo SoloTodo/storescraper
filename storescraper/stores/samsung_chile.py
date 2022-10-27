@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from storescraper.categories import NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -26,7 +27,8 @@ class SamsungChile(Store):
             'Wearable',
             'AirConditioner',
             'DishWasher',
-            'Stove'
+            'Stove',
+            NOTEBOOK
         ]
 
     @classmethod
@@ -132,4 +134,5 @@ class SamsungChile(Store):
              'AirConditioner'),
             ('08080000', 'cooking-appliances/all-cooking-appliances', 'Oven'),
             ('07010000', 'monitors/all-monitors', 'Monitor'),
+            ('03010000', 'computers/all-computers', NOTEBOOK),
         ]
