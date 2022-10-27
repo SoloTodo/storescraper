@@ -123,15 +123,8 @@ class Tecnocam(Store):
         else:
             return []
 
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
-
-        for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
+        product_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
         name = product_data['name']
         sku = product_data['sku']
