@@ -7,6 +7,7 @@ from .agencias_way_online import AgenciasWayOnline
 from .aire_center import AireCenter
 from .ak_byte_computacion import AkByteComputacion
 from .al_kosto import AlKosto
+from .alca import Alca
 from .alfaomega import Alfaomega
 from .allink_gamer import AllinkGamer
 from .all_gamers_chile import AllGamersChile
