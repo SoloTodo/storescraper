@@ -19,7 +19,7 @@ class SamsungChile(Store):
         for cat_id, path, cat in cls._category_info():
             if cat not in cats:
                 cats.append(cat)
-        
+
         return cats
 
     @classmethod
