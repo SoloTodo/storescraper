@@ -1,6 +1,9 @@
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK
+from storescraper.categories import NOTEBOOK, CELL, TABLET, WEARABLE, \
+    HEADPHONES, CELL_ACCESORY, TELEVISION, STEREO_SYSTEM, REFRIGERATOR, \
+    WASHING_MACHINE, OVEN, DISH_WASHER, VACUUM_CLEANER, AIR_CONDITIONER, \
+    MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -11,25 +14,13 @@ import json
 class SamsungChile(Store):
     @classmethod
     def categories(cls):
-        return [
-            'Television',
-            'OpticalDiskPlayer',
-            'StereoSystem',
-            'Cell',
-            'Tablet',
-            'Refrigerator',
-            'Oven',
-            'WashingMachine',
-            'VacuumCleaner',
-            'Monitor',
-            'CellAccesory',
-            'Headphones',
-            'Wearable',
-            'AirConditioner',
-            'DishWasher',
-            'Stove',
-            NOTEBOOK
-        ]
+        cats = []
+
+        for cat_id, path, cat in cls._category_info():
+            if cat not in cats:
+                cats.append(cat)
+        
+        return cats
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -53,7 +44,7 @@ class SamsungChile(Store):
         session = session_with_proxy(extra_args)
 
         api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/' \
-                  'finder/global?siteCode=cl&start=0&num=1000' \
+                  'finder/newhybris?siteCode=cl&start=0&num=600' \
                   '&onlyFilterInfoYN=N'
 
         products = []
@@ -115,24 +106,24 @@ class SamsungChile(Store):
     @classmethod
     def _category_info(cls):
         return [
-            ('01010000', 'smartphones/all-smartphones', 'Cell'),
-            ('01020000', 'tablets/all-tablets', 'Tablet'),
-            ('01030000', 'watches/all-watches', 'Wearable'),
-            ('01040000', 'audio-sound', 'Headphones'),
+            ('01010000', 'smartphones/all-smartphones', CELL),
+            ('01020000', 'tablets/all-tablets', TABLET),
+            ('01030000', 'watches/all-watches', WEARABLE),
+            ('01040000', 'audio-sound', HEADPHONES),
             ('01050000', 'mobile-accessories/all-mobile-accessories/',
-             'CellAccesory'),
-            ('04010000', 'tvs/all-tvs', 'Television'),
-            ('05010000', 'audio-devices/all-audio-devices', 'StereoSystem'),
-            ('08030000', 'refrigerators/all-refrigerators', 'Refrigerator'),
+             CELL_ACCESORY),
+            ('04010000', 'tvs/all-tvs', TELEVISION),
+            ('05010000', 'audio-devices/all-audio-devices', STEREO_SYSTEM),
+            ('08030000', 'refrigerators/all-refrigerators', REFRIGERATOR),
             ('08010000', 'washers-and-dryers/all-washers-and-dryers',
-             'WashingMachine'),
-            ('08110000', 'microwave-ovens/all-microwave-ovens', 'Oven'),
-            ('08090000', 'dishwashers/all-dishwashers', 'DishWasher'),
+             WASHING_MACHINE),
+            ('08110000', 'microwave-ovens/all-microwave-ovens', OVEN),
+            ('08090000', 'dishwashers/all-dishwashers', DISH_WASHER),
             ('08070000', 'vacuum-cleaners/all-vacuum-cleaners',
-             'VacuumCleaner'),
+             VACUUM_CLEANER),
             ('08050000', 'air-conditioners/all-air-conditioners',
-             'AirConditioner'),
-            ('08080000', 'cooking-appliances/all-cooking-appliances', 'Oven'),
-            ('07010000', 'monitors/all-monitors', 'Monitor'),
+             AIR_CONDITIONER),
+            ('08080000', 'cooking-appliances/all-cooking-appliances', OVEN),
+            ('07010000', 'monitors/all-monitors', MONITOR),
             ('03010000', 'computers/all-computers', NOTEBOOK),
         ]
