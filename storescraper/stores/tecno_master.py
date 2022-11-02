@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
+from storescraper.categories import MOTHERBOARD, PROCESSOR, UPS, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
@@ -43,6 +43,7 @@ class TecnoMaster(Store):
             GAMING_DESK,
             ALL_IN_ONE,
             NOTEBOOK,
+            UPS
         ]
 
     @classmethod
@@ -75,6 +76,7 @@ class TecnoMaster(Store):
             ['productos/perifericos/microfonosystreaming', GAMING_DESK],
             ['pc_armados/pc-escritorio', ALL_IN_ONE],
             ['pc_armados/notebook-laptop', NOTEBOOK],
+            ['productos/ups', UPS],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
