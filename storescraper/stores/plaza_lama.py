@@ -35,7 +35,7 @@ class PlazaLama(Store):
                 '?page={}'.format(page)
             print(url)
             response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            soup = BeautifulSoup(response.text, 'html5lib')
             product_containers = soup.findAll('div', 'product-item')
 
             if not product_containers:
@@ -55,7 +55,7 @@ class PlazaLama(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/json'})[-1].text)
