@@ -88,6 +88,10 @@ class FullcolorSpa(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-name').text.strip()
         sku = soup.find('input', {'id': 'id'})['value']
+
+        if sku == "":
+            return []
+
         stock = int(soup.find('span', 'in-stock').text.replace('(', '')
                     .replace(')', '').split()[-1])
         price = Decimal(
