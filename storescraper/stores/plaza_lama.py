@@ -1,3 +1,4 @@
+import json
 import logging
 
 from bs4 import BeautifulSoup
@@ -5,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, session_with_proxy
+from storescraper.utils import session_with_proxy
 from storescraper.categories import TELEVISION
 
 
@@ -30,12 +31,12 @@ class PlazaLama(Store):
             if page >= 15:
                 raise Exception('Page overflow')
 
-            url = 'https://www.plazalama.com.do/catalogsearch/result/index/?' \
-                'p={}&q=lg%20lg'.format(page)
+            url = 'https://www.plazalama.com.do/collections/lg' \
+                '?page={}'.format(page)
             print(url)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product-item')
+            product_containers = soup.findAll('div', 'product-item')
 
             if not product_containers:
                 if page == 1:
@@ -43,8 +44,9 @@ class PlazaLama(Store):
                 break
 
             for container in product_containers:
-                product_url = container.find('a', 'product-item-link')['href']
-                product_urls.append(product_url)
+                product_url = container.find('a')['href']
+                product_urls.append(
+                    'https://www.plazalama.com.do' + product_url)
             page += 1
         return product_urls
 
@@ -54,34 +56,44 @@ class PlazaLama(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-title').text
-        sku = soup.find('div', {'itemprop': 'sku'}).text
-        if soup.find('div', 'stock available').text.strip() == 'En stock':
-            stock = -1
-        else:
-            stock = 0
-        price = Decimal(soup.find('span', 'price').text.strip()
-                        .split()[-1].replace('$', '').replace(',', ''))
-        picture_urls = []
-        if soup.find('div', 'product-gallery'):
-            picture_urls = ['https:' + tag['data-src'].split('_130')[0] +
-                            '.jpg' for tag in
-                            soup.find('div', 'product-gallery').find('div',
-                            'scroller').findAll('img')]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'DOP',
-            sku=sku,
-            picture_urls=picture_urls,
-        )
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/json'})[-1].text)
+        json_product = json_data['product']
 
-        return [p]
+        description = json_product['description']
+        picture_urls = ['https:' + i for i in json_product['images']]
+
+        json_data_variants = json_product['variants']
+
+        products = []
+        for v_data in json_data_variants:
+
+            key = str(v_data['id'])
+            sku = v_data['sku']
+            name = v_data['name']
+            if key in json_data['inventories']:
+                stock = int(json_data['inventories']
+                            [key]['inventory_quantity'])
+            else:
+                stock = 0
+            price = Decimal(v_data['price']) / Decimal(100)
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'DOP',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description
+            )
+            products.append(p)
+
+        return products
