@@ -163,20 +163,21 @@ class Movistar(Store):
             'application/x-www-form-urlencoded'
         ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
+        del ajax_session.headers['Accept-Encoding']
         page = session.get(url)
 
         if page.url == 'https://catalogo.movistar.cl/equipomasplan/' \
                        'catalogo.html':
-            return []
+            raise Exception('Catalogo page URL')
 
         if page.status_code in [404, 503]:
-            return []
+            raise Exception('Invalid status code: ' + str(page.status_code))
 
         soup = BeautifulSoup(page.text, 'html.parser')
         if soup.find('h1'):
             base_name = soup.find('h1').text.strip()
         else:
-            return []
+            raise Exception('No base name found')
 
         sku_color_choices = []
         for color_container in soup.find('ul', 'colorEMP').findAll('li'):
@@ -192,10 +193,14 @@ class Movistar(Store):
 
         def get_json_response(_payload):
             print(_payload)
+            if 'Cookie' in ajax_session.headers:
+                del ajax_session.headers['Cookie']
+            # print(ajax_session.headers)
             _response = ajax_session.post(
                 'https://catalogo.movistar.cl/equipomasplan/'
                 'emp_detalle/planes',
                 data=_payload)
+            # import curlify; print(curlify.to_curl(_response.request))
 
             return json.loads(_response.text)
 
@@ -219,10 +224,8 @@ class Movistar(Store):
                               'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                               '&{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    try:
-                        json_response = get_json_response(payload)
-                    except Exception:
-                        return []
+
+                    json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
                         cell_plan_name = container['name'] + ' Portabilidad'
@@ -271,10 +274,7 @@ class Movistar(Store):
                                   'Plus+Libre+Cod_0J3_Porta' \
                                   '&{}&current%5Bcode%5D=' \
                                   ''.format(sku, payload_params)
-                        try:
-                            json_response = get_json_response(payload)
-                        except Exception:
-                            return []
+                        json_response = get_json_response(payload)
 
                         for container in json_response['planes']['dataplan']:
                             cell_plan_name = \
@@ -324,10 +324,7 @@ class Movistar(Store):
                               'current%5Bplan%5D=&' \
                               '{}&current%5Bcode%5D=' \
                               ''.format(sku, payload_params)
-                    try:
-                        json_response = get_json_response(payload)
-                    except Exception:
-                        return []
+                    json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
                         cell_plan_name = container['name']
