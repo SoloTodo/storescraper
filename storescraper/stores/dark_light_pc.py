@@ -23,10 +23,14 @@ class DarkLightPc(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['tarjeta-grafica', VIDEO_CARD],
-            ['ram', RAM],
-            ['almacenamiento', SOLID_STATE_DRIVE],
-            ['procesador', PROCESSOR],
+            ['componentes/tarjeta-grafica', VIDEO_CARD],
+            ['componentes/ram', RAM],
+            ['componentes/almacenamiento', SOLID_STATE_DRIVE],
+            ['componentes/procesador', PROCESSOR],
+            ['perifericos/teclados-mecanicos', PROCESSOR],
+            ['perifericos/mouse', PROCESSOR],
+            ['perifericos/audifonos', PROCESSOR],
+            ['perifericos/parlantes', PROCESSOR],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -38,8 +42,8 @@ class DarkLightPc(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extensions)
                 url_webpage = 'https://darklightpc.cl/product-category/' \
-                              'componentes/{}/page/{}/'.format(
-                                url_extension, page)
+                              '{}/page/{}/'.format(
+                                  url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')

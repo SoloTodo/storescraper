@@ -1,4 +1,3 @@
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -86,14 +85,22 @@ class FullcolorSpa(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('div', 'product-name').text.strip()
-        sku = soup.find('input', {'id': 'id'})['value']
-        stock = int(soup.find('span', 'in-stock').text.replace('(', '')
+        product_soup = soup.find('div', 'product-view')
+
+        name = product_soup.find('div', 'product-name').text.strip()
+        sku = product_soup.find('input', {'id': 'id'})['value']
+
+        if sku == "":
+            return []
+
+        stock = int(product_soup.find('span', 'in-stock').text.replace('(', '')
                     .replace(')', '').split()[-1])
         price = Decimal(
-            remove_words(soup.find('span', 'price').text.strip().split()[1]))
+            remove_words(
+                product_soup.find('span', 'price').text.strip().split()[1]))
 
-        picture_container = soup.find('div', 'product-image').find('img')
+        picture_container = product_soup.find(
+            'div', 'product-image').find('img')
 
         if picture_container:
             picture_urls = ['https://www.fullcolorspa.com' +

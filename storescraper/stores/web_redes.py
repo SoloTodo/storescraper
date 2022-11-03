@@ -7,10 +7,10 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TABLET, NOTEBOOK, MOTHERBOARD, PROCESSOR, \
     CPU_COOLER, VIDEO_CARD, RAM, COMPUTER_CASE, POWER_SUPPLY, KEYBOARD, \
     STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MONITOR, \
-    PRINTER, GAMING_CHAIR, MICROPHONE
+    PRINTER, GAMING_CHAIR, MICROPHONE, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class WebRedes(Store):
@@ -33,7 +33,8 @@ class WebRedes(Store):
             MONITOR,
             PRINTER,
             GAMING_CHAIR,
-            MICROPHONE
+            MICROPHONE,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -58,7 +59,8 @@ class WebRedes(Store):
             ['239-monitores', MONITOR],
             ['256-impresoras', PRINTER],
             ['271-sillas-gamer', GAMING_CHAIR],
-            ['275-microfonos', MICROPHONE]
+            ['275-microfonos', MICROPHONE],
+            ['315-consolas', VIDEO_GAME_CONSOLE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
