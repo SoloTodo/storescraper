@@ -1,4 +1,3 @@
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -97,7 +96,8 @@ class FullcolorSpa(Store):
         stock = int(product_soup.find('span', 'in-stock').text.replace('(', '')
                     .replace(')', '').split()[-1])
         price = Decimal(
-            remove_words(product_soup.find('span', 'price').text.strip().split()[1]))
+            remove_words(
+                product_soup.find('span', 'price').text.strip().split()[1]))
 
         picture_container = product_soup.find(
             'div', 'product-image').find('img')
