@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, trim
 
 
 class Movistar(Store):
@@ -228,7 +228,8 @@ class Movistar(Store):
                     json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
-                        cell_plan_name = container['name'] + ' Portabilidad'
+                        cell_plan_name = trim(container['name']) + \
+                                         ' Portabilidad'
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
                         print(cell_url)
@@ -253,7 +254,7 @@ class Movistar(Store):
                             price,
                             price,
                             'CLP',
-                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_plan_name=cell_plan_name,
                             cell_monthly_payment=Decimal(0)
                         ))
 
@@ -277,8 +278,8 @@ class Movistar(Store):
                         json_response = get_json_response(payload)
 
                         for container in json_response['planes']['dataplan']:
-                            cell_plan_name = \
-                                container['name'] + ' Portabilidad Cuotas'
+                            cell_plan_name = trim(container['name']) + \
+                                             ' Portabilidad Cuotas'
                             code = container['codigo']
                             cell_url = '{}?codigo={}'.format(base_url, code)
                             print(cell_url)
@@ -311,7 +312,7 @@ class Movistar(Store):
                                 price,
                                 price,
                                 'CLP',
-                                cell_plan_name='{}'.format(cell_plan_name),
+                                cell_plan_name=cell_plan_name,
                                 cell_monthly_payment=cell_monthly_payment
                             ))
                 elif portability_type_id == 3:
@@ -327,7 +328,7 @@ class Movistar(Store):
                     json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
-                        cell_plan_name = container['name']
+                        cell_plan_name = trim(container['name'])
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
                         print(cell_url)
@@ -353,7 +354,7 @@ class Movistar(Store):
                             price,
                             price,
                             'CLP',
-                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_plan_name=cell_plan_name,
                             cell_monthly_payment=Decimal(0)
                         ))
 

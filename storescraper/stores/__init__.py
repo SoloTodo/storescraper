@@ -76,7 +76,6 @@ from .david_and_joseph import DavidAndJoseph
 from .dazbog_store import DazbogStore
 from .dd_tech import DdTech
 from .dell import Dell
-from .deltron import Deltron
 from .demasled import Demasled
 from .deuva import Deuva
 from .de_prati import DePrati
@@ -196,7 +195,6 @@ from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
 from .jumbo_store import JumboStore
 from .k_d_tec import KDTec
-from .kabum import Kabum
 from .kalunga import Kalunga
 from .kill_store import KillStore
 from .kraken_store import KrakenStore
@@ -310,7 +308,6 @@ from .pc_master_games import PcMasterGames
 from .pc_ofertas import PcOfertas
 from .pc_part import PcPart
 from .pcel import Pcel
-from .pch_mayoreo import PchMayoreo
 from .pcm_store import PcmStore
 from .pcmig import Pcmig
 from .pc_nexus import PcNexus
@@ -356,7 +353,6 @@ from .shonen_tienda import ShonenTienda
 from .sicot import Sicot
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
-from .sindelen import Sindelen
 from .sipo_online import SipoOnline
 from .sistemax import Sistemax
 from .smart_deal import SmartDeal
@@ -447,7 +443,6 @@ from .woow import Woow
 from .wom import Wom
 from .x_com import XCom
 from .xenex import Xenex
-from .xl_store import XlStore
 from .xtreme_tec_pc import XtremeTecPc
 from .yokan_store import YokanStore
 from .you_tech import YouTech

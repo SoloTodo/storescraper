@@ -133,34 +133,10 @@ def session_with_proxy(extra_args):
     return session
 
 
-class InvalidSessionCookieException(Exception):
-    pass
-
-
 CF_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) '
                   'Gecko/20100101 Firefox/84.0'
 }
-
-
-def get_cf_session(extra_args):
-    session = session_with_proxy(extra_args)
-
-    for header_name, header_value in CF_REQUEST_HEADERS.items():
-        session.headers[header_name] = header_value
-
-    cookie_names = ['cf_clearance']
-
-    for cookie_name in cookie_names:
-        if cookie_name not in extra_args:
-            logging.warning(
-                'This scraper expects a CloudFlare cookie in production')
-            continue
-
-        cookie = requests.cookies.create_cookie(name=cookie_name,
-                                                value=extra_args[cookie_name])
-        session.cookies.set_cookie(cookie)
-    return session
 
 
 class HeadlessChrome:
@@ -198,29 +174,5 @@ class HeadlessChrome:
         self.driver.close()
 
 
-def load_driver_cf_cookies(driver, extra_args, domain):
-    driver.add_cookie({
-        'name': 'cf_clearance',
-        'value': extra_args['cf_clearance'],
-        'domain': domain,
-        'path': '/'
-    })
-
-
-class PhantomJS:
-    def __init__(self, service_args=['--load-images=no'], timeout=30):
-        dcap = dict(DesiredCapabilities.PHANTOMJS)
-        dcap["phantomjs.page.settings.userAgent"] = (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
-            "(KHTML, like Gecko) Chrome/15.0.87"
-        )
-
-        self.driver = webdriver.PhantomJS(service_args=service_args,
-                                          desired_capabilities=dcap)
-        self.driver.set_page_load_timeout(timeout)
-
-    def __enter__(self):
-        return self.driver
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.driver.close()
+def trim(text):
+    return ' '.join(text.split())

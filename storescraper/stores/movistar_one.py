@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CELL
 from .movistar import Movistar
 from ..product import Product
-from ..utils import session_with_proxy, remove_words
+from ..utils import session_with_proxy, remove_words, trim
 
 
 class MovistarOne(Movistar):
@@ -91,7 +91,8 @@ class MovistarOne(Movistar):
                     json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
-                        cell_plan_name = container['name'] + ' Portabilidad'
+                        cell_plan_name = trim(container['name']) + \
+                                         ' Portabilidad'
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
                         print(cell_url)
@@ -118,7 +119,7 @@ class MovistarOne(Movistar):
                             price,
                             price,
                             'CLP',
-                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_plan_name=cell_plan_name,
                             cell_monthly_payment=cell_monthly_payment
                         ))
                 elif portability_type_id == 3:
@@ -134,7 +135,7 @@ class MovistarOne(Movistar):
                     json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
-                        cell_plan_name = container['name']
+                        cell_plan_name = trim(container['name'])
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
                         print(cell_url)
@@ -161,7 +162,7 @@ class MovistarOne(Movistar):
                             price,
                             price,
                             'CLP',
-                            cell_plan_name='{}'.format(cell_plan_name),
+                            cell_plan_name=cell_plan_name,
                             cell_monthly_payment=cell_monthly_payment
                         ))
 
