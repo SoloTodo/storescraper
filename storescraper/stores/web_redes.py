@@ -59,7 +59,7 @@ class WebRedes(Store):
             ['239-monitores', MONITOR],
             ['256-impresoras', PRINTER],
             ['271-sillas-gamer', GAMING_CHAIR],
-            ['275-microfonos', MICROPHONE]
+            ['275-microfonos', MICROPHONE],
             ['315-consolas', VIDEO_GAME_CONSOLE]
         ]
         session = session_with_proxy(extra_args)
