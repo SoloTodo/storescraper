@@ -828,6 +828,7 @@ class MercadoLibreChile(Store):
         description = ""
 
         picker = None
+        condition = 'https://schema.org/NewCondition'
         for x in data['initialState']['components']['short_description']:
             if x['id'] == 'variations' and 'pickers' in x:
                 if len(x['pickers']) == 1:
@@ -837,6 +838,9 @@ class MercadoLibreChile(Store):
                     # https://articulo.mercadolibre.cl/MLC-547289939-
                     # samartband-huawei-band-4-pro-_JM
                     picker = None
+            if x['id'] == 'header' and 'tag' in x:
+                if 'REACONDICIONADO' in x['tag']['text'].upper():
+                    condition = 'https://schema.org/RefurbishedCondition'
 
         products = []
 
@@ -877,6 +881,7 @@ class MercadoLibreChile(Store):
                     'CLP',
                     sku=sku,
                     seller=seller,
+                    condition=condition,
                     description='{} Type2'.format(description)
                 ))
         else:

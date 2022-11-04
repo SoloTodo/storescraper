@@ -116,6 +116,12 @@ class BookComputer(Store):
                     0])
             for product in variations:
                 name = soup.find('h1', 'product-form_title page-title').text
+
+                if 'REACONDICIONADO' in name.upper():
+                    condition = 'https://schema.org/RefurbishedCondition'
+                else:
+                    condition = 'https://schema.org/NewCondition'
+
                 sku = str(product['variant']['id'])
                 price = Decimal(product['variant']['price'])
                 stock = product['variant']['stock']
@@ -135,7 +141,8 @@ class BookComputer(Store):
                     'CLP',
                     sku=sku,
                     picture_urls=picture_urls,
-                    description=description
+                    description=description,
+                    condition=condition
                 )
                 products.append(p)
             return products
@@ -147,6 +154,11 @@ class BookComputer(Store):
             else:
                 sku = json_info['sku']
             name = sku + ' - ' + html.unescape(json_info['name'])
+
+            if 'REACONDICIONADO' in name.upper():
+                condition = 'https://schema.org/RefurbishedCondition'
+            else:
+                condition = 'https://schema.org/NewCondition'
 
             sku = soup.find('form', 'product-form form-horizontal')[
                 'action'].split('/')[-1]
@@ -169,6 +181,7 @@ class BookComputer(Store):
                 'CLP',
                 sku=sku,
                 picture_urls=picture_urls,
-                description=description
+                description=description,
+                condition=condition
             )
             return [p]

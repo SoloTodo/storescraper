@@ -217,18 +217,11 @@ class SpDigital(Store):
         # I have zero idea why they calculate it like this
         offer_price = (normal_price * cash_price / other_price).quantize(0)
 
-        refurbished_blacklist = [
-            'CAJA ABIERTA',
-            'SEGUNDA SELECCI',
-            'DAÑADA'
-        ]
-
-        for keyword in refurbished_blacklist:
-            if keyword in name:
-                condition = 'https://schema.org/RefurbishedCondition'
-                break
-        else:
-            condition = 'https://schema.org/NewCondition'
+        condition = 'https://schema.org/NewCondition'
+        for attr in page_data['content']['attributes']:
+            if attr['attribute']['slug'] == 'condition':
+                if attr['values'][0]['slug'] != 'nuevo':
+                    condition = 'https://schema.org/RefurbishedCondition'
 
         if page_data['content']['description']:
             description_json = json.loads(page_data['content']['description'])

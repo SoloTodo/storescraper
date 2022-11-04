@@ -527,6 +527,13 @@ class Ripley(Store):
         else:
             seller = None
 
+        if element.find('img', {'src': '//home.ripley.cl/'
+                                       'promo-badges/reacondicionado.png'}) \
+                or 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -540,7 +547,8 @@ class Ripley(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            seller=seller
+            seller=seller,
+            condition=condition
         )
 
         return p

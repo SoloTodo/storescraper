@@ -357,6 +357,11 @@ class Lider(Store):
 
         picture_urls = [img for img in entry['images']['availableImages']]
 
+        if 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger
         # the wiodget makes sure that we only need to check for the brand.
@@ -378,7 +383,8 @@ class Lider(Store):
             part_number=part_number,
             picture_urls=picture_urls,
             description=description,
-            has_virtual_assistant=has_virtual_assistant
+            has_virtual_assistant=has_virtual_assistant,
+            condition=condition
         )]
 
     @classmethod
