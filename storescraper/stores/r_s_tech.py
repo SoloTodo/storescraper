@@ -4,9 +4,9 @@ from decimal import Decimal
 import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, \
-    RAM, PROCESSOR, CPU_COOLER, NOTEBOOK, VIDEO_GAME_CONSOLE, \
-    STORAGE_DRIVE, MOUSE
+from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, MONITOR, \
+    VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, RAM, PROCESSOR, CPU_COOLER, \
+    NOTEBOOK, VIDEO_GAME_CONSOLE, STORAGE_DRIVE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,7 +25,10 @@ class RSTech(Store):
             NOTEBOOK,
             VIDEO_GAME_CONSOLE,
             STORAGE_DRIVE,
-            MOUSE
+            MOUSE,
+            COMPUTER_CASE,
+            MONITOR,
+            GAMING_CHAIR
         ]
 
     @classmethod
@@ -41,7 +44,9 @@ class RSTech(Store):
             ['procesadores', PROCESSOR],
             ['refrigeracion', CPU_COOLER],
             ['tarjetas-de-video', VIDEO_CARD],
-            # ['monitores', MONITOR],
+            ['gabinetes', COMPUTER_CASE],
+            ['monitores', MONITOR],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
