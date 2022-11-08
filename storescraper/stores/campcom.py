@@ -72,9 +72,13 @@ class Campcom(Store):
         else:
             price = Decimal(offer['lowPrice'])
         stock_span = soup.find('span', 'stock in-stock')
-        stock = -1
-        if stock_span:
+
+        if soup.find('p', 'available-on-backorder'):
+            stock = 0
+        elif stock_span:
             stock = int(stock_span.text.split('disp')[0].strip())
+        else:
+            stock = -1
 
         picture_urls = []
         picture_container = soup.find(
