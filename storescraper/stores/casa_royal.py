@@ -119,11 +119,15 @@ class CasaRoyal(Store):
         price = Decimal(
             soup.find('meta', {'property': 'product:price:amount'})['content'])
 
-        description = html_to_markdown(
-            soup.find('div', 'productTabs-container').find(
-                'div', {'id': 'description'}).text)
+        product_tab = soup.find('div', 'productTabs-container')
+        description_div = product_tab.find('div', {'id': 'description'})
+        if description_div:
+            description = html_to_markdown(description_div.text)
+        else:
+            description = None
 
-        if 'reacond' in name.lower() or 'reacond' in description.lower():
+        if description and ('reacond' in name.lower() or
+                            'reacond' in description.lower()):
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'

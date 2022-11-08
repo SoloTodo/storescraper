@@ -83,7 +83,11 @@ class Dreamtec(Store):
         name = soup.find('h1').text.strip()
         description = soup.find('div', {'id': 'nav-home'}).text.strip()
         sku = str(soup.find('span', 'sku-detalle').find('strong').text)
-        normal_price = Decimal(remove_words(soup.find('strong', 'fs-3').text))
+
+        price_tag = soup.find('strong', 'fs-3')
+        if not price_tag:
+            return []
+        normal_price = Decimal(remove_words(price_tag.text))
         offer_price = Decimal(remove_words(soup.find('h3', 'fs-1').text))
 
         stock_select = soup.find('select', {'id': 'select-cantidad'})

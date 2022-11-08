@@ -68,7 +68,7 @@ class OpcStore(Store):
             'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']
-        sku = json_data['sku']
+        sku = json_data.get('sku', None)
         description = json_data['description']
 
         if 'caja abierta' in name.lower():
