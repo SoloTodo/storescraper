@@ -133,7 +133,7 @@ class Wom(Store):
 
         for container in plan_containers:
             plan_name = container.find(
-                'div', 'index-module--value--3xbFh').text
+                'div', 'index-module--header_wrapper--19A6B').text
             plan_price = Decimal(remove_words(
                 container.find('span', 'index-module--price--1k_ac').text))
 
