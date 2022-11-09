@@ -69,12 +69,11 @@ class PlazaLama(Store):
         products = []
         for v_data in json_data_variants:
 
-            key = str(v_data['id'])
+            # key = str(v_data['id'])
             sku = v_data['sku']
             name = v_data['name']
-            if key in json_data['inventories']:
-                stock = int(json_data['inventories']
-                            [key]['inventory_quantity'])
+            if v_data['available']:
+                stock = -1
             else:
                 stock = 0
             price = Decimal(v_data['price']) / Decimal(100)
