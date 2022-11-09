@@ -153,6 +153,8 @@ class Winpy(Store):
         }
 
         condition = condition_dict[condition_str]
+        if sku.endswith('.PLUS'):
+            condition = 'https://schema.org/RefurbishedCondition'
 
         if soup.find('div', 'sinstock'):
             stock = 0
