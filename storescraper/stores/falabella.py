@@ -11,7 +11,7 @@ from html import unescape
 
 from dateutil.parser import parse
 
-from storescraper.categories import GAMING_CHAIR, STEREO_SYSTEM
+from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy, \
@@ -26,149 +26,107 @@ class Falabella(Store):
     seller = None
 
     category_paths = [
-        ['cat70057', ['Notebook'],
-         'Home > Computación-Notebooks', 1],
-        ['cat5860031', ['Notebook'],
-         'Home > Computación-Notebooks > Notebooks Tradicionales', 1],
-        ['cat2028', ['Notebook'],
-         'Home > Computación-Notebooks Gamers', 1],
-        ['cat2450060', ['Notebook'],
-         'Home > Computación-Notebooks > Notebooks Convertibles 2en1', 1],
-        ['cat15880017', ['Notebook'],
-         'Home > Especiales-Gamer', 1],
-        ['cat5860030', ['Notebook'],
-         'Home > Computación-Notebooks > MacBooks', 1],
-        ['cat4850013', ['Notebook'],
-         'Home > Computación-Computación Gamer', 1],
-        ['cat1012', ['Television'],
-         'Home > Tecnología-TV', 1],
-        ['cat7190148', ['Television'],
-         'Home > Tecnología-TV > Televisores LED', 1],
-        ['cat11161614', ['Television'],
-         'Home > Tecnología-TV > LEDs menores a 50 pulgadas', 1],
-        ['cat11161675', ['Television'],
-         'Home > Tecnología-TV > LEDs entre 50 - 55 pulgadas', 1],
-        ['cat11161679', ['Television'],
-         'Home > Tecnología-TV > LEDs sobre 55 pulgadas', 1],
-        ['cat2850016', ['Television'],
-         'Home > TV-Televisores OLED', 1],
-        ['cat10020021', ['Television'],
-         'Home > TV-Televisores QLED', 1],
-        ['cat18110001', ['Television'],
-         'Home > Tecnología-Premium', 1],
-        ['cat7230007', ['Tablet'],
-         'Home > Computación-Tablets', 1],
-        ['cat3205', ['Refrigerator'],
-         'Home > Electrohogar-Línea Blanca > Refrigeradores', 1],
-        ['cat4048', ['Refrigerator'],
-         'Home > Electrohogar-Línea Blanca > Refrigeradores > Freezers', 1],
-        ['cat4049', ['Refrigerator'],
-         'Home > Electrohogar-Línea Blanca > Refrigeradores > Frigobar', 1],
-        ['cat4091', ['Refrigerator'],
-         'Home > Refrigeración-Side by Side', 1],
-        ['cat1820006', ['Printer'],
-         'Home > Computación-Impresión > Impresoras Multifuncionales', 1],
-        ['cat2049', ['Printer'],
-         'Home > Tecnología-Computadores > Impresoras', 1],
-        ['cat3151', ['Oven'],
-         'Home > Microondas', 1],
-        ['cat3114', ['Oven'],
-         'Home > Electrodomésticos Cocina- Electrodomésticos de cocina > '
-         'Hornos Eléctricos', 1],
-        ['cat3025', ['VacuumCleaner'],
-         'Home > Electrohogar- Aspirado y Limpieza > Aspiradoras', 1],
-        ['cat3136', ['WashingMachine'],
-         'Home > Electrohogar-Lavado > Lavado', 1],
-        ['cat4060', ['WashingMachine'],
-         'Home > Electrohogar-Lavado > Lavadoras', 1],
-        ['cat1700002', ['WashingMachine'],
-         'Home > Electrohogar-Lavado > Lavadoras-Secadoras', 1],
-        ['cat4088', ['WashingMachine'],
-         'Home > Electrohogar-Lavado > Secadoras', 1],
-        ['cat1280018', ['Cell'],
-         'Home > Telefonía- Celulares y Teléfonos > Celulares Básicos', 1],
-        ['cat720161', ['Cell'],
-         'Home > Telefonía- Celulares y Teléfonos > Smartphones', 1],
-        ['cat70028', ['Camera'],
-         'Home > Fotografía-Cámaras Compactas', 1],
-        ['cat70029', ['Camera'],
-         'Home > Fotografía-Cámaras Semiprofesionales', 1],
-        ['cat2005', ['StereoSystem'],
-         'Home > Tecnología-Audio', 0],
-        ['cat3091', ['StereoSystem'],
-         'Home > Tecnología-Audio > Equipos de Música y Karaokes', 1],
-        ['cat3171', ['StereoSystem'],
-         'Home > Tecnología-Audio > Parlantes Bluetooth', 1],
-        ['cat2045', ['StereoSystem'],
-         'Home > Tecnología-Audio > Soundbar y Home Theater', 1],
-        ['cat1130010', ['StereoSystem'],
-         'Home > Audio- Hi-Fi > Tornamesas', 1],
-        ['cat6260041', ['StereoSystem'],
-         'Home > Día del Niño Chile- Tecnología > Audio > Karaoke', 1],
-        ['cat2032', ['OpticalDiskPlayer'],
-         'Home > TV-Blu Ray y DVD', 1],
-        ['cat3087', ['ExternalStorageDrive'],
-         'Home > Computación- Almacenamiento > Discos duros', 1],
-        ['cat3177', ['UsbFlashDrive'],
-         'Home > Computación- Almacenamiento > Pendrives', 1],
-        ['cat70037', ['MemoryCard'],
-         'Home > Computación- Accesorios Tecnología > '
-         'Accesorios Fotografía > Tarjetas de Memoria', 1],
-        ['cat2070', ['Projector'],
-         'Home > TV-Proyectores', 1],
-        ['cat3770004', ['VideoGameConsole'],
-         'Home > Tecnología- Videojuegos > Consolas', 1],
-        ['cat4440005', ['VideoGameConsole'],
-         'Home > Tecnología-Videojuegos > Playstation', 1],
-        ['cat70003', ['VideoGameConsole'],
-         'Home > Tecnología-Videojuegos > Nintendo', 1],
-        ['cat4440004', ['VideoGameConsole'],
-         'Home > Tecnología-Videojuegos > Xbox', 1],
-        ['cat40051', ['AllInOne'],
-         'Home > Computación-All In One', 1],
-        ['cat7830015', ['AirConditioner'],
-         'Home > Electrohogar- Aire Acondicionado > Portátiles', 1],
-        ['cat7830014', ['AirConditioner'],
-         'Home > Electrohogar- Aire Acondicionado >Split', 1],
-        ['cat3197', ['AirConditioner'],
-         'Home > Electrohogar- Aire Acondicionado > Purificadores', 1],
-        ['cat2062', ['Monitor'],
-         'Home > Computación-Monitores', 1],
-        ['cat2013', ['WaterHeater'],
-         'Home > Electrohogar- Aire Acondicionado > Calefont y Termos', 1],
-        ['cat3155', ['Mouse'],
-         'Home > Computación- Accesorios Tecnología > '
-         'Accesorios Computación > Mouse', 1],
-        ['cat9900007', ['SpaceHeater'],
-         'Home > Electrohogar- Calefacción > Estufas Parafina Láser', 1],
-        ['cat9910024', ['SpaceHeater'],
-         'Home > Electrohogar- Calefacción > Estufas Gas', 1],
-        ['cat9910006', ['SpaceHeater'],
-         'Home > Electrohogar- Calefacción > Estufas Eléctricas', 1],
-        ['cat9910027', ['SpaceHeater'],
-         'Home > Electrohogar- Calefacción > Estufas Pellet y Leña', 1],
-        ['cat4290063', ['Wearable'],
-         'Home > Telefonía- Wearables > SmartWatch', 1],
-        ['cat4730023', ['Keyboard'],
-         'Home > Computación- Accesorios Tecnología > '
-         'Accesorios Computación > Teclados > Teclados Gamers', 1],
-        ['cat2370002', ['Keyboard'],
-         'Home > Computación- Accesorios Tecnología > '
-         'Accesorios Computación > Teclados', 1],
-        ['cat2930003', ['Keyboard'],
-         'Home > Computación- Accesorios Tecnología > Accesorios TV > '
-         'Teclados Smart', 1],
-        ['cat1640002', ['Headphones'],
-         'Home > Tecnología-Audio > Audífonos', 1],
-        ['cat3239', [STEREO_SYSTEM],
-         'Home > Tecnología-Audio > Parlantes y Subwoofer', 1],
-        ['cat3203', [STEREO_SYSTEM],
-         'Home > Tecnología-Audio > Hi-Fi', 1],
-        ['cat4061', ['DishWasher'],
-         'Home > Lavado-Lavavajillas', 1],
-        ['CATG19011', [GAMING_CHAIR],
-         'Home > Tecnología-Computadores > Accesorios Computación > Sillas '
-         'Gamer', 1]
+        ['cat720161', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléfon'
+         'os > Smartphones', 1],
+        ['cat1280018', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléfon'
+         'os > Celulares Básicos', 1],
+        ['cat1640002', [HEADPHONES], 'Home > Tecnología-Audio > Audífonos', 1],
+        ['cat70037', [MEMORY_CARD], 'Home > Tecnología-Telefonía > Accesorios '
+         'Celulares > Tarjetas de Memoria', 1],
+        ['cat4290064', [WEARABLE], 'Home > Tecnología-Wearables > Smartband',
+         1],
+        ['cat4290063', [WEARABLE], 'Home > Tecnología-Wearables > SmartWatch',
+         1],
+        ['cat429001', [WEARABLE], 'Home > Tecnología-Wearables > SmartWatch In'
+         'fantil', 1],
+        ['cat7190148', [TELEVISION], 'Home > Tecnología-TV > Smart TV', 1],
+        ['cat2070', [PROJECTOR], 'Home > Tecnología-TV > Proyectores', 1],
+        ['cat2005', [STEREO_SYSTEM], 'Home > Tecnología-Audio', 0],
+        ['cat3091', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Equipos de Mús'
+         'ica y Karaokes', 1],
+        ['cat3203', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Hi-Fi', 1],
+        ['cat3171', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Parlantes Blue'
+         'tooth', 1],
+        ['cat2045', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Soundbar y Hom'
+         'e Theater', 1],
+        ['cat3155', [MOUSE], 'Home > Tecnología-Computadores > Accesorios Comp'
+         'utación > Mouse', 1],
+        ['cat2370002', [KEYBOARD], 'Home > Tecnología-Computadores > Accesorio'
+         's Computación > Teclados', 1],
+        ['cat3239', [STEREO_SYSTEM], 'Home > Tecnología-Computadores > Accesor'
+         'ios Computación > Parlantes y Subwoofer', 1],
+        ['CATG11879', [VIDEO_CARD], 'Home > Tecnología-Computadores > Accesori'
+         'os Computación > Tarjetas de Video', 1],
+        ['cat40051', [ALL_IN_ONE], 'Home > Tecnología-Computadores > All in on'
+         'e', 1],
+        ['cat3087', [EXTERNAL_STORAGE_DRIVE], 'Home > Tecnología-Computadores '
+         '> Almacenamiento > Discos duros', 1],
+        ['cat3177', [USB_FLASH_DRIVE], 'Home > Tecnología-Computación > Almace'
+         'namiento > Pendrives', 1],
+        ['cat1820006', [PRINTER], 'Home > Tecnología-Computadores > Impresoras'
+         ' y Tintas > Impresoras Multifuncionales', 1],
+        ['cat1820004', [PRINTER], 'Home > Tecnología-Computadores > Impresoras'
+         ' y Tintas > Impresoras', 1],
+        ['cat6680042', [PRINTER], 'Home > Tecnología-Computadores > Impresoras'
+         ' y Tintas > Impresoras Tradicionales', 1],
+        ['cat11970007', [PRINTER], 'Home > Tecnología-Computadores > Impresora'
+         's y Tintas > Impresoras Láser', 1],
+        ['cat2062', [MONITOR], 'Home > Tecnología-Computadores > Monitores',
+         1],
+        ['cat70057', [NOTEBOOK], 'Home > Tecnología-Computadores > Notebooks',
+         1],
+        ['cat7230007', [TABLET], 'Home > Tecnología-Computadores > Tablets',
+         1],
+        ['cat4930009', [HEADPHONES], 'Home > Tecnología-Computadores > Accesor'
+         'ios gamer > Audífonos gamer', 1],
+        ['CATG19011', [GAMING_CHAIR], 'Home > Tecnología-Computadores > Acceso'
+         'rios gamer > Sillas gamer', 1],
+        ['CATG19012', [COMPUTER_CASE], 'Home > Tecnología-Computadores > Acces'
+         'orios gamer > Gabinete gamer', 1],
+        ['CATG19008', [KEYBOARD], 'Home > Tecnología-Computadores > Accesorios'
+         ' gamer > Tecaldos gamer', 1],
+        ['CATG19007', [MOUSE], 'Home > Tecnología-Computadores > Accesorios ga'
+         'mer > Mouse gamer', 1],
+        ['cat202303', [VIDEO_GAME_CONSOLE], 'Home > Tecnología-Videojuegos > C'
+         'onsolas', 1],
+        ['cat3114', [OVEN], 'Home > Electrohogar-Electrodomésticos Cocina > Ho'
+         'rnos Eléctricos', 1],
+        ['cat3151', [OVEN], 'Home > Electrohogar-Electrodomésticos Cocina > Mi'
+         'croondas', 1],
+        ['cat4060', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > Lav'
+         'ado > Lavadoras', 1],
+        ['cat1700002', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > '
+         'Lavado > Lavadoras-Secadoras', 1],
+        ['cat4088', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > Lav'
+         'ado > Secadoras', 1],
+        ['cat4061', [DISH_WASHER], 'Home > Electrohogar-Línea blanca > Lavado '
+         '> Lavavajillas', 1],
+        ['cat3205', [REFRIGERATOR], 'Home > Electrohogar-Línea Blanca > Refrig'
+         'eración > Refrigeradores', 1],
+        ['cat4054', [OVEN], 'Home > Electrohogar-Línea blanca > Cocina > Horno'
+         's Empotrables', 1],
+        ['cat2013', [WATER_HEATER], 'Home > Cocina y Baño-Baño > Calefont y Te'
+         'rmos', 1],
+        ['cat2019', [AIR_CONDITIONER], 'Home > Electrohogar-Climatización > Ai'
+         're acondicionado', 1],
+        ['cat4850013', [NOTEBOOK], 'Home > Especiales-Otras categorias > PC ga'
+         'mer', 1],
+        ['cat3025', [VACUUM_CLEANER], 'Home > Electrohogar-Aspirado y Limpieza'
+         ' > Aspiradoras', 1],
+        ['cat70028', [CAMERA], 'Home > Tecnología-Fotografía > Cámaras Compact'
+         'as', 1],
+        ['cat70029', [CAMERA], 'Home > Tecnología-Fotografía > Cámaras Semipro'
+         'fesionales', 1],
+        ['cat1130010', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Tornamesas',
+         1],
+        ['cat9900007', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
+         'facción > Estufas Parafina Láser', 1],
+        ['cat9910024', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
+         'facción > Estufas Gas', 1],
+        ['cat9910006', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
+         'facción > Estufas Eléctricas', 1],
+        ['cat9910027', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
+         'facción > Estufas Pellet y Leña', 1],
     ]
 
     @classmethod
@@ -279,8 +237,10 @@ class Falabella(Store):
     def _get_product_urls(cls, session, category_id):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
-                   '&categoryId={}&page={}'
+                   'zones=ZL_CERRILLOS%2C3045%2CLOSC%2C2020%2CSC14F6B' \
+                   '_FLEX%2CSC3FD1A_FLEX%2CBX_R13_BASE%2CSCD9039_FLEX' \
+                   '%2C99%2C1234%2C130617%2CBLUE_RM_URBANO%2CRM%2CRM%' \
+                   '2C13%2C15&categoryId={}&page={}'
 
         page = 1
 
@@ -297,6 +257,9 @@ class Falabella(Store):
             if cls.seller:
                 pag_url += '&f.derived.variant.sellerId={}'.format(
                     cls.seller)
+            else:
+                pag_url += '&f.derived.variant.sellerId={}'.format(
+                    'FALABELLA%3A%3AMARKETPLACE')
 
             print(pag_url)
 
