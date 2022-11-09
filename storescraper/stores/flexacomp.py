@@ -1,7 +1,7 @@
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import CASE_FAN, CELL, COMPUTER_CASE, \
-    GAMING_CHAIR, HEADPHONES, MOUSE, NOTEBOOK, POWER_SUPPLY, SOLID_STATE_DRIVE
+from storescraper.categories import CPU_COOLER, CELL, COMPUTER_CASE, \
+    GAMING_CHAIR, HEADPHONES, MOUSE, POWER_SUPPLY, SOLID_STATE_DRIVE
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -10,11 +10,10 @@ class Flexacomp(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK,
             GAMING_CHAIR,
             CELL,
             HEADPHONES,
-            CASE_FAN,
+            CPU_COOLER,
             POWER_SUPPLY,
             SOLID_STATE_DRIVE,
             COMPUTER_CASE,
@@ -24,11 +23,10 @@ class Flexacomp(MercadoLibreChile):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/notebooks', NOTEBOOK],
             ['celulares-telefonia', CELL],
             ['accesorios-pc-gamin', HEADPHONES],
             ['hogar', GAMING_CHAIR],
-            ['componentes-pc-coolers', CASE_FAN],
+            ['componentes-pc-coolers', CPU_COOLER],
             ['componentes-pc-fuentes-alimentacion', POWER_SUPPLY],
             ['componentes-pc-discos-accesorios', SOLID_STATE_DRIVE],
             ['componentes-pc-gabinetes-soportes', COMPUTER_CASE],
