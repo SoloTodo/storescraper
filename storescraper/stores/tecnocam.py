@@ -94,7 +94,7 @@ class Tecnocam(Store):
                 url_webpage = 'https://tecnocam.cl/product-category/{}/' \
                               'page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                data = session.get(url_webpage).text
+                data = session.get(url_webpage, timeout=60).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('section', 'product')
                 if not product_containers:
@@ -111,7 +111,7 @@ class Tecnocam(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=60)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         add_button = soup.find('button', {'name': 'add-to-cart'})
