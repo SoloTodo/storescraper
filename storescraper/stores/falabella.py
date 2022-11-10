@@ -26,10 +26,10 @@ class Falabella(Store):
     seller = None
 
     category_paths = [
-        ['cat720161', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléfon'
-         'os > Smartphones', 1],
-        ['cat1280018', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléfon'
-         'os > Celulares Básicos', 1],
+        ['cat720161', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléf'
+         'onos > Smartphones', 1],
+        ['cat1280018', [CELL], 'Home > Tecnología-Telefonía > Celulares y Telé'
+         'fonos > Celulares Básicos', 1],
         ['cat1640002', [HEADPHONES], 'Home > Tecnología-Audio > Audífonos', 1],
         ['cat70037', [MEMORY_CARD], 'Home > Tecnología-Telefonía > Accesorios '
          'Celulares > Tarjetas de Memoria', 1],
