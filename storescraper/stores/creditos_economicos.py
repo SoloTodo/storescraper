@@ -1,4 +1,3 @@
-import base64
 import json
 import logging
 import re
@@ -6,7 +5,6 @@ import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-import urllib
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -66,6 +64,13 @@ class CreditosEconomicos(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.cookies['vtex_segment'] = 'eyJjYW1wYWlnbnMiOm51bGwsImNoYW5uZ' \
+            'WwiOiIyIiwicHJpY2VUYWJsZXMiOm51bGwsInJlZ2lvbklkIjpudWxsLCJ1dG1f' \
+            'Y2FtcGFpZ24iOm51bGwsInV0bV9zb3VyY2UiOm51bGwsInV0bWlfY2FtcGFpZ24' \
+            'iOm51bGwsImN1cnJlbmN5Q29kZSI6IlVTRCIsImN1cnJlbmN5U3ltYm9sIjoiJC' \
+            'IsImNvdW50cnlDb2RlIjoiRUNVIiwiY3VsdHVyZUluZm8iOiJlcy1FQyIsImFkb' \
+            'WluX2N1bHR1cmVJbmZvIjoiZXMtRUMiLCJjaGFubmVsUHJpdmFjeSI6InB1Ymxp' \
+            'YyJ9'
         new_url = '{}?sc=2'.format(url)
         response = session.get(new_url)
 
@@ -97,37 +102,8 @@ class CreditosEconomicos(Store):
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)
         pricing_data = product_data[pricing_key]
-        # price = Decimal(str(pricing_data['Price']))
+        price = Decimal(str(pricing_data['Price']))
         stock = pricing_data['AvailableQuantity']
-
-        variables = base64.b64encode(
-            json.dumps({"slug": slug}).encode('ascii'))
-        payload = {
-            "persistedQuery": {
-                "version": 1,
-                "sha256Hash": "063017c225e96ae1f83a1f97a4c7cf97348e0ae7cc746" +
-                              "97a0d026a1fe1e545d1",
-                "sender": "crecos.sale-channel-selector@0.x",
-                "provider": "vtex.search-graphql@0.x"
-            },
-            "variables": variables.decode("ascii")
-        }
-
-        extensions = urllib.parse.quote(json.dumps(payload).encode('ascii'))
-
-        session.cookies['vtex_segment'] = 'eyJjYW1wYWlnbnMiOm51bGwsImNoYW5uZ' \
-            'WwiOiIyIiwicHJpY2VUYWJsZXMiOm51bGwsInJlZ2lvbklkIjpudWxsLCJ1dG1f' \
-            'Y2FtcGFpZ24iOm51bGwsInV0bV9zb3VyY2UiOm51bGwsInV0bWlfY2FtcGFpZ24' \
-            'iOm51bGwsImN1cnJlbmN5Q29kZSI6IlVTRCIsImN1cnJlbmN5U3ltYm9sIjoiJC' \
-            'IsImNvdW50cnlDb2RlIjoiRUNVIiwiY3VsdHVyZUluZm8iOiJlcy1FQyIsImFkb' \
-            'WluX2N1bHR1cmVJbmZvIjoiZXMtRUMiLCJjaGFubmVsUHJpdmFjeSI6InB1Ymxp' \
-            'YyJ9'
-        price_url = 'https://www.creditoseconomicos.com/_v/segment/graphql/v' \
-            '1?extensions={}'.format(extensions)
-        res = session.get(price_url)
-        price_json = json.loads(res.text)
-        price = Decimal(str(price_json['data']['product']['priceRange']
-                            ['sellingPrice']['lowPrice']))
 
         picture_list_key = '{}.items.0'.format(base_json_key)
         picture_list_node = product_data[picture_list_key]
