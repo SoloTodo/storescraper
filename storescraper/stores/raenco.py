@@ -2,8 +2,7 @@ import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import AIR_CONDITIONER, REFRIGERATOR, \
-    STEREO_SYSTEM, TELEVISION
+from storescraper.categories import *
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -17,20 +16,34 @@ class Raenco(Store):
             REFRIGERATOR,
             AIR_CONDITIONER,
             TELEVISION,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            OVEN,
+            WEARABLE,
+            CELL,
+            MONITOR,
+            TABLET,
+            DISH_WASHER,
+            WASHING_MACHINE,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ["hogar.html", REFRIGERATOR],
             ["aires-acondicionados.html", AIR_CONDITIONER],
-            ["fuente-de-agua.html", TELEVISION],
-            ["oficina.html", TELEVISION],
-            ["construccion.html", TELEVISION],
-            ["audio-y-video.html", TELEVISION],
-            ["tecnologia.html", STEREO_SYSTEM],
-            ["autos.html", TELEVISION],
+            ["audio-y-video/tv.html", TELEVISION],
+            ["audio-y-video/equipos-de-sonido.html", STEREO_SYSTEM],
+            ["electrodomesticos/microondas.html", OVEN],
+            ["linea-blanca/refrigeradoras.html", REFRIGERATOR],
+            ["linea-blanca/lavadora.html", WASHING_MACHINE],
+            ["linea-blanca/secadoras.html", WASHING_MACHINE],
+            ["linea-blanca/lavaplatos.html", DISH_WASHER],
+            ["linea-blanca/cogeladores.html", REFRIGERATOR],
+            ["tecnologia/celulares.html", CELL],
+            ["tecnologia/computadoras/monitores.html", MONITOR],
+            ["tecnologia/tablet.html", TABLET],
+            ["tecnologia/reloj-smartwatch.html", WEARABLE],
+            ["tecnologia/audifonos-y-bocinas.html", HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
@@ -49,7 +62,7 @@ class Raenco(Store):
                 if page >= 15:
                     raise Exception('Page overflow')
 
-                url = 'https://www.raenco.com/{}?' \
+                url = 'https://www.raenco.com/departamentos/{}?' \
                       'marca=221'.format(category_path)
 
                 if page != 1:
