@@ -127,6 +127,7 @@ class Falabella(Store):
          'facción > Estufas Eléctricas', 1],
         ['cat9910027', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
          'facción > Estufas Pellet y Leña', 1],
+        ['CATG10194', [GROCERIES], 'Despensa', 1]
     ]
 
     @classmethod
@@ -275,6 +276,10 @@ class Falabella(Store):
                 # Remove weird special characters
                 product_url = product_url.encode(
                     'ascii', 'ignore').decode('ascii')
+
+                if '?' in product_url:
+                    product_url = '{}/{}'.format(product_url.split('?')
+                                                 [0], result['skuId'])
 
                 discovered_urls.append(product_url)
 
