@@ -131,6 +131,8 @@ class TravelTienda(Store):
 
         offer_price_text = json_container['listPrices']['tiendaBancoDeChile']
         if offer_price_text:
+            if Decimal(offer_price_text) > normal_price:
+                return []
             offer_price = Decimal(offer_price_text)
         else:
             offer_price = normal_price
