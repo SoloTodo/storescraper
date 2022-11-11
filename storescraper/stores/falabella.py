@@ -550,6 +550,7 @@ class Falabella(Store):
                 condition = 'https://schema.org/NewCondition'
 
             seller = None
+
             if model['offerings'] and 'sellerName' in model['offerings'][0]:
                 if 'falabella' not in \
                         model['offerings'][0]['sellerName'].lower():
@@ -558,6 +559,9 @@ class Falabella(Store):
                 if 'falabella' not in \
                         model['offerings'][0]['sellerId'].lower():
                     seller = model['offerings'][0]['sellerId']
+
+            if seller == '':
+                seller = None
 
             picture_urls = [x['url'] + '?scl=1.0' for x in model['medias']]
             model_name = model['name'].encode(
