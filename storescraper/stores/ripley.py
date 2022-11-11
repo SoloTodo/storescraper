@@ -394,6 +394,10 @@ class Ripley(Store):
                                     'reacondicionado.png'}):
             condition = 'https://schema.org/RefurbishedCondition'
 
+        if soup.find('img', {'src': '//home.ripley.cl/promo-badges/'
+                                    'openbox-telefonia-mz.png'}):
+            condition = 'https://schema.org/RefurbishedCondition'
+
         picture_urls = []
         for path in specs_json['images']:
             picture_url = path
