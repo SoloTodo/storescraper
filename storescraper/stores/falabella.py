@@ -483,6 +483,8 @@ class Falabella(Store):
         review_avg_score = review_data['reviewSummary']['primaryRating'][
             'average']
 
+        is_international_shipping = product_data['internationalShipping']['applicable']
+
         for model in product_data['variants']:
             sku = model['id']
             sku_url = 'https://www.falabella.com/falabella-cl/product/{}/{}/' \
@@ -533,7 +535,7 @@ class Falabella(Store):
 
             stock = 0
 
-            if model.get('isPurchaseable', False):
+            if not is_international_shipping and model.get('isPurchaseable', False):
                 availabilities = model['availability']
 
                 for availability in availabilities:
@@ -673,7 +675,6 @@ class Falabella(Store):
         ]
 
         banners = []
-        proxy = extra_args['proxy']
 
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
