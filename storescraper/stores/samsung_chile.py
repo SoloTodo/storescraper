@@ -81,7 +81,9 @@ class SamsungChile(Store):
                     for picture in model['galleryImage'] or []:
                         picture_urls.append('https:' + picture)
 
-                    if model['priceDisplay']:
+                    if model['promotionPrice']:
+                        price = Decimal(remove_words(model['promotionPrice']))
+                    elif model['priceDisplay']:
                         price = Decimal(remove_words(model['priceDisplay']))
                     else:
                         price = Decimal(0)
