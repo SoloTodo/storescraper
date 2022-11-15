@@ -148,7 +148,8 @@ class BookComputer(Store):
             return products
         else:
             json_info = json.loads(
-                soup.find('script', {'type': 'application/ld+json'}).text)
+                soup.find('script', {'type': 'application/ld+json'}).text,
+                strict=False)
             if 'sku' not in json_info:
                 sku = soup.find('form', 'product-form')['id'].split('-')[-1]
             else:
