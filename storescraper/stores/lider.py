@@ -26,8 +26,8 @@ class Lider(Store):
     tenant = 'catalogo'
     category_paths = [
         # TECNO
-        ['Tecno/TV/Televisores', [TELEVISION],
-         'Tecno > TV > Televisores', 1],
+        ['Tecno/TV', [TELEVISION],
+         'Tecno > TV', 1],
         ['Tecno/TV/Home_Theater', [STEREO_SYSTEM],
          'Tecno > TV > Home Theater', 1],
         ['Tecno/TV/Proyectores', [PROJECTOR],
