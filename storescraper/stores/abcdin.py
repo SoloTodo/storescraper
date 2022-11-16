@@ -65,8 +65,8 @@ class AbcDin(Store):
              'Electro / Audio / Home Theater', 1],
             # ['electro/audio/radios', [STEREO_SYSTEM],
             #  'Electro / Audio / Radios', 1],
-            # ['electro/audio/reproductores-de-musica', [STEREO_SYSTEM],
-            #  'Electro / Audio / Reproductores de Música', 1],
+            ['electro/audio/reproductores-de-musica', [STEREO_SYSTEM],
+             'Electro / Audio / Reproductores de Música', 1],
             # ['electro/audio/tornamesas', [STEREO_SYSTEM],
             #  'Electro / Audio / Tornamesas', 1],
             # ['electro/audio/radio-y-parlantes-de-auto', [STEREO_SYSTEM],
@@ -139,8 +139,8 @@ class AbcDin(Store):
              'Computación / Almacenamiento', 1],
             ['computacion/impresoras-y-multifuncionales', [PRINTER],
              'Computación / Impresoras y Multifuncionales', 1],
-            # ['entretenimiento/videojuegos', [VIDEO_GAME_CONSOLE],
-            #  'Entretenimiento / Videojuegos', 1],
+            ['entretenimiento/videojuegos', [VIDEO_GAME_CONSOLE],
+             'Entretenimiento / Videojuegos', 1],
         ]
 
         discovered_entries = defaultdict(lambda: [])
@@ -172,9 +172,8 @@ class AbcDin(Store):
 
                 if not products_grid:
                     if page == 1:
-                        raise Exception('Empty section: {}'.format(url))
-                    else:
-                        break
+                        logging.warning('empty category: ' + url)
+                    break
 
                 product_cells = products_grid.findAll('li')
 
