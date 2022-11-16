@@ -48,6 +48,7 @@ class MHWStore(Store):
         url_extensions = [
             ['11-procesadores', PROCESSOR],
             ['12-placas-madre', MOTHERBOARD],
+            ['13-almacenamiento', SOLID_STATE_DRIVE],
             ['21-ssd', SOLID_STATE_DRIVE],
             ['22-hdd', STORAGE_DRIVE],
             ['14-memorias-ram', RAM],
