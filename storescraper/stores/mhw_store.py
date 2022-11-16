@@ -111,7 +111,8 @@ class MHWStore(Store):
         name = soup.find('h1', 'h1').text
         key = soup.find('input', {'id': 'product_page_product_id'})['value']
         sku = soup.find(
-            'div', 'product-reference').text.replace('Referencia: ', '').strip()
+            'div',
+            'product-reference').text.replace('Referencia: ', '').strip()
         not_stock = soup.find('span', {'id': 'product-availability'}).text
         if 'Fuera de stock' in not_stock:
             stock = 0

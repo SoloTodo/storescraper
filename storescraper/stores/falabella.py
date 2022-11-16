@@ -483,7 +483,8 @@ class Falabella(Store):
         review_avg_score = review_data['reviewSummary']['primaryRating'][
             'average']
 
-        is_international_shipping = product_data['internationalShipping']['applicable']
+        is_international_shipping = product_data[
+            'internationalShipping']['applicable']
 
         for model in product_data['variants']:
             sku = model['id']
@@ -535,7 +536,8 @@ class Falabella(Store):
 
             stock = 0
 
-            if not is_international_shipping and model.get('isPurchaseable', False):
+            if not is_international_shipping and \
+                    model.get('isPurchaseable', False):
                 availabilities = model['availability']
 
                 for availability in availabilities:
