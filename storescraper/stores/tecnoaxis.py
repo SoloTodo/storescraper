@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, GAMING_CHAIR, HEADPHONES, \
     KEYBOARD, MONITOR, MOUSE, POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, \
-    VIDEO_CARD, PROCESSOR, MOTHERBOARD, CPU_COOLER
+    VIDEO_CARD, PROCESSOR, MOTHERBOARD, CPU_COOLER, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -27,6 +27,7 @@ class Tecnoaxis(Store):
             PROCESSOR,
             MOTHERBOARD,
             CPU_COOLER,
+            USB_FLASH_DRIVE
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class Tecnoaxis(Store):
             ['perifericos/mouse', MOUSE],
             ['perifericos/teclados', KEYBOARD],
             ['sillas', GAMING_CHAIR],
+            ['perifericos/pendrive', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
