@@ -174,7 +174,7 @@ class Digiplot(Store):
 
         condition_span = soup.find(
             'p', {'id': 'product_condition'}).find('span', 'editable')
-        if condition_span.text == 'Nuevo':
+        if 'nuevo' in condition_span.text.lower():
             condition = 'https://schema.org/NewCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
