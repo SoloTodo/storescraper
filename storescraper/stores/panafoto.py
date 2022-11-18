@@ -6,6 +6,8 @@ from decimal import Decimal
 
 from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup
+
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
@@ -43,7 +45,7 @@ class Panafoto(Store):
             payload_params = "page={}&facetFilters={}&numericFilters=%5B" \
                              "%22visibility_catalog%3D1%22%5D" \
                              "".format(page, urllib.parse.quote(
-                                '[["manufacturer:LG"]]'))
+                                 '[["manufacturer:LG"]]'))
 
             payload = {"requests": [
                 {"indexName": "wwwpanafotocom_default_products",
@@ -92,31 +94,62 @@ class Panafoto(Store):
         response = session.post(cls.endpoint, data=json.dumps(payload))
         products_json = json.loads(response.text)['results'][0]['hits']
 
+        url_present = False
         for product_entry in products_json:
             if product_entry['url'] == url:
+                url_present = True
                 break
+
+        if url_present:
+            name = product_entry['name']
+            key = product_entry['sku']
+            stock = -1 if product_entry['in_stock'] else 0
+            price = Decimal(str(product_entry['price']['USD']['default']))
+            part_number = product_entry.get('reference', None)
+            picture_urls = [product_entry['image_url']]
+
+            return [Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=key,
+                part_number=part_number,
+                picture_urls=picture_urls
+            )]
         else:
-            raise Exception('No product found for URL: ' + url)
+            res = session.get(url)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            json_data = json.loads(
+                soup.find('script', {'type': 'application/ld+json'}).text)
 
-        name = product_entry['name']
-        key = product_entry['sku']
-        stock = -1 if product_entry['in_stock'] else 0
-        price = Decimal(str(product_entry['price']['USD']['default']))
-        part_number = product_entry.get('reference', None)
-        picture_urls = [product_entry['image_url']]
+            name = json_data['name']
+            key = json_data['sku']
+            price = Decimal(json_data['offers']['price'])
+            stock = -1 if soup.find('button',
+                                    {'id': 'product-addtocart-button'}) else 0
 
-        return [Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'USD',
-            sku=key,
-            part_number=part_number,
-            picture_urls=picture_urls
-        )]
+            picture_urls = []
+            for i in soup.findAll('img', 'fotorama__img'):
+                picture_urls.append(i['src'])
+
+            return [Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=key,
+                picture_urls=picture_urls
+            )]
