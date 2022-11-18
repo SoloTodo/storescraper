@@ -83,6 +83,7 @@ from .dc_computer import DcComputer
 from .dgital import Dgital
 from .digi_planet import DigiPlanet
 from .digiplot import Digiplot
+from .digital_choice import DigitalChoice
 from .digitalife import Digitalife
 from .dimercom import Dimercom
 from .diunsa import Diunsa
