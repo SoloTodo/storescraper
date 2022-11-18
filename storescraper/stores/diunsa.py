@@ -1,7 +1,5 @@
 import json
-import logging
-import urllib
-import re
+
 
 from decimal import Decimal
 
@@ -10,7 +8,7 @@ from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class Diunsa(Store):
@@ -32,23 +30,30 @@ class Diunsa(Store):
 
         page = 1
 
-        while True:
+        done = False
+        while not done:
             if page > 30:
                 raise Exception('Page overflow')
 
-            url = 'https://www.diunsa.hn/buscapagina?fq=C%3a%2f1%2f&' + \
-                'ft=televisores+marca+lg&PS=12&sl=47de5394-cc68-404f-' + \
-                '93ee-dca7e0b26b7f&cc=12&sm=0&PageNumber={}'.format(page)
+            url = 'https://www.diunsa.hn/lg%20lg?_q=lg%20lg&' \
+                'page={}'.format(page)
 
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('div', 'contentShelve')
+            page_state_tag = soup.find('template',
+                                       {'data-varname': '__STATE__'})
+            page_state = json.loads(page_state_tag.text)
 
-            if not products:
-                break
-
-            for product in products:
-                product_url = product.find('a')['href']
+            done = True
+            for key, product in page_state.items():
+                if 'productId' not in product:
+                    continue
+                done = False
+                product_url = 'https://www.diunsa.hn/{}/p'.format(
+                    product['linkText'])
                 product_urls.append(product_url)
+
+            if done and page == 1:
+                raise Exception('Empty site')
 
             page += 1
 
@@ -59,37 +64,36 @@ class Diunsa(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html5lib')
 
-        if response.status_code == 404:
-            return []
+        product_data = json.loads(
+            soup.find('template', {'data-varname': '__STATE__'}).text)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        base_json_key = list(product_data.keys())[0]
+        product_specs = product_data[base_json_key]
 
-        scripts = soup.findAll('script')
-        product_data = [s for s in scripts if 'var skuJson' in s.text]
+        key_key = '{}.items.0'.format(base_json_key)
+        key = product_data[key_key]['itemId']
+        name = product_specs['productName']
+        sku = product_specs['productId']
+        part_number = product_specs['productReference']
+        description = product_specs.get('description', None)
 
-        if product_data:
-            product_data = product_data[0].text
-        else:
-            raise Exception('No Data')
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
 
-        product_json = json.loads(re.search(
-            r'var skuJson_0 = ([\S\s]+?);', product_data).groups()[0])
+        price = Decimal(str(pricing_data['Price']))
+        stock = pricing_data['AvailableQuantity']
 
-        name = product_json['name']
-        sku = str(product_json['skus'][0]['sku'])
-        stock = 0
-        if product_json['available']:
-            stock = -1
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
 
-        price = Decimal(product_json['skus'][0]['bestPrice']) / Decimal(100)
-        picture_urls = [
-            a['zoom'] for a in soup.findAll('a', {'id': 'botaoZoom'})]
-
-        description = html_to_markdown(
-            str(soup.find('div', 'productDescription')))
-
-        part_number = soup.find('div', 'productReference').text.strip()
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -97,15 +101,15 @@ class Diunsa(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
-            'HNL',
+            'CLP',
             sku=sku,
-            picture_urls=picture_urls,
+            part_number=part_number,
             description=description,
-            part_number=part_number
+            picture_urls=picture_urls
         )
 
         return [p]
