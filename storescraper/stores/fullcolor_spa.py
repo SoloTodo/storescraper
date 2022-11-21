@@ -2,10 +2,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, HEADPHONES, KEYBOARD, MONITOR, \
-    POWER_SUPPLY, COMPUTER_CASE, SOLID_STATE_DRIVE, KEYBOARD_MOUSE_COMBO, \
-    PRINTER, STEREO_SYSTEM, MEMORY_CARD, USB_FLASH_DRIVE, STORAGE_DRIVE, \
-    GAMING_CHAIR, MICROPHONE
+from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -25,39 +22,60 @@ class FullcolorSpa(Store):
             KEYBOARD_MOUSE_COMBO,
             PRINTER,
             STEREO_SYSTEM,
-            MEMORY_CARD,
             USB_FLASH_DRIVE,
             STORAGE_DRIVE,
             GAMING_CHAIR,
-            MICROPHONE
+            MICROPHONE,
+            MOTHERBOARD,
+            GAMING_DESK,
+            EXTERNAL_STORAGE_DRIVE,
+            CASE_FAN,
+            CPU_COOLER,
+            PROCESSOR,
+            NOTEBOOK,
+            TABLET,
+            RAM
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            # gamer mouse
+            # Gamer
             ['subcategoria.asp?/id/4', MOUSE],
-            ['subcategoria.asp?/id/76', MOUSE],
-            # gamer headphones
-            ['subcategoria.asp?/id/99', HEADPHONES],
-            ['subcategoria.asp?/id/101', HEADPHONES],
-            # gamer keyboard
             ['subcategoria.asp?/id/7', KEYBOARD],
-            ['subcategoria.asp?/id/80', KEYBOARD],
+            ['subcategoria.asp?/id/28', MICROPHONE],
+            ['subcategoria.asp?/id/99', HEADPHONES],
+            ['segmento.asp?/id/82', KEYBOARD_MOUSE_COMBO],
             ['segmento.asp?/id/191', MONITOR],
             ['segmento.asp?/id/193', POWER_SUPPLY],
             ['segmento.asp?/id/239', COMPUTER_CASE],
             ['segmento.asp?/id/243', SOLID_STATE_DRIVE],
-            ['segmento.asp?/id/244', SOLID_STATE_DRIVE],
-            ['segmento.asp?/id/82', KEYBOARD_MOUSE_COMBO],
-            ['segmento.asp?/id/175', KEYBOARD_MOUSE_COMBO],
-            ['subcategoria.asp?/id/83', PRINTER],
+            ['segmento.asp?/id/270', MOTHERBOARD],
+            ['segmento.asp?/id/195', GAMING_CHAIR],
+            ['segmento.asp?/id/246', GAMING_DESK],
+            # Streaming
+            ['subcategoria.asp?/id/93', MICROPHONE],
+            ['subcategoria.asp?/id/100', HEADPHONES],
+            ['segmento.asp?/id/206', GAMING_CHAIR],
+            # Computacion
+            ['subcategoria.asp?/id/76', MOUSE],
+            ['subcategoria.asp?/id/78', MICROPHONE],
+            ['subcategoria.asp?/id/101', HEADPHONES],
             ['subcategoria.asp?/id/92', STEREO_SYSTEM],
-            ['subcategoria.asp?/id/30', MEMORY_CARD],
-            ['segmento.asp?/id/241', STORAGE_DRIVE],
+            ['subcategoria.asp?/id/80', KEYBOARD],
+            ['segmento.asp?/id/185', CASE_FAN],
+            ['segmento.asp?/id/244', EXTERNAL_STORAGE_DRIVE],
+            ['segmento.asp?/id/287', CPU_COOLER],
+            ['segmento.asp?/id/251', MONITOR],
+            ['segmento.asp?/id/252', PROCESSOR],
+            ['subcategoria.asp?/id/115', NOTEBOOK],
+            ['subcategoria.asp?/id/123', TABLET],
+            ['subcategoria.asp?/id/83', PRINTER],
+            # extra
             ['subcategoria.asp?/id/31', USB_FLASH_DRIVE],
-            ['subcategoria.asp?/id/88', GAMING_CHAIR],
-            ['subcategoria.asp?/id/93', MICROPHONE]
+            ['subcategoria.asp?/id/30', RAM],
+            ['segmento.asp?/id/175', KEYBOARD_MOUSE_COMBO],
+            ['segmento.asp?/id/241', STORAGE_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
