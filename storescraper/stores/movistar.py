@@ -1,3 +1,4 @@
+import base64
 import json
 
 from collections import defaultdict
@@ -158,6 +159,24 @@ class Movistar(Store):
 
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
+
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        products = []
+
+        for color_container in soup.find('ul', 'colorEMP').findAll('li'):
+            color_element = color_container.find('a')
+            sku_url = color_element['data-url-key']
+            products.extend(cls.__celular_postpago(sku_url, extra_args))
+
+        return products
+
+
+    @classmethod
+    def __celular_postpago(cls, url, extra_args):
+        print(url)
+
+        session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'python-requests/2.21.0'
         ajax_session = session_with_proxy(extra_args)
         ajax_session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded'
@@ -175,20 +194,11 @@ class Movistar(Store):
 
         soup = BeautifulSoup(page.text, 'html.parser')
         if soup.find('h1'):
-            base_name = soup.find('h1').text.strip()
+            name = soup.find('h1').text.strip()
         else:
             raise Exception('No base name found')
 
-        sku_color_choices = []
-        for color_container in soup.find('ul', 'colorEMP').findAll('li'):
-            color_element = color_container.find('a')
-            sku = color_element['data-sku']
-            color_id = color_element['data-id']
-            color_name = color_element['data-nombre-color']
-            sku_color_choices.append((sku, color_id, color_name))
-
         products = []
-
         base_url = url.split('?')[0]
 
         def get_json_response(_payload):
@@ -207,155 +217,152 @@ class Movistar(Store):
         payload_params = 'current%5BhasMovistar1%5D=1&' \
                          'current%5Bmovistar1%5D=0'
 
-        for sku, color_id, color_name in sku_color_choices:
-            name = '{} {}'.format(base_name, color_name)
+        status_tag = soup.find('div', 'current-status')
+        contado_sku = status_tag['data-sku']
+        cuotas_sku = status_tag['data-code']
 
-            for portability_type_id, portability_suffix in \
-                    cls.portability_choices:
+        for portability_type_id, portability_suffix in \
+                cls.portability_choices:
 
-                if portability_type_id == 1:
-                    # Portabilidad
-                    # Sin arriendo
-                    print('porta sin arriendo')
+            if portability_type_id == 1:
+                # Portabilidad
+                # Sin arriendo
+                print('porta sin arriendo')
 
+                payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
+                          'current%5Bpayment%5D=1&' \
+                          'current%5Bplan%5D=' \
+                          'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
+                          '&{}&current%5Bcode%5D=' \
+                          ''.format(contado_sku, payload_params)
+
+                json_response = get_json_response(payload)
+
+                for container in json_response['planes']['dataplan']:
+                    cell_plan_name = trim(container['name']) + \
+                                     ' Portabilidad'
+                    code = container['codigo']
+                    cell_url = '{}?codigo={}'.format(base_url, code)
+                    print(cell_url)
+
+                    cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                              'html.parser')
+                    price_tag = cell_soup.find('div', {'data-method': '1'})
+
+                    if not price_tag:
+                        continue
+
+                    price = Decimal(price_tag['data-price']).quantize(0)
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        cell_url,
+                        cell_url,
+                        '{} - {}'.format(contado_sku, cell_plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        cell_plan_name=cell_plan_name,
+                        cell_monthly_payment=Decimal(0)
+                    ))
+
+                # Con arriendo
+
+                code = json_response['current']['sku']
+                cell_url = '{}?codigo={}'.format(base_url, code)
+                cell_soup = BeautifulSoup(session.get(cell_url).text,
+                                          'html.parser')
+                has_arriendo_option = cell_soup.find(
+                    'li', {'id': 'metodo2'})
+
+                if has_arriendo_option:
+                    print('Porta con arriendo')
                     payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
-                              'current%5Bpayment%5D=1&' \
+                              'current%5Bpayment%5D=2&' \
                               'current%5Bplan%5D=' \
-                              'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
+                              'Plus+Libre+Cod_0J3_Porta' \
                               '&{}&current%5Bcode%5D=' \
-                              ''.format(sku, payload_params)
-
+                              ''.format(cuotas_sku, payload_params)
                     json_response = get_json_response(payload)
 
                     for container in json_response['planes']['dataplan']:
                         cell_plan_name = trim(container['name']) + \
-                                         ' Portabilidad'
+                                         ' Portabilidad Cuotas'
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
-                        print(cell_url)
 
-                        cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                                  'html.parser')
-                        price_tag = cell_soup.find('div', {'data-method': '1'})
+                        cell_soup = BeautifulSoup(
+                            session.get(cell_url).text,
+                            'html.parser')
+                        price_tag = cell_soup.find('div',
+                                                   {'data-method': '2'})
 
                         if not price_tag:
                             continue
 
-                        price = Decimal(price_tag['data-price'])
+                        price = Decimal(remove_words(price_tag.find(
+                            'p', 'boxEMPlan-int-box-pie').contents[1]))
+                        cell_monthly_payment = Decimal(remove_words(
+                            price_tag.find('p',
+                                           'boxEMPlan-int-meses').find(
+                                'b').text))
+
                         products.append(Product(
                             name,
                             cls.__name__,
                             'Cell',
                             cell_url,
                             cell_url,
-                            '{} - {} - {}'.format(sku, color_id,
-                                                  cell_plan_name),
+                            '{} - {}'.format(cuotas_sku, cell_plan_name),
                             -1,
                             price,
                             price,
                             'CLP',
                             cell_plan_name=cell_plan_name,
-                            cell_monthly_payment=Decimal(0)
+                            cell_monthly_payment=cell_monthly_payment
                         ))
+            elif portability_type_id == 3:
+                # Nuevo
+                # Sin arriendo
+                print('nuevo')
 
-                    # Con arriendo
+                payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
+                          'current%5Bpayment%5D=1&' \
+                          'current%5Bplan%5D=&' \
+                          '{}&current%5Bcode%5D=' \
+                          ''.format(contado_sku, payload_params)
+                json_response = get_json_response(payload)
 
-                    code = json_response['codeOfferCurrent']
-                    cell_url = '{}?codigo={}'.format(base_url, code)
+                for container in json_response['planes']['dataplan']:
+                    cell_plan_name = trim(container['name'])
+                    code = container['codigo']
+                    b64code = base64.b64encode(code.encode('utf-8')).decode('utf-8')
+                    cell_url = '{}?codigo={}'.format(base_url, b64code)
+
                     cell_soup = BeautifulSoup(session.get(cell_url).text,
                                               'html.parser')
-                    has_arriendo_option = cell_soup.find(
-                        'li', {'id': 'metodo2'})
+                    price_tag = cell_soup.find('div', {'data-method': '1'})
 
-                    if has_arriendo_option:
-                        print('Porta con arriendo')
-                        payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
-                                  'current%5Bpayment%5D=2&' \
-                                  'current%5Bplan%5D=' \
-                                  'Plus+Libre+Cod_0J3_Porta' \
-                                  '&{}&current%5Bcode%5D=' \
-                                  ''.format(sku, payload_params)
-                        json_response = get_json_response(payload)
+                    if not price_tag:
+                        continue
 
-                        for container in json_response['planes']['dataplan']:
-                            cell_plan_name = trim(container['name']) + \
-                                             ' Portabilidad Cuotas'
-                            code = container['codigo']
-                            cell_url = '{}?codigo={}'.format(base_url, code)
-                            print(cell_url)
+                    price = Decimal(price_tag['data-price']).quantize(0)
 
-                            cell_soup = BeautifulSoup(
-                                session.get(cell_url).text,
-                                'html.parser')
-                            price_tag = cell_soup.find('div',
-                                                       {'data-method': '2'})
-
-                            if not price_tag:
-                                continue
-
-                            price = Decimal(remove_words(price_tag.find(
-                                'p', 'boxEMPlan-int-box-pie').contents[1]))
-                            cell_monthly_payment = Decimal(remove_words(
-                                price_tag.find('p',
-                                               'boxEMPlan-int-meses').find(
-                                    'b').text))
-
-                            products.append(Product(
-                                name,
-                                cls.__name__,
-                                'Cell',
-                                cell_url,
-                                cell_url,
-                                '{} - {} - {}'.format(sku, color_id,
-                                                      cell_plan_name),
-                                -1,
-                                price,
-                                price,
-                                'CLP',
-                                cell_plan_name=cell_plan_name,
-                                cell_monthly_payment=cell_monthly_payment
-                            ))
-                elif portability_type_id == 3:
-                    # Nuevo
-                    # Sin arriendo
-                    print('nuevo')
-
-                    payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
-                              'current%5Bpayment%5D=1&' \
-                              'current%5Bplan%5D=&' \
-                              '{}&current%5Bcode%5D=' \
-                              ''.format(sku, payload_params)
-                    json_response = get_json_response(payload)
-
-                    for container in json_response['planes']['dataplan']:
-                        cell_plan_name = trim(container['name'])
-                        code = container['codigo']
-                        cell_url = '{}?codigo={}'.format(base_url, code)
-                        print(cell_url)
-
-                        cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                                  'html.parser')
-                        price_tag = cell_soup.find('div', {'data-method': '1'})
-
-                        if not price_tag:
-                            continue
-
-                        price = Decimal(price_tag['data-price'])
-
-                        products.append(Product(
-                            name,
-                            cls.__name__,
-                            'Cell',
-                            cell_url,
-                            cell_url,
-                            '{} - {} - {}'.format(sku, color_id,
-                                                  cell_plan_name),
-                            -1,
-                            price,
-                            price,
-                            'CLP',
-                            cell_plan_name=cell_plan_name,
-                            cell_monthly_payment=Decimal(0)
-                        ))
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        cell_url,
+                        cell_url,
+                        '{} - {}'.format(contado_sku, cell_plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        cell_plan_name=cell_plan_name,
+                        cell_monthly_payment=Decimal(0)
+                    ))
 
         return products
