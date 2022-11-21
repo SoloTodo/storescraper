@@ -193,8 +193,8 @@ class Movistar(Store):
             raise Exception('Invalid status code: ' + str(page.status_code))
 
         soup = BeautifulSoup(page.text, 'html.parser')
-        if soup.find('h1'):
-            name = soup.find('h1').text.strip()
+        if soup.find('meta', {'name': 'title'}):
+            name = soup.find('meta', {'name': 'title'})['content']
         else:
             raise Exception('No base name found')
 
