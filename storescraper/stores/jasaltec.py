@@ -129,7 +129,7 @@ class Jasaltec(Store):
         else:
             sku = None
 
-        if soup.find('p', 'stock out-of-stock') or \
+        if soup.find('p', 'out-of-stock') or \
                 soup.find('p', 'available-on-backorder'):
             stock = 0
         else:
