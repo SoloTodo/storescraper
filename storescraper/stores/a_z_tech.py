@@ -3,7 +3,7 @@ import demjson
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, CELL, EXTERNAL_STORAGE_DRIVE, \
-    HEADPHONES, MONITOR, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
+    HEADPHONES, MONITOR, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, TABLET, TELEVISION, VIDEO_CARD, \
     VIDEO_GAME_CONSOLE, WEARABLE
 from storescraper.product import Product
@@ -30,7 +30,8 @@ class AZTech(Store):
             TELEVISION,
             PRINTER,
             STEREO_SYSTEM,
-            CELL
+            CELL,
+            MOUSE
         ]
 
     @classmethod
@@ -39,8 +40,10 @@ class AZTech(Store):
             ['computacion/notebook', NOTEBOOK],
             ['computacion/escritorio', ALL_IN_ONE],
             ['computacion/tablet', TABLET],
+            ['computacion/perifericos', MOUSE],
             ['computacion/almacenamiento-datos', SOLID_STATE_DRIVE],
             ['computacion/monitores', MONITOR],
+            ['computacion/smartwatches', WEARABLE],
             ['mundo-apple/mac/portatil/macbook-pro', NOTEBOOK],
             ['mundo-apple/mac/portatil/macbook-air', NOTEBOOK],
             ['mundo-apple/mac/escritorio/imac', ALL_IN_ONE],
@@ -66,7 +69,6 @@ class AZTech(Store):
             ['hogar-y-oficina/television', TELEVISION],
             ['hogar-y-oficina/impresoras', PRINTER],
             ['hogar-y-oficina/escaner-y-plotter', PRINTER],
-            ['hogar-y-oficina/smartwatches', WEARABLE],
             ['audio-y-video/audio', STEREO_SYSTEM],
             ['celulares/marcas-1', CELL],
         ]
@@ -86,7 +88,7 @@ class AZTech(Store):
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll(
                     'div', 'product-block__wrapper')
-                if not product_containers:
+                if not product_containers or len(product_containers) == 0:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
