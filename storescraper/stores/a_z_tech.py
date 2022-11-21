@@ -3,9 +3,9 @@ import demjson
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, CELL, EXTERNAL_STORAGE_DRIVE, \
-    HEADPHONES, MONITOR, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
+    HEADPHONES, MONITOR, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, TABLET, TELEVISION, VIDEO_CARD, \
-    VIDEO_GAME_CONSOLE, WEARABLE
+    VIDEO_GAME_CONSOLE, WEARABLE, RAM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy

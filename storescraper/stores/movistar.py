@@ -170,7 +170,6 @@ class Movistar(Store):
 
         return products
 
-
     @classmethod
     def __celular_postpago(cls, url, extra_args):
         print(url)
@@ -240,7 +239,7 @@ class Movistar(Store):
 
                 for container in json_response['planes']['dataplan']:
                     cell_plan_name = trim(container['name']) + \
-                                     ' Portabilidad'
+                        ' Portabilidad'
                     code = container['codigo']
                     cell_url = '{}?codigo={}'.format(base_url, code)
                     print(cell_url)
@@ -289,7 +288,7 @@ class Movistar(Store):
 
                     for container in json_response['planes']['dataplan']:
                         cell_plan_name = trim(container['name']) + \
-                                         ' Portabilidad Cuotas'
+                            ' Portabilidad Cuotas'
                         code = container['codigo']
                         cell_url = '{}?codigo={}'.format(base_url, code)
 
@@ -338,7 +337,8 @@ class Movistar(Store):
                 for container in json_response['planes']['dataplan']:
                     cell_plan_name = trim(container['name'])
                     code = container['codigo']
-                    b64code = base64.b64encode(code.encode('utf-8')).decode('utf-8')
+                    b64code = base64.b64encode(
+                        code.encode('utf-8')).decode('utf-8')
                     cell_url = '{}?codigo={}'.format(base_url, b64code)
 
                     cell_soup = BeautifulSoup(session.get(cell_url).text,

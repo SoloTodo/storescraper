@@ -90,7 +90,7 @@ class DigitalChoice(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        
+
         key = soup.find('meta', {'property': 'og:id'})['content']
 
         json_data = json.loads(soup.find(
@@ -108,7 +108,7 @@ class DigitalChoice(Store):
             stock = 0
         else:
             stock = int(stock_span.text)
-            
+
         pictures_container = soup.find('div', 'product-images')
         picture_urls = []
         for i in pictures_container.findAll('img'):
