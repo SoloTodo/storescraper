@@ -1,19 +1,24 @@
 import logging
 from decimal import Decimal
+import re
+from bs4 import BeautifulSoup
 import validators
 
 from storescraper.categories import CELL, STORAGE_DRIVE, POWER_SUPPLY, \
     COMPUTER_CASE, RAM, PROCESSOR, MOTHERBOARD, VIDEO_CARD, CPU_COOLER, \
-    GAMING_CHAIR, MONITOR
+    GAMING_CHAIR, MONITOR, SOLID_STATE_DRIVE, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class CesaPro(Store):
     @classmethod
     def categories(cls):
         return [
+            SOLID_STATE_DRIVE,
+            MOUSE,
+
             CELL,
             STORAGE_DRIVE,
             POWER_SUPPLY,
@@ -30,19 +35,20 @@ class CesaPro(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['569552', CELL],
-            ['286086', STORAGE_DRIVE],
-            ['572189', POWER_SUPPLY],
-            ['286055', COMPUTER_CASE],
-            ['286088', RAM],
-            ['268198', PROCESSOR],
-            ['621424', PROCESSOR],
-            ['371788', MOTHERBOARD],
-            ['621425', MOTHERBOARD],
-            ['286249', VIDEO_CARD],
-            ['572184', CPU_COOLER],
-            ['640377', GAMING_CHAIR],
-            ['667566', MONITOR],
+            ['computacion/disco-duro', STORAGE_DRIVE],
+            ['computacion/disco-duro/solido', SOLID_STATE_DRIVE],
+            ['categoria-producto/computacion/fuentes-de-poder', POWER_SUPPLY],
+            ['categoria-producto/computacion/gabinetes', COMPUTER_CASE],
+            ['categoria-producto/computacion/memoria', RAM],
+            ['categoria-producto/computacion/monitores', MONITOR],
+            ['categoria-producto/computacion/mouse', MOUSE],
+            ['categoria-producto/computacion/placa-madre', MOTHERBOARD],
+            ['categoria-producto/computacion/tarjeta-madre', MOTHERBOARD],
+            ['categoria-producto/computacion/procesadores', PROCESSOR],
+            ['categoria-producto/computacion/sillas', GAMING_CHAIR],
+            ['categoria-producto/computacion/tarjeta-de-video', VIDEO_CARD],
+            ['categoria-producto/computacion/ventilacion', CPU_COOLER],
+            ['categoria-producto/celulares', CELL],
         ]
 
         session = session_with_proxy(extra_args)
@@ -58,25 +64,21 @@ class CesaPro(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://juan-andres-recabarren-molina.' \
-                              'wobiz.cl/ajaxGetFilteredProducts'
-                payload = 'filter%5Bpagination%5D%5Bpage%5D={}&filter%5B' \
-                          'pagination%5D%5Bcount%5D=30&filter%5Bsort%5D%5' \
-                          'Bid%5D=desc&filter%5BcategoryId%5D={}&'.format(
-                            page, url_extension)
+                url_webpage = 'https://cesapro.cl/index.php/categoria-produc' \
+                    'to/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                response = session.post(url_webpage, data=payload)
-                products_json = response.json()['products']['products']
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('li', 'product')
 
-                if not products_json:
+                if not product_containers:
                     if page == 1:
                         logging.warning('empty category: ' + url_extension)
                     break
 
-                for product in products_json:
-                    product_url = product['link']['href']
-                    product_urls.append('https://juan-andres-recabarren-'
-                                        'molina.wobiz.cl' + product_url)
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
                 page += 1
         return product_urls
 
@@ -84,24 +86,35 @@ class CesaPro(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers[
-            'content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-        session.headers['x-requested-with'] = 'XMLHttpRequest'
-        product_id = url.split('/')[4]
-        product_url = 'https://juan-andres-recabarren-molina.' \
-                      'wobiz.cl/ajaxGetProductById'
-        payload = 'productId=' + product_id
-        response = session.post(product_url, data=payload)
-        product_json = response.json()['product']
-        name = product_json['name']
-        key = str(product_json['id'])
-        sku = product_json['sku']
-        stock = product_json['total_stock']
-        price = Decimal(product_json['right_price'].split('.')[0])
-        image = product_json['image']['big']
-        picture_urls = []
-        if validators.url(image):
-            picture_urls.append(image)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+
+        name = soup.find('h1', 'product_title').text.strip()
+
+        product_container = soup.find('p', 'price')
+        if product_container.find('ins'):
+            price = Decimal(remove_words(
+                product_container.find('ins').
+                find('span', 'woocommerce-Price-amount amount').text))
+        else:
+            price = Decimal(remove_words(
+                product_container.find('span',
+                                       'woocommerce-Price-amount '
+                                       'amount').text))
+
+        stock_span = soup.find('span', 'stock')
+        if not stock_span:
+            stock = 0
+        else:
+            stock = int(stock_span.text.split(' ')[0])
+
+        image_style = soup.find(
+            'style', {'id': 'elementor-frontend-inline-css'}).text
+        picture = re.search(r'background-image:url\(\"(.*?)\"\)',
+                            image_style).groups()[0]
+        picture_urls = [picture]
 
         p = Product(
             name,
@@ -114,7 +127,6 @@ class CesaPro(Store):
             price,
             price,
             'CLP',
-            sku=sku,
             picture_urls=picture_urls,
 
         )
