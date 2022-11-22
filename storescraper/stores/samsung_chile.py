@@ -82,11 +82,12 @@ class SamsungChile(Store):
                         picture_urls.append('https:' + picture)
 
                     if model['promotionPrice']:
-                        price = Decimal(remove_words(model['promotionPrice']))
+                        price = Decimal(model['promotionPrice'])
                     elif model['priceDisplay']:
-                        price = Decimal(remove_words(model['priceDisplay']))
+                        price = Decimal(model['priceDisplay'])
                     else:
                         price = Decimal(0)
+                    price = price.quantize(0)
 
                     products.append(Product(
                         '{} ({})'.format(name, key),
