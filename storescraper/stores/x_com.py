@@ -71,7 +71,7 @@ class XCom(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
-                if not product_containers:
+                if not product_containers or '404!' in soup.text:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
