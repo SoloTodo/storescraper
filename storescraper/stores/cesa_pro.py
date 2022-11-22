@@ -127,6 +127,7 @@ class CesaPro(Store):
             price,
             price,
             'CLP',
+            sku=key,
             picture_urls=picture_urls,
 
         )
