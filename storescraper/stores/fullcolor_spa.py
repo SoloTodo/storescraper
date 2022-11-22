@@ -75,6 +75,7 @@ class FullcolorSpa(Store):
             ['subcategoria.asp?/id/31', USB_FLASH_DRIVE],
             ['subcategoria.asp?/id/30', RAM],
             ['segmento.asp?/id/175', KEYBOARD_MOUSE_COMBO],
+            ['segmento.asp?/id/240', SOLID_STATE_DRIVE],
             ['segmento.asp?/id/241', STORAGE_DRIVE],
         ]
 
