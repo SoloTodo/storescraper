@@ -171,7 +171,7 @@ class NotebookStore(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
 
-        if response.status_code == 404:
+        if response.status_code == 404 or response.status_code == 500:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
