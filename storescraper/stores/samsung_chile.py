@@ -89,6 +89,11 @@ class SamsungChile(Store):
                         price = Decimal(0)
                     price = price.quantize(0)
 
+                    if model['stockStatusText'] == 'inStock':
+                        stock = -1
+                    else:
+                        stock = 0
+
                     products.append(Product(
                         '{} ({})'.format(name, key),
                         cls.__name__,
@@ -96,7 +101,7 @@ class SamsungChile(Store):
                         model_url,
                         url,
                         key,
-                        -1,
+                        stock,
                         price,
                         price,
                         'CLP',
