@@ -229,13 +229,19 @@ class Movistar(Store):
             'contado': status_tag['data-sku'],
             'cuotas': status_tag['data-code']
         }
-        print(skus)
+
+        movistar_one_tag = soup.select('div.boxEMPlan.metodo3.visible')
+        if movistar_one_tag:
+            # This SKU should only be needed for movistar one enabled SKUs
+            skus['movistar_one'] = movistar_one_tag[0]['data-code']
 
         for type_id, payment_id, suffix in cls.aquisition_options:
             if payment_id == 1:
                 sku_to_use = skus['contado']
             elif payment_id == 2:
                 sku_to_use = skus['cuotas']
+            elif payment_id == 3:
+                sku_to_use = skus['movistar_one']
             else:
                 raise Exception('Invalid payment ID')
 
@@ -271,6 +277,10 @@ class Movistar(Store):
                         price_tag.find('p',
                                        'boxEMPlan-int-meses').find(
                             'b').text))
+                elif payment_id == 3:
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+                    price = Decimal(price_tag['data-price']).quantize(0)
+                    cell_monthly_payment = Decimal(0)
                 else:
                     raise Exception('Invalid payment ID')
 
