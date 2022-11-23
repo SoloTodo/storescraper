@@ -7,6 +7,7 @@ from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import *
 from storescraper.utils import session_with_proxy
+import validators
 
 
 class DigitalChoice(Store):
@@ -108,7 +109,11 @@ class DigitalChoice(Store):
                 key = str(variant['variant']['id'])
                 stock = variant['variant']['stock']
                 price = Decimal(variant['variant']['price_decimal'])
-                picture_urls = [variant['image']]
+
+                if validators.url(variant['image']):
+                    picture_urls = [variant['image']]
+                else:
+                    picture_urls = None
 
                 products.append(Product(
                     name,
