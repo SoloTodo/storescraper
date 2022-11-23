@@ -83,7 +83,7 @@ class MegaDriveStore(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://megadrivestore.cl/es/{}?page={}'.format(
+                url_webpage = 'https://megadrivestore.cl/{}?page={}'.format(
                     url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
