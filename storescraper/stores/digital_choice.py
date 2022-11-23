@@ -1,3 +1,4 @@
+import re
 from decimal import Decimal
 import json
 import logging
@@ -90,44 +91,72 @@ class DigitalChoice(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        key = soup.find('meta', {'property': 'og:id'})['content']
-
         json_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json'}).text)
 
-        name = json_data['name']
+        base_name = json_data['name'].strip()
         description = json_data['description']
-        price = Decimal(json_data['offers']['price'])
+        variants_match = re.search('var productInfo = (.+);', response.text)
+        products = []
 
-        sku = soup.find('span', 'sku_elem').text
-        if sku == "":
-            sku = None
-        stock_span = soup.find('span', 'product-form-stock')
-        if not stock_span or stock_span.text == "":
-            stock = 0
+        if variants_match:
+            variants_data = json.loads(variants_match.groups()[0])
+
+            for variant in variants_data:
+                variant_name_suffix = ' / '.join(x['value']['name'] for x in variant['values'])
+                name = '{} ({})'.format(base_name, variant_name_suffix)
+                key = str(variant['variant']['id'])
+                stock = variant['variant']['stock']
+                price = Decimal(variant['variant']['price_decimal'])
+                picture_urls = [variant['image']]
+
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    'CLP',
+                    sku=key,
+                    picture_urls=picture_urls,
+                    description=description
+                ))
         else:
-            stock = int(stock_span.text)
+            key = soup.find('meta', {'property': 'og:id'})['content']
+            price = Decimal(json_data['offers']['price'])
 
-        pictures_container = soup.find('div', 'product-images')
-        picture_urls = []
-        for i in pictures_container.findAll('img'):
-            picture_urls.append(i['src'])
+            sku = soup.find('span', 'sku_elem').text
+            if sku == "":
+                sku = None
+            stock_span = soup.find('span', 'product-form-stock')
+            if not stock_span or stock_span.text == "":
+                stock = 0
+            else:
+                stock = int(stock_span.text)
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-            description=description
-        )
+            pictures_container = soup.find('div', 'product-images')
+            picture_urls = []
+            for i in pictures_container.findAll('img'):
+                picture_urls.append(i['src'])
 
-        return [p]
+            products.append(Product(
+                base_name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description
+            ))
+
+        return products
