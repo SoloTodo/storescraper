@@ -3,7 +3,9 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
+from storescraper.categories import EXTERNAL_STORAGE_DRIVE, \
+    KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MOUSE, SOLID_STATE_DRIVE, \
+    USB_FLASH_DRIVE, VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
     STORAGE_DRIVE, RAM, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, KEYBOARD, \
     HEADPHONES, PRINTER, NOTEBOOK, MONITOR, STEREO_SYSTEM, CASE_FAN
 from storescraper.product import Product
@@ -30,29 +32,43 @@ class MegaDriveStore(Store):
             MONITOR,
             STEREO_SYSTEM,
             CASE_FAN,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            SOLID_STATE_DRIVE,
+            EXTERNAL_STORAGE_DRIVE,
+            MOUSE,
+            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['11-tarjetas-de-video', VIDEO_CARD],
+            ['11-tarjetas-graficas', VIDEO_CARD],
             ['12-procesadores-amd', PROCESSOR],
             ['13-procesadores-intel', PROCESSOR],
             ['14-placas-madres-amd', MOTHERBOARD],
             ['15-placas-madres-intel', MOTHERBOARD],
-            ['16-discos-duros', STORAGE_DRIVE],
-            ['17-memorias', RAM],
+            ['30-disco-ssd', SOLID_STATE_DRIVE],
+            ['31-discos-externos', EXTERNAL_STORAGE_DRIVE],
+            ['32-discos-de-notebook', STORAGE_DRIVE],
+            ['33-discos-hdd', STORAGE_DRIVE],
+            ['61-memorias-ddr4', RAM],
+            ['62-memorias-de-notebook', RAM],
+            ['63-pendrive', USB_FLASH_DRIVE],
+            ['64-microsd', MEMORY_CARD],
             ['18-fuentes-de-poder', POWER_SUPPLY],
             ['35-ventiladores', CASE_FAN],
             ['36-disipador-cpu', CPU_COOLER],
             ['37-refrigeracion-liquida', CPU_COOLER],
             ['20-gabinetes', COMPUTER_CASE],
-            ['22-mouse-y-teclados', KEYBOARD],
-            ['74-audifonos', HEADPHONES],
+            ['41-mouse', MOUSE],
+            ['42-teclados', KEYBOARD],
+            ['44-kit-teclados', KEYBOARD_MOUSE_COMBO],
             ['26-impresoras', PRINTER],
-            ['54-notebook', PRINTER],
+            ['54-notebook', NOTEBOOK],
             ['70-monitores', MONITOR],
             ['73-parlantes', STEREO_SYSTEM],
+            ['74-audifonos', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
