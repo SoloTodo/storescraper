@@ -16,9 +16,16 @@ class Movistar(Store):
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
     cell_catalog_suffix = ''
-    portability_choices = [
-        (3, ''),
-        (1, ' Portabilidad'),
+    # Format: (type, payment, suffix)
+    # type 1 (Portabilidad), 3 (Linea nueva)
+    # payment 1 (Sin arriendo), 2 (Cuotas), 3 (Movistar One)
+    aquisition_options = [
+        # Línea nueva sin arriendo
+        (3, 1, ''),
+        # Portabilidad sin arriendo
+        (1, 1, ' Portabilidad'),
+        # Portabilidad con arriendo
+        (1, 2, ' Portabilidad Cuotas'),
     ]
 
     @classmethod
@@ -217,152 +224,77 @@ class Movistar(Store):
                          'current%5Bmovistar1%5D=0'
 
         status_tag = soup.find('div', 'current-status')
-        contado_sku = status_tag['data-sku']
-        cuotas_sku = status_tag['data-code']
+        skus = {
+            'contado': status_tag['data-sku'],
+            'cuotas': status_tag['data-code']
+        }
 
-        for portability_type_id, portability_suffix in \
-                cls.portability_choices:
+        movistar_one_tag = soup.select('div.boxEMPlan.metodo3.visible')
+        if movistar_one_tag:
+            # This SKU should only be needed for movistar one enabled SKUs
+            skus['movistar_one'] = movistar_one_tag[0]['data-code']
 
-            if portability_type_id == 1:
-                # Portabilidad
-                # Sin arriendo
-                print('porta sin arriendo')
+        for type_id, payment_id, suffix in cls.aquisition_options:
+            if payment_id == 1:
+                sku_to_use = skus['contado']
+            elif payment_id == 2:
+                sku_to_use = skus['cuotas']
+            elif payment_id == 3:
+                sku_to_use = skus['movistar_one']
+            else:
+                raise Exception('Invalid payment ID')
 
-                payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
-                          'current%5Bpayment%5D=1&' \
-                          'current%5Bplan%5D=' \
-                          'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
-                          '&{}&current%5Bcode%5D=' \
-                          ''.format(contado_sku, payload_params)
+            payload = 'current%5Bsku%5D={}&current%5Btype%5D={}&' \
+                      'current%5Bpayment%5D={}&' \
+                      'current%5Bplan%5D=' \
+                      'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
+                      '&{}&current%5Bcode%5D=' \
+                      ''.format(sku_to_use, type_id, payment_id, payload_params)
 
-                json_response = get_json_response(payload)
+            json_response = get_json_response(payload)
 
-                for container in json_response['planes']['dataplan']:
-                    cell_plan_name = trim(container['name']) + \
-                        ' Portabilidad'
-                    code = container['codigo']
-                    cell_url = '{}?codigo={}'.format(base_url, code)
-                    print(cell_url)
+            for container in json_response['planes']['dataplan']:
+                cell_plan_name = trim(container['name']) + suffix
+                code = container['codigo']
+                b64code = base64.b64encode(
+                    code.encode('utf-8')).decode('utf-8')
+                cell_url = '{}?codigo={}'.format(base_url, b64code)
+                print(cell_url)
 
-                    cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                              'html.parser')
-                    price_tag = cell_soup.find('div', {'data-method': '1'})
-
-                    if not price_tag:
-                        continue
-
-                    price = Decimal(price_tag['data-price']).quantize(0)
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'Cell',
-                        cell_url,
-                        cell_url,
-                        '{} - {}'.format(contado_sku, cell_plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name=cell_plan_name,
-                        cell_monthly_payment=Decimal(0)
-                    ))
-
-                # Con arriendo
-
-                code = json_response['current']['sku']
-                cell_url = '{}?codigo={}'.format(base_url, code)
                 cell_soup = BeautifulSoup(session.get(cell_url).text,
                                           'html.parser')
-                has_arriendo_option = cell_soup.find(
-                    'li', {'id': 'metodo2'})
-
-                if has_arriendo_option:
-                    print('Porta con arriendo')
-                    payload = 'current%5Bsku%5D={}&current%5Btype%5D=1&' \
-                              'current%5Bpayment%5D=2&' \
-                              'current%5Bplan%5D=' \
-                              'Plus+Libre+Cod_0J3_Porta' \
-                              '&{}&current%5Bcode%5D=' \
-                              ''.format(cuotas_sku, payload_params)
-                    json_response = get_json_response(payload)
-
-                    for container in json_response['planes']['dataplan']:
-                        cell_plan_name = trim(container['name']) + \
-                            ' Portabilidad Cuotas'
-                        code = container['codigo']
-                        cell_url = '{}?codigo={}'.format(base_url, code)
-
-                        cell_soup = BeautifulSoup(
-                            session.get(cell_url).text,
-                            'html.parser')
-                        price_tag = cell_soup.find('div',
-                                                   {'data-method': '2'})
-
-                        if not price_tag:
-                            continue
-
-                        price = Decimal(remove_words(price_tag.find(
-                            'p', 'boxEMPlan-int-box-pie').contents[1]))
-                        cell_monthly_payment = Decimal(remove_words(
-                            price_tag.find('p',
-                                           'boxEMPlan-int-meses').find(
-                                'b').text))
-
-                        products.append(Product(
-                            name,
-                            cls.__name__,
-                            'Cell',
-                            cell_url,
-                            cell_url,
-                            '{} - {}'.format(cuotas_sku, cell_plan_name),
-                            -1,
-                            price,
-                            price,
-                            'CLP',
-                            cell_plan_name=cell_plan_name,
-                            cell_monthly_payment=cell_monthly_payment
-                        ))
-            elif portability_type_id == 3:
-                # Nuevo
-                # Sin arriendo
-                print('nuevo')
-
-                payload = 'current%5Bsku%5D={}&current%5Btype%5D=3&' \
-                          'current%5Bpayment%5D=1&' \
-                          'current%5Bplan%5D=&' \
-                          '{}&current%5Bcode%5D=' \
-                          ''.format(contado_sku, payload_params)
-                json_response = get_json_response(payload)
-
-                for container in json_response['planes']['dataplan']:
-                    cell_plan_name = trim(container['name'])
-                    code = container['codigo']
-                    b64code = base64.b64encode(
-                        code.encode('utf-8')).decode('utf-8')
-                    cell_url = '{}?codigo={}'.format(base_url, b64code)
-
-                    cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                              'html.parser')
+                if payment_id == 1:
                     price_tag = cell_soup.find('div', {'data-method': '1'})
-
-                    if not price_tag:
-                        continue
-
                     price = Decimal(price_tag['data-price']).quantize(0)
+                    cell_monthly_payment = Decimal(0)
+                elif payment_id == 2:
+                    price_tag = cell_soup.find('div', {'data-method': '2'})
+                    price = Decimal(remove_words(price_tag.find(
+                        'p', 'boxEMPlan-int-box-pie').contents[1]))
+                    cell_monthly_payment = Decimal(remove_words(
+                        price_tag.find('p',
+                                       'boxEMPlan-int-meses').find(
+                            'b').text))
+                elif payment_id == 3:
+                    price_tag = cell_soup.find('div', {'data-method': '3'})
+                    price = Decimal(price_tag['data-price']).quantize(0)
+                    cell_monthly_payment = Decimal(0)
+                else:
+                    raise Exception('Invalid payment ID')
 
-                    products.append(Product(
-                        name,
-                        cls.__name__,
-                        'Cell',
-                        cell_url,
-                        cell_url,
-                        '{} - {}'.format(contado_sku, cell_plan_name),
-                        -1,
-                        price,
-                        price,
-                        'CLP',
-                        cell_plan_name=cell_plan_name,
-                        cell_monthly_payment=Decimal(0)
-                    ))
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'Cell',
+                    cell_url,
+                    cell_url,
+                    '{} - {}'.format(sku_to_use, cell_plan_name),
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    cell_plan_name=cell_plan_name,
+                    cell_monthly_payment=cell_monthly_payment
+                ))
 
         return products
