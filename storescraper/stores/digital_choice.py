@@ -134,9 +134,6 @@ class DigitalChoice(Store):
             key = soup.find('meta', {'property': 'og:id'})['content']
             price = Decimal(json_data['offers']['price'])
 
-            sku = soup.find('span', 'sku_elem').text
-            if sku == "":
-                sku = None
             stock_span = soup.find('span', 'product-form-stock')
             if not stock_span or stock_span.text == "":
                 stock = 0
@@ -159,7 +156,7 @@ class DigitalChoice(Store):
                 price,
                 price,
                 'CLP',
-                sku=sku,
+                sku=key,
                 picture_urls=picture_urls,
                 description=description
             ))
