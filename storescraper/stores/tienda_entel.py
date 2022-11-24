@@ -97,7 +97,6 @@ class TiendaEntel(Store):
                 price,
                 'CLP',
                 sku=sku_id,
-                cell_plan_name='Entel Prepago',
                 picture_urls=picture_urls,
                 condition=condition
             )
