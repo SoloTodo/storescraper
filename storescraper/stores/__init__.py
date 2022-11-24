@@ -1,3 +1,4 @@
+from .a_v_pro import AVPro
 from .a_z_tech import AZTech
 from .abcdin import AbcDin
 from .absolutec import Absolutec
@@ -146,6 +147,7 @@ from .gearbest import GearBest
 from .geant import Geant
 from .gelcom import Gelcom
 from .generacion_gamers import GeneracionGamers
+from .giga_black import GigaBlack
 from .gigaclic import Gigaclic
 from .global_box import Globalbox
 from .globalmac import GlobalMac
