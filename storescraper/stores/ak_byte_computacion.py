@@ -93,6 +93,10 @@ class AkByteComputacion(Store):
 
         name = product_data['name']
         description = product_data['description']
+
+        if 'offers' not in product_data:
+            return []
+
         price = Decimal(product_data['offers']['price'])
 
         if soup.find('p', 'out-of-stock'):
