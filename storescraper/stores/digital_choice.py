@@ -104,7 +104,8 @@ class DigitalChoice(Store):
             variants_data = json.loads(variants_match.groups()[0])
 
             for variant in variants_data:
-                variant_name_suffix = ' / '.join(x['value']['name'] for x in variant['values'])
+                variant_name_suffix = ' / '.join(x['value']['name']
+                                                 for x in variant['values'])
                 name = '{} ({})'.format(base_name, variant_name_suffix)
                 key = str(variant['variant']['id'])
                 stock = variant['variant']['stock']

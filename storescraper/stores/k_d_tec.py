@@ -92,6 +92,7 @@ class KDTec(Store):
             ['oficina/impresoras/impresoras-tinta', PRINTER],
             ['oficina/impresoras/impresora-multifuncional', PRINTER],
             ['oficina/impresoras/matriz-de-punto', PRINTER],
+            ['oficina/impresoras/plotter', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
