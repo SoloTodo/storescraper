@@ -124,6 +124,7 @@ class AkByteComputacion(Store):
             price,
             price,
             'CLP',
+            sku=key,
             picture_urls=picture_urls,
             description=description
         )
