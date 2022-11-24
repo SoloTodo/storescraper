@@ -240,6 +240,11 @@ class Movistar(Store):
             elif payment_id == 2:
                 sku_to_use = skus['cuotas']
             elif payment_id == 3:
+                if 'movistar_one' not in skus:
+                    # This can happen if the original product is available
+                    # with movistar one, but we are scraping a color variant
+                    # of it that is not
+                    continue
                 sku_to_use = skus['movistar_one']
             else:
                 raise Exception('Invalid payment ID')
