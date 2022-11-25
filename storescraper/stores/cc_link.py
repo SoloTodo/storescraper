@@ -90,7 +90,7 @@ class CCLink(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', {
-                    'data-toggle': 'shop-products'})
+                    'data-bs-toggle': 'shop-products'})
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
