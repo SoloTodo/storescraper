@@ -1,6 +1,6 @@
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import CASE_FAN, RAM, VIDEO_CARD
+from storescraper.categories import RAM
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -9,17 +9,13 @@ class PcmStore(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [
-            VIDEO_CARD,
             RAM,
-            CASE_FAN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/componentes-pc/tarjetas', VIDEO_CARD],
-            ['computacion/componentes-pc/memorias-ram', RAM],
-            ['computacion/componentes-pc/coolers-ventiladores', CASE_FAN],
+            ['computacion', RAM],
         ]
 
         session = session_with_proxy(extra_args)
