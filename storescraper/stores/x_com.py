@@ -120,6 +120,8 @@ class XCom(Store):
         else:
             stock = 0
 
+        if not soup.find('p', 'price').find('ins'):
+            return []
         price = Decimal(remove_words(soup.find('p', 'price').find(
             'ins').find('span', 'woocommerce-Price-amount').text))
 
