@@ -16,7 +16,7 @@ from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
     HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class PcFactory(Store):
@@ -198,37 +198,22 @@ class PcFactory(Store):
             session.cookies = requests.utils.cookiejar_from_dict(
                 extra_args['cookies'])
 
-        sku = re.match(r'https://www.pcfactory.cl/producto/(\d+)-',
-                       url).groups()[0]
-        body = json.dumps(
-            {'requests': [{'indexName': 'productos_sort_price_asc',
-                           'params': 'hitsPerPage=1000&query={}'.format(
-                               sku)}]})
-        api_response = session.post(
-            'https://ed3kwid4nw-dsn.algolia.net/1/indexes/*/queries?x'
-            '-algolia-api-key=8e5bacd98938c96a0f1d8a50bd86e0cc&x-algolia'
-            '-application-id=ED3KWID4NW',
-            data=body)
-        json_container = json.loads(api_response.text)
+        session.get(url)
+        res = session.get(
+            'https://www.pcfactory.cl/public/scripts/dynamic/initData.js')
+        match = re.search('window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
+        product_data = json.loads(match.groups()[0])['producto']
 
-        product_json = None
+        sku = product_data['id_producto']
+        part_number = product_data['partno']
+        name = product_data['nombre']
+        stock = int(product_data['stock_web']) + \
+                int(product_data['stock_tienda'])
 
-        for product in json_container['results'][0]['hits']:
-            if product['idProducto'] == int(sku):
-                product_json = product
-                break
+        offer_price = Decimal(product_data['precio_meta_info']).quantize(0)
+        normal_price = Decimal(remove_words(product_data['precio_normal']))
 
-        if not product_json:
-            return []
-
-        part_number = product_json['partno']
-        name = product_json['nombre']
-        stock = sum(stock['stock'] for stock in product_json['stockSucursal'])
-        offer_price = Decimal(product_json['precio'])
-        normal_price = (offer_price / Decimal('0.97')).quantize(0)
-
-        picture_urls = ['https://www.pcfactory.cl/public/foto/{}/'
-                        '1_1000.jpg'.format(sku)]
+        picture_urls = [x.split('?')[0] for x in product_data['imagen_1000']]
 
         if 'LIQ' in name:
             condition = 'https://schema.org/RefurbishedCondition'
