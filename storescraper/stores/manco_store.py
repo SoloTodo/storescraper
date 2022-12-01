@@ -96,6 +96,8 @@ class MancoStore(Store):
                 stock = int(stock_text.split()[0])
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
+        else:
+            stock = -1
 
         if soup.find('p', 'price').find('ins'):
             price = Decimal(

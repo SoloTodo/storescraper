@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, PRINTER, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class GigaBlack(Store):
@@ -62,7 +62,7 @@ class GigaBlack(Store):
         products = []
 
         name = json_data['title']
-        description = json_data['description']
+        description = html_to_markdown(json_data['description'])
         picture_urls = ['https:' + i for i in json_data['images']]
 
         for variant in json_data['variants']:
@@ -73,7 +73,7 @@ class GigaBlack(Store):
                 sku = None
 
             variant_name = '{} ({})'.format(name, variant['title'])
-            variant_url = '{}?variant={}'.format(url, key)
+            variant_url = '{}?variant={}'.format(url.split('?')[0], key)
 
             if variant['available']:
                 stock = -1
