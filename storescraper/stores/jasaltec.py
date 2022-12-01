@@ -120,6 +120,10 @@ class Jasaltec(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        if "PAGE NOT FOUND" in soup.text:
+            return []
+
         name = soup.find('h1', 'product_title').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
         sku_tag = soup.find('span', 'sku')
