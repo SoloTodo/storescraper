@@ -201,14 +201,15 @@ class PcFactory(Store):
         session.get(url)
         res = session.get(
             'https://www.pcfactory.cl/public/scripts/dynamic/initData.js')
-        match = re.search('window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
+        match = re.search(
+            'window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
         product_data = json.loads(match.groups()[0])['producto']
 
         sku = product_data['id_producto']
         part_number = product_data['partno']
         name = product_data['nombre']
         stock = int(product_data['stock_web']) + \
-                int(product_data['stock_tienda'])
+            int(product_data['stock_tienda'])
 
         offer_price = Decimal(product_data['precio_meta_info']).quantize(0)
         normal_price = Decimal(remove_words(product_data['precio_normal']))

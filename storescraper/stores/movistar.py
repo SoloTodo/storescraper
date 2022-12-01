@@ -254,7 +254,8 @@ class Movistar(Store):
                       'current%5Bplan%5D=' \
                       'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
                       '&{}&current%5Bcode%5D=' \
-                      ''.format(sku_to_use, type_id, payment_id, payload_params)
+                      ''.format(sku_to_use, type_id,
+                                payment_id, payload_params)
 
             json_response = get_json_response(payload)
 
