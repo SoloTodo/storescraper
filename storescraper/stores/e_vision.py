@@ -1,6 +1,7 @@
 import json
 
 from decimal import Decimal
+import time
 
 from storescraper.categories import WASHING_MACHINE
 from storescraper.store import Store
@@ -56,7 +57,19 @@ class EVision(Store):
             'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
         url_request = 'https://www.evisionstore.com/api/product/view-react.php'
         data = json.dumps({'model_number': url.split('product/')[1]})
-        json_container = json.loads(session.post(url_request, data=data).text)
+
+        max_tries = 3
+        while max_tries > 0:
+            try:
+                response = session.post(url_request, data=data).text
+                break
+            except:
+                max_tries -= 1
+                if max_tries == 0:
+                    return []
+                time.sleep(3)
+
+        json_container = json.loads(response)
         name = json_container['product_view'][0]['product_name']
         sku = json_container['product_view'][0]['product_id']
         if json_container['product_view'][0]['allow_purchase'] == '0':
