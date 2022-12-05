@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, HEADPHONES, \
     KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, PROCESSOR, RAM, \
-    STORAGE_DRIVE, VIDEO_CARD
+    STORAGE_DRIVE, VIDEO_CARD, ALL_IN_ONE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -25,12 +25,15 @@ class AkByteComputacion(Store):
             PROCESSOR,
             VIDEO_CARD,
             KEYBOARD,
-            CASE_FAN
+            CASE_FAN,
+            ALL_IN_ONE,
+            NOTEBOOK
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['all-in-one', ALL_IN_ONE],
             ['almacenamiento', STORAGE_DRIVE],
             ['audifonos', HEADPHONES],
             ['fuente-de-poder', POWER_SUPPLY],
@@ -38,6 +41,7 @@ class AkByteComputacion(Store):
             ['memorias-ram', RAM],
             ['monitores', MONITOR],
             ['mouses', MOUSE],
+            ['notebook', NOTEBOOK],
             ['placa-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['tarjetas-graficas', VIDEO_CARD],
