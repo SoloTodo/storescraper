@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
-    SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
+    SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
     MOTHERBOARD, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MEMORY_CARD, \
     USB_FLASH_DRIVE, STEREO_SYSTEM, GAMING_DESK, MICROPHONE, CASE_FAN
@@ -22,7 +22,6 @@ class PcCom(Store):
             RAM,
             VIDEO_CARD,
             SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
             POWER_SUPPLY,
             COMPUTER_CASE,
             HEADPHONES,
@@ -52,7 +51,6 @@ class PcCom(Store):
             ['ssd-25-sata', SOLID_STATE_DRIVE],
             ['m-2-pcie-nvme', SOLID_STATE_DRIVE],
             ['disco-duro-pc', STORAGE_DRIVE],
-            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes', COMPUTER_CASE],
             ['enfriamiento/refrigeracion-liquida', CPU_COOLER],
