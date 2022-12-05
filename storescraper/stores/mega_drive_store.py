@@ -1,13 +1,13 @@
+import json
 import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import EXTERNAL_STORAGE_DRIVE, \
-    KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MOUSE, SOLID_STATE_DRIVE, \
-    USB_FLASH_DRIVE, VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
+from storescraper.categories import EXTERNAL_STORAGE_DRIVE, MOUSE, \
+    SOLID_STATE_DRIVE, USB_FLASH_DRIVE, VIDEO_CARD, PROCESSOR, MOTHERBOARD, \
     STORAGE_DRIVE, RAM, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, KEYBOARD, \
-    HEADPHONES, PRINTER, NOTEBOOK, MONITOR, STEREO_SYSTEM, CASE_FAN
+    HEADPHONES, NOTEBOOK, MONITOR, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,48 +27,38 @@ class MegaDriveStore(Store):
             COMPUTER_CASE,
             KEYBOARD,
             HEADPHONES,
-            PRINTER,
             NOTEBOOK,
             MONITOR,
-            STEREO_SYSTEM,
             CASE_FAN,
             USB_FLASH_DRIVE,
-            MEMORY_CARD,
             SOLID_STATE_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
             MOUSE,
-            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['11-tarjetas-graficas', VIDEO_CARD],
-            ['12-procesadores-amd', PROCESSOR],
-            ['13-procesadores-intel', PROCESSOR],
-            ['14-placas-madres-amd', MOTHERBOARD],
-            ['15-placas-madres-intel', MOTHERBOARD],
-            ['30-disco-ssd', SOLID_STATE_DRIVE],
-            ['31-discos-externos', EXTERNAL_STORAGE_DRIVE],
-            ['32-discos-de-notebook', STORAGE_DRIVE],
-            ['33-discos-hdd', STORAGE_DRIVE],
-            ['61-memorias-ddr4', RAM],
-            ['62-memorias-de-notebook', RAM],
-            ['63-pendrive', USB_FLASH_DRIVE],
-            ['64-microsd', MEMORY_CARD],
-            ['18-fuentes-de-poder', POWER_SUPPLY],
-            ['35-ventiladores', CASE_FAN],
-            ['36-disipador-cpu', CPU_COOLER],
-            ['37-refrigeracion-liquida', CPU_COOLER],
-            ['20-gabinetes', COMPUTER_CASE],
-            ['41-mouse', MOUSE],
-            ['42-teclados', KEYBOARD],
-            ['44-kit-teclados', KEYBOARD_MOUSE_COMBO],
-            ['26-impresoras', PRINTER],
-            ['54-notebook', NOTEBOOK],
-            ['70-monitores', MONITOR],
-            ['73-parlantes', STEREO_SYSTEM],
-            ['74-audifonos', HEADPHONES],
+            ['59-tarjetas-graficas', VIDEO_CARD],
+            ['77-disco-ssd', SOLID_STATE_DRIVE],
+            ['78-discos-hdd', STORAGE_DRIVE],
+            ['79-discos-externos-y-cofres', EXTERNAL_STORAGE_DRIVE],
+            ['80-memorias', RAM],
+            ['84-usb-flah', USB_FLASH_DRIVE],
+            ['85-fuentes-de-poder', POWER_SUPPLY],
+            ['89-refrigeracion-liquida', CPU_COOLER],
+            ['90-refrigeracion-por-aire', CPU_COOLER],
+            ['92-ventiladores', CASE_FAN],
+            ['94-gabinetes', COMPUTER_CASE],
+            ['99-mouse', MOUSE],
+            ['101-teclados', KEYBOARD],
+            ['105-notebook', NOTEBOOK],
+            ['110-monitores', MONITOR],
+            ['112-audifonos', HEADPHONES],
+            ['122-placas-madres-amd', MOTHERBOARD],
+            ['123-placas-madres-intel', MOTHERBOARD],
+            ['124-procesadores-amd', PROCESSOR],
+            ['125-procesadores-intel', PROCESSOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -109,34 +99,30 @@ class MegaDriveStore(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_container = soup.find('div', 'row product_container')
-        name = product_container.find('h1', 'product_name').text
-        sku = product_container.find('input', {'name': 'id_product'})['value']
-        offer_price = Decimal(remove_words(
-            product_container.find('div', 'product-prices')
-            .find('span', 'price')['content']))
-        normal_price = (offer_price / Decimal('0.95')).quantize(0)
-        stock_container = product_container.find('span', {
-            'id': 'product-availability'}).text.strip().split('\n')[-1].strip()
-        if stock_container == 'Producto en Stock' or stock_container == \
-                'Últimas unidades en stock':
-            stock = -1
-        else:
-            stock = 0
-        picture_urls = [tag.find('img')['src'] for tag in
-                        product_container.findAll('li', 'thumb-container')]
+
+        json_data = json.loads(
+            soup.find('div', {'id': 'product-details'})['data-product'])
+
+        key = str(json_data['id_product'])
+        name = json_data['name']
+        description = json_data['description']
+        stock = json_data['quantity']
+        price = Decimal(json_data['price_amount'])
+        picture_urls = [i['large']['url'] for i in json_data['images']]
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
+            description=description,
         )
         return [p]
