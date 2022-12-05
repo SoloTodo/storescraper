@@ -71,7 +71,7 @@ class TiendaInglesa(Store):
         description = json_data['Info']['ProductObs']
         sku = json_data['Info']['ProductCode']
         ean = json_data['Info']['ProductBarCode']
-        price = Decimal(json_data['Prices'][0]['Price'])
+        price = Decimal(str(json_data['Prices'][0]['Price']))
         stock = json_data['QuickBuy']['StockMax']
 
         picture_urls = [i['ProductImageUrl'] for i in json_data['Pictures']]
