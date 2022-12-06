@@ -1,10 +1,11 @@
 import json
 import re
 
-from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import NOTEBOOK, MONITOR, TABLET, CELL, \
+    HEADPHONES, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -15,32 +16,32 @@ class MacOnline(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Monitor',
-            'Tablet',
-            'Cell',
-            'Headphones'
+            NOTEBOOK,
+            MONITOR,
+            TABLET,
+            CELL,
+            HEADPHONES,
+            WEARABLE,
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
+    def discover_urls_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl'
-        discovered_entries = defaultdict(lambda: [])
+        discovered_urls = []
 
         category_paths = [
-            ['mac', ['Notebook'],
-             'Mac', 1],
-            ['ipad', ['Tablet'],
-             'iPad', 1],
-            ['iphone', ['Cell'],
-             'iPhone', 1],
+            ['mac', NOTEBOOK],
+            ['ipad', TABLET],
+            ['iphone', CELL],
+            ['watch', WEARABLE],
+            ['musica', HEADPHONES],
         ]
 
         for e in category_paths:
-            category_path, local_categories, section_name, category_weight = e
+            category_path, local_category = e
 
-            if category not in local_categories:
+            if category != local_category:
                 continue
 
             category_url = 'https://www.maconline.com/t/{}'\
@@ -49,22 +50,40 @@ class MacOnline(Store):
 
             soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
 
-            subcategories = soup.find('ul', 'list-unstyled').findAll('li')
+            products_grid = soup.find('div', {'id': 'products'})
+            if products_grid:
+                page = 1
+                while True:
+                    if page >= 10:
+                        raise Exception('Page overflow')
+                    url = '{}?page={}'.format(category_url, page)
+                    print(url)
+                    soup = BeautifulSoup(session.get(url).text,
+                                         'html.parser')
+                    products_grid = soup.find('div', {'id': 'products'})
+                    if not products_grid:
+                        break
+                    for product_cell in products_grid.findAll(
+                            'div', 'product-list-item'):
+                        product_url = 'https://www.maconline.com' + \
+                                      product_cell.find('a')['href']
+                        discovered_urls.append(product_url)
+                    page += 1
+            else:
+                subcategories = soup.find('ul', 'list-unstyled').findAll('li')
+                assert subcategories
 
-            for idx, subcategory in enumerate(subcategories):
-                subcategory_url = 'https://www.maconline.com{}'.format(
-                    subcategory.find('a')['href'].split('?')[0]
-                )
-                discovered_entries[subcategory_url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+                for idx, subcategory in enumerate(subcategories):
+                    product_url = 'https://www.maconline.com{}'.format(
+                        subcategory.find('a')['href'].split('?')[0]
+                    )
+                    discovered_urls.append(product_url)
 
-        return discovered_entries
+        return discovered_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         products = []
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl'
