@@ -113,7 +113,8 @@ class EliteCenter(Store):
                 soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.findAll('div', 'product-grid-item')
 
-                if response.status_code == 404 or 'Ups...' in soup.text:
+                if response.status_code == 404 or 'no encontrada' \
+                        in soup.find('title').text:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
