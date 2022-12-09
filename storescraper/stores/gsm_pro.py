@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CELL, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class GsmPro(Store):
@@ -64,32 +64,19 @@ class GsmPro(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[0].text)
+            'script', {'type': 'application/json'})[-1].text)['product']
 
-        description = product_data['description']
-        carousel_items = soup.findAll('div', 'product-gallery__carousel-item')
-        picture_urls = []
-        for item in carousel_items:
-            noscript = item.find('noscript')
-            if noscript:
-                img_url = noscript.find('img')['src']
-                picture_urls.append('https:{}'.format(img_url))
+        description = html_to_markdown(product_data['description'])
+        picture_urls = ['https:' + i for i in product_data['images']]
 
         products = []
-        for offer in product_data['offers']:
-            name = '{} {}'.format(product_data['name'], offer['name'])
-            if 'sku' in offer:
-                sku = offer['sku']
-            else:
-                sku = None
+        for variant in product_data['variants']:
+            key = str(variant['id'])
+            name = variant['name']
+            sku = variant['sku']
+            price = (Decimal(variant['price']) / Decimal(100)).quantize(0)
 
-            price = Decimal(
-                offer['price'])
-            key = offer['url'].split('variant=')[1]
-            if 'bajo pedido' in name.lower() or 'días' in name.lower():
-                stock = 0
-            elif 'InStock' in offer['availability'] and 'preventa' not in \
-                    offer['name'].lower():
+            if variant['available']:
                 stock = -1
             else:
                 stock = 0
