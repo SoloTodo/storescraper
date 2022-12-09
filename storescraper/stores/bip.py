@@ -1,3 +1,4 @@
+import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -129,7 +130,7 @@ class Bip(Store):
 
                 if not product_containers:
                     if offset == 0:
-                        raise Exception('Empty category: ' + url_webpage)
+                        logging.warning('Empty category: ' + url_webpage)
                     break
 
                 for container in product_containers:
