@@ -63,7 +63,7 @@ class EVision(Store):
             try:
                 response = session.post(url_request, data=data).text
                 break
-            except:
+            except Exception:
                 max_tries -= 1
                 if max_tries == 0:
                     return []
