@@ -57,7 +57,7 @@ class MiTiendaDamasco(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_product = json.loads(
             soup.find('script', {'id': 'wix-warmup-data'}).text)
-        json_product = list(json_product['appsWarmupData'].values())[0]
+        json_product = list(json_product['appsWarmupData'].values())[-1]
         json_product = list(json_product.values())[0]['catalog']['product']
         name = html.unescape(json_product['name'])
         sku = json_product['sku']
