@@ -127,7 +127,7 @@ class Falabella(Store):
          'facción > Estufas Eléctricas', 1],
         ['cat9910027', [SPACE_HEATER], 'Home > Electrohogar-Calefacción > Cale'
          'facción > Estufas Pellet y Leña', 1],
-        ['CATG10194', [GROCERIES], 'Despensa', 1]
+        # ['CATG10194', [GROCERIES], 'Despensa', 1]
     ]
 
     @classmethod
