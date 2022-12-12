@@ -82,7 +82,8 @@ class Sicot(Store):
         description = json_data['description']
         price = Decimal(json_data['offers'][0]['price'])
 
-        if soup.find('button', {'name': 'add-to-cart'}):
+        if soup.find('button', {'name': 'add-to-cart'}) and not \
+                soup.find('p', 'stock available-on-backorder'):
             stock_p = soup.find('p', 'stock in-stock')
             if stock_p:
                 stock = int(stock_p.text.split('disponible')[0].strip())
