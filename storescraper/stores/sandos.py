@@ -4,9 +4,9 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, HEADPHONES, MOUSE, KEYBOARD, \
+from storescraper.categories import TABLET, HEADPHONES, MOUSE, KEYBOARD, \
     GAMING_CHAIR, MONITOR, MOTHERBOARD, RAM, POWER_SUPPLY, CPU_COOLER, \
-    COMPUTER_CASE, PROCESSOR, SOLID_STATE_DRIVE
+    COMPUTER_CASE, PROCESSOR, SOLID_STATE_DRIVE, NOTEBOOK, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,11 +29,15 @@ class Sandos(Store):
             COMPUTER_CASE,
             PROCESSOR,
             SOLID_STATE_DRIVE,
+            NOTEBOOK,
+            TABLET,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['computacion/notebook', NOTEBOOK],
+            ['computacion/tablet', TABLET],
             ['monitores', MONITOR],
             ['componentes/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes/procesadores', PROCESSOR],
@@ -68,17 +72,8 @@ class Sandos(Store):
                         logging.warning('Empty category: ' + url_extension)
                     break
 
-                script_tag = soup.find('script', {'type': 'text/template'})
-
-                if not script_tag:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-
-                soup = BeautifulSoup(json.loads(script_tag.text),
-                                     'html.parser')
-
-                product_containers = soup.findAll('li', 'product-col')
+                product_containers = soup.find(
+                    'div', 'site-content').findAll('div', 'product')
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
@@ -92,71 +87,52 @@ class Sandos(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
             -1]
-        soup = BeautifulSoup(
-            json.loads(soup.find('script', {'type': 'text/template'}).text),
-            'html.parser')
 
-        name = soup.find('h2').text.strip()
-        if soup.find('form', 'variations_form'):
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[-1].text)
 
-            variations = json.loads(soup.find('form', 'variations_form')[
-                                        'data-product_variations'])
-            products = []
-            for variation in variations:
-                variation_name = name + ' - ' + variation['attributes'][
-                    'attribute_pa_color']
-                sku = str(variation['variation_id'])
-                if variation['is_in_stock']:
-                    stock = variation['max_qty']
-                else:
-                    stock = 0
-                price = Decimal(variation['display_price'])
-                picture_urls = [variation['image']['url']]
-                p = Product(
-                    variation_name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    sku,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=sku,
-                    picture_urls=picture_urls
-                )
-                products.append(p)
-            return products
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
         else:
+            raise Exception('No JSON product data found')
 
-            if soup.find('span', 'product-stock'):
-                stock = int(soup.find('span', 'product-stock').find('span',
-                                                                    'stock').
-                            text.split()[0])
-            else:
-                stock = -1
-            if soup.find('p', 'price').find('ins'):
-                price = Decimal(
-                    remove_words(soup.find('p', 'price').find('ins').text))
-            else:
-                price = Decimal(remove_words(soup.find('p', 'price').text))
-            picture_urls = [tag['src'] for tag in
-                            soup.find('div', 'product-images').findAll('img')]
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls
-            )
-            return [p]
+        name = product_data['name']
+        description = product_data['description']
+        sku = str(product_data['sku'])
+        offer_price = Decimal(product_data['offers'][0]['price'])
+
+        price_table = soup.find('table', {'id': 'precio_tabla'})
+        price_spans = price_table.findAll('span', 'amount')
+        if len(price_spans) > 1:
+            normal_price = Decimal(remove_words(price_spans[-1].text))
+        else:
+            normal_price = offer_price
+
+        stock_p = soup.find('p', 'in-stock')
+        if stock_p:
+            stock = int(stock_p.text.split(' ')[0])
+        else:
+            stock = -1
+
+        picture_urls = [product_data['image']]
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description
+        )
+        return [p]
