@@ -2,8 +2,7 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import ALL_IN_ONE, CELL, HEADPHONES, KEYBOARD, \
-    KEYBOARD_MOUSE_COMBO, MOUSE, NOTEBOOK, TABLET
+from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -20,7 +19,20 @@ class AdisStore(Store):
             NOTEBOOK,
             ALL_IN_ONE,
             TABLET,
-            CELL
+            CELL,
+            COMPUTER_CASE,
+            POWER_SUPPLY,
+            RAM,
+            PROCESSOR,
+            MEMORY_CARD,
+            VIDEO_CARD,
+            MOTHERBOARD,
+            USB_FLASH_DRIVE,
+            MONITOR,
+            TELEVISION,
+            STEREO_SYSTEM,
+            PRINTER,
+            UPS,
         ]
 
     @classmethod
@@ -38,6 +50,29 @@ class AdisStore(Store):
             ['computadores-y-notebooks/pc-de-escritorio', ALL_IN_ONE],
             ['computadores-y-notebooks/tablets', TABLET],
             ['audio-video-tecnologia/celulares', CELL],
+            ['almacenamiento-partes-y-piezas/cajas-gabinetes', COMPUTER_CASE],
+            ['almacenamiento-partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
+            ['almacenamiento-partes-y-piezas/modulos-ram-genericos', RAM],
+            ['almacenamiento-partes-y-piezas/modulos-ram-propietarios', RAM],
+            ['almacenamiento-partes-y-piezas/procesadores', PROCESSOR],
+            ['almacenamiento-partes-y-piezas/tarjetas-de-memoria-flash',
+             MEMORY_CARD],
+            ['almacenamiento-partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+            ['almacenamiento-partes-y-piezas/tarjetas-madre-placas-madre',
+             MOTHERBOARD],
+            ['almacenamiento-partes-y-piezas/unidades-flash-usb',
+             USB_FLASH_DRIVE],
+            ['audio-video-tecnologia/monitores', MONITOR],
+            ['audio-video-tecnologia/televisores', TELEVISION],
+            ['audio-video-tecnologia/audifonos', HEADPHONES],
+            ['audio-video-tecnologia/audio-parlantes', STEREO_SYSTEM],
+            ['impresion-y-escaner/impresoras-ink-jet', PRINTER],
+            ['impresion-y-escaner/impresoras-laser', PRINTER],
+            ['impresion-y-escaner/impresoras-multifuncionales', PRINTER],
+            ['proteccion-de-poder-y-ups/ups-respaldo-de-energia', UPS],
+            ['mundo-apple/imac-apple', ALL_IN_ONE],
+            ['mundo-apple/ipad', TABLET],
+            ['mundo-apple/apple-macbook', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
