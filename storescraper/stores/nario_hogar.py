@@ -1,3 +1,4 @@
+import logging
 import urllib
 from decimal import Decimal
 
@@ -26,16 +27,28 @@ class NarioHogar(Store):
         for local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://www.nariohogar.com.uy/producto' \
-                          '/busqueda?name=lg'
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('a', 'overlay small')
-            if not product_containers:
-                break
-            for container in product_containers:
-                product_url = container['href']
-                product_urls.append(product_url)
+
+            page = 0
+            while True:
+                url_webpage = 'https://www.nariohogar.com.uy/productos/' \
+                    'paginado?marcas=lg8&p={}'.format(page)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
+
+                if 'No se encontraron resultados' in soup.text:
+                    if page == 0:
+                        logging.warning('Empty category: ' + local_category)
+                    break
+
+                product_containers = soup.findAll('div', 'product-card-5')
+                if not product_containers:
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
+
         return product_urls
 
     @classmethod
@@ -44,12 +57,13 @@ class NarioHogar(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
+        name = soup.find('meta', {'property': 'og:title'})['content']
         sku = url.split('/')[-1]
         stock = -1
-        price = Decimal(soup.find('div', 'price-detalle').text.split()[-1])
+        price = Decimal(
+            soup.find('div', 'product-price').find('span').text.split()[-1])
         picture_urls = [urllib.parse.quote(tag['src'], safe='/:') for tag in
-                        soup.find('div', 'owl-carousel').findAll('img')]
+                        soup.find('div', 'swiper_gallery').findAll('img')]
         p = Product(
             name,
             cls.__name__,
