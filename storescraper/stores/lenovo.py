@@ -13,7 +13,6 @@ from storescraper.utils import remove_words, html_to_markdown, \
 class Lenovo(Store):
     base_domain = 'https://www.lenovo.com'
     currency = 'USD'
-    extension = ''
     region_extension = ''
 
     @classmethod
@@ -44,9 +43,19 @@ class Lenovo(Store):
         response = session.get(url, allow_redirects=True)
 
         soup = BeautifulSoup(response.text, 'html5lib')
+
+        gallery_tag = soup.find('div', 'gallery-image-slider')
+
+        if gallery_tag:
+            picture_urls = ['https://www.lenovo.com' + tag['src'] for tag in gallery_tag.findAll('img')]
+        else:
+            picture_urls = ['https://www.lenovo.com' + soup.find('meta', {'name': 'thumbnail'})['content']]
+
+        model_containers = soup.findAll('li', 'tabbedBrowse-productListing-container')
         products = []
 
         if soup.find('div', 'singleModelView'):
+            # Notebook, Tablet or AIO without variants
             name = soup.find('h2', 'tabbedBrowse-title singleModelTitle')\
                 .text.strip()
             if soup.find('div', 'partNumber'):
@@ -72,9 +81,6 @@ class Lenovo(Store):
             description = html_to_markdown(str(soup.find(
                 'div', 'configuratorItem-accordion-content')))
 
-            picture_urls = ['https://www.lenovo.com' +
-                            soup.find('img', 'subSeries-Hero')['src']]
-
             stock_msg = soup.find('span', 'stock_message').text
             stock = -1
 
@@ -99,34 +105,41 @@ class Lenovo(Store):
             )
 
             products.append(p)
+        elif model_containers:
+            # Notebook with variants
+            products = []
+
+            for model_container in model_containers:
+                name = model_container.find('h3', 'tabbedBrowse-productListing-title').contents[0].strip()
+                sku = model_container['data-code']
+                price_tag = model_container.find('dd', 'pricingSummary-details-final-price')
+                price = Decimal(remove_words(price_tag.text))
+                description = html_to_markdown(str(model_container.find('div', 'tabbedBrowse-productListing-featureList')))
+
+                p = Product(
+                    '{} ({})'.format(name, sku),
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    -1,
+                    price,
+                    price,
+                    cls.currency,
+                    sku=sku,
+                    part_number=sku,
+                    description=description,
+                    picture_urls=picture_urls
+                )
+                products.append(p)
         else:
-            name_tag = soup.find('div', 'titleSection')
+            # Monitor most likely
 
-            if not name_tag:
-                return []
-
-            name = name_tag.text.strip()
-            sku = soup.find('input', {'name': 'productCode'})['value'].strip()
-            price_tag = soup.find('meta', {'name': 'productsaleprice'})
-
-            if not price_tag:
-                price_tag = soup.find('meta', {'name': 'productprice'})
-
-            price = Decimal(remove_words(price_tag['content']))
-            description = html_to_markdown(str(soup.find(
-                'div', 'tabbed-browse-content-wrapper')))
-
-            picture_urls = [
-                'https://www.lenovo.com' +
-                soup.find('meta', {'name': 'thumbnail'})['content']
-            ]
-
-            stock_tag = soup.find('span', 'stock_message')
-
-            if stock_tag and stock_tag.text.strip() == 'Agotado':
-                stock = 0
-            else:
-                stock = -1
+            name = soup.find('div', 'titleSection').text.strip()
+            sku = soup.find('meta', {'name': 'productid'})['content']
+            price = Decimal(remove_words(soup.find('meta', {'name': 'productsaleprice'})['content']))
+            description = html_to_markdown(str(soup.find('ul', 'tabs-content-items')))
 
             p = Product(
                 '{} ({})'.format(name, sku),
@@ -135,16 +148,15 @@ class Lenovo(Store):
                 url,
                 url,
                 sku,
-                stock,
+                -1,
                 price,
                 price,
-                'CLP',
+                cls.currency,
                 sku=sku,
                 part_number=sku,
                 description=description,
                 picture_urls=picture_urls
             )
-
             products.append(p)
 
         return products
@@ -169,10 +181,10 @@ class Lenovo(Store):
 
             for sorter in sorters:
                 nb_path = \
-                    cls.base_domain + '/api/nfe/dlp/search?contextString=' \
-                                      '{}&categories={}&pageSize=30' \
-                                      '&sort={}&page='.format(
-                                          cls.extension, category_path, sorter)
+                    cls.base_domain + cls.region_extension + \
+                    '/api/product/graph?categories={}' \
+                    '&sort={}&src=splitter&page='.format(
+                        category_path, sorter)
                 page = 0
 
                 while True:
@@ -183,10 +195,10 @@ class Lenovo(Store):
                     print(url)
                     response = session.get(url)
 
-                    if response.status_code == 404:
-                        break
-
                     data = json.loads(response.text)
+
+                    if not data['results']:
+                        break
 
                     for product_entry in data['results']:
                         product_url = cls.base_domain + \
