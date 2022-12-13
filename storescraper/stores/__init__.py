@@ -272,6 +272,7 @@ from .multi_ahorro import MultiAhorro
 from .multimax import Multimax
 from .mundo_gaming import MundoGaming
 from .musimundo import Musimundo
+from .mutant import Mutant
 from .my_box import MyBox
 from .nario_hogar import NarioHogar
 from .natcom import Natcom
