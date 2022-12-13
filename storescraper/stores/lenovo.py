@@ -180,6 +180,7 @@ class Lenovo(Store):
                         raise Exception('Page overflow')
 
                     url = nb_path + str(page)
+                    print(url)
                     response = session.get(url)
 
                     if response.status_code == 404:
@@ -208,6 +209,7 @@ class Lenovo(Store):
 
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = 'curl/7.68.0'
+        session.headers['Content-Type'] = 'application/json'
 
         products_urls = []
 
@@ -227,6 +229,7 @@ class Lenovo(Store):
                         raise Exception('Page overflow')
 
                     url = nb_path + str(page)
+                    print(url)
                     response = session.get(url)
 
                     if response.status_code == 500:
