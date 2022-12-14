@@ -157,13 +157,14 @@ class Wei(Store):
 
         name = soup.find('meta', {'name': 'description'})['content']
 
-        stock_div = soup.find('div', {'id': 'tab-disponibilidad'})
+        stock_div = soup.find('div', 'col-55 col-100-md-2 pb20')
         if 'IMPORTACION' in name or 'en tránsito' in stock_div.text.lower():
             stock = 0
         else:
             stock = -1
 
-        pricing_container = soup.findAll('div', 'mb10')
+        pricing_container = soup.find('div', 'col-50 col-100-sm-1').findAll(
+            'div', style=lambda value: value and 'bolder' in value)
 
         if len(pricing_container) == 0:
             return []
@@ -171,7 +172,7 @@ class Wei(Store):
         offer_price = Decimal(remove_words(
             re.search(r"\$[0-9.]*", pricing_container[0].text).group(0)))
         normal_price = Decimal(remove_words(
-            re.search(r"\$[0-9.]*", pricing_container[1].text).group(0)))
+            re.search(r"\$[0-9.]*", pricing_container[2].text).group(0)))
 
         assert normal_price
 
