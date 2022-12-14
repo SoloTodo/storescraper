@@ -68,8 +68,13 @@ class TecTec(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://tectec.cl/categoria/{}/page' \
-                              '/{}/'.format(url_extension, page)
+                if page > 1:
+                    url_webpage = 'https://tectec.cl/categoria/{}/page' \
+                                  '/{}/'.format(url_extension, page)
+                else:
+                    url_webpage = 'https://tectec.cl/categoria/{}/'.format(
+                        url_extension)
+
                 print(url_webpage)
                 response = session.get(url_webpage, timeout=60)
                 soup = BeautifulSoup(response.text, 'html.parser')
