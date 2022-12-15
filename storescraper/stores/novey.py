@@ -68,6 +68,7 @@ class Novey(Store):
         sku = prodBean['sku']
         key = prodBean['id']
         price = Decimal(str(prodBean['price']))
+        description = prodBean['filterData']
 
         picture_urls = [i['uri'] for i in prodBean['EProductMediasS']]
 
@@ -81,8 +82,9 @@ class Novey(Store):
             stock,
             price,
             price,
-            'CLP',
+            'USD',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]

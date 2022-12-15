@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION
 
 
@@ -57,11 +57,17 @@ class Rodelag(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
 
+        part_number_tag = soup.find('div', 'product-part_number')
+        if part_number_tag:
+            part_number = part_number_tag.find('span').text.strip()
+        else:
+            part_number = None
+
         json_data = json.loads(soup.find(
             'script', {'data-section-id': 'static-product'}).text)
         json_product = json_data['product']
 
-        description = json_product['description']
+        description = html_to_markdown(json_product['description'])
         picture_urls = ['https:' + i for i in json_product['images']]
 
         json_data_variants = json_product['variants']
@@ -88,8 +94,9 @@ class Rodelag(Store):
                 stock,
                 price,
                 price,
-                'DOP',
+                'USD',
                 sku=sku,
+                part_number=part_number,
                 picture_urls=picture_urls,
                 description=description
             )
