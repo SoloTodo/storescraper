@@ -110,33 +110,94 @@ class MHWStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'h1').text
         key = soup.find('input', {'id': 'product_page_product_id'})['value']
-        sku_div = soup.find('div', 'product-reference')
-        if sku_div:
-            sku = sku_div.text.replace('Referencia: ', '').strip()
+        token = soup.find('input', {'name': 'token'})['value']
+
+        variants_ul = soup.find('ul', 'color-variants')
+        if variants_ul:
+            products = []
+            for variant in variants_ul.findAll('li'):
+                v_id = variant.find('input')['value']
+                v_key = '{}-{}'.format(key, v_id)
+                v_name = '{} - {}'.format(name,
+                                          variant.find('span').text.strip())
+                variant_data = session.post(
+                    'https://www.mhwstore.cl/index.php?controller=product&to'
+                    'ken={}&id_product={}&id_customization=0&group%5B2%5D={}'
+                    '&qty=1'.format(token, key, v_id),
+                    data={
+                        'quickview': 0,
+                        'ajax': 1,
+                        'action': 'refresh',
+                        'quantity_wanted': 1
+                    }).json()
+
+                soup_price = BeautifulSoup(
+                    variant_data['product_prices'], 'html.parser')
+
+                v_price = Decimal(
+                    soup_price.find('span', {'itemprop': 'price'})['content'])
+
+                stock_link = soup_price.find(
+                    'link', {'itemprop': 'availability'})
+                if "https://schema.org/OutOfStock" == stock_link['href']:
+                    v_stock = 0
+                else:
+                    v_stock = -1
+
+                soup_images = BeautifulSoup(
+                    variant_data['product_cover_thumbnails'], 'html.parser')
+
+                picture_urls = [tag['src'] for tag in
+                                soup_images.findAll('img')
+                                if tag['src']]
+                picture_urls = list(dict.fromkeys(picture_urls))
+
+                p = Product(
+                    v_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    v_key,
+                    v_stock,
+                    v_price,
+                    v_price,
+                    'CLP',
+                    picture_urls=picture_urls
+                )
+                products.append(p)
+
+            return products
         else:
-            sku = None
-        not_stock = soup.find('span', {'id': 'product-availability'}).text
-        if 'Fuera de stock' in not_stock:
-            stock = 0
-        else:
-            stock = int(soup.find('span', 'bon-stock-countdown-counter').text)
-        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'images-container').find(
-            'div', 'product-cover').findAll('img')
-            if tag['src']]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+            sku_div = soup.find('div', 'product-reference')
+            if sku_div:
+                sku = sku_div.text.replace('Referencia: ', '').strip()
+            else:
+                sku = None
+            not_stock = soup.find('span', {'id': 'product-availability'}).text
+            if 'Fuera de stock' in not_stock:
+                stock = 0
+            else:
+                stock = int(
+                    soup.find('span', 'bon-stock-countdown-counter').text)
+            price = Decimal(
+                soup.find('span', {'itemprop': 'price'})['content'])
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'images-container').find(
+                'div', 'product-cover').findAll('img')
+                if tag['src']]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            return [p]
