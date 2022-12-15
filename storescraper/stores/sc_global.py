@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import session_with_proxy
 from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
     KEYBOARD, MONITOR, HEADPHONES, UPS, GAMING_CHAIR, TABLET, RAM, \
-    SOLID_STATE_DRIVE
+    SOLID_STATE_DRIVE, PROCESSOR, VIDEO_CARD
 
 
 class ScGlobal(Store):
@@ -27,26 +27,33 @@ class ScGlobal(Store):
             TABLET,
             RAM,
             SOLID_STATE_DRIVE,
+            PROCESSOR,
+            VIDEO_CARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['81', NOTEBOOK],  # Zbook
-            ['83', NOTEBOOK],  # Notebook
-            ['10', NOTEBOOK],  # Notebook
-            ['84', PRINTER],  # Plotter
-            ['85', UPS],  # UPS
-            ['22', ALL_IN_ONE],  # All In One
-            ['17', MONITOR],  # Monitores
-            ['12', PRINTER],  # Impresoras
-            ['11', TABLET],  # Tablet
-            ['29', RAM],  # RAM
-            ['30', SOLID_STATE_DRIVE],  # Discos Duros
-            ['24', MOUSE],  # Zona gamer
-            ['76', MOUSE],  # Teclados / Mouse
-            ['78', HEADPHONES],  # Audífonos
-            ['74', GAMING_CHAIR],  # Sillas Gamer
+            ['workstations-31', NOTEBOOK],
+            ['rendimiento-32', NOTEBOOK],
+            ['notebook-gamer-89', NOTEBOOK],
+            ['notebook-10', NOTEBOOK],
+            ['plotter-hp-100', PRINTER],
+            ['ups-69', UPS],
+            ['ups-85', UPS],
+            ['all-in-one-22', ALL_IN_ONE],
+            ['monitores-17', MONITOR],
+            ['monitor-gamer-90', MONITOR],
+            ['impresion-12', PRINTER],
+            ['tablet-11', TABLET],
+            ['memoria-ram-29', RAM],
+            ['discos-duros-30', SOLID_STATE_DRIVE],
+            ['teclados-mouse-76', MOUSE],
+            ['audifonos-78', HEADPHONES],
+            ['silla-gamer-74', GAMING_CHAIR],
+            ['silla-gamer-88', GAMING_CHAIR],
+            ['procesadores-94', PROCESSOR],
+            ['tarjetas-de-video-56', VIDEO_CARD],
         ]
 
         session = session_with_proxy(extra_args)
@@ -59,9 +66,8 @@ class ScGlobal(Store):
             page = 1
 
             while True:
-                category_url = 'https://www.scglobal.cl/index.php?' \
-                               'id_category={}&controller=category&page={}' \
-                               ''.format(category_path, page)
+                category_url = 'https://www.scglobal.cl/{}?' \
+                               'page={}'.format(category_path, page)
                 print(category_url)
 
                 if page >= 10:
@@ -70,12 +76,12 @@ class ScGlobal(Store):
                 response = session.get(category_url, verify=False)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
-                if soup.find('section', 'page-not-found'):
+                if not soup.find('div', 'products row'):
                     if page == 1:
                         logging.warning('Empty category: ' + category_url)
                     break
 
-                product_cells = soup.findAll('div', 'item-inner')
+                product_cells = soup.findAll('article', 'product-miniature')
 
                 for cell in product_cells:
                     product_url = cell.find('a')['href']
