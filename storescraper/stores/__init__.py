@@ -283,6 +283,7 @@ from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notebooks_ya import NotebooksYa
 from .notetop import Notetop
+from .novey import Novey
 from .nuevatec import Nuevatec
 from .ofimania import Ofimania
 from .olier import Olier
@@ -336,6 +337,7 @@ from .riady_digital import RiadyDigital
 from .ribeiro import Ribeiro
 from .ripley import Ripley
 from .ripley_peru import RipleyPeru
+from .rodelag import Rodelag
 from .rodo import Rodo
 from .r_s_tech import RSTech
 from .sams import Sams
