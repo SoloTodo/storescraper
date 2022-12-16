@@ -2,10 +2,14 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR, CPU_COOLER
+from storescraper.categories import GAMING_CHAIR, CPU_COOLER, CELL, NOTEBOOK, \
+    ALL_IN_ONE, VIDEO_CARD, PROCESSOR, MONITOR, MOTHERBOARD, RAM, \
+    STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, TABLET, \
+    EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, MOUSE, PRINTER, \
+    KEYBOARD, HEADPHONES, STEREO_SYSTEM, UPS, TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
+from storescraper.utils import html_to_markdown, \
     session_with_proxy
 
 
@@ -13,96 +17,95 @@ class Bip(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
+            NOTEBOOK,
+            VIDEO_CARD,
+            PROCESSOR,
+            MONITOR,
+            MOTHERBOARD,
+            RAM,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
             CPU_COOLER,
-            'Tablet',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            'MemoryCard',
-            'Television',
-            'Mouse',
-            'Printer',
-            'Camera',
-            'AllInOne',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'StereoSystem',
-            'Ups',
-            GAMING_CHAIR
+            TABLET,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            TELEVISION,
+            MOUSE,
+            PRINTER,
+            ALL_IN_ONE,
+            KEYBOARD,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            UPS,
+            GAMING_CHAIR,
+            CELL,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             # Notebooks
-            ['166', 'Notebook'],
-            # Cámaras digitales
-            ['2', 'Camera'],
+            ['166', NOTEBOOK],
             # All in One
-            ['218', 'AllInOne'],
+            ['218', ALL_IN_ONE],
             # Tarjetas de video
-            ['792', 'VideoCard'],
+            ['792', VIDEO_CARD],
             # Proces
-            ['784', 'Processor'],
+            ['784', PROCESSOR],
             # Monitores
-            ['761', 'Monitor'],
+            ['761', MONITOR],
             # Placas madre
-            ['785', 'Motherboard'],
+            ['785', MOTHERBOARD],
             # RAM PC
-            ['132', 'Ram'],
+            ['132', RAM],
             # RAM Notebook
-            ['178', 'Ram'],
+            ['178', RAM],
             # Disco Duro 2,5'
-            ['125', 'StorageDrive'],
+            ['125', STORAGE_DRIVE],
             # Disco Duro 3,5'
-            ['124', 'StorageDrive'],
+            ['124', STORAGE_DRIVE],
             # Disco Duro SSD
-            ['413', 'SolidStateDrive'],
+            ['413', SOLID_STATE_DRIVE],
             # Fuentes de poder
-            ['88', 'PowerSupply'],
+            ['88', POWER_SUPPLY],
             # Gabinetes
-            ['8', 'ComputerCase'],
+            ['8', COMPUTER_CASE],
             # Gabinetes gamer
-            ['707', 'ComputerCase'],
+            ['707', COMPUTER_CASE],
             # Coolers CPU
             ['5', CPU_COOLER],
             ['790', CPU_COOLER],
             # Tablets
-            ['286', 'Tablet'],
+            ['286', TABLET],
             # Discos externos 2.5
-            ['128', 'ExternalStorageDrive'],
+            ['128', EXTERNAL_STORAGE_DRIVE],
             # USB Flash
-            ['528', 'UsbFlashDrive'],
+            ['528', USB_FLASH_DRIVE],
             # Memory card
-            ['82', 'MemoryCard'],
+            ['82', MEMORY_CARD],
             # Mouse
-            ['20', 'Mouse'],
+            ['20', MOUSE],
             # Mouse Gamer
-            ['703', 'Mouse'],
+            ['703', MOUSE],
             # Impresoras
-            ['769', 'Printer'],
+            ['769', PRINTER],
             # Plotter
-            ['770', 'Printer'],
+            ['770', PRINTER],
             # Teclados
-            ['12', 'Keyboard'],
+            ['12', KEYBOARD],
             # Audífono/Micrófono
-            ['70', 'Headphones'],
+            ['70', HEADPHONES],
             # Parlantes
-            ['13', 'StereoSystem'],
+            ['13', STEREO_SYSTEM],
             # UPS
-            ['31', 'Ups'],
+            ['31', UPS],
             # Sillas
             ['591', GAMING_CHAIR],
+            ['864', CELL],
+            ['762', TELEVISION],
         ]
 
         session = session_with_proxy(extra_args)

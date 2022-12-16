@@ -179,15 +179,13 @@ class Wom(Store):
             condition = 'https://schema.org/NewCondition'
 
         products = []
-        plans = [
-            'WOM Plan 50 GB',
-            'WOM Plan 100 GB',
-            'WOM Plan 200 GB',
-            'WOM Plan 300 GB',
-            'WOM Plan 400 GB',
-            'WOM Plan 500 GB',
-            'WOM Plan Libre',
-        ]
+        plans = []
+
+        for plan_choice in json_data['result']['data']['planData']['edges']:
+            plan_fatures = json.loads(plan_choice['node']['context']['context'])
+            if plan_fatures['voice feature'] and \
+                    plan_fatures['data service feature']:
+                plans.append('WOM ' + plan_choice['node']['name'])
 
         for entry in json_data['result']['data']['contentfulProduct'][
                 'productVariations']:
