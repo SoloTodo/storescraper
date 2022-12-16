@@ -76,14 +76,18 @@ class Claro(Store):
                 'html5lib'
             )
 
-            containers = soup.find(
-                'div', 'product_listing_container').findAll(
-                'div', 'product')[1:]
+            listing = soup.find('div', 'product_listing_container')
+
+            if not listing:
+                if offset == 0:
+                    raise Exception('Empty list')
+                break
+
+            containers = listing.findAll('div', 'product')[1:]
 
             if not containers:
                 if offset == 0:
                     raise Exception('Empty list')
-
                 break
 
             for container in containers:
