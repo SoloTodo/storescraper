@@ -61,9 +61,8 @@ class Jasaltec(Store):
             ['componentes-informaticos/tarjetas-graficas', VIDEO_CARD],
             ['componentes-informaticos/ventiladores-y-enfriadores',
              CPU_COOLER],
-
-            ['componentes-informaticos/memoria-ram/modulos-ram-notebook', RAM],
-            ['componentes-informaticos/memoria-ram/modulos-ram-pc-escritorio',
+            ['memoria-ram/modulos-ram-notebook', RAM],
+            ['memoria-ram/modulos-ram-pc-escritorio',
              RAM],
             ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['memoria-ram/tarjetas-de-memoria-flash', MEMORY_CARD],
