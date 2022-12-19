@@ -65,7 +65,7 @@ class Wom(Store):
                 cell_url = 'https://store.wom.cl/equipos/' + \
                            str(cell_entry['sku']) + '/' + cell_entry[
                                'name'].replace('+', 'plus').replace(
-                                '.', '-').replace(' ', '-')
+                               '.', '-').replace(' ', '-')
                 discovered_entries[cell_url].append({
                     'category_weight': 1,
                     'section_name': 'Equipos',
@@ -182,7 +182,8 @@ class Wom(Store):
         plans = []
 
         for plan_choice in json_data['result']['data']['planData']['edges']:
-            plan_fatures = json.loads(plan_choice['node']['context']['context'])
+            plan_fatures = json.loads(
+                plan_choice['node']['context']['context'])
             if plan_fatures['voice feature'] and \
                     plan_fatures['data service feature']:
                 plans.append('WOM ' + plan_choice['node']['name'])
