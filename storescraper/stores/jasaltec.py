@@ -66,7 +66,6 @@ class Jasaltec(Store):
             ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['memoria-ram/tarjetas-de-memoria-flash', MEMORY_CARD],
-            ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['computadores/all-in-one', ALL_IN_ONE],
             ['computadores/notebook', NOTEBOOK],
             ['computadores/notebook-gamer', NOTEBOOK],
