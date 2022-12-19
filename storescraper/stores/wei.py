@@ -146,7 +146,10 @@ class Wei(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, verify=False, timeout=61).text
+        try:
+            page_source = session.get(url, verify=False, timeout=61).text
+        except Exception:
+            return []
         sku = re.search(r"productoPrint\('(.+)'\);", page_source)
 
         if not sku:
