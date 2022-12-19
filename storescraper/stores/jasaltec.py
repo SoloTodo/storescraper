@@ -110,7 +110,6 @@ class Jasaltec(Store):
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    print('*', product_url)
                     product_urls.append(product_url)
                 page += 1
         return product_urls
