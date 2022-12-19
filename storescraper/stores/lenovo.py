@@ -44,14 +44,21 @@ class Lenovo(Store):
 
         soup = BeautifulSoup(response.text, 'html5lib')
 
+        if soup.find('div', {'id': 'product-details-variant-notavailable'}):
+            return []
+
         gallery_tag = soup.find('div', 'gallery-image-slider')
 
         if gallery_tag:
-            picture_urls = ['https://www.lenovo.com' + tag['src'] for tag in gallery_tag.findAll('img')]
+            picture_urls = ['https://www.lenovo.com' + tag['src']
+                            for tag in gallery_tag.findAll('img')]
         else:
-            picture_urls = ['https://www.lenovo.com' + soup.find('meta', {'name': 'thumbnail'})['content']]
+            picture_urls = ['https://www.lenovo.com' +
+                            soup.find('meta', {'name': 'thumbnail'}
+                                      )['content']]
 
-        model_containers = soup.findAll('li', 'tabbedBrowse-productListing-container')
+        model_containers = soup.findAll(
+            'li', 'tabbedBrowse-productListing-container')
         products = []
 
         if soup.find('div', 'singleModelView'):
@@ -110,11 +117,15 @@ class Lenovo(Store):
             products = []
 
             for model_container in model_containers:
-                name = model_container.find('h3', 'tabbedBrowse-productListing-title').contents[0].strip()
+                name = model_container.find(
+                    'h3', 'tabbedBrowse-productListing-title'
+                ).contents[0].strip()
                 sku = model_container['data-code']
-                price_tag = model_container.find('dd', 'pricingSummary-details-final-price')
+                price_tag = model_container.find(
+                    'dd', 'pricingSummary-details-final-price')
                 price = Decimal(remove_words(price_tag.text))
-                description = html_to_markdown(str(model_container.find('div', 'tabbedBrowse-productListing-featureList')))
+                description = html_to_markdown(str(model_container.find(
+                    'div', 'tabbedBrowse-productListing-featureList')))
 
                 p = Product(
                     '{} ({})'.format(name, sku),
@@ -138,8 +149,10 @@ class Lenovo(Store):
 
             name = soup.find('div', 'titleSection').text.strip()
             sku = soup.find('meta', {'name': 'productid'})['content']
-            price = Decimal(remove_words(soup.find('meta', {'name': 'productsaleprice'})['content']))
-            description = html_to_markdown(str(soup.find('ul', 'tabs-content-items')))
+            price = Decimal(remove_words(
+                soup.find('meta', {'name': 'productsaleprice'})['content']))
+            description = html_to_markdown(
+                str(soup.find('ul', 'tabs-content-items')))
 
             p = Product(
                 '{} ({})'.format(name, sku),
