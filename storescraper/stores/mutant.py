@@ -2,7 +2,8 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import CPU_COOLER, MOUSE
+from storescraper.categories import COMPUTER_CASE, CPU_COOLER, KEYBOARD, \
+    MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -14,14 +15,28 @@ class Mutant(Store):
     def categories(cls):
         return [
             CPU_COOLER,
-            MOUSE
+            MOUSE,
+            VIDEO_CARD,
+            POWER_SUPPLY,
+            MOTHERBOARD,
+            SOLID_STATE_DRIVE,
+            COMPUTER_CASE,
+            MONITOR,
+            KEYBOARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['categoria-componentes', CPU_COOLER],
-            ['categoria-perifericos', MOUSE],
+            ['tarjeta-video', VIDEO_CARD],
+            ['fuente-de-poder', POWER_SUPPLY],
+            ['placa-madre', MOTHERBOARD],
+            ['disco-ssd', SOLID_STATE_DRIVE],
+            ['sistema-refrigeracion', CPU_COOLER],
+            ['gabinetes', COMPUTER_CASE],
+            ['monitor', MONITOR],
+            ['teclado', KEYBOARD],
+            ['mouse', MOUSE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
