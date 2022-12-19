@@ -62,10 +62,11 @@ class Jasaltec(Store):
             ['componentes-informaticos/ventiladores-y-enfriadores',
              CPU_COOLER],
             ['memoria-ram/modulos-ram-notebook', RAM],
-            ['memoria-ram/modulos-ram-pc-escritorio',
-             RAM],
+            ['memoria-ram/modulos-ram-pc-escritorio', RAM],
             ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
+            ['memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['memoria-ram/tarjetas-de-memoria-flash', MEMORY_CARD],
+            ['almacenamiento-de-datos/memoria-ram/pendrive', USB_FLASH_DRIVE],
             ['computadores/all-in-one', ALL_IN_ONE],
             ['computadores/notebook', NOTEBOOK],
             ['computadores/notebook-gamer', NOTEBOOK],
@@ -92,7 +93,8 @@ class Jasaltec(Store):
                 if page > 15:
                     raise Exception('page overflow: ' + url_extension)
                 url_webpage = 'https://jasaltec.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
+                              'page/{}/?_pjax=.main-page-wrapper' \
+                              '&per_page=36'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
 
@@ -109,6 +111,7 @@ class Jasaltec(Store):
 
                 for container in product_containers:
                     product_url = container.find('a')['href']
+                    print('*', product_url)
                     product_urls.append(product_url)
                 page += 1
         return product_urls
