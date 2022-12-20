@@ -94,6 +94,9 @@ class CesaPro(Store):
         name = soup.find('h1', 'product_title').text.strip()
 
         product_container = soup.find('p', 'price')
+        if not product_container.text:
+            return []
+
         if product_container.find('ins'):
             price = Decimal(remove_words(
                 product_container.find('ins').
