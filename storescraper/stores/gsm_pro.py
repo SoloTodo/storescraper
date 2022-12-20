@@ -63,8 +63,11 @@ class GsmPro(Store):
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/json'})[-1].text)['product']
+        product_data = json.loads(soup.find(
+            'script', {
+                'type': 'application/json',
+                'data-product-json': True
+            }).text)['product']
 
         description = html_to_markdown(product_data['description'])
         picture_urls = ['https:' + i for i in product_data['images']]
