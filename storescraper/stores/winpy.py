@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, HEADPHONES, MEMORY_CARD, \
-    USB_FLASH_DRIVE, ALL_IN_ONE, WEARABLE, CPU_COOLER
+    USB_FLASH_DRIVE, ALL_IN_ONE, WEARABLE, CPU_COOLER, KEYBOARD, \
+    KEYBOARD_MOUSE_COMBO, MOUSE
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -32,7 +33,7 @@ class Winpy(Store):
             CPU_COOLER,
             'Printer',
             'ExternalStorageDrive',
-            'Mouse',
+            MOUSE,
             'Television',
             'StereoSystem',
             'Headphones',
@@ -42,6 +43,8 @@ class Winpy(Store):
             USB_FLASH_DRIVE,
             ALL_IN_ONE,
             WEARABLE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
@@ -61,7 +64,9 @@ class Winpy(Store):
             ['memorias/para-computadores/', 'Ram'],
             ['almacenamiento/disco-duro-pc-s/', 'StorageDrive'],
             ['partes-y-piezas/tarjetas-de-video/', 'VideoCard'],
-            ['accesorios/mouse-y-teclados/', 'Mouse'],
+            ['accesorios/mouse/', MOUSE],
+            ['accesorios/teclados/', KEYBOARD],
+            ['accesorios/kit-perifericos/', KEYBOARD_MOUSE_COMBO],
             ['partes-y-piezas/placas-madres/', 'Motherboard'],
             ['partes-y-piezas/procesadores/', 'Processor'],
             ['memorias/', 'Ram'],

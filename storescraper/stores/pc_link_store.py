@@ -67,7 +67,7 @@ class PcLinkStore(Store):
                 STEREO_SYSTEM],
             ['celulares/celulares-con-servicio', 67, CELL],
             ['celulares/celulares-desbloqueados', 37, CELL],
-            ['componentes-informaticos/cajas-gabinetes', 69, COMPUTER_CASE],
+            ['componentes-informaticos/gabinetes', 69, COMPUTER_CASE],
             ['componentes-informaticos/fuentes-de-poder', 140, POWER_SUPPLY],
             ['componentes-informaticos/procesadores', 80, PROCESSOR],
             ['componentes-informaticos/tarjetas-de-expansion-de-memoria', 206,
