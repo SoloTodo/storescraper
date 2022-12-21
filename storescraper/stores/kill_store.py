@@ -71,7 +71,6 @@ class KillStore(Store):
             ['257?map=productClusterIds', MEMORY_CARD],
             ['258?map=productClusterIds', PRINTER],
             ['computacion/sillas', GAMING_CHAIR],
-            ['gaming', VIDEO_GAME_CONSOLE],
             ['audio/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
