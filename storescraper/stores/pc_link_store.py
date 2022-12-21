@@ -151,9 +151,6 @@ class PcLinkStore(Store):
                     break
 
                 for container in product_containers:
-                    if 'Avisame' in container.text:
-                        done = True
-                        break
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
 
