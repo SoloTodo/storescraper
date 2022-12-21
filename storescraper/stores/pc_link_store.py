@@ -107,7 +107,6 @@ class PcLinkStore(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'python-requests/2.21.0'
         session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded'
         session.headers['x-requested-with'] = 'XMLHttpRequest'
