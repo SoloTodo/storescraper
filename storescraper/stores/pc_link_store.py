@@ -119,7 +119,7 @@ class PcLinkStore(Store):
                 ''.format(url_extension)
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            soup = BeautifulSoup(data, 'html5lib')
 
             token = soup.find('meta', {'name': 'csrf-token'})['content']
             query_url = 'https://www.pclinkstore.cl/productos'
@@ -139,7 +139,7 @@ class PcLinkStore(Store):
 
                 product_data = session.post(query_url, query_params).text
                 product_json = json.loads(product_data)['data']
-                product_soup = BeautifulSoup(product_json, 'html.parser')
+                product_soup = BeautifulSoup(product_json, 'html5lib')
 
                 product_containers = product_soup.findAll(
                     'div', 'sv-producto-mod')
@@ -165,7 +165,7 @@ class PcLinkStore(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         add_button = soup.find('button', 'add-product-cart')
 
