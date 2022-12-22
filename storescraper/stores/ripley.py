@@ -1,13 +1,18 @@
 import logging
 import re
 import json
+import time
 from datetime import datetime
 
 import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import GAMING_CHAIR
+from storescraper.categories import GAMING_CHAIR, NOTEBOOK, TABLET, PRINTER, \
+    USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE, ALL_IN_ONE, MONITOR, PROJECTOR, \
+    RAM, TELEVISION, REFRIGERATOR, STOVE, OVEN, DISH_WASHER, WASHING_MACHINE, \
+    CELL, STEREO_SYSTEM, OPTICAL_DISK_PLAYER, VIDEO_GAME_CONSOLE, \
+    AIR_CONDITIONER, SPACE_HEATER, WEARABLE, HEADPHONES
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
@@ -21,41 +26,36 @@ class Ripley(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'Television',
-            'Tablet',
-            'Refrigerator',
-            'Printer',
-            'Oven',
-            'Stove',
-            'DishWasher',
-            # 'VacuumCleaner',
-            'WashingMachine',
-            'Cell',
-            'StereoSystem',
-            'OpticalDiskPlayer',
-            'ExternalStorageDrive',
-            'UsbFlashDrive',
-            # 'MemoryCard',
-            'Projector',
-            'VideoGameConsole',
-            'Monitor',
-            'AllInOne',
-            'AirConditioner',
-            # 'WaterHeater',
-            # 'SolidStateDrive',
-            'SpaceHeater',
-            'Wearable',
-            # 'Mouse',
-            # 'Keyboard',
-            # 'KeyboardMouseCombo',
-            'Headphones',
-            'Ram',
+            NOTEBOOK,
+            TELEVISION,
+            TABLET,
+            REFRIGERATOR,
+            PRINTER,
+            OVEN,
+            STOVE,
+            DISH_WASHER,
+            WASHING_MACHINE,
+            CELL,
+            STEREO_SYSTEM,
+            OPTICAL_DISK_PLAYER,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            PROJECTOR,
+            VIDEO_GAME_CONSOLE,
+            MONITOR,
+            ALL_IN_ONE,
+            AIR_CONDITIONER,
+            SPACE_HEATER,
+            WEARABLE,
+            HEADPHONES,
+            RAM,
             GAMING_CHAIR
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # If the method returns too soon it seems to trigger a RabbitMQ bug
+        time.sleep(5)
         return [category]
 
     @classmethod
@@ -76,105 +76,105 @@ class Ripley(Store):
             return [product]
 
         category_paths = [
-            ['tecno/computacion/notebooks', ['Notebook'],
+            ['tecno/computacion/notebooks', [NOTEBOOK],
              'Tecno > Computación > Notebooks', 1],
-            ['tecno/computacion/notebooks-gamer', ['Notebook'],
+            ['tecno/computacion/notebooks-gamer', [NOTEBOOK],
              'Tecno > Computación > Notebooks gamer', 1],
-            ['tecno/computacion/tablets-y-e-readers', ['Tablet'],
+            ['tecno/computacion/tablets-y-e-readers', [TABLET],
              'Tecno > Computación > Tablets y E-readers', 1],
-            ['tecno/impresoras-y-tintas/impresoras', ['Printer'],
+            ['tecno/impresoras-y-tintas/impresoras', [PRINTER],
              'Tecno > Computación > Impresoras', 1],
             ['tecno/computacion/almacenamiento',
-             ['UsbFlashDrive', 'ExternalStorageDrive'],
+             [USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE],
              'Tecno > Computación > Almacenamiento', 0.5],
-            ['tecno/computacion/pc-all-in-one', ['AllInOne'],
+            ['tecno/computacion/pc-all-in-one', [ALL_IN_ONE],
              'Tecno > Computación > PC/All in one', 1],
             ['tecno/computacion/proyectores-y-monitores',
-             ['Monitor', 'Projector'],
+             [MONITOR, PROJECTOR],
              'Tecno > Computación > Proyectores y monitores', 0.5],
-            ['tecno/computacion-gamer/componentes-pc', ['Ram'],
+            ['tecno/computacion-gamer/componentes-pc', [RAM],
              'Tecno > Computación Gamer > Componentes', 1],
-            ['tecno/computacion-gamer/monitores', ['Monitor'],
+            ['tecno/computacion-gamer/monitores', [MONITOR],
              'Tecno > Computación Gamer > Monitores', 1],
-            ['tecno/television', ['Television'],
+            ['tecno/television', [TELEVISION],
              'Tecno > Televisión', 1],
-            ['tecno/television/smart-tv', ['Television'],
+            ['tecno/television/smart-tv', [TELEVISION],
              'Tecno > Televisión > Smart TV', 1],
-            ['tecno/television/ultra-hd-4k', ['Television'],
+            ['tecno/television/ultra-hd-4k', [TELEVISION],
              'Tecno > Televisión > Ultra HD 4K', 1],
-            ['tecno/television/premium-tv-y-8k', ['Television'],
+            ['tecno/television/premium-tv-y-8k', [TELEVISION],
              'Tecno > Televisión > Premium y 8K', 1],
-            ['tecno/television/hd-y-full-hd', ['Television'],
+            ['tecno/television/hd-y-full-hd', [TELEVISION],
              'Tecno > Televisión > HD y Full HD', 1],
-            ['electro/refrigeracion', ['Refrigerator'],
+            ['electro/refrigeracion', [REFRIGERATOR],
              'Electro > Refrigeración', 1],
-            ['electro/refrigeracion/side-by-side', ['Refrigerator'],
+            ['electro/refrigeracion/side-by-side', [REFRIGERATOR],
              'Electro > Refrigeración > Side by Side', 1],
-            ['electro/refrigeracion/refrigeradores', ['Refrigerator'],
+            ['electro/refrigeracion/refrigeradores', [REFRIGERATOR],
              'Electro > Refrigeración > Refrigeradores', 1],
-            ['electro/refrigeracion/freezers-y-congeladores', ['Refrigerator'],
+            ['electro/refrigeracion/freezers-y-congeladores', [REFRIGERATOR],
              'Electro > Refrigeración > Freezers y congeladores', 1],
-            ['electro/refrigeracion/frigobar', ['Refrigerator'],
+            ['electro/refrigeracion/frigobar', [REFRIGERATOR],
              'Electro > Refrigeración > Frigobar', 1],
-            # ['electro/refrigeracion/door-in-door', ['Refrigerator'],
+            # ['electro/refrigeracion/door-in-door', [REFRIGERATOR],
             #  'Electro > Refrigeración > Door in Door', 1],
-            ['electro/cocina/cocinas', ['Stove'],
+            ['electro/cocina/cocinas', [STOVE],
              'Electro > Cocina > Cocinas', 1],
-            ['electro/electrodomesticos/hornos-y-microondas', ['Oven'],
+            ['electro/electrodomesticos/hornos-y-microondas', [OVEN],
              'Electro > Electrodomésticos > Hornos y Microondas', 1],
-            ['electro/cocina/lavavajillas', ['DishWasher'],
+            ['electro/cocina/lavavajillas', [DISH_WASHER],
              'Electro > Cocina > Lavavajillas', 1],
             ['electro/aseo/aspiradoras-y-enceradoras', ['VacuumCleaner'],
              'Electro > Aseo > Aspiradoras y enceradoras', 1],
-            ['electro/lavanderia', ['WashingMachine'],
+            ['electro/lavanderia', [WASHING_MACHINE],
              'Electro > Lavandería', 1],
-            ['electro/lavanderia/lavadoras', ['WashingMachine'],
+            ['electro/lavanderia/lavadoras', [WASHING_MACHINE],
              'Electro > Lavandería > Lavadoras', 1],
-            ['electro/lavanderia/secadoras', ['WashingMachine'],
+            ['electro/lavanderia/secadoras', [WASHING_MACHINE],
              'Electro > Lavandería > Secadoras', 1],
-            ['electro/lavanderia/lavadora-secadora', ['WashingMachine'],
+            ['electro/lavanderia/lavadora-secadora', [WASHING_MACHINE],
              'Electro > Lavandería > Lavadora-secadora', 1],
-            # ['electro/lavanderia/doble-carga', ['WashingMachine'],
+            # ['electro/lavanderia/doble-carga', [WASHING_MACHINE],
             #  'Electro > Lavandería > Doble carga', 1],
             ['tecno/celulares?facet=Tipo%20de%20Producto%3ASmartphone',
-             ['Cell'], 'Tecno > Celulares', 1],
-            ['tecno/audio-y-musica', ['StereoSystem'],
+             [CELL], 'Tecno > Celulares', 1],
+            ['tecno/audio-y-musica', [STEREO_SYSTEM],
              'Tecno > Audio y Música', 0],
-            ['tecno/audio-y-musica/equipos-de-musica', ['StereoSystem'],
+            ['tecno/audio-y-musica/equipos-de-musica', [STEREO_SYSTEM],
              'Tecno > Audio y Música > Equipos de música', 1],
-            ['tecno/audio-y-musica/parlantes-bluetooth', ['StereoSystem'],
+            ['tecno/audio-y-musica/parlantes-bluetooth', [STEREO_SYSTEM],
              'Tecno > Audio y Música > Parlantes Portables', 1],
-            ['tecno/audio-y-musica/soundbar-y-home-theater', ['StereoSystem'],
+            ['tecno/audio-y-musica/soundbar-y-home-theater', [STEREO_SYSTEM],
              'Tecno > Audio y Música > Soundbar y Home theater', 1],
             ['tecno/television/bluray-dvd-y-tv-portatiles',
-             ['OpticalDiskPlayer'],
+             [OPTICAL_DISK_PLAYER],
              'Tecno > Televisión > Bluray -DVD y TV Portátil', 1],
-            ['tecno/playstation/consolas', ['VideoGameConsole'],
+            ['tecno/playstation/consolas', [VIDEO_GAME_CONSOLE],
              'Tecno > PlayStation > Consolas', 1],
-            ['tecno/nintendo/consolas', ['VideoGameConsole'],
+            ['tecno/nintendo/consolas', [VIDEO_GAME_CONSOLE],
              'Tecno > Nintendo > Consolas', 1],
-            ['tecno/xbox/consolas', ['VideoGameConsole'],
+            ['tecno/xbox/consolas', [VIDEO_GAME_CONSOLE],
              'Tecno > Xbox > Consolas', 1],
             ['electro/climatizacion/aire-acondicionado',
-             ['AirConditioner'],
+             [AIR_CONDITIONER],
              'Electro > Climatización > Ventiladores y aire acondicionado', 1],
             ['electro/climatizacion/purificadores-y-humificadores',
-             ['AirConditioner'],
+             [AIR_CONDITIONER],
              'Electro > Climatización > Purificadores y humidificadores', 1],
             ['electro/especial-calefaccion',
-             ['SpaceHeater'],
+             [SPACE_HEATER],
              'Electro > Climatización > Estufas y calefactores', 1],
-            ['tecno/smartwatches-y-smartbands/garmin', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/garmin', [WEARABLE],
              'Tecno > Telefonía > Smartwatches y Wearables > Garmin', 1],
-            ['tecno/smartwatches-y-smartbands/polar', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/polar', [WEARABLE],
              'Tecno > Telefonía > Smartwatches y Wearables > Polar', 1],
-            ['tecno/smartwatches-y-smartbands/apple', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/apple', [WEARABLE],
              'Tecno > Telefonía > Smartwatches y Wearables > Apple Watch', 1],
-            ['tecno/smartwatches-y-smartbands/samsung', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/samsung', [WEARABLE],
              'Tecno > Telefonía > Smartwatches y Wearables > Samsung', 1],
-            ['tecno/smartwatches-y-smartbands/huawei', ['Wearable'],
+            ['tecno/smartwatches-y-smartbands/huawei', [WEARABLE],
              'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
-            ['tecno/especial-audifonos', ['Headphones'],
+            ['tecno/especial-audifonos', [HEADPHONES],
              'Tecno > Audio y Música > Audífonos', 1],
             ['tecno/computacion-gamer/sillas-gamer', [GAMING_CHAIR],
              'Tecno > Computación Gamer > Sillas Gamer', 1]
@@ -256,7 +256,7 @@ class Ripley(Store):
                             url = cls._get_entry_url(product_element)
                             product = cls._assemble_full_product(
                                 url, category, extra_args)
-                    elif category == 'Headphones' and 'MPM' in \
+                    elif category == HEADPHONES and 'MPM' in \
                             product_data['sku']:
                         # Skip the thousands of headphones sold in marketplace
                         continue
@@ -342,7 +342,7 @@ class Ripley(Store):
 
         # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
         # "Prepago" information in its description
-        if category in ['Cell', 'Unknown'] and 'MPM' not in sku:
+        if category in [CELL, 'Unknown'] and 'MPM' not in sku:
             name += ' ({})'.format(short_description)
 
         if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
