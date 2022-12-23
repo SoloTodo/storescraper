@@ -274,6 +274,7 @@ from .mundo_gaming import MundoGaming
 from .musimundo import Musimundo
 from .mutant import Mutant
 from .my_box import MyBox
+from .my_shop import MyShop
 from .nario_hogar import NarioHogar
 from .natcom import Natcom
 from .next_pc import NextPc
