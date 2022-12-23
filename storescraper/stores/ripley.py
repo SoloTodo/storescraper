@@ -158,7 +158,7 @@ class Ripley(Store):
             ['electro/climatizacion/aire-acondicionado',
              [AIR_CONDITIONER],
              'Electro > Climatización > Ventiladores y aire acondicionado', 1],
-            ['electro/climatizacion/purificadores-y-humificadores',
+            ['electro/clima/purificadores-y-humidificadores',
              [AIR_CONDITIONER],
              'Electro > Climatización > Purificadores y humidificadores', 1],
             ['electro/especial-calefaccion',
