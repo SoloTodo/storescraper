@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, NOTEBOOK
+from storescraper.categories import VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -13,16 +13,13 @@ class Dgital(Store):
     @classmethod
     def categories(cls):
         return [
-            VIDEO_CARD,
-            NOTEBOOK,
+            VIDEO_CARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['3-amd', VIDEO_CARD],
-            ['6-nvidia', VIDEO_CARD],
-            ['9-macbooks', NOTEBOOK],
+            ['2-inicio', VIDEO_CARD],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
