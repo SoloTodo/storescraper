@@ -71,9 +71,9 @@ class Alca(Store):
         description = product_data['description']
         price = Decimal(product_data['offers'][0]['price'])
 
-        stock_p = soup.find('p', 'stock in-stock')
-        if stock_p:
-            stock = int(stock_p.text.split(' ')[0])
+        stock_button = soup.find('button', {'name': 'add-to-cart'})
+        if stock_button:
+            stock = -1
         else:
             stock = 0
 
