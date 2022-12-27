@@ -328,6 +328,7 @@ from .portatil_chile import PortatilChile
 from .power_play import PowerPlay
 from .pro_gamer_afta import ProGamerAfta
 from .pro_movil import ProMovil
+from .progaming import Progaming
 from .proglobal import Proglobal
 from .raenco import Raenco
 from .refresh_store import RefreshStore
