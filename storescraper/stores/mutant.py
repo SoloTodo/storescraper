@@ -75,7 +75,8 @@ class Mutant(Store):
             'figure', 'woocommerce-product-gallery__wrapper')
         picture_urls = []
         for a in picture_container.findAll('a'):
-            picture_urls.append(a['href'])
+            if a['href'] != '':
+                picture_urls.append(a['href'])
 
         variations = soup.find('form', 'variations_form')
         if variations:

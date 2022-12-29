@@ -7,7 +7,8 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, UPS, VIDEO_CARD, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
-    USB_FLASH_DRIVE, GAMING_CHAIR, GAMING_DESK, ALL_IN_ONE, NOTEBOOK
+    USB_FLASH_DRIVE, GAMING_CHAIR, GAMING_DESK, ALL_IN_ONE, NOTEBOOK, \
+    MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -43,40 +44,56 @@ class TecnoMaster(Store):
             GAMING_DESK,
             ALL_IN_ONE,
             NOTEBOOK,
-            UPS
+            UPS,
+            MICROPHONE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['sin-categorizar', MOTHERBOARD],
-            ['productos/hardware/placasmadres', MOTHERBOARD],
-            ['productos/hardware/procesadores', PROCESSOR],
-            ['productos/almacenamiento/discosestadosolidosdd',
-             SOLID_STATE_DRIVE],
-            ['productos/almacenamiento/discosduroshdd', STORAGE_DRIVE],
-            ['productos/almacenamiento/discosdurosecternos',
+            ['pc_armados/notebook-laptop-pc_armados', NOTEBOOK],
+            ['pc_armados/pc-escritorio-all-in-one', ALL_IN_ONE],
+            ['productos/almacenamiento-productos/discos-duros-externos',
              EXTERNAL_STORAGE_DRIVE],
-            ['productos/hardware/memorias-ram', RAM],
-            ['productos/hardware/fuentesdepoder', POWER_SUPPLY],
-            ['productos/hardware/gabinetes', COMPUTER_CASE],
-            ['productos/hardware/refrigeracion-ventiladores', CPU_COOLER],
-            ['productos/perifericos/audifonos', HEADPHONES],
-            ['productos/perifericos/monitores', MONITOR],
-            ['productos/perifericos/mouse', MOUSE],
-            ['productos/perifericos/parlantes', STEREO_SYSTEM],
-            ['productos/perifericos/teclados', KEYBOARD],
-            ['productos/perifericos/kit_tecladosymouse',
+            ['productos/almacenamiento-productos/discos-duros-hdd',
+             STORAGE_DRIVE],
+            ['productos/almacenamiento-productos/discos-estado-solido-sdd',
+             SOLID_STATE_DRIVE],
+            ['productos/almacenamiento-productos/flash-drivers-usb-almacenam'
+             'iento-productos', USB_FLASH_DRIVE],
+            ['productos/almacenamiento-productos/tarjetas-de-memoria-sdd',
+             MEMORY_CARD],
+            ['productos/hardware-productos/fuentes-de-poder', POWER_SUPPLY],
+            ['productos/hardware-productos/gabinetes-hardware-productos',
+             COMPUTER_CASE],
+            ['productos/hardware-productos/memorias-ram-hardware-productos',
+             RAM],
+            ['productos/hardware-productos/placas-madres', MOTHERBOARD],
+            ['productos/hardware-productos/placas-madres/amd-am4-placas-'
+             'madres', MOTHERBOARD],
+            ['productos/hardware-productos/procesadores-hardware-productos',
+             PROCESSOR],
+            ['productos/hardware-productos/refrigeracion-ventiladores-hardwa'
+             're-productos', CPU_COOLER],
+            ['productos/hardware-productos/tarjetas-de-video', VIDEO_CARD],
+            ['productos/perifericos-productos/audifonos-perifericos-productos',
+             HEADPHONES],
+            ['productos/perifericos-productos/impresoras-perifericos-produc'
+             'tos', PRINTER],
+            ['productos/perifericos-productos/kit-teclados-y-mouse',
              KEYBOARD_MOUSE_COMBO],
-            ['productos/perifericos/impresoras', PRINTER],
-            ['productos/almacenamiento/tarjetasdememoriasdd', MEMORY_CARD],
-            ['productos/almacenamiento/flash-drivers-usb', USB_FLASH_DRIVE],
-            ['productos/hardware/tarjetasdevideo', VIDEO_CARD],
+            ['productos/perifericos-productos/microfonos-y-streaming',
+             MICROPHONE],
+            ['productos/perifericos-productos/monitores-perifericos-productos',
+             MONITOR],
+            ['productos/perifericos-productos/mouse-perifericos-productos',
+             MOUSE],
+            ['productos/perifericos-productos/parlantes-perifericos-productos',
+             STEREO_SYSTEM],
+            ['productos/perifericos-productos/teclados-perifericos-productos',
+             KEYBOARD],
+            ['productos/ups-respaldos-de-energia', UPS],
             ['sillasgamer', GAMING_CHAIR],
-            ['productos/perifericos/microfonosystreaming', GAMING_DESK],
-            ['pc_armados/pc-escritorio', ALL_IN_ONE],
-            ['pc_armados/notebook-laptop', NOTEBOOK],
-            ['productos/ups', UPS],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []

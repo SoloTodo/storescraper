@@ -161,7 +161,8 @@ class Wei(Store):
         name = soup.find('meta', {'name': 'description'})['content']
 
         stock_div = soup.find('div', 'col-55 col-100-md-2 pb20')
-        if 'IMPORTACION' in name or 'en tránsito' in stock_div.text.lower():
+        if 'IMPORTACION' in name or 'en tránsito' in stock_div.text.lower() \
+                or 'agotado' in stock_div.text.lower():
             stock = 0
         else:
             stock = -1
