@@ -10,7 +10,7 @@ from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, RAM, \
     POWER_SUPPLY, GAMING_CHAIR, MOTHERBOARD, CPU_COOLER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class BitCenter(Store):
@@ -113,9 +113,10 @@ class BitCenter(Store):
         else:
             stock = 0
 
-        normal_price = Decimal(
-            int(json_container['offers'][0]['price']) * 1.038 // 1)
         offer_price = Decimal(json_container['offers'][0]['price'])
+        normal_price_tag = soup.find('div', 'entry-summary').findAll(
+            'span', 'woocommerce-Price-amount')[-1]
+        normal_price = Decimal(remove_words(normal_price_tag.text))
         picture_urls = [json_container['image']]
 
         p = Product(
