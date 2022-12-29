@@ -16,6 +16,8 @@ class Product:
         'https://schema.org/NewCondition',
         'https://schema.org/RefurbishedCondition',
         'https://schema.org/UsedCondition',
+        # This is not part of the schema standard
+        'https://schema.org/OpenBox'
     ]
 
     def __init__(self, name, store, category, url, discovery_url, key,
