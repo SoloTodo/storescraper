@@ -59,7 +59,7 @@ class Natcom(Store):
             ['ventiladores', CASE_FAN],
             ['tarjetas-de-video-amd', VIDEO_CARD],
             ['tarjetas-de-video-nvidia', VIDEO_CARD],
-            ['sillas-gamer', GAMING_CHAIR],
+            ['categoria-producto/sillas-gamer', GAMING_CHAIR],
 
         ]
 
