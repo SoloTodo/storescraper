@@ -57,7 +57,7 @@ class Dreamtec(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://www.dreamtec.cl/{}/' \
+            url_webpage = 'http://www.dreamtec.cl/{}/' \
                 ''.format(url_extension)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
