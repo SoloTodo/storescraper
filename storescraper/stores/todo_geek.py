@@ -90,7 +90,7 @@ class TodoGeek(Store):
                 stock = 0
 
             if 'OPEN BOX' in name.upper() or 'OPEN BOX' in description.upper():
-                condition = 'https://schema.org/RefurbishedCondition'
+                condition = 'https://schema.org/OpenBox'
             else:
                 condition = 'https://schema.org/NewCondition'
 
