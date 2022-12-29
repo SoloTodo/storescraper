@@ -79,7 +79,8 @@ class Natcom(Store):
                 print(url_webpage)
                 response = session.get(url_webpage, timeout=60)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('article', 'w-grid-item')
+                product_containers = soup.findAll(
+                    'article', 'w-grid-item') + soup.findAll('li', 'product')
 
                 if not product_containers:
                     if page == 1:
