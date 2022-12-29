@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import remove_words, session_with_proxy
 
 
 class LapShop(Store):
@@ -59,7 +59,9 @@ class LapShop(Store):
         sku = str(json_info['id'])
         stock = -1 if json_info['available'] else 0
         normal_price = Decimal(json_info['price'] // 100)
-        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        prices = soup.find('div', 'product-prices')
+        offer_price = Decimal(remove_words(
+            prices.find('span', 'price-amount').text))
         picture_urls = ['https:' + image_url.split('?')[0] for image_url in
                         json_info['images']]
 
