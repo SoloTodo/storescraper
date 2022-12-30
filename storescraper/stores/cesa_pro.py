@@ -114,10 +114,12 @@ class CesaPro(Store):
             stock = int(stock_span.text.split(' ')[0])
 
         image_style = soup.find(
-            'style', {'id': 'elementor-frontend-inline-css'}).text
-        picture = re.search(r'background-image:url\(\"(.*?)\"\)',
-                            image_style).groups()[0]
-        picture_urls = [picture]
+            'style', {'id': 'elementor-frontend-inline-css'})
+        picture_urls = []
+        if image_style:
+            picture = re.search(r'background-image:url\(\"(.*?)\"\)',
+                                image_style.text).groups()[0]
+            picture_urls.append(picture)
 
         p = Product(
             name,
