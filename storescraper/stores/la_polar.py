@@ -222,6 +222,9 @@ class LaPolar(Store):
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
+        if not soup.find('div', 'product-name'):
+            return []
+
         name = soup.find('div', 'product-name').text.strip()
         sku = soup.find('span', 'sku-code-value').text.strip()
 
