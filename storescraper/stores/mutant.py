@@ -88,7 +88,10 @@ class Mutant(Store):
                 variant_name = '{} - {}'.format(name, attr)
                 sku = v['sku']
                 price = Decimal(v['display_price'])
-                stock = v['max_qty']
+                if v['max_qty'] != "":
+                    stock = v['max_qty']
+                else:
+                    stock = 0
 
                 p = Product(
                     variant_name,
