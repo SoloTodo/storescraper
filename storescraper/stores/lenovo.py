@@ -149,8 +149,13 @@ class Lenovo(Store):
 
             name = soup.find('div', 'titleSection').text.strip()
             sku = soup.find('meta', {'name': 'productid'})['content']
-            price = Decimal(remove_words(
-                soup.find('meta', {'name': 'productsaleprice'})['content']))
+
+            sale_price = soup.find('meta', {'name': 'productsaleprice'})
+            if sale_price:
+                price = Decimal(remove_words(sale_price['content']))
+            else:
+                price = Decimal(remove_words(
+                    soup.find('meta', {'name': 'productprice'})['content']))
             description = html_to_markdown(
                 str(soup.find('ul', 'tabs-content-items')))
 
