@@ -362,6 +362,8 @@ class Lider(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
+        seller = entry['winningOffer']['sellerName'] or None
+
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger
         # the wiodget makes sure that we only need to check for the brand.
@@ -384,7 +386,8 @@ class Lider(Store):
             picture_urls=picture_urls,
             description=description,
             has_virtual_assistant=has_virtual_assistant,
-            condition=condition
+            condition=condition,
+            seller=seller
         )]
 
     @classmethod
