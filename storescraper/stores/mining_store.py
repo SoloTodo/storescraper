@@ -3,7 +3,7 @@ import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, MOTHERBOARD, \
-    POWER_SUPPLY, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
+    POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -19,7 +19,8 @@ class MiningStore(Store):
             RAM,
             MOTHERBOARD,
             VIDEO_CARD,
-            CASE_FAN
+            CASE_FAN,
+            PROCESSOR,
         ]
 
     @classmethod
@@ -32,6 +33,7 @@ class MiningStore(Store):
             ['placas-madre', MOTHERBOARD],
             ['tarjetas-de-video', VIDEO_CARD],
             ['accesorios', CASE_FAN],
+            ['procesadores', PROCESSOR],
         ]
 
         session = session_with_proxy(extra_args)
