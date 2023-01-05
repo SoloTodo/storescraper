@@ -362,7 +362,7 @@ class Lider(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        seller = entry['winningOffer']['sellerName'] or None
+        seller = entry.get('winningOffer', {}).get('sellerName', None) or None
 
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger
