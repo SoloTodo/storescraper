@@ -207,16 +207,27 @@ class Claro(Store):
                 payload)
             data = demjson.decode(res.text)['catalogEntry']
 
+            stock_payload = 'storeId=10151&catalogId=10052&quantity=1' \
+                            '&catEntryId={}'.format(c['catentry_id'])
+            res = session.post(
+                'https://tienda.clarochile.cl/AjaxRESTOrderItemAdd',
+                stock_payload)
+            stock_data = json.loads(res.text.strip()[2:-2])
+            if stock_data.get('errorMessageKey', '') == '_ERR_ITEM_INVENTORY_AVALAIBLE':
+                stock = 0
+            else:
+                stock = -1
+
             combination_type = data['attrSwatchFlujo']
 
             if combination_type in ['REB', 'RET', '']:
                 # Renovación or Default
                 continue
 
-            priceText = remove_words(data['offerPrice'])
-            if not priceText:
+            price_text = remove_words(data['offerPrice'])
+            if not price_text:
                 return []
-            price = Decimal(priceText)
+            price = Decimal(price_text)
 
             attributes = []
             for key, value in c['Attributes'].items():
@@ -236,7 +247,7 @@ class Claro(Store):
                     url,
                     url,
                     '{} - {}'.format(product_id, 'Claro Prepago'),
-                    -1,
+                    stock,
                     price,
                     price,
                     'CLP',
@@ -256,7 +267,7 @@ class Claro(Store):
                         url,
                         url,
                         '{} - {}'.format(product_id, cell_plan_name),
-                        -1,
+                        stock,
                         price,
                         price,
                         'CLP',
@@ -284,7 +295,7 @@ class Claro(Store):
                         url,
                         url,
                         '{} - {}'.format(product_id, cell_plan_name),
-                        -1,
+                        stock,
                         init_pay,
                         init_pay,
                         'CLP',
@@ -293,7 +304,7 @@ class Claro(Store):
                         picture_urls=picture_urls
                     ))
             elif combination_type == 'PE_PORTA':
-                # Portabildiad sin arriendo
+                # Portabilidad sin arriendo
 
                 for plan_entry in data['planAssociate']:
                     cell_plan_name = plan_entry['name'] + ' Portabilidad'
@@ -305,7 +316,7 @@ class Claro(Store):
                         url,
                         url,
                         '{} - {}'.format(product_id, cell_plan_name),
-                        -1,
+                        stock,
                         price,
                         price,
                         'CLP',
