@@ -149,7 +149,7 @@ class KDTec(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = product_data['sku']
+        sku = product_data.get('sku', None)
         description = product_data['description']
         offer_price = Decimal(product_data['offers']['price'])
         normal_price = (offer_price * Decimal(1.02951)).quantize(0)
