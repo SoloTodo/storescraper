@@ -397,20 +397,15 @@ class Paris(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
-        reviews_endpoint = 'https://api.bazaarvoice.com/data/batch.json?pass' \
-                           'key=caKNy0lDYfGnjpRhD27b7ZtxiSbxdwBcuuIEwXCyc9Zr' \
-                           'M&apiversion=5.5&resource.q0=reviews&filter.q0=p' \
-                           'roductid%3Aeq%3A{}&limit.q0=100'.format(sku)
-        review_data = json.loads(session.get(reviews_endpoint).text)
-        reviews = review_data['BatchedResults']['q0']['Results']
-        review_count = len(reviews)
+        review_count_tag = soup.find('span', 'bvseo-reviewCount')
+        if review_count_tag:
+            review_count = int(review_count_tag.text)
+        else:
+            review_count = 0
 
-        sum_review_scores = 0
-        for review in reviews:
-            sum_review_scores += review['Rating']
-
-        if review_count:
-            review_avg_score = sum_review_scores / review_count
+        review_rating_tag = soup.find('span', 'bvseo-ratingValue')
+        if review_rating_tag:
+            review_avg_score = float(review_rating_tag.text)
         else:
             review_avg_score = None
 
