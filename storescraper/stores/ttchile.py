@@ -1,3 +1,5 @@
+import datetime
+import json
 import logging
 
 from bs4 import BeautifulSoup
@@ -127,39 +129,28 @@ class TtChile(Store):
         soup = BeautifulSoup(session.get(
             url, timeout=30).text, 'html.parser')
 
-        sku_tag = soup.find('span', {'itemprop': 'sku'})
+        json_data_tag = soup.find('div', {'id': 'product-details'})
+        json_data = json.loads(json_data_tag['data-product'])
 
-        if not sku_tag:
-            return []
+        sku = json_data['reference']
+        name = json_data['name']
 
-        sku = sku_tag.text.strip()
-        name = soup.find('h1', 'product_name').text.strip()
-
-        base_price = Decimal(
-            soup.find('meta', {'property': 'product:price:amount'})['content'])
-        assert soup.find('meta', {'property': 'product:price:currency'})[
-            'content'] == 'CLP'
-        offer_price = (base_price * Decimal('0.95')).quantize(0)
-        normal_price = (base_price * Decimal('1.0')).quantize(0)
-
-        availability_message = soup.find(
-            'span', {'id': 'product-availability'}).contents[2].strip()
-
-        if availability_message in ['Producto sin Stock, solo reservas.',
-                                    'Producto fuera de stock.'] \
-                or 'preventa' in name.lower():
+        normal_price = Decimal(json_data['price_amount'])
+        offer_price = (normal_price * Decimal('0.95')).quantize(0)
+        stock = json_data['quantity']
+        if json_data['availability'] == 'unavailable':
             stock = 0
         else:
-            quantities_tag = soup.find('div', 'product-quantities')
-            if quantities_tag:
-                stock = int(quantities_tag.find('span')['data-stock'])
-            else:
-                stock = -1
+            availability_date_str = json_data['availability_date']
+            if availability_date_str:
+                availability_date = datetime.datetime.strptime(
+                    availability_date_str, '%Y-%M-%d')
+                now = datetime.datetime.now()
+                if availability_date > now:
+                    stock = 0
 
-        description = html_to_markdown(
-            str(soup.find('div', 'tab-content')))
-        picture_urls = [x['data-image-large-src'] for x in
-                        soup.find('ul', 'product-images').findAll('img')]
+        description = html_to_markdown(json_data['description'])
+        picture_urls = [x['large']['url'] for x in json_data['images']]
 
         p = Product(
             name,
