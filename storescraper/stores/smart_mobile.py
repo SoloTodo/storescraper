@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, POWER_SUPPLY, CPU_COOLER, \
     COMPUTER_CASE, RAM, MONITOR, MOTHERBOARD, PROCESSOR, VIDEO_CARD, \
-    WEARABLE, STEREO_SYSTEM, HEADPHONES, CASE_FAN
+    WEARABLE, STEREO_SYSTEM, CASE_FAN, STORAGE_DRIVE, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,14 +27,20 @@ class SmartMobile(Store):
             VIDEO_CARD,
             WEARABLE,
             STEREO_SYSTEM,
-            HEADPHONES,
             CASE_FAN,
+            STORAGE_DRIVE,
+            GAMING_CHAIR,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['audio', STEREO_SYSTEM],
+            ['celulares-y-accesorios', CELL],
             ['smartphones', CELL],
+            ['componentes-pc/discos-duros', STORAGE_DRIVE],
+            ['componentes-pc/silla-gamer', GAMING_CHAIR],
+            ['componentes-pc/accesorios-componentes-pc', CASE_FAN],
             ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
             ['componentes-pc/cooler', CPU_COOLER],
             ['componentes-pc/gabinete', COMPUTER_CASE],
@@ -43,10 +49,7 @@ class SmartMobile(Store):
             ['componentes-pc/placa-madre', MOTHERBOARD],
             ['componentes-pc/procesador', PROCESSOR],
             ['componentes-pc/tarjeta-grafica', VIDEO_CARD],
-            ['componentes-pc/accesorios-componentes-pc', CASE_FAN],
             ['wearables', WEARABLE],
-            ['audio/speakers', STEREO_SYSTEM],
-            ['audio/audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \

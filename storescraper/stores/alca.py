@@ -67,7 +67,7 @@ class Alca(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = product_data['sku']
+        sku = product_data['sku'][:50]
         description = product_data['description']
         price = Decimal(product_data['offers'][0]['price'])
 
