@@ -69,10 +69,26 @@ class UltraPc(Store):
             stock = -1
         else:
             stock = 0
-        offer_price = Decimal(soup.find(
-            'meta', {'property': 'product:sale_price:amount'})['content'])
-        normal_price = Decimal(remove_words(
-            soup.find('span', 'precio_oferta').text))
+
+        offer_price_tags = ['product:sale_price:amount',
+                            'product:price:amount']
+        for tag in offer_price_tags:
+            price_tag = soup.find('meta', {'property': tag})
+            if price_tag:
+                offer_price = Decimal(price_tag['content'])
+                break
+        else:
+            raise Exception('No offer price found')
+
+        normal_price_tags = ['precio_oferta', 'precio_con_iva_tbk']
+        for tag in normal_price_tags:
+            price_tag = soup.find('span', tag)
+            if price_tag:
+                normal_price = Decimal(remove_words(price_tag.text))
+                break
+        else:
+            raise Exception('No normal price found')
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll(
             'img')]
