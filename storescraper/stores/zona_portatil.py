@@ -97,7 +97,7 @@ class ZonaPortatil(Store):
                     url_webpage = 'https://www.zonaportatil.cl/categoria-pro' \
                         'ducto/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, verify=False)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
 
@@ -118,7 +118,7 @@ class ZonaPortatil(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
 
