@@ -109,14 +109,17 @@ class UltraPc(Store):
                     picture_urls=picture_urls
                 ))
         else:
-            key = soup.find('link', {'type': 'application/json'})['href'].split(
-                '/')[-1]
-            json_data = json.loads(soup.findAll(
-                'script', {'type': 'application/ld+json'})[1].text)['@graph'][1]
+            key = soup.find('link', {'type': 'application/json'}
+                            )['href'].split('/')[-1]
+            json_data = json.loads(
+                soup.findAll(
+                    'script', {'type': 'application/ld+json'}
+                )[1].text)['@graph'][1]
             sku = json_data['sku']
             description = json_data['description']
 
-            if soup.find('span', 'electro-stock-availability').find('p', 'stock'):
+            if soup.find('span',
+                         'electro-stock-availability').find('p', 'stock'):
                 stock = -1
             else:
                 stock = 0
@@ -138,7 +141,7 @@ class UltraPc(Store):
                 'img')]
             condition_text = soup.find(
                 'span', 'condicion_item_ultrapc').text.strip()
-            if condition_text == 'NUEVO SELLADO':
+            if condition_text == 'NUEVO' or condition_text == 'NUEVO SELLADO':
                 condition = 'https://schema.org/NewCondition'
             else:
                 condition = 'https://schema.org/RefurbishedCondition'
