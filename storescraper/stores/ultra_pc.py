@@ -66,6 +66,10 @@ class UltraPc(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         base_name = soup.find('h1', 'product_title').text
 
+        bundle_tag = soup.find('span', 'accesorios_sumario')
+        if bundle_tag:
+            base_name += ' + ' + ' '.join(bundle_tag['data-tooltip'].split())
+
         variants = soup.find('form', 'variations_form')
         products = []
 
