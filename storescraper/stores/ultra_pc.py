@@ -138,7 +138,7 @@ class UltraPc(Store):
                 'img')]
             condition_text = soup.find(
                 'span', 'condicion_item_ultrapc').text.strip()
-            if condition_text == 'NUEVO':
+            if condition_text == 'NUEVO SELLADO':
                 condition = 'https://schema.org/NewCondition'
             else:
                 condition = 'https://schema.org/RefurbishedCondition'
