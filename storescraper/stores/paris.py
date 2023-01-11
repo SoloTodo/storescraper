@@ -397,17 +397,14 @@ class Paris(Store):
         description = html_to_markdown(
             str(soup.find('div', {'id': 'collapseDetails'})))
 
-        review_count_tag = soup.find('span', 'bvseo-reviewCount')
-        if review_count_tag:
-            review_count = int(review_count_tag.text)
-        else:
-            review_count = 0
-
-        review_rating_tag = soup.find('span', 'bvseo-ratingValue')
-        if review_rating_tag:
-            review_avg_score = float(review_rating_tag.text)
-        else:
-            review_avg_score = None
+        reviews_endpoint = 'https://api.bazaarvoice.com/data/display/' \
+                           '0.2alpha/product/summary?PassKey=cawhDUNXMzzke7y' \
+                           'V6JTnIiPm8Eh0hP8s7Oqzo57qihXkk&productid=' \
+                           '{}&contentType=reviews&rev=0'.format(sku)
+        review_data = json.loads(session.get(reviews_endpoint).text)
+        review_count = review_data['reviewSummary']['numReviews']
+        review_avg_score = review_data['reviewSummary'][
+            'primaryRating']['average']
 
         seller_container = soup.find('b', 'sellerMkp')
         if seller_container:
