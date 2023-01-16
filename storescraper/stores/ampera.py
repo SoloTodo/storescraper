@@ -23,8 +23,11 @@ class Ampera(Store):
             return []
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
-        url_webpage = 'https://ampera.cl/alph/tienda/'
+        url_webpage = 'https://ampera.cl/tienda/'
         data = session.get(url_webpage).text
         soup = BeautifulSoup(data, 'html.parser')
         product_containers = soup.findAll('li', 'product')
@@ -39,6 +42,9 @@ class Ampera(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
 
         if response.url != url:
@@ -51,7 +57,7 @@ class Ampera(Store):
         if soup.find('form', 'variations_form'):
             products = []
             variations = json.loads(soup.find('form', 'variations_form')[
-                                        'data-product_variations'])
+                'data-product_variations'])
             for product in variations:
                 variation_name = name + ' - ' + product['attributes'][
                     'attribute_pa_color']
