@@ -105,7 +105,7 @@ class TecnoPro(Store):
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-card-grid')
+                product_containers = soup.findAll('li', 'productgrid--item')
 
                 if not product_containers:
                     if page == 1:
@@ -124,10 +124,12 @@ class TecnoPro(Store):
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        description = html_to_markdown(
-            soup.find('div', 'product-detail-infomation').text)
         json_products = json.loads(soup.find('script', {
-            'id': "ProductJson-gp-product-template-2-columns-right"}).text)
+            'data-section-id': "template--16602361921778__main"
+        }).text)['product']
+
+        description = html_to_markdown(json_products['description'])
+
         products = []
         for variant in json_products['variants']:
             name = variant['name']
@@ -143,6 +145,8 @@ class TecnoPro(Store):
             else:
                 picture_urls = None
 
+            part_number = variant['barcode']
+
             p = Product(
                 name,
                 cls.__name__,
@@ -157,6 +161,7 @@ class TecnoPro(Store):
                 sku=sku,
                 picture_urls=picture_urls,
                 description=description,
+                part_number=part_number,
             )
             products.append(p)
 
