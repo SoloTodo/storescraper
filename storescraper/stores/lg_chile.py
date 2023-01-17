@@ -1,7 +1,7 @@
 from .lg_v5 import LgV5
 from storescraper.categories import TELEVISION, OPTICAL_DISK_PLAYER, \
     STEREO_SYSTEM, HEADPHONES, CELL, REFRIGERATOR, WASHING_MACHINE, OVEN, \
-    MONITOR, PROJECTOR, CELL_ACCESORY
+    MONITOR, PROJECTOR, CELL_ACCESORY, DISH_WASHER
 
 
 class LgChile(LgV5):
@@ -45,6 +45,9 @@ class LgChile(LgV5):
             # Refrigeradores
             ('CT20106034', REFRIGERATOR, True),
             ('CT20106034', REFRIGERATOR, False),
+            # Lavavajillas
+            ('CT20106046', DISH_WASHER, True),
+            ('CT20106046', DISH_WASHER, False),
             # Secadoras
             ('CT20106044', WASHING_MACHINE, True),
             ('CT20106044', WASHING_MACHINE, False),
