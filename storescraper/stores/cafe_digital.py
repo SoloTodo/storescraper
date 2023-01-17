@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import SOLID_STATE_DRIVE, STORAGE_DRIVE, \
     MOTHERBOARD, RAM, POWER_SUPPLY, VIDEO_CARD, COMPUTER_CASE, CPU_COOLER, \
     HEADPHONES, KEYBOARD_MOUSE_COMBO, KEYBOARD, MOUSE, MONITOR, GAMING_CHAIR, \
-    PROCESSOR, NOTEBOOK, CASE_FAN, STEREO_SYSTEM
+    PROCESSOR, NOTEBOOK, CASE_FAN, STEREO_SYSTEM, EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -35,6 +35,7 @@ class CafeDigital(Store):
             NOTEBOOK,
             CASE_FAN,
             STEREO_SYSTEM,
+            EXTERNAL_STORAGE_DRIVE,
         ]
 
     @classmethod
@@ -43,6 +44,7 @@ class CafeDigital(Store):
             ['notebooks', NOTEBOOK],
             ['almacenamiento-pc/discos-ssd', SOLID_STATE_DRIVE],
             ['almacenamiento-pc/disco-duro-pc-hdd', STORAGE_DRIVE],
+            ['almacenamiento-pc/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['placas-madre', MOTHERBOARD],
             ['procesadores', PROCESSOR],
             ['memorias-pc', RAM],
