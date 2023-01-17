@@ -5,6 +5,9 @@ from storescraper.utils import session_with_proxy, \
 
 
 class FalabellaPeru(Store):
+    store_and_subdomain = None
+    seller = 'FALABELLA'
+
     @classmethod
     def categories(cls):
         return [
@@ -32,6 +35,15 @@ class FalabellaPeru(Store):
                        '?page={}&brandName=LG&zones=912_LIMA_2%2CLIMA_URB1_' \
                        'DIRECTO%2CURBANO_83%2COLVAA_36%2C912_LIMA_1%2C' \
                        '150101%2CIBIS_21%2CPERF_TEST%2C150000'.format(page)
+
+            if cls.store_and_subdomain:
+                endpoint += '&subdomain={}&store={}'.format(
+                    cls.store_and_subdomain, cls.store_and_subdomain)
+
+            if cls.seller:
+                endpoint += '&f.derived.variant.sellerId={}'.format(
+                    cls.seller)
+
             res = session.get(endpoint).json()
 
             if not res['data']['results']:
