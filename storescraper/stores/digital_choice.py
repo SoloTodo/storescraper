@@ -1,58 +1,39 @@
-import re
 from decimal import Decimal
-import json
+import demjson
 import logging
 from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.categories import *
 from storescraper.utils import session_with_proxy
-import validators
 
 
 class DigitalChoice(Store):
     @classmethod
     def categories(cls):
         return [
-            EXTERNAL_STORAGE_DRIVE,
             USB_FLASH_DRIVE,
-            MEMORY_CARD,
             HEADPHONES,
-            PRINTER,
             MONITOR,
             MOUSE,
             KEYBOARD,
-            GAMING_CHAIR,
-            NOTEBOOK,
-            TABLET,
-            SOLID_STATE_DRIVE,
-            RAM,
-            PROCESSOR,
             MICROPHONE,
-            STEREO_SYSTEM
+            STEREO_SYSTEM,
+            KEYBOARD_MOUSE_COMBO
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento-datos/discos-duros-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento-datos/pendrives', USB_FLASH_DRIVE, ],
-            ['almacenamiento-datos/tarjetas-micro-sd', MEMORY_CARD],
-            ['perifericos/audifonos', HEADPHONES],
-            ['perifericos/impresoras', PRINTER],
-            ['monitores', MONITOR],
-            ['mouse-pad', MOUSE],
-            ['teclados', KEYBOARD],
-            ['computacion/sillas-gamer', GAMING_CHAIR],
-            ['tablet/notebooks', NOTEBOOK],
-            ['tableta-digitalizadora', TABLET],
-            ['almacenamiento', SOLID_STATE_DRIVE],
-            ['memorias-ram', RAM],
-            ['procesadores', PROCESSOR],
-            ['audifonos-bluetooth', HEADPHONES],
+            ['almacenamiento', USB_FLASH_DRIVE],
+            ['audifonos', HEADPHONES],
+            ['parlantes', STEREO_SYSTEM],
             ['microfonos', MICROPHONE],
-            ['parlantes-portatiles', STEREO_SYSTEM],
+            ['mouse', MOUSE],
+            ['teclados', KEYBOARD],
+            ['kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['monitores', MONITOR],
+            ['2da-seleccion', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -60,30 +41,23 @@ class DigitalChoice(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
-            while True:
-                if page > 15:
-                    raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://digitalchoice.cl/{}?' \
-                              'page={}'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
+            url_webpage = 'https://digitalchoice.cl/collection/{}?' \
+                'limit=1000'.format(url_extension)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                data = response.text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_containers = soup.findAll('div', 'product-block')
+            data = response.text
+            soup = BeautifulSoup(data, 'html5lib')
+            product_containers = soup.findAll('section', 'grid__item')
 
-                if len(product_containers) == 0:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
+            if len(product_containers) == 0:
+                logging.warning('Empty category: ' + url_extension)
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://digitalchoice.cl' + product_url)
-                page += 1
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(
+                    'https://digitalchoice.cl' + product_url)
         return product_urls
 
     @classmethod
@@ -92,62 +66,35 @@ class DigitalChoice(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
 
-        base_name = json_data['name'].strip()
-        description = json_data['description']
-        variants_match = re.search('var productInfo = (.+);', response.text)
         products = []
+        scripts = soup.findAll(
+            'script', {
+                'type': 'application/ld+json',
+                'data-schema': 'Product'})
+        for product_script in scripts:
+            json_data = demjson.decode(product_script.text)
 
-        if variants_match:
-            variants_data = json.loads(variants_match.groups()[0])
-
-            for variant in variants_data:
-                variant_name_suffix = ' / '.join(x['value']['name']
-                                                 for x in variant['values'])
-                name = '{} ({})'.format(base_name, variant_name_suffix)
-                key = str(variant['variant']['id'])
-                stock = variant['variant']['stock']
-                price = Decimal(variant['variant']['price_decimal'])
-
-                if validators.url(variant['image']):
-                    picture_urls = [variant['image']]
-                else:
-                    picture_urls = None
-
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    key,
-                    stock,
-                    price,
-                    price,
-                    'CLP',
-                    sku=key,
-                    picture_urls=picture_urls,
-                    description=description
-                ))
-        else:
-            key = soup.find('meta', {'property': 'og:id'})['content']
+            key = json_data['@id']
+            name = json_data['name']
+            description = json_data['description']
+            sku = json_data['sku']
+            picture_urls = json_data['image']
             price = Decimal(json_data['offers']['price'])
 
-            stock_span = soup.find('span', 'product-form-stock')
-            if not stock_span or stock_span.text == "":
-                stock = 0
+            if json_data['offers']['availability'] == \
+                    "https://schema.org/InStock":
+                stock = -1
             else:
-                stock = int(stock_span.text)
+                stock = 0
 
-            pictures_container = soup.find('div', 'product-images')
-            picture_urls = []
-            for i in pictures_container.findAll('img'):
-                picture_urls.append(i['src'])
+            if 'open box' in name.lower():
+                condition = "https://schema.org/RefurbishedCondition"
+            else:
+                condition = "https://schema.org/NewCondition"
 
             products.append(Product(
-                base_name,
+                name,
                 cls.__name__,
                 category,
                 url,
@@ -157,9 +104,11 @@ class DigitalChoice(Store):
                 price,
                 price,
                 'CLP',
-                sku=key,
+                sku=sku,
+                part_number=sku,
                 picture_urls=picture_urls,
-                description=description
+                description=description,
+                condition=condition
             ))
 
         return products
