@@ -70,23 +70,33 @@ class CrazyGamesenChile(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://www.crazygamesenchile.com/collections/{}' \
-                .format(url_extension)
-            print(url_webpage)
-            res = session.get(url_webpage)
+            page = 1
 
-            if res.status_code == 404:
-                raise Exception('Invalid category: ' + url_extension)
+            while True:
+                if page >= 20:
+                    raise Exception('Page overflow')
 
-            soup = BeautifulSoup(res.text, 'html.parser')
-            product_containers = soup.findAll('li', 'grid__item')
-            if not product_containers:
-                logging.warning('Empty category: ' + url_extension)
-                continue
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://www.crazygamesenchile.com/' + product_url)
+                url_webpage = 'https://www.crazygamesenchile.com/' \
+                              'collections/{}?page={}' \
+                    .format(url_extension, page)
+                print(url_webpage)
+                res = session.get(url_webpage)
+
+                if res.status_code == 404:
+                    raise Exception('Invalid category: ' + url_extension)
+
+                soup = BeautifulSoup(res.text, 'html.parser')
+                product_containers = soup.findAll('li', 'grid__item')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(
+                        'https://www.crazygamesenchile.com' + product_url)
+
+                page += 1
         return product_urls
 
     @classmethod
