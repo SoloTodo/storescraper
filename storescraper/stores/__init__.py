@@ -219,6 +219,7 @@ from .lg_chile import LgChile
 from .lg_cac import LgCac
 from .lg_cac_en import LgCacEn
 from .lg_ec import LgEc
+from .lg_pe import LgPe
 from .lg_uruguay_store import LgUruguayStore
 from .lider import Lider
 from .lider_supermarket import LiderSupermarket
