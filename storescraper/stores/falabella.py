@@ -410,7 +410,8 @@ class Falabella(Store):
                 review_count=review_count,
                 review_avg_score=review_avg_score,
                 condition=condition,
-                seller=seller
+                seller=seller,
+                description='NEW'
             )
 
             products.append(p)
@@ -586,7 +587,8 @@ class Falabella(Store):
                 review_count=review_count,
                 review_avg_score=review_avg_score,
                 condition=condition,
-                seller=seller
+                seller=seller,
+                description='OLD'
             )
 
             products.append(p)

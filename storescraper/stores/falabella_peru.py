@@ -66,5 +66,7 @@ class FalabellaPeru(Store):
         for product in products:
             product.store = cls.__name__
             product.currency = 'PEN'
+            product.url = url
+            product.discovery_url = url
 
         return products
