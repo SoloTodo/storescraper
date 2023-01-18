@@ -199,6 +199,7 @@ from .jumbo_colombia import JumboColombia
 from .jumbo_store import JumboStore
 from .k_d_tec import KDTec
 from .kalunga import Kalunga
+from .key_teks import KeyTeks
 from .kill_store import KillStore
 from .kraken_store import KrakenStore
 from .kuhn import Kuhn
@@ -206,6 +207,7 @@ from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
 from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala
 from .la_curacao_online_honduras import LaCuracaoOnlineHonduras
+from .la_curacao import LaCuracao
 from .la_polar import LaPolar
 from .lab_snake import LabSnake
 from .lady_lee import LadyLee
