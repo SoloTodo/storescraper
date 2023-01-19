@@ -81,12 +81,13 @@ class LaCuracao(Store):
             'input', {'id': f'ProductInfoPrice_{key}'}
         )['value']).replace(",", ""))
 
-        if soup.find(
-                'input',
-                {'id': 'validatePopUpPickupStoreStockZero'})['value'] == "1":
-            stock = 0
-        else:
+        page_id = soup.find('meta', {'name': 'pageId'})['content']
+        stock_tag = soup.find('div', {'id': 'entitledItem_' + page_id})
+        json_stock = json.loads(stock_tag.text)[0]
+        if json_stock['buyable'] == 'true':
             stock = -1
+        else:
+            stock = 0
 
         pictures_data = soup.find(
             'div', {'id': 'ProductAngleProdImagesAreaProdList'})
