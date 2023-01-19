@@ -1,9 +1,8 @@
-import logging
+import json
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from storescraper.categories import OVEN, REFRIGERATOR, STEREO_SYSTEM, \
-    TELEVISION, WASHING_MACHINE
+from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -14,49 +13,29 @@ class Efe(Store):
     @classmethod
     def categories(cls):
         return [
-            TELEVISION,
-            STEREO_SYSTEM,
-            WASHING_MACHINE,
-            REFRIGERATOR,
-            OVEN,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['3074457345616709673', TELEVISION],
-            ['3074457345616734709', STEREO_SYSTEM],
-            ['3074457345616709682', WASHING_MACHINE],
-            ['3074457345616709683', REFRIGERATOR],
-            ['3074457345616709684', OVEN],
-        ]
+        # Only returns LG products
+
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                index = str(24*(page - 1) + 1)
-                url_webpage = 'https://www.efe.com.pe/webapp/wcs/stores/se' \
-                    'rvlet/CategoryNavigationResultsGridScrollView?categoryI' \
-                    'd={}&storeId=10152&beginIndex={}&pageSize=24&facet=mfNa' \
-                    'me_ntk_cs%253A%2522LG%2522'.format(url_extension, index)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        url_webpage = 'https://www.efe.com.pe/webapp/wcs/stores/servlet/' \
+                      'CategoryNavigationResultsGridScrollView?' \
+                      'categoryId=3074457345616749263&storeId=10152' \
+                      '&pageSize=1000'
+        print(url_webpage)
+        data = session.get(url_webpage).text
+        soup = BeautifulSoup(data, 'html.parser')
+        product_containers = soup.findAll('div', 'product')
+        for container in product_containers:
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
         return product_urls
 
     @classmethod
@@ -77,18 +56,20 @@ class Efe(Store):
             'input', {'id': f'ProductInfoPrice_{key}'}
         )['value']).replace(",", ""))
 
-        if soup.find(
-                'input',
-                {'id': 'validatePopUpPickupStoreStockZero'})['value'] == "1":
-            stock = 0
-        else:
+        page_id = soup.find('meta', {'name': 'pageId'})['content']
+        stock_tag = soup.find('div', {'id': 'entitledItem_' + page_id})
+        json_stock = json.loads(stock_tag.text)[0]
+
+        if json_stock['buyable'] == 'true':
             stock = -1
+        else:
+            stock = 0
 
         pictures_data = soup.find(
             'div', {'id': 'ProductAngleProdImagesAreaProdList'})
         if pictures_data:
-            picture_urls = ['https://www.lacuracao.pe' + tag['src'].replace(
-                '200x310', '656x1000') for tag in pictures_data.findAll('img')]
+            picture_urls = ['https://www.efe.com.pe' + tag['src'].replace(
+                '200x310', '646x1000') for tag in pictures_data.findAll('img')]
         else:
             picture_urls = []
 
@@ -101,13 +82,14 @@ class Efe(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'PEN',
             sku=sku,
             picture_urls=picture_urls,
+            part_number=sku,
             description=description
         )
 
