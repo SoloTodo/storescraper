@@ -92,7 +92,7 @@ class LaCuracao(Store):
             'div', {'id': 'ProductAngleProdImagesAreaProdList'})
         if pictures_data:
             picture_urls = ['https://www.lacuracao.pe' + tag['src'].replace(
-                '200x310', '656x1000') for tag in pictures_data.findAll('img')]
+                '200x310', '646x1000') for tag in pictures_data.findAll('img')]
         else:
             picture_urls = []
 
