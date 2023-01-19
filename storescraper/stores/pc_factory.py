@@ -1,6 +1,8 @@
+import html
 import json
 import logging
 import re
+from collections import defaultdict
 from decimal import Decimal
 
 import requests.utils
@@ -62,22 +64,14 @@ class PcFactory(Store):
         ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
 
         if extra_args and 'cookies' in extra_args:
             session.cookies = requests.utils.cookiejar_from_dict(
                 extra_args['cookies'])
 
-        product_urls = []
-
-        if extra_args and 'file' in extra_args:
-            with open(extra_args['file']) as f:
-                product_entries = json.loads(f.read())
-                for entry in product_entries:
-                    if entry[1] == category:
-                        product_urls.append(entry[0])
-            return product_urls
+        product_entries = defaultdict(lambda: [])
 
         # Productos normales
         url_extensions = [
@@ -139,6 +133,7 @@ class PcFactory(Store):
             if local_category != category:
                 continue
             page = 1
+            idx = 1
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
@@ -153,10 +148,24 @@ class PcFactory(Store):
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
+
+                section_tag = soup.find(
+                    'div', {'data-menu-categoria': url_extension})
+                section = '{} > {}'.format(html.unescape(
+                    section_tag['data-menu-path']),
+                    section_tag['data-menu']
+                )
+
                 for container in product_containers:
                     product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.pcfactory.cl' + product_url)
+                    product_entries['https://www.pcfactory.cl' + product_url].append(
+                        {
+                            'category_weight': 1,
+                            'section_name': section,
+                            'value': idx
+                        }
+                    )
+                    idx += 1
                 page += 1
 
         # Segunda seleccción
@@ -182,12 +191,25 @@ class PcFactory(Store):
             if not product_containers:
                 continue
 
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://www.pcfactory.cl' + product_url)
+            section_tag = soup.find(
+                'div', {'data-menu-categoria': url_extension})
+            section = '{} > {}'.format(html.unescape(
+                section_tag['data-menu-path']),
+                section_tag['data-menu']
+            )
 
-        return product_urls
+            for idx, container in enumerate(product_containers):
+                product_url = container.find('a')['href']
+                product_entries[
+                    'https://www.pcfactory.cl' + product_url].append(
+                    {
+                        'category_weight': 1,
+                        'section_name': section,
+                        'value': idx + 1
+                    }
+                )
+
+        return product_entries
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
