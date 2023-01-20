@@ -1,6 +1,7 @@
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MICROPHONE, MOUSE, NOTEBOOK, POWER_SUPPLY
+from storescraper.categories import HEADPHONES, KEYBOARD, \
+    KEYBOARD_MOUSE_COMBO, MICROPHONE, MOUSE, NOTEBOOK, POWER_SUPPLY
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -24,7 +25,8 @@ class KeyTeks(MercadoLibreChile):
             ['computacion/notebooks-accesorios/notebooks', NOTEBOOK],
             ['computacion/perifericos-accesorios/teclados', KEYBOARD],
             ['computacion/perifericos-accesorios/mouses', MOUSE],
-            ['mouses-teclados-controles-kits-mouse-teclado', KEYBOARD_MOUSE_COMBO],
+            ['mouses-teclados-controles-kits-mouse-teclado',
+             KEYBOARD_MOUSE_COMBO],
             ['computacion/accesorios-pc-gaming/audifonos', HEADPHONES],
             ['computacion/accesorios-pc-gaming/microfonos', MICROPHONE],
             ['computacion/componentes-pc', POWER_SUPPLY],
