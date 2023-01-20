@@ -116,6 +116,9 @@ class Gigaclic(Store):
             stock = -1
 
         price_container = soup.find('p', 'price')
+        if not price_container.text:
+            return []
+
         if price_container.find('ins'):
             price = Decimal(
                 remove_words(price_container.find('ins').text))
