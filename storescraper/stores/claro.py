@@ -213,7 +213,8 @@ class Claro(Store):
                 'https://tienda.clarochile.cl/AjaxRESTOrderItemAdd',
                 stock_payload)
             stock_data = json.loads(res.text.strip()[2:-2])
-            if stock_data.get('errorMessageKey', '') == '_ERR_ITEM_INVENTORY_AVALAIBLE':
+            if stock_data.get('errorMessageKey', '') == \
+                    '_ERR_ITEM_INVENTORY_AVALAIBLE':
                 stock = 0
             else:
                 stock = -1

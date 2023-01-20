@@ -1,6 +1,9 @@
+import random
 from decimal import Decimal
 import json
 import logging
+
+import ipdb
 from bs4 import BeautifulSoup
 from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
     HEADPHONES, MONITOR, NOTEBOOK, OVEN, REFRIGERATOR, STEREO_SYSTEM, \
@@ -80,7 +83,8 @@ class Oechsle(Store):
         sku = sku_input['value']
         product_info = session.get('https://www.oechsle.pe/api/catalog_'
                                    'system/pub/products/search/'
-                                   '?fq=productId:' + sku).json()[0]
+                                   '?fq=productId:{}&v={}'.format(
+                                    sku, random.randint(0, 1000))).json()[0]
 
         category_path = product_info['categories'][0].split('/')[-2].lower()
         category = categories_json.get(category_path, category)

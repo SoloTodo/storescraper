@@ -157,8 +157,9 @@ class PcFactory(Store):
                 )
 
                 for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_entries['https://www.pcfactory.cl' + product_url].append(
+                    product_url = 'https://www.pcfactory.cl' + \
+                        container.find('a')['href']
+                    product_entries[product_url].append(
                         {
                             'category_weight': 1,
                             'section_name': section,
@@ -224,7 +225,7 @@ class PcFactory(Store):
         res = session.get(
             'https://www.pcfactory.cl/public/scripts/dynamic/initData.js')
         match = re.search(
-            'window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
+            r'window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
         product_data = json.loads(match.groups()[0])['producto']
 
         sku = product_data['id_producto']

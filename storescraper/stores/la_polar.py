@@ -93,7 +93,8 @@ class LaPolar(Store):
             ['discos-duros', [EXTERNAL_STORAGE_DRIVE],
              'Inicio > Tecnología > Accesorios Computación > Discos Duros', 1],
             ['mouse-i-teclados', [MOUSE],
-             'Inicio > Tecnología > Accesorios Computación > Mouse y Teclados', 1],
+             'Inicio > Tecnología > Accesorios Computación > '
+             'Mouse y Teclados', 1],
             ['refrigeradores', [REFRIGERATOR],
              'Inicio > Línea Blanca > Refrigeradorees', 1],
             ['freezer', [REFRIGERATOR],
@@ -113,15 +114,18 @@ class LaPolar(Store):
             ['secadoras', [WASHING_MACHINE],
              'Inicio > Línea Blanca > Lavado y Secado > Secadoras', 1],
             ['lavadoras-secadoras', [WASHING_MACHINE],
-             'Inicio > Línea Blanca > Lavado y Secado > Lavadoras - Secadoras', 1],
+             'Inicio > Línea Blanca > Lavado y Secado > '
+             'Lavadoras - Secadoras', 1],
             ['hornos-electricos', [OVEN],
-             'Inicio > Línea Blanca > Electrodomésticos > Hornos Eléctricos', 1],
+             'Inicio > Línea Blanca > Electrodomésticos > '
+             'Hornos Eléctricos', 1],
             ['microondas', [OVEN],
              'Inicio > Línea Blanca > Electrodomésticos > Microondas', 1],
             ['lavaplatos-y-lavavajillas', [DISH_WASHER],
              'Inicio > Línea Blanca > Cocina > Lavaplatos y Lavavajillas', 1],
             ['aires-acondicionados', [AIR_CONDITIONER],
-             'Inicio > Línea Blanca > Climatización > Aires Acondicionados', 1],
+             'Inicio > Línea Blanca > Climatización > '
+             'Aires Acondicionados', 1],
             ['calefont-y-termos', [WATER_HEATER],
              'Inicio > Línea Blanca > Climatización > Calefont y Termos', 1],
             ['estufas', [SPACE_HEATER],
