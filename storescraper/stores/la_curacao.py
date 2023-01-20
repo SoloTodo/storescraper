@@ -3,8 +3,7 @@ import json
 import logging
 import re
 from bs4 import BeautifulSoup
-from storescraper.categories import CELL, NOTEBOOK, OVEN, REFRIGERATOR, \
-    STEREO_SYSTEM, TELEVISION, WASHING_MACHINE
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -14,53 +13,31 @@ class LaCuracao(Store):
     @classmethod
     def categories(cls):
         return [
-            REFRIGERATOR,
-            NOTEBOOK,
-            WASHING_MACHINE,
-            OVEN,
-            TELEVISION,
-            STEREO_SYSTEM,
-            CELL,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['3074457345616720730', REFRIGERATOR],
-            ['3074457345616813209', NOTEBOOK],
-            ['3074457345616720731', WASHING_MACHINE],
-            ['3074457345616720732', OVEN],
-            ['3074457345616720729', TELEVISION],
-            ['3074457345616720733', STEREO_SYSTEM],
-            ['3074457345616751193', CELL],
-        ]
+        # Only returns LG products
+
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                index = str(12*(page - 1) + 1)
-                url_webpage = 'https://www.lacuracao.pe/webapp/wcs/stores/se' \
-                    'rvlet/CategoryNavigationResultsGridScrollView?categoryI' \
-                    'd={}&storeId=10151&beginIndex={}&pageSize=12'.format(
-                        url_extension, index)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+
+        url_webpage = 'https://www.lacuracao.pe/webapp/wcs/stores/se' \
+            'rvlet/CategoryNavigationResultsGridScrollView?categoryI' \
+            'd=3074457345616720688&storeId=10151&pageSize=1000'
+        print(url_webpage)
+        data = session.get(url_webpage).text
+        soup = BeautifulSoup(data, 'html.parser')
+        product_containers = soup.findAll('div', 'product')
+        if not product_containers:
+            logging.warning('Empty category')
+        for container in product_containers:
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
         return product_urls
 
     @classmethod

@@ -1,9 +1,10 @@
 from decimal import Decimal
+import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
-    HEADPHONES, MONITOR, NOTEBOOK, OVEN, PRINTER, REFRIGERATOR, \
-    STEREO_SYSTEM, TELEVISION, WASHING_MACHINE
+    HEADPHONES, MONITOR, NOTEBOOK, OVEN, REFRIGERATOR, STEREO_SYSTEM, \
+    TELEVISION, WASHING_MACHINE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import check_ean13, html_to_markdown, \
@@ -15,65 +16,35 @@ class Oechsle(Store):
     def categories(cls):
         return [
             TELEVISION,
-            MONITOR,
-            STEREO_SYSTEM,
-            NOTEBOOK,
-            CELL,
-            ALL_IN_ONE,
-            PRINTER,
-            REFRIGERATOR,
-            WASHING_MACHINE,
-            OVEN,
-            AIR_CONDITIONER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # https://www.oechsle.pe/lg
-        #   En esta url se ecuentran todo los productos LG
-        #   Existen links a las categorías que contienen productos
-        #      LG en el menú lateral
-        #   url_extension se encuentra en la petición buscapagina?...
-        url_extensions = [
-            ['160/171', TELEVISION],
-            ['160/168/209', NOTEBOOK],
-            ['160/206/1222493', MONITOR],
-            ['160/167', STEREO_SYSTEM],
-            ['160/1222982', HEADPHONES],
-            ['160/170/217', CELL],
-            ['160/168/207', ALL_IN_ONE],
-            ['160/168/208', PRINTER],
-            ['161/332', WASHING_MACHINE],
-            ['161/201', REFRIGERATOR],
-            ['161/198', OVEN],
-            ['161/260/324', AIR_CONDITIONER],
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
 
-                url_webpage = 'https://www.oechsle.pe/buscapagina?fq=C:/{}/&' \
-                    'fq=B:599&O=OrderByScoreDESC&PS=36&sl=cc1f325c-7406-439c' \
-                    '-b922-9b2e850fcc90&cc=36&sm=0&PageNumber={}&'.format(
-                        url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+        if category != TELEVISION:
+            return []
+        page = 1
+        while True:
+            if page > 20:
+                raise Exception('Page overflow')
 
-                product_containers = soup.findAll('div', 'prod-cont')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_urls.append(container.find('a')['href'])
-                page += 1
+            url_webpage = 'https://www.oechsle.pe/buscapagina?fq=B:599&O=Ord' \
+                'erByScoreDESC&PS=36&sl=cc1f325c-7406-439c-b922-9b2e850fcc90' \
+                '&cc=36&sm=0&PageNumber={}'.format(page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+
+            product_containers = soup.findAll('div', 'prod-cont')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category')
+                break
+            for container in product_containers:
+                product_urls.append(container.find('a')['href'])
+            page += 1
         return product_urls
 
     @classmethod
@@ -86,10 +57,33 @@ class Oechsle(Store):
         if not sku_input:
             return []
 
+        categories_json = {
+            'monitores': MONITOR,
+            'soundbar': STEREO_SYSTEM,
+            'parlantes y altavoces': STEREO_SYSTEM,
+            'parlantes inalámbricos': STEREO_SYSTEM,
+            'equipos de sonido': STEREO_SYSTEM,
+            'home theater': STEREO_SYSTEM,
+            'laptops': NOTEBOOK,
+            'celulares': CELL,
+            'all in one y computadoras de escritorio': ALL_IN_ONE,
+            'refrigeradoras': REFRIGERATOR,
+            'lavadoras': WASHING_MACHINE,
+            'lavasecas y centros de lavado': WASHING_MACHINE,
+            'secadoras': WASHING_MACHINE,
+            'hornos microondas': OVEN,
+            'aires acondicionados': AIR_CONDITIONER,
+            'audífonos on ear': HEADPHONES,
+            'audífonos inalámbricos bluetooth': HEADPHONES,
+        }
+
         sku = sku_input['value']
         product_info = session.get('https://www.oechsle.pe/api/catalog_'
                                    'system/pub/products/search/'
                                    '?fq=productId:' + sku).json()[0]
+
+        category_path = product_info['categories'][0].split('/')[-2].lower()
+        category = categories_json.get(category_path, category)
         name = product_info['productName']
         stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
             'AvailableQuantity']
@@ -115,7 +109,7 @@ class Oechsle(Store):
         if description:
             description = html_to_markdown(description)
 
-        part_number = product_info.get('nomenclatura', None)
+        part_number = product_info.get('Modelo', None)
         if part_number:
             part_number = part_number[0]
 
