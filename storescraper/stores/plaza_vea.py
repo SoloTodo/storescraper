@@ -141,7 +141,7 @@ class PlazaVea(Store):
         category_path = product_info['categories'][0].split('/')[-2].lower()
         category = categories_json.get(category_path, category)
         name = product_info['productName']
-        sku = product_info['productReference']
+        sku = product_info['items'][0]['itemId']
         stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
             'AvailableQuantity']
         normal_price = Decimal(str(
