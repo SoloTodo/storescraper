@@ -335,6 +335,7 @@ from .pro_gamer_afta import ProGamerAfta
 from .pro_movil import ProMovil
 from .progaming import Progaming
 from .proglobal import Proglobal
+from .promart import Promart
 from .raenco import Raenco
 from .refresh_store import RefreshStore
 from .reif_store import ReifStore
