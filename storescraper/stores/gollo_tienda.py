@@ -25,7 +25,7 @@ class GolloTienda(Store):
         if category != TELEVISION:
             return []
 
-        url = 'https://www.gollotienda.com/productos?at_marca=LG&' \
+        url = 'https://www.gollo.com/productos?at_marca=LG&' \
               'product_list_limit=100'
 
         print(url)
