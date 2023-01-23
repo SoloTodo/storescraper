@@ -107,7 +107,7 @@ class Hites(Store):
              'Inicio > Electro Hogar > Cocina', 0],
             ['electro-hogar/cocina/cocina-a-gas', [STOVE],
              'Inicio > Electro Hogar > Cocina > Cocina a gas', 1],
-            ['electro-hogar/cocina/lavavajillas', [DISH_WASHER],
+            ['electro-hogar/lavado-y-secado/lavavajillas', [DISH_WASHER],
              'Inicio > Electro Hogar > Cocina > Lavavajillas', 1],
             ['electro-hogar/cocina/encimeras', [STOVE],
              'Inicio > Electro Hogar > Cocina > Encimeras', 1],
