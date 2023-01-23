@@ -51,7 +51,8 @@ class KDTec(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/notebook', NOTEBOOK],
+            ['computacion/notebook/notebook-2', NOTEBOOK],
+            ['computacion/notebook/notebook-gamer', NOTEBOOK],
             ['computacion/pc-de-escritorio/all-in-one', ALL_IN_ONE],
             ['computacion/tablets/tablet', TABLET],
             ['computacion/apple/macbook', NOTEBOOK],
@@ -111,6 +112,7 @@ class KDTec(Store):
                     raise Exception('Page overflow: ' + url_extension)
                 url_webpage = 'https://www.kdtec.cl/categoria-producto/{}/' \
                               'page/{}/'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll('li', 'product')
