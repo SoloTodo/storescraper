@@ -1,5 +1,8 @@
+import json
+import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
+from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -10,38 +13,41 @@ class Hiraoka(Store):
     @classmethod
     def categories(cls):
         return [
-            'Notebook',
-            'UsbFlashDrive',
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'http://www.hiraoka.com.pe/'
+        # Only returns LG products
 
-        category_paths = [
-            # ['029', 'Notebook'],      # Notebooks
-            # ['031', 'Notebook'],      # Convertibles
-            ['123', 'UsbFlashDrive'],
-        ]
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
 
-            category_url = '{}productlist.php?ss={}'.format(
-                url_base, category_path)
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+            category_url = 'https://hiraoka.com.pe/lg/marca-lg?p={}'.format(
+                page)
+            print(category_url)
+            res = session.get(category_url)
+            soup = BeautifulSoup(res.text, 'html.parser')
 
-            p_paragraphs = soup.findAll('div', 'proditem')
+            product_containers = soup.find('div', 'products')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category')
+                break
 
-            for p in p_paragraphs:
-                product_url = url_base + p.find('a')['href']
-                product_url = product_url.split('&n')[0]
-
+            for p in product_containers.findAll('li', 'product'):
+                product_url = p.find('a')['href']
                 product_urls.append(product_url)
+
+            page += 1
         return product_urls
 
     @classmethod
@@ -50,22 +56,33 @@ class Hiraoka(Store):
 
         soup = BeautifulSoup(session.get(url).content, 'html.parser')
 
-        brand = soup.findAll('div', 'vpmodelo')[0].contents[1]
-        model = soup.findAll('div', 'vpmodelo')[1].contents[1]
-        sku = soup.findAll('div', 'vpmodelo')[2].contents[1]
-        stock = int(soup.findAll('div', 'vpmodelo')[-1].find('b').text)
+        product_data = json.loads(
+            soup.find('script', {'type': 'application/ld+json'}).text)
 
-        name = '{} {}'.format(brand, model)
+        name = product_data['name']
+        sku = product_data['sku']
+        price = Decimal(product_data['offers']['price'])
+
+        if soup.find('button', 'tocart'):
+            stock = -1
+        else:
+            stock = 0
+
+        if soup.find('td', {'data-th': "Modelo"}):
+            part_number = soup.find('td', {'data-th': "Modelo"}).text
+        else:
+            part_number = None
+
+        picture_container = soup.find('div', 'fotorama__stage')
+        picture_urls = []
+        if picture_container:
+            for i in picture_container.findAll('img'):
+                picture_urls.append(i['src'])
+        else:
+            picture_urls = [product_data['image']]
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'contarea'})))
-
-        picture_urls = ['http://www.hiraoka.com.pe/' + tag['data-image']
-                        for tag in soup.find(
-                'div', {'id': 'gallery_01'}).findAll('a')]
-
-        price_container = soup.findAll('span', 'precio')[1]
-        price = Decimal(price_container.text.split('/.')[1].replace(',', ''))
+            soup.find('div', 'hiraoka-product-details-datasheet').text)
 
         p = Product(
             name,
@@ -80,7 +97,8 @@ class Hiraoka(Store):
             'PEN',
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number,
         )
 
         return [p]
