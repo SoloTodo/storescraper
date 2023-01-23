@@ -45,7 +45,6 @@ class TravelTienda(Store):
             ('2234300147', STEREO_SYSTEM),  # Tech > TV > Sistemas de Sonido TV
             ('2934181475', TABLET),  # Tech > Comp. > Tablets
             ('3415774358', NOTEBOOK),  # Tech > Comp. > Notebook
-            ('375810843', MONITOR),  # Tech > Computación > Monitores
             ('3213133197', PRINTER),  # Tech > Computación > Domótica & Acc.
             ('714969430', GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
             ('1226813193', HEADPHONES),  # Tech > Gamer > Audífonos Gamer
