@@ -83,14 +83,21 @@ class Promart(Store):
         category_path = product_info['categories'][0].split('/')[-2].lower()
         category = categories_json.get(category_path, category)
         name = product_info['productName']
-        sku = product_info['items'][0]['itemId']
-        stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
-            'AvailableQuantity']
-        normal_price = Decimal(str(
-            product_info['items'][0]['sellers'][0]['commertialOffer'][
-                'Price']))
 
-        item_id = product_info['items'][0]['itemId']
+        item_data = product_info['items'][0]
+        sku = item_data['itemId']
+
+        for seller in item_data['sellers']:
+            if seller['sellerId'] == '1':
+                promart_seller = seller
+                break
+        else:
+            return []
+
+        stock = promart_seller['commertialOffer']['AvailableQuantity']
+        normal_price = Decimal(str(promart_seller['commertialOffer']['Price']))
+
+        item_id = item_data['itemId']
         payload = {
             "items": [{"id": item_id, "quantity": 1, "seller": "1"}],
             "country": "PER",
@@ -108,10 +115,11 @@ class Promart(Store):
         else:
             offer_price = normal_price
 
-        picture_urls = [
-            product_info['items'][0]['images'][0]['imageUrl'].split('?')[0]]
-        if check_ean13(product_info['items'][0]['ean']):
-            ean = product_info['items'][0]['ean']
+        picture_urls = [x['imageUrl'].split('?')[0]
+                        for x in item_data['images']]
+
+        if check_ean13(item_data['ean']):
+            ean = item_data['ean']
         else:
             ean = None
 
