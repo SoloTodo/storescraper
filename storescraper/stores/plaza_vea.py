@@ -158,7 +158,8 @@ class PlazaVea(Store):
         else:
             stock = plaza_vea_seller['commertialOffer']['AvailableQuantity']
 
-        normal_price = Decimal(str(plaza_vea_seller['commertialOffer']['Price']))
+        normal_price = Decimal(
+            str(plaza_vea_seller['commertialOffer']['Price']))
         item_id = item_data['itemId']
         payload = {
             "items": [{"id": item_id, "quantity": 1, "seller": "1"}],
