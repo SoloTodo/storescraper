@@ -45,16 +45,20 @@ class Marcimex(Store):
 
                 url = 'https://www.marcimex.com/{}?page={}'.format(
                     category_path, page)
+                print(url)
 
                 soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-                products = soup.findAll(
-                    'section', 'vtex-product-summary-2-x-container')
+                products_container = soup.find(
+                    'div', {'id': 'gallery-layout-container'})
 
-                if not products:
+                if not products_container:
                     if page == 1:
                         logging.warning('Empty url {}'.format(url))
                     break
+
+                products = products_container.findAll(
+                    'section', 'vtex-product-summary-2-x-container')
 
                 for product in products:
                     product_url = product.find('a')['href']
