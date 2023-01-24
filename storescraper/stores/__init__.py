@@ -457,6 +457,7 @@ from .wisdomts import Wisdomts
 from .winpy import Winpy
 from .woow import Woow
 from .wom import Wom
+from .wong import Wong
 from .x_com import XCom
 from .xenex import Xenex
 from .xtreme_tec_pc import XtremeTecPc
