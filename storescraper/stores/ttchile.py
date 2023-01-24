@@ -145,7 +145,7 @@ class TtChile(Store):
             if availability_date_str:
                 availability_date = datetime.datetime.strptime(
                     availability_date_str, '%Y-%M-%d')
-                now = datetime.datetime.now()
+                now = datetime.datetime.now() + datetime.timedelta(days=1)
                 if availability_date > now:
                     stock = 0
 
