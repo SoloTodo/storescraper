@@ -80,20 +80,33 @@ class Oechsle(Store):
             'audífonos inalámbricos bluetooth': HEADPHONES,
         }
 
-        sku = sku_input['value']
+        key = sku_input['value']
         product_info = session.get('https://www.oechsle.pe/api/catalog_'
                                    'system/pub/products/search/'
                                    '?fq=productId:{}&v={}'.format(
-                                    sku, random.randint(0, 1000))).json()[0]
-
+                                    key, random.randint(0, 1000))).json()[0]
         category_path = product_info['categories'][0].split('/')[-2].lower()
         category = categories_json.get(category_path, category)
         name = product_info['productName']
-        stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
-            'AvailableQuantity']
-        normal_price = Decimal(str(
-            product_info['items'][0]['sellers'][0]['commertialOffer'][
-                'Price']))
+
+        item_data = product_info['items'][0]
+        sku = item_data['itemId']
+
+        for seller in item_data['sellers']:
+            print(seller)
+            if seller['sellerId'] == '1':
+                oechsle_seller = seller
+                break
+        else:
+            return []
+
+        if '5970' in product_info['productClusters']:
+            # Producto internacional
+            stock = 0
+        else:
+            stock = oechsle_seller['commertialOffer']['AvailableQuantity']
+
+        normal_price = Decimal(str(oechsle_seller['commertialOffer']['Price']))
 
         offer_info = session.get('https://api.retailrocket.net/api/1.0/partn'
                                  'er/5e6260df97a5251a10daf30d/items/?itemsId'
@@ -102,8 +115,8 @@ class Oechsle(Store):
             offer_price = Decimal(offer_info[0]['Params']['tarjeta'])
         else:
             offer_price = normal_price
-        picture_urls = [
-            product_info['items'][0]['images'][0]['imageUrl'].split('?')[0]]
+        picture_urls = [x['imageUrl'].split('?')[0]
+                        for x in item_data['images']]
         if check_ean13(product_info['items'][0]['ean']):
             ean = product_info['items'][0]['ean']
         else:
