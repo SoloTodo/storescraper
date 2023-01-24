@@ -112,6 +112,7 @@ from .enarix import Enarix
 from .enel import Enel
 from .entel import Entel
 from .entercode_gaming import EntercodeGaming
+from .estilos import Estilos
 from .et_chile import ETChile
 from .eurogen import Eurogen
 from .exito import Exito
