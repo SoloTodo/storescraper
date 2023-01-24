@@ -201,6 +201,7 @@ from .k_d_tec import KDTec
 from .kalunga import Kalunga
 from .key_teks import KeyTeks
 from .kill_store import KillStore
+from .kompu import Kompu
 from .kraken_store import KrakenStore
 from .kuhn import Kuhn
 from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
