@@ -141,20 +141,25 @@ class PlazaVea(Store):
         category_path = product_info['categories'][0].split('/')[-2].lower()
         category = categories_json.get(category_path, category)
         name = product_info['productName']
-        sku = product_info['items'][0]['itemId']
+
+        item_data = product_info['items'][0]
+        sku = item_data['itemId']
+
+        for seller in item_data['sellers']:
+            if seller['sellerId'] == '1':
+                plaza_vea_seller = seller
+                break
+        else:
+            return []
 
         if '10178' in product_info['productClusters']:
             # Producto internacional
             stock = 0
         else:
-            stock = product_info['items'][0]['sellers'][0]['commertialOffer'][
-                'AvailableQuantity']
+            stock = plaza_vea_seller['commertialOffer']['AvailableQuantity']
 
-        normal_price = Decimal(str(
-            product_info['items'][0]['sellers'][0]['commertialOffer'][
-                'Price']))
-
-        item_id = product_info['items'][0]['itemId']
+        normal_price = Decimal(str(plaza_vea_seller['commertialOffer']['Price']))
+        item_id = item_data['itemId']
         payload = {
             "items": [{"id": item_id, "quantity": 1, "seller": "1"}],
             "country": "PER",
@@ -168,16 +173,16 @@ class PlazaVea(Store):
                 discount = teaser[0]['effects']['parameters'][-1]['value']
 
                 list_price = Decimal(str(
-                    product_info['items'][0]['sellers'][0]['commertialOffer'][
-                        'ListPrice']))
+                    plaza_vea_seller['commertialOffer']['ListPrice']))
                 offer_price = (list_price - Decimal(discount)).quantize(0)
             else:
                 offer_price = normal_price
         else:
             offer_price = normal_price
 
-        picture_urls = [
-            product_info['items'][0]['images'][0]['imageUrl'].split('?')[0]]
+        picture_urls = [x['imageUrl'].split('?')[0]
+                        for x in item_data['images']]
+
         if check_ean13(product_info['items'][0]['ean']):
             ean = product_info['items'][0]['ean']
         else:
