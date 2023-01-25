@@ -64,6 +64,8 @@ class KeyTeks(MercadoLibreChile):
             url, category=category, extra_args=extra_args)
 
         for product in products:
+            product.url = url
+            product.discovery_url = url
             product.seller = None
 
         return products
