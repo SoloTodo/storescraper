@@ -77,8 +77,8 @@ class GoldenGamers(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'container-pushy-main') \
-                    .findAll('div', 'col-md-4')
+                product_containers = soup.find('div', 'collection-row') \
+                    .findAll('div', 'collection-products-wrapper')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
