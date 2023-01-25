@@ -3,12 +3,12 @@ import json
 import logging
 import re
 from bs4 import BeautifulSoup
-from storescraper.categories import ALL_IN_ONE, CASE_FAN, CELL, COMPUTER_CASE, \
+from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, \
     HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MICROPHONE, \
     MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, TELEVISION, \
-    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM
+    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
