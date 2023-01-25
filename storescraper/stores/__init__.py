@@ -102,6 +102,7 @@ from .eight_bits import EightBits
 from .electroban import Electroban
 from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
+from .electro_go import ElectroGo
 from .electro_ventas import ElectroVentas
 from .el_cofre_de_shepard import ElCofreDeShepard
 from .el_gallo_mas_gallo import ElGalloMasGallo
