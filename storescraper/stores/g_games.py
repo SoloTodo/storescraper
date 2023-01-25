@@ -69,6 +69,9 @@ class GGames(Store):
             ['smart-home/smartwatch', WEARABLE],
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -100,6 +103,9 @@ class GGames(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
         picture_urls = ['http:' + tag['src'].split('?v')[0] for tag in
