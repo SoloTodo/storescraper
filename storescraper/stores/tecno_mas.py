@@ -3,9 +3,9 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, MONITOR, \
+from storescraper.categories import KEYBOARD_MOUSE_COMBO, VIDEO_CARD, \
     ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, \
-    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM, PRINTER
+    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,6 +27,7 @@ class TecnoMas(Store):
             RAM,
             SOLID_STATE_DRIVE,
             PRINTER,
+            KEYBOARD_MOUSE_COMBO,
         ]
 
     @classmethod
@@ -51,6 +52,7 @@ class TecnoMas(Store):
              TELEVISION],
             ['apple', NOTEBOOK],
             ['impresoras', PRINTER],
+            ['teclados-y-mouse', KEYBOARD_MOUSE_COMBO]
             # ['aio-preconfigurados', ALL_IN_ONE],
             # ['notebooks-preconfigurados', NOTEBOOK],
         ]

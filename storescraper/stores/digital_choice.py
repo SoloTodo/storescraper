@@ -12,28 +12,42 @@ class DigitalChoice(Store):
     @classmethod
     def categories(cls):
         return [
+            EXTERNAL_STORAGE_DRIVE,
             USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            SOLID_STATE_DRIVE,
             HEADPHONES,
+            STEREO_SYSTEM,
+            MICROPHONE,
+            PRINTER,
             MONITOR,
             MOUSE,
+            PROCESSOR,
             KEYBOARD,
-            MICROPHONE,
-            STEREO_SYSTEM,
-            KEYBOARD_MOUSE_COMBO
+            GAMING_CHAIR,
+            TABLET,
+            UPS,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento', USB_FLASH_DRIVE],
+            ['discos-externos-portatiles', EXTERNAL_STORAGE_DRIVE],
+            ['pendrives', USB_FLASH_DRIVE],
+            ['tarjetas-micro-sd-y-lector-de-tarjetas', MEMORY_CARD],
+            ['ssd-y-hdd', SOLID_STATE_DRIVE],
             ['audifonos', HEADPHONES],
             ['parlantes', STEREO_SYSTEM],
             ['microfonos', MICROPHONE],
-            ['mouse', MOUSE],
-            ['teclados', KEYBOARD],
-            ['kit-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['impresoras', PRINTER],
             ['monitores', MONITOR],
-            ['2da-seleccion', MONITOR],
+            ['mouse-y-mousepads', MOUSE],
+            ['procesadores', PROCESSOR],
+            ['teclados', KEYBOARD],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['tablas-digitalizadoras-y-tablets', TABLET],
+            ['ups-y-baterias-externas', UPS],
+            ['segunda-seleccion', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)

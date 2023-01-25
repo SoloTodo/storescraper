@@ -3,7 +3,7 @@ import json
 import logging
 import re
 from bs4 import BeautifulSoup
-from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
+from storescraper.categories import ALL_IN_ONE, CASE_FAN, CELL, COMPUTER_CASE, \
     CPU_COOLER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, \
     HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MICROPHONE, \
     MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
@@ -45,7 +45,8 @@ class KDTec(Store):
             CPU_COOLER,
             CASE_FAN,
             TELEVISION,
-            PRINTER
+            PRINTER,
+            CELL
         ]
 
     @classmethod
@@ -94,6 +95,10 @@ class KDTec(Store):
             ['oficina/impresoras/impresora-multifuncional', PRINTER],
             ['oficina/impresoras/matriz-de-punto', PRINTER],
             ['oficina/impresoras/plotter', PRINTER],
+            ['redes/servidores/procesador-servidor', PROCESSOR],
+            ['redes/servidores/memoria-ram-servidor', RAM],
+            ['redes/servidores/discos-servidor', SOLID_STATE_DRIVE],
+            ['telefonia/celulares', CELL],
         ]
 
         session = session_with_proxy(extra_args)
