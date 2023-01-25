@@ -30,7 +30,8 @@ class TiendaInglesa(Store):
             if local_category != category:
                 continue
             page = 0
-            while True:
+            done = False
+            while not done:
                 if page > 10:
                     raise Exception('page overflow: ' + local_category)
                 url_webpage = 'https://www.tiendainglesa.com.uy/busqueda?' \
@@ -39,14 +40,17 @@ class TiendaInglesa(Store):
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', {'id': 'SECTION1'}). \
-                    findAll('div', 'card-product-section')
-                if not product_containers:
-                    break
-                for container in product_containers:
-                    products_url = container.find('a')['href']
-                    products_urls.append(
-                        'https://www.tiendainglesa.com.uy' + products_url)
+
+                i = soup.find('input', {'name': 'GXState'})['value']
+                json_data = json.loads(i)
+
+                done = True
+                for key in json_data.keys():
+                    if key.endswith('PRODUCTUI'):
+                        done = False
+                        products_url = json_data[key]['Info']['Uri']
+                        products_urls.append(
+                            'https://www.tiendainglesa.com.uy' + products_url)
                 page += 1
         return products_urls
 
