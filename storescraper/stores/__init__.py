@@ -88,6 +88,7 @@ from .digiplot import Digiplot
 from .digital_choice import DigitalChoice
 from .digitalife import Digitalife
 from .dimercom import Dimercom
+from .dismac import Dismac
 from .diunsa import Diunsa
 from .do_it_center import DoItCenter
 from .dreamtec import Dreamtec
@@ -410,6 +411,7 @@ from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
 from .techni_diseno import TechniDiseno
+from .tienda_amiga import TiendaAmiga
 from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
