@@ -718,6 +718,8 @@ class MercadoLibreChile(Store):
                 data = json.loads(new_mode_data.groups()[0])
                 break
             except Exception:
+                if tries >= 3:
+                    raise
                 tries += 1
 
         for entry in data['initialState']['components'].get('head', []):
@@ -725,10 +727,10 @@ class MercadoLibreChile(Store):
                     entry['body']['text'].upper():
                 return []
 
-        if url.startswith('https://articulo.mercadolibre.cl/'):
+        if url.startswith('https://articulo.mercadolibre.'):
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
-        elif url.startswith('https://www.mercadolibre.cl/'):
+        elif url.startswith('https://www.mercadolibre.'):
             return cls.retrieve_type3_products(data, session, category)
         else:
             # Another scraper with embedded ML pages
