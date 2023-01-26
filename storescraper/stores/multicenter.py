@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import check_ean13, html_to_markdown, session_with_proxy
+from storescraper.utils import check_ean13, html_to_markdown, \
+    session_with_proxy
 
 
 class Multicenter(Store):
@@ -46,9 +47,9 @@ class Multicenter(Store):
             return []
 
         key = key_input['value']
-        product_info = session.get('https://www.multicenter.com.bo/api/catalog_'
-                                   'system/pub/products/search/'
-                                   '?fq=productId:' + key).json()[0]
+        product_info = session.get(
+            'https://www.multicenter.com.bo/api/catalog_system/pub/products/se'
+            'arch/?fq=productId:' + key).json()[0]
 
         name = product_info['productName']
 
