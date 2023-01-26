@@ -45,7 +45,8 @@ class Dust2(Store):
             GAMING_DESK,
             CASE_FAN,
             PRINTER,
-            UPS
+            UPS,
+            WEARABLE
         ]
 
     @classmethod
