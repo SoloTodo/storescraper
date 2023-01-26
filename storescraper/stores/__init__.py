@@ -88,6 +88,7 @@ from .digiplot import Digiplot
 from .digital_choice import DigitalChoice
 from .digitalife import Digitalife
 from .dimercom import Dimercom
+from .dismac import Dismac
 from .diunsa import Diunsa
 from .do_it_center import DoItCenter
 from .dreamtec import Dreamtec
