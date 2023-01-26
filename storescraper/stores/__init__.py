@@ -279,6 +279,7 @@ from .motorola_shop import MotorolaShop
 from .movistar import Movistar
 from .movistar_one import MovistarOne
 from .multi_ahorro import MultiAhorro
+from .multicenter import Multicenter
 from .multimax import Multimax
 from .mundo_gaming import MundoGaming
 from .musimundo import Musimundo
