@@ -64,25 +64,7 @@ class Multicenter(Store):
             return []
 
         stock = promart_seller['commertialOffer']['AvailableQuantity']
-        normal_price = Decimal(str(promart_seller['commertialOffer']['Price']))
-
-        item_id = item_data['itemId']
-        payload = {
-            "items": [{"id": item_id, "quantity": 1, "seller": "1"}],
-            "country": "PER",
-        }
-        offer_info = session.post('https://www.promart.pe/api/checkout/pu'
-                                  'b/orderforms/simulation?sc=1', json=payload
-                                  ).json()
-        if offer_info['ratesAndBenefitsData']:
-            teaser = offer_info['ratesAndBenefitsData']['teaser']
-            if len(teaser) != 0:
-                discount = teaser[0]['effects']['parameters'][-1]['value']
-                offer_price = (normal_price - Decimal(discount)).quantize(0)
-            else:
-                offer_price = normal_price
-        else:
-            offer_price = normal_price
+        price = Decimal(str(promart_seller['commertialOffer']['Price']))
 
         picture_urls = [x['imageUrl'].split('?')[0]
                         for x in item_data['images']]
@@ -108,8 +90,8 @@ class Multicenter(Store):
             url,
             key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'BOB',
             sku=sku,
             picture_urls=picture_urls,
