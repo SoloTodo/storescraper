@@ -112,11 +112,11 @@ class Kompu(Store):
             return []
 
         parsed_url = urlparse(url)
-        productId = parse_qs(parsed_url.query)['productID'][0].split('?')[0]
-        categoryId = parsed_url.path.split('/')[-1]
+        product_id = parse_qs(parsed_url.query)['productID'][0].split('?')[0]
+        category_id = parsed_url.path.split('/')[-1]
 
         product_data_url = 'https://www.kompu.cl/product/{}/quick-view-dialo' \
-            'g/{}?fresh=2'.format(productId, categoryId)
+            'g/{}?fresh=2'.format(product_id, category_id)
         product_response = session.get(product_data_url)
 
         product_data = product_response.json()['data']['details']
@@ -128,6 +128,13 @@ class Kompu(Store):
         stock = product_data['cantidad']
         picture_urls = [i['getProductImageURL']
                         for i in product_data['allImages']]
+
+        part_number_label_tag = soup.find('td', text='Numero de partes')
+        if part_number_label_tag:
+            part_number = part_number_label_tag.parent.findAll(
+                'td')[1].text.strip()
+        else:
+            part_number = None
 
         normal_price = Decimal(
             remove_words(soup.find('span', {
@@ -159,6 +166,7 @@ class Kompu(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            part_number=part_number
         )
         return [p]
