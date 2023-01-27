@@ -63,11 +63,13 @@ class GsmPro(Store):
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(soup.find(
+        publication_data = json.loads(soup.find(
             'script', {
                 'type': 'application/json',
                 'data-product-json': True
-            }).text)['product']
+            }).text)
+        product_data = publication_data['product']
+        stock_data = publication_data['inventories']
 
         description = html_to_markdown(product_data['description'])
         picture_urls = ['https:' + i for i in product_data['images']]
@@ -78,11 +80,7 @@ class GsmPro(Store):
             name = variant['name']
             sku = variant['sku']
             price = (Decimal(variant['price']) / Decimal(100)).quantize(0)
-
-            if variant['available']:
-                stock = -1
-            else:
-                stock = 0
+            stock = max(stock_data[key]['inventory_quantity'], 0)
 
             variant_url = '{}?variant={}'.format(url, key)
 
