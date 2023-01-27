@@ -169,8 +169,12 @@ class Movistar(Store):
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
+        
+        color_list = soup.find('ul', 'colorEMP')
+        if not color_list:
+            return []
 
-        for color_container in soup.find('ul', 'colorEMP').findAll('li'):
+        for color_container in color_list.findAll('li'):
             color_element = color_container.find('a')
             sku_url = color_element['data-url-key']
             products.extend(cls.__celular_postpago(sku_url, extra_args))
