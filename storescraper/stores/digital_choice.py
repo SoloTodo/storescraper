@@ -56,22 +56,30 @@ class DigitalChoice(Store):
             if local_category != category:
                 continue
 
-            url_webpage = 'https://digitalchoice.cl/collection/{}?' \
-                'limit=1000'.format(url_extension)
-            print(url_webpage)
-            response = session.get(url_webpage)
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('Page overflow')
 
-            data = response.text
-            soup = BeautifulSoup(data, 'html5lib')
-            product_containers = soup.findAll('section', 'grid__item')
+                url_webpage = 'https://www.digitalchoice.cl/collection/{}?' \
+                              'page={}'.format(url_extension, page)
+                print(url_webpage)
+                response = session.get(url_webpage)
 
-            if len(product_containers) == 0:
-                logging.warning('Empty category: ' + url_extension)
+                data = response.text
+                soup = BeautifulSoup(data, 'html5lib')
+                product_containers = soup.findAll('section', 'grid__item')
 
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://digitalchoice.cl' + product_url)
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_extension)
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(
+                        'https://digitalchoice.cl' + product_url)
+                page += 1
         return product_urls
 
     @classmethod
