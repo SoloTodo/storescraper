@@ -9,7 +9,7 @@ from storescraper.categories import PRINTER, UPS, VIDEO_GAME_CONSOLE, MOUSE, \
     CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, \
-    CASE_FAN
+    CASE_FAN, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -45,7 +45,8 @@ class Dust2(Store):
             GAMING_DESK,
             CASE_FAN,
             PRINTER,
-            UPS
+            UPS,
+            WEARABLE
         ]
 
     @classmethod
@@ -100,6 +101,7 @@ class Dust2(Store):
              'amazon-asistentes-virtuales', STEREO_SYSTEM],
             ['dispositivos-inteligentes/asistentes-virtuales/'
              'google-asistente', STEREO_SYSTEM],
+            ['dispositivos-inteligentes/smartwatches-smartbands', WEARABLE],
             ['mundo-gamer/microfonos', MICROPHONE],
             ['mundo-gamer/escritorios', GAMING_DESK],
             ['computacion-y-electronica/impresoras-y-escaneres/'
