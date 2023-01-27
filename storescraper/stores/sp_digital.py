@@ -116,6 +116,7 @@ class SpDigital(Store):
             ['hogar-y-oficina-equipamiento-oficina-proyectores', PROJECTOR],
             ['hogar-y-oficina-impresoras-impresoras-laser', PRINTER],
             ['hogar-y-oficina-impresoras-impresoras-tinta', PRINTER],
+            ['hogar-y-oficina-impresoras-multifuncionales', PRINTER],
             ['hogar-y-oficina-smartwatches-smartwatch', WEARABLE],
             ['audio-y-musica-audio-audifonos', HEADPHONES],
             ['audio-y-musica-audio-audifonos-bluetooth', HEADPHONES],
