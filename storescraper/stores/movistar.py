@@ -169,7 +169,7 @@ class Movistar(Store):
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
         products = []
-        
+
         color_list = soup.find('ul', 'colorEMP')
         if not color_list:
             return []
