@@ -87,7 +87,7 @@ class KDTec(Store):
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['componentes/fuentes-de-poder-ups/fuente-de-poder', POWER_SUPPLY],
-            ['componentes/fuentes-de-poder-ups/ups', UPS]
+            ['componentes/fuentes-de-poder-ups/ups', UPS],
             ['oficina/gabinetes', COMPUTER_CASE],
             ['componentes/refrigeracion/refrigeracion-cpu', CPU_COOLER],
             ['componentes/refrigeracion/ventiladores-pc', CASE_FAN],
