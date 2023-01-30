@@ -139,12 +139,13 @@ class UltraPc(Store):
             picture_urls = [tag['src'] for tag in soup.find(
                 'div', 'woocommerce-product-gallery').findAll(
                 'img')]
-            condition_text = soup.find(
-                'span', 'condicion_item_ultrapc').text.strip()
-            if condition_text == 'NUEVO' or condition_text == 'NUEVO SELLADO':
-                condition = 'https://schema.org/NewCondition'
-            else:
-                condition = 'https://schema.org/RefurbishedCondition'
+
+            condition_span = soup.find('span', 'condicion_item_ultrapc')
+            condition = 'https://schema.org/NewCondition'
+            if condition_span:
+                condition_text = condition_span.text.strip().upper()
+                if condition_text not in ['NUEVO', 'NUEVO SELLADO']:
+                    condition = 'https://schema.org/RefurbishedCondition'
 
             products.append(Product(
                 base_name,
