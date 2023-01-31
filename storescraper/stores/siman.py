@@ -1,5 +1,6 @@
 import json
 from decimal import Decimal
+import re
 
 from bs4 import BeautifulSoup
 
@@ -43,7 +44,12 @@ class Siman(Store):
                 soup = BeautifulSoup(data, 'html.parser')
                 page_state_tag = soup.find('template',
                                            {'data-varname': '__STATE__'})
-                page_state = json.loads(page_state_tag.text)
+                if page_state_tag:
+                    page_state_tag = page_state_tag.text
+                else:
+                    page_state_tag = '{' + re.search(
+                        r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'
+                page_state = json.loads(page_state_tag)
                 done = True
 
                 for key, product in page_state.items():
