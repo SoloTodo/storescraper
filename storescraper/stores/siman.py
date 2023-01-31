@@ -76,8 +76,14 @@ class Siman(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
 
-        product_data = json.loads(
-            soup.find('template', {'data-varname': '__STATE__'}).text)
+        product_state_tag = soup.find('template',
+                                      {'data-varname': '__STATE__'})
+        if product_state_tag:
+            product_state_tag = product_state_tag.text
+        else:
+            product_state_tag = '{' + re.search(
+                r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'
+        product_data = json.loads(product_state_tag)
 
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
