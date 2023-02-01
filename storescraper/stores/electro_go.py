@@ -68,12 +68,12 @@ class ElectroGo(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'PEN',
-            sku=key,
+            sku=sku,
             picture_urls=picture_urls,
             description=description
         )
