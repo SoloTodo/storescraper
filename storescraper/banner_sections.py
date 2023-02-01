@@ -6,6 +6,7 @@ AUDIO = 'Audio'
 CELLS = 'Telefonía'
 AIR_CONDITIONING = 'Climatización'
 HOME_APPLIANCE = 'Electrodomésticos'
+TECHNOLOGY = 'Tecnología'
 
 # Store Specifics #
 ELECTRO_RIPLEY = 'Electro Ripley'

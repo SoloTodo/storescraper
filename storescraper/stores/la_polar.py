@@ -351,7 +351,9 @@ class LaPolar(Store):
     def banners(cls, extra_args=None):
         sections_data = [
             [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME,
-             'https://www.lapolar.cl/']
+             'https://www.lapolar.cl/'],
+            [bs.TECHNOLOGY, 'Tecnología', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+             'https://www.lapolar.cl/tecnologia/']
         ]
 
         session = session_with_proxy(extra_args)
@@ -412,45 +414,29 @@ class LaPolar(Store):
                             'url': url,
                             'picture': pictures[index],
                             'destination_urls': destination_urls,
-                            'key': key,
+                            'key': key[:250],
                             'position': index + 1,
                             'section': section,
                             'subsection': subsection,
                             'type': subsection_type
                         })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                iframe = soup.find('iframe', 'full')
-                if iframe:
-                    content = session.get(iframe['src'])
-                    soup = BeautifulSoup(content.text, 'html.parser')
-                    picture_base_url = 'https://www.lapolar.cl{}'
-                else:
-                    picture_base_url = url + '{}'
+                banner_tag = soup.find('div', 'category-banner-module__image')
 
-                images = soup.findAll('div', 'swiper-slide')
+                if not banner_tag:
+                    continue
 
-                if not images:
-                    images = soup.findAll('div', 'item')
+                picture_url = banner_tag.find('source')['srcset']
+                destination_urls = [banner_tag.find('a')['href']]
 
-                for index, image, in enumerate(images):
-                    picture = image.find('picture')
-                    if not picture:
-                        picture_url = picture_base_url.format(
-                            image.find('img')['src'])
-                    else:
-                        picture_url = picture_base_url.format(
-                            image.findAll('source')[-1]['srcset']
-                        )
-                    destination_urls = [image.find('a')['href']]
-
-                    banners.append({
-                        'url': url,
-                        'picture_url': picture_url,
-                        'destination_urls': destination_urls,
-                        'key': picture_url,
-                        'position': index + 1,
-                        'section': section,
-                        'subsection': subsection,
-                        'type': subsection_type
-                    })
+                banners.append({
+                    'url': url,
+                    'picture_url': picture_url,
+                    'destination_urls': destination_urls,
+                    'key': picture_url,
+                    'position': 1,
+                    'section': section,
+                    'subsection': subsection,
+                    'type': subsection_type
+                })
         return banners
