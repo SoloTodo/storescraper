@@ -23,7 +23,7 @@ class ElectroGo(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        url_webpage = 'https://electrogo.pe/ajax/CargarBuscador.php?MARCA=1'
+        url_webpage = 'https://credivargas.pe/tienda/pucallpa/m/lg'
         print(url_webpage)
         data = session.get(url_webpage).text
         soup = BeautifulSoup(data, 'html.parser')
@@ -43,14 +43,14 @@ class ElectroGo(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         key = url.split('-')[-1]
-        name = soup.find('div', {'id': 'producto-name'}).text.strip()
+        name = soup.find('h2', 'text-lh-1dot2').text.strip()
         stock = int(
             soup.find('span', 'text-green').text.replace(' en stock', ''))
 
         product_info = soup.find('div', 'col-wd-9gdot5').find('div', 'mb-lg-0')
-        sku = product_info.find('p').text.split(':')[-1].strip()
+        sku = product_info.findAll('p')[-1].text.split(':')[-1].strip()
 
-        price_div = product_info.find('div', {'id': 'product-price'})
+        price_div = product_info.find('ins', 'text-decoration-none')
         if not price_div:
             return []
 
@@ -68,12 +68,12 @@ class ElectroGo(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             price,
             price,
             'PEN',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
             description=description
         )
