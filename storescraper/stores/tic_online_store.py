@@ -133,6 +133,8 @@ class TicOnlineStore(Store):
 
             price = Decimal(remove_words(
                 soup.find('p', 'price').findAll('bdi')[-1].text))
+            if len(price.as_tuple().digits) > 10:
+                return []
 
             cart_btn = soup.find('button', {'name': 'add-to-cart'})
             if cart_btn:

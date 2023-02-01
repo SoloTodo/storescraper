@@ -1,17 +1,13 @@
-from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
-from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import check_ean13, html_to_markdown, \
-    session_with_proxy
+from storescraper.stores.peru_stores import PeruStores
+from storescraper.utils import session_with_proxy
 
 
-class Multicenter(Store):
-    @classmethod
-    def categories(cls):
-        return [TELEVISION]
+class Multicenter(PeruStores):
+    base_url = 'https://www.multicenter.com.bo'
+    currency = 'BOB'
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -34,69 +30,3 @@ class Multicenter(Store):
             product_url = container.find('a')['href']
             product_urls.append(product_url)
         return product_urls
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        session = session_with_proxy(extra_args)
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        key_input = soup.find('input', {'id': '___rc-p-id'})
-        if not key_input:
-            return []
-
-        key = key_input['value']
-        product_info = session.get(
-            'https://www.multicenter.com.bo/api/catalog_system/pub/products/se'
-            'arch/?fq=productId:' + key).json()[0]
-
-        name = product_info['productName']
-
-        item_data = product_info['items'][0]
-        sku = item_data['itemId']
-
-        for seller in item_data['sellers']:
-            if seller['sellerId'] == '1':
-                promart_seller = seller
-                break
-        else:
-            return []
-
-        stock = promart_seller['commertialOffer']['AvailableQuantity']
-        price = Decimal(str(promart_seller['commertialOffer']['Price']))
-
-        picture_urls = [x['imageUrl'].split('?')[0]
-                        for x in item_data['images']]
-
-        if check_ean13(item_data['ean']):
-            ean = item_data['ean']
-        else:
-            ean = None
-
-        description = product_info.get('description', None)
-        if description:
-            description = html_to_markdown(description)
-
-        part_number = product_info.get('Modelo', None)
-        if part_number:
-            part_number = part_number[0]
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'BOB',
-            sku=sku,
-            picture_urls=picture_urls,
-            ean=ean,
-            description=description,
-            part_number=part_number,
-        )
-        return [p]

@@ -82,6 +82,8 @@ class Olier(Store):
 
                 for product in product_containers:
                     name = product['nombre']
+                    if not name:
+                        name = product['producto']['nombre']
                     sku = product['codigo_articulo']
                     ean = product.get('ean', None)
                     url_ver = product['url_ver']

@@ -3,11 +3,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CASE_FAN, MEMORY_CARD, PRINTER, \
+from storescraper.categories import ALL_IN_ONE, CASE_FAN, MEMORY_CARD, \
     EXTERNAL_STORAGE_DRIVE, PROCESSOR, RAM, MOTHERBOARD, KEYBOARD, MOUSE, \
     KEYBOARD_MOUSE_COMBO, HEADPHONES, STEREO_SYSTEM, COMPUTER_CASE, UPS, \
     VIDEO_CARD, CPU_COOLER, MONITOR, GAMING_CHAIR, POWER_SUPPLY, MICROPHONE, \
-    STORAGE_DRIVE, SOLID_STATE_DRIVE, USB_FLASH_DRIVE
+    STORAGE_DRIVE, SOLID_STATE_DRIVE, USB_FLASH_DRIVE, PRINTER
 from storescraper.product import Product
 
 from storescraper.store import Store
@@ -41,6 +41,7 @@ class MHWStore(Store):
             USB_FLASH_DRIVE,
             MEMORY_CARD,
             PRINTER,
+            ALL_IN_ONE,
         ]
 
     @classmethod
@@ -70,6 +71,7 @@ class MHWStore(Store):
             ['40-impresoras-y-escaners', PRINTER],
             ['41-monitores', MONITOR],
             ['42-sillas-gamer', GAMING_CHAIR],
+            ['4-computadores-armados', ALL_IN_ONE],
         ]
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \

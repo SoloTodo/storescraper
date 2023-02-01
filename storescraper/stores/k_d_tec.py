@@ -7,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, \
     HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MICROPHONE, \
     MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
-    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, TELEVISION, \
+    SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, TELEVISION, UPS, \
     USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM, CELL
 from storescraper.product import Product
 from storescraper.store import Store
@@ -46,7 +46,8 @@ class KDTec(Store):
             CASE_FAN,
             TELEVISION,
             PRINTER,
-            CELL
+            CELL,
+            UPS,
         ]
 
     @classmethod
@@ -86,6 +87,7 @@ class KDTec(Store):
             ['componentes/placas-madres', MOTHERBOARD],
             ['componentes/tarjetas-de-video', VIDEO_CARD],
             ['componentes/fuentes-de-poder-ups/fuente-de-poder', POWER_SUPPLY],
+            ['componentes/fuentes-de-poder-ups/ups', UPS],
             ['oficina/gabinetes', COMPUTER_CASE],
             ['componentes/refrigeracion/refrigeracion-cpu', CPU_COOLER],
             ['componentes/refrigeracion/ventiladores-pc', CASE_FAN],
