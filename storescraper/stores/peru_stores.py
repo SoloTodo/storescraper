@@ -33,7 +33,7 @@ class PeruStores(Store):
             return []
         page = 1
         while True:
-            if page > 20:
+            if page > 25:
                 raise Exception('Page overflow')
 
             url_webpage = '{}/buscapagina?{}&PageNumber={}'.format(
