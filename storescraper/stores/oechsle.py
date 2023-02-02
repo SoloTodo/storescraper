@@ -35,11 +35,11 @@ class Oechsle(PeruStores):
 
     @classmethod
     def get_offer_price(cls, session, sku, normal_price, store_seller):
-
         offer_info = session.get('https://api.retailrocket.net/api/1.0/partn'
                                  'er/5e6260df97a5251a10daf30d/items/?itemsId'
                                  's={}&format=json'.format(sku)).json()
-        if len(offer_info) != 0 and offer_info[0]['Params']['tarjeta'] != "0":
+        if len(offer_info) != 0 and offer_info[0]['Params']['tarjeta'] != "0" \
+                and offer_info[0]['Params']['seller'] == 'oechsle':
             offer_price = Decimal(offer_info[0]['Params']['tarjeta'])
         else:
             offer_price = normal_price
