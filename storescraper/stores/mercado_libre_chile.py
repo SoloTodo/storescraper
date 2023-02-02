@@ -718,9 +718,9 @@ class MercadoLibreChile(Store):
                 data = json.loads(new_mode_data.groups()[0])
                 break
             except Exception:
-                if tries >= 3:
-                    raise
                 tries += 1
+                if tries == 3:
+                    raise
 
         for entry in data['initialState']['components'].get('head', []):
             if entry['id'] == 'item_status_message' and 'PAUSADA' in \
