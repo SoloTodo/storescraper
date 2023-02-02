@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import check_ean13, session_with_proxy
 from storescraper.categories import AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
     REFRIGERATOR, STEREO_SYSTEM, TELEVISION
 
@@ -15,57 +15,30 @@ from storescraper.categories import AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
 class Marcimex(Store):
     @classmethod
     def categories(cls):
-        return [
-            AIR_CONDITIONER,
-            OVEN,
-            WASHING_MACHINE,
-            REFRIGERATOR,
-            STEREO_SYSTEM,
-            TELEVISION
-        ]
+        return [WASHING_MACHINE]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['lg', WASHING_MACHINE],
-        ]
+        if category != WASHING_MACHINE:
+            return []
 
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
+        url = 'https://www.marcimex.com/lg'
+        print(url)
+
+        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+
+        page_state = json.loads(
+            soup.find('template', {'data-varname': '__STATE__'}).text)
+
+        for key, product in page_state.items():
+            if 'productId' not in product:
                 continue
-
-            page = 1
-
-            while True:
-                if page > 30:
-                    raise Exception('Page overflow')
-
-                url = 'https://www.marcimex.com/{}?page={}'.format(
-                    category_path, page)
-                print(url)
-
-                soup = BeautifulSoup(session.get(url).text, 'html.parser')
-
-                products_container = soup.find(
-                    'div', {'id': 'gallery-layout-container'})
-
-                if not products_container:
-                    if page == 1:
-                        logging.warning('Empty url {}'.format(url))
-                    break
-
-                products = products_container.findAll(
-                    'section', 'vtex-product-summary-2-x-container')
-
-                for product in products:
-                    product_url = product.find('a')['href']
-                    product_urls.append(
-                        'https://www.marcimex.com' + product_url)
-
-                page += 1
+            product_url = 'https://www.marcimex.com/{}/p'.format(
+                product['linkText'])
+            product_urls.append(product_url)
 
         return product_urls
 
@@ -76,30 +49,38 @@ class Marcimex(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        product_json = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+        product_data = json.loads(
+            soup.find('template', {'data-varname': '__STATE__'}).text)
 
-        name = product_json['name']
-        sku = str(product_json['sku'])
-        description = product_json['description']
+        base_json_key = list(product_data.keys())[0]
+        product_specs = product_data[base_json_key]
 
-        stock = int(
-            soup.find('span',
-                      'vtex-product-availability-0-x-lowStockHighlight').text)
+        item_key = '{}.items.0'.format(base_json_key)
+        key = product_data[item_key]['itemId']
+        ean = product_data[item_key]['ean']
+        if not check_ean13(ean):
+            ean = None
 
-        product_div = soup.find(
-            'div', 'vtex-flex-layout-0-x-flexRow--quantity')
-        product_price = product_div.find(
-            'span', 'vtex-product-price-1-x-sellingPrice')
+        name = product_specs['productName']
+        sku = product_specs['productReference']
+        description = product_specs.get('description', None)
 
-        price = Decimal(product_price.find(
-            'span', 'vtex-product-price-1-x-currencyContainer')
-            .text.replace('$', '').replace(',', '.'))
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        price = Decimal(str(pricing_data['Price'])) + \
+            Decimal(str(pricing_data['Tax']))
+        stock = pricing_data['AvailableQuantity']
+
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
 
         picture_urls = []
-        picture_container = soup.findAll('div', 'swiper-wrapper')[1]
-        for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'])
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -107,14 +88,15 @@ class Marcimex(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'USD',
             sku=sku,
-            picture_urls=picture_urls,
+            ean=ean,
             description=description,
+            picture_urls=picture_urls
         )
 
         return [p]
