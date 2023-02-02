@@ -395,7 +395,7 @@ class LaPolar(Store):
                         key = None
                         key_options = image.findAll('img', 'responsive_prod')
 
-                        destination_urls = [d['href'] for d in
+                        destination_urls = [d['href'][:500] for d in
                                             image.findAll('a')]
                         destination_urls = list(set(destination_urls))
 
@@ -427,7 +427,7 @@ class LaPolar(Store):
                     continue
 
                 picture_url = banner_tag.find('source')['srcset']
-                destination_urls = [banner_tag.find('a')['href']]
+                destination_urls = [banner_tag.find('a')['href'][:500]]
 
                 banners.append({
                     'url': url,
