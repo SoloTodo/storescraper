@@ -720,7 +720,7 @@ class MercadoLibreChile(Store):
             except Exception:
                 tries += 1
                 if tries == 3:
-                    raise
+                    return []
 
         for entry in data['initialState']['components'].get('head', []):
             if entry['id'] == 'item_status_message' and 'PAUSADA' in \
