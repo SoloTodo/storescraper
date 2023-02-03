@@ -238,10 +238,11 @@ class Falabella(Store):
     def _get_product_urls(cls, session, category_id):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zones=ZL_CERRILLOS%2C3045%2CLOSC%2C2020%2CSC14F6B' \
-                   '_FLEX%2CSC3FD1A_FLEX%2CBX_R13_BASE%2CSCD9039_FLEX' \
-                   '%2C99%2C1234%2C130617%2CBLUE_RM_URBANO%2CRM%2CRM%' \
-                   '2C13%2C15&categoryId={}&page={}'
+                   'zones=ZL_CERRILLOS%2C3045%2CLOSC%2C2020%2CCHILEXPRESS_8' \
+                   '%2CSC14F6B_FLEX%2CSC3FD1A_FLEX%2CBX_R13_BASE%2CSCD9039' \
+                   '_FLEX%2CHUB_SALIDA_DIRECTA_RM%2C1234%2C130617%2CBLUE_' \
+                   'RM_URBANO%2CRM%2CRM%2C13%2CCHILE_INTERNATIONAL' \
+                   '&categoryId={}&page={}'
 
         page = 1
 
