@@ -123,8 +123,13 @@ class Tecnocam(Store):
         else:
             return []
 
-        product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
+        json_scripts = soup.findAll(
+            'script', {'type': 'application/ld+json'})
+
+        if len(json_scripts) <= 1:
+            return []
+
+        product_data = json.loads(json_scripts[-1].text)
 
         name = product_data['name']
         sku = product_data['sku']
