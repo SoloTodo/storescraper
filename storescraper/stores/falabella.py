@@ -20,7 +20,7 @@ from storescraper import banner_sections as bs
 
 
 class Falabella(Store):
-    preferred_discover_urls_concurrency = 1
+    preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 20
     store_and_subdomain = None
     seller = None
@@ -242,49 +242,63 @@ class Falabella(Store):
                    '%2CSC14F6B_FLEX%2CSC3FD1A_FLEX%2CBX_R13_BASE%2CSCD9039' \
                    '_FLEX%2CHUB_SALIDA_DIRECTA_RM%2C1234%2C130617%2CBLUE_' \
                    'RM_URBANO%2CRM%2CRM%2C13%2CCHILE_INTERNATIONAL' \
-                   '&categoryId={}&page={}'
+                   '&categoryId={}&sortBy={}&page={}'
 
-        page = 1
+        # The first sorting will be given preference for
+        # section position information
 
-        while True:
-            if page > 210:
-                raise Exception('Page overflow: ' + category_id)
+        sortings = [
+            '_score%2Cdesc',
+            'derived.price.search%2Casc',
+            'product.brandName%2Casc',
+            'product.attribute.newIconExpiryDate%2Cdesc',
+            'product.averageOverallRating%2Cdesc'
+        ]
 
-            pag_url = base_url.format(category_id, page)
+        for sorting in sortings:
+            page = 1
 
-            if cls.store_and_subdomain:
-                pag_url += '&subdomain={}&store={}'.format(
-                    cls.store_and_subdomain, cls.store_and_subdomain)
+            while True:
+                if page > 210:
+                    raise Exception('Page overflow: ' + category_id)
 
-            if cls.seller:
-                pag_url += '&f.derived.variant.sellerId={}'.format(
-                    cls.seller)
-            else:
-                pag_url += '&f.derived.variant.sellerId={}'.format(
-                    'FALABELLA%3A%3AMARKETPLACE')
+                pag_url = base_url.format(category_id, sorting,
+                                          page)
 
-            print(pag_url)
+                if cls.store_and_subdomain:
+                    pag_url += '&subdomain={}&store={}'.format(
+                        cls.store_and_subdomain, cls.store_and_subdomain)
 
-            res = cls.retrieve_json_page(session, pag_url)
+                if cls.seller:
+                    pag_url += '&f.derived.variant.sellerId={}'.format(
+                        cls.seller)
+                else:
+                    pag_url += '&f.derived.variant.sellerId={}'.format(
+                        'FALABELLA%3A%3AMARKETPLACE')
 
-            if 'results' not in res or not res['results']:
-                if page == 1:
-                    logging.warning('Empty category: {}'.format(category_id))
-                break
+                print(pag_url)
 
-            for result in res['results']:
-                product_url = result['url']
-                # Remove weird special characters
-                product_url = product_url.encode(
-                    'ascii', 'ignore').decode('ascii')
+                res = cls.retrieve_json_page(session, pag_url)
 
-                if '?' in product_url:
-                    product_url = '{}/{}'.format(product_url.split('?')
-                                                 [0], result['skuId'])
+                if 'results' not in res or not res['results']:
+                    if page == 1:
+                        logging.warning('Empty category: {}'.format(category_id))
+                    break
 
-                discovered_urls.append(product_url)
+                for result in res['results']:
+                    product_url = result['url']
+                    # Remove weird special characters
+                    product_url = product_url.encode(
+                        'ascii', 'ignore').decode('ascii')
 
-            page += 1
+                    if '?' in product_url:
+                        product_url = '{}/{}'.format(product_url.split('?')
+                                                     [0], result['skuId'])
+
+                    if product_url not in discovered_urls:
+                        discovered_urls.append(product_url)
+
+                page += 1
 
         return discovered_urls
 
