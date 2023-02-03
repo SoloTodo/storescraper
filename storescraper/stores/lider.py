@@ -188,7 +188,8 @@ class Lider(Store):
         session.headers = {
             'Content-Type': 'application/json',
             'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT),
-            'tenant': cls.tenant
+            'tenant': cls.tenant,
+            'x-channel': 'BuySmart'
         }
 
         product_entries = defaultdict(lambda: [])
