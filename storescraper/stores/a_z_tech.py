@@ -43,7 +43,7 @@ class AZTech(Store):
             ['computacion/perifericos', MOUSE],
             ['computacion/almacenamiento-datos', SOLID_STATE_DRIVE],
             ['computacion/monitores', MONITOR],
-            ['computacion/smartwatches', WEARABLE],
+            ['outdoor-tech/wearables', WEARABLE],
             ['mundo-apple/mac/portatil/macbook-pro', NOTEBOOK],
             ['mundo-apple/mac/portatil/macbook-air', NOTEBOOK],
             ['mundo-apple/mac/escritorio/imac', ALL_IN_ONE],
