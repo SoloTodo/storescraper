@@ -31,19 +31,23 @@ class AZTech(Store):
             PRINTER,
             STEREO_SYSTEM,
             CELL,
-            MOUSE
+            MOUSE,
+            HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['computacion/procesadores', PROCESSOR],
             ['computacion/notebook', NOTEBOOK],
             ['computacion/escritorio', ALL_IN_ONE],
+            ['computacion/memorias-ram', RAM],
             ['computacion/tablet', TABLET],
             ['computacion/perifericos', MOUSE],
+            ['computacion/tarjetas-de-video', VIDEO_CARD],
+            ['computacion/fuente-de-poder', POWER_SUPPLY],
             ['computacion/almacenamiento-datos', SOLID_STATE_DRIVE],
             ['computacion/monitores', MONITOR],
-            ['outdoor-tech/wearables', WEARABLE],
             ['mundo-apple/mac/portatil/macbook-pro', NOTEBOOK],
             ['mundo-apple/mac/portatil/macbook-air', NOTEBOOK],
             ['mundo-apple/mac/escritorio/imac', ALL_IN_ONE],
@@ -53,24 +57,21 @@ class AZTech(Store):
             ['mundo-apple/ipad/ipad-mini', TABLET],
             ['apple-watch-ultra', WEARABLE],
             ['apple-watch-series-8', WEARABLE],
+            ['mundo-apple/watch/apple-watch-se-2da-gen', WEARABLE],
             ['mundo-apple/watch/apple-watch-series-7', WEARABLE],
-            ['mundo-apple/watch/apple-watch-nike-series-7', WEARABLE],
-            ['mundo-apple/watch/apple-watch-se', WEARABLE],
-            ['mundo-apple/watch/apple-watch-nike-se', WEARABLE],
-            ['mundo-apple/watch/apple-watch-series-3', WEARABLE],
             ['mundo-apple/airpods', HEADPHONES],
             ['mundo-apple/accesorios/almacenamiento', EXTERNAL_STORAGE_DRIVE],
-            ['computacion/procesadores', PROCESSOR],
-            ['computacion/memorias-ram', RAM],
-            ['computacion/almacenamiento', SOLID_STATE_DRIVE],
-            ['computacion/tarjetas-de-video', VIDEO_CARD],
-            ['computacion/fuente-de-poder', POWER_SUPPLY],
-            ['mundo-gamers/consolas', VIDEO_GAME_CONSOLE],
             ['hogar-y-oficina/television', TELEVISION],
             ['hogar-y-oficina/impresoras', PRINTER],
-            ['hogar-y-oficina/escaner-y-plotter', PRINTER],
-            ['audio-y-video/audio', STEREO_SYSTEM],
+            ['musica/parlantes', STEREO_SYSTEM],
+            ['musica/audifonos/in-ear', HEADPHONES],
+            ['musica/on-ear', HEADPHONES],
+            ['musica/audifonos/over-ear', HEADPHONES],
+            ['musica/audifonos/gamers-y-streamers', HEADPHONES],
             ['celulares/marcas-1', CELL],
+            ['outdoor-tech/wearables', WEARABLE],
+            ['mundo-gamers/consolas', VIDEO_GAME_CONSOLE],
+            ['mundo-gamers/perifericos', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
