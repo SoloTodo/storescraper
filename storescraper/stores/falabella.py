@@ -282,7 +282,8 @@ class Falabella(Store):
 
                 if 'results' not in res or not res['results']:
                     if page == 1:
-                        logging.warning('Empty category: {}'.format(category_id))
+                        logging.warning(
+                            'Empty category: {}'.format(category_id))
                     break
 
                 for result in res['results']:
