@@ -103,7 +103,7 @@ class XCom(Store):
 
         name = product_data['name']
         sku = str(product_data['sku'])
-        description = product_data['description']
+        description = product_data.get('description', None)
         picture_urls = [product_data['image']['@id']]
 
         if 'PRODUCTOS NUEVOS' in product_data['category']:
