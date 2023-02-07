@@ -25,7 +25,7 @@ class Deuva(Store):
         for local_category in url_extensions:
             if local_category != category:
                 continue
-            url_webpage = 'https://www.deuva.com/productos' \
+            url_webpage = 'https://www.alltechmarket.ec/productos' \
                 '?limit=1000&brand=257'
             print(url_webpage)
             data = session.get(url_webpage).text
@@ -34,7 +34,7 @@ class Deuva(Store):
                 'div', {'id': 'pdx-products-contaniner-list'})
             for container in containers.findAll('div', 'product-card'):
                 product = container.find('a')['href']
-                product_urls.append('https://www.deuva.com' + product)
+                product_urls.append('https://www.alltechmarket.ec' + product)
         return product_urls
 
     @classmethod
