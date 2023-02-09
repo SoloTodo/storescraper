@@ -61,7 +61,6 @@ class Multicenter(Store):
         key = json_data['mpn']
         name = json_data['name']
         sku = json_data['sku']
-        description = html_to_markdown(json_data['description'])
         price = Decimal(str(json_data['offers']['offers'][0]['price']))
 
         if soup.find('div', 'vtex-add-to-cart-button-0-x-buttonDataContainer'):
@@ -69,7 +68,10 @@ class Multicenter(Store):
         else:
             stock = 0
 
+        picture_container = soup.findAll('div', 'swiper-container')[-1]
         picture_urls = []
+        for i in picture_container.findAll('img'):
+            picture_urls.append(i['src'])
 
         p = Product(
             name,
@@ -84,6 +86,5 @@ class Multicenter(Store):
             'BOB',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
         )
         return [p]
