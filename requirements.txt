@@ -13,7 +13,7 @@ html2text==2016.9.19
 html5lib==1.0.1
 idna==2.5
 ipdb==0.10.3
-ipython==7.15.0
+ipython==8.10.0
 ipython-genutils==0.2.0
 jedi==0.10.2
 kombu==4.6.11
