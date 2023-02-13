@@ -3,8 +3,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import VIDEO_CARD, RAM, SOLID_STATE_DRIVE, \
-    PROCESSOR, POWER_SUPPLY
+from storescraper.categories import COMPUTER_CASE, RAM, SOLID_STATE_DRIVE, \
+    PROCESSOR, POWER_SUPPLY, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,6 +19,7 @@ class DarkLightPc(Store):
             SOLID_STATE_DRIVE,
             PROCESSOR,
             POWER_SUPPLY,
+            COMPUTER_CASE,
         ]
 
     @classmethod
@@ -29,6 +30,7 @@ class DarkLightPc(Store):
             ['componentes/almacenamiento', SOLID_STATE_DRIVE],
             ['componentes/procesador', PROCESSOR],
             ['componentes/fte-poder', POWER_SUPPLY],
+            ['componentes/gabinete', COMPUTER_CASE],
             ['perifericos/teclados-mecanicos', PROCESSOR],
             ['perifericos/mouse', PROCESSOR],
             ['perifericos/audifonos', PROCESSOR],
