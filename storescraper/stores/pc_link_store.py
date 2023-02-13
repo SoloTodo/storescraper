@@ -56,55 +56,52 @@ class PcLinkStore(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['accesorios-para-computadores/audifonos-y-manos-libres-2', 114,
+            ['accesorios-para-computadores/audifonos-y-manos-libres-2',
              HEADPHONES],
             ['accesorios-para-computadores/kit-teclado-y-mouse-2',
-                261, KEYBOARD_MOUSE_COMBO],
-            ['accesorios-para-computadores/microfonos-3', 271, MICROPHONE],
-            ['accesorios-para-computadores/mouse', 260, MOUSE],
-            ['accesorios-para-computadores/teclado', 259, KEYBOARD],
-            ['accesorios-para-computadores/teclados-2', 268, KEYBOARD],
-            ['almacenamiento/discos-de-estado-solido', 54, SOLID_STATE_DRIVE],
-            ['almacenamiento/discos-duros-externos', 84,
-                EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/discos-duros-internos', 85, STORAGE_DRIVE],
-            ['audio-y-video/auriculares', 30, HEADPHONES],
-            ['audio-y-video/parlantes-bocinas-cornetas', 66, STEREO_SYSTEM],
-            ['celulares-accesorios/smart-band', 254, WEARABLE],
-            ['celulares-accesorios/smartphone', 256, CELL],
-            ['celulares-accesorios/smartwatch', 255, WEARABLE],
-            ['componentes-informaticos/fuentes-de-poder', 140, POWER_SUPPLY],
-            ['componentes-informaticos/gabinetes', 69, COMPUTER_CASE],
-            ['componentes-informaticos/modulos-ram-propietarios', 171, RAM],
-            ['componentes-informaticos/memoria-ram-ddr5-8gb', 270, RAM],
-            ['componentes-informaticos/tarjetas-madre-placas-madre', 68,
-                MOTHERBOARD],
-            ['componentes-informaticos/procesador', 80, PROCESSOR],
-            ['componentes-informaticos/tarjetas-de-video', 60, VIDEO_CARD],
+             KEYBOARD_MOUSE_COMBO],
+            ['accesorios-para-computadores/microfonos-3', MICROPHONE],
+            ['accesorios-para-computadores/mouse', MOUSE],
+            ['accesorios-para-computadores/teclado', KEYBOARD],
+            ['accesorios-para-computadores/teclados-2', KEYBOARD],
+            ['almacenamiento/discos-de-estado-solido', SOLID_STATE_DRIVE],
+            ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/discos-duros-internos', STORAGE_DRIVE],
+            ['audio-y-video/auriculares', HEADPHONES],
+            ['audio-y-video/parlantes-bocinas-cornetas', STEREO_SYSTEM],
+            ['celulares-accesorios/smart-band', WEARABLE],
+            ['celulares-accesorios/smartphone', CELL],
+            ['celulares-accesorios/smartwatch', WEARABLE],
+            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-informaticos/gabinetes', COMPUTER_CASE],
+            ['componentes-informaticos/modulos-ram-propietarios', RAM],
+            ['componentes-informaticos/memoria-ram-ddr5-8gb', RAM],
+            ['componentes-informaticos/tarjetas-madre-placas-madre',
+             MOTHERBOARD],
+            ['componentes-informaticos/procesador', PROCESSOR],
+            ['componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
             ['componentes-informaticos/ventiladores-y-sistemas-de-'
-             'enfriamiento', 136, CPU_COOLER],
-            ['computacion/all-in-one', 70, ALL_IN_ONE],
-            ['computacion/notebook', 48, NOTEBOOK],
-            ['computacion/tableta', 91, TABLET],
-            ['consolas-volantes-accesorios/consolas', 109, VIDEO_GAME_CONSOLE],
-            ['impresoras-escaner-suministros/escaner', 102, PRINTER],
-            ['impresoras-escaner-suministros/impresoras-ink-jet', 169,
+             'enfriamiento', CPU_COOLER],
+            ['computacion/all-in-one', ALL_IN_ONE],
+            ['computacion/notebook', NOTEBOOK],
+            ['computacion/tableta', TABLET],
+            ['consolas-volantes-accesorios/consolas', VIDEO_GAME_CONSOLE],
+            ['impresoras-escaner-suministros/escaner', PRINTER],
+            ['impresoras-escaner-suministros/impresoras-ink-jet', PRINTER],
+            ['impresoras-escaner-suministros/impresoras-laser', PRINTER],
+            ['impresoras-escaner-suministros/impresoras-multifuncionales',
              PRINTER],
-            ['impresoras-escaner-suministros/impresoras-laser', 77, PRINTER],
-            ['impresoras-escaner-suministros/impresoras-multifuncionales', 28,
-                PRINTER],
-            ['memorias-flash-pendrive/pendrive-unidades-flash-usb', 226,
+            ['memorias-flash-pendrive/pendrive-unidades-flash-usb',
              USB_FLASH_DRIVE],
-            ['memorias-flash-pendrive/tarjetas-de-memoria-flash', 96,
+            ['memorias-flash-pendrive/tarjetas-de-memoria-flash',
              MEMORY_CARD],
-            ['monitores-televisores/monitores-2', 25, MONITOR],
-            ['monitores-televisores/televisores', 93, TELEVISION],
-            ['muebles-sillas-escritorios/escritorios', 132, GAMING_DESK],
-            ['muebles-sillas-escritorios/sillas', 10, GAMING_CHAIR],
-            ['perifericos/auriculares-y-manos-libres', 22, HEADPHONES],
-            ['perifericos/combos-de-teclado-y-raton', 146,
-                KEYBOARD_MOUSE_COMBO],
-            ['ups-reguladores/ups-respaldo-de-energia', 19, UPS],
+            ['monitores-televisores/monitores-2', MONITOR],
+            ['monitores-televisores/televisores', TELEVISION],
+            ['muebles-sillas-escritorios/escritorios', GAMING_DESK],
+            ['muebles-sillas-escritorios/sillas', GAMING_CHAIR],
+            # ['perifericos/auriculares-y-manos-libres', HEADPHONES],
+            ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
+            ['ups-reguladores/ups-respaldo-de-energia', UPS],
         ]
 
         session = session_with_proxy(extra_args)
@@ -112,7 +109,7 @@ class PcLinkStore(Store):
             'application/x-www-form-urlencoded'
         session.headers['x-requested-with'] = 'XMLHttpRequest'
         product_urls = []
-        for url_extension, id_category, local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
 
@@ -123,6 +120,8 @@ class PcLinkStore(Store):
             soup = BeautifulSoup(data, 'html5lib')
 
             token = soup.find('meta', {'name': 'csrf-token'})['content']
+            id_category = re.search('"id_category":(\d+)', data).groups()[0]
+
             query_url = 'https://www.pclinkstore.cl/productos'
 
             page = 1
@@ -147,7 +146,6 @@ class PcLinkStore(Store):
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
-                    done = True
                     break
 
                 for container in product_containers:
