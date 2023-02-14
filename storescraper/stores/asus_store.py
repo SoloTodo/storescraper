@@ -1,9 +1,9 @@
-import json
+import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK
+from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -14,27 +14,51 @@ class AsusStore(Store):
     def categories(cls):
         return [
             NOTEBOOK,
+            ALL_IN_ONE,
+            VIDEO_CARD,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # Products URL: https://www.asus.com/cl/deals/All-Deals/
-        if category != NOTEBOOK:
-            return []
-
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+
+        category_paths = [
+            ('laptops', NOTEBOOK),
+            ('displays-desktops', ALL_IN_ONE),
+            ('motherboards-components', VIDEO_CARD),
+        ]
         product_urls = []
-        url_webpage = 'https://odinapi.asus.com/recent-data/apiv2/' \
-                      'DealsHomePage?SystemCode=asus&WebsiteCode=cl'
-        print(url_webpage)
-        response = session.get(url_webpage)
-        for product_level in json.loads(response.text)['Result']:
-            for product in product_level['ProductList']:
-                product_url = product['ProductCardURL']
-                product_urls.append(product_url)
+
+        for category_id, local_category in category_paths:
+            if local_category != category:
+                continue
+
+            page = 1
+
+            while True:
+                if page >= 10:
+                    raise Exception('Page overflow')
+
+                url_webpage = 'https://odinapi.asus.com/recent-data/apiv2/' \
+                              'DealsFilterResult?SystemCode=asus&' \
+                              'WebsiteCode=cl&ProductLevel1Code={}&Type=2' \
+                              '&PageSize=20&PageIndex={}'.format(
+                                category_id, page)
+                print(url_webpage)
+                page += 1
+                response = session.get(url_webpage).json()
+                product_entries = response['Result']['ProductList']
+                if not product_entries:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_id)
+                    break
+
+                for product_entry in product_entries:
+                    product_url = product_entry['ProductCardURL']
+                    product_urls.append(product_url)
         return product_urls
 
     @classmethod
