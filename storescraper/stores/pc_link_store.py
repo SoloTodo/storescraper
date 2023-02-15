@@ -75,7 +75,6 @@ class PcLinkStore(Store):
             ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
             ['componentes-informaticos/gabinetes', COMPUTER_CASE],
             ['componentes-informaticos/modulos-ram-propietarios', RAM],
-            ['componentes-informaticos/memoria-ram-ddr5-8gb', RAM],
             ['componentes-informaticos/tarjetas-madre-placas-madre',
              MOTHERBOARD],
             ['componentes-informaticos/procesador', PROCESSOR],
