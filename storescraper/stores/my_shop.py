@@ -137,6 +137,12 @@ class MyShop(Store):
         else:
             stock = 0
 
+        part_number_tag = soup.find('span', 'custom-part_number')
+        if part_number_tag:
+            part_number = part_number_tag.find('span').text.strip()
+        else:
+            part_number = None
+
         picture_urls = []
         picture_container = soup.find(
             'figure', 'woocommerce-product-gallery__wrapper')
@@ -156,6 +162,7 @@ class MyShop(Store):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            part_number=part_number
         )
         return [p]
