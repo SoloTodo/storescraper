@@ -136,6 +136,8 @@ class TravelTienda(Store):
         else:
             offer_price = normal_price
 
+        part_number = json_container.get('x_codigoProveedor', None)
+
         picture_urls = ['https://tienda.travel.cl' +
                         picture.replace(' ', '%20') for picture in
                         json_container['fullImageURLs']]
@@ -157,7 +159,8 @@ class TravelTienda(Store):
             offer_price,
             'CLP',
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=part_number
         )
 
         return [p]
