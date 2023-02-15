@@ -200,8 +200,6 @@ class Lider(Store):
             '',
             'price_asc',
             'price_desc',
-            'discount_asc',
-            'discount_desc',
         ]
         query_url = 'https://apps.lider.cl/catalogo/bff/category'
 

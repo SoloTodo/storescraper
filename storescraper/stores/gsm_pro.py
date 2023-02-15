@@ -4,7 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, HEADPHONES
+from storescraper.categories import CELL, HEADPHONES, MOUSE, STEREO_SYSTEM, \
+    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -16,15 +17,29 @@ class GsmPro(Store):
         return [
             CELL,
             HEADPHONES,
+            STEREO_SYSTEM,
+            WEARABLE,
+            VIDEO_GAME_CONSOLE,
+            MOUSE,
+            VIDEO_CARD,
+            USB_FLASH_DRIVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['telefonos', CELL],
-            ['accesorios', HEADPHONES],
-            ['mundo-gamer', CELL],
-            ['bajo-pedido', CELL],
+            ['smartphones', CELL],
+            ['audifonos-in-ear', HEADPHONES],
+            ['parlantes', STEREO_SYSTEM],
+            ['smartwatch', WEARABLE],
+            ['audifonos-gamer', HEADPHONES],
+            ['smartphones-gamer', CELL],
+            ['consolas', VIDEO_GAME_CONSOLE],
+            ['mouses-y-teclados', MOUSE],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['audifonos', HEADPHONES],
+            ['mouses-y-teclados-1', MOUSE],
+            ['memorias-y-pendrive', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)

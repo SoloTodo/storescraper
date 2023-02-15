@@ -52,7 +52,7 @@ class DarkLightPc(Store):
                               '{}/page/{}/'.format(
                                   url_extension, page)
                 print(url_webpage)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, timeout=60)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'product-grid-item')
 
@@ -73,7 +73,7 @@ class DarkLightPc(Store):
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-        response = session.get(url)
+        response = session.get(url, timeout=60)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
