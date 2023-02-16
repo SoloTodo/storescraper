@@ -126,7 +126,8 @@ class TecTec(Store):
                 stock = int(stock_tag['value'])
 
         picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'woocommerce-product-gallery').findAll('img') if validators.url(tag['src'])]
+            'div', 'woocommerce-product-gallery').findAll('img')
+            if validators.url(tag['src'])]
         p = Product(
             name,
             cls.__name__,
