@@ -189,10 +189,20 @@ class PcLinkStore(Store):
             if offer_price > normal_price:
                 offer_price = normal_price
 
-        detail_infos = product_infos[1].findAll('p')
-        sku = detail_infos[0].text.replace('Número de Parte: ', '')
-        stock = int(detail_infos[5].text.split(' ')[0].replace('.', ''))
-        if 'NUEVO' in detail_infos[4].text:
+        sku_tag = product_infos[1].find('strong', text='Número de Parte:')
+        sku = sku_tag.next.next.strip()
+        stock_tags = product_infos[1].findAll('div', 'justify-content-between')
+        stock = 0
+        for stock_tag in stock_tags:
+            stock_text = stock_tag.find('strong').text.strip()
+            if stock_text == 'No disponible':
+                continue
+            stock += int(stock_text.replace('Unidades', '').replace('Unidad', '').replace('.', ''))
+
+        condition_tag = product_infos[1].find('strong', text='Condición:')
+        condition_text = condition_tag.next.next.strip()
+
+        if 'NUEVO' in condition_text:
             condition = 'https://schema.org/NewCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
