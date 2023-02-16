@@ -191,7 +191,7 @@ class PcLinkStore(Store):
 
         detail_infos = product_infos[1].findAll('p')
         sku = detail_infos[0].text.replace('Número de Parte: ', '')
-        stock = int(detail_infos[3].text.split(' ')[2].replace('.', ''))
+        stock = int(detail_infos[5].text.split(' ')[0].replace('.', ''))
         if 'NUEVO' in detail_infos[4].text:
             condition = 'https://schema.org/NewCondition'
         else:
