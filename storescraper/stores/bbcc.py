@@ -47,30 +47,35 @@ class BookComputer(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['all-in-one', ALL_IN_ONE],
-            ['tablets-1', TABLET],
-            ['computadores-y-tablets/notebooks', NOTEBOOK],
-            ['almacenamiento/ssd/hdd', STORAGE_DRIVE],
-            ['almacenamiento/ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento/memorias-sd', MEMORY_CARD],
-            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
+            ['portatiles', NOTEBOOK],
+            ['todo-en-uno', ALL_IN_ONE],
+            ['accesorios-para-portatiles', VIDEO_CARD],
             ['monitores', MONITOR],
             ['monitores-proyectores', MONITOR],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['notebook-outlet', NOTEBOOK],
-            ['computadores', NOTEBOOK],
-            ['tablet-outlet', TABLET],
-            ['televisores', TELEVISION],
-            ['outlet/all-in-one', ALL_IN_ONE],
-            ['impresoras-y-suministros', PRINTER],
-            ['memorias', RAM],
             ['impresoras-y-escaneres', PRINTER],
-            ['audio-y-video', HEADPHONES],
+            ['impresoras-multifuncionales', PRINTER],
+            ['tabletas-digitales', TABLET],
+            ['sillas', GAMING_CHAIR],
+            ['televisores', TELEVISION],
+            ['auriculares-y-manos-libres', HEADPHONES],
+            ['gabinetes', COMPUTER_CASE],
             ['celulares', CELL],
-            ['notebook-1', NOTEBOOK],
+            ['celulares-desbloqueados', CELL],
+            ['memorias', RAM],
+            ['ratones', MOUSE],
+            ['notebook-outlet', NOTEBOOK],
+            ['tablet-outlet', TABLET],
             ['outlet/impresoras', PRINTER],
-            ['gamers/perifericos', HEADPHONES],
-            ['gamers/sillas', GAMING_CHAIR],
+            ['outlet/all-in-one', ALL_IN_ONE],
+            ['outlet/monitores', MONITOR],
+            ['outlet/televisores', TELEVISION],
+            ['outlet/consolas', VIDEO_GAME_CONSOLE],
+            ['gamers', HEADPHONES],
+            ['notebook-y-desktop', NOTEBOOK],
+            ['tarjetas-madre-placas-madre', MOTHERBOARD],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['chuwi', NOTEBOOK],
+            ['thunderobot', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -161,7 +166,7 @@ class BookComputer(Store):
             else:
                 condition = 'https://schema.org/NewCondition'
 
-            sku = soup.find('form', 'product-form form-horizontal')[
+            key = soup.find('form', 'product-form form-horizontal')[
                 'action'].split('/')[-1]
             stock = int(soup.find('input', {'id': 'input-qty'})['max'])
 
@@ -175,12 +180,13 @@ class BookComputer(Store):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
                 'CLP',
                 sku=sku,
+                part_number=sku,
                 picture_urls=picture_urls,
                 description=description,
                 condition=condition
