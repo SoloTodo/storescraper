@@ -197,7 +197,8 @@ class PcLinkStore(Store):
             stock_text = stock_tag.find('strong').text.strip()
             if stock_text == 'No disponible':
                 continue
-            stock += int(stock_text.replace('Unidades', '').replace('Unidad', '').replace('.', ''))
+            stock += int(stock_text.replace('Unidades',
+                         '').replace('Unidad', '').replace('.', ''))
 
         condition_tag = product_infos[1].find('strong', text='Condición:')
         condition_text = condition_tag.next.next.strip()
