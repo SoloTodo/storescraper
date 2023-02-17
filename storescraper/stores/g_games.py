@@ -80,7 +80,7 @@ class GGames(Store):
                 continue
             page = 1
             while True:
-                if page > 15:
+                if page > 20:
                     raise Exception('page overflow: ' + url_extension)
 
                 url_webpage = 'https://ggames.cl/collections/{}?page={}' \
