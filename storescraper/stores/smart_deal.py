@@ -23,6 +23,7 @@ class SmartDeal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
+            ('smart-to-school', NOTEBOOK),
             ('computacion', NOTEBOOK),
             ('smartphones-y-tablets', CELL),
             ('componentes-y-otros', MOTHERBOARD),
@@ -35,30 +36,21 @@ class SmartDeal(Store):
             if category != local_category:
                 continue
 
-            page = 1
+            page_url = 'https://smartdeal.cl/categoria-producto/{}/'.format(
+                category_path)
+            print(page_url)
+            response = session.get(page_url)
+            data = response.text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
 
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + category_path)
+            if not product_containers:
+                logging.warning('Empty category: ' + category_path)
 
-                page_url = 'https://smartdeal.cl/categoria-producto/{}/' \
-                           '?product-page={}'.format(category_path, page)
-                print(page_url)
-                response = session.get(page_url)
-                data = response.text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_path)
-                    break
-
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
         return product_urls
 
     @classmethod
