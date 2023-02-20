@@ -49,10 +49,7 @@ class ElectronicaPanamericana(Store):
         sku = soup.find('span', 'sku')
 
         if not sku:
-            sku_container = soup.find(
-                'script', {'type': 'application/ld+json'}).text
-            sku_json = json.loads(sku_container)
-            sku = str(sku_json['@graph'][1]['sku'])
+            return []
         else:
             sku = sku.text.strip()
 
