@@ -3,13 +3,14 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MOUSE, STORAGE_DRIVE, \
+from storescraper.categories import MICROPHONE, MOUSE, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, HEADPHONES, STEREO_SYSTEM, \
     KEYBOARD, COMPUTER_CASE, CPU_COOLER, POWER_SUPPLY, RAM, MEMORY_CARD, \
     USB_FLASH_DRIVE, GAMING_CHAIR, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, remove_words, \
+    session_with_proxy
 
 
 class PcInfinity(Store):
@@ -31,28 +32,33 @@ class PcInfinity(Store):
             USB_FLASH_DRIVE,
             GAMING_CHAIR,
             CASE_FAN,
+            MICROPHONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['18-discos-duros', STORAGE_DRIVE],
-            ['22-discos-externos', EXTERNAL_STORAGE_DRIVE],
-            ['19-discos-solidos', SOLID_STATE_DRIVE],
-            ['25-audifonos-gamer', HEADPHONES],
-            ['24-audifonos', HEADPHONES],
-            ['23-parlantes', STEREO_SYSTEM],
-            ['13-teclados', KEYBOARD],
-            ['14-mouse', MOUSE],
-            ['16-gabinetes', COMPUTER_CASE],
-            ['78-ventiladores-para-cpu', CPU_COOLER],
-            ['51-fuentes-de-poder', POWER_SUPPLY],
-            ['60-memorias-pc', RAM],
-            ['61-memorias-notebook', RAM],
-            ['62-memorias-flash', MEMORY_CARD],
-            ['64-pendrives', USB_FLASH_DRIVE],
-            ['82-sillas-gamer', GAMING_CHAIR],
-            ['49-ventiladores-para-gabinetes', CASE_FAN],
+            ['almacenamiento/discos-duros', STORAGE_DRIVE],
+            ['almacenamiento/discos-externos', EXTERNAL_STORAGE_DRIVE],
+            ['almacenamiento/discos-solidos', SOLID_STATE_DRIVE],
+            ['audio/audifonos', HEADPHONES],
+            ['audio/audifonos-gamer', HEADPHONES],
+            ['audio/microfonos', MICROPHONE],
+            ['audio/parlantes', STEREO_SYSTEM],
+            ['gabinetes', COMPUTER_CASE],
+            ['memorias/memorias-flash', MEMORY_CARD],
+            ['memorias/memorias-notebook', RAM],
+            ['memorias/memorias-pc', RAM],
+            ['memorias/pendrives', USB_FLASH_DRIVE],
+            ['mouse-mouse', MOUSE],
+            ['mouse/mouse-gamer', MOUSE],
+            ['teclados', KEYBOARD],
+            ['refrigeracion/ventiladores-para-cpu', CPU_COOLER],
+            ['refrigeracion/ventiladores-para-gabinetes', CASE_FAN],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['zona-gamer/parlantes-gamer', STEREO_SYSTEM],
+            ['sillas-y-escritorios-gamer', GAMING_CHAIR],
+            ['mouse-gamer', MOUSE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -65,19 +71,18 @@ class PcInfinity(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://www.pc-infinity.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://www.pc-infinity.cl/categoria-producto' \
+                    '/{}/page/{}/'.format(url_extension, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.find('div', 'products row')
+                product_containers = soup.findAll('li', 'product')
 
-                if not product_containers:
+                if len(product_containers) == 0:
                     if page == 1:
                         logging.warning('empty category: ' + url_extension)
                     break
-                for container in product_containers.findAll(
-                        'article', 'product-miniature'):
+                for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
                 page += 1
@@ -89,33 +94,52 @@ class PcInfinity(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = soup.find('div', 'row product_container')
-        name = product_data.find('h1', 'product_name').text
-        key = product_data.find('input', {'name': 'id_product'})['value']
-        sku = soup.find('span', {'itemprop': 'sku'}).text.strip()
-        if product_data.find('span', {'id': 'product-availability'})\
-                .text.strip() == '':
-            stock = -1
+
+        key = soup.find('link', {'rel': 'shortlink'})[
+            'href'].split('=')[-1]
+
+        name = soup.find('h1', 'product_title').text.strip()
+        sku = soup.find('span', 'sku').text.strip()
+
+        offer_price = Decimal(remove_words(
+            soup.find('div', 'wds-first').find('span').text))
+        normal_price = Decimal(remove_words(
+            soup.find('div', 'wds-second').find('span').text))
+
+        if normal_price < offer_price:
+            normal_price = offer_price
+
+        input_qty = soup.find('input', 'qty')
+        if input_qty:
+            if 'max' in input_qty.attrs and input_qty['max']:
+                stock = int(input_qty['max'])
+            else:
+                stock = -1
         else:
             stock = 0
-        price = Decimal(product_data.find('span', 'price').text.replace(
-            '$\xa0', '').replace('.', ''))
-        picture_urls = [tag['src'] for tag in
-                        product_data.find('ul', 'product-images')
-                        .findAll('img')]
+
+        description = html_to_markdown(
+            soup.find('div', {'id': 'tab-description'}).text)
+
+        picture_container = soup.find(
+            'figure', 'woocommerce-product-gallery__wrapper')
+        picture_urls = []
+        for i in picture_container.findAll('img'):
+            picture_urls.append(i['src'])
+
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            key,
+            sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             picture_urls=picture_urls,
-
+            description=description,
         )
         return [p]
