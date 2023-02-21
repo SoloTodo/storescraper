@@ -646,8 +646,10 @@ class MercadoLibreChile(Store):
             base_url += '&official_store=all'
 
         while True:
-            if offset > 1000:
-                raise Exception('Page overflow')
+            if offset >= 1000:
+                logging.warning('Overflow reached in: ' + category or 'Unkown')
+                break
+                # raise Exception('Page overflow')
 
             url = '{}&offset={}'.format(base_url, offset)
             response = session.get(url)
