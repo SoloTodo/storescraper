@@ -42,7 +42,6 @@ class Max(Store):
                 break
             for container in product_containers:
                 product_url = container.find('a')['href']
-                print(product_url)
                 if product_url in product_urls:
                     return product_urls
                 product_urls.append(product_url)
@@ -53,7 +52,12 @@ class Max(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url, timeout=30).text
+        response = session.get(url, timeout=60)
+
+        if response.status_code != 200:
+            return []
+
+        data = response.text
         soup = BeautifulSoup(data, 'html.parser')
         name = soup.find('h1', 'page-title').text.strip()
         key = soup.find('input', {'id': 'getproductid'})['value']
