@@ -384,6 +384,7 @@ from .smart_gaming import SmartGaming
 from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
+from .sodimac_peru import SodimacPeru
 from .solar_led import SolarLed
 from .soluservi import Soluservi
 from .sony_store import SonyStore
@@ -434,6 +435,7 @@ from .tomalo import Tomalo
 from .top_fps_store import TopFpsStore
 from .top_pc import TopPc
 from .tottus import Tottus
+from .tottus_peru import TottusPeru
 from .ttchile import TtChile
 from .tupi import Tupi
 from .ultra_pc import UltraPc

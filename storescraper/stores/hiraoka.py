@@ -31,7 +31,7 @@ class Hiraoka(Store):
             if page > 10:
                 raise Exception('Page overflow')
 
-            category_url = 'https://hiraoka.com.pe/lg/marca-lg?p={}'.format(
+            category_url = 'https://hiraoka.com.pe/lg?p={}'.format(
                 page)
             print(category_url)
             res = session.get(category_url)

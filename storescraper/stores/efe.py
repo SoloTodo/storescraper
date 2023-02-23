@@ -26,9 +26,8 @@ class Efe(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
         url_webpage = 'https://www.efe.com.pe/webapp/wcs/stores/servlet/' \
-                      'CategoryNavigationResultsGridScrollView?' \
-                      'categoryId=3074457345616749263&storeId=10152' \
-                      '&pageSize=1000'
+                      'ScrollableProductListingView?' \
+                      'manufacturer=LG&resultsPerPage=1000&storeId=10152'
         print(url_webpage)
         data = session.get(url_webpage).text
         soup = BeautifulSoup(data, 'html.parser')
