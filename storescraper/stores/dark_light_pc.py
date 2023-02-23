@@ -4,7 +4,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, RAM, SOLID_STATE_DRIVE, \
-    PROCESSOR, POWER_SUPPLY, VIDEO_CARD
+    MOTHERBOARD, PROCESSOR, POWER_SUPPLY, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,6 +20,7 @@ class DarkLightPc(Store):
             PROCESSOR,
             POWER_SUPPLY,
             COMPUTER_CASE,
+            MOTHERBOARD,
         ]
 
     @classmethod
@@ -28,6 +29,7 @@ class DarkLightPc(Store):
             ['componentes/tarjeta-grafica', VIDEO_CARD],
             ['componentes/ram', RAM],
             ['componentes/almacenamiento', SOLID_STATE_DRIVE],
+            ['componentes/placa-madre', MOTHERBOARD],
             ['componentes/procesador', PROCESSOR],
             ['componentes/fte-poder', POWER_SUPPLY],
             ['componentes/gabinete', COMPUTER_CASE],
