@@ -80,7 +80,7 @@ class TiendaEntel(Store):
                               container['heroImage']
                 picture_urls.append(picture_url.replace(' ', '%20'))
 
-            if 'seminuevo' in sku['skuName'].lower():
+            if 'semi' in sku['skuName'].lower():
                 condition = 'https://schema.org/RefurbishedCondition'
             else:
                 condition = 'https://schema.org/NewCondition'

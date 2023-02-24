@@ -174,7 +174,7 @@ class Entel(Store):
             variant_sku = variant['skuId']
             stock = stock_dict[variant_sku]
 
-            refurbished_blacklist = ['seminuevo', 'renovado']
+            refurbished_blacklist = ['semi', 'renovado']
 
             for blacklist in refurbished_blacklist:
                 if blacklist in variant_name.lower():
