@@ -115,14 +115,21 @@ class CSByte(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text
+        name = soup.find('h1', 'product_title').text.strip()
+
+        new_condition_tag = soup.find('a', {'href': 'https://www.csbyte.cl/estado/nuevo/'})
+        if new_condition_tag:
+            condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         if soup.find('form', 'variations_form'):
             products = []
             variations = json.loads(soup.find('form', 'variations_form')[
                 'data-product_variations'])
             for product in variations:
-                variation_name = name + ' - ' + product['attributes'][
-                    'attribute_pa_color']
+                variation_name = name + ' - ' + ' '.join(
+                    product['attributes'].values())
                 key = str(product['variation_id'])
                 sku = product.get('sku', None)
                 if product['max_qty'] == '':
@@ -143,7 +150,8 @@ class CSByte(Store):
                     price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    condition=condition
                 )
                 products.append(p)
             return products
@@ -173,6 +181,7 @@ class CSByte(Store):
                 price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                condition=condition
             )
             return [p]
