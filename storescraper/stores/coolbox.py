@@ -85,11 +85,27 @@ class Coolbox(Store):
         sku = product_specs['productReference']
         description = html_to_markdown(product_specs.get('description', None))
 
-        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
-            base_json_key)
-        pricing_data = product_data[pricing_key]
-        price = Decimal(str(pricing_data['Price']))
-        stock = pricing_data['AvailableQuantity']
+        seller_entry = None
+
+        seller_idx = 0
+        while True:
+            seller_key = '{}.items.0.sellers.{}'.format(
+                base_json_key, seller_idx)
+            if seller_key not in product_data:
+                break
+            if product_data[seller_key]['sellerId'] == '1':
+                seller_entry_key = \
+                    '${}.items.0.sellers.0.commertialOffer'.format(
+                        base_json_key, seller_key)
+                seller_entry = product_data[seller_entry_key]
+                break
+            seller_idx += 1
+
+        if not seller_entry:
+            return []
+
+        price = Decimal(str(seller_entry['Price']))
+        stock = seller_entry['AvailableQuantity']
 
         picture_list_key = '{}.items.0'.format(base_json_key)
         picture_list_node = product_data[picture_list_key]
