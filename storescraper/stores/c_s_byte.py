@@ -13,6 +13,8 @@ from storescraper.utils import session_with_proxy
 
 
 class CSByte(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
