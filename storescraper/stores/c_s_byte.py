@@ -117,7 +117,8 @@ class CSByte(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text.strip()
 
-        new_condition_tag = soup.find('a', {'href': 'https://www.csbyte.cl/estado/nuevo/'})
+        new_condition_tag = soup.find(
+            'a', {'href': 'https://www.csbyte.cl/estado/nuevo/'})
         if new_condition_tag:
             condition = 'https://schema.org/NewCondition'
         else:
@@ -164,7 +165,11 @@ class CSByte(Store):
             sku = str(json_data['sku'])
             offer = json_data['offers'][0]
             if offer['availability'] == 'http://schema.org/InStock':
-                stock = int(soup.find('p', 'stock').text.split()[0])
+                stock_p = soup.find('p', 'stock')
+                if stock_p:
+                    stock = int(stock_p.text.split()[0])
+                else:
+                    stock = -1
             else:
                 stock = 0
             price = Decimal(offer['price'])
