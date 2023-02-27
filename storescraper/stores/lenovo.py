@@ -89,10 +89,11 @@ class Lenovo(Store):
                 'div', 'configuratorItem-accordion-content')))
 
             stock_msg = soup.find('span', 'stock_message').text
-            stock = -1
 
-            if stock_msg == 'Agotado':
+            if 'agotado' in stock_msg.lower():
                 stock = 0
+            else:
+                stock = -1
 
             p = Product(
                 '{} ({})'.format(name, sku),
