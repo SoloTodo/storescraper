@@ -115,6 +115,8 @@ class EForest(MercadoLibreChile):
             url, category=category, extra_args=extra_args)
 
         for product in products:
+            if 'openbox' in product.name.lower():
+                product.condition = 'https://schema.org/RefurbishedCondition'
             product.seller = None
 
         return products
