@@ -102,15 +102,19 @@ class Tecnoaxis(Store):
         description = product_data['description']
 
         sku = soup.find('span', 'sku').text.strip()
+
+        section = soup.find('section', 'wd-negative-gap')
+        normal_price = Decimal(remove_words(section.findAll(
+            'span', 'woocommerce-Price-amount')[-1].text))
+
+        if normal_price == 0:
+            return []
+
         price_p = soup.find('p', 'price')
         if price_p.find('ins'):
             offer_price = Decimal(remove_words(price_p.find('ins').text))
         else:
             offer_price = Decimal(remove_words(price_p.find('bdi').text))
-
-        section = soup.find('section', 'wd-negative-gap')
-        normal_price = Decimal(remove_words(section.findAll(
-            'span', 'woocommerce-Price-amount')[-1].text))
 
         if soup.find('button', 'single_add_to_cart_button'):
             stock = -1
