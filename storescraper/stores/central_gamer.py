@@ -37,7 +37,7 @@ class CentralGamer(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['almacenamiento', STORAGE_DRIVE],
+            ['almacenamiento-para-pc', STORAGE_DRIVE],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['gabinetes-gamer', COMPUTER_CASE],
             ['placas-madre-pc', MOTHERBOARD],
