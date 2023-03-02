@@ -118,8 +118,11 @@ class UltraPc(Store):
             sku = json_data['sku']
             description = json_data['description']
 
-            if soup.find('span',
-                         'electro-stock-availability').find('p', 'stock'):
+            product_container = soup.find('div', 'single-product-wrapper')
+            stock_tag = product_container.find('p', 'in-stock',
+                                               text='Hay existencias')
+
+            if stock_tag:
                 stock = -1
             else:
                 stock = 0
