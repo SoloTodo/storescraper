@@ -417,6 +417,7 @@ from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
 from .techni_diseno import TechniDiseno
+from .technology_world import TechnologyWorld
 from .tienda_amiga import TiendaAmiga
 from .tienda_cargo_sud import TiendaCargoSud
 from .tienda_claro import TiendaClaro

@@ -120,7 +120,7 @@ class BookComputer(Store):
                 re.search(r"var productInfo = (.*);", response.text).groups()[
                     0])
             for product in variations:
-                name = soup.find('h1', 'product-form_title page-title').text
+                name = soup.find('h1', 'page-header').text
 
                 if 'REACONDICIONADO' in name.upper():
                     condition = 'https://schema.org/RefurbishedCondition'
