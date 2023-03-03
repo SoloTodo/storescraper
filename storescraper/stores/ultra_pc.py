@@ -119,14 +119,20 @@ class UltraPc(Store):
             description = json_data['description']
 
             product_container = soup.find('div', 'post-' + key)
-            blacklist = ['outofstock', 'product_tag-proximamente']
 
-            for keyword in blacklist:
-                if keyword in product_container.attrs['class']:
-                    stock = 0
-                    break
+            query_stock_button = soup.find('div', 'boton_consultar_stock')
+            
+            if query_stock_button:
+                stock = 0
             else:
-                stock = -1
+                blacklist = ['outofstock', 'product_tag-proximamente']
+
+                for keyword in blacklist:
+                    if keyword in product_container.attrs['class']:
+                        stock = 0
+                        break
+                else:
+                    stock = -1
 
             offer_price = Decimal(
                 json_data['offers'][0]['priceSpecification']['price'])
