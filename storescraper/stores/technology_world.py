@@ -9,7 +9,8 @@ from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
     USB_FLASH_DRIVE, VIDEO_CARD, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, session_with_proxy
+from storescraper.utils import html_to_markdown, remove_words, \
+    session_with_proxy
 
 
 class TechnologyWorld(Store):
