@@ -114,7 +114,7 @@ class Zmart(Store):
         name = soup.find('h1').text.strip()
 
         query_string = urllib.parse.urlparse(url).query
-        sku = urllib.parse.parse_qs(query_string)['idProduct'][0]
+        key = urllib.parse.parse_qs(query_string)['idProduct'][0]
 
         if soup.find('input', 'comprar2015'):
             stock = -1
@@ -127,14 +127,11 @@ class Zmart(Store):
         if 'PREVENTA' in order_type_container.text:
             stock = 0
 
-        price_string = soup.find('div', {'id': 'PriceProduct'})
+        sku = soup.find('span', 'zmart__sku').text.strip()
 
-        if not price_string:
-            return []
-
-        price_string = price_string.contents[2]
-
-        price = Decimal(remove_words(price_string))
+        price_td = soup.find('div', {'id': 'ficha_producto'}).findAll('td')[
+            0].find('div')
+        price = Decimal(remove_words(price_td.text.strip()))
 
         description = html_to_markdown(str(soup.find('div', 'tab')),
                                        'https://www.zmart.cl')
@@ -159,7 +156,7 @@ class Zmart(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
