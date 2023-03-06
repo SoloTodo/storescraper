@@ -111,7 +111,7 @@ class GWStore(Store):
         name = json_data['name']
         sku = json_data['sku']
         price = Decimal(json_data['offers']['price'])
-        picture_urls = json_data['offers']['image']
+        picture_urls = json_data['offers'].get('image', [])
 
         if json_data['offers']['availability'] == \
                 'https://schema.org/OutOfStock':
