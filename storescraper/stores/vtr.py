@@ -141,6 +141,9 @@ class Vtr(Store):
             'https://vtr.com/api/product/device?device={}'.format(
                 prod_id)).text)
 
+        if 'plans' not in product_data:
+            return []
+
         for plan_entry in product_data['plans']:
             plan_entry['pricing_data'] = {x['name']: x
                                           for x in plan_entry['price']}
