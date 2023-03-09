@@ -111,7 +111,7 @@ class Wom(Store):
 
             while retries:
                 plan_containers = driver.find_elements_by_class_name(
-                    'index-module--planItemWrapper--1HvWb')
+                    'PlanItem-module--container--2HhUC')
                 if plan_containers:
                     break
                 time.sleep(2)
@@ -123,7 +123,7 @@ class Wom(Store):
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
         plan_containers = soup.findAll(
-            'div', 'index-module--planItemWrapper--1HvWb')
+            'div', 'PlanItem-module--container--2HhUC')
         products = []
 
         variants = [
@@ -133,9 +133,9 @@ class Wom(Store):
 
         for container in plan_containers:
             plan_name = container.find(
-                'div', 'index-module--header_wrapper--19A6B').text
+                'h3', 'PlanItem-module--name--2ab79').text
             plan_price = Decimal(remove_words(
-                container.find('span', 'index-module--price--1k_ac').text))
+                container.find('span', 'PlanItem-module--price--2M4jG').text))
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:
