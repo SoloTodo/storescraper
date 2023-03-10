@@ -1,6 +1,7 @@
 from decimal import Decimal
-from itertools import product
 from bs4 import BeautifulSoup
+import validators
+
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
@@ -61,7 +62,8 @@ class Deuva(Store):
         picture_container = soup.find('div', 'product-gallery-preview')
         picture_urls = []
         for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'])
+            if validators.url(i['src']):
+                picture_urls.append(i['src'])
 
         p = Product(
             name,
