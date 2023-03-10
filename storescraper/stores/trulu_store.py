@@ -94,7 +94,9 @@ class TruluStore(Store):
         name = soup.find('h1', 'product-title').text.strip()
         sku = soup.find('span', 'sku').text
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        if soup.find('p', 'stock out-of-stock') or 'venta' in name.lower():
+        if soup.find('p', 'stock out-of-stock') or 'venta' in name.lower() or \
+                'PRE-VENTA' in soup.find(
+                    'div', 'product-short-description').text.upper():
             stock = 0
         else:
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
