@@ -12,6 +12,9 @@ from storescraper.utils import session_with_proxy
 
 
 class HeyStore(Store):
+    preferred_products_for_url_concurrency = 3
+    preferred_discover_urls_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
