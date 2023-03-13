@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, STORAGE_DRIVE, \
+from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, MOUSE, KEYBOARD, TELEVISION, MONITOR, \
     MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR, CASE_FAN
@@ -37,12 +37,14 @@ class CCLink(Store):
             UPS,
             GAMING_CHAIR,
             CASE_FAN,
+            ALL_IN_ONE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ['computadores/notebook', NOTEBOOK],
+            ['computadores/todo-en-uno', ALL_IN_ONE],
             ['partes-y-piezas/almacenamiento/discos-opticos-externos',
              EXTERNAL_STORAGE_DRIVE],
             ['partes-y-piezas/almacenamiento/discos-opticos-internos',
