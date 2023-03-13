@@ -4,7 +4,7 @@ import logging
 import re
 from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR, PROCESSOR, STEREO_SYSTEM, \
-    VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, WEARABLE
+    VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, VIDEO_GAME_CONSOLE, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -21,6 +21,7 @@ class TodoGeek(Store):
             NOTEBOOK,
             GAMING_CHAIR,
             WEARABLE,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -33,6 +34,7 @@ class TodoGeek(Store):
             ['laptops-computer', NOTEBOOK],
             ['sillas-gamer', GAMING_CHAIR],
             ['watches', WEARABLE],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)

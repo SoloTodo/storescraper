@@ -121,7 +121,7 @@ class UltraPc(Store):
             product_container = soup.find('div', 'post-' + key)
 
             query_stock_button = soup.find('div', 'boton_consultar_stock')
-            
+
             if query_stock_button:
                 stock = 0
             else:

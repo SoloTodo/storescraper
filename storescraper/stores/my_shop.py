@@ -1,6 +1,7 @@
 from decimal import Decimal
 import json
 import logging
+import validators
 from bs4 import BeautifulSoup
 from storescraper.categories import *
 from storescraper.product import Product
@@ -152,7 +153,8 @@ class MyShop(Store):
         picture_container = soup.find(
             'figure', 'woocommerce-product-gallery__wrapper')
         for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'])
+            if validators.url(i['src']):
+                picture_urls.append(i['src'])
 
         p = Product(
             name,

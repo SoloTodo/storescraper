@@ -74,7 +74,7 @@ class Campcom(Store):
         stock_span = soup.find('span', 'stock in-stock')
 
         if soup.find('p', 'available-on-backorder') or \
-                soup.find('span', 'stock out-of-stock'):
+                soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif stock_span:
             stock = int(stock_span.text.split('disp')[0].strip())
