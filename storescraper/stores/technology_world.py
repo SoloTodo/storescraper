@@ -49,6 +49,7 @@ class TechnologyWorld(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
+            ['apple', NOTEBOOK],
             ['ipad', TABLET],
             ['imac-mac-mini', ALL_IN_ONE],
             ['relojes-inteligentes', WEARABLE],
@@ -57,6 +58,7 @@ class TechnologyWorld(Store):
             ['all-in-one-1', ALL_IN_ONE],
             ['tablets-1', TABLET],
             ['monitores-tv', MONITOR],
+            ['impresoras-1', PRINTER],
             ['impresoras-de-tinta', PRINTER],
             ['impresoras-laser-1', PRINTER],
             ['impresoras-multifuncional-1', PRINTER],

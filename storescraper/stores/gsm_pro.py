@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import demjson
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, HEADPHONES, MOUSE, STEREO_SYSTEM, \
@@ -73,6 +74,11 @@ class GsmPro(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        if extra_args and 'product_blacklist' in extra_args:
+            product_blacklist = extra_args['product_blacklist']
+        else:
+            product_blacklist = []
+
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
@@ -84,6 +90,7 @@ class GsmPro(Store):
                 'data-product-json': True
             }).text)
         product_data = publication_data['product']
+        publication_id = product_data['id']
         stock_data = publication_data['inventories']
 
         description = html_to_markdown(product_data['description'])
@@ -95,7 +102,11 @@ class GsmPro(Store):
             name = variant['name']
             sku = variant['sku']
             price = (Decimal(variant['price']) / Decimal(100)).quantize(0)
-            stock = max(stock_data[key]['inventory_quantity'], 0)
+
+            if publication_id in product_blacklist:
+                stock = 0
+            else:
+                stock = max(stock_data[key]['inventory_quantity'], 0)
 
             variant_url = '{}?variant={}'.format(url, key)
 
@@ -117,3 +128,34 @@ class GsmPro(Store):
             products.append(p)
 
         return products
+
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        session = session_with_proxy(extra_args)
+        config = session.get(
+            'https://cdn.shopify.com/s/files/1/0448/8921/1040/t/28/assets/'
+            'bss-file-configdata.js').text.split('\n')[0]
+        json_body = config[16:-1]
+        json_data = demjson.decode(json_body)
+
+        blacklist = [
+            72534,  # Encargo
+            71437,  # Preventa
+            64852,  # Descontinuado
+            63091,  # Stock en transito
+            63078,  # Stock en transito
+            63069,  # Encargo
+            63064,  # Encargo
+            63062,  # Stock en transito
+        ]
+
+        product_blacklist = []
+        for entry in json_data:
+            if entry['label_id'] in blacklist:
+                product_blacklist.extend(entry['product'].split(','))
+
+        new_extra_args = extra_args or {}
+        new_extra_args['product_blacklist'] = list(set(product_blacklist))
+
+        return new_extra_args
