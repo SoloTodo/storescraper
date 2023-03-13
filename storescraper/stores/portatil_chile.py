@@ -4,36 +4,38 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import NOTEBOOK
+from storescraper.categories import NOTEBOOK, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class PortatilChile(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK
+            NOTEBOOK,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            NOTEBOOK
+            ['4-notebooks', NOTEBOOK],
+            ['42-especial-2-1', NOTEBOOK],
+            ['71-consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in url_extensions:
+        for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 15:
                     raise Exception('page overflow')
-                url_webpage = 'https://portatilchile.com/4-notebooks?page={}' \
-                              ''.format(page)
+                url_webpage = 'https://portatilchile.com/{}?page={}' \
+                              ''.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
