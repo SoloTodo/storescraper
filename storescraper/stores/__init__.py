@@ -33,6 +33,7 @@ from .bios_play import BiosPlay
 from .bristol import Bristol
 from .bulldog_pc import BulldogPc
 from .byp import Byp
+from .c_nava import CNava
 from .c_network import CNetwork
 from .c_s_byte import CSByte
 from .cafe_digital import CafeDigital
