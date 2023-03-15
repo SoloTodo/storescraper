@@ -93,6 +93,7 @@ class Coolbox(Store):
                 base_json_key, seller_idx)
             if seller_key not in product_data:
                 break
+            # print(json.dumps(product_data[seller_key]))
             if product_data[seller_key]['sellerId'] == '1':
                 seller_entry_key = \
                     '${}.items.0.sellers.0.commertialOffer'.format(
@@ -100,6 +101,10 @@ class Coolbox(Store):
                 seller_entry = product_data[seller_entry_key]
                 break
             seller_idx += 1
+            # Consider only the first seller because the site does not allow
+            # to select another one. If you want to consider all sellers remove
+            # the following break
+            break
 
         if not seller_entry:
             return []
