@@ -87,8 +87,8 @@ class AgenciasWayOnline(Store):
 
         sku = product_container['id'].split('-')[1]
 
-        model = product_container.find(
-            'p', 'alter').text.split(
+        model = product_container.findAll(
+            'p', 'alter')[-1].text.split(
             'Alterno')[0].split(':')[1].strip()
 
         name = '{} - {} ({})'.format(
@@ -118,7 +118,8 @@ class AgenciasWayOnline(Store):
             'GTQ',
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
+            part_number=model
         )
 
         return [p]
