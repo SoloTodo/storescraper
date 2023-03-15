@@ -28,8 +28,9 @@ class Estilos(Store):
             if page > 20:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.estilos.com.pe/54_lg?page={}'.format(
-                page)
+            url_webpage = 'https://www.estilos.com.pe/buscar?' \
+                          'controller=search&s=LG&order=product.name.asc' \
+                          '&page={}'.format(page)
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
@@ -40,7 +41,9 @@ class Estilos(Store):
                     logging.warning('Empty category')
                 break
             for container in product_containers:
-                product_urls.append(container.find('a')['href'])
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+
             page += 1
         return product_urls
 
