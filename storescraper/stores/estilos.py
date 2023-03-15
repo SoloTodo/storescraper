@@ -54,11 +54,15 @@ class Estilos(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        if 'Este paquete contiene' in soup.text:
+        # if 'Este paquete contiene' in soup.text:
+        #     return []
+
+        product_tag = soup.find('div', {'id': 'product-details'})
+
+        if not product_tag:
             return []
 
-        product_data = json.loads(
-            soup.find('div', {'id': 'product-details'})['data-product'])
+        product_data = json.loads(product_tag['data-product'])
 
         key = str(product_data['id'])
         name = product_data['name']
