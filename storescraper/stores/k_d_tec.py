@@ -164,9 +164,12 @@ class KDTec(Store):
         offer_price = Decimal(product_data['offers']['price'])
         normal_price = (offer_price * Decimal(1.02951)).quantize(0)
 
-        stock_span = soup.find('span', 'stock in-stock')
-        if stock_span:
-            stock = int(stock_span.text.split(' ')[0])
+        input_qty = soup.find('input', 'qty')
+        if input_qty:
+            if 'max' in input_qty.attrs and input_qty['max']:
+                stock = int(input_qty['max'])
+            else:
+                stock = -1
         else:
             stock = 0
 
