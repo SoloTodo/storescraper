@@ -71,6 +71,7 @@ class KDTec(Store):
             ['computacion/almacenamiento/disco-duro-interno', STORAGE_DRIVE],
             ['computacion/almacenamiento/disco-ssd', SOLID_STATE_DRIVE],
             ['computacion/monitores/monitor', MONITOR],
+            ['audio/pantallas-interactivas', MONITOR],
             ['computacion/gamer/monitor-gamer', MONITOR],
             ['computacion/perifericos/mouse', MOUSE],
             ['computacion/perifericos/teclados', KEYBOARD],
