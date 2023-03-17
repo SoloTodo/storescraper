@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CELL, PRINTER, WEARABLE, TELEVISION, \
     STEREO_SYSTEM, NOTEBOOK, MONITOR, TABLET, \
     HEADPHONES, MOUSE, GAMING_CHAIR, REFRIGERATOR, OVEN, \
-    AIR_CONDITIONER, VIDEO_GAME_CONSOLE
+    AIR_CONDITIONER, VIDEO_GAME_CONSOLE, WASHING_MACHINE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -33,7 +33,8 @@ class TravelTienda(Store):
             OVEN,
             AIR_CONDITIONER,
             VIDEO_GAME_CONSOLE,
-            PRINTER
+            PRINTER,
+            WASHING_MACHINE
         ]
 
     @classmethod
@@ -52,15 +53,18 @@ class TravelTienda(Store):
             ('2881216585', VIDEO_GAME_CONSOLE),  # Tech > Gamer > Consolas y Ac
             ('3121709090', HEADPHONES),  # Tech > Audio > Audífonos
             ('326296390', STEREO_SYSTEM),  # Tech > Audio > Audio Portátil
-            ('1345767085', STEREO_SYSTEM),  # Tech > Audio > Sistemas de Sonido
+            ('742795275', STEREO_SYSTEM),  # Tech > Audio > Soundbar
             ('1095159098', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Parlantes y
-            ('3514911626', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Soundbar
-            ('3551610308', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Subwoofer y
+            ('3555399911', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Stereo
+            ('1379171641', STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Subwoofer y
             ('4064311224', STEREO_SYSTEM),  # Tech > Audio
             ('1479054651', STEREO_SYSTEM),  # Tech > Audio HiFi
+            # Electro > Línea blanca > regrigerador
             ('306745319', REFRIGERATOR),
+            ('3548829535', REFRIGERATOR),  # Electro > Línea blanca > freezer
             ('831669398', OVEN),
             ('628735343', AIR_CONDITIONER),
+            ('2620100069', WASHING_MACHINE),
         ]
 
         session = session_with_proxy(extra_args)
