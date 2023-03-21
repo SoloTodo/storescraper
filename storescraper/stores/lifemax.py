@@ -119,6 +119,10 @@ class Lifemax(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.text == "":
+            return []
+
         soup = BeautifulSoup(response.text, 'html5lib')
 
         json_container = soup.find('main', 'bs-main').find(
