@@ -3,7 +3,8 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, CPU_COOLER, \
     GAMING_CHAIR, KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, \
-    POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, HEADPHONES
+    POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, VIDEO_CARD, HEADPHONES, \
+    PRINTER, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -26,7 +27,9 @@ class Chelnovix(Store):
             MOUSE,
             HEADPHONES,
             RAM,
-            SOLID_STATE_DRIVE
+            SOLID_STATE_DRIVE,
+            PRINTER,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -43,10 +46,12 @@ class Chelnovix(Store):
             ['accesorios-gamer/teclados-gamer', KEYBOARD],
             ['accesorios-gamer/mouse-gamer', MOUSE],
             ['accesorios-gamer/audifonos-gamer', HEADPHONES],
+            ['accesorios-gamer/parlante', STEREO_SYSTEM],
             ['monitores', MONITOR],
             ['tarjeta-de-video', VIDEO_CARD],
             ['partes-y-piezas/memoria-ram', RAM],
             ['partes-y-piezas/almacenamiento', SOLID_STATE_DRIVE],
+            ['impresoras', PRINTER],
         ]
 
         session = session_with_proxy(extra_args)
