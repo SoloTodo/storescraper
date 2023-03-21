@@ -1,6 +1,6 @@
 import json
 
-import requests
+import demjson
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -26,19 +26,18 @@ class TiendaClaro(Store):
             offset = 0
 
             while True:
-                category_url = 'https://tienda.clarochile.cl/webapp/wcs/' \
-                               'stores/servlet/CategoryDisplay?categoryId=' \
-                               '10008&pageSize=18&storeId=10151&beginIndex=' \
-                               '{}'.format(offset)
+                category_url = 'https://tienda.clarochile.cl/' \
+                               'CategoryDisplay?' \
+                               'categoryId=3074457345616688192&storeId=10151' \
+                               '&beginIndex={}'.format(offset)
                 print(category_url)
                 soup = BeautifulSoup(
                     session.get(category_url, verify=False).text,
                     'html.parser'
                 )
 
-                containers = soup.find(
-                    'div', 'product_listing_container').findAll(
-                    'div', 'product')
+                containers = soup.findAll(
+                    'div', 'product_info')
 
                 if not containers:
                     if offset == 0:
@@ -75,7 +74,7 @@ class TiendaClaro(Store):
 
         json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
             page_id)})
-        json_data = json.loads(json_container.text)
+        json_data = demjson.decode(json_container.text)
         description = html_to_markdown(
             str(soup.find('div', 'billing_method_div_custom')))
         description += '\n\n{}'.format(html_to_markdown(
@@ -131,7 +130,6 @@ class TiendaClaro(Store):
                 price,
                 'CLP',
                 sku=sku,
-                cell_plan_name='Claro Prepago',
                 description=description,
                 picture_urls=picture_urls
             ))
