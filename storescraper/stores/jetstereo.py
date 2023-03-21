@@ -19,38 +19,11 @@ class Jetstereo(Store):
     @classmethod
     def categories(cls):
         return [
-            STEREO_SYSTEM,
-            TELEVISION,
-            CELL,
-            REFRIGERATOR,
-            STOVE,
-            OVEN,
-            WASHING_MACHINE,
-            CELL_ACCESORY,
-            HEADPHONES,
-            MONITOR,
-            AIR_CONDITIONER,
-            WEARABLE,
-            VACUUM_CLEANER,
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_path = {
-            STEREO_SYSTEM: ['48', '212'],
-            TELEVISION: ['41'],
-            CELL: ['26'],
-            REFRIGERATOR: ['74', '159', '195', '160', '161'],
-            STOVE: ['75', '163', '164'],
-            OVEN: ['76'],
-            WASHING_MACHINE: ['77', '157', '78', '249', '158', '156'],
-            CELL_ACCESORY: ['63'],
-            HEADPHONES: ['132'],
-            MONITOR: ['91'],
-            AIR_CONDITIONER: ['79'],
-            WEARABLE: ['89'],
-            VACUUM_CLEANER: ['152'],
-        }
         session = session_with_proxy(extra_args)
         product_urls = []
         page = 1
@@ -72,11 +45,7 @@ class Jetstereo(Store):
                 break
 
             for container in product_containers:
-                if container['mainCategory']['id'] not in \
-                        category_path[category]:
-                    continue
-                product_url = 'https://www.jetstereo.com/' + \
-                              container['url'].split('.com/')[-1]
+                product_url = container['url']
                 product_urls.append(product_url)
             page += 1
         return product_urls
