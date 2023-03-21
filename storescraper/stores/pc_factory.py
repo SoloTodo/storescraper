@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, VIDEO_CARD, PROCESSOR, MONITOR, \
     TELEVISION, MOTHERBOARD, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
-    POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, TABLET, PRINTER, CELL, CAMERA, \
+    POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, TABLET, PRINTER, CELL, \
     EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, PROJECTOR, \
     VIDEO_GAME_CONSOLE, STEREO_SYSTEM, ALL_IN_ONE, MOUSE, OPTICAL_DRIVE, \
     KEYBOARD, KEYBOARD_MOUSE_COMBO, WEARABLE, UPS, AIR_CONDITIONER, \
@@ -40,7 +40,6 @@ class PcFactory(Store):
             TABLET,
             PRINTER,
             CELL,
-            CAMERA,
             EXTERNAL_STORAGE_DRIVE,
             USB_FLASH_DRIVE,
             MEMORY_CARD,
@@ -97,8 +96,6 @@ class PcFactory(Store):
             ['262', PRINTER],
             ['5', CELL],
             ['655', CELL],
-            ['6', CAMERA],
-            ['620', CAMERA],
             ['422', EXTERNAL_STORAGE_DRIVE],
             ['904', EXTERNAL_STORAGE_DRIVE],
             ['218', USB_FLASH_DRIVE],
@@ -108,15 +105,15 @@ class PcFactory(Store):
             ['889', STEREO_SYSTEM],
             ['890', STEREO_SYSTEM],
             ['798', STEREO_SYSTEM],
-            ['700', STEREO_SYSTEM],
+            # ['700', STEREO_SYSTEM],
             ['831', STEREO_SYSTEM],
             ['34', STEREO_SYSTEM],
             ['797', STEREO_SYSTEM],
             ['748', STEREO_SYSTEM],
             ['999', ALL_IN_ONE],
-            ['22', MOUSE],
+            ['1302', MOUSE],
             ['286', OPTICAL_DRIVE],
-            ['36', KEYBOARD],
+            ['1301', KEYBOARD],
             ['418', KEYBOARD_MOUSE_COMBO],
             ['685', WEARABLE],
             ['38', UPS],
@@ -146,7 +143,7 @@ class PcFactory(Store):
 
                 if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                        raise Exception('Empty category: ' + url_extension)
                     break
 
                 section_tag = soup.find(
