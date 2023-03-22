@@ -129,7 +129,6 @@ class GsmPro(Store):
 
         return products
 
-
     @classmethod
     def preflight(cls, extra_args=None):
         session = session_with_proxy(extra_args)
