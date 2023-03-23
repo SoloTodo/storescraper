@@ -97,7 +97,7 @@ class MyShop(Store):
                               '/page/{}'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 collection = soup.find('div', 'products')
                 if not collection:
                     if page == 1:
