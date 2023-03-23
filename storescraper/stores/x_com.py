@@ -120,10 +120,11 @@ class XCom(Store):
         else:
             stock = 0
 
-        if not soup.find('p', 'price').find('ins'):
+        price_ins = soup.find('div', 'wpr-product-price').find('ins')
+        if not price_ins:
             return []
-        price = Decimal(remove_words(soup.find('p', 'price').find(
-            'ins').find('span', 'woocommerce-Price-amount').text))
+        price = Decimal(remove_words(price_ins.find(
+            'span', 'woocommerce-Price-amount').text))
 
         p = Product(
             name,

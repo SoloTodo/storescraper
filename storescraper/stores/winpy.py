@@ -36,7 +36,7 @@ class Winpy(Store):
             MOUSE,
             'Television',
             'StereoSystem',
-            'Headphones',
+            HEADPHONES,
             'Ups',
             GAMING_CHAIR,
             MEMORY_CARD,
@@ -73,7 +73,6 @@ class Winpy(Store):
             ['partes-y-piezas/gabinetes/', 'ComputerCase'],
             ['partes-y-piezas/fuente-de-poder/', 'PowerSupply'],
             ['partes-y-piezas/disipadores/', CPU_COOLER],
-            ['zona-audifonos-gamer/', HEADPHONES],
             ['accesorios/sillas-y-mesas/', GAMING_CHAIR],
             ['almacenamiento/nas/', 'StorageDrive'],
             ['almacenamiento/discos-portatiles/', 'ExternalStorageDrive'],
@@ -86,7 +85,7 @@ class Winpy(Store):
             ['apple/watch/', WEARABLE],
             ['monitores/', 'Monitor'],
             ['impresoras/', 'Printer'],
-            ['accesorios/audifonos/', 'Headphones'],
+            ['accesorios/audifonos/', HEADPHONES],
             ['accesorios/parlantes/', 'StereoSystem'],
             ['ups/ups/', 'Ups'],
         ]
@@ -134,7 +133,7 @@ class Winpy(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.url != url:
+        if response.url != url or response.status_code == 404:
             return []
 
         page_source = response.text
@@ -172,10 +171,10 @@ class Winpy(Store):
             stock = int(soup.find('p', {'itemprop': 'offerCount'}).text)
 
             offer_price = Decimal(remove_words(soup.find(
-                'h2', {'itemprop': 'lowPrice'}).string))
+                'p', {'itemprop': 'lowPrice'}).string))
 
             normal_price = Decimal(remove_words(soup.find(
-                'h3', {'itemprop': 'highPrice'}).string))
+                'p', {'itemprop': 'highPrice'}).string))
 
         description = html_to_markdown(str(soup.find('div', 'info')))
 
