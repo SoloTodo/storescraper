@@ -133,7 +133,7 @@ class Winpy(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.url != url:
+        if response.url != url or response.status_code == 404:
             return []
 
         page_source = response.text
