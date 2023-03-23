@@ -141,8 +141,7 @@ class TodoGeek(Store):
                 condition=condition
             )
             products.append(p)
-        return productshttps://todogeek.cl/collections/celulares/products/oneplus-10-pro-12gb-256gb
-https://todogeek.cl/collections/celulares/prod
+        return products
 
     @classmethod
     def preflight(cls, extra_args=None):
