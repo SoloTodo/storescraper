@@ -171,10 +171,10 @@ class Winpy(Store):
             stock = int(soup.find('p', {'itemprop': 'offerCount'}).text)
 
             offer_price = Decimal(remove_words(soup.find(
-                'h2', {'itemprop': 'lowPrice'}).string))
+                'p', {'itemprop': 'lowPrice'}).string))
 
             normal_price = Decimal(remove_words(soup.find(
-                'h3', {'itemprop': 'highPrice'}).string))
+                'p', {'itemprop': 'highPrice'}).string))
 
         description = html_to_markdown(str(soup.find('div', 'info')))
 
