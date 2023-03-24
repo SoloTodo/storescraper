@@ -29,6 +29,7 @@ from .best_buy_mexico import BestBuyMexico
 from .best_store import BestStore
 from .bip import Bip
 from .bit_center import BitCenter
+from .bodega_oportunidades import BodegaOportunidades
 from .bgod_gaming import BgodGaming
 from .bios_play import BiosPlay
 from .bristol import Bristol
