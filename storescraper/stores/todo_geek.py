@@ -14,7 +14,6 @@ class TodoGeek(Store):
     OPEN_BOX_COLLECTION = 401041227988
     REFURBISHED_COLLECTION = 401041326292
 
-
     @classmethod
     def categories(cls):
         return [
