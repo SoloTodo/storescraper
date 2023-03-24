@@ -77,7 +77,13 @@ class HeyStore(Store):
 
                 if len(product_containers) == 0:
                     if page == 1:
-                        logging.warning('empty category: ' + url_extension)
+                        # We would normally just log the message, but
+                        # heystore tends to die without reason and we would
+                        # like to see the html of the error page
+                        raise Exception(
+                            'Empty category: ' + url_extension +
+                            '\n' + str(response.text)
+                        )
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']
@@ -92,7 +98,12 @@ class HeyStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('input', {'name': 'id'})['value']
+        key_tag = soup.find('input', {'name': 'id'})
+
+        if not key_tag:
+            raise Exception(response.text)
+
+        key = key_tag['value']
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
