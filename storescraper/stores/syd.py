@@ -8,8 +8,7 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, MONITOR, \
     EXTERNAL_STORAGE_DRIVE, MOUSE, HEADPHONES, RAM
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class Syd(Store):
@@ -33,7 +32,6 @@ class Syd(Store):
             ['imac-m1', ALL_IN_ONE],
             ['macbook-pro-16-m1-de-apple', NOTEBOOK],
             ['imac', ALL_IN_ONE],
-            ['macbook-pro-16', NOTEBOOK],
             ['studio-display', MONITOR],
             ['macbook-pro-13-m1-de-apple', NOTEBOOK],
             ['macbook-pro-13-m2-nuevo', NOTEBOOK],
