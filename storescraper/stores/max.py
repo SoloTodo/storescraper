@@ -71,8 +71,8 @@ class Max(Store):
         price_container = soup.find('span', {'data-price-type': 'finalPrice'})
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
         picture_container = json.loads(
-            soup.find('div', 'product media').find('script', {
-                'type': 'text/x-magento-init'}).text)[
+            soup.find('div', 'product media').findAll('script', {
+                'type': 'text/x-magento-init'})[-2].text)[
             '[data-gallery-role=gallery-placeholder]']['mage/gallery/gallery'][
             'data']
 
