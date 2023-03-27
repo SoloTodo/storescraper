@@ -102,8 +102,8 @@ class InfographicsSolutions(Store):
                 url = 'https://infographicssolutions.cl/categoria-producto/' \
                       '{}/page/{}/'.format(category_path, page)
 
-                if page > 10:
-                    raise Exception('Page overflow: ' + page)
+                if page > 15:
+                    raise Exception('Page overflow: ' + str(page))
 
                 res = session.get(url)
                 if res.status_code == 404:
