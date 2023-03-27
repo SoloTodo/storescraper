@@ -80,6 +80,7 @@ class PcLinkStore(Store):
             ['componentes-informaticos/ventiladores-y-sistemas-de-'
              'enfriamiento', CPU_COOLER],
             ['computacion/all-in-one', ALL_IN_ONE],
+            ['computacion/apple-2', NOTEBOOK],
             ['computacion/notebook', NOTEBOOK],
             ['computacion/tableta', TABLET],
             ['consolas-volantes-accesorios/consolas', VIDEO_GAME_CONSOLE],
@@ -116,7 +117,7 @@ class PcLinkStore(Store):
             soup = BeautifulSoup(data, 'html5lib')
 
             token = soup.find('meta', {'name': 'csrf-token'})['content']
-            id_category = re.search('"id_category":(\d+)', data).groups()[0]
+            id_category = re.search('"id_category":(\\d+)', data).groups()[0]
 
             query_url = 'https://www.pclinkstore.cl/productos'
 
