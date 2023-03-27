@@ -43,9 +43,7 @@ class Sevenwin(Store):
                     url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'container '
-                                                      'category-page') \
-                    .findAll('div', 'col-lg-4')
+                product_containers = soup.findAll('div', 'product-block')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
@@ -63,26 +61,24 @@ class Sevenwin(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-header').text
-        sku = soup.find('form', 'form-horizontal')['action'].split('/')[-1]
+        name = soup.find('h1', 'page-title').text
+        key = soup.find('form', {'name': 'buy'})['action'].split('/')[-1]
+        sku = soup.find('span', 'sku_elem').text
         if soup.find('input', 'adc') and 'preventa' not in name.lower():
             stock = -1
         else:
             stock = 0
         price = Decimal(remove_words(
-            soup.find('span', 'product-form-price').text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'col-md-3 '
-                                                        'product-page-thumbs '
-                                                        'space mt-3')
-                        .findAll('img')]
+            soup.find('span', {'id': 'product-form-price'}).text))
+        picture_urls = [tag['src'] for tag in soup.find(
+            'div', 'product-images').findAll('img')]
         p = Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

@@ -23,7 +23,7 @@ class PlazaVea(PeruStores):
         page_size = 50
         page = 0
         while True:
-            if page > 12:
+            if page > 15:
                 raise Exception('Page overflow')
             url_webpage = 'https://www.plazavea.com.pe/api/io/_v/public/' \
                 'graphql/v1?workspace=master'
