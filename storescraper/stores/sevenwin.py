@@ -43,9 +43,7 @@ class Sevenwin(Store):
                     url_extension, page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find('div', 'container '
-                                                      'category-page') \
-                    .findAll('div', 'col-lg-4')
+                product_containers = soup.findAll('div', 'product-block')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
