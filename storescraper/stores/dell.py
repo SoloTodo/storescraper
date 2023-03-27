@@ -1,3 +1,5 @@
+import time
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs
@@ -17,6 +19,9 @@ class Dell(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        # If the method returns too soon it seems to trigger a RabbitMQ bug
+        time.sleep(5)
+
         url_extensions = [
             ['professional-monitors', MONITOR],
             ['home-monitors', MONITOR],
