@@ -70,14 +70,10 @@ class TodoGeek(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-
-        if extra_args and 'blacklist' in extra_args:
-            blacklist = extra_args['blacklist']
-        else:
-            blacklist = {'product': [], 'collection': []}
-
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        blacklist = cls._get_blackslist(response)
+
         match = re.search('product: (.+), onVariantSelected', response.text)
         json_data = json.loads(match.groups()[0])
 
@@ -143,10 +139,7 @@ class TodoGeek(Store):
         return products
 
     @classmethod
-    def preflight(cls, extra_args=None):
-        # Load the skus that are blacklisted because they are pre-sales
-        session = session_with_proxy(extra_args)
-        response = session.get('https://todogeek.cl/')
+    def _get_blackslist(cls, response):
         match = re.search(r'\sotEstAppData = (.+)', response.text)
         json_data = json.loads(match.groups()[0])
         # print(json.dumps(json_data))
@@ -158,5 +151,4 @@ class TodoGeek(Store):
         }
         for rule in raw_rules:
             blacklist[rule['type']].append(rule['value'])
-        # print(blacklist)
-        return {'blacklist': blacklist}
+        return blacklist
