@@ -4,8 +4,9 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, GAMING_CHAIR, MONITOR, \
-    COMPUTER_CASE, VIDEO_CARD, GAMING_DESK
+from storescraper.categories import CASE_FAN, HEADPHONES, GAMING_CHAIR, \
+    KEYBOARD, MICROPHONE, MONITOR, COMPUTER_CASE, MOTHERBOARD, MOUSE, \
+    VIDEO_CARD, GAMING_DESK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,21 +21,30 @@ class Valrod(Store):
             MONITOR,
             COMPUTER_CASE,
             VIDEO_CARD,
-            GAMING_DESK
+            GAMING_DESK,
+            MOUSE,
+            KEYBOARD,
+            CASE_FAN,
+            MOTHERBOARD,
+            MICROPHONE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['perifericos', HEADPHONES],
+            ['perifericos/mouse-y-mousepads', MOUSE],
+            ['teclados', KEYBOARD],
             ['audifonos', HEADPHONES],
             ['sillas-gamer', GAMING_CHAIR],
             ['accesorios', COMPUTER_CASE],
             ['monitores', MONITOR],
             ['gabinetes', COMPUTER_CASE],
             ['accesorios', COMPUTER_CASE],
-            ['tarjeta-de-video-y-coolers', VIDEO_CARD],
-            ['escritorios', GAMING_DESK]
+            ['hardware/tarjetas-de-video', VIDEO_CARD],
+            ['escritorios', GAMING_DESK],
+            ['tarjeta-de-video-y-coolers/coolers', CASE_FAN],
+            ['accesorios/placa-madre', MOTHERBOARD],
+            ['microfonos', MICROPHONE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -84,6 +94,12 @@ class Valrod(Store):
         picture_urls = [tag['src'].split('?')[0] for tag in
                         soup.find('div', 'product-previews-wrapper').findAll(
                             'img')]
+
+        if 'CAJA ABIERTA' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -97,6 +113,7 @@ class Valrod(Store):
             'CLP',
             sku=sku,
             part_number=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
         return [p]
