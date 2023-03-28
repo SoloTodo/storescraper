@@ -65,6 +65,10 @@ class TravelTienda(Store):
             ('831669398', OVEN),
             ('628735343', AIR_CONDITIONER),
             ('2620100069', WASHING_MACHINE),
+            # Tecnología > Computación > Accesorios de Computacion
+            ('3421645721', PRINTER),
+            # Tecnología > Computación > Monitores
+            ('375810843', MONITOR),
         ]
 
         session = session_with_proxy(extra_args)
