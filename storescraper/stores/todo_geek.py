@@ -86,10 +86,12 @@ class TodoGeek(Store):
         preventa = False
 
         if str(json_data['id']) in blacklist['product']:
+            # print('Product blacklist: ' + str(json_data['id']))
             preventa = True
 
         for collection in collections:
             if str(collection) in blacklist['collection']:
+                # print('Collection blacklist: ' + str(collection))
                 preventa = True
 
         picture_urls = []
@@ -143,12 +145,19 @@ class TodoGeek(Store):
         match = re.search(r'\sotEstAppData = (.+)', response.text)
         json_data = json.loads(match.groups()[0])
         # print(json.dumps(json_data))
-        raw_rules = json_data['data'][
-            'app']['estimatedDate']['specificRuleTargets']
+        raw_rules = json_data['data']['app']
+
+        shipping_methods_dict = {
+            x['id']: int(x['minimum_days'])
+            for x in raw_rules['shippingMethods']
+        }
+
         blacklist = {
             'product': [],
             'collection': []
         }
-        for rule in raw_rules:
-            blacklist[rule['type']].append(rule['value'])
+        for rule in raw_rules['estimatedDate']['specificRuleTargets']:
+            if shipping_methods_dict[rule['shipping_method_id']] > 1:
+                blacklist[rule['type']].append(rule['value'])
+        # print(json.dumps(blacklist))
         return blacklist
