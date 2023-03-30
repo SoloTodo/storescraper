@@ -129,8 +129,8 @@ class Zmart(Store):
 
         sku = soup.find('span', 'zmart__sku').text.strip()
 
-        price_td = soup.find('div', {'id': 'ficha_producto'}).findAll('td')[
-            0].find('div')
+        price_td = soup.find('div', {'id': 'ficha_producto'}).findAll('tr')[
+            1].find('div')
         price = Decimal(remove_words(price_td.text.strip()))
 
         description = html_to_markdown(str(soup.find('div', 'tab')),
