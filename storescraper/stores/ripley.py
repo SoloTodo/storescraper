@@ -393,6 +393,9 @@ class Ripley(Store):
             if not picture_url.startswith('http'):
                 picture_url = 'https:' + picture_url
 
+            if not validators.url(picture_url):
+                continue
+
             picture_urls.append(picture_url)
 
         if not picture_urls:
