@@ -56,6 +56,8 @@ class LaPolar(Store):
              'Inicio > Tecnología > Celulares > Smartwatch', 1],
             ['accesorios-telefonos', [HEADPHONES],
              'Inicio > Tecnología > Celulares > Accesorios Teléfonos', 1],
+            ['televisores', [TELEVISION],
+             'Inicio > Tecnología > Televisores', 1],
             ['smart-tv', [TELEVISION],
              'Inicio > Tecnología > Televisores > Smart TV', 1],
             ['televisores-basicos', [TELEVISION],

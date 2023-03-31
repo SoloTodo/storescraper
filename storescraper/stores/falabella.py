@@ -39,6 +39,7 @@ class Falabella(Store):
          1],
         ['cat429001', [WEARABLE], 'Home > Tecnología-Wearables > SmartWatch In'
          'fantil', 1],
+        ['cat1012', [TELEVISION], 'Home > Tecnología-TV y Video', 0],
         ['cat7190148', [TELEVISION], 'Home > Tecnología-TV > Smart TV', 1],
         ['cat2070', [PROJECTOR], 'Home > Tecnología-TV > Proyectores', 1],
         ['cat2005', [STEREO_SYSTEM], 'Home > Tecnología-Audio', 0],
@@ -93,6 +94,8 @@ class Falabella(Store):
          'rnos Eléctricos', 1],
         ['cat3151', [OVEN], 'Home > Electrohogar-Electrodomésticos Cocina > Mi'
          'croondas', 1],
+        ['cat3136', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > Lav'
+                                       'ado', 1],
         ['cat4060', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > Lav'
          'ado > Lavadoras', 1],
         ['cat1700002', [WASHING_MACHINE], 'Home > Electrohogar-Línea blanca > '
@@ -103,6 +106,9 @@ class Falabella(Store):
          '> Lavavajillas', 1],
         ['cat3205', [REFRIGERATOR], 'Home > Electrohogar-Línea Blanca > Refrig'
          'eración > Refrigeradores', 1],
+        ['cat4091', [REFRIGERATOR], 'Home > Electrohogar-Línea Blanca > Refrig'
+                                    'eración > Refrigeradores > '
+                                    'Side by side', 1],
         ['cat4054', [OVEN], 'Home > Electrohogar-Línea blanca > Cocina > Horno'
          's Empotrables', 1],
         ['cat2013', [WATER_HEATER], 'Home > Cocina y Baño-Baño > Calefont y Te'

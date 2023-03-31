@@ -8,7 +8,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
-from storescraper.categories import GAMING_CHAIR, GAMING_DESK
+from storescraper.categories import GAMING_CHAIR, GAMING_DESK, TELEVISION
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -30,6 +30,8 @@ class Paris(Store):
          'Electro > Televisión > Oled y Qled', 1],
         ['electro/television/soundbar-home-theater', ['StereoSystem'],
          'Electro > Televisión > Soundbar y Home Theater', 1],
+        ['electro/elige-tu-pulgada', [TELEVISION],
+         'Electro > Elige tu pulgada', 1],
         # Also contains other audio products
         ['electro/audio', ['StereoSystem', 'Headphones'],
          'Electro > Audio', 0],

@@ -58,6 +58,8 @@ class Ripley(Store):
          'Tecno > Televisión > HD y Full HD', 1],
         ['electro/refrigeracion', [REFRIGERATOR],
          'Electro > Refrigeración', 1],
+        ['electro/refrigeracion/refrigerador-no-frost', [REFRIGERATOR],
+         'Electro > Refrigeración > Refrigerador No Frost', 1],
         ['electro/refrigeracion/side-by-side', [REFRIGERATOR],
          'Electro > Refrigeración > Side by Side', 1],
         ['electro/refrigeracion/refrigeradores', [REFRIGERATOR],
