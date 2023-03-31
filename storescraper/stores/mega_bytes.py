@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, RAM, \
     SOLID_STATE_DRIVE, COMPUTER_CASE, MONITOR, NOTEBOOK, MOUSE, \
-    POWER_SUPPLY, CPU_COOLER, HEADPHONES
+    POWER_SUPPLY, CPU_COOLER, HEADPHONES, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -27,6 +27,7 @@ class MegaBytes(Store):
             POWER_SUPPLY,
             HEADPHONES,
             CPU_COOLER,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -45,6 +46,7 @@ class MegaBytes(Store):
             ['monitores', MONITOR],
             ['notebooks', NOTEBOOK],
             ['accesorios/audifonos-headsets', HEADPHONES],
+            ['otros', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
