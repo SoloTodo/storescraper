@@ -119,12 +119,18 @@ class CSByte(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text.strip()
 
-        new_condition_tag = soup.find(
-            'a', {'href': 'https://www.csbyte.cl/estado/nuevo/'})
-        if new_condition_tag:
-            condition = 'https://schema.org/NewCondition'
-        else:
-            condition = 'https://schema.org/RefurbishedCondition'
+        attributes_table = soup.find('table', 'woocommerce-product-attributes')
+        condition = 'https://schema.org/RefurbishedCondition'
+
+        if attributes_table:
+            for row in attributes_table.findAll('tr'):
+                label = row.find('th').text.strip()
+                if label != 'Condición':
+                    continue
+                value = row.find('td').text.strip()
+                if value == 'Nuevo':
+                    condition = 'https://schema.org/NewCondition'
+                    break
 
         if soup.find('form', 'variations_form'):
             products = []
