@@ -748,7 +748,7 @@ class Ripley(Store):
                 if banner_tag.name == 'a':
                     destination_urls = [banner_tag['href']]
                     if banner_tag.find('img'):
-                        picture_url = banner_tag.find('img')['data-src']
+                        picture_url = banner_tag.find('img')['src']
                     else:
                         picture_style = banner_tag.find('span')['style']
                         picture_url = re.search(r'url\((.+)\)',
@@ -770,8 +770,7 @@ class Ripley(Store):
                     cell_tags = desktop_container_tag.findAll('a')
                     destination_urls = [tag['href'] for tag in cell_tags
                                         if 'href' in tag.attrs]
-                    picture_url = desktop_container_tag.find('source')[
-                        'srcset']
+                    picture_url = desktop_container_tag.find('img')['src']
 
                     banners.append({
                         'url': url,
