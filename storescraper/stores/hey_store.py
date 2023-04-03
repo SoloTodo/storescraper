@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, \
     HEADPHONES, KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, \
     POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, STEREO_SYSTEM, \
-    STORAGE_DRIVE
+    STORAGE_DRIVE, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -32,6 +32,7 @@ class HeyStore(Store):
             MONITOR,
             HEADPHONES,
             STEREO_SYSTEM,
+            VIDEO_CARD,
         ]
 
     @classmethod
@@ -48,11 +49,11 @@ class HeyStore(Store):
             ['fuentes-de-poder', POWER_SUPPLY],
             ['teclados', KEYBOARD],
             ['mouse', MOUSE],
+            ['tarjetas-graficas', VIDEO_CARD],
             ['discos-externos', EXTERNAL_STORAGE_DRIVE],
             ['discos-duros-pc', STORAGE_DRIVE],
             ['discos-ssd', SOLID_STATE_DRIVE],
             ['discos-m-2', SOLID_STATE_DRIVE],
-            ['discos-nas', STORAGE_DRIVE],
             ['monitores', MONITOR],
             ['audifonos', HEADPHONES],
             ['parlante', STEREO_SYSTEM],
