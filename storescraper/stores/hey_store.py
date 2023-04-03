@@ -112,6 +112,8 @@ class HeyStore(Store):
         name = json_data['name']
         description = json_data['description']
         sku = json_data.get('sku', None)
+        if sku:
+            sku = sku[:50]
 
         price = Decimal(str(json_data['offers'][0]['price']))
 
