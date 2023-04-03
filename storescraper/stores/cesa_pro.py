@@ -91,6 +91,8 @@ class CesaPro(Store):
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
+        if not soup.find('h1', 'product_title'):
+            return []
         name = soup.find('h1', 'product_title').text.strip()
 
         product_container = soup.find('p', 'price')
