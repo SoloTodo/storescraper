@@ -88,6 +88,7 @@ from .deuva import Deuva
 from .de_prati import DePrati
 from .dc_computer import DcComputer
 from .dgital import Dgital
+from .diamond_pc import DiamondPc
 from .digi_planet import DigiPlanet
 from .digiplot import Digiplot
 from .digital_choice import DigitalChoice
