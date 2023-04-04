@@ -177,7 +177,7 @@ class MHWStore(Store):
             else:
                 sku = None
             not_stock = soup.find('span', {'id': 'product-availability'}).text
-            if 'Fuera de stock' in not_stock:
+            if 'Fuera de stock' in not_stock or 'Out-of-Stock' in not_stock:
                 stock = 0
             else:
                 stock = int(
