@@ -115,9 +115,15 @@ class CCLink(Store):
         key = soup.find('button', 'single_add_to_cart_button')['value']
         sku = soup.find('span', 'sku').text.strip()
         stock = -1
-        price = Decimal(remove_words(
+        offer_price = Decimal(remove_words(
             soup.find('div', 'product-actions-wrapper').findAll('bdi')[
                 0].text))
+        summary = soup.find('div', 'summary')
+        if summary.find('h5'):
+            normal_price = Decimal(remove_words(
+                summary.find('h5').find('strong').text))
+        else:
+            normal_price = offer_price
         picture_urls = [urllib.parse.quote(tag['src'], safe='/:') for tag in
                         soup.find('div', 'product-images-wrapper').findAll(
                             'img')]
@@ -129,8 +135,8 @@ class CCLink(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,

@@ -129,9 +129,16 @@ class Zmart(Store):
 
         sku = soup.find('span', 'zmart__sku').text.strip()
 
-        price_td = soup.find('div', {'id': 'ficha_producto'}).findAll('tr')[
-            1].find('div')
-        price = Decimal(remove_words(price_td.text.strip()))
+        price_tds = soup.find('div', {'id': 'ficha_producto'}).findAll('tr')
+        if len(price_tds) == 5:
+            price_td = price_tds[3].find('div')
+            normal_price = Decimal(remove_words(price_td.text.strip()))
+            price_td_offer = price_tds[1].find('p', 'price')
+            offer_price = Decimal(remove_words(price_td_offer.text.strip()))
+        else:
+            price_td = price_tds[1].find('div')
+            offer_price = normal_price = Decimal(
+                remove_words(price_td.text.strip()))
 
         description = html_to_markdown(str(soup.find('div', 'tab')),
                                        'https://www.zmart.cl')
@@ -158,8 +165,8 @@ class Zmart(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             description=description,
