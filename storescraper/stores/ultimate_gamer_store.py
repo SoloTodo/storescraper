@@ -102,7 +102,7 @@ class UltimateGamerStore(Store):
         key = re.search(r'data.content_ids = \[(\d+)];',
                         page_source).groups()[0]
 
-        if 'PREVENTA' in name.upper():
+        if 'PREVENTA' in name.upper() or 'PREVENTA' in url.upper():
             stock = 0
         elif soup.find('meta', {'property': 'product:availability'})[
                 'content'] == 'instock':

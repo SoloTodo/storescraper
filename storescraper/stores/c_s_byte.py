@@ -175,7 +175,7 @@ class CSByte(Store):
             if offer['availability'] == 'http://schema.org/InStock':
                 stock_p = soup.find('p', 'stock')
                 if stock_p and 'hay existencias' not in stock_p.text.lower():
-                    stock = int(stock_p.text.split()[2])
+                    stock = int(stock_p.text.split()[0])
                 else:
                     stock = -1
             else:
