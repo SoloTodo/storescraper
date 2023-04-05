@@ -118,10 +118,14 @@ class CCLink(Store):
         offer_price = Decimal(remove_words(
             soup.find('div', 'product-actions-wrapper').findAll('bdi')[
                 0].text))
-        summary = soup.find('div', 'summary')
-        if summary.find('h5'):
-            normal_price = Decimal(remove_words(
-                summary.find('h5').find('strong').text))
+        summary_h5 = soup.find('div', 'summary').find('h5')
+        if summary_h5:
+            if summary_h5.find('strong'):
+                normal_price = Decimal(remove_words(
+                    summary_h5.find('strong').text))
+            else:
+                normal_price = Decimal(remove_words(
+                    summary_h5.find('span').text))
         else:
             normal_price = offer_price
         picture_urls = [urllib.parse.quote(tag['src'], safe='/:') for tag in
