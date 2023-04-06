@@ -219,5 +219,20 @@ class LgV5(Store):
         return product_data['data'][0]
 
     @classmethod
+    def _retrieve_features(cls, url):
+        # Standalone method the retrieves the featured specs of the given model
+        # Used by a one-use script that loads the features in the LG CAC_EN
+        # microsite for their landing
+        # Safe to remove once the script finishes running
+        session = requests.Session()
+        response = session.get(url, timeout=20)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        feature_list_tag = soup.find('ul', 'feature-list')
+        features = []
+        for feature in feature_list_tag.findAll('li'):
+            features.append(feature.text.strip())
+        return features
+
+    @classmethod
     def _category_paths(cls):
         raise NotImplementedError('Subclasses must implement this method')
