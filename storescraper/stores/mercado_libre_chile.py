@@ -822,8 +822,7 @@ class MercadoLibreChile(Store):
             'analytics_event']['custom_dimensions'][
             'customDimensions']['officialStore']
         sku = data['initialState']['id']
-        base_name = data['initialState']['components'][
-            'short_description'][0]['title']
+        base_name = data['initialState']['schema'][0]['name']
         price = Decimal(data['initialState']['schema'][0][
             'offers']['price'])
 
@@ -833,18 +832,19 @@ class MercadoLibreChile(Store):
 
         picker = None
         condition = 'https://schema.org/NewCondition'
-        for x in data['initialState']['components']['short_description']:
-            if x['id'] == 'variations' and 'pickers' in x:
-                if len(x['pickers']) == 1:
-                    picker = x['pickers'][0]
-                else:
-                    # I'm not sure how to handle multiple pickers
-                    # https://articulo.mercadolibre.cl/MLC-547289939-
-                    # samartband-huawei-band-4-pro-_JM
-                    picker = None
-            if x['id'] == 'header' and 'tag' in x:
-                if 'REACONDICIONADO' in x['tag']['text'].upper():
-                    condition = 'https://schema.org/RefurbishedCondition'
+        if 'short_description' in data['initialState']['components']:
+            for x in data['initialState']['components']['short_description']:
+                if x['id'] == 'variations' and 'pickers' in x:
+                    if len(x['pickers']) == 1:
+                        picker = x['pickers'][0]
+                    else:
+                        # I'm not sure how to handle multiple pickers
+                        # https://articulo.mercadolibre.cl/MLC-547289939-
+                        # samartband-huawei-band-4-pro-_JM
+                        picker = None
+                if x['id'] == 'header' and 'tag' in x:
+                    if 'REACONDICIONADO' in x['tag']['text'].upper():
+                        condition = 'https://schema.org/RefurbishedCondition'
 
         products = []
 
