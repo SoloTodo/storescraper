@@ -96,7 +96,7 @@ class AkByteComputacion(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        description = product_data['description']
+        description = product_data.get('description', None)
 
         if 'offers' not in product_data:
             return []
