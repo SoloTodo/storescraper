@@ -29,10 +29,10 @@ class Computron(Store):
                 continue
             page = 1
             while True:
-                if page > 10:
+                if page > 20:
                     raise Exception('page overflow')
-                url_webpage = 'https://computron.com.ec/brand/lg/' \
-                    'page/{}/'.format(page)
+                url_webpage = 'https://computron.com.ec/page/{}/?s=lg&produ' \
+                    'ct_cat&post_type=product'.format(page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -42,11 +42,13 @@ class Computron(Store):
                         logging.warning('empty category')
                     break
                 for container in product_containers:
-                    product_url = container.find(
-                        'a', 'woocommerce-LoopProduct-link')['href']
-                    if product_url in product_urls:
-                        continue
-                    product_urls.append(product_url)
+                    if 'LG' in container.find('h3',
+                                              'product-title').text.upper():
+                        product_url = container.find(
+                            'a', 'woocommerce-LoopProduct-link')['href']
+                        if product_url in product_urls:
+                            continue
+                        product_urls.append(product_url)
                 page += 1
         return product_urls
 
