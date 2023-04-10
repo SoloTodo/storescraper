@@ -12,6 +12,8 @@ from storescraper.utils import session_with_proxy, remove_words
 
 
 class MegaBytes(Store):
+    preferred_products_for_url_concurrency = 3
+
     @classmethod
     def categories(cls):
         return [
