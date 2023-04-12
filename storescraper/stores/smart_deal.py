@@ -36,20 +36,30 @@ class SmartDeal(Store):
             if category != local_category:
                 continue
 
-            page_url = 'https://smartdeal.cl/categoria-producto/{}/'.format(
-                category_path)
-            print(page_url)
-            response = session.get(page_url)
-            data = response.text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+            page = 1
 
-            if not product_containers:
-                logging.warning('Empty category: ' + category_path)
+            while True:
+                if page > 20:
+                    raise Exception('Page overflow')
 
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+                page_url = 'https://smartdeal.cl/categoria-producto/{}/' \
+                           '?product-page={}'.format(category_path, page)
+                print(page_url)
+                response = session.get(page_url)
+                data = response.text
+                soup = BeautifulSoup(data, 'html.parser')
+                product_containers = soup.findAll('li', 'product')
+
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category: ' + category_path)
+                    break
+
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+
+                page += 1
 
         return product_urls
 
