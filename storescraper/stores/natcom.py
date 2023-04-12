@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, MONITOR, NOTEBOOK, \
     KEYBOARD, MOUSE, HEADPHONES, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
-    VIDEO_CARD, CASE_FAN, GAMING_CHAIR
+    VIDEO_CARD, CASE_FAN, GAMING_CHAIR, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,6 +33,7 @@ class Natcom(Store):
             VIDEO_CARD,
             CASE_FAN,
             GAMING_CHAIR,
+            USB_FLASH_DRIVE,
         ]
 
     @classmethod
@@ -60,7 +61,7 @@ class Natcom(Store):
             ['tarjetas-de-video-amd', VIDEO_CARD],
             ['tarjetas-de-video-nvidia', VIDEO_CARD],
             ['categoria-producto/sillas-gamer', GAMING_CHAIR],
-
+            ['pendrive', USB_FLASH_DRIVE]
         ]
 
         session = session_with_proxy(extra_args)

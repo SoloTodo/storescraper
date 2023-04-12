@@ -131,9 +131,9 @@ class Zmart(Store):
 
         price_tds = soup.find('div', {'id': 'ficha_producto'}).findAll('tr')
         if len(price_tds) == 5:
-            price_td = price_tds[3].find('div')
+            price_td = price_tds[3].findAll('li')[-1].find('div')
             normal_price = Decimal(remove_words(price_td.text.strip()))
-            price_td_offer = price_tds[1].find('p', 'price')
+            price_td_offer = price_tds[3].find('p', 'price')
             offer_price = Decimal(remove_words(price_td_offer.text.strip()))
         else:
             price_td = price_tds[1].find('div')
