@@ -37,7 +37,6 @@ class KillStore(Store):
             MOUSE,
             MEMORY_CARD,
             STEREO_SYSTEM,
-            MICROPHONE
         ]
 
     @classmethod
@@ -71,7 +70,6 @@ class KillStore(Store):
             ['257?map=productClusterIds', MEMORY_CARD],
             ['258?map=productClusterIds', PRINTER],
             ['computacion/sillas', GAMING_CHAIR],
-            ['audio/microfonos', MICROPHONE]
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -114,7 +112,7 @@ class KillStore(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.status_code == 404:
+        if response.status_code == 404 or response.status_code == 500:
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
