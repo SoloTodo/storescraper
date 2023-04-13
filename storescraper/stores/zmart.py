@@ -100,6 +100,7 @@ class Zmart(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
@@ -129,16 +130,16 @@ class Zmart(Store):
 
         sku = soup.find('span', 'zmart__sku').text.strip()
 
-        price_tds = soup.find('div', {'id': 'ficha_producto'}).findAll('tr')
-        if len(price_tds) == 5:
-            price_td = price_tds[3].findAll('li')[-1].find('div')
+        price_div = soup.find('div', {'id': 'ficha_producto'})
+
+        price_td_offer = price_div.find('p', 'price')
+        offer_price = Decimal(remove_words(price_td_offer.text.strip()))
+
+        if len(price_div.findAll('li')) > 1:
+            price_td = price_div.findAll('li')[-1].find('p', 'price')
             normal_price = Decimal(remove_words(price_td.text.strip()))
-            price_td_offer = price_tds[3].find('p', 'price')
-            offer_price = Decimal(remove_words(price_td_offer.text.strip()))
         else:
-            price_td = price_tds[1].find('div')
-            offer_price = normal_price = Decimal(
-                remove_words(price_td.text.strip()))
+            normal_price = offer_price
 
         description = html_to_markdown(str(soup.find('div', 'tab')),
                                        'https://www.zmart.cl')
