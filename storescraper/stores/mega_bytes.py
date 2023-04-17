@@ -105,7 +105,12 @@ class MegaBytes(Store):
         if price_container:
             prices = price_container.findAll(
                 'span', 'woocommerce-Price-amount')
-            normal_price = Decimal(remove_words(prices[-1].text))
+            highest_price = Decimal(0)
+            for price in prices:
+                p = Decimal(remove_words(price.text))
+                if p > highest_price:
+                    highest_price = p
+            normal_price = highest_price
         else:
             normal_price = offer_price
 
