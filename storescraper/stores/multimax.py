@@ -25,16 +25,21 @@ class Multimax(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        page = 1
+        page = 0
+        page_size = 10
         while True:
             if page >= 20:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.searchanise.com/getresults?q=lg&' \
-                'startIndex={}&api_key=8b0u9V5d8D'.format(page*15)
+            url_webpage = 'https://searchserverapi.com/getresults?restrictBy%5Bvendor%5D=LG&' \
+                'startIndex={}&api_key=8b0u9V5d8D'.format(page*page_size)
 
             data = session.get(url_webpage).text
-            items = json.loads(data)['items']
+            json_data = json.loads(data)
+
+            assert json_data['itemsPerPage'] == page_size
+
+            items = json_data['items']
 
             if len(items) == 0:
                 if page == 1:
