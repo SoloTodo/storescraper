@@ -310,6 +310,7 @@ from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
 from .opc_store import OpcStore
+from .oportutek import Oportutek
 from .orbital_store import OrbitalStore
 from .oechsle import Oechsle
 from .office_depot import OfficeDepot
