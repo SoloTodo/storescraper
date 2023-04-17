@@ -1,126 +1,104 @@
-from bs4 import BeautifulSoup
+import json
+import logging
+import urllib
 from decimal import Decimal
+
+from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy, check_ean13
+from storescraper.utils import session_with_proxy
 
 
 class AlKosto(Store):
+    endpoint = 'https://qx5ips1b1q-dsn.algolia.net/1/indexes/*/queries?x-al' \
+        'golia-agent=Algolia%20for%20JavaScript%20(4.5.1)%3B%20Brows' \
+        'er%20(lite)%3B%20instantsearch.js%20(4.40.3)%3B%20JS%20Help' \
+        'er%20(3.8.0)&x-algolia-api-key=04636813b7beb6abd08a7e35f8c8' \
+        '80a1&x-algolia-application-id=QX5IPS1B1Q'
+
     @classmethod
     def categories(cls):
         return [
-            'ExternalStorageDrive',
-            'MemoryCard',
-            'UsbFlashDrive',
-            'StorageDrive',
-            'Notebook',
+            TELEVISION
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        base_url = 'http://www.alkosto.com/'
-
-        url_extensions = [
-            # ['computadores-y-tablets/accesorios/accesorios-computadores/'
-            #    'memorias-sd-hd/discos-duros/', 'ExternalStorageDrive'],
-            ['accesorios/accesorios-computadores-tablets/'
-             'accesorios-computadores/memorias-sd-hd/micro-sd', 'MemoryCard'],
-            ['accesorios/accesorios-computadores-tablets/'
-             'accesorios-computadores/memorias-sd-hd/memoria-usb',
-             'UsbFlashDrive'],
-            ['accesorios/accesorios-computadores-tablets/'
-             'accesorios-computadores/memorias-sd-hd', 'MemoryCard']
-        ]
-
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+
         product_urls = []
 
-        for url_path, local_category in url_extensions:
-            if local_category != category:
-                continue
+        if category != TELEVISION:
+            return []
 
-            category_url = base_url + url_path
+        page = 0
 
-            base_soup = BeautifulSoup(
-                session.get(category_url).text, 'html.parser')
+        while True:
+            payload_params = "query=""&page={}&facetFilters={}" \
+                             "".format(page, urllib.parse.quote(
+                                 '[["brand_string_mv:LG"]]'))
 
-            link_containers = base_soup.find(
-                'ul', 'products-grid')
+            payload = {"requests": [
+                {"indexName": "alkostoIndexAlgoliaPRD",
+                 "params": payload_params}]}
 
-            if not link_containers:
-                raise Exception('Empty category: ' + category_url)
+            response = session.post(cls.endpoint, data=json.dumps(payload))
+            products_json = json.loads(response.text)['results'][0]['hits']
 
-            link_containers = link_containers.findAll('li', 'item')
+            if not products_json:
+                if page == 0:
+                    logging.warning('Empty category:')
+                break
 
-            for link_container in link_containers:
-                product_url = link_container.find('a')['href']
-                product_urls.append(product_url)
+            for product_json in products_json:
+                product_url = product_json['url_es_string']
+
+                product_urls.append('https://www.alkosto.com/' + product_url)
+
+            page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
+        # Try and find the SKU in the URL
+        query = url.split('/')[-1]
+        payload_params = "query={}".format(query)
+
+        payload = {"requests": [
+            {"indexName": "alkostoIndexAlgoliaPRD",
+             "params": payload_params}]}
+
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = session.post(cls.endpoint, data=json.dumps(payload))
+        products_json = json.loads(response.text)['results'][0]['hits']
 
-        name = soup.find('div', 'product-name').text.strip()
-        ean = soup.find('span', {'itemprop': 'sku'}).text.strip()
-        sku = ean
-        if len(ean) == 12:
-            ean = '0' + ean
+        for product_entry in products_json:
+            if product_entry['url_es_string'] in url:
+                raise Exception('Product without sku in url ' + url)
 
-        if not check_ean13(ean):
-            ean = None
+        name = product_entry['name_text_es']
+        key = product_entry['code_string']
+        stock = -1 if product_entry['instockflag_boolean'] else 0
+        price = Decimal(str(product_entry['lowestprice_double']))
+        picture_urls = ['https://www.alkosto.com/' +
+                        product_entry['img-820wx820h_string']]
 
-        description = ''
-
-        panels = [
-            soup.find('div', 'short-description std'),
-            soup.find('table', {'id': 'product-attribute-specs-table'})
-        ]
-
-        for panel in panels:
-            description += html_to_markdown(str(panel)) + '\n\n'
-
-        if soup.find('p', 'in-stock'):
-            stock = -1
-        else:
-            stock = 0
-
-        picture_urls = []
-
-        for picture_tag in soup.find('li', 'image-extra').findAll('img'):
-            picture_urls.append(picture_tag['src'])
-
-        product_box = soup.find('div', 'product-shop')
-
-        price_container = product_box.find('span', {'itemprop': 'price'})
-
-        if price_container:
-            normal_price = Decimal(price_container['content'])
-        else:
-            price_container = product_box.findAll('span', 'price')[1]
-            normal_price = Decimal(remove_words(price_container.string))
-
-        offer_price = normal_price
-
-        p = Product(
+        return [Product(
             name,
             cls.__name__,
             category,
             url,
             url,
-            sku,
+            key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             'COP',
-            sku=sku,
-            ean=ean,
-            description=description,
+            sku=key,
             picture_urls=picture_urls
-        )
-
-        return [p]
+        )]

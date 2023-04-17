@@ -128,6 +128,7 @@ from .exito import Exito
 from .extra_brasil import ExtraBrasil
 from .eyc import Eyc
 from .falabella import Falabella
+from .falabella_colombia import FalabellaColombia
 from .falabella_fast import FalabellaFast
 from .falabella_cf import FalabellaCf
 from .falabella_argentina import FalabellaArgentina
@@ -310,6 +311,7 @@ from .ofimania import Ofimania
 from .olier import Olier
 from .omnisport import Omnisport
 from .opc_store import OpcStore
+from .oportutek import Oportutek
 from .orbital_store import OrbitalStore
 from .oechsle import Oechsle
 from .office_depot import OfficeDepot
