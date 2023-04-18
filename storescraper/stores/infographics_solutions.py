@@ -213,7 +213,7 @@ class InfographicsSolutions(Store):
 
         if len(sku) > 50:
             sku = None
-        if len(part_number) > 50:
+        if not part_number and len(part_number) > 50:
             part_number = None
 
         p = Product(
