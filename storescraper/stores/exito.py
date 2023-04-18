@@ -92,7 +92,8 @@ class Exito(Store):
         if offer_key in product_data:
             offer_data = product_data[offer_key]
             offer_price = (Decimal(str(pricing_data['ListPrice'])) -
-                           Decimal(offer_data['value'])).quantize(0, rounding="ROUND_UP")
+                           Decimal(offer_data['value'])
+                           ).quantize(0, rounding="ROUND_UP")
         else:
             offer_price = normal_price
         stock = pricing_data['AvailableQuantity']
