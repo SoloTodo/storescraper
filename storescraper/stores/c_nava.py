@@ -7,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     KEYBOARD_MOUSE_COMBO, MEMORY_CARD, MICROPHONE, MONITOR, MOTHERBOARD, \
     MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, USB_FLASH_DRIVE, \
-    VIDEO_CARD
+    VIDEO_CARD, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -41,7 +41,8 @@ class CNava(Store):
             NOTEBOOK,
             TABLET,
             ALL_IN_ONE,
-            GAMING_CHAIR
+            GAMING_CHAIR,
+            UPS
         ]
 
     @classmethod
@@ -73,6 +74,7 @@ class CNava(Store):
             ['equipos/tablets', TABLET],
             ['equipos/all-in-one', ALL_IN_ONE],
             ['hogar/sillas-gamer', GAMING_CHAIR],
+            ['equipos/ups', UPS],
         ]
 
         session = session_with_proxy(extra_args)
