@@ -97,26 +97,24 @@ class Oportutek(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        
-        key = soup.find('select', {'name': 'id'}).find('option')['value']
-        
-        if len(soup.find('select', {'name': 'id'}).findAll('option')) != 1:
-            print('AAAAAAAAA')
-            print('AAAAAAAAA')
-            print('AAAAAAAAA')
-            print('AAAAAAAAA')
-            print('AAAAAAAAA')
 
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[1].text)
 
+        key = json_data.get('productId', None)
+        if not key:
+            key = soup.find(
+                'div', {'id': 'shopify-product-reviews'})['data-id']
         name = json_data['name']
         sku = json_data['sku']
         description = json_data['description']
         price = Decimal(json_data['offers'][0]['price'])
 
-        stock = int(
-            soup.find('span', {'id': 'variant-inventory'}).text.split(' ')[0])
+        stock_span = soup.find('span', {'id': 'variant-inventory'})
+        if 'SIN STOCK' in stock_span.text.upper():
+            stock = 0
+        else:
+            stock = int(stock_span.text.split(' ')[0])
 
         picture_urls = []
         picture_container = soup.find('div', {'id': 'ProductThumbs'})
