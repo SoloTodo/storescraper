@@ -211,6 +211,11 @@ class InfographicsSolutions(Store):
                 str(soup.find('div',
                     'woocommerce-product-details__short-description')))
 
+        if len(sku) > 50:
+            sku = None
+        if len(part_number) > 50:
+            part_number = None
+
         p = Product(
             name,
             cls.__name__,
