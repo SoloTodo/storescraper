@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, \
     GAMING_CHAIR, VIDEO_CARD, PROCESSOR, MOTHERBOARD, POWER_SUPPLY, \
     CPU_COOLER, STORAGE_DRIVE, RAM, COMPUTER_CASE, \
-    SOLID_STATE_DRIVE, USB_FLASH_DRIVE, CASE_FAN
+    SOLID_STATE_DRIVE, USB_FLASH_DRIVE, CASE_FAN, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,7 +30,8 @@ class GorillaStore(Store):
             COMPUTER_CASE,
             SOLID_STATE_DRIVE,
             USB_FLASH_DRIVE,
-            CASE_FAN
+            CASE_FAN,
+            NOTEBOOK
         ]
 
     @classmethod
@@ -52,6 +53,7 @@ class GorillaStore(Store):
             ['teclado', KEYBOARD],
             ['mouse', MOUSE],
             ['sillas-gamer', GAMING_CHAIR],
+            ['notebooks', NOTEBOOK],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
