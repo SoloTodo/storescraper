@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import urllib
 
@@ -6,7 +7,8 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import HEADPHONES, TABLET, CELL, MOUSE
+from storescraper.categories import HEADPHONES, TABLET, CELL, MOUSE, WEARABLE, \
+    VIDEO_GAME_CONSOLE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown, \
@@ -23,18 +25,26 @@ class TiendaMovistar(Store):
             CELL,
             TABLET,
             HEADPHONES,
-            MOUSE
+            WEARABLE,
+            VIDEO_GAME_CONSOLE,
+            STEREO_SYSTEM
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['smartphones-liberados.html', [CELL],
-             'Smartphones liberados', 1],
+            ['celulares', [CELL], 'Celulares', 1],
+            ['outlet/celulares-reacondicionados', [CELL],
+             'Celulares Reacondicionados', 1],
             ['outlet.html', [CELL], 'Outlet', 1],
-            ['tablets.html', [TABLET], 'Tablets', 1],
-            ['accesorios.html', [HEADPHONES], 'Accesorios', 1],
-            ['gaming.html', [MOUSE], 'Gaming', 1],
+            ['tablets', [TABLET], 'Tablets', 1],
+            ['outlet/tablets', [TABLET], 'Outlet Tablets', 1],
+            ['audifonos', [HEADPHONES], 'Audífonos', 1],
+            ['smartwatch', [WEARABLE], 'SmartWatch', 1],
+            ['outlet/smartwatch', [WEARABLE], 'Outlet Smartwatch', 1],
+            ['gaming/consolas', [VIDEO_GAME_CONSOLE], 'Consolas de Videojuegos', 1],
+            ['accesorios/parlantes-bluetooth', [STEREO_SYSTEM],
+             'Parlantes Bluetooth', 1],
         ]
 
         session = session_with_proxy(extra_args)
@@ -52,8 +62,7 @@ class TiendaMovistar(Store):
             done = False
 
             while not done:
-                category_url = 'https://catalogo.movistar.cl/fullprice/' \
-                               'catalogo/{}?p={}'.format(category_path, page)
+                category_url = 'https://catalogo.movistar.cl/tienda/{}/?p={}'.format(category_path, page)
                 print(category_url)
 
                 if page >= 80:
@@ -62,11 +71,11 @@ class TiendaMovistar(Store):
                 soup = BeautifulSoup(session.get(category_url).text,
                                      'html.parser')
 
-                items = soup.findAll('div', 'item-producto')
+                items = soup.findAll('li', 'product')
 
                 if not items:
                     if page == 1:
-                        raise Exception('Empty category: ' + category_url)
+                        logging.warning('Empty category: ' + category_url)
                     break
 
                 empty_page = True

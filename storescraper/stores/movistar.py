@@ -59,15 +59,15 @@ class Movistar(Store):
                 if page >= 30:
                     raise Exception('Page overflow')
 
-                catalogo_url = 'https://catalogo.movistar.cl/equipomasplan/' \
-                               'catalogo.html?p={}'.format(page) + \
+                catalogo_url = 'https://catalogo.movistar.cl/tienda/' \
+                               'celulares/equipos-con-plan?p={}'.format(page) + \
                     cls.cell_catalog_suffix
                 print(catalogo_url)
                 session = session_with_proxy(extra_args)
                 session.headers['user-agent'] = 'python-requests/2.21.0'
                 soup = BeautifulSoup(session.get(
                     catalogo_url).text, 'html.parser')
-                containers = soup.findAll('div', 'itemsCatalogo')
+                containers = soup.findAll('li', 'product')
 
                 if not containers:
                     if page == 1:
@@ -75,7 +75,7 @@ class Movistar(Store):
                     break
 
                 for container in containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('a')['href'].split('?')[0]
                     if product_url in product_entries:
                         print(product_url)
                     product_entries[product_url].append({
