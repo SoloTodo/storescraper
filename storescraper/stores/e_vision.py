@@ -30,9 +30,9 @@ class EVision(Store):
                 continue
 
             url_webpage = 'https://www.evisionstore.com/api/product/' \
-                          'search-react.php'
-            res = session.post(url_webpage, '{"keyword":"lg"}')
-            product_containers = json.loads(res.text)['search_data']
+                          'onlineproducts-react.php'
+            res = session.get(url_webpage)
+            product_containers = json.loads(res.text)['online_products_all']
 
             if not product_containers:
                 raise Exception('Empty')
