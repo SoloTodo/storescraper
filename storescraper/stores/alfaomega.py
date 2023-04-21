@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -115,14 +117,12 @@ class Alfaomega(Store):
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        name = soup.find('h2', 'product_title').text.strip()
-        sku_container = soup.find('span', 'sku')
+        json_container = \
+            json.loads(soup.find(
+                'script', {'type': 'application/ld+json'}).text)
 
-        if not sku_container:
-            return []
-
-        sku = sku_container.text.strip()
-
+        name = json_container['name']
+        sku = json_container['sku']
         stock_container = soup.find('span', 'stock')
 
         if stock_container:
@@ -134,15 +134,8 @@ class Alfaomega(Store):
         else:
             stock = -1
 
-        price_container = soup.find('p', 'price')
-
-        if not price_container.text.strip():
-            return []
-
-        offer_price = Decimal(
-            remove_words(price_container.find('ins').find('span').text))
-        normal_price = Decimal(
-            remove_words(price_container.find('del').find('span').text))
+        offer_price = Decimal(json_container['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.05')).quantize(0)
 
         picture_containers = soup.findAll('div', 'img-thumbnail')
         picture_urls = []
@@ -154,8 +147,7 @@ class Alfaomega(Store):
             except KeyError:
                 continue
 
-        description = html_to_markdown(
-            str(soup.find('div', {'id': 'tab-description'})))
+        description = html_to_markdown(json_container['description'])
 
         p = Product(
             name,
