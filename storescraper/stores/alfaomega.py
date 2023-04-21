@@ -122,7 +122,7 @@ class Alfaomega(Store):
                 'script', {'type': 'application/ld+json'}).text)
 
         name = json_container['name']
-        sku = json_container['sku']
+        sku = str(json_container['sku'])
         stock_container = soup.find('span', 'stock')
 
         if stock_container:
