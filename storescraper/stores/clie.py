@@ -39,7 +39,7 @@ class Clie(Store):
             ['114', 'Printer'],         # Impresoras Multi. Laser negro
             ['456', 'Printer'],         # Impresoras Multi. Laser color
             ['1050', 'Printer'],        # Impresoras Multi. Laser Color A3
-            ['863', 'Printer'],         # Impresoras Multi. Tinta Solida
+            # ['863', 'Printer'],         # Impresoras Multi. Tinta Solida
             ['80', 'Printer'],          # Impresoras Laser negro
             ['205', 'Printer'],         # Impresoras Laser color
             ['363', 'Printer'],         # Multifuncional tinta

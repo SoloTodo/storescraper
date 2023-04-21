@@ -103,6 +103,10 @@ class GoldenGamers(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         product_container = soup.find('div', {'id': 'parent'})
+
+        if not product_container:
+            raise Exception(response.text)
+
         name = product_container.find('h1', 'product-item-caption-title').text
         sku = product_container.find('span', 'shopify-product-reviews-badge')[
             'data-id']

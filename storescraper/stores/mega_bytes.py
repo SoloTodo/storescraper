@@ -51,6 +51,7 @@ class MegaBytes(Store):
             ['otros', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.68.0'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -82,6 +83,7 @@ class MegaBytes(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.68.0'
         response = session.get(url)
 
         if response.status_code == 404:

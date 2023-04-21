@@ -22,6 +22,7 @@ class EVision(Store):
             WASHING_MACHINE
         ]
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.68.0'
         product_urls = []
 
         for local_category in url_extensions:
@@ -29,9 +30,9 @@ class EVision(Store):
                 continue
 
             url_webpage = 'https://www.evisionstore.com/api/product/' \
-                          'onlineproducts-react.php'
-            product_containers = json.loads(
-                session.post(url_webpage).text)['online_products_all']
+                          'search-react.php'
+            res = session.post(url_webpage, '{"keyword":"lg"}')
+            product_containers = json.loads(res.text)['search_data']
 
             if not product_containers:
                 raise Exception('Empty')
@@ -39,7 +40,7 @@ class EVision(Store):
             for container in product_containers:
                 if container['brand'] != 'lg':
                     continue
-                product_url = 'https://www.evisionstore.com/product/' + \
+                product_url = 'https://www.evisionstore.com/producto/' + \
                               container['modelo']
                 product_urls.append(product_url)
 
@@ -49,8 +50,9 @@ class EVision(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = 'curl/7.68.0'
         url_request = 'https://www.evisionstore.com/api/product/view-react.php'
-        data = json.dumps({'model_number': url.split('product/')[1]})
+        data = json.dumps({'model_number': url.split('producto/')[1]})
 
         max_tries = 3
         while max_tries > 0:
