@@ -71,7 +71,6 @@ class KDTec(Store):
             ['computacion/almacenamiento/disco-duro-interno', STORAGE_DRIVE],
             ['computacion/almacenamiento/disco-ssd', SOLID_STATE_DRIVE],
             ['computacion/monitores/monitor', MONITOR],
-            ['audio/pantallas-interactivas', MONITOR],
             ['computacion/gamer/monitor-gamer', MONITOR],
             ['computacion/perifericos/mouse', MOUSE],
             ['computacion/perifericos/teclados', KEYBOARD],
@@ -102,6 +101,8 @@ class KDTec(Store):
             ['redes/servidores/memoria-ram-servidor', RAM],
             ['redes/servidores/discos-servidor', SOLID_STATE_DRIVE],
             ['telefonia/celulares', CELL],
+            ['audio/pantallas-interactivas', MONITOR],
+            ['audio/parlantes-audio', STEREO_SYSTEM],
         ]
 
         session = session_with_proxy(extra_args)
