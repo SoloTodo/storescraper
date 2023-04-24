@@ -146,9 +146,16 @@ class Lenovo(Store):
                 )
                 products.append(p)
         else:
+            # Case for https://www.lenovo.com/cl/es/laptops/ideapad/
+            # serie-flex/IdeaPad-Flex-5-15ITL-05/p/88IPF501454
+
+            name_tag = soup.find('div', 'titleSection')
+            if not name_tag:
+                return []
+
             # Monitor most likely
 
-            name = soup.find('div', 'titleSection').text.strip()
+            name = name_tag.text.strip()
             sku = soup.find('meta', {'name': 'productid'})['content']
 
             sale_price = soup.find('meta', {'name': 'productsaleprice'})
