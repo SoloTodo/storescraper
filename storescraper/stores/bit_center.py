@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOUSE, KEYBOARD, HEADPHONES, NOTEBOOK, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, VIDEO_CARD, COMPUTER_CASE, RAM, \
-    POWER_SUPPLY, GAMING_CHAIR, MOTHERBOARD, CPU_COOLER, MICROPHONE
+    POWER_SUPPLY, GAMING_CHAIR, MOTHERBOARD, CPU_COOLER, MICROPHONE, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -30,7 +31,8 @@ class BitCenter(Store):
             MICROPHONE,
             RAM,
             SOLID_STATE_DRIVE,
-            NOTEBOOK
+            NOTEBOOK,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -50,6 +52,7 @@ class BitCenter(Store):
             ['sillas-gamer', GAMING_CHAIR],
             ['microfonos', MICROPHONE],
             ['notebooks', NOTEBOOK],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
