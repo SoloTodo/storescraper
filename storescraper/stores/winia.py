@@ -1,8 +1,7 @@
 from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import OVEN, REFRIGERATOR, TELEVISION, \
-    WASHING_MACHINE
+from storescraper.categories import OVEN, REFRIGERATOR, WASHING_MACHINE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -14,8 +13,7 @@ class Winia(Store):
         return [
             REFRIGERATOR,
             WASHING_MACHINE,
-            OVEN,
-            TELEVISION
+            OVEN
         ]
 
     @classmethod
@@ -25,11 +23,11 @@ class Winia(Store):
             ['22-carga-frontal', WASHING_MACHINE],
             ['21-carga-superior', WASHING_MACHINE],
             ['23-secadoras', WASHING_MACHINE],
-            ['24-microondas', OVEN],
-            ['12-tv', TELEVISION],
+            ['24-microondas', OVEN]
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -40,6 +38,7 @@ class Winia(Store):
                     raise Exception('Page overflow: ' + url_extension)
                 url_webpage = 'https://www.winia.cl/{}?' \
                               'page={}'.format(url_extension, page)
+                print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.findAll(
@@ -58,6 +57,7 @@ class Winia(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.54.0'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 

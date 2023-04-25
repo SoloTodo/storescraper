@@ -34,15 +34,11 @@ class Hites(Store):
             STOVE,
             WASHING_MACHINE,
             CELL,
-            'Camera',
             STEREO_SYSTEM,
-            'OpticalDiskPlayer',
             VIDEO_GAME_CONSOLE,
             ALL_IN_ONE,
             SPACE_HEATER,
-            'CellAccesory',
             KEYBOARD,
-            'KeyboardMouseCombo',
             MOUSE,
             HEADPHONES,
             EXTERNAL_STORAGE_DRIVE,
@@ -253,14 +249,15 @@ class Hites(Store):
 
             start = 0
             current_position = 1
+            step = 48
 
             while True:
-                category_url = 'https://www.hites.com/{}/?sz=24&start={}&' \
+                category_url = 'https://www.hites.com/{}/?sz={}&start={}&' \
                                'srule=best-matches'.format(
-                                   category_path, start)
+                                   category_path, step, start)
                 print(category_url)
 
-                if start >= 600:
+                if start >= step * 50:
                     raise Exception('Page overflow: ' + category_url)
 
                 response = session.get(category_url, timeout=60)
@@ -300,7 +297,7 @@ class Hites(Store):
                     })
                     current_position += 1
 
-                start += 24
+                start += step
 
         return product_entries
 
