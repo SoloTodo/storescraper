@@ -10,7 +10,8 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, MOUSE, \
     HEADPHONES, NOTEBOOK, MONITOR, CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class MegaDriveStore(Store):
@@ -105,9 +106,10 @@ class MegaDriveStore(Store):
 
         key = str(json_data['id_product'])
         name = json_data['name']
-        description = json_data['description']
+        description = html_to_markdown(json_data['description'])
         stock = json_data['quantity']
-        price = Decimal(json_data['price_amount'])
+        offer_price = Decimal(json_data['price_amount'])
+        normal_price = (offer_price / Decimal('0.95')).quantize(0)
         picture_urls = [i['large']['url'] for i in json_data['images']]
 
         p = Product(
@@ -118,8 +120,8 @@ class MegaDriveStore(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=key,
             picture_urls=picture_urls,

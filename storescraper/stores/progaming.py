@@ -1,7 +1,11 @@
 from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import *
+
+from storescraper.categories import SOLID_STATE_DRIVE, NOTEBOOK, \
+    POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
+    VIDEO_CARD, HEADPHONES, KEYBOARD_MOUSE_COMBO, MOUSE, STEREO_SYSTEM, \
+    KEYBOARD, MONITOR, GAMING_CHAIR, USB_FLASH_DRIVE, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -13,53 +17,46 @@ class Progaming(Store):
     def categories(cls):
         return [
             SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            MONITOR,
-            CPU_COOLER,
+            NOTEBOOK,
             POWER_SUPPLY,
             COMPUTER_CASE,
             RAM,
+            MOTHERBOARD,
             PROCESSOR,
+            CPU_COOLER,
             VIDEO_CARD,
             HEADPHONES,
-            MICROPHONE,
-            STEREO_SYSTEM,
+            KEYBOARD_MOUSE_COMBO,
             MOUSE,
-            GAMING_CHAIR,
+            STEREO_SYSTEM,
             KEYBOARD,
-            MEMORY_CARD,
+            MONITOR,
+            GAMING_CHAIR,
+            USB_FLASH_DRIVE,
             WEARABLE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion/almacenamiento/discos-y-accesorios',
-             SOLID_STATE_DRIVE],
-            ['computacion/almacenamiento/pen-drives', USB_FLASH_DRIVE],
-            ['computacion/monitores-y-accesorios/monitores', MONITOR],
-            ['computacion/componentes-de-pc/coolers-y-ventiladores',
-             CPU_COOLER],
-            ['computacion/componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['computacion/componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['computacion/componentes-de-pc/memorias-ram', RAM],
-            ['computacion/componentes-de-pc/procesadores', PROCESSOR],
-            ['computacion/componentes-de-pc/tarjetas', VIDEO_CARD],
-            ['electronica-audio-y-video/audio/audifonos-audio', HEADPHONES],
-            ['electronica-audio-y-video/audio/microfonos', MICROPHONE],
-            ['electronica-audio-y-video/audio/parlantes-portatiles',
-             STEREO_SYSTEM],
-            ['electronica-audio-y-video/audio/parlantes-y-subwoofers',
-             STEREO_SYSTEM],
-            ['electronica-audio-y-video/parlantes', STEREO_SYSTEM],
-            ['gaming-y-streaming/audifonos', HEADPHONES],
-            ['gaming-y-streaming/mouse', MOUSE],
-            ['gaming-y-streaming/sillas-y-sillones', GAMING_CHAIR],
-            ['gaming-y-streaming/teclados-fisicos', KEYBOARD],
-            ['otras-categorias/accesorios-para-celulares/memorias',
-             MEMORY_CARD],
-            ['otras-categorias/handies-y-dispositivos-moviles/smartwatches',
-             WEARABLE],
+            ['componentes/almacenamiento-componentes', SOLID_STATE_DRIVE],
+            ['componentes/computadores-y-notebooks', NOTEBOOK],
+            ['componentes/fuentes-poder', POWER_SUPPLY],
+            ['componentes/gabinetes-componentes', COMPUTER_CASE],
+            ['componentes/memorias-ram-componentes', RAM],
+            ['componentes/placas-madres', MOTHERBOARD],
+            ['componentes/procesadores-componentes', PROCESSOR],
+            ['componentes/refrigeracion', CPU_COOLER],
+            ['componentes/tarjetas-video', VIDEO_CARD],
+            ['perifericos/audifonos-perifericos', HEADPHONES],
+            ['perifericos/kits-perifericos', KEYBOARD_MOUSE_COMBO],
+            ['perifericos/mouse-perifericos', MOUSE],
+            ['perifericos/parlantes-perifericos', STEREO_SYSTEM],
+            ['perifericos/teclados', KEYBOARD],
+            ['monitores-2/monitor-gamer', MONITOR],
+            ['sillas-gamers/sillas-sillones', GAMING_CHAIR],
+            ['otros-productos/pendrivers-memorias', USB_FLASH_DRIVE],
+            ['otros-productos/relojes-inteligentes', WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
