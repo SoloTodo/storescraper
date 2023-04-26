@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import STORAGE_DRIVE, VIDEO_CARD, RAM, \
     COMPUTER_CASE, MOTHERBOARD, MONITOR, PROCESSOR, POWER_SUPPLY, CPU_COOLER, \
-    VIDEO_GAME_CONSOLE
+    VIDEO_GAME_CONSOLE, KEYBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -25,7 +25,8 @@ class TiendaCargoSud(Store):
             PROCESSOR,
             POWER_SUPPLY,
             CPU_COOLER,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            KEYBOARD
         ]
 
     @classmethod
@@ -40,6 +41,7 @@ class TiendaCargoSud(Store):
             ['procesadores', PROCESSOR],
             ['fuentes-de-poder', POWER_SUPPLY],
             ['refigeracion-liquida', CPU_COOLER],
+            ['perifericos', KEYBOARD],
             ['consolas-y-videojuegos', VIDEO_GAME_CONSOLE]
         ]
 
@@ -90,10 +92,11 @@ class TiendaCargoSud(Store):
         else:
             price = Decimal(
                 remove_words(soup.find('span', 'product__price').text.strip()))
-        picture_urls = ['https:' + tag['href'] for tag in
+        picture_urls = ['https://tiendacargosud.cl' + tag['href'] for tag in
                         soup.find('div', 'product__thumbs').findAll('a')]
         picture_urls.append(
-            'https:' + soup.find('div', 'product-image-main').find('img')[
+            'https://tiendacargosud.cl' +
+            soup.find('div', 'product-image-main').find('img')[
                 'data-photoswipe-src'])
         description = html_to_markdown(str(
             soup.find('div', 'product-single__description')))

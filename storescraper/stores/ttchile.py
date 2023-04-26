@@ -129,7 +129,7 @@ class TtChile(Store):
         soup = BeautifulSoup(session.get(
             url, timeout=30).text, 'html.parser')
 
-        json_data_tag = soup.find('div', {'id': 'product-details'})
+        json_data_tag = soup.findAll('div', {'id': 'product-details'})[-1]
         json_data = json.loads(json_data_tag['data-product'])
 
         sku = json_data['reference']

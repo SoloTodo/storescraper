@@ -7,7 +7,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import HEADPHONES, TABLET, CELL, MOUSE, WEARABLE, \
+from storescraper.categories import HEADPHONES, TABLET, CELL, WEARABLE, \
     VIDEO_GAME_CONSOLE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store import Store
@@ -42,7 +42,8 @@ class TiendaMovistar(Store):
             ['audifonos', [HEADPHONES], 'Audífonos', 1],
             ['smartwatch', [WEARABLE], 'SmartWatch', 1],
             ['outlet/smartwatch', [WEARABLE], 'Outlet Smartwatch', 1],
-            ['gaming/consolas', [VIDEO_GAME_CONSOLE], 'Consolas de Videojuegos', 1],
+            ['gaming/consolas', [VIDEO_GAME_CONSOLE],
+             'Consolas de Videojuegos', 1],
             ['accesorios/parlantes-bluetooth', [STEREO_SYSTEM],
              'Parlantes Bluetooth', 1],
         ]
@@ -62,8 +63,8 @@ class TiendaMovistar(Store):
             done = False
 
             while not done:
-                category_url = 'https://catalogo.movistar.cl/tienda/{}/?p={}'.format(category_path, page)
-                print(category_url)
+                category_url = 'https://catalogo.movistar.cl/tienda/{}/' \
+                               '?p={}'.format(category_path, page)
 
                 if page >= 80:
                     raise Exception('Page overflow: ' + category_url)

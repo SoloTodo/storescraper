@@ -60,8 +60,8 @@ class Movistar(Store):
                     raise Exception('Page overflow')
 
                 catalogo_url = 'https://catalogo.movistar.cl/tienda/' \
-                               'celulares/equipos-con-plan?p={}'.format(page) + \
-                    cls.cell_catalog_suffix
+                               'celulares/equipos-con-plan?p={}'.format(
+                                page) + cls.cell_catalog_suffix
                 print(catalogo_url)
                 session = session_with_proxy(extra_args)
                 session.headers['user-agent'] = 'python-requests/2.21.0'
