@@ -122,7 +122,7 @@ class Hites(Store):
              'Inicio > Electro Hogar > Calefacción', 0],
             ['electro-hogar/calefaccion/estufas-a-gas', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción > Estufas a Gas', 1],
-            ['electro-hogar/calefaccion/estufa-a-lena', [SPACE_HEATER],
+            ['electro-hogar/calefaccion/f/estufa-a-lena', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción > Estufa a Leña', 1],
             ['electro-hogar/calefaccion/estufas-electricas', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción > Estufas Eléctricas', 1],

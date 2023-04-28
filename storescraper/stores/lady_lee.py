@@ -62,6 +62,10 @@ class LadyLee(Store):
             'FAULT,images(FULL,galleryIndex),ean&currentPoS=D001'.format(sku)
         response = session.get(product_url, allow_redirects=False)
 
+        if response.status_code == 400:
+            # Their own version of a 404 error
+            return []
+
         json_data = json.loads(response.text)
 
         assert sku == json_data['code']

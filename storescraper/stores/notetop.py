@@ -86,14 +86,20 @@ class Notetop(Store):
         key = product_container['productID']
         sku = product_container.get('sku', None)
         description = product_container['description']
-        if product_container['offers']['offers'][0]['availability'] == \
+
+        if product_container['offers']['@type'] == 'AggregateOffer':
+            offer_tag = product_container['offers']['offers'][0]
+        else:
+            offer_tag = product_container['offers']
+
+        if offer_tag['availability'] == \
                 'http://schema.org/InStock':
             stock = int(soup.find('div', 'title-description').findAll('div',
                                                                       'marca')
                         [-1].text.strip().split('Stock:')[-1].strip())
         else:
             stock = 0
-        price = Decimal(product_container['offers']['lowPrice'])
+        price = Decimal(offer_tag['price'])
         picture_urls = [tag['src'] for tag in
                         soup.find('div', {'id': 'product-images'}).findAll(
                             'img')]
