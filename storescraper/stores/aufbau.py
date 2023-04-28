@@ -1,7 +1,6 @@
 from decimal import Decimal
 import json
 import logging
-from bs4 import BeautifulSoup
 
 from storescraper.categories import ALL_IN_ONE, CELL, HEADPHONES, MOUSE, \
     NOTEBOOK, STEREO_SYSTEM, TABLET, WEARABLE, MONITOR
@@ -72,13 +71,17 @@ class Aufbau(Store):
         print(url)
         code = url.split('/p/')[-1].replace('--', '/')
         session = session_with_proxy(extra_args)
-        data = session.get(
+        response = session.get(
             'https://api.cxl8rgz-articulos1-p1-public.model-t.cc.commerce.'
             'ondemand.com/rest/v2/reifstoreb2cstore/products/reifstore-enc'
             'oding?productCode={}'.format(code)
-        ).text
+        )
 
-        product_info = json.loads(data)
+        if response.status_code == 400:
+            # Their own version of a 404 error
+            return []
+
+        product_info = json.loads(response.text)
 
         base_name = product_info['name']
         description = html_to_markdown(product_info['description'])

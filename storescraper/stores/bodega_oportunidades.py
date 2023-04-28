@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import GAMING_CHAIR, MICROPHONE, NOTEBOOK, OVEN, \
     PRINTER, RAM, REFRIGERATOR, STEREO_SYSTEM, STORAGE_DRIVE, TELEVISION, \
-    WEARABLE, CELL, VIDEO_GAME_CONSOLE
+    WEARABLE, CELL, VIDEO_GAME_CONSOLE, SPACE_HEATER, AIR_CONDITIONER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -26,7 +26,9 @@ class BodegaOportunidades(Store):
             OVEN,
             REFRIGERATOR,
             MICROPHONE,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            SPACE_HEATER,
+            AIR_CONDITIONER
         ]
 
     @classmethod
@@ -45,6 +47,9 @@ class BodegaOportunidades(Store):
             ['Refrigeradores y frigobar', REFRIGERATOR],
             ['Smarwatch y Smartband', WEARABLE],
             ['Televisores', TELEVISION],
+            ['Calefacción', SPACE_HEATER],
+            ['Humidificación', AIR_CONDITIONER],
+            ['Ventilación', AIR_CONDITIONER],
         ]
 
         session = session_with_proxy(extra_args)
