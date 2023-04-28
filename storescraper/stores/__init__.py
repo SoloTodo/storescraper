@@ -344,6 +344,7 @@ from .pc_nexus import PcNexus
 from .pc_nitro import PcNitro
 from .pcx import Pcx
 from .peta import Peta
+from .philips import Philips
 from .pichau import Pichau
 from .plaza_lama import PlazaLama
 from .plaza_vea import PlazaVea
