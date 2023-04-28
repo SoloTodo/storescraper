@@ -133,7 +133,8 @@ class MyShop(Store):
         name = product_data['name']
         sku = product_data['sku']
         description = product_data['description']
-        price = Decimal(product_data['offers'][0]['price'])
+        offer_price = Decimal(product_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
         stock_p = soup.find('p', 'stock in-stock')
         if stock_p:
@@ -165,8 +166,8 @@ class MyShop(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
