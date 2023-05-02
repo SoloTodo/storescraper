@@ -8,7 +8,8 @@ from storescraper.categories import PRINTER, UPS, MOUSE, \
     KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
     CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE
+    MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE, \
+    CASE_FAN
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -23,7 +24,8 @@ class Dust2(Store):
             GAMING_CHAIR, COMPUTER_CASE, CPU_COOLER, RAM, POWER_SUPPLY,
             PROCESSOR, MOTHERBOARD, VIDEO_CARD, STORAGE_DRIVE, MEMORY_CARD,
             EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MONITOR,
-            KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE
+            KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE,
+            CASE_FAN
         ]
 
     @classmethod
@@ -43,7 +45,8 @@ class Dust2(Store):
             ['electronica/smartband', WEARABLE],
             ['electronica/tarjetas-de-memoria-electronica', MEMORY_CARD],
             ['electronica/pendrives', USB_FLASH_DRIVE],
-            ['componentes-de-pc/gabinetes/gabinetes', COMPUTER_CASE],
+            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
+            ['componentes-de-pc/fans-y-controladores', CASE_FAN],
             ['componentes-de-pc/cooler-para-cpu', CPU_COOLER],
             ['componentes-de-pc/refrigeracion-liquida', CPU_COOLER],
             ['componentes-de-pc/memorias-ram', RAM],
