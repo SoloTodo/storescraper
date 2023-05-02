@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, TABLET, HEADPHONES, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, RAM, POWER_SUPPLY, COMPUTER_CASE, \
     MONITOR, MOUSE, STORAGE_DRIVE, USB_FLASH_DRIVE, PRINTER, STEREO_SYSTEM, \
-    MICROPHONE, GAMING_CHAIR
+    MICROPHONE, GAMING_CHAIR, UPS
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,7 +33,8 @@ class Zacto(Store):
             PRINTER,
             STEREO_SYSTEM,
             GAMING_CHAIR,
-            MICROPHONE
+            MICROPHONE,
+            UPS
         ]
 
     @classmethod
@@ -58,7 +59,9 @@ class Zacto(Store):
             ['impresion/multifuncionales-tinta', PRINTER],
             ['zona-outlet', NOTEBOOK],
             ['oficina', GAMING_CHAIR],
-            ['audio-video-y-fotografia/microfonos', MICROPHONE]
+            ['audio-video-y-fotografia/microfonos', MICROPHONE],
+            ['conectividad-y-redes/ups', UPS],
+            ['gamers', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
