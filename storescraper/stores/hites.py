@@ -419,6 +419,11 @@ class Hites(Store):
         picture_urls = [i.find('img')['src'].replace(' ', '%20')
                         for i in images if i.find('img') is not None]
 
+        seller = soup.find('b', 'seller').text.strip()
+
+        if seller == 'Hites':
+            seller = None
+
         p = Product(
             name,
             cls.__name__,
@@ -435,7 +440,8 @@ class Hites(Store):
             picture_urls=picture_urls,
             video_urls=video_urls,
             has_virtual_assistant=has_virtual_assistant,
-            flixmedia_id=flixmedia_id
+            flixmedia_id=flixmedia_id,
+            seller=seller
         )
 
         return [p]
