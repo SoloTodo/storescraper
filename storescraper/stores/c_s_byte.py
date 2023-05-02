@@ -122,15 +122,22 @@ class CSByte(Store):
         attributes_table = soup.find('table', 'woocommerce-product-attributes')
         condition = 'https://schema.org/RefurbishedCondition'
 
+        conditions_table = {
+            'Nuevo': 'https://schema.org/NewCondition',
+            'Refurbished': 'https://schema.org/RefurbishedCondition',
+            'OpenBox': 'https://schema.org/OpenBoxCondition',
+            'Seminuevo': 'https://schema.org/UsedCondition'
+        }
+
         if attributes_table:
             for row in attributes_table.findAll('tr'):
                 label = row.find('th').text.strip()
                 if label != 'Condición':
                     continue
                 value = row.find('td').text.strip()
-                if value == 'Nuevo':
-                    condition = 'https://schema.org/NewCondition'
-                    break
+                condition = conditions_table.get(
+                    value, 'https://schema.org/RefurbishedCondition')
+                break
 
         if soup.find('form', 'variations_form'):
             products = []
