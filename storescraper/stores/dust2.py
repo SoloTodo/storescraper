@@ -4,12 +4,11 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import PRINTER, UPS, VIDEO_GAME_CONSOLE, MOUSE, \
+from storescraper.categories import PRINTER, UPS, MOUSE, \
     KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
     CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, TABLET, MICROPHONE, GAMING_DESK, \
-    CASE_FAN, WEARABLE
+    MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -20,33 +19,11 @@ class Dust2(Store):
     @classmethod
     def categories(cls):
         return [
-            VIDEO_GAME_CONSOLE,
-            MOUSE,
-            KEYBOARD,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            GAMING_CHAIR,
-            COMPUTER_CASE,
-            CPU_COOLER,
-            RAM,
-            POWER_SUPPLY,
-            PROCESSOR,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            STORAGE_DRIVE,
-            MEMORY_CARD,
-            EXTERNAL_STORAGE_DRIVE,
-            USB_FLASH_DRIVE,
-            MONITOR,
-            KEYBOARD_MOUSE_COMBO,
-            NOTEBOOK,
-            TABLET,
-            MICROPHONE,
-            GAMING_DESK,
-            CASE_FAN,
-            PRINTER,
-            UPS,
-            WEARABLE
+            PRINTER, UPS, MOUSE, KEYBOARD, HEADPHONES, STEREO_SYSTEM,
+            GAMING_CHAIR, COMPUTER_CASE, CPU_COOLER, RAM, POWER_SUPPLY,
+            PROCESSOR, MOTHERBOARD, VIDEO_CARD, STORAGE_DRIVE, MEMORY_CARD,
+            EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MONITOR,
+            KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE
         ]
 
     @classmethod
@@ -54,59 +31,42 @@ class Dust2(Store):
         url_extensions = [
             ['mundo-gamer/mouse-gamer', MOUSE],
             ['mundo-gamer/teclados-gamer', KEYBOARD],
-            ['mundo-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
+            ['mundo-gamer/kits-gamer', KEYBOARD_MOUSE_COMBO],
             ['mundo-gamer/audifonos-gamer', HEADPHONES],
             ['mundo-gamer/parlantes-gamer', STEREO_SYSTEM],
-            ['mundo-gamer/sillas', GAMING_CHAIR],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['computacion-y-electronica/componentes-de-pc/gabinetes',
-             COMPUTER_CASE],
-            ['computacion-y-electronica/componentes-de-pc/cooler-para-cpu',
-             CPU_COOLER],
-            ['computacion-y-electronica/componentes-de-pc/'
-             'refrigeracion-liquida', CPU_COOLER],
-            ['computacion-y-electronica/componentes-de-pc/memorias-ram', RAM],
-            ['computacion-y-electronica/componentes-de-pc/fuentes-de-poder',
-             POWER_SUPPLY],
-            ['computacion-y-electronica/componentes-de-pc/procesadores',
-             PROCESSOR],
-            ['computacion-y-electronica/componentes-de-pc/placas-madres',
-             MOTHERBOARD],
-            ['computacion-y-electronica/componentes-de-pc/tarjetas-de-video',
-             VIDEO_CARD],
-            ['computacion-y-electronica/perifericos/teclados-perifericos',
-             KEYBOARD],
-            ['computacion-y-electronica/perifericos/mouse-perifericos', MOUSE],
-            ['computacion-y-electronica/perifericos/combo-teclado-y-mouse',
-             KEYBOARD_MOUSE_COMBO],
-            ['computacion-y-electronica/almacenamiento/ssd-y-discos-duros',
+            ['mundo-gamer/sillas-gamer', GAMING_CHAIR],
+            ['mundo-gamer/monitores-gamer', MONITOR],
+            ['electronica/notebooks/equipos', NOTEBOOK],
+            ['electronica/notebooks/memorias-ram-notebooks', RAM],
+            ['electronica/impresoras', PRINTER],
+            ['electronica/respaldo-energia', UPS],
+            ['electronica/smartband', WEARABLE],
+            ['electronica/tarjetas-de-memoria-electronica', MEMORY_CARD],
+            ['electronica/pendrives', USB_FLASH_DRIVE],
+            ['componentes-de-pc/gabinetes/gabinetes', COMPUTER_CASE],
+            ['componentes-de-pc/cooler-para-cpu', CPU_COOLER],
+            ['componentes-de-pc/refrigeracion-liquida', CPU_COOLER],
+            ['componentes-de-pc/memorias-ram', RAM],
+            ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
+            ['componentes-de-pc/procesadores', PROCESSOR],
+            ['componentes-de-pc/placas-madres', MOTHERBOARD],
+            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
+            ['componentes-de-pc/almacenamiento/ssd-y-discos-duros',
              STORAGE_DRIVE],
-            ['computacion-y-electronica/almacenamiento/tarjetas-de-memoria',
+            ['componentes-de-pc/almacenamiento/tarjetas-de-memoria',
              MEMORY_CARD],
-            ['computacion-y-electronica/almacenamiento/discos-y-ssd-externos',
+            ['componentes-de-pc/almacenamiento/discos-y-ssd-externos',
              EXTERNAL_STORAGE_DRIVE],
-            ['computacion-y-electronica/almacenamiento/pendrive',
-             USB_FLASH_DRIVE],
-            ['computacion-y-electronica/audio/audifonos-audio', HEADPHONES],
-            ['computacion-y-electronica/audio/parlantes-audio', STEREO_SYSTEM],
-            ['computacion-y-electronica/monitores', MONITOR],
-            ['computacion-y-electronica/notebooks/equipos', NOTEBOOK],
-            ['computacion-y-electronica/notebooks/memorias-ram-notebooks',
-             RAM],
-            ['computacion-y-electronica/tablets-e-readers', TABLET],
-            ['computacion-y-electronica/componentes-de-pc/'
-             'fans-y-controladores', CASE_FAN],
-            ['apple/airpods/airpods-pro', HEADPHONES],
-            ['dispositivos-inteligentes/asistentes-virtuales/'
-             'amazon-asistentes-virtuales', STEREO_SYSTEM],
-            ['dispositivos-inteligentes/asistentes-virtuales/'
-             'google-asistente', STEREO_SYSTEM],
-            ['dispositivos-inteligentes/smartwatches-smartbands', WEARABLE],
-            ['mundo-gamer/microfonos', MICROPHONE],
-            ['mundo-gamer/escritorios', GAMING_DESK],
-            ['computacion-y-electronica/impresoras-y-escaneres/'
-             'impresoras', PRINTER],
-            ['computacion-y-electronica/respaldo-energia', UPS]
+            ['componentes-de-pc/almacenamiento/discos-m-2',
+             SOLID_STATE_DRIVE],
+            ['oficina/teclados-perifericos', KEYBOARD],
+            ['oficina/mouse-perifericos', MOUSE],
+            ['oficina/combo-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['oficina/audifonos-audio', HEADPHONES],
+            ['oficina/parlantes-audio', STEREO_SYSTEM],
+            ['oficina/monitores-oficina', MONITOR],
+            ['consolas-y-videojuegos/playstation-5/audifonos-ps5', HEADPHONES],
+            ['consolas-y-videojuegos/xbox/audifonos-xbox', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
