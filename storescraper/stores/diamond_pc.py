@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CELL, COMPUTER_CASE, CPU_COOLER, \
     GAMING_CHAIR, GAMING_DESK, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
     MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STORAGE_DRIVE, TELEVISION, VIDEO_CARD
+    SOLID_STATE_DRIVE, STORAGE_DRIVE, TELEVISION, VIDEO_CARD, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -34,7 +35,8 @@ class DiamondPc(Store):
             TELEVISION,
             NOTEBOOK,
             PRINTER,
-            CELL
+            CELL,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod
@@ -69,6 +71,7 @@ class DiamondPc(Store):
             ['impresoras-y-suministros/impresoras', PRINTER],
             ['celulares-y-accesorios/celulares-smartphone', CELL],
             ['celulares-y-accesorios/audifonos-inalambricos', HEADPHONES],
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
 
         session = session_with_proxy(extra_args)

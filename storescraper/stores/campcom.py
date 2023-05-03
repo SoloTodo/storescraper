@@ -3,7 +3,8 @@ import json
 import logging
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MONITOR
+from storescraper.categories import MOUSE, SOLID_STATE_DRIVE, \
+    HEADPHONES, MOTHERBOARD, PROCESSOR, VIDEO_CARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -13,34 +14,50 @@ class Campcom(Store):
     @classmethod
     def categories(cls):
         return [
-            MONITOR
+            MOUSE, SOLID_STATE_DRIVE, HEADPHONES, MOTHERBOARD, PROCESSOR,
+            VIDEO_CARD
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        if category != MONITOR:
-            return []
-        url_extension = 'https://campcom.cl/shop'
+        category_paths = [
+            ('componentes', MOUSE),
+            ('disco-solido-ssd', SOLID_STATE_DRIVE),
+            ('mouse', MOUSE),
+            ('perifericos', HEADPHONES),
+            ('placas-madre', MOTHERBOARD),
+            ('procesadores', PROCESSOR),
+            ('tarjetas-de-video', VIDEO_CARD),
+        ]
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        page = 1
-        while True:
-            if page > 10:
-                raise Exception('Page overflow: ' + url_extension)
-            url_webpage = '{}/page/{}/'.format(url_extension, page)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+
+        for category_path, local_category in category_paths:
+            if local_category != category:
+                continue
+
+            page = 1
+            while True:
+                if page > 10:
+                    raise Exception('Page overflow: ' + category_path)
+                url_webpage = 'https://campcom.cl/categoria-producto/{}/' \
+                              'page/{}/'.format(category_path, page)
+                print(url_webpage)
+                response = session.get(url_webpage)
+
+                if response.status_code == 404:
+                    if page == 1:
+                        logging.warning('Empty category: ' + url_webpage)
+                    break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('li', 'type-product')
+
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
         return product_urls
 
     @classmethod
