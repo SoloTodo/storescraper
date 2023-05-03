@@ -2,6 +2,8 @@ import json
 import logging
 import random
 import re
+import urllib
+
 import time
 
 from collections import defaultdict
@@ -41,6 +43,31 @@ class Falabella(Store):
          'fantil', 1],
         ['cat1012', [TELEVISION], 'Home > Tecnología-TV y Video', 0],
         ['cat7190148', [TELEVISION], 'Home > Tecnología-TV > Smart TV', 1],
+        ['cat7190148',
+         [TELEVISION],
+         'Home > Tecnología-TV > Smart tv entre 50" - 55"', 1,
+         {'f.product.attribute.Tamaño_de_la_pantalla':
+          '50::50 "::50 pulgadas::50"::51::51 pulgadas::55::55 "::'
+          '55 pulgadas::55"'}],
+        ['cat7190148',
+         [TELEVISION],
+         'Home > Tecnología-TV > Smart tv sobre 55"', 1,
+         {'f.product.attribute.Tamaño_de_la_pantalla':
+          '56 ::56 pulgadas::58::58 "::58 pulgadas::58''::60::60 "::'
+          '60 pulgadas::60''::65::65 "::65 pulgadas::65"::68::68 pulgadas::'
+          '70::70 "::70 pulgadas::70"::75::75 "::75 pulgadas::77::'
+          '77 pulgadas::82 pulgadas::83 pulgadas::85::85 pulgadas::'
+          '86 pulgadas'}],
+        ['cat7190148',
+         [TELEVISION],
+         'Home > Tecnología-TV > Smart tv menores a 50"', 1,
+         {
+             'f.product.attribute.Tamaño_de_la_pantalla':
+             '22 pulgadas::24::24 pulgadas::24"::27 pulgadas::32::32 "::'
+             '32 pulgadas::32"::32''::39::39 "::39 pulgadas::40::40 "::'
+             '40 pulgadas::40"::42::42 "::42 pulgadas::42"::43::43 "::'
+             '43 pulgadas::43"::48::48 "::48 pulgadas::48"::49 "::'
+             '49 pulgadas::49"::49''"'}],
         ['cat2070', [PROJECTOR], 'Home > Tecnología-TV > Proyectores', 1],
         ['cat2005', [STEREO_SYSTEM], 'Home > Tecnología-Audio', 0],
         ['cat3091', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Equipos de Mús'
@@ -154,13 +181,18 @@ class Falabella(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            category_id, local_categories, section_name, category_weight = e
+            category_id, local_categories, section_name, category_weight = e[:4]
+
+            if len(e) == 5:
+                extra_params = e[4]
+            else:
+                extra_params = {}
 
             if category not in local_categories:
                 continue
 
             category_product_urls = cls._get_product_urls(
-                session, category_id)
+                session, category_id, extra_params)
 
             for idx, url in enumerate(category_product_urls):
                 product_entries[url].append({
@@ -241,14 +273,13 @@ class Falabella(Store):
                 raise Exception('Invalid product type')
 
     @classmethod
-    def _get_product_urls(cls, session, category_id):
+    def _get_product_urls(cls, session, category_id, extra_params):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zones=ZL_CERRILLOS%2C3045%2CLOSC%2C2020%2CCHILEXPRESS_8' \
-                   '%2CSC14F6B_FLEX%2CSC3FD1A_FLEX%2CBX_R13_BASE%2CSCD9039' \
-                   '_FLEX%2CHUB_SALIDA_DIRECTA_RM%2C1234%2C130617%2CBLUE_' \
-                   'RM_URBANO%2CRM%2CRM%2C13%2CCHILE_INTERNATIONAL' \
                    '&categoryId={}&sortBy={}&page={}'
+
+        for key, value in extra_params.items():
+            base_url += '&{}={}'.format(key, urllib.parse.quote(value))
 
         # The first sorting will be given preference for
         # section position information
@@ -280,7 +311,7 @@ class Falabella(Store):
                         cls.seller)
                 else:
                     pag_url += '&f.derived.variant.sellerId={}'.format(
-                        'FALABELLA%3A%3AMARKETPLACE')
+                        'FALABELLA')
 
                 print(pag_url)
 

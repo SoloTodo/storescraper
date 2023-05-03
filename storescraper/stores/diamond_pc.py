@@ -90,7 +90,7 @@ class DiamondPc(Store):
                     '{}/'.format(url_extension, page)
                 print(url_webpage)
                 data = session.get(url_webpage, timeout=20).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_container = soup.find('div', 'wd-shop-product')
                 if not product_container:
                     if page == 1:
