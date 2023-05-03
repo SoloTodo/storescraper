@@ -93,7 +93,7 @@ class TecnoSite(Store):
         if not soup.find('span', {'id': 'final-price'}):
             return []
 
-        name = soup.find('h1', 'product_title').text.strip()[:256]
+        name = soup.find('h1', 'product_title').text.strip()[:250]
         part_number_tag = soup.find('span', 'sku')
 
         if part_number_tag:

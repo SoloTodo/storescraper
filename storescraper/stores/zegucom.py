@@ -132,10 +132,7 @@ class Zegucom(Store):
         if not soup.find('div', 'item-description'):
             return []
 
-        name = soup.find('div', 'item-description').text.strip()
-
-        if len(name) > 256:
-            name = name[0:256]
+        name = soup.find('div', 'item-description').text.strip()[:250]
 
         sku = None
         part_number = None

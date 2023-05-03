@@ -147,7 +147,7 @@ class PcExpress(Store):
         if '¡No se encuentra el producto!' in soup.find('title').text:
             return []
 
-        name = soup.find('h1', 'rm-product-page__title').text
+        name = soup.find('h1', 'rm-product-page__title').text[:250]
         sku = soup.find('div', 'rm-product__id').h3.text
         if not soup.find('p', 'rm-product__mpn'):
             part_number = None

@@ -98,7 +98,7 @@ class Linio(Store):
                                 page_source).groups()[0]
         pricing_data = json.loads(pricing_str)
 
-        name = pricing_data['product_name'][0:254]
+        name = pricing_data['product_name'][:250]
         sku = pricing_data['sku_config']
 
         reference_code = pricing_data['ean_code'].strip()
