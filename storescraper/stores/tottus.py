@@ -4,6 +4,7 @@ from .falabella import Falabella
 class Tottus(Falabella):
     store_and_subdomain = 'tottus'
     seller = [('TOTTUS', None)]
+    seller_blacklist = []
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
