@@ -26,6 +26,12 @@ class Falabella(Store):
     preferred_products_for_url_concurrency = 20
     store_and_subdomain = None
     seller = None
+    zones = 'PCL2281,ZL_CERRILLOS,PCL1135,3045,PCL1486,FALABELLA_FBY_SDD,' \
+            'PCL2269,LOSC,PCL540,2020,PCL1186,FEDEX_RM_URB,PCL2520,PCL1336,' \
+            'CHILEXPRESS_8,PCL1839,BX_R13_BASE,PCL226,SCD9039_FLEX,PCL105,' \
+            'HUB_SALIDA_DIRECTA_RM,PCL2120,PCL1923,PCL2441,1234,PCL1223,' \
+            '130617,PCL25,PCL2442,BLUE_RM_URBANO,PCL115,RM,PCL94,PCL108,' \
+            '13,PCL861,CHILE_INTERNATIONAL,PCL1364,PCL109,PCL184'
 
     category_paths = [
         ['cat720161', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléf'
@@ -280,6 +286,8 @@ class Falabella(Store):
 
         for key, value in extra_params.items():
             base_url += '&{}={}'.format(key, urllib.parse.quote(value))
+
+        base_url += '&zones={}'.format(urllib.parse.quote(cls.zones))
 
         # The first sorting will be given preference for
         # section position information
