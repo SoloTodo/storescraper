@@ -3,7 +3,7 @@ from .falabella import Falabella
 
 class Sodimac(Falabella):
     store_and_subdomain = 'sodimac'
-    seller = 'SODIMAC'
+    seller = [('SODIMAC', None)]
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

@@ -3,7 +3,7 @@ from .falabella import Falabella
 
 class Tottus(Falabella):
     store_and_subdomain = 'tottus'
-    seller = 'TOTTUS'
+    seller = [('TOTTUS', None)]
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):

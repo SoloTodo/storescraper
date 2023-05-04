@@ -25,7 +25,10 @@ class Falabella(Store):
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 20
     store_and_subdomain = None
-    seller = None
+    seller = [
+        ('FALABELLA', 'RETAIL'),
+        (None, 'GRUPO')
+    ]
     zones = 'PCL2281,ZL_CERRILLOS,PCL1135,3045,PCL1486,FALABELLA_FBY_SDD,' \
             'PCL2269,LOSC,PCL540,2020,PCL1186,FEDEX_RM_URB,PCL2520,PCL1336,' \
             'CHILEXPRESS_8,PCL1839,BX_R13_BASE,PCL226,SCD9039_FLEX,PCL105,' \
@@ -197,15 +200,21 @@ class Falabella(Store):
             if category not in local_categories:
                 continue
 
-            category_product_urls = cls._get_product_urls(
-                session, category_id, extra_params)
+            for seller_id, section_prefix in cls.seller:
+                category_product_urls = cls._get_product_urls(
+                    session, category_id, extra_params, seller_id)
 
-            for idx, url in enumerate(category_product_urls):
-                product_entries[url].append({
-                    'category_weight': category_weight,
-                    'section_name': section_name,
-                    'value': idx + 1
-                })
+                if section_prefix:
+                    full_section_name = '{} > {}'.format(section_prefix, section_name)
+                else:
+                    full_section_name = section_name
+
+                for idx, url in enumerate(category_product_urls):
+                    product_entries[url].append({
+                        'category_weight': category_weight,
+                        'section_name': full_section_name,
+                        'value': idx + 1
+                    })
 
         return product_entries
 
@@ -279,7 +288,7 @@ class Falabella(Store):
                 raise Exception('Invalid product type')
 
     @classmethod
-    def _get_product_urls(cls, session, category_id, extra_params):
+    def _get_product_urls(cls, session, category_id, extra_params, seller_id):
         discovered_urls = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
                    '&categoryId={}&sortBy={}&page={}'
@@ -314,12 +323,9 @@ class Falabella(Store):
                     pag_url += '&subdomain={}&store={}'.format(
                         cls.store_and_subdomain, cls.store_and_subdomain)
 
-                if cls.seller:
+                if seller_id:
                     pag_url += '&f.derived.variant.sellerId={}'.format(
-                        cls.seller)
-                else:
-                    pag_url += '&f.derived.variant.sellerId={}'.format(
-                        'FALABELLA')
+                        seller_id)
 
                 print(pag_url)
 
