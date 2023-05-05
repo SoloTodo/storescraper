@@ -48,6 +48,7 @@ class BodegaOportunidades(Store):
             ['Smarwatch y Smartband', WEARABLE],
             ['Televisores', TELEVISION],
             ['Calefacción', SPACE_HEATER],
+            ['Climatización y energía', SPACE_HEATER],
             ['Humidificación', AIR_CONDITIONER],
             ['Ventilación', AIR_CONDITIONER],
         ]
@@ -76,7 +77,7 @@ class BodegaOportunidades(Store):
                         logging.warning('Empty category: ' + product_type)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find('a')['href'].split('?')[0]
                     product_urls.append(
                         'https://bodegaoportunidades.cl' + product_url)
                 page += 1
