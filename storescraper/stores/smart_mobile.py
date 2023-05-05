@@ -121,9 +121,13 @@ class SmartMobile(Store):
                                    'html.parser').text.split()[0] == 'Agotado':
                     stock = 0
                 else:
-                    stock = int(
-                        BeautifulSoup(variation['availability_html'],
-                                      'html.parser').text.split()[0])
+                    stock_text = BeautifulSoup(variation['availability_html'],
+                                      'html.parser').text.strip()
+                    if stock_text == 'Hay existencias':
+                        # A pedido
+                        stock = 0
+                    else:
+                        stock = int(stock_text.split()[0])
                 picture_urls = [variation['image']['url']]
                 p = Product(
                     variation_name,

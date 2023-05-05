@@ -64,10 +64,12 @@ class PcLinkStore(Store):
             ['accesorios-para-computadores/mouse', MOUSE],
             ['parlantes-subwoofer-altavoz-inteligente', STEREO_SYSTEM],
             ['accesorios-para-computadores/teclados-2', KEYBOARD],
-            ['almacenamiento/discos-de-estado-solido-ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento/discos-duros-externos-portatiles',
-             EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/discos-duros-internos', STORAGE_DRIVE],
+            ['componentes-informaticos/almacenamiento/'
+             'unidad-de-estado-solido-ssd', SOLID_STATE_DRIVE],
+            ['componentes-informaticos/almacenamiento/discos-duros-'
+             'externos-portatiles', EXTERNAL_STORAGE_DRIVE],
+            ['componentes-informaticos/almacenamiento/'
+             'discos-duros-internos', STORAGE_DRIVE],
             ['celulares-accesorios/smart-band', WEARABLE],
             ['celulares-accesorios/smartphone', CELL],
             ['celulares-accesorios/smartwatch', WEARABLE],

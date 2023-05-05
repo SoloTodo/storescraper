@@ -69,7 +69,7 @@ class Mutant(Store):
         name = soup.find('h1', 'product_title').text.strip()
 
         description = html_to_markdown(
-            soup.find('div', {'id': 'tab-description'}).text)
+            str(soup.find('div', {'id': 'tab-description'})))
 
         picture_container = soup.find(
             'figure', 'woocommerce-product-gallery__wrapper')

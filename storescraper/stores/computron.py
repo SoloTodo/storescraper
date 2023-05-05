@@ -31,8 +31,9 @@ class Computron(Store):
             while True:
                 if page > 20:
                     raise Exception('page overflow')
-                url_webpage = 'https://computron.com.ec/page/{}/?s=lg&produ' \
-                    'ct_cat&post_type=product'.format(page)
+                url_webpage = 'https://www.computron.com.ec/page/{}/?' \
+                              'post_type=product&marcas=lg&per_page=48'.format(
+                                page)
                 print(url_webpage)
                 response = session.get(url_webpage)
                 soup = BeautifulSoup(response.text, 'html.parser')
