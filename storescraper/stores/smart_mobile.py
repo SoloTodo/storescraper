@@ -122,7 +122,7 @@ class SmartMobile(Store):
                     stock = 0
                 else:
                     stock_text = BeautifulSoup(variation['availability_html'],
-                                      'html.parser').text.strip()
+                                               'html.parser').text.strip()
                     if stock_text == 'Hay existencias':
                         # A pedido
                         stock = 0

@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, HEADPHONES, \
     KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, PROCESSOR, RAM, \
-    STORAGE_DRIVE, VIDEO_CARD, ALL_IN_ONE, NOTEBOOK
+    STORAGE_DRIVE, VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, GAMING_CHAIR
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -27,7 +27,8 @@ class AkByteComputacion(Store):
             KEYBOARD,
             CASE_FAN,
             ALL_IN_ONE,
-            NOTEBOOK
+            NOTEBOOK,
+            GAMING_CHAIR,
         ]
 
     @classmethod
@@ -47,6 +48,7 @@ class AkByteComputacion(Store):
             ['tarjetas-graficas', VIDEO_CARD],
             ['teclados', KEYBOARD],
             ['ventiladores-y-enfriamiento-liquido', CASE_FAN],
+            ['sillas-gamer', GAMING_CHAIR],
         ]
 
         session = session_with_proxy(extra_args)
@@ -101,7 +103,8 @@ class AkByteComputacion(Store):
         if 'offers' not in product_data:
             return []
 
-        price = Decimal(product_data['offers']['price'])
+        offer_price = Decimal(product_data['offers']['price'])
+        normal_price = (offer_price * Decimal('1.025')).quantize(0)
 
         if soup.find('p', 'out-of-stock'):
             stock = 0
@@ -125,8 +128,8 @@ class AkByteComputacion(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=key,
             picture_urls=picture_urls,

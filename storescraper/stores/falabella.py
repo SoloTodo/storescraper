@@ -192,7 +192,8 @@ class Falabella(Store):
         product_entries = defaultdict(lambda: [])
 
         for e in category_paths:
-            category_id, local_categories, section_name, category_weight = e[:4]
+            category_id, local_categories, section_name, \
+                category_weight = e[:4]
 
             if len(e) == 5:
                 extra_params = e[4]
@@ -207,7 +208,8 @@ class Falabella(Store):
                     session, category_id, extra_params, seller_id)
 
                 if section_prefix:
-                    full_section_name = '{} > {}'.format(section_prefix, section_name)
+                    full_section_name = '{} > {}'.format(section_prefix,
+                                                         section_name)
                 else:
                     full_section_name = section_name
 

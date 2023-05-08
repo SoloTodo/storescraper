@@ -74,6 +74,7 @@ from .costco_mexico import CostcoMexico
 from .crazy_games_en_chile import CrazyGamesenChile
 from .creditos_economicos import CreditosEconomicos
 from .creditos_mundiales import CreditosMundiales
+from .ct_man import CtMan
 from .cyber_puerta import CyberPuerta
 from .dac_digital import DacDigital
 from .daewoo import Daewoo
