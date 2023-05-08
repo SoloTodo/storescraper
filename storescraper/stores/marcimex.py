@@ -114,7 +114,8 @@ class Marcimex(Store):
             sku=sku,
             ean=ean,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            part_number=sku
         )
 
         return [p]
