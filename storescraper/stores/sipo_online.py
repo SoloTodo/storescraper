@@ -3,6 +3,7 @@ import json
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
@@ -194,7 +195,8 @@ class SipoOnline(Store):
             picture_containers = soup.find('ul',
                                            'swiper-wrapper') \
                 .findAll('img')
-            picture_urls = [tag['src'] for tag in picture_containers]
+            picture_urls = [tag['src'] for tag in picture_containers
+                            if validators.url(tag['src'])]
             p = Product(
                 name,
                 cls.__name__,

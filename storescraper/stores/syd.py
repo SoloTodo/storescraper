@@ -30,13 +30,11 @@ class Syd(Store):
 
         category_paths = [
             ['imac-m1', ALL_IN_ONE],
-            ['macbook-pro-16-m1-de-apple', NOTEBOOK],
-            ['imac', ALL_IN_ONE],
-            ['studio-display', MONITOR],
-            ['macbook-pro-13-m1-de-apple', NOTEBOOK],
+            ['macbook-air-m1', NOTEBOOK],
             ['macbook-pro-13-m2-nuevo', NOTEBOOK],
             ['macbook-pro-14-m1-de-apple', NOTEBOOK],
-            ['macbook-air-m1', NOTEBOOK],
+            ['macbook-pro-16-m1-de-apple', NOTEBOOK],
+            ['studio-display', MONITOR],
             ['usb-c', EXTERNAL_STORAGE_DRIVE],
             ['thunderbolt-3', EXTERNAL_STORAGE_DRIVE],
             ['ssd', EXTERNAL_STORAGE_DRIVE],

@@ -25,20 +25,38 @@ class Marcimex(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        url = 'https://www.marcimex.com/lg'
-        print(url)
+        page = 1
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            url = 'https://www.marcimex.com/lg?page={}'.format(page)
+            print(url)
 
-        page_state = json.loads(
-            soup.find('template', {'data-varname': '__STATE__'}).text)
+            soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        for key, product in page_state.items():
-            if 'productId' not in product:
-                continue
-            product_url = 'https://www.marcimex.com/{}/p'.format(
-                product['linkText'])
-            product_urls.append(product_url)
+            page_state = json.loads(
+                soup.find('template', {'data-varname': '__STATE__'}).text)
+            product_ids = []
+
+            for key, value in page_state.items():
+                if value.get('__typename', None) != 'ProductSearch':
+                    continue
+                product_ids = [x['id'] for x in value['products']]
+                break
+
+            if not product_ids:
+                if page == 1:
+                    raise Exception('Empty page')
+                break
+
+            for product_id in product_ids:
+                product_entry = page_state[product_id]
+                product_url = 'https://www.marcimex.com/{}/p'.format(
+                    product_entry['linkText'])
+                product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 

@@ -133,7 +133,12 @@ class DiamondPc(Store):
             raise Exception('No JSON product data found')
 
         name = product_data['name']
-        sku = product_data.get('sku', None)
+
+        if 'sku' in product_data:
+            sku = str(product_data['sku'])
+        else:
+            sku = None
+
         description = product_data['description']
 
         offer_price = Decimal(product_data['offers'][0]['price']).quantize(0)
