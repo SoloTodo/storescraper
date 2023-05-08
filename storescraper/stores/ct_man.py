@@ -129,6 +129,18 @@ class CtMan(Store):
         else:
             part_number = None
 
+        special_tags = soup.find('div', 'special-tags').findAll(
+            'span', 'special-tag')
+
+        condition = 'https://schema.org/NewCondition'
+
+        for special_tag in special_tags:
+            if 'special-tag-3' in special_tag.attrs['class']:
+                # Sin accesorios
+                condition = 'https://schema.org/RefurbishedCondition'
+            if 'special-tag-4' in special_tag.attrs['class']:
+                condition = 'https://schema.org/DamagedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -143,6 +155,7 @@ class CtMan(Store):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
-            part_number=part_number
+            part_number=part_number,
+            condition=condition
         )
         return [p]
