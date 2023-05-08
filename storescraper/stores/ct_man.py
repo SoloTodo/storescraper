@@ -101,10 +101,14 @@ class CtMan(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        key_tag = soup.find('div', 'title-description').find('input', {'name': 'cart_item[variant_id]'})
 
+        if not key_tag:
+            return []
+
+        key = key_tag['value']
         json_data = demjson.decode(
             soup.find('script', {'type': 'application/ld+json'}).text)
-        key = soup.find('input', {'name': 'cart_item[variant_id]'})['value']
         name = json_data['name']
         sku = soup.find('p', 'product-sku').text.split(':')[1].strip()
         description = json_data['description']
