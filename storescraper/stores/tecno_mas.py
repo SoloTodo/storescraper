@@ -1,84 +1,85 @@
+import json
 import logging
+import urllib
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import KEYBOARD_MOUSE_COMBO, VIDEO_CARD, \
-    ALL_IN_ONE, NOTEBOOK, COMPUTER_CASE, PROCESSOR, STORAGE_DRIVE, \
-    MOTHERBOARD, TELEVISION, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR
+from storescraper.categories import VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, \
+    PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class TecnoMas(Store):
+    domain = 'https://www.tecnomas.cl/'
     @classmethod
     def categories(cls):
         return [
-            ALL_IN_ONE,
-            VIDEO_CARD,
-            MONITOR,
-            NOTEBOOK,
-            COMPUTER_CASE,
-            PROCESSOR,
-            STORAGE_DRIVE,
-            MOTHERBOARD,
-            TELEVISION,
-            RAM,
-            SOLID_STATE_DRIVE,
-            PRINTER,
-            KEYBOARD_MOUSE_COMBO,
+            VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, PROCESSOR, MOTHERBOARD,
+            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['all-in-one-aio', ALL_IN_ONE],
-            ['componentes-de-computador/gabinetes', COMPUTER_CASE],
-            ['componentes-de-computador/procesadores', PROCESSOR],
-            ['componentes-de-computador/almacenamiento/hdd-disco-duro',
-             STORAGE_DRIVE],
-            ['componentes-de-computador/almacenamiento/ssd-disco-solido',
-             SOLID_STATE_DRIVE],
-            ['componentes-de-computador/tarjetas-de-video', VIDEO_CARD],
-            ['ram', RAM],
-            ['componentes-de-computador/placas-madre', MOTHERBOARD],
-            ['monitores', MONITOR],
-            ['notebooks', NOTEBOOK],
-            ['equipos-reacondicionados/aios-reacondicionados', ALL_IN_ONE],
-            ['equipos-refaccionados/notebooks-reacondicionados', NOTEBOOK],
-            ['equipos-reacondicionados/monitores-reacondicionados', MONITOR],
-            ['equipos-reacondicionados/televisores-reacondicionados',
-             TELEVISION],
-            ['apple', NOTEBOOK],
-            ['impresoras', PRINTER],
-            ['teclados-y-mouse', KEYBOARD_MOUSE_COMBO]
-            # ['aio-preconfigurados', ALL_IN_ONE],
-            # ['notebooks-preconfigurados', NOTEBOOK],
+            ['Notebooks', NOTEBOOK],
+            ['Notebooks Reacondicionados', NOTEBOOK],
+            ['SSD - Disco Sólido', SOLID_STATE_DRIVE],
+            ['Monitores', MONITOR],
+            ['Procesadores', PROCESSOR],
+            ['Impresoras de Hogar', PRINTER],
+            ['Placas Madre', MOTHERBOARD],
+            ['Impresoras de Oficina', PRINTER],
+            ['Almacenamiento', SOLID_STATE_DRIVE],
+            ['Teclados y Mouse', MOUSE],
+            ['Tarjetas de Video', VIDEO_CARD],
+            ['All in One (AIO)', ALL_IN_ONE],
+            ['AIOs Reacondicionados', ALL_IN_ONE],
+            ['SO-DIMM', RAM],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
+            page = 0
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.tecnomas.cl/{}?page={}'.format(
-                    url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-block')
+
+                facet_filters = urllib.parse.quote(json.dumps(
+                    [["category:{}".format(url_extension)]]
+                ))
+
+                payload = {
+                    "requests": [
+                        {
+                            "indexName": "Product_production",
+                            "params": "facetFilters={}&hitsPerPage=48"
+                                      "&page={}".format(facet_filters, page)
+                        }
+                    ]
+                }
+
+                response = session.post(
+                    'https://wnp9zg9fi5-dsn.algolia.net/1/indexes/*/queries?'
+                    'x-algolia-api-key=290ed9c571e4c27390d1e57e291379f0&'
+                    'x-algolia-application-id=WNP9ZG9FI5',
+                    json=payload
+                )
+
+                json_data = response.json()
+
+                product_containers = json_data['results'][0]['hits']
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
                     product_urls.append(
-                        'https://www.tecnomas.cl' + product_url)
+                        '{}producto/{}'.format(cls.domain, container['slug']))
                 page += 1
         return product_urls
 
@@ -86,38 +87,40 @@ class TecnoMas(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
-        key = soup.find('form', 'product-form')['action'].split('/')[-1]
-        sku = soup.find('span', 'sku_elem').text.strip()
+        name = soup.find('h1').text.strip()
+        key = soup.find('input', {'id': 'product_id'})['value']
+        sku = soup.find('p', {'id': 'sku-' + key}).text.replace('SKU: ', '').strip()
 
-        if 'CN-' in sku:
-            # Manipulated by the store (adding RAM or something), skip
+        stock_text = soup.find('p', {'id': 'stock-' + key}).text.strip()
+
+        if 'Sin stock' in stock_text:
             stock = 0
         else:
-            stock_tag = soup.find('span', 'product-form-stock')
-            if stock_tag:
-                stock_value = soup.find('input', {'id': 'input-qty'})['max']
-                stock = int(stock_value)
-            else:
-                stock = 0
+            stock = -1
 
-        if 'REF-' in sku:
-            # Refurbished
+        if soup.find('span', text='Reacondicionado'):
             condition = 'https://schema.org/RefurbishedCondition'
+        elif soup.find('span', text='Caja Abierta'):
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif soup.find('span', text='Usado'):
+            condition = 'https://schema.org/UsedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 
-        # if 'CN-' in sku:
-        #     condition = 'https://schema.org/RefurbishedCondition'
-        #     name = '[ESPECIFICACIONES MODIFICADAS] - ' + name
+        offer_price_tag = soup.find('span', {'id': 'wire-transfer-price-' + key})
+        offer_price = Decimal(remove_words(offer_price_tag.text))
 
-        price = Decimal(
-            soup.find('meta', {'property': 'product:price:amount'})['content'])
+        normal_price_tag = soup.find('span',
+                                    {'id': 'webpay-price-' + key})
+        normal_price = Decimal(remove_words(normal_price_tag.text))
 
-        picture_urls = [tag['src'].split("?")[0] for tag in
-                        soup.find('div', 'product-images').findAll('img')]
+        picture_urls = [tag.find('img')['src'] for tag in
+                        soup.findAll('div', 'swiper-slide')]
 
         p = Product(
             name,
@@ -127,8 +130,8 @@ class TecnoMas(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,
