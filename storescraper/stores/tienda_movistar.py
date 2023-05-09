@@ -133,7 +133,7 @@ class TiendaMovistar(Store):
         description = html_to_markdown(str(
             soup.find('div', 'detailed-desktop')))
 
-        if 'seminuevo' in description:
+        if 'seminuevo' in description.lower() or 'seminuevo' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
