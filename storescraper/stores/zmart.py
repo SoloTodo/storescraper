@@ -125,7 +125,7 @@ class Zmart(Store):
         order_type_container = soup.find(
             'div', {'id': 'ficha_producto'}).find('div', 'txTituloRef')
 
-        if 'PREVENTA' in order_type_container.text:
+        if not order_type_container or 'PREVENTA' in order_type_container.text:
             stock = 0
 
         sku = soup.find('span', 'zmart__sku').text.strip()
