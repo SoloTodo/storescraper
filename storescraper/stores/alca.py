@@ -1,6 +1,8 @@
 from decimal import Decimal
 import json
 import logging
+
+import validators
 from bs4 import BeautifulSoup
 from storescraper.categories import PRINTER
 from storescraper.product import Product
@@ -80,7 +82,8 @@ class Alca(Store):
         picture_urls = []
         picture_container = soup.find('figure', 'product-gallery-slider')
         for i in picture_container.findAll('a'):
-            picture_urls.append(i['href'])
+            if validators.url(i['href']):
+                picture_urls.append(i['href'])
 
         p = Product(
             name,

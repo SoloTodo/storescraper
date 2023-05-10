@@ -108,8 +108,7 @@ class Zmart(Store):
         soup = BeautifulSoup(session.get(url, verify=False).text,
                              'html.parser')
 
-        if soup.find('img', {'src': '/productos/upload/2015/09/23/'
-                                    '20150922-errorpage.jpg'}):
+        if soup.find('div', {'id': 'mensajes_sistema'}):
             return []
 
         name = soup.find('h1').text.strip()
