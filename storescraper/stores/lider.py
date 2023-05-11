@@ -21,7 +21,9 @@ from storescraper import banner_sections as bs
 
 
 class Lider(Store):
-    DEFAULT_USER_AGENT = 'PostmanRuntime/7.28.4'
+    DEFAULT_USER_AGENT = \
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+        '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
 
     tenant = 'catalogo'
     category_paths = [
@@ -394,7 +396,7 @@ class Lider(Store):
     @classmethod
     def banners(cls, extra_args=None):
         extra_args = extra_args or {}
-        base_url = 'https://apps.lider.cl/catalogo/bff/banners'
+        base_url = 'https://apps.lider.cl/catalogo/bff/banners?v=2'
         destination_url_base = 'https://www.lider.cl/{}'
         session = session_with_proxy(extra_args)
         session.headers = {
