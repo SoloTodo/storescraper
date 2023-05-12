@@ -21,20 +21,25 @@ class Sukasa(Store):
         if category != TELEVISION:
             return []
 
+        endpoints = [
+            'busqueda?controller=search&s=LG',
+            '4849-lg',
+            '4692-lg',
+        ]
+
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        soup = BeautifulSoup(session.get(
-            'https://www.sukasa.com/busqueda?controller=search&s=LG')
-            .text, 'html.parser')
-        products = soup.findAll('div', 'product-container')
+        for endpoint in endpoints:
+            soup = BeautifulSoup(session.get(
+                'https://www.sukasa.com/' + endpoint)
+                .text, 'html.parser')
+            products = soup.findAll('div', 'product-container')
 
-        if not products:
-            raise Exception('Empty store')
-
-        for product in products:
-            product_url = product.find('a')['href']
-            product_urls.append(product_url)
+            for product in products:
+                product_url = product.find('a')['href']
+                if product_url not in product_urls:
+                    product_urls.append(product_url)
 
         return product_urls
 
@@ -45,7 +50,7 @@ class Sukasa(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         brand = soup.find('h2', 'manufacturer-product').text.strip()
-        stock = -1 if brand == 'LG' else 0
+        stock = -1 if not brand or brand == 'LG' else 0
         variants_container = soup.find('div', 'attribute-list')
         sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
         name = soup.find('h1', 'page-heading').text.strip()

@@ -47,9 +47,8 @@ class Deuva(Store):
 
         product_details = soup.find('div', 'product-details')
         name = product_details.find('h1').text
-        price = Decimal(product_details.find(
-            'div', {'id': 'pdx-variant-price'}).find('span').text
-            .strip().replace('$', '').replace(',', ''))
+        price = Decimal(product_details.select_one('#pdx-variant-price')
+                        .text.strip().replace('$', '').replace(',', ''))
         sku = product_details.find('span', 'text-muted').text.strip()
         stock = 0
         if soup.find('div', 'product-badge').text.strip() \
