@@ -152,10 +152,18 @@ class UltraPc(Store):
 
             condition_span = soup.find('span', 'condicion_item_ultrapc')
             condition = 'https://schema.org/NewCondition'
+            conditions_dict = {
+                'NUEVO': 'https://schema.org/NewCondition',
+                'NUEVO SELLADO': 'https://schema.org/NewCondition',
+                'USADO': 'https://schema.org/UsedCondition',
+                'SEMINUEVO': 'https://schema.org/RefurbishedCondition',
+                'OPEN BOX': 'https://schema.org/OpenBoxCondition',
+                'REACONDICIONADO (SIN USO)':
+                    'https://schema.org/RefurbishedCondition',
+            }
             if condition_span:
                 condition_text = condition_span.text.strip().upper()
-                if condition_text not in ['NUEVO', 'NUEVO SELLADO']:
-                    condition = 'https://schema.org/RefurbishedCondition'
+                condition = conditions_dict[condition_text]
 
             products.append(Product(
                 base_name,
