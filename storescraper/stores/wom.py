@@ -104,38 +104,35 @@ class Wom(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        with HeadlessChrome() as driver:
-            driver.get('https://store.wom.cl/planes/')
-            retries = 5
-            plan_containers = None
+        session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
+        session.headers['authorization'] = 'Bearer Zrm-3HalMaeFIiR83iiKZCzCn7FK2BNSqs8_VLfSfBE'
 
-            while retries:
-                plan_containers = driver.find_elements_by_class_name(
-                    'PlanItem-module--container--2HhUC')
-                if plan_containers:
-                    break
-                time.sleep(2)
-                retries -= 1
+        params = {
+            "query": "query getContentfulPlansProducts($productType: String) "
+                     "{ productCollection(where: { productType: "
+                     "$productType }) { total items { referenceId name "
+                     "context } } }", "variables": {"productType": "plan"}}
 
-            if not plan_containers:
-                raise Exception('No plan tags found')
+        response = session.post('https://graphql.contentful.com/content/'
+                                'v1/spaces/vlub6abkwzvo/environments/master',
+                                json=params)
 
-            soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-        plan_containers = soup.findAll(
-            'div', 'PlanItem-module--container--2HhUC')
-        products = []
-
+        data = response.json()
         variants = [
             'sin cuota de arriendo',
             'con cuota de arriendo',
         ]
+        products = []
 
-        for container in plan_containers:
-            plan_name = container.find(
-                'h3', 'PlanItem-module--name--2ab79').text
-            plan_price = Decimal(remove_words(
-                container.find('span', 'PlanItem-module--price--2M4jG').text))
+        for product_entry in data['data']['productCollection']['items']:
+            plan_name = product_entry['name']
+            product_data = json.loads(product_entry['context'])
+
+            if not product_data['individuales'] or 'Womers' in plan_name:
+                continue
+
+            plan_price = Decimal(product_data['price'])
 
             for variant in variants:
                 for suffix in ['', ' Portabilidad']:

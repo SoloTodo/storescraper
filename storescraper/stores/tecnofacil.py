@@ -33,11 +33,14 @@ class Tecnofacil(Store):
                     raise Exception('Page overflow')
 
                 url = 'https://www.tecnofacil.com.gt/catalogsearch/result' \
-                      '/index/?limit=30&marca=7&p={}&q=LG'.format(page)
+                      '/index/?product_list_limit=40&marca=7&p={}&q=LG+LG'.format(page)
                 print(url)
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('li', 'col-sm-6')
+
+                if not product_containers:
+                    break
 
                 for container in product_containers:
                     product_url = container.find('a')['href']

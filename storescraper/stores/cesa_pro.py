@@ -113,7 +113,11 @@ class CesaPro(Store):
         if not stock_span:
             stock = 0
         else:
-            stock = int(stock_span.text.split(' ')[0])
+            stock_text = stock_span.text.strip()
+            if stock_text == 'Agotado':
+                stock = 0
+            else:
+                stock = int(stock_span.text.split(' ')[0])
 
         image_style = soup.find(
             'style', {'id': 'elementor-frontend-inline-css'})

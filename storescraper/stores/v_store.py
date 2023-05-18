@@ -88,7 +88,11 @@ class VStore(Store):
         else:
             stock = 0
         price = (Decimal(json_product['price']) / Decimal(100)).quantize(0)
-        picture_urls = [m['src'] for m in json_container['media']]
+
+        if 'media' in json_container:
+            picture_urls = [m['src'] for m in json_container['media']]
+        else:
+            picture_urls = None
 
         p = Product(
             name,
