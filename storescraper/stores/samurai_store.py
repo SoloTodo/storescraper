@@ -100,9 +100,13 @@ class SamuraiStore(Store):
         price_p = soup.find('p', 'product-page-price')
         if not price_p:
             return []
-        price_container = price_p.findAll(
-            'span', 'woocommerce-Price-amount')[-1]
-        offer_price = Decimal(remove_words(price_container.text))
+        price_containers = price_p.findAll(
+            'span', 'woocommerce-Price-amount')
+
+        if not price_containers:
+            return []
+
+        offer_price = Decimal(remove_words(price_containers[-1].text))
         normal_price = (offer_price * Decimal('1.04')).quantize(0)
 
         picture_urls = [tag.find('a')['href'] for tag in soup.find('div',
