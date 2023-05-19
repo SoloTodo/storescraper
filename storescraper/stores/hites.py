@@ -495,13 +495,18 @@ class Hites(Store):
         session = session_with_proxy(extra_args)
         banners = []
 
+        if extra_args and 'proxy' in extra_args:
+            proxy = extra_args['proxy']
+        else:
+            proxy = None
+
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 with HeadlessChrome(images_enabled=True,
-                                    timeout=120) as driver:
+                                    timeout=120, proxy=proxy) as driver:
                     driver.set_window_size(1920, 1080)
                     driver.get(url)
 
@@ -633,8 +638,8 @@ class Hites(Store):
                             'type': subsection_type
                         })
                     else:
-                        with HeadlessChrome(images_enabled=True, timeout=120) \
-                                as driver:
+                        with HeadlessChrome(images_enabled=True, timeout=120,
+                                            proxy=proxy) as driver:
                             driver.set_window_size(1920, 1080)
                             driver.get(url)
 
