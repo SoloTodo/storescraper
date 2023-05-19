@@ -106,7 +106,8 @@ class Wom(Store):
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = 'application/json'
-        session.headers['authorization'] = 'Bearer Zrm-3HalMaeFIiR83iiKZCzCn7FK2BNSqs8_VLfSfBE'
+        session.headers['authorization'] = \
+            'Bearer Zrm-3HalMaeFIiR83iiKZCzCn7FK2BNSqs8_VLfSfBE'
 
         params = {
             "query": "query getContentfulPlansProducts($productType: String) "

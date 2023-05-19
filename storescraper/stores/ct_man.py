@@ -101,7 +101,8 @@ class CtMan(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        key_tag = soup.find('div', 'title-description').find('input', {'name': 'cart_item[variant_id]'})
+        key_tag = soup.find('div', 'title-description').find(
+            'input', {'name': 'cart_item[variant_id]'})
 
         if not key_tag:
             return []

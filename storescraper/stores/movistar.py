@@ -1,6 +1,4 @@
 import base64
-import json
-
 from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -16,17 +14,6 @@ class Movistar(Store):
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
     cell_catalog_suffix = ''
-    # Format: (type, payment, suffix)
-    # type 1 (Portabilidad), 3 (Linea nueva)
-    # payment 1 (Sin arriendo), 2 (Cuotas), 3 (Movistar One)
-    aquisition_options = [
-        # Línea nueva sin arriendo
-        (3, 1, ''),
-        # Portabilidad sin arriendo
-        (1, 1, ' Portabilidad'),
-        # Portabilidad con arriendo
-        (1, 2, ' Portabilidad Cuotas'),
-    ]
 
     @classmethod
     def categories(cls):
@@ -76,8 +63,6 @@ class Movistar(Store):
 
                 for container in containers:
                     product_url = container.find('a')['href'].split('?')[0]
-                    if product_url in product_entries:
-                        print(product_url)
                     product_entries[product_url].append({
                         'category_weight': 1,
                         'section_name': 'Smartphones',
@@ -187,17 +172,11 @@ class Movistar(Store):
 
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
-        ajax_session = session_with_proxy(extra_args)
-        ajax_session.headers['Content-Type'] = \
-            'application/x-www-form-urlencoded'
-        ajax_session.headers['user-agent'] = 'python-requests/2.21.0'
-        ajax_session.headers['x-requested-with'] = 'XMLHttpRequest'
-        del ajax_session.headers['Accept-Encoding']
         page = session.get(url)
 
-        if page.url == 'https://catalogo.movistar.cl/equipomasplan/' \
-                       'catalogo.html':
-            raise Exception('Catalogo page URL')
+        if page.url == 'https://catalogo.movistar.cl/tienda/celulares':
+            return []
+            # raise Exception('Catalogo page URL')
 
         if page.status_code in [404, 503]:
             raise Exception('Invalid status code: ' + str(page.status_code))
@@ -208,103 +187,109 @@ class Movistar(Store):
         else:
             raise Exception('No base name found')
 
+        sku_status = soup.find('div', 'current-status')
+        if sku_status['data-type'] != '1':
+            return []
+
         products = []
         base_url = url.split('?')[0]
+        raw_sku = soup.select_one(
+            'form#product_addtocart_form')['data-product-sku']
+        assert raw_sku.endswith('NU')
+        base_sku = raw_sku[:-2]
 
-        def get_json_response(_payload):
-            print(_payload)
-            if 'Cookie' in ajax_session.headers:
-                del ajax_session.headers['Cookie']
-            # print(ajax_session.headers)
-            _response = ajax_session.post(
-                'https://catalogo.movistar.cl/equipomasplan/'
-                'emp_detalle/planes',
-                data=_payload)
-            # import curlify; print(curlify.to_curl(_response.request))
+        # Planes asociados
+        plans = []
+        plan_cells = soup.find('div', 'planesHtml').findAll('article')
+        for plan_cell in plan_cells:
+            plan_name = plan_cell['data-name'].strip()
+            plans.append(plan_name)
 
-            return json.loads(_response.text)
+        # Número nuevo
+        code = '{}EMP_NUM_TAR_5GLibreFullAltasParr'.format(base_sku)
+        url = '{}?codigo={}'.format(base_url, base64.b64encode(
+                code.encode('utf-8')).decode('utf-8'))
+        print(url)
 
-        payload_params = 'current%5BhasMovistar1%5D=1&' \
-                         'current%5Bmovistar1%5D=0'
+        res = session.get(url)
+        assert res.url == url, res.url
+        soup = BeautifulSoup(res.text, 'html.parser')
+        price_tag = soup.find('div', {'data-method': '1'})
+        price = Decimal(price_tag['data-price']).quantize(0)
 
-        status_tag = soup.find('div', 'current-status')
-        skus = {
-            'contado': status_tag['data-sku'],
-            'cuotas': status_tag['data-code']
-        }
+        for plan in plans:
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - {}'.format(base_sku, plan),
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=base_sku,
+                cell_plan_name=plan,
+                cell_monthly_payment=Decimal(0)
+            ))
 
-        movistar_one_tag = soup.select('div.boxEMPlan.metodo3.visible')
-        if movistar_one_tag:
-            # This SKU should only be needed for movistar one enabled SKUs
-            skus['movistar_one'] = movistar_one_tag[0]['data-code']
+        # Portabilidad
+        code = '{}EMP_POR_TAR_5GLibreFullPortaParr'.format(base_sku)
+        url = '{}?codigo={}'.format(base_url, base64.b64encode(
+            code.encode('utf-8')).decode('utf-8'))
+        print(url)
 
-        for type_id, payment_id, suffix in cls.aquisition_options:
-            if payment_id == 1:
-                sku_to_use = skus['contado']
-            elif payment_id == 2:
-                sku_to_use = skus['cuotas']
-            elif payment_id == 3:
-                if 'movistar_one' not in skus:
-                    # This can happen if the original product is available
-                    # with movistar one, but we are scraping a color variant
-                    # of it that is not
-                    continue
-                sku_to_use = skus['movistar_one']
-            else:
-                raise Exception('Invalid payment ID')
+        res = session.get(url)
+        assert res.url == url, res.url
+        soup = BeautifulSoup(res.text, 'html.parser')
 
-            payload = 'current%5Bsku%5D={}&current%5Btype%5D={}&' \
-                      'current%5Bpayment%5D={}&' \
-                      'current%5Bplan%5D=' \
-                      'Movistar+con+Todo+Libre+Cod_0P8_Porta' \
-                      '&{}&current%5Bcode%5D=' \
-                      ''.format(sku_to_use, type_id,
-                                payment_id, payload_params)
+        # Con arriendo
+        price_tag = soup.find('p', 'boxEMPlan-int-meses').parent
+        price = Decimal(remove_words(price_tag.find(
+            'p', 'boxEMPlan-int-box-pie').contents[1]))
+        cell_monthly_payment = Decimal(remove_words(
+            price_tag.find('p',
+                           'boxEMPlan-int-meses').find('b').text))
 
-            json_response = get_json_response(payload)
+        for plan in plans:
+            final_plan_name = '{} Portabilidad Cuotas'.format(plan)
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - {}'.format(base_sku, final_plan_name),
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=base_sku,
+                cell_plan_name=final_plan_name,
+                cell_monthly_payment=cell_monthly_payment
+            ))
 
-            for container in json_response['planes']['dataplan']:
-                cell_plan_name = trim(container['name']) + suffix
-                code = container['codigo']
-                b64code = base64.b64encode(
-                    code.encode('utf-8')).decode('utf-8')
-                cell_url = '{}?codigo={}'.format(base_url, b64code)
-                print(cell_url)
+        # Sin arriendo
+        price_tag = soup.find('div', {'data-method': '1'})
+        price = Decimal(price_tag['data-price']).quantize(0)
 
-                cell_soup = BeautifulSoup(session.get(cell_url).text,
-                                          'html.parser')
-                if payment_id == 1:
-                    price_tag = cell_soup.find('div', {'data-method': '1'})
-                    price = Decimal(price_tag['data-price']).quantize(0)
-                    cell_monthly_payment = Decimal(0)
-                elif payment_id == 2:
-                    price_tag = cell_soup.find('div', {'data-method': '2'})
-                    price = Decimal(remove_words(price_tag.find(
-                        'p', 'boxEMPlan-int-box-pie').contents[1]))
-                    cell_monthly_payment = Decimal(remove_words(
-                        price_tag.find('p',
-                                       'boxEMPlan-int-meses').find(
-                            'b').text))
-                elif payment_id == 3:
-                    price_tag = cell_soup.find('div', {'data-method': '3'})
-                    price = Decimal(price_tag['data-price']).quantize(0)
-                    cell_monthly_payment = Decimal(0)
-                else:
-                    raise Exception('Invalid payment ID')
-
-                products.append(Product(
-                    name,
-                    cls.__name__,
-                    'Cell',
-                    cell_url,
-                    cell_url,
-                    '{} - {}'.format(sku_to_use, cell_plan_name),
-                    -1,
-                    price,
-                    price,
-                    'CLP',
-                    cell_plan_name=cell_plan_name,
-                    cell_monthly_payment=cell_monthly_payment
-                ))
+        for plan in plans:
+            final_plan_name = '{} Portabilidad'.format(plan)
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - {}'.format(base_sku, final_plan_name),
+                -1,
+                price,
+                price,
+                'CLP',
+                sku=base_sku,
+                cell_plan_name=final_plan_name,
+                cell_monthly_payment=Decimal(0)
+            ))
 
         return products

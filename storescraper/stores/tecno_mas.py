@@ -14,6 +14,7 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class TecnoMas(Store):
     domain = 'https://www.tecnomas.cl/'
+
     @classmethod
     def categories(cls):
         return [
@@ -94,7 +95,8 @@ class TecnoMas(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text.strip()
         key = soup.find('input', {'id': 'product_id'})['value']
-        sku = soup.find('p', {'id': 'sku-' + key}).text.replace('SKU: ', '').strip()
+        sku = soup.find('p', {'id': 'sku-' + key}).text.replace(
+            'SKU: ', '').strip()
 
         stock_text = soup.find('p', {'id': 'stock-' + key}).text.strip()
 
@@ -112,11 +114,12 @@ class TecnoMas(Store):
         else:
             condition = 'https://schema.org/NewCondition'
 
-        offer_price_tag = soup.find('span', {'id': 'wire-transfer-price-' + key})
+        offer_price_tag = soup.find(
+            'span', {'id': 'wire-transfer-price-' + key})
         offer_price = Decimal(remove_words(offer_price_tag.text))
 
-        normal_price_tag = soup.find('span',
-                                    {'id': 'webpay-price-' + key})
+        normal_price_tag = soup.find(
+            'span', {'id': 'webpay-price-' + key})
         normal_price = Decimal(remove_words(normal_price_tag.text))
 
         picture_urls = [tag.find('img')['src'] for tag in
