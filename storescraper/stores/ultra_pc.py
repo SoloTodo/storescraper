@@ -156,7 +156,7 @@ class UltraPc(Store):
                 'NUEVO': 'https://schema.org/NewCondition',
                 'NUEVO SELLADO': 'https://schema.org/NewCondition',
                 'USADO': 'https://schema.org/UsedCondition',
-                'SEMINUEVO': 'https://schema.org/RefurbishedCondition',
+                'SEMINUEVO': 'https://schema.org/UsedCondition',
                 'OPEN BOX': 'https://schema.org/OpenBoxCondition',
                 'REACONDICIONADO (SIN USO)':
                     'https://schema.org/RefurbishedCondition',

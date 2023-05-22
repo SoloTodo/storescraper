@@ -1,4 +1,5 @@
 import base64
+import time
 from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -27,6 +28,7 @@ class Movistar(Store):
         product_entries = defaultdict(lambda: [])
 
         if category == 'CellPlan':
+            time.sleep(5)
             product_entries[cls.prepago_url].append({
                 'category_weight': 1,
                 'section_name': 'Planes',
