@@ -40,7 +40,7 @@ class VentasAlbion(Store):
                               '&loop=32&woo_ajax=1'.format(page)
                 print(url_webpage)
 
-                data = session.get(url_webpage)
+                data = session.get(url_webpage, verify=False)
                 if data.status_code == 404:
                     break
                 soup = BeautifulSoup(json.loads(data.text)['items'],
@@ -63,7 +63,7 @@ class VentasAlbion(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        response = session.get(url)
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
         base_name = soup.find('h1', 'product_title').text
         variations_form = soup.find('form', 'variations_form')
