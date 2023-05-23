@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, trim
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Movistar(Store):
@@ -49,13 +49,14 @@ class Movistar(Store):
                     raise Exception('Page overflow')
 
                 catalogo_url = 'https://catalogo.movistar.cl/tienda/' \
-                               'celulares/equipos-con-plan?p={}'.format(
-                                page) + cls.cell_catalog_suffix
+                               'celulares?prfilter_ajax=0&prfilter_variables' \
+                               '%5Bmodalidades%5D=831&prfilter_ajax=1&p=' \
+                               '{}'.format(page)
                 print(catalogo_url)
                 session = session_with_proxy(extra_args)
                 session.headers['user-agent'] = 'python-requests/2.21.0'
                 soup = BeautifulSoup(session.get(
-                    catalogo_url).text, 'html.parser')
+                    catalogo_url).json()['productlist'], 'html.parser')
                 containers = soup.findAll('li', 'product')
 
                 if not containers:
@@ -65,11 +66,42 @@ class Movistar(Store):
 
                 for container in containers:
                     product_url = container.find('a')['href'].split('?')[0]
+                    print(product_url)
+
                     product_entries[product_url].append({
                         'category_weight': 1,
                         'section_name': 'Smartphones',
                         'value': idx
                     })
+
+                    if len(container.findAll('div', 'color-label')) > 1:
+                        product_soup = BeautifulSoup(
+                            session.get(product_url).text, 'html.parser')
+
+                        color_list = product_soup.find(
+                            'div', 'container-colores')
+
+                        if color_list:
+                            for color_element in color_list.findAll('a')[1:]:
+                                sku_url = color_element['href'].split('?')[0]
+                                product_entries[sku_url].append({
+                                    'category_weight': 1,
+                                    'section_name': 'Smartphones',
+                                    'value': idx
+                                })
+                        else:
+                            color_list = product_soup.find('ul',
+                                                           'colorEMP')
+
+                            if color_list:
+                                for color_element in color_list.findAll('a'):
+                                    sku_url = color_element[
+                                        'data-url-key'].split('?')[0]
+                                    product_entries[sku_url].append({
+                                        'category_weight': 1,
+                                        'section_name': 'Smartphones',
+                                        'value': idx
+                                    })
                     idx += 1
                 page += 1
 
@@ -98,7 +130,7 @@ class Movistar(Store):
             products.extend(cls._plans(url, extra_args))
         elif 'catalogo.movistar.cl' in url:
             # Equipo postpago
-            products.extend(cls._celular_postpago(url, extra_args))
+            products.extend(cls.__celular_postpago(url, extra_args))
         else:
             raise Exception('Invalid URL: ' + url)
         return products
@@ -148,27 +180,6 @@ class Movistar(Store):
         return products
 
     @classmethod
-    def _celular_postpago(cls, url, extra_args):
-        print(url)
-
-        session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'python-requests/2.21.0'
-
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        products = []
-
-        color_list = soup.find('ul', 'colorEMP')
-        if not color_list:
-            return []
-
-        for color_container in color_list.findAll('li'):
-            color_element = color_container.find('a')
-            sku_url = color_element['data-url-key']
-            products.extend(cls.__celular_postpago(sku_url, extra_args))
-
-        return products
-
-    @classmethod
     def __celular_postpago(cls, url, extra_args):
         print(url)
 
@@ -190,6 +201,10 @@ class Movistar(Store):
             raise Exception('No base name found')
 
         sku_status = soup.find('div', 'current-status')
+
+        if not sku_status:
+            return []
+
         if sku_status['data-type'] != '1':
             return []
 

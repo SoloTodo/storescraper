@@ -956,28 +956,35 @@ class MercadoLibreChile(Store):
         products = MercadoLibreChile.products_for_url(
             url, category=category, extra_args=extra_args)
 
-        assert len(products) == 1, 'Method only supports single product'
 
-        product = products[0]
-        print(product.url)
+        # DAC digital has this publication with two variants,
+        # but both have the same price
+        # https://www.dacdigital.cl/MLC-1329330315-pc-gamer-i5-13600k-
+        # rtx-3060-16gb-ram-ssd-m2-_JM
+        # assert len(products) == 1, 'Method only supports single product'
 
-        if product.offer_price == min_price:
-            if retries:
-                extra_args['retries'] = retries - 1
-                return cls._products_for_url_with_custom_price(
-                    url, category=category, extra_args=extra_args,
-                    min_price=min_price)
-            else:
-                # Sometimes the ML price actually matches the original one,
-                # so keep it
-                pass
-        elif product.offer_price < min_price:
-            min_price = product.offer_price
+        final_products = []
+        for product in products:
+            print(product.url)
 
-        product.url = url
-        product.discovery_url = url
-        product.offer_price = min_price
-        product.normal_price = min_price
-        product.seller = None
+            if product.offer_price == min_price:
+                if retries:
+                    extra_args['retries'] = retries - 1
+                    return cls._products_for_url_with_custom_price(
+                        url, category=category, extra_args=extra_args,
+                        min_price=min_price)
+                else:
+                    # Sometimes the ML price actually matches the original one,
+                    # so keep it
+                    pass
+            elif product.offer_price < min_price:
+                min_price = product.offer_price
 
-        return [product]
+            product.url = url
+            product.discovery_url = url
+            product.offer_price = min_price
+            product.normal_price = min_price
+            product.seller = None
+            final_products.append(product)
+
+        return final_products
