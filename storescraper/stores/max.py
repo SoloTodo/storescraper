@@ -29,8 +29,8 @@ class Max(Store):
             if page >= 16:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.max.com.gt/marcas/productos-lg/?' \
-                          'p={}'.format(page)
+            url_webpage = 'https://www.max.com.gt/marcas/productos-lg?' \
+                          'marca=7&p={}'.format(page)
             print(url_webpage)
             data = session.get(url_webpage, timeout=30).text
             soup = BeautifulSoup(data, 'html.parser')

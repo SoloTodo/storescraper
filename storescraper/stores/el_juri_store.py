@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -31,13 +32,11 @@ class ElJuriStore(Store):
             if page > 10:
                 raise Exception('page overflow')
 
-            url_webpage = 'https://eljuri.store/index.php?fc=module&' \
-                          'module=leoproductsearch&controller=product' \
-                          'search&search_query=LG&page={}'.format(page)
+            url_webpage = 'https://eljuri.store/brand/19-lg?page={}'.format(page)
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'ajax_block_product')
+            product_containers = soup.findAll('article', 'product-miniature')
 
             if not product_containers:
                 if page == 1:
@@ -58,17 +57,27 @@ class ElJuriStore(Store):
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('input', {'name': 'id_product'})['value']
+
+        json_tags = soup.findAll('script', {'type': 'application/ld+json'})
+
+        for tag in json_tags:
+            entry = json.loads(tag.text)
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        name = product_data['name']
+        sku = str(product_data['mpn'])
+        description = product_data['description']
+        price = Decimal(product_data['offers']['price'])
+
         stock_tag_container = soup.find('div', 'product-quantities')
         stock = int(stock_tag_container.find('span')['data-stock'])
-        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
-        picture_urls = []
-        for tag in soup.find('div', 'product-images').findAll('img'):
-            if tag.has_attr('src'):
-                picture_urls.append(tag['src'])
-            elif tag.has_attr('data-image-large-data-src'):
-                picture_urls.append(tag['data-image-large-data-src'])
+        picture_urls = [product_data['image']]
+
+
         p = Product(
             name,
             cls.__name__,
@@ -82,6 +91,7 @@ class ElJuriStore(Store):
             'USD',
             sku=sku,
             picture_urls=picture_urls,
+            description=description
 
         )
         return [p]
