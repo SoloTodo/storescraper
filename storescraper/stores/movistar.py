@@ -11,10 +11,23 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class Movistar(Store):
     preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 8
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
     cell_catalog_suffix = ''
+    requires_movistar_one = False
+    variations = [{
+            'base_plan': 'EMP_NUM_TAR_5GLibreFullAltasParr',
+            'methods': [
+                (1, ''),
+            ]
+        },
+        {
+            'base_plan': 'EMP_POR_TAR_5GLibreFullPortaParr',
+            'methods': [
+                (1, ' Portabilidad'),
+                (2, ' Portabilidad Cuotas'),
+            ]}
+    ]
 
     @classmethod
     def categories(cls):
@@ -205,7 +218,7 @@ class Movistar(Store):
         if not sku_status:
             return []
 
-        if sku_status['data-type'] != '1':
+        if cls.requires_movistar_one and sku_status['data-movistar1'] == 'No':
             return []
 
         products = []
@@ -215,98 +228,53 @@ class Movistar(Store):
         assert raw_sku.endswith('NU')
         base_sku = raw_sku[:-2]
 
-        # Planes asociados
-        plans = []
-        plan_cells = soup.find('div', 'planesHtml').findAll('article')
-        for plan_cell in plan_cells:
-            plan_name = plan_cell['data-name'].strip()
-            plans.append(plan_name)
+        for variation in cls.variations:
+            print(base_sku, variation['base_plan'])
+            code = '{}{}'.format(base_sku, variation['base_plan'])
+            print(code)
+            url = '{}?codigo={}'.format(base_url, base64.b64encode(
+                    code.encode('utf-8')).decode('utf-8'))
+            print(url)
 
-        # Número nuevo
-        code = '{}EMP_NUM_TAR_5GLibreFullAltasParr'.format(base_sku)
-        url = '{}?codigo={}'.format(base_url, base64.b64encode(
-                code.encode('utf-8')).decode('utf-8'))
-        print(url)
+            res = session.get(url)
+            assert res.url == url, res.url
+            soup = BeautifulSoup(res.text, 'html.parser')
 
-        res = session.get(url)
-        assert res.url == url, res.url
-        soup = BeautifulSoup(res.text, 'html.parser')
-        price_tag = soup.find('div', {'data-method': '1'})
-        price = Decimal(price_tag['data-price']).quantize(0)
+            for method_id, plan_name_suffix in variation['methods']:
+                plan_tags = soup.findAll('div', {'data-method': str(method_id)})
 
-        for plan in plans:
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - {}'.format(base_sku, plan),
-                -1,
-                price,
-                price,
-                'CLP',
-                sku=base_sku,
-                cell_plan_name=plan,
-                cell_monthly_payment=Decimal(0)
-            ))
+                for plan_tag in plan_tags:
+                    cell_plan_name = plan_tag.select_one('p.boxPlanesEmp-plan b').text.split(
+                        ':')[0].strip() + plan_name_suffix
 
-        # Portabilidad
-        code = '{}EMP_POR_TAR_5GLibreFullPortaParr'.format(base_sku)
-        url = '{}?codigo={}'.format(base_url, base64.b64encode(
-            code.encode('utf-8')).decode('utf-8'))
-        print(url)
+                    if method_id == 1:
+                        price = Decimal(plan_tag['data-price']).quantize(0)
+                        cell_monthly_payment = Decimal(0)
+                    elif method_id in [2, 3]:
+                        price = Decimal(remove_words(
+                            plan_tag.find('p',
+                                          'boxEMPlan-int-box-pie').text.split(
+                                '$')[1]))
+                        cell_monthly_payment = Decimal(remove_words(
+                            plan_tag.select_one(
+                                'p.boxEMPlan-int-meses b').text))
+                    else:
+                        raise Exception('Invalid method ID ', method_id)
 
-        res = session.get(url)
-        assert res.url == url, res.url
-        soup = BeautifulSoup(res.text, 'html.parser')
-
-        # Con arriendo
-        price_tag = soup.find('p', 'boxEMPlan-int-meses').parent
-        price = Decimal(remove_words(price_tag.find(
-            'p', 'boxEMPlan-int-box-pie').contents[1]))
-        cell_monthly_payment = Decimal(remove_words(
-            price_tag.find('p',
-                           'boxEMPlan-int-meses').find('b').text))
-
-        for plan in plans:
-            final_plan_name = '{} Portabilidad Cuotas'.format(plan)
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - {}'.format(base_sku, final_plan_name),
-                -1,
-                price,
-                price,
-                'CLP',
-                sku=base_sku,
-                cell_plan_name=final_plan_name,
-                cell_monthly_payment=cell_monthly_payment
-            ))
-
-        # Sin arriendo
-        price_tag = soup.find('div', {'data-method': '1'})
-        price = Decimal(price_tag['data-price']).quantize(0)
-
-        for plan in plans:
-            final_plan_name = '{} Portabilidad'.format(plan)
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - {}'.format(base_sku, final_plan_name),
-                -1,
-                price,
-                price,
-                'CLP',
-                sku=base_sku,
-                cell_plan_name=final_plan_name,
-                cell_monthly_payment=Decimal(0)
-            ))
+                    products.append(Product(
+                        name,
+                        cls.__name__,
+                        'Cell',
+                        url,
+                        url,
+                        '{} - {}'.format(base_sku, cell_plan_name),
+                        -1,
+                        price,
+                        price,
+                        'CLP',
+                        sku=base_sku,
+                        cell_plan_name=cell_plan_name,
+                        cell_monthly_payment=cell_monthly_payment
+                    ))
 
         return products

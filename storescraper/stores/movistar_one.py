@@ -3,12 +3,18 @@ from .movistar import Movistar
 
 
 class MovistarOne(Movistar):
-    cell_catalog_suffix = '&movistarone=1'
-    aquisition_options = [
-        # Línea nueva sin arriendo
-        (3, 3, ''),
-        # Portabilidad sin arriendo
-        (1, 3, ' Portabilidad'),
+    requires_movistar_one = True
+    variations = [{
+        'base_plan': 'EMP_NUM_MOV_5GLibreUltraAltasPar',
+        'methods': [
+            (3, ' Cuotas'),
+        ]
+    },
+        {
+            'base_plan': 'EMP_POR_MOV_5GLibreUltraPortaPar',
+            'methods': [
+                (3, ' Portabilidad Cuotas'),
+            ]}
     ]
 
     @classmethod

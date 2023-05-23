@@ -35,9 +35,11 @@ class Tecnofacil(Store):
                 if page >= 25:
                     raise Exception('Page overflow')
 
-                url = 'https://www.tecnofacil.com.gt/catalogsearch/result' \
-                      '/index/?product_list_limit=40&marca=7&p={}' \
-                      '&q=LG+LG'.format(page)
+                url = 'https://www.tecnofacil.com.gt/marcas/productos-lg'
+
+                if page > 1:
+                    url += '?p={}'.format(page)
+
                 print(url)
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
