@@ -3,8 +3,7 @@ from .movistar import Movistar
 
 
 class MovistarOne(Movistar):
-    requires_movistar_one = True
-    required_payment_id = None
+    required_method_id = '3'
     variations = [{
         'base_plan': 'EMP_NUM_MOV_5GLibreUltraAltasPar',
         'methods': [

@@ -13,9 +13,7 @@ class Movistar(Store):
     preferred_discover_urls_concurrency = 1
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
-    cell_catalog_suffix = ''
-    requires_movistar_one = False
-    required_payment_id = '1'
+    required_method_id = '1'
     variations = [{
             'base_plan': 'EMP_NUM_TAR_5GLibreFullAltasParr',
             'methods': [
@@ -219,10 +217,7 @@ class Movistar(Store):
         if not sku_status:
             return []
 
-        if cls.requires_movistar_one and sku_status['data-movistar1'] == 'No':
-            return []
-
-        if cls.required_payment_id and sku_status['data-payment'] != cls.required_payment_id:
+        if not soup.find('div', {'data-method': cls.required_method_id}):
             return []
 
         products = []
@@ -233,12 +228,9 @@ class Movistar(Store):
         base_sku = raw_sku[:-2]
 
         for variation in cls.variations:
-            print(base_sku, variation['base_plan'])
             code = '{}{}'.format(base_sku, variation['base_plan'])
-            print(code)
             url = '{}?codigo={}'.format(base_url, base64.b64encode(
                     code.encode('utf-8')).decode('utf-8'))
-            print(url)
 
             res = session.get(url)
             assert res.url == url, res.url
