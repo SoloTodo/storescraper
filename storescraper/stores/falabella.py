@@ -269,11 +269,14 @@ class Falabella(Store):
 
         for i in range(3):
             try:
-                response = session.get(url, timeout=30)
+                response = session.get(url, timeout=30, allow_redirects=False)
             except UnicodeDecodeError:
                 return []
 
             if response.status_code in [404, 500]:
+                return []
+
+            if response.status_code == 301 and response.url == url:
                 return []
 
             content = response.text.replace('&#10;', '')

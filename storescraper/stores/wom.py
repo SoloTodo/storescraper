@@ -221,7 +221,8 @@ class Wom(Store):
                     elif related_price['priceType'] == 'initialPrice':
                         initial_price_with_installments = Decimal(
                             related_price['price']['value'])
-                    elif related_price['priceType'] == 'installmentPrice':
+                    elif related_price['priceType'] == 'installmentPrice' \
+                            and related_price['recurringChargePeriodType']:
                         installment_price = Decimal(
                             related_price['price']['value'])
 

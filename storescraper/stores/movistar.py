@@ -15,6 +15,7 @@ class Movistar(Store):
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
     cell_catalog_suffix = ''
     requires_movistar_one = False
+    required_payment_id = '1'
     variations = [{
             'base_plan': 'EMP_NUM_TAR_5GLibreFullAltasParr',
             'methods': [
@@ -219,6 +220,9 @@ class Movistar(Store):
             return []
 
         if cls.requires_movistar_one and sku_status['data-movistar1'] == 'No':
+            return []
+
+        if cls.required_payment_id and sku_status['data-payment'] != cls.required_payment_id:
             return []
 
         products = []
