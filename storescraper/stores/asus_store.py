@@ -45,10 +45,10 @@ class AsusStore(Store):
                     raise Exception('Page overflow')
 
                 url_webpage = 'https://odinapi.asus.com/recent-data/apiv2/' \
-                              'DealsFilterResult?SystemCode=asus&' \
-                              'WebsiteCode=cl&ProductLevel1Code={}&Type=2' \
-                              '&PageSize=20&PageIndex={}'.format(
-                                category_id, page)
+                              'ShopAPI/ShopFilterResult?SystemCode=asus&' \
+                              'WebsiteCode=cl&ProductLevel1Code={}&' \
+                              'PageSize=25&PageIndex={}&Sort=' \
+                              'Newsest&siteID=www'.format(category_id, page)
                 print(url_webpage)
                 page += 1
                 response = session.get(url_webpage).json()
