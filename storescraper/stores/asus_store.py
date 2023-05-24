@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD
+from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -16,6 +16,7 @@ class AsusStore(Store):
             NOTEBOOK,
             ALL_IN_ONE,
             VIDEO_CARD,
+            MOUSE,
         ]
 
     @classmethod
@@ -29,6 +30,7 @@ class AsusStore(Store):
             ('laptops', NOTEBOOK),
             ('displays-desktops', ALL_IN_ONE),
             ('motherboards-components', VIDEO_CARD),
+            ('accessories', MOUSE),
         ]
         product_urls = []
 
