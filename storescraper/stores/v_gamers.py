@@ -89,15 +89,8 @@ class VGamers(Store):
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
-        json_data = json.loads(soup.findAll(
+        product_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
-
-        for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
 
         name = product_data['name']
         sku = product_data['sku']

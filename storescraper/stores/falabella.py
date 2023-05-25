@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from html import unescape
 
 from dateutil.parser import parse
+from requests import TooManyRedirects
 
 from storescraper.categories import *
 from storescraper.product import Product
@@ -264,19 +265,22 @@ class Falabella(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = CF_REQUEST_HEADERS['User-Agent']
 
         for i in range(3):
             try:
-                response = session.get(url, timeout=30, allow_redirects=False)
+                response = session.get(url, timeout=30)
+            except TooManyRedirects:
+                return []
             except UnicodeDecodeError:
                 return []
 
             if response.status_code in [404, 500]:
                 return []
 
-            if response.status_code == 301 and response.url == url:
+            if 'notFound' in response.url:
                 return []
 
             content = response.text.replace('&#10;', '')
