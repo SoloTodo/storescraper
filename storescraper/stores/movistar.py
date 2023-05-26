@@ -222,10 +222,7 @@ class Movistar(Store):
 
         products = []
         base_url = url.split('?')[0]
-        raw_sku = soup.select_one(
-            'form#product_addtocart_form')['data-product-sku']
-        assert raw_sku.endswith('NU')
-        base_sku = raw_sku[:-2]
+        base_sku = sku_status['data-sku'].split('EMP')[0]
 
         for variation in cls.variations:
             code = '{}{}'.format(base_sku, variation['base_plan'])

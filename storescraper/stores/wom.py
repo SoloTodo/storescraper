@@ -186,8 +186,13 @@ class Wom(Store):
                     plan_fatures['data service feature']:
                 plans.append('WOM ' + plan_choice['node']['name'])
 
-        for entry in json_data['result']['data']['contentfulProduct'][
-                'productVariations']:
+        variations = json_data['result']['data']['contentfulProduct'][
+                'productVariations']
+
+        if not variations:
+            return []
+
+        for entry in variations:
             name = entry['name']
             context = json.loads(entry['context']['context'])
             graphql_data = json.loads(context['graphql_data'])

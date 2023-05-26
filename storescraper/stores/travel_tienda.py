@@ -124,6 +124,11 @@ class TravelTienda(Store):
                 return cls.products_for_url(url, category, extra_args)
 
         product_json = json.loads(script_tag.text)[0]
+
+        price_text = product_json['offers']['price']
+        if not price_text:
+            return []
+
         data = soup.find('body').find('script').text
 
         data_clean = urllib.parse.unquote(
@@ -134,7 +139,7 @@ class TravelTienda(Store):
                 'products'].values())[0]
         name = product_json['name']
         sku = product_json['sku']
-        normal_price = Decimal(product_json['offers']['price'])
+        normal_price = Decimal(price_text)
 
         offer_price_text = json_container['listPrices']['tiendaBancoDeChile']
         if offer_price_text:
