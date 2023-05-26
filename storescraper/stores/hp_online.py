@@ -4,7 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import MONITOR, NOTEBOOK, PRINTER, ALL_IN_ONE
+from storescraper.categories import MONITOR, NOTEBOOK, PRINTER, ALL_IN_ONE, \
+    MOUSE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -18,6 +19,8 @@ class HpOnline(Store):
             PRINTER,
             MONITOR,
             ALL_IN_ONE,
+            MOUSE,
+            HEADPHONES
         ]
 
     @classmethod
@@ -27,6 +30,8 @@ class HpOnline(Store):
             ['impresoras', PRINTER],
             ['monitores', MONITOR],
             ['desktops', ALL_IN_ONE],
+            ['accesorios/mouse-teclados', MOUSE],
+            ['accesorios/bocinas-audio', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
