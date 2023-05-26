@@ -5,9 +5,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import TABLET, NOTEBOOK, MOTHERBOARD, PROCESSOR, \
-    CPU_COOLER, VIDEO_CARD, RAM, COMPUTER_CASE, POWER_SUPPLY, KEYBOARD, \
-    STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, MONITOR, \
-    PRINTER, GAMING_CHAIR, MICROPHONE, VIDEO_GAME_CONSOLE
+    CPU_COOLER, VIDEO_CARD, RAM, COMPUTER_CASE, POWER_SUPPLY, \
+    STORAGE_DRIVE, SOLID_STATE_DRIVE, MONITOR, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -17,50 +16,32 @@ class WebRedes(Store):
     @classmethod
     def categories(cls):
         return [
-            TABLET,
-            NOTEBOOK,
-            MOTHERBOARD,
-            PROCESSOR,
-            CPU_COOLER,
-            VIDEO_CARD,
-            RAM,
-            COMPUTER_CASE,
-            POWER_SUPPLY,
-            KEYBOARD,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            MONITOR,
-            PRINTER,
-            GAMING_CHAIR,
-            MICROPHONE,
-            VIDEO_GAME_CONSOLE
+            TABLET, NOTEBOOK, MOTHERBOARD, PROCESSOR,
+            CPU_COOLER, VIDEO_CARD, RAM, COMPUTER_CASE, POWER_SUPPLY,
+            STORAGE_DRIVE, SOLID_STATE_DRIVE, MONITOR, HEADPHONES
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['145-tablets', TABLET],
-            ['146-notebooks', NOTEBOOK],
-            ['147-ultrabooks', NOTEBOOK],
-            ['228-placas-madre', MOTHERBOARD],
             ['229-procesadores', PROCESSOR],
-            ['269-refrigeracion-y-ventiladores', CPU_COOLER],
-            ['230-tarjetas-de-video', VIDEO_CARD],
+            ['228-placas-madre', MOTHERBOARD],
             ['91-memorias-ram', RAM],
-            ['231-gabinetes', COMPUTER_CASE],
-            ['232-fuentes-de-poder', POWER_SUPPLY],
-            ['234-mouse-y-teclados', KEYBOARD],
             ['62-discos-duros-hdd', STORAGE_DRIVE],
             ['63-discos-duros-ssd', SOLID_STATE_DRIVE],
             ['249-nvme', SOLID_STATE_DRIVE],
-            ['250-m2-sata', SOLID_STATE_DRIVE],
-            ['64-discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['232-fuentes-de-poder', POWER_SUPPLY],
+            ['272-audifonos', HEADPHONES],
+            ['230-tarjetas-de-video', VIDEO_CARD],
+            ['269-refrigeracion-y-ventiladores', CPU_COOLER],
+            ['231-gabinetes', COMPUTER_CASE],
             ['239-monitores', MONITOR],
-            ['256-impresoras', PRINTER],
-            ['271-sillas-gamer', GAMING_CHAIR],
-            ['275-microfonos', MICROPHONE],
-            ['315-consolas', VIDEO_GAME_CONSOLE]
+            ['60-notebooks', NOTEBOOK],
+            ['291-tablets', TABLET],
+            ['299-procesador', PROCESSOR],
+            ['298-memoria-ram', RAM],
+            ['300-fuentes-de-poder', POWER_SUPPLY],
+            ['302-almacenamiento', STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -88,13 +69,15 @@ class WebRedes(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         json_info = json.loads(
             soup.find('div', {'id': 'product-details'})['data-product'])
         name = json_info['reference'] + ' - ' + json_info['name']
-        sku = str(json_info['id_product'])
+        key = str(json_info['id_product'])
+        sku = str(json_info['reference'])
         stock = json_info['quantity']
         normal_price = Decimal(json_info['price_amount'])
         offer_price = (normal_price * Decimal(0.95)).quantize(0)
@@ -107,12 +90,13 @@ class WebRedes(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
 
         )
