@@ -119,8 +119,12 @@ class KDTec(Store):
             while True:
                 if page > 15:
                     raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.kdtec.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
+                url_webpage = 'https://kdtec.cl/categoria-producto/{}/'.format(
+                    url_extension)
+
+                if page > 1:
+                    url_webpage += 'page/{}/'.format(page)
+
                 print(url_webpage)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
