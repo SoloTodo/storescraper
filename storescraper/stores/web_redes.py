@@ -75,6 +75,7 @@ class WebRedes(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         json_info = json.loads(
             soup.find('div', {'id': 'product-details'})['data-product'])
+        print(json.dumps(json_info))
         name = json_info['reference'] + ' - ' + json_info['name']
         key = str(json_info['id_product'])
         sku = str(json_info['reference'])

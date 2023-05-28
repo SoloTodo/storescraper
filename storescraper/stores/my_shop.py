@@ -83,6 +83,7 @@ class MyShop(Store):
             ['gamer/sillas-y-mesas', GAMING_CHAIR],
             ['gamer/microfonos', MICROPHONE],
             ['empresas/ups', UPS],
+            ['empresas/servidores-nas', STORAGE_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
