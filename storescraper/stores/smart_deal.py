@@ -23,7 +23,7 @@ class SmartDeal(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ('smart-to-school', NOTEBOOK),
+            # ('smart-to-school', NOTEBOOK),
             ('computacion', NOTEBOOK),
             ('smartphones-y-tablets', CELL),
             ('componentes-y-otros', MOTHERBOARD),
