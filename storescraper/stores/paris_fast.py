@@ -33,6 +33,7 @@ class ParisFast(Store):
         category_paths = Paris.category_paths
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = Paris.USER_AGENT
         products_dict = {}
 
         for e in category_paths:

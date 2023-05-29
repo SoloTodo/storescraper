@@ -1,5 +1,8 @@
 import json
 import logging
+import urllib
+
+import time
 from decimal import Decimal
 
 from storescraper.stores import Falabella
@@ -19,6 +22,7 @@ class FalabellaFast(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
+        time.sleep(2)
         return [category]
 
     @classmethod
@@ -69,7 +73,7 @@ class FalabellaFast(Store):
     def _get_products_data(cls, session, category_id, extra_query_params):
         products_data = []
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   'zones=ZL_CERRILLOS%2CLOSC%2C130617%2C13' \
+                   'zones={}' \
                    '&categoryId={}&page={}'
 
         page = 1
@@ -78,11 +82,13 @@ class FalabellaFast(Store):
             if page > 200:
                 raise Exception('Page overflow: ' + category_id)
 
-            pag_url = base_url.format(category_id, page)
+            pag_url = base_url.format(urllib.parse.quote(Falabella.zones),
+                                      category_id, page)
             print(pag_url)
 
             if extra_query_params:
-                pag_url += '&' + extra_query_params
+                for key, value in extra_query_params.items():
+                    pag_url += '&{}={}'.format(key, urllib.parse.quote(value))
 
             res = Falabella.retrieve_json_page(session, pag_url)
 
@@ -108,7 +114,15 @@ class FalabellaFast(Store):
         product_url = product_data['url']
         product_name = product_data['displayName']
         product_sku = product_data['skuId']
+
         product_stock = -1
+
+        seller = product_data['sellerName']
+
+        if 'FALABELLA' in seller.upper():
+            seller = None
+        elif seller in Falabella.seller_blacklist:
+            product_stock = 0
 
         prices = product_data['prices']
         offer_price = None
@@ -149,7 +163,8 @@ class FalabellaFast(Store):
                     normal_price,
                     offer_price,
                     'CLP',
-                    sku=variant_sku
+                    sku=variant_sku,
+                    seller=seller
                 )
                 products.append(p)
 
@@ -166,6 +181,7 @@ class FalabellaFast(Store):
                 offer_price,
                 'CLP',
                 sku=product_sku,
+                seller=seller
             )
             products.append(p)
 
