@@ -3,10 +3,10 @@ import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
-    EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
+    EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MONITOR, \
     MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    VIDEO_CARD, CPU_COOLER
+    VIDEO_CARD, CPU_COOLER, MEMORY_CARD, STEREO_SYSTEM, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -31,37 +31,44 @@ class Nuevatec(Store):
             KEYBOARD,
             USB_FLASH_DRIVE,
             PRINTER,
-            MICROPHONE,
             HEADPHONES,
             NOTEBOOK,
             CPU_COOLER,
             CASE_FAN,
+            MEMORY_CARD,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['monitor', MONITOR],
-            ['procesadores', PROCESSOR],
             ['placas-madres', MOTHERBOARD],
-            ['memorias-ram', RAM],
-            ['discos-duros', STORAGE_DRIVE],
-            ['unidades-de-estado-solido-ssd-m2-y-nvme', SOLID_STATE_DRIVE],
+            ['procesadores', PROCESSOR],
             ['tarjetas-de-video', VIDEO_CARD],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['refrigeracion', CASE_FAN],
-            ['gabinetes', COMPUTER_CASE],
-            ['notebook', NOTEBOOK],
-            ['impresoras', PRINTER],
-            ['mouses', MOUSE],
-            ['teclados', KEYBOARD],
-            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
-            ['pendrives', USB_FLASH_DRIVE],
-            ['audifonos', HEADPHONES],
-            ['microfonos', MICROPHONE],
+            ['memorias-ram', RAM],
+            ['disco-hdd', STORAGE_DRIVE],
+            ['disco-duro-ssd', SOLID_STATE_DRIVE],
+            ['m2-y-nvme', SOLID_STATE_DRIVE],
+            ['tarjeta-sdxc', MEMORY_CARD],
             ['refrigeracion-aire-cpu', CPU_COOLER],
             ['refrigeracion-liquida-cpu', CPU_COOLER],
             ['ventiladores-gabinete', CASE_FAN],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes', COMPUTER_CASE],
+            ['monitor', MONITOR],
+            ['mouses', MOUSE],
+            ['teclados', KEYBOARD],
+            ['audifonos', HEADPHONES],
+            ['parlantes', STEREO_SYSTEM],
+            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+            ['pendrives', USB_FLASH_DRIVE],
+            ['micro-sd', MEMORY_CARD],
+            ['impresoras-scanner', PRINTER],
+            ['playstation-5', VIDEO_GAME_CONSOLE],
+            ['impresoras', PRINTER],
+            ['discos-duros', STORAGE_DRIVE],
+            ['unidades-de-estado-solido-ssd-m2-y-nvme', SOLID_STATE_DRIVE],
+            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
