@@ -37,6 +37,7 @@ class Nuevatec(Store):
             CASE_FAN,
             MEMORY_CARD,
             STEREO_SYSTEM,
+            VIDEO_GAME_CONSOLE
         ]
 
     @classmethod

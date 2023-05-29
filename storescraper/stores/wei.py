@@ -100,6 +100,9 @@ class Wei(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 
         product_urls = []
         for category_path, local_category in category_urls:
@@ -108,19 +111,17 @@ class Wei(Store):
 
             page = 0
             local_urls = []
+            done = False
 
-            while True:
+            while not done:
                 if page >= 10:
                     raise Exception('Page overflow: ' + category_path)
 
                 page_url = 'https://www.wei.cl/categoria/{}?page={}' \
                            ''.format(category_path, page)
+                print(page_url)
                 soup = BeautifulSoup(
                     session.get(page_url, verify=False).text, 'html.parser')
-
-                showing = soup.find('div', 'inline-block pt5').findAll('span')
-                if showing[1].text == showing[-1].text and page != 0:
-                    break
 
                 product_cells = soup.findAll('div', 'box-producto')
 
@@ -133,7 +134,8 @@ class Wei(Store):
                 for cell in product_cells:
                     product_url = cell.find('a')['href']
                     if product_url in local_urls:
-                        continue
+                        done = True
+                        break
                     local_urls.append(product_url)
 
                 page += 1
