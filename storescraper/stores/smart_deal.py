@@ -42,8 +42,8 @@ class SmartDeal(Store):
                 if page > 20:
                     raise Exception('Page overflow')
 
-                page_url = 'https://smartdeal.cl/categoria-producto/{}/' \
-                           'page/{}'.format(category_path, page)
+                page_url = 'https://www.smartdeal.cl/categoria-producto/{}/' \
+                           '?product-page={}'.format(category_path, page)
                 print(page_url)
                 response = session.get(page_url)
                 data = response.text
