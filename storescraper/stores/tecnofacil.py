@@ -1,9 +1,9 @@
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
-    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -23,9 +23,7 @@ class Tecnofacil(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        session.headers['User-Agent'] = 'curl/7.68.0'
         product_urls = []
         for local_category in url_extensions:
             if local_category != category:
@@ -43,13 +41,15 @@ class Tecnofacil(Store):
                 print(url)
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'col-sm-6')
+                product_containers = soup.find('div', 'products-grid')
 
                 if not product_containers:
                     break
 
-                for container in product_containers:
+                for container in product_containers.findAll(
+                        'li', 'product-item'):
                     product_url = container.find('a')['href']
+                    print(product_url)
                     if product_url in product_urls:
                         return product_urls
                     product_urls.append(product_url)
@@ -61,35 +61,44 @@ class Tecnofacil(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'curl/7.68.0'
         data = session.get(url).text
         soup = BeautifulSoup(data, 'html.parser')
-        sku_container = soup.find('h6', 'sku')
+        sku_container = soup.find('div', {'itemprop': 'sku'})
 
         if not sku_container:
             return []
 
         sku = sku_container.text.strip()
-        name = "{} ({})".format(soup.find('div', 'product-name')
-                                .find('h1').text.strip(), sku)
-        if soup.find('p', 'availability') and soup.find('p',
-                                                        'availability').find(
-            'span').text == '✔' or soup.find('div',
-                                             'availability-in-store'):
+        key = soup.select_one('input#getproductid')['value']
+        name = "{} ({})".format(soup.find('span', {'itemprop': 'name'})
+                                .text.strip(), sku)
+
+        if not soup.find('img', {'src': 'https://www.tecnofacil.com.gt/'
+                                        'media/marcas/LG.jpg'}):
+            stock = 0
+        elif soup.find('button', 'add-cart'):
             stock = -1
         else:
             stock = 0
 
-        price = Decimal(soup.find('div', 'price-box').find('span', 'price')
-                        .text.replace('Q', '').replace(',', ''))
+        price = Decimal(soup.find('span', 'price-wrapper')[
+                            'data-price-amount'])
 
-        picture_urls = [soup.find('p', 'product-image').find('a')['href']]
+        json_tags = soup.findAll('script', {'type': 'text/x-magento-init'})
+
+        for tag in json_tags:
+            if 'data-gallery-role=gallery-placeholder' in tag.text:
+                pictures_json = json.loads(tag.text)
+                break
+        else:
+            raise Exception('No pictures tag found')
+
+        picture_urls = [tag['full'] for tag in pictures_json[
+            '[data-gallery-role=gallery-placeholder]'][
+            'mage/gallery/gallery']['data']]
         description = html_to_markdown(str(
-            soup.find('div', {'id': 'product_tabs_description_contents'})))
-
-        description += '\n\n'
-
-        description += html_to_markdown(str(
-            soup.find('div', {'id': 'product_tabs_additional_contents'})))
+            soup.find('div', 'additional-attributes-wrapper')))
 
         p = Product(
             name,
@@ -97,12 +106,13 @@ class Tecnofacil(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             'GTQ',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )

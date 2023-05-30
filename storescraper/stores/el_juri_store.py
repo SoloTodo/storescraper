@@ -32,7 +32,8 @@ class ElJuriStore(Store):
             if page > 10:
                 raise Exception('page overflow')
 
-            url_webpage = 'https://eljuri.store/brand/19-lg?page={}'.format(page)
+            url_webpage = 'https://eljuri.store/brand/19-lg?page={}'.format(
+                page)
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -76,7 +77,6 @@ class ElJuriStore(Store):
         stock_tag_container = soup.find('div', 'product-quantities')
         stock = int(stock_tag_container.find('span')['data-stock'])
         picture_urls = [product_data['image']]
-
 
         p = Product(
             name,

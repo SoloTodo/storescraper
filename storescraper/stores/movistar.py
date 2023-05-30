@@ -234,10 +234,12 @@ class Movistar(Store):
             soup = BeautifulSoup(res.text, 'html.parser')
 
             for method_id, plan_name_suffix in variation['methods']:
-                plan_tags = soup.findAll('div', {'data-method': str(method_id)})
+                plan_tags = soup.findAll(
+                    'div', {'data-method': str(method_id)})
 
                 for plan_tag in plan_tags:
-                    cell_plan_name = plan_tag.select_one('p.boxPlanesEmp-plan b').text.split(
+                    cell_plan_name = plan_tag.select_one(
+                        'p.boxPlanesEmp-plan b').text.split(
                         ':')[0].strip() + plan_name_suffix
 
                     if method_id == 1:

@@ -956,7 +956,6 @@ class MercadoLibreChile(Store):
         products = MercadoLibreChile.products_for_url(
             url, category=category, extra_args=extra_args)
 
-
         # DAC digital has this publication with two variants,
         # but both have the same price
         # https://www.dacdigital.cl/MLC-1329330315-pc-gamer-i5-13600k-
