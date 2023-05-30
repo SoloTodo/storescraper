@@ -170,7 +170,8 @@ class SpDigital(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        slug = url.split('/')[-1]
+
+        slug = re.match(r'https://www.spdigital.cl/(.+?)/?$', url).groups()[0]
         page_data_url = 'https://www.spdigital.cl/page-data/{}/' \
                         'page-data.json'.format(slug)
         print(page_data_url)
@@ -221,7 +222,7 @@ class SpDigital(Store):
         condition = 'https://schema.org/NewCondition'
         for attr in page_data['content']['attributes']:
             if attr['attribute']['slug'] == 'condition':
-                if attr['values'][0]['slug'] != 'nuevo':
+                if attr['values'] and attr['values'][0]['slug'] != 'nuevo':
                     condition = 'https://schema.org/RefurbishedCondition'
 
         if page_data['content']['description']:
