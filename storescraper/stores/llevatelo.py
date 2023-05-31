@@ -44,6 +44,7 @@ class Llevatelo(Store):
             ('linea-blanca/lavadoras', WASHING_MACHINE),
             ('linea-blanca/secadoras-de-ropa', WASHING_MACHINE),
             ('linea-blanca/refrigeradores', REFRIGERATOR),
+            ('linea-blanca/freezer', REFRIGERATOR),
             ('computacion/monitores', MONITOR),
             ('tecnologia/notebooks', NOTEBOOK),
             ('linea-blanca/lavavajillas', DISH_WASHER),
