@@ -74,6 +74,11 @@ class TodoGeek(Store):
         response = session.get(url)
         blacklist = cls._get_blackslist(response)
 
+        # Manually add the "Espéralo y paga menos" collection to the blacklist
+        # because the website "a pedido" rules sometimes do not show the
+        # warning
+        blacklist['collection'].append('411533082836')
+
         match = re.search('product: (.+), onVariantSelected', response.text)
         json_data = json.loads(match.groups()[0])
 
@@ -108,7 +113,8 @@ class TodoGeek(Store):
             price = (Decimal(variant['price']) /
                      Decimal(100)).quantize(0)
 
-            if preventa or 'RESERVA' in description.upper():
+            if preventa or 'RESERVA' in description.upper() or \
+                    'VENTA' in name.upper():
                 stock = 0
             elif variant['available']:
                 stock = -1
