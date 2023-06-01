@@ -72,6 +72,7 @@ class TodoGeek(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
         blacklist = cls._get_blackslist(response)
 
         # Manually add the "Espéralo y paga menos" collection to the blacklist
@@ -99,6 +100,16 @@ class TodoGeek(Store):
                 print('Collection blacklist: ' + str(collection))
                 preventa = True
 
+        category_tags = soup.find('li', 'category').findAll('a')
+        assert category_tags
+
+        for tag in category_tags:
+            if 'ESPERALO' in tag.text.upper() or 'ESPERALO' in tag['href'].upper():
+                a_pedido = True
+                break
+        else:
+            a_pedido = False
+
         picture_urls = []
 
         for picture in json_data['images']:
@@ -113,7 +124,7 @@ class TodoGeek(Store):
             price = (Decimal(variant['price']) /
                      Decimal(100)).quantize(0)
 
-            if preventa or 'RESERVA' in description.upper() or \
+            if a_pedido or preventa or 'RESERVA' in description.upper() or \
                     'VENTA' in name.upper():
                 stock = 0
             elif variant['available']:
