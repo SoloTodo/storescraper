@@ -204,7 +204,8 @@ class Movistar(Store):
             # raise Exception('Catalogo page URL')
 
         if page.status_code in [404, 503]:
-            raise Exception('Invalid status code: ' + str(page.status_code))
+            # raise Exception('Invalid status code: ' + str(page.status_code))
+            return []
 
         soup = BeautifulSoup(page.text, 'html.parser')
         if soup.find('meta', {'name': 'title'}):
