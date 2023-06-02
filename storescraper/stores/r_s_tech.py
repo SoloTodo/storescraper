@@ -50,6 +50,11 @@ class RSTech(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 '
+                          '(KHTML, like Gecko) Chrome/77.0 Safari/537.36',
+        }
+
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -63,12 +68,14 @@ class RSTech(Store):
                               'productos/{}/page/{}/'.format(url_extension,
                                                              page)
                 print(url_webpage)
-                response = session.get(url_webpage)
+                response = session.get(url_webpage, headers=headers)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_container = soup.findAll('div', 'product-small')
 
                 if not product_container:
                     if page == 1:
+                        if not soup.find('p', 'woocommerce-no-products-found'):
+                            raise Exception('Invalid page')
                         logging.warning('Empty category: ' + url_extension)
                     break
                 for container in product_container:
@@ -81,7 +88,12 @@ class RSTech(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 '
+                          '(KHTML, like Gecko) Chrome/77.0 Safari/537.36',
+        }
+
+        response = session.get(url, headers=headers)
 
         if response.status_code == 404:
             return []
