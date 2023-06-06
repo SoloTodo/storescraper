@@ -1,4 +1,3 @@
-import logging
 import re
 
 from decimal import Decimal
@@ -7,8 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.categories import TELEVISION, AIR_CONDITIONER, \
-    WASHING_MACHINE, STEREO_SYSTEM, REFRIGERATOR, OVEN
+from storescraper.categories import TELEVISION
 
 
 class AlmacenesLaGanga(Store):
@@ -16,39 +14,31 @@ class AlmacenesLaGanga(Store):
     def categories(cls):
         return [
             TELEVISION,
-            AIR_CONDITIONER,
-            WASHING_MACHINE,
-            STEREO_SYSTEM,
-            REFRIGERATOR,
-            OVEN
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['Televisores', 'Television'],
-            ['Aires-Split', 'AirConditioner'],
-            ['Lavadoras', 'WashingMachine'],
-            ['Equipos-de-sonido', 'StereoSystem'],
-            ['Refrigeradoras', 'Refrigerator'],
-            ['Cocinas', 'Oven']
-        ]
+        if category != TELEVISION:
+            return []
 
         session = session_with_proxy(extra_args)
-        base_url = 'https://www.almaceneslaganga.com/' \
-                   'pedidos-en-linea/efectivo/{}/LG'
         product_urls = []
+        page = 1
 
-        for url_extension, local_category in category_paths:
-            if category != local_category:
-                continue
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
 
-            url = base_url.format(url_extension)
+            url = 'https://www.almaceneslaganga.com/pedidos-en-linea/' \
+                  'efectivo/LG?page={}'.format(page)
+            print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products = soup.findAll('div', 'esquema_producto')
 
             if not products:
-                logging.warning('Empty path: ' + url)
+                if page == 1:
+                    raise Exception('Empty store')
+                break
 
             for product in products:
                 product_slug = product.find(
@@ -57,6 +47,8 @@ class AlmacenesLaGanga(Store):
                               'pedidos-en-linea/efectivo/{}'\
                     .format(product_slug)
                 product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 
@@ -74,7 +66,9 @@ class AlmacenesLaGanga(Store):
         sku = re.search(
             r'global_id_producto="([\S\s]+?)";', page_source).groups()[0]
         part_number = re.search(
-            r'\[modelo] => ([\S\s]+?)\n', page_source).groups()[0]
+            r'\[modelo] => ([\S\s]*?)\n', page_source).groups()[0].strip()
+        if not part_number:
+            part_number = None
         stock = -1
 
         price = Decimal(
