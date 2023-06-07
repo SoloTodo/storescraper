@@ -124,9 +124,20 @@ class TiendaMovistar(Store):
         name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
-        stock_match = re.search(r'stockMagento: (\d+),', page_source)
-        stock = int(stock_match.groups()[0])
+        stock_headers = {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Referer': url,
+        }
+        stock_session = session_with_proxy(extra_args)
+        stock_session.headers = stock_headers
 
+        stock_data = stock_session.post(
+            'https://catalogo.movistar.cl/fullprice/stockproducto/validar/',
+            'sku={}&cookie_detail=0'.format(sku),
+        ).json()
+
+        stock = int(stock_data['respuesta']['cantidad'])
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
 
