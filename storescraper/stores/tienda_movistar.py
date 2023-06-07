@@ -137,7 +137,11 @@ class TiendaMovistar(Store):
             'sku={}&cookie_detail=0'.format(sku),
         ).json()
 
-        stock = int(stock_data['respuesta']['cantidad'])
+        if 'cantidad' in stock_data['respuesta']:
+            stock = int(stock_data['respuesta']['cantidad'])
+        else:
+            stock = 0
+
         price_container = soup.find('span', 'special-price').find('p')
         price = Decimal(remove_words(price_container.text))
 
