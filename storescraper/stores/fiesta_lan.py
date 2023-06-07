@@ -95,14 +95,14 @@ class FiestaLan(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        stock_tag = soup.find('p', 'stock')
+
+        if not stock_tag:
+            return []
+
         name = soup.find('h1', 'product_title').text.replace('\n\t', '')
-        if soup.find('button', 'single_add_to_cart_button'):
-            sku = soup.find('button', 'single_add_to_cart_button')['value']
-        else:
-            sku = str(json.loads(html.unescape(
-                soup.find('script', {'type': 'application/ld+json'}).text))[
-                          '@graph'][1]['sku'])
-        stock = -1 if soup.find('p', 'stock').text == 'Hay existencias' else 0
+        sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        stock = -1 if stock_tag.text == 'Hay existencias' else 0
         price = Decimal(
             remove_words(soup.find('p', 'price').findAll('bdi')[-1].text))
         picture_containers = soup.find('div', 'woocommerce-product-gallery') \

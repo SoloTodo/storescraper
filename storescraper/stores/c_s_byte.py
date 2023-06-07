@@ -188,7 +188,12 @@ class CSByte(Store):
             else:
                 stock = 0
             price = Decimal(offer['price'])
-            picture_urls = [json_data['image']]
+
+            if 'image' in json_data:
+                picture_urls = [json_data['image']]
+            else:
+                picture_urls = None
+
             p = Product(
                 name,
                 cls.__name__,
