@@ -125,7 +125,7 @@ class TecnoPro(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         json_products = json.loads(soup.find('script', {
-            'data-section-id': "template--16602361921778__main"
+            'data-section-type': "static-product"
         }).text)['product']
 
         description = html_to_markdown(json_products['description'])

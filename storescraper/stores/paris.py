@@ -89,7 +89,7 @@ class Paris(Store):
         # Also includes videogames
         ['tecnologia/consolas-videojuegos', ['VideoGameConsole'],
          'Tecno > Consolas VideoJuegos', 0],
-        ['tecnologia/consolas-videojuegos/playstation',
+        ['tecnologia/consolas-videojuegos/playstation1',
          ['VideoGameConsole'],
          'Tecno > Consolas VideoJuegos > Consolas PlayStation', 1],
         ['tecnologia/consolas-videojuegos/nintendo',
