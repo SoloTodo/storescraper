@@ -7,7 +7,7 @@ from storescraper.categories import COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, \
     GAMING_CHAIR, HEADPHONES, KEYBOARD, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
     MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, \
     RAM, SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    VIDEO_CARD
+    VIDEO_CARD, TABLET, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -35,7 +35,9 @@ class Lifemax(Store):
             STEREO_SYSTEM,
             STORAGE_DRIVE,
             USB_FLASH_DRIVE,
-            VIDEO_CARD
+            VIDEO_CARD,
+            TABLET,
+            ALL_IN_ONE,
         ]
 
     @classmethod
@@ -45,33 +47,39 @@ class Lifemax(Store):
             ['audifonos-con-cable', HEADPHONES],
             ['tarjeta-de-memoria-microsdxc', MEMORY_CARD],
             ['tarjeta-de-memoria-microsd', MEMORY_CARD],
+            ['tarjeta-de-memoria-microsdhc', MEMORY_CARD],
             ['discos-ssd', SOLID_STATE_DRIVE],
             ['discos-ssd-m-2', SOLID_STATE_DRIVE],
             ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
-            ['disco-duro-interno', STORAGE_DRIVE],
             ['memoria-ram-notebook', RAM],
             ['memoria-ram-pc', RAM],
-            ['impresoras-multifuncionales-tinta', PRINTER],
+            ['disco-duro-interno', STORAGE_DRIVE],
+            ['disco-ssd-externo', EXTERNAL_STORAGE_DRIVE],
+            ['monitores', MONITOR],
             ['notebook-corporativos', NOTEBOOK],
+            ['impresoras-multifuncionales-tinta', PRINTER],
+            ['impresoras-laser', PRINTER],
+            ['pendrives', USB_FLASH_DRIVE],
+            ['tablets', TABLET],
+            ['all-in-one', ALL_IN_ONE],
             ['mouse', MOUSE],
             ['kits-de-mouse-y-teclado', KEYBOARD_MOUSE_COMBO],
             ['teclados', KEYBOARD],
-            ['pendrives', USB_FLASH_DRIVE],
-            ['monitores', MONITOR],
             ['memorias-ram-pc-gaming', RAM],
             ['memoria-ram-notebook-gamers', RAM],
-            ['audifonos-gamers', HEADPHONES],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['procesadores', PROCESSOR],
             ['ssd-m-2-especial-gamers', SOLID_STATE_DRIVE],
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['placas-madre', MOTHERBOARD],
             ['monitores-gamer', MONITOR],
-            ['mouse-gamers', MOUSE],
+            ['procesadores', PROCESSOR],
             ['gabinetes-gamer', COMPUTER_CASE],
-            ['audifonos-c-microfono', HEADPHONES],
+            ['placas-madre', MOTHERBOARD],
+            ['mouse-gamers', MOUSE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['tarjeta-de-video', VIDEO_CARD],
+            ['audifonos-gamers', HEADPHONES],
+            ['disco-duro-externo-especial-gamer', EXTERNAL_STORAGE_DRIVE],
             ['parlantes-y-subwoofers', STEREO_SYSTEM],
+            ['audifonos-c-microfono', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
@@ -93,21 +101,22 @@ class Lifemax(Store):
                 response = session.get(page_url)
                 data = response.text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_container = soup.find('article')
+                product_container = soup.find('div', 'bs-collection')
 
                 if not product_container:
                     if page == 1:
                         logging.warning('Empty category: ' + category_path)
                     break
 
-                product_containers = product_container.findAll('a', 'col-sm-6')
+                product_containers = product_container.findAll(
+                    'div', 'bs-collection__product')
                 if not product_containers:
                     if page == 1:
                         logging.warning('Empty category: ' + category_path)
                     break
 
                 for container in product_containers:
-                    product_url = container['href']
+                    product_url = container.find('a')['href']
                     product_urls.append(
                         'https://www.lifemaxstore.cl' + product_url)
 
@@ -131,15 +140,9 @@ class Lifemax(Store):
             re.search(r"window.INIT.products.push\(([\s\S]+)\);",
                       json_container).groups()[0])
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
-
-        for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
+        product_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json',
+                       'data-schema': 'Product'}).text)
 
         picture_urls = product_data['image']
 

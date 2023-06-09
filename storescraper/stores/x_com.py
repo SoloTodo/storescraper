@@ -91,8 +91,8 @@ class XCom(Store):
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
 
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
