@@ -71,35 +71,33 @@ class Rodelag(Store):
         picture_urls = ['https:' + i for i in json_product['images']]
 
         json_data_variants = json_product['variants']
+        assert len(json_data_variants) == 1
+        
+        v_data = json_data_variants[0]
+        sku = v_data['sku']
+        name = v_data['name']
+        if v_data['available']:
+            stock = -1
+        else:
+            stock = 0
+        price = Decimal(v_data['price']) / Decimal(100)
 
-        products = []
-        for v_data in json_data_variants:
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'USD',
+            sku=sku,
+            part_number=part_number,
+            picture_urls=picture_urls,
+            description=description
+        )
 
-            key = str(v_data['id'])
-            sku = v_data['sku']
-            name = v_data['name']
-            if v_data['available']:
-                stock = -1
-            else:
-                stock = 0
-            price = Decimal(v_data['price']) / Decimal(100)
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'USD',
-                sku=sku,
-                part_number=part_number,
-                picture_urls=picture_urls,
-                description=description
-            )
-            products.append(p)
-
-        return products
+        return [p]
