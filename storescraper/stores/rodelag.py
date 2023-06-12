@@ -72,7 +72,7 @@ class Rodelag(Store):
 
         json_data_variants = json_product['variants']
         assert len(json_data_variants) == 1
-        
+
         v_data = json_data_variants[0]
         sku = v_data['sku']
         name = v_data['name']

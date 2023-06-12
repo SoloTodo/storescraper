@@ -98,6 +98,10 @@ class APTech(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         response = session.get(url, timeout=60)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
 
@@ -113,7 +117,6 @@ class APTech(Store):
         name = product_data['name']
         sku = str(product_data['sku'])
         description = product_data['description']
-        price = Decimal(product_data['offers'][0]['price'])
 
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
