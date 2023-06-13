@@ -8,85 +8,48 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
-from storescraper.categories import KEYBOARD_MOUSE_COMBO, MOTHERBOARD, RAM, \
-    PROCESSOR, VIDEO_CARD, NOTEBOOK, TABLET, HEADPHONES, MOUSE, \
-    SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, MONITOR, STORAGE_DRIVE, \
-    POWER_SUPPLY, CPU_COOLER, CELL, WEARABLE, STEREO_SYSTEM, GAMING_CHAIR, \
-    USB_FLASH_DRIVE, MEMORY_CARD, MICROPHONE, CASE_FAN, \
-    TELEVISION, VIDEO_GAME_CONSOLE, GAMING_DESK
+from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
+    HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, \
+    STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, GAMING_CHAIR, USB_FLASH_DRIVE, \
+    CASE_FAN, EXTERNAL_STORAGE_DRIVE
 
 
 class InfographicsSolutions(Store):
     @classmethod
     def categories(cls):
         return [
-            MOTHERBOARD,
-            RAM,
-            PROCESSOR,
-            VIDEO_CARD,
-            NOTEBOOK,
-            TABLET,
-            HEADPHONES,
-            MOUSE,
-            SOLID_STATE_DRIVE,
-            KEYBOARD,
-            COMPUTER_CASE,
-            MONITOR,
-            STORAGE_DRIVE,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            CELL,
-            WEARABLE,
-            STEREO_SYSTEM,
-            GAMING_CHAIR,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            MICROPHONE,
-            CASE_FAN,
-            TELEVISION,
-            VIDEO_GAME_CONSOLE,
-            GAMING_DESK,
+            MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, HEADPHONES, MOUSE,
+            SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, STORAGE_DRIVE,
+            POWER_SUPPLY, CPU_COOLER, GAMING_CHAIR, USB_FLASH_DRIVE, CASE_FAN,
+            EXTERNAL_STORAGE_DRIVE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            ['computacion/almacenamiento/discos-duros',
-             STORAGE_DRIVE],
-            ['computacion/almacenamiento/discos-solidos',
-             SOLID_STATE_DRIVE],
-            ['computacion/almacenamiento/microsd', MEMORY_CARD],
-            ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-de-pc/memorias-ram', RAM],
-            ['componentes-de-pc/procesadores', PROCESSOR],
-            ['componentes-de-pc/refrigeracion/ventiladores', CASE_FAN],
-            ['componentes-de-pc/refrigeracion/aire', CPU_COOLER],
-            ['componentes-de-pc/refrigeracion/liquida', CPU_COOLER],
-            ['componentes-de-pc/placas-madres', MOTHERBOARD],
-            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['pantallas-monitores', MONITOR],
-            ['portatiles-notebook', NOTEBOOK],
-            ['tecnologia/television', TELEVISION],
-            ['celulares-smarthphones', CELL],
-            ['reloj-inteligente-smartwatch', WEARABLE],
-            ['tecnologia/fitnesstracker', WEARABLE],
-            ['tecnologia/consolas', VIDEO_GAME_CONSOLE],
-            ['accesorios/ofimatica-accesorios/audifonos-headset', HEADPHONES],
-            ['accesorios/ofimatica-accesorios/kit-teclado-mouse/',
-             KEYBOARD_MOUSE_COMBO],
-            ['accesorios/ofimatica-accesorios/microfonos/', MICROPHONE],
-            ['accesorios/ofimatica-accesorios/mouse', MOUSE],
-            ['accesorios/ofimatica-accesorios/parlantes', STEREO_SYSTEM],
-            ['accesorios/ofimatica-accesorios/pendrive', USB_FLASH_DRIVE],
-            ['accesorios/ofimatica-accesorios/teclados', KEYBOARD],
-            ['accesorios/mundo-gamer/audifonos-gamer', HEADPHONES],
-            ['accesorios/mundo-gamer/escritorios-gamer', GAMING_DESK],
-            ['accesorios/mundo-gamer/microfonos-condensadores/', MICROPHONE],
-            ['accesorios/mundo-gamer/mouse-gamer/', MOUSE],
-            ['accesorios/mundo-gamer/sillas/', GAMING_CHAIR],
-            ['accesorios/mundo-gamer/teclados-gamer/', KEYBOARD],
-            ['tecnologia', TABLET],
+            ['gabinetes', COMPUTER_CASE],
+            ['refrigeracion-liquida', CPU_COOLER],
+            ['refrigeracion-aire', CPU_COOLER],
+            ['ventiladores-fans', CASE_FAN],
+            ['disco-duro', STORAGE_DRIVE],
+            ['ssd-sata-2-5', SOLID_STATE_DRIVE],
+            ['ssd-sata-m-2', SOLID_STATE_DRIVE],
+            ['ssd-nvme-pcie', SOLID_STATE_DRIVE],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['placas-madre', MOTHERBOARD],
+            ['procesadores', PROCESSOR],
+            ['memorias-ram', RAM],
+            ['tarjetas-graficas', VIDEO_CARD],
+            ['audifonos-headset', HEADPHONES],
+            ['teclados-gamer', KEYBOARD],
+            ['mouse-gamer', MOUSE],
+            ['sillas-gamer', GAMING_CHAIR],
+            ['audifonos', HEADPHONES],
+            ['teclados', KEYBOARD],
+            ['mouse', MOUSE],
+            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+            ['ssd-externo', EXTERNAL_STORAGE_DRIVE],
+            ['pendrive', USB_FLASH_DRIVE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -102,6 +65,7 @@ class InfographicsSolutions(Store):
             while True:
                 url = 'https://infographicssolutions.cl/categoria-producto/' \
                       '{}/page/{}/'.format(category_path, page)
+                print(url)
 
                 if page > 15:
                     raise Exception('Page overflow: ' + str(page))
@@ -151,19 +115,23 @@ class InfographicsSolutions(Store):
             if entry['@type'] == 'Product':
                 product_data = entry
                 break
+        else:
+            raise Exception('No data entry found')
 
         if 'name' in product_data:
             name = product_data['name']
             sku = str(product_data['sku'])
             offer_price = Decimal(product_data['offers'][0]['price'])
             normal_price = round(
-                (offer_price * Decimal('1.05')).quantize(0), -1)
+                (offer_price * Decimal('1.1')).quantize(0), -1)
         else:
             json_data_2 = json.loads(soup_jsons[0].text)['@graph']
             for entry in json_data_2['@graph']:
                 if entry['@type'] == 'WebPage':
                     product_data_2 = entry
                     break
+            else:
+                raise Exception('No Webpage entry found')
             name = product_data_2['name']
             wds = soup.find('div', 'wd-single-price')
             if wds.find('div', 'wds-first').find('ins'):
