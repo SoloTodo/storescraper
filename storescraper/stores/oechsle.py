@@ -41,6 +41,9 @@ class Oechsle(PeruStores):
         if len(offer_info) != 0 and offer_info[0]['Params']['tarjeta'] != "0" \
                 and offer_info[0]['Params']['seller'] == 'oechsle':
             offer_price = Decimal(offer_info[0]['Params']['tarjeta'])
+
+            if offer_price > normal_price:
+                offer_price = normal_price
         else:
             offer_price = normal_price
         return offer_price
