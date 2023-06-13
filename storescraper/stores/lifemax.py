@@ -100,7 +100,7 @@ class Lifemax(Store):
                 print(page_url)
                 response = session.get(page_url)
                 data = response.text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_container = soup.find('div', 'bs-collection')
 
                 if not product_container:
