@@ -11,7 +11,7 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, \
     STORAGE_DRIVE, POWER_SUPPLY, CPU_COOLER, GAMING_CHAIR, USB_FLASH_DRIVE, \
-    CASE_FAN, EXTERNAL_STORAGE_DRIVE
+    CASE_FAN, EXTERNAL_STORAGE_DRIVE, NOTEBOOK, MONITOR
 
 
 class InfographicsSolutions(Store):
@@ -21,7 +21,7 @@ class InfographicsSolutions(Store):
             MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, HEADPHONES, MOUSE,
             SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, STORAGE_DRIVE,
             POWER_SUPPLY, CPU_COOLER, GAMING_CHAIR, USB_FLASH_DRIVE, CASE_FAN,
-            EXTERNAL_STORAGE_DRIVE
+            EXTERNAL_STORAGE_DRIVE, NOTEBOOK, MONITOR
         ]
 
     @classmethod
@@ -50,6 +50,9 @@ class InfographicsSolutions(Store):
             ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
             ['ssd-externo', EXTERNAL_STORAGE_DRIVE],
             ['pendrive', USB_FLASH_DRIVE],
+            ['memorias-ram-notebook-ddr4', RAM],
+            ['notebook-gamer', NOTEBOOK],
+            ['monitores', MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
