@@ -358,6 +358,7 @@ from .pro_movil import ProMovil
 from .progaming import Progaming
 from .proglobal import Proglobal
 from .promart import Promart
+from .pulso_gamers import PulsoGamers
 from .raenco import Raenco
 from .refresh_store import RefreshStore
 from .reif_store import ReifStore
@@ -377,6 +378,7 @@ from .samurai_store import SamuraiStore
 from .sanborns import Sanborns
 from .sandos import Sandos
 from .santa_isabel import SantaIsabel
+from .santis_prime import SantisPrime
 from .saraiva import Saraiva
 from .sc_global import ScGlobal
 from .sears_mexico import SearsMexico
