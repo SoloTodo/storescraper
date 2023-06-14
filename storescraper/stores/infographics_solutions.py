@@ -154,8 +154,12 @@ class InfographicsSolutions(Store):
             sku = key
 
         stock_container = soup.find('p', 'stock')
+        short_description = product_data.get('description', '')
 
         if 'VENTA' in name.upper() and 'PRE' in name.upper():
+            # Preventa
+            stock = 0
+        elif 'LLEGADA' in short_description.upper():
             # Preventa
             stock = 0
         elif stock_container:
