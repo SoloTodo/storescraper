@@ -74,7 +74,8 @@ class RSTech(Store):
 
                 if not product_container:
                     if page == 1:
-                        if not soup.find('p', 'woocommerce-no-products-found'):
+                        if not soup.find('div',
+                                         'woocommerce-no-products-found'):
                             raise Exception('Invalid page')
                         logging.warning('Empty category: ' + url_extension)
                     break

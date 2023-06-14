@@ -152,8 +152,11 @@ class TicOnlineStore(Store):
             picture_urls = []
             container = soup.find('figure',
                                   'woocommerce-product-gallery__wrapper')
-            for a in container.findAll('a'):
-                picture_urls.append(a['href'])
+            if container:
+                for a in container.findAll('a'):
+                    picture_urls.append(a['href'])
+            else:
+                picture_urls = None
 
             p = Product(
                 name,
