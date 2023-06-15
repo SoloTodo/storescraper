@@ -82,7 +82,13 @@ class Valrod(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('div', 'product-name-wrapper').find('h1').text
         key = soup.find('form', {'id': 'addtocart'})['action'].split('/')[-1]
-        sku = re.search(r'"sku":\s?"(.+?)"', response.text).groups()[0]
+
+        sku_match = re.search(r'"sku":\s?"(.+?)"', response.text)
+        if sku_match:
+            sku = sku_match.groups()[0]
+        else:
+            sku = None
+
         stock_container = soup.find('div', 'product-availability').find('span')
         if stock_container.text == 'No Disponible' or \
                 stock_container.text == 'Agotado':

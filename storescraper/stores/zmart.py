@@ -116,7 +116,7 @@ class Zmart(Store):
         query_string = urllib.parse.urlparse(url).query
         key = urllib.parse.parse_qs(query_string)['idProduct'][0]
 
-        if soup.find('input', 'comprar2015'):
+        if soup.find('button', {'name': 'add'}):
             stock = -1
         else:
             stock = 0

@@ -72,7 +72,7 @@ class Mutant(Store):
             str(soup.find('div', {'id': 'tab-description'})))
 
         picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         picture_urls = []
         for a in picture_container.findAll('a'):
             if a['href'] != '':
