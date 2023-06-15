@@ -101,7 +101,9 @@ class GsmPro(Store):
             key = str(variant['id'])
             name = variant['name']
             sku = variant['sku']
-            price = (Decimal(variant['price']) / Decimal(100)).quantize(0)
+            offer_price = (Decimal(variant['price']) /
+                           Decimal(100)).quantize(0)
+            normal_price = (offer_price * Decimal('1.0356')).quantize(0)
 
             if publication_id in product_blacklist:
                 stock = 0
@@ -118,8 +120,8 @@ class GsmPro(Store):
                 url,
                 key,
                 stock,
-                price,
-                price,
+                normal_price,
+                offer_price,
                 'CLP',
                 sku=sku,
                 picture_urls=picture_urls,
