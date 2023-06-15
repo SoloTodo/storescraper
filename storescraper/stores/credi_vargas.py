@@ -8,7 +8,7 @@ from storescraper.utils import html_to_markdown, remove_words, \
     session_with_proxy
 
 
-class ElectroGo(Store):
+class CrediVargas(Store):
     @classmethod
     def categories(cls):
         return [TELEVISION]
@@ -21,17 +21,23 @@ class ElectroGo(Store):
             return []
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
 
-        url_webpage = 'https://credivargas.pe/tienda/pucallpa/m/lg'
+        url_webpage = 'https://credivargas.pe/buscar.php?buscar=LG'
         print(url_webpage)
         data = session.get(url_webpage).text
         soup = BeautifulSoup(data, 'html.parser')
-        product_containers = soup.findAll('h5', 'product-item__title')
+        # import ipdb
+        # ipdb.set_trace()
+        product_containers = soup.findAll('li', 'product-item')
         if not product_containers:
-            logging.warning('Empty category')
+            # logging.warning('Empty category')
+            raise Exception('Empyy site')
         for container in product_containers:
-            product_url = container.find('a')['href']
+            product_url = container.find('a', 'text-blue')['href']
             product_urls.append(product_url)
         return product_urls
 
@@ -51,7 +57,7 @@ class ElectroGo(Store):
         sku = product_info.findAll('p')[-1].text.split(':')[-1].strip()
 
         price_div = product_info.find('ins', 'text-decoration-none')
-        if not price_div:
+        if not price_div or 'AGOTADO' in price_div.text:
             return []
 
         price = Decimal(remove_words(price_div.text, ['S/.', ',']))
