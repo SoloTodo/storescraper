@@ -54,11 +54,12 @@ class CrediVargas(Store):
             soup.find('span', 'text-green').text.replace(' en stock', ''))
 
         product_info = soup.find('div', 'col-wd-9gdot5').find('div', 'mb-lg-0')
-        sku = product_info.findAll('p')[-1].text.split(':')[-1].strip()
-
         price_div = product_info.find('ins', 'text-decoration-none')
+
         if not price_div or 'AGOTADO' in price_div.text:
             return []
+
+        sku = product_info.findAll('p')[-1].text.split(':')[-1].strip()
 
         price = Decimal(remove_words(price_div.text, ['S/.', ',']))
         description = html_to_markdown(product_info.find('h2').text)
