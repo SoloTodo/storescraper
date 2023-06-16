@@ -58,28 +58,18 @@ class Falabella(Store):
         ['cat7190148',
          [TELEVISION],
          'Home > Tecnología-TV > Smart tv entre 50" - 55"', 1,
-         {'f.product.attribute.Tamaño_de_la_pantalla':
-          '50::50 "::50 pulgadas::50"::51::51 pulgadas::55::55 "::'
-          '55 pulgadas::55"'}],
+         {'f.variant.custom.Tamaño_de_la_pantalla': '50::55'}],
         ['cat7190148',
          [TELEVISION],
          'Home > Tecnología-TV > Smart tv sobre 55"', 1,
-         {'f.product.attribute.Tamaño_de_la_pantalla':
-          '56 ::56 pulgadas::58::58 "::58 pulgadas::58''::60::60 "::'
-          '60 pulgadas::60''::65::65 "::65 pulgadas::65"::68::68 pulgadas::'
-          '70::70 "::70 pulgadas::70"::75::75 "::75 pulgadas::77::'
-          '77 pulgadas::82 pulgadas::83 pulgadas::85::85 pulgadas::'
-          '86 pulgadas'}],
+         {'f.variant.custom.Tamaño_de_la_pantalla':
+          '58::60::65::68::70::75::77::85::86'}],
         ['cat7190148',
          [TELEVISION],
          'Home > Tecnología-TV > Smart tv menores a 50"', 1,
          {
-             'f.product.attribute.Tamaño_de_la_pantalla':
-             '22 pulgadas::24::24 pulgadas::24"::27 pulgadas::32::32 "::'
-             '32 pulgadas::32"::32''::39::39 "::39 pulgadas::40::40 "::'
-             '40 pulgadas::40"::42::42 "::42 pulgadas::42"::43::43 "::'
-             '43 pulgadas::43"::48::48 "::48 pulgadas::48"::49 "::'
-             '49 pulgadas::49"::49''"'}],
+             'f.variant.custom.Tamaño_de_la_pantalla':
+             '1::20::24::32::39::40::42::43::48'}],
         ['cat2070', [PROJECTOR], 'Home > Tecnología-TV > Proyectores', 1],
         ['cat2005', [STEREO_SYSTEM], 'Home > Tecnología-Audio', 0],
         ['cat3091', [STEREO_SYSTEM], 'Home > Tecnología-Audio > Equipos de Mús'
