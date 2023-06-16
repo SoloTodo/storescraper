@@ -111,7 +111,7 @@ class Progaming(Store):
         stock = int(soup.find('input', 'qty')['value'])
 
         picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         picture_urls = []
         for a in picture_container.findAll('a'):
             picture_urls.append(a['href'])

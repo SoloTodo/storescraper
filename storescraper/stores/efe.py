@@ -44,6 +44,9 @@ class Efe(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        if soup.select_one('div#WC_GenericError_6'):
+            return []
+
         key = re.search(r'id="ProductInfoName_(\d*)"',
                         response.text).groups()[0].split('_')[-1]
 

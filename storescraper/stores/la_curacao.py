@@ -47,6 +47,9 @@ class LaCuracao(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        if soup.find('div', 'error-lc-404'):
+            return []
+
         key = re.search(r'id="ProductInfoName_(\d*)"',
                         response.text).groups()[0].split('_')[-1]
 
