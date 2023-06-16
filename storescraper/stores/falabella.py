@@ -36,8 +36,9 @@ class Falabella(Store):
             'PCL2269,LOSC,PCL540,2020,PCL1186,FEDEX_RM_URB,PCL2520,PCL1336,' \
             'CHILEXPRESS_8,PCL1839,BX_R13_BASE,PCL226,SCD9039_FLEX,PCL105,' \
             'HUB_SALIDA_DIRECTA_RM,PCL2120,PCL1923,PCL2441,1234,PCL1223,' \
-            '130617,PCL25,PCL2442,BLUE_RM_URBANO,PCL115,RM,PCL94,PCL108,' \
-            '13,PCL861,CHILE_INTERNATIONAL,PCL1364,PCL109,PCL184'
+            'FBY_BT_CTT,PCL2661,130617,PCL25,PCL2442,BLUE_RM_URBANO,PCL115,' \
+            'RM,PCL94,PCL2511,PCL108,13,PCL861,CHILE_INTERNATIONAL,PCL1364,' \
+            'PCL109,PCL184'
 
     category_paths = [
         ['cat720161', [CELL], 'Home > Tecnología-Telefonía > Celulares y Teléf'
@@ -286,8 +287,10 @@ class Falabella(Store):
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_params, seller_id):
         discovered_urls = []
+        # For some reason the "categoryName" param activates the sponsored
+        # results
         base_url = 'https://www.falabella.com/s/browse/v1/listing/cl?' \
-                   '&categoryId={}&sortBy={}&page={}'
+                   '&categoryId={}&categoryName=foo&sortBy={}&page={}'
 
         for key, value in extra_params.items():
             base_url += '&{}={}'.format(key, urllib.parse.quote(value))
