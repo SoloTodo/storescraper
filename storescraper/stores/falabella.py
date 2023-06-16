@@ -489,39 +489,49 @@ class Falabella(Store):
                     offer_price == Decimal('9999999'):
                 continue
 
+            seller_entry = None
+
+            if model['offerings'] and 'sellerName' in model['offerings'][0]:
+                if 'falabella' not in \
+                        model['offerings'][0]['sellerName'].lower():
+                    seller_entry = model['offerings'][0]
+            elif model['offerings'] and 'sellerId' in model['offerings'][0]:
+                if 'falabella' not in \
+                        model['offerings'][0]['sellerId'].lower():
+                    seller_entry = model['offerings'][0]
+
             stock = 0
 
-            if not is_international_shipping and \
-                    model.get('isPurchaseable', False):
-                availabilities = model['availability']
+            if seller_entry:
+                seller = seller_entry.get('sellerName', seller_entry['sellerId']) or None
 
-                for availability in availabilities:
-                    if availability['shippingOptionType'] in \
-                            ['All', 'HomeDelivery', 'SiteToStore',
-                             'PickupInStore']:
-                        stock = availability['quantity']
+                if seller in cls.seller_blacklist:
+                    stock = 0
+                else:
+                    if seller_entry['sellerProductStatus'] == 'ACTIVO':
+                        stock = -1
+                    else:
+                        stock = 0
+            else:
+                seller = None
+                if not is_international_shipping and \
+                        model.get('isPurchaseable', True):
+                    availabilities = model['availability']
+
+                    for availability in availabilities:
+                        if availability['shippingOptionType'] in \
+                                ['All', 'HomeDelivery', 'SiteToStore',
+                                 'PickupInStore']:
+                            if availability['quantity']:
+                                stock = -1
+                                break
+                    else:
+                        stock = 0
 
             if 'reacondicionado' in base_name.lower():
                 condition = 'https://schema.org/RefurbishedCondition'
             else:
                 condition = 'https://schema.org/NewCondition'
-
-            seller = None
-
-            if model['offerings'] and 'sellerName' in model['offerings'][0]:
-                if 'falabella' not in \
-                        model['offerings'][0]['sellerName'].lower():
-                    seller = model['offerings'][0]['sellerName']
-            elif model['offerings'] and 'sellerId' in model['offerings'][0]:
-                if 'falabella' not in \
-                        model['offerings'][0]['sellerId'].lower():
-                    seller = model['offerings'][0]['sellerId']
-
-            if seller == '':
-                seller = None
-
-            if seller in cls.seller_blacklist:
-                stock = 0
 
             picture_urls = [x['url'] + '?scl=1.0' for x in model['medias']]
             model_name = model['name'].encode(
