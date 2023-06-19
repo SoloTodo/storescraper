@@ -379,8 +379,9 @@ class LaPolar(Store):
                         .find_elements_by_tag_name('li')
 
                     for control in controls:
-                        control.click()
-                        time.sleep(2)
+                        if len(controls) > 1:
+                            control.click()
+                            time.sleep(2)
                         pictures.append(banner_container.screenshot_as_base64)
 
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
