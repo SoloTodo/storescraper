@@ -308,7 +308,7 @@ class Falabella(Store):
             'product.averageOverallRating%2Cdesc'
         ]
 
-        for sorting in sortings:
+        for idx, sorting in enumerate(sortings):
             page = 1
 
             while True:
@@ -346,7 +346,10 @@ class Falabella(Store):
                         product_url = '{}/{}'.format(product_url.split('?')
                                                      [0], result['skuId'])
 
-                    if product_url not in discovered_urls:
+                    # The same sku may appear twice, and we have to consider
+                    # that case, but only add it twice if we are still
+                    # using the first sorting option ("Recomendados")
+                    if product_url not in discovered_urls or idx == 0:
                         discovered_urls.append(product_url)
 
                 page += 1
@@ -508,7 +511,8 @@ class Falabella(Store):
                 if seller in cls.seller_blacklist:
                     stock = 0
                 else:
-                    if seller_entry['sellerProductStatus'] == 'ACTIVO':
+                    if seller_entry.get('sellerProductStatus', None) == \
+                            'ACTIVO' or seller_entry.get('isActive', False):
                         stock = -1
                     else:
                         stock = 0

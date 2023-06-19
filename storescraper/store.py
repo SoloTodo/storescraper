@@ -119,7 +119,7 @@ class Store:
 
         logger.info('Discovering URLs for: {}'.format(cls.__name__))
 
-        entry_positions = defaultdict(lambda: {})
+        entry_positions = defaultdict(lambda: list())
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
         extra_args = cls._extra_args_with_preflight(extra_args)
 
@@ -154,16 +154,13 @@ class Store:
 
                         if positions:
                             for pos in positions:
-                                if pos['section_name'] not in \
-                                        entry_positions[url]:
-                                    entry_positions[url][pos['section_name']]\
-                                        = pos['value']
+                                entry_positions[url].append((pos['section_name'], pos['value']))
                                 url_category_weights[url][category] += \
                                     pos['category_weight']
                         else:
                             # Legacy for implementations without position data
                             url_category_weights[url][category] = 1
-                            entry_positions[url] = {}
+                            entry_positions[url] = []
         else:
             logger.info('Using sync method')
             for category in categories:
@@ -174,17 +171,13 @@ class Store:
 
                     if positions:
                         for pos in positions:
-                            if pos['section_name'] not in \
-                                    entry_positions[url]:
-                                entry_positions[url][
-                                    pos['section_name']] = pos['value']
-
+                            entry_positions[url].append((pos['section_name'], pos['value']))
                             url_category_weights[url][category] += \
                                 pos['category_weight']
                     else:
                         # Legacy for implementations without position data
                         url_category_weights[url][category] = 1
-                        entry_positions[url] = {}
+                        entry_positions[url] = []
 
         discovered_entries = {}
         for url, positions in entry_positions.items():

@@ -44,7 +44,7 @@ def main():
                                       entry_metadata['category_weight']))
         positions = entry_metadata['positions']
         if positions:
-            for section_name, value in positions.items():
+            for section_name, value in positions:
                 print('* {} in {}'.format(value, section_name))
         else:
             print('No positions given')

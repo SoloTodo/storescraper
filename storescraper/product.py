@@ -97,7 +97,7 @@ class Product:
         if not timestamp.tzinfo:
             timestamp = pytz.utc.localize(timestamp)
         self.condition = condition
-        self.positions = positions or {}
+        self.positions = positions or []
         self.video_urls = video_urls
         self.review_count = review_count
         self.review_avg_score = review_avg_score
