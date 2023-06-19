@@ -89,8 +89,8 @@ class ParisFast(Store):
                         products_dict[product.sku] = product
                         product_to_update = product
 
-                    product_to_update.positions[section_name] = \
-                        40 * page + idx + 1
+                    product_to_update.positions.append(
+                        (section_name, 40 * page + idx + 1))
 
                 page += 1
 

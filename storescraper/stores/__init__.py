@@ -131,7 +131,6 @@ from .eyc import Eyc
 from .falabella import Falabella
 from .falabella_colombia import FalabellaColombia
 from .falabella_fast import FalabellaFast
-from .falabella_cf import FalabellaCf
 from .falabella_argentina import FalabellaArgentina
 from .falabella_peru import FalabellaPeru
 from .fama import Fama

@@ -263,7 +263,7 @@ class Ripley(Store):
                             product_dict[product.sku] = product
                             product_to_update = product
 
-                        product_to_update.positions[section_name] = position
+                        product_to_update.positions.append((section_name, position))
 
                     position += 1
 

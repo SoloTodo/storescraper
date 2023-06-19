@@ -164,9 +164,7 @@ class LgV5(Store):
 
             section_paths = section_data[candidate].split(':')[1:]
             section_path = ' > '.join([x for x in section_paths if x.strip()])
-            positions = {
-                section_path: 1
-            }
+            positions = [(section_path, 1)]
             break
         else:
             raise Exception('At least one of the section candidates should '

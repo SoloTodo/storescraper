@@ -64,7 +64,7 @@ class FalabellaFast(Store):
                         products_dict[product.sku] = product
                         product_to_update = product
 
-                    product_to_update.positions[section_name] = idx + 1
+                    product_to_update.positions.append((section_name, idx + 1))
 
         products_list = [p for p in products_dict.values()]
         return products_list
