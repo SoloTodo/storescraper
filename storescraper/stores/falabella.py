@@ -346,10 +346,7 @@ class Falabella(Store):
                         product_url = '{}/{}'.format(product_url.split('?')
                                                      [0], result['skuId'])
 
-                    # The same sku may appear twice, and we have to consider
-                    # that case, but only add it twice if we are still
-                    # using the first sorting option ("Recomendados")
-                    if product_url not in discovered_urls or idx == 0:
+                    if product_url not in discovered_urls:
                         discovered_urls.append(product_url)
 
                 page += 1
