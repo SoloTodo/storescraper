@@ -399,9 +399,7 @@ class Lider(Store):
         base_url = 'https://apps.lider.cl/catalogo/bff/banners?v=2'
         destination_url_base = 'https://www.lider.cl/{}'
         session = session_with_proxy(extra_args)
-        session.headers = {
-            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT)
-        }
+        session.headers['User-Agent'] = cls.DEFAULT_USER_AGENT
         banners = []
         response = session.get(base_url)
 
