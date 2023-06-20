@@ -130,15 +130,16 @@ class Zmart(Store):
         sku = soup.find('span', 'zmart__sku').text.strip()
 
         price_div = soup.find('div', {'id': 'ficha_producto'})
+        price_tags = price_div.findAll('li')
 
-        price_td_offer = price_div.find('p', 'price')
-        offer_price = Decimal(remove_words(price_td_offer.text.strip()))
-
-        if len(price_div.findAll('li')) > 1:
-            price_td = price_div.findAll('li')[-1].find('p', 'price')
-            normal_price = Decimal(remove_words(price_td.text.strip()))
+        if len(price_tags) == 1:
+            normal_price = Decimal(remove_words(price_tags[0].find('p').text))
+            offer_price = normal_price
+        elif len(price_tags) == 2:
+            offer_price = Decimal(remove_words(price_tags[0].find('p').text))
+            normal_price = Decimal(remove_words(price_tags[1].find('p').text))
         else:
-            normal_price = offer_price
+            raise Exception('Invalid number of price tags found')
 
         description = html_to_markdown(str(soup.find('div', 'tab')),
                                        'https://www.zmart.cl')
