@@ -21,7 +21,12 @@ class Estilos(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        product_urls = []
+        # Yes, we hardcode a URL because it doesn't appear in any index in the
+        # Estilos page
+        product_urls = [
+            'https://www.estilos.com.pe/cierra-puertas-online/52601-'
+            'Televisor-LG-UHD-65-Inteligencia-Artificial-4k-Smart.html'
+        ]
 
         page = 1
         while True:
