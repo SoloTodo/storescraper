@@ -91,7 +91,11 @@ class Ampera(Store):
             sku = str(json_data['sku'])
             offer = json_data['offers'][0]
             if offer['availability'] == 'http://schema.org/InStock':
-                stock = int(soup.find('p', 'stock').text.split()[0])
+                stock_tag = soup.find('p', 'stock')
+                if stock_tag:
+                    stock = int(stock_tag.text.split()[0])
+                else:
+                    return []
             else:
                 stock = 0
             price = Decimal(offer['price'])

@@ -100,7 +100,7 @@ class Campcom(Store):
 
         picture_urls = []
         picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         for a in picture_container.findAll('a'):
             if a['href'] != "":
                 picture_urls.append(a['href'])
