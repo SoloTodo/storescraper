@@ -141,6 +141,9 @@ class Infosep(Store):
         sku = json_data['sku']
         price = Decimal(json_data['offers'][0]['price'])
 
+        if not price:
+            return []
+
         if soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:

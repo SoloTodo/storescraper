@@ -75,6 +75,10 @@ class TecnoBoss(Store):
             'meta', {'property': 'og:description'})['content']
 
         price = Decimal(remove_words(soup.find('span', 'form-price').text))
+
+        if not price:
+            return []
+
         sku_span = soup.find('span', 'sku_elem')
         if sku_span and sku_span.text != "":
             sku = sku_span.text

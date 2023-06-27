@@ -73,6 +73,9 @@ class Product:
         if seller:
             assert len(seller) <= 256
 
+        if not normal_price or not offer_price:
+            assert 'PREPAGO' in name.upper() or cell_plan_name is not None
+
         assert condition in Product.VALID_CONDITIONS
 
         self.name = name

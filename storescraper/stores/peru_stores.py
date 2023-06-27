@@ -95,6 +95,10 @@ class PeruStores(Store):
 
         normal_price = Decimal(str(store_seller['commertialOffer']['Price']))
 
+        # Price will be zero if the product is not sold directly by retailer
+        if not normal_price:
+            return []
+
         offer_price = cls.get_offer_price(
             session, sku, normal_price, store_seller)
 

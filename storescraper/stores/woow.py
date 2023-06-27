@@ -84,8 +84,10 @@ class Woow(Store):
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)
         pricing_data = product_data[pricing_key]
-
         price = Decimal(str(pricing_data['Price']))
+
+        if not price:
+            return []
 
         stock = pricing_data['AvailableQuantity']
         picture_list_key = '{}.items.0'.format(base_json_key)

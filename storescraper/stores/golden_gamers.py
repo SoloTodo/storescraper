@@ -120,6 +120,10 @@ class GoldenGamers(Store):
             product_container.find('ul', 'product-item-caption-price').find(
                 'li', 'product-item-caption-price-current').text.replace('CLP',
                                                                          '')))
+
+        if not price:
+            return []
+
         picture_urls = [
             'https:' + tag['src'].replace('_small', '').split('?')[0] for tag
             in product_container.find('div', 'swiper-horiz-'

@@ -138,6 +138,10 @@ class KillStore(Store):
         pricing_data = product_data[pricing_key]
 
         normal_price = Decimal(pricing_data['Price'])
+
+        if not normal_price:
+            return []
+
         offer_price = (normal_price * Decimal('0.96')).quantize(0)
         stock = pricing_data['AvailableQuantity']
 

@@ -133,6 +133,9 @@ class Clie(Store):
             'td', 'price-normal').contents[0].split('$')[1].split('IVA')[0]
         normal_price = Decimal(remove_words(normal_price))
 
+        if not normal_price or offer_price:
+            return []
+
         picture_links = soup.findAll('a', {'rel': 'lightbox[roadtrip]'})
 
         picture_urls = []

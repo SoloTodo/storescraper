@@ -6,7 +6,7 @@ from storescraper.categories import MONITOR, NOTEBOOK
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import check_ean13, session_with_proxy
+from storescraper.utils import check_ean13, session_with_proxy, remove_words
 
 
 class AcerStore(Store):
@@ -90,8 +90,13 @@ class AcerStore(Store):
         pricing_data = product_data[pricing_key]
 
         price = Decimal(str(pricing_data['Price']))
-        stock = pricing_data['AvailableQuantity']
 
+        if not price:
+            pricing_key = '{}.specificationGroups.2.specifications.0'.format(
+                base_json_key)
+            price = Decimal(remove_words(product_data[pricing_key]['name']))
+
+        stock = pricing_data['AvailableQuantity']
         picture_list_key = '{}.items.0'.format(base_json_key)
         picture_list_node = product_data[picture_list_key]
         picture_ids = [x['id'] for x in picture_list_node['images']]
