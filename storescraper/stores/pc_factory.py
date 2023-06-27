@@ -227,7 +227,9 @@ class PcFactory(Store):
         stock = int(product_data['stock_web']) + \
             int(product_data['stock_tienda'])
 
-        offer_price = Decimal(remove_words(product_data['precio_cash']))
+        # precio_cash for efectivo
+        # precio_fpago for tarjeta bancoestado
+        offer_price = Decimal(remove_words(product_data['precio_fpago']))
         normal_price = Decimal(remove_words(product_data['precio_normal']))
 
         picture_urls = [x.split('?')[0] for x in product_data['imagen_1000']]
