@@ -72,6 +72,7 @@ class Todoclick(Store):
             ['571-consolas', VIDEO_GAME_CONSOLE],
             ['513-audifonos-over-ear', HEADPHONES],
             ['552-audifonos-in-ear', HEADPHONES],
+            ['video-conferencia-701', HEADPHONES],
             ['514-parlantes-gamer', STEREO_SYSTEM],
             ['524-sillas-gamer', GAMING_CHAIR],
             ['523-escritorios-gamer', GAMING_DESK],
