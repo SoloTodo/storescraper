@@ -79,7 +79,8 @@ class PlazaVea(PeruStores):
                 "    }\n    }\n  }",
                 "variables": {
                     "fullText": "lg",
-                    "selectedFacets": [{"key": "brand", "value": "lg"}],
+                    "selectedFacets": [{"key": "vendido-por",
+                                        "value": "plazavea"}],
                     "from": page * page_size,
                     "to": (page + 1) * page_size - 1,
                     "orderBy": "OrderByScoreDESC"

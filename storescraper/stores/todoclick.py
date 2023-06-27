@@ -136,8 +136,9 @@ class Todoclick(Store):
         products = []
 
         sku_tag = soup.find('div', 'reference-detail')
+        price_tag = soup.find('span', {'itemprop': 'price'})
 
-        if not sku_tag:
+        if not sku_tag or not price_tag:
             return []
 
         sku = sku_tag.text.strip()
@@ -145,7 +146,7 @@ class Todoclick(Store):
         stock_container = soup.find('div', 'product-quantities')
         if stock_container:
             stock = int(stock_container.find('span')['data-stock'])
-        price = Decimal(soup.find('span', {'itemprop': 'price'})['content'])
+        price = Decimal(price_tag['content'])
         picture_urls = [tag['data-image-large-src'] for tag in
                         soup.find('ul', 'product-images')
                             .findAll('img')]
