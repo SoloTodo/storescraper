@@ -232,7 +232,7 @@ from .led_shop import LedShop
 from .led_studio import LedStudio
 from .lenovo_chile import LenovoChile
 from .lenovo_mexico import LenovoMexico
-from .lg_chile import LgChile
+from .lg_cl import LgCl
 from .lg_cac import LgCac
 from .lg_cac_en import LgCacEn
 from .lg_ec import LgEc
@@ -438,6 +438,8 @@ from .tienda_inglesa import TiendaInglesa
 from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
 from .tienda_smart import TiendaSmart
+from .tienda_oficial_lg_chile import TiendaOficialLgChile
+from .tienda_oficial_lg_panama import TiendaOficialLgPanama
 from .tienda_toyotomi import TiendaToyotomi
 from .todo_geek import TodoGeek
 from .travel_tienda import TravelTienda

@@ -28,10 +28,8 @@ class CrediVargas(Store):
 
         url_webpage = 'https://credivargas.pe/buscar.php?buscar=LG'
         print(url_webpage)
-        data = session.get(url_webpage).text
+        data = session.get(url_webpage, timeout=60).text
         soup = BeautifulSoup(data, 'html.parser')
-        # import ipdb
-        # ipdb.set_trace()
         product_containers = soup.findAll('li', 'product-item')
         if not product_containers:
             # logging.warning('Empty category')
@@ -45,7 +43,7 @@ class CrediVargas(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        response = session.get(url, timeout=60)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         key = url.split('-')[-1]

@@ -26,7 +26,8 @@ class Product:
                  cell_monthly_payment=None, picture_urls=None, timestamp=None,
                  condition='https://schema.org/NewCondition', positions=None,
                  video_urls=None, review_count=None, review_avg_score=None,
-                 flixmedia_id=None, has_virtual_assistant=None, seller=None):
+                 flixmedia_id=None, has_virtual_assistant=None, seller=None,
+                 allow_zero_prices=False):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -73,8 +74,8 @@ class Product:
         if seller:
             assert len(seller) <= 256
 
-        if not normal_price or not offer_price:
-            assert 'PREPAGO' in name.upper() or cell_plan_name is not None
+        if (not normal_price or not offer_price) and not allow_zero_prices:
+            raise Exception('Price cannot be zero')
 
         assert condition in Product.VALID_CONDITIONS
 

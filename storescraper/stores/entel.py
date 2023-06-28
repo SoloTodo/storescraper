@@ -88,6 +88,7 @@ class Entel(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                allow_zero_prices=True
             ))
 
         elif url == cls.planes_url:
@@ -224,7 +225,8 @@ class Entel(Store):
                     sku=variant_sku,
                     cell_monthly_payment=Decimal(0),
                     cell_plan_name=plan_name,
-                    condition=condition
+                    condition=condition,
+                    allow_zero_prices=True
                 ))
 
             # Prepago

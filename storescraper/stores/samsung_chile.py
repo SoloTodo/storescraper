@@ -106,7 +106,8 @@ class SamsungChile(Store):
                         price,
                         'CLP',
                         sku=key,
-                        picture_urls=picture_urls
+                        picture_urls=picture_urls,
+                        allow_zero_prices=True
                     ))
 
         return products

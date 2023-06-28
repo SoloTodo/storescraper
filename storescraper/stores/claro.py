@@ -115,6 +115,7 @@ class Claro(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                allow_zero_prices=True
             )
             products.append(p)
         elif url == cls.planes_url:
@@ -274,7 +275,8 @@ class Claro(Store):
                         'CLP',
                         cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=Decimal(0),
-                        picture_urls=picture_urls
+                        picture_urls=picture_urls,
+                        allow_zero_prices=True
                     ))
             elif combination_type == 'PEB':
                 # Portabildiad arriendo
@@ -302,7 +304,8 @@ class Claro(Store):
                         'CLP',
                         cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=cell_monthly_payment,
-                        picture_urls=picture_urls
+                        picture_urls=picture_urls,
+                        allow_zero_prices=True
                     ))
             elif combination_type == 'PE_PORTA':
                 # Portabilidad sin arriendo
@@ -323,7 +326,8 @@ class Claro(Store):
                         'CLP',
                         cell_plan_name='Claro {}'.format(cell_plan_name),
                         cell_monthly_payment=Decimal(0),
-                        picture_urls=picture_urls
+                        picture_urls=picture_urls,
+                        allow_zero_prices=True
                     ))
             else:
                 raise Exception('Invalid switch:' + combination_type)

@@ -18,6 +18,7 @@ class LgV5(Store):
     region_code = property(lambda self: 'Subclasses must implement this')
     currency = 'USD'
     price_approximation = '0.01'
+    skip_unavailable = False
 
     @classmethod
     def categories(cls):
@@ -33,7 +34,6 @@ class LgV5(Store):
         discovered_urls = []
         session = session_with_proxy(extra_args)
         session.headers['content-type'] = 'application/x-www-form-urlencoded'
-        skip_unavailable = extra_args and extra_args.get('skip_unavailable')
 
         endpoint_url = 'https://www.lg.com/{}/mkt/ajax/category/' \
                        'retrieveCategoryProductList'.format(cls.region_code)
@@ -51,7 +51,7 @@ class LgV5(Store):
             payload = 'categoryId={}&modelStatusCode={}&bizType=B2C&viewAll' \
                       '=Y'.format(category_id, status)
 
-            if skip_unavailable:
+            if cls.skip_unavailable:
                 payload += '&obsOnly=Y'
 
             json_response = json.loads(
@@ -72,7 +72,6 @@ class LgV5(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=20)
-        skip_unavailable = extra_args and extra_args.get('skip_unavailable')
 
         if response.url != url or response.status_code == 404:
             return []
@@ -96,7 +95,7 @@ class LgV5(Store):
         for sibling_id in sibling_ids:
             sibling = cls._retrieve_single_product(sibling_id, category)
             if sibling:
-                if skip_unavailable and sibling.stock == 0:
+                if cls.skip_unavailable and sibling.stock == 0:
                     continue
                 products.append(sibling)
 
@@ -132,6 +131,8 @@ class LgV5(Store):
             price = Decimal(model_data['obsSellingPrice']).quantize(
                 Decimal(cls.price_approximation))
             stock = -1
+        elif cls.skip_unavailable:
+            return None
         else:
             price = Decimal(0)
             stock = 0
@@ -198,7 +199,8 @@ class LgV5(Store):
             picture_urls=picture_urls,
             part_number=sku,
             positions=positions,
-            description=description
+            description=description,
+            allow_zero_prices=not cls.skip_unavailable
         )
 
     @classmethod

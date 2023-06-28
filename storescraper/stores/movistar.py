@@ -135,6 +135,7 @@ class Movistar(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                allow_zero_prices=True
             )
             products.append(p)
         elif url == cls.planes_url:
@@ -270,7 +271,8 @@ class Movistar(Store):
                         'CLP',
                         sku=base_sku,
                         cell_plan_name=cell_plan_name,
-                        cell_monthly_payment=cell_monthly_payment
+                        cell_monthly_payment=cell_monthly_payment,
+                        allow_zero_prices=True
                     ))
 
         return products

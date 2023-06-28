@@ -90,6 +90,7 @@ class Wom(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                allow_zero_prices=True
             )
             products.append(p)
         elif url == cls.planes_url:
@@ -258,7 +259,8 @@ class Wom(Store):
                             plan,
                             portability_name_suffix,
                         ),
-                        cell_monthly_payment=Decimal(0)
+                        cell_monthly_payment=Decimal(0),
+                        allow_zero_prices=True
                     ))
 
                     # With installments
@@ -279,7 +281,8 @@ class Wom(Store):
                             plan,
                             portability_name_suffix,
                         ),
-                        cell_monthly_payment=installment_price
+                        cell_monthly_payment=installment_price,
+                        allow_zero_prices=True
                     ))
 
             # Prepaid

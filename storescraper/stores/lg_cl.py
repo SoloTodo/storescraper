@@ -4,7 +4,7 @@ from storescraper.categories import TELEVISION, OPTICAL_DISK_PLAYER, \
     MONITOR, PROJECTOR, CELL_ACCESORY, DISH_WASHER
 
 
-class LgChile(LgV5):
+class LgCl(LgV5):
     region_code = 'cl'
     currency = 'CLP'
     price_approximation = '0'
