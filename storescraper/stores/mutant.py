@@ -3,7 +3,8 @@ import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import COMPUTER_CASE, CPU_COOLER, KEYBOARD, \
-    MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD
+    MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD, \
+    PROCESSOR, RAM, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, remove_words, \
@@ -22,7 +23,10 @@ class Mutant(Store):
             SOLID_STATE_DRIVE,
             COMPUTER_CASE,
             MONITOR,
-            KEYBOARD
+            KEYBOARD,
+            PROCESSOR,
+            RAM,
+            HEADPHONES,
         ]
 
     @classmethod
@@ -31,12 +35,15 @@ class Mutant(Store):
             ['tarjeta-video', VIDEO_CARD],
             ['fuente-de-poder', POWER_SUPPLY],
             ['placa-madre', MOTHERBOARD],
-            ['disco-ssd', SOLID_STATE_DRIVE],
+            ['discos-ssd', SOLID_STATE_DRIVE],
             ['sistema-refrigeracion', CPU_COOLER],
             ['gabinetes', COMPUTER_CASE],
             ['monitor', MONITOR],
-            ['teclado', KEYBOARD],
             ['mouse', MOUSE],
+            ['cpu', PROCESSOR],
+            ['memoria-ram', RAM],
+            ['teclados-armados', KEYBOARD],
+            ['audifonos', HEADPHONES],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
