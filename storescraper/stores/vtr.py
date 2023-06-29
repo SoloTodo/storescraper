@@ -71,6 +71,7 @@ class Vtr(Store):
                 Decimal(0),
                 Decimal(0),
                 'CLP',
+                allow_zero_prices=True
             )
             products.append(p)
         elif url == cls.planes_url:
@@ -174,7 +175,8 @@ class Vtr(Store):
                     'CLP',
                     cell_plan_name=base_cell_plan_name,
                     cell_monthly_payment=Decimal(0),
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    allow_zero_prices=True
                 ))
 
                 # Portabilidad sin arriendo
@@ -192,7 +194,8 @@ class Vtr(Store):
                     'CLP',
                     cell_plan_name=cell_plan_name,
                     cell_monthly_payment=Decimal(0),
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    allow_zero_prices=True
                 ))
 
                 # Portabilidad con arriendo
@@ -212,7 +215,8 @@ class Vtr(Store):
                     'CLP',
                     cell_plan_name=cell_plan_name,
                     cell_monthly_payment=Decimal(0),
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    allow_zero_prices=True
                 ))
 
         return products
