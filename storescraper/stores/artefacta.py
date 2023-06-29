@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -66,7 +67,20 @@ class Artefacta(Store):
             soup.find('span', {'data-price-type': 'finalPrice'})
                 .find('span', 'price').text.replace('$', '').replace(',', ''))
 
-        picture_urls = [soup.find('div', 'preloaded-image').find('img')['src']]
+        scripts = soup.findAll('script', {'type': 'text/x-magento-init'})
+        img_json_data = None
+
+        for script in scripts:
+            if 'mage/gallery/gallery' in script.text:
+                img_json_data = json.loads(script.text)[
+                    '[data-gallery-role=gallery-placeholder]'][
+                    'mage/gallery/gallery']['data']
+                break
+
+        if not img_json_data:
+            picture_urls = None
+        else:
+            picture_urls = [image['full'] for image in img_json_data]
 
         description = html_to_markdown(
             str(soup.find('div', 'description')))
