@@ -178,6 +178,7 @@ class NotebookStore(Store):
 
         name = soup.find('span', {'itemprop': 'name'}).text
         sku = soup.find('div', {'itemprop': 'sku'}).text
+        key = soup.find('div', {'data-role': 'priceBox'})['data-product-id']
 
         stock = 0
         stock_container = soup.find('div', 'product-stock')
@@ -220,7 +221,7 @@ class NotebookStore(Store):
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             part_number=sku,
             picture_urls=picture_urls,
             description=description,
