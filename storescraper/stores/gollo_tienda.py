@@ -19,25 +19,36 @@ class GolloTienda(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # KEEPS ONLY LG PRODUCTS
-        session = session_with_proxy(extra_args)
-        product_urls = []
-
         if category != TELEVISION:
             return []
 
-        url = 'https://www.gollo.com/productos?at_marca=LG&' \
-              'product_list_limit=100'
+        session = session_with_proxy(extra_args)
+        product_urls = []
+        page = 1
 
-        print(url)
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
 
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        container = soup.find('div', 'products')
-        items = container.findAll('li', 'item')
+            url = 'https://www.gollo.com/catalogsearch/result/index/' \
+                  '?q=LG&p={}'.format(page)
 
-        for item in items:
-            product_url = item.find('a')['href']
-            product_urls.append(product_url)
+            print(url)
+
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            container = soup.find('div', 'products')
+
+            if not container:
+                if page == 1:
+                    raise Exception('Empty store')
+                break
+
+            for item in container.findAll('li', 'item'):
+                product_url = item.find('a')['href']
+                product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 

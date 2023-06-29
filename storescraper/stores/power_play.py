@@ -124,7 +124,7 @@ class PowerPlay(Store):
 
         picture_urls = []
         picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         for i in picture_container.findAll('a'):
             picture_urls.append(i['href'])
 

@@ -27,14 +27,16 @@ class Artefacta(Store):
         done = False
 
         while not done:
-            url = 'https://www.artefacta.com/productos?at_marca=LG&p={}&' \
-                  'product_list_limit=36'.format(page)
+            url = 'https://www.artefacta.com/catalogsearch/result/?' \
+                  'q=LG&p={}&product_list_limit=36'.format(page)
             print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             products = soup.findAll('li', 'product-item')
 
             if not products:
-                raise Exception('Empty path: ' + url)
+                if page == 1:
+                    raise Exception('Empty path: ' + url)
+                break
 
             for product in products:
                 try:
@@ -43,9 +45,6 @@ class Artefacta(Store):
                     # Skip the template tag
                     continue
 
-                if product_url in product_urls:
-                    done = True
-                    break
                 product_urls.append(product_url)
             page += 1
 
