@@ -109,6 +109,7 @@ class Product:
         self.has_virtual_assistant = has_virtual_assistant
         self.timestamp = timestamp
         self.seller = seller
+        self.allow_zero_prices = allow_zero_prices
 
     def __str__(self):
         lines = list()
@@ -199,6 +200,7 @@ class Product:
             'flixmedia_id': self.flixmedia_id,
             'has_virtual_assistant': self.has_virtual_assistant,
             'seller': self.seller,
+            'allow_zero_prices': self.allow_zero_prices
         }
 
     @classmethod
