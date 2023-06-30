@@ -74,6 +74,10 @@ class MotorolaShop(Store):
             price = Decimal(json_product['$' + variation_key +
                                          '.sellers.0.commertialOffer'][
                                 'Price'])
+
+            if not stock and not price:
+                return []
+
             picture_urls = [
                 json_product[image['id']]['imageUrl'].split('?v=')[0] for
                 image in product['images']]
