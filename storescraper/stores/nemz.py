@@ -45,6 +45,9 @@ class Nemz(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
@@ -53,8 +56,11 @@ class Nemz(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.nemz.cl/product-category/{}/page' \
-                              '/{}/'.format(url_extension, page)
+                url_webpage = 'https://www.nemz.cl/product-category/{}/'.format(url_extension)
+
+                if page > 1:
+                    url_webpage += 'page/{}/'.format(page)
+
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
                 product_containers = soup.find('ul', 'products')
@@ -72,6 +78,9 @@ class Nemz(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
@@ -117,17 +126,10 @@ class Nemz(Store):
                 'div', 'woocommerce-product-details__short-description')
             if description_tag and 'PREVENTA' in description_tag.text.upper():
                 stock = 0
-            elif soup.find('p', 'stock'):
-                stock = 0
-            elif soup.find('span', 'stock') and re.search(r'(\d+)', soup.find(
-                    'span', 'stock').text):
-                stock = int(
-                    re.search(r'(\d+)', soup.find('span', 'stock').text)
-                    .groups()[0])
-            elif soup.find('span', 'stock') and '✅En Stock!':
+            elif soup.find('button', 'single_add_to_cart_button'):
                 stock = -1
             else:
-                return []
+                stock = 0
             price_container = soup.find('p', 'price')
             if price_container.find('ins'):
                 price = Decimal(remove_words(price_container.find('ins').text

@@ -128,7 +128,7 @@ class ETChile(Store):
                 sku = variation['sku']
                 key = str(variation['variation_id'])
                 stock = variation['max_qty']
-                price = Decimal(variation['display_price'])
+                price = Decimal(variation['display_price']).quantize(0)
                 picture_urls = [variation['image']['url']]
 
                 p = Product(

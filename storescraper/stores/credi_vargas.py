@@ -47,7 +47,13 @@ class CrediVargas(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         key = url.split('-')[-1]
-        name = soup.find('h2', 'text-lh-1dot2').text.strip()
+        name_tag = soup.find('h2', 'text-lh-1dot2')
+
+        if not name_tag:
+            return []
+
+        name = name_tag.text.strip()
+
         stock = int(
             soup.find('span', 'text-green').text.replace(' en stock', ''))
 

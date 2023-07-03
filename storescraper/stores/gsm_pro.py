@@ -39,7 +39,6 @@ class GsmPro(Store):
             ['mouses-y-teclados', MOUSE],
             ['tarjetas-de-video', VIDEO_CARD],
             ['audifonos', HEADPHONES],
-            ['mouses-y-teclados-1', MOUSE],
             ['memorias-y-pendrive', USB_FLASH_DRIVE],
         ]
 
