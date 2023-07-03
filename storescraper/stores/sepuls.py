@@ -3,7 +3,7 @@ import logging
 import re
 from decimal import Decimal
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
@@ -83,7 +83,7 @@ class Sepuls(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = demjson.decode(
+        product_data = demjson3.decode(
             soup.find('script', {'type': 'application/ld+json'})
             .text)
 

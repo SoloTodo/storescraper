@@ -1,5 +1,5 @@
 from decimal import Decimal
-import demjson
+import demjson3
 import logging
 from bs4 import BeautifulSoup
 from storescraper.product import Product
@@ -95,7 +95,7 @@ class DigitalChoice(Store):
                 'type': 'application/ld+json',
                 'data-schema': 'Product'})
         for product_script in scripts:
-            json_data = demjson.decode(product_script.text)
+            json_data = demjson3.decode(product_script.text)
 
             key = json_data['@id']
             name = json_data['name']

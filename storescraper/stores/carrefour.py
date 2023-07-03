@@ -1,6 +1,6 @@
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -74,7 +74,7 @@ class Carrefour(Store):
 
         pricing_text = re.search(
             r'var productDetail = ([\S\s]+?);', page_source)
-        pricing_json = demjson.decode(pricing_text.groups()[0])
+        pricing_json = demjson3.decode(pricing_text.groups()[0])
 
         name = pricing_json['name']
         sku = pricing_json['id']

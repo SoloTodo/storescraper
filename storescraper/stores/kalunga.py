@@ -2,7 +2,7 @@ import json
 
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -65,7 +65,7 @@ class Kalunga(Store):
         session = session_with_proxy(extra_args)
         page_source = session.get(url).text
 
-        pricing_data = demjson.decode(re.search(
+        pricing_data = demjson3.decode(re.search(
             r'dataLayer = ([\S\s]+?);', page_source).groups()[0])[0]
 
         name = pricing_data['prodName']

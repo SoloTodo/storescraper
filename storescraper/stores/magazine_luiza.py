@@ -1,7 +1,7 @@
 import json
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -74,7 +74,7 @@ class MagazineLuiza(Store):
             for_replace = "'{}': .+".format(kw)
             pricing_data = re.sub(for_replace, '', pricing_data)
 
-        pricing_data = demjson.decode(pricing_data)['page']['product']
+        pricing_data = demjson3.decode(pricing_data)['page']['product']
 
         name = pricing_data['title']
         sku = pricing_data['idSku']

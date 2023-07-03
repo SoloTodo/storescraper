@@ -3,7 +3,7 @@ import urllib
 
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -73,7 +73,7 @@ class Sanborns(Store):
 
         pricing_str = re.search(r'dataLayer = ([\S\s]+?);',
                                 page_source).groups()[0]
-        pricing_data = demjson.decode(pricing_str)[0]
+        pricing_data = demjson3.decode(pricing_str)[0]
 
         json_product = pricing_data['ecommerce']['detail']['products'][0]
 

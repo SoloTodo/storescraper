@@ -1,6 +1,6 @@
 import json
 
-import demjson
+import demjson3
 import re
 
 from collections import defaultdict
@@ -116,7 +116,7 @@ class Entel(Store):
             raw_plans = re.search(
                 r'const Planes_Parrilla_1plan = (\[[\s\S]*?])',
                 res.text).groups()[0]
-        plans = demjson.decode(raw_plans)
+        plans = demjson3.decode(raw_plans)
 
         products = []
 

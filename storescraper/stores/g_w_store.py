@@ -1,7 +1,7 @@
 import logging
 from decimal import Decimal
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, COMPUTER_CASE, RAM, \
@@ -105,7 +105,7 @@ class GWStore(Store):
 
         key = key_input['value']
 
-        json_data = demjson.decode(soup.findAll(
+        json_data = demjson3.decode(soup.findAll(
             'script', {'type': 'application/ld+json'})[-1].text)
 
         name = json_data['name']

@@ -2,7 +2,7 @@ import json
 
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -103,7 +103,7 @@ class Megatone(Store):
 
         product_data = re.search(r'var google_tag_params = ([\s\S]+?);',
                                  page_source).groups()[0]
-        product_json = demjson.decode(product_data)
+        product_json = demjson3.decode(product_data)
 
         price = Decimal(product_json['ecomm_totalvalue'])
         sku = product_json['ecomm_prodid']

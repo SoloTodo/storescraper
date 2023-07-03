@@ -1,6 +1,6 @@
 import json
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -74,7 +74,7 @@ class TiendaClaro(Store):
 
         json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
             page_id)})
-        json_data = demjson.decode(json_container.text)
+        json_data = demjson3.decode(json_container.text)
         description = html_to_markdown(
             str(soup.find('div', 'billing_method_div_custom')))
         description += '\n\n{}'.format(html_to_markdown(

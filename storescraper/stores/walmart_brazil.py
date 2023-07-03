@@ -1,7 +1,7 @@
 import html
 import urllib
 
-import demjson
+import demjson3
 import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -105,7 +105,7 @@ class WalmartBrazil(Store):
         if not picture_urls:
             picture_urls = None
 
-        pricing_data = demjson.decode(re.search(
+        pricing_data = demjson3.decode(re.search(
             r'dataLayer = ([\S\s]+?);dataLayer', page_source).groups()[0])[0]
 
         products = []

@@ -1,7 +1,7 @@
 import json
 import logging
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -85,7 +85,7 @@ class Syd(Store):
             '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        json_data = demjson.decode(soup.findAll(
+        json_data = demjson3.decode(soup.findAll(
             'script', {'type': 'application/ld+json'})[2].text)
         name = json_data['name']
         sku = json_data['sku']

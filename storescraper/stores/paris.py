@@ -1,5 +1,5 @@
 import json
-import demjson
+import demjson3
 import logging
 import re
 from collections import defaultdict
@@ -337,7 +337,7 @@ class Paris(Store):
         try:
             json_data = json.loads(json_script.text, strict=False)
         except Exception:
-            json_data = demjson.decode(json_script.text, strict=False)
+            json_data = demjson3.decode(json_script.text, strict=False)
 
         model = json_data['name']
         if 'brand' in json_data:

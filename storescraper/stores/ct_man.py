@@ -2,7 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 
 from storescraper.categories import PRINTER, KEYBOARD, HEADPHONES, \
@@ -108,7 +108,7 @@ class CtMan(Store):
             return []
 
         key = key_tag['value']
-        json_data = demjson.decode(
+        json_data = demjson3.decode(
             soup.find('script', {'type': 'application/ld+json'}).text)
         name = json_data['name']
         sku = soup.find('p', 'product-sku').text.split(':')[1].strip()

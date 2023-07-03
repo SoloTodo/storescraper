@@ -1,6 +1,6 @@
 import re
 
-import demjson
+import demjson3
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -86,7 +86,7 @@ class Byp(Store):
             r'(\'sku\': [\S\s]+)ga\(', page_source)
 
         pricing_text = '{' + pricing_text.groups()[0]
-        pricing_json = demjson.decode(pricing_text)
+        pricing_json = demjson3.decode(pricing_text)
 
         name = pricing_json['Name']
         sku = pricing_json['sku']
