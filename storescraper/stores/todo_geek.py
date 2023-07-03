@@ -74,6 +74,7 @@ class TodoGeek(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
         shipping_rules = cls._get_shipping_rules(response)
 
         json_match = re.search(r'var otEstProduct = (.+)\n', response.text)
@@ -91,8 +92,28 @@ class TodoGeek(Store):
         for collection in collections:
             rules.extend(shipping_rules['collection'][str(collection)])
 
+        if not rules:
+            print('No rules: ' + url)
+
         rules.sort(key=lambda rule: int(rule['shipping_method']['position']))
         preventa = rules and int(rules[0]['minimum_days']) > 1
+
+        if not preventa and rules:
+            for rule in rules[1:]:
+                if int(rule['minimum_days']) > 1:
+                    raise Exception('Conflicting rules found')
+
+        category_tags = soup.find(
+            'span', text='Categoria: ').parent.findAll('a')
+        assert category_tags
+
+        for tag in category_tags:
+            if 'ESPERALO' in tag.text.upper() or 'ESPERALO' in tag['href'].upper():
+                a_pedido = True
+                break
+        else:
+            a_pedido = False
+
 
         picture_urls = []
 
@@ -108,7 +129,7 @@ class TodoGeek(Store):
             price = (Decimal(variant['price']) /
                      Decimal(100)).quantize(0)
 
-            if preventa or \
+            if preventa or a_pedido or \
                     cls.ESPERALO_Y_PAGA_MENOS_COLLECTION in collections or \
                     'RESERVA' in description.upper() or \
                     'VENTA' in name.upper():
