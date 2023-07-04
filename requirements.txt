@@ -14,8 +14,8 @@ executing==1.2.0
 html2text==2016.9.19
 html5lib==1.0.1
 idna==2.5
-ipdb==0.10.3
-ipython==7.34.0
+ipdb>=0.10.3
+ipython>=7.34.0
 ipython-genutils==0.2.0
 jedi==0.18.2
 kombu==5.2.4
