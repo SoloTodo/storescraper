@@ -88,12 +88,12 @@ class UltraPc(Store):
                 key = str(product['variation_id'])
                 price = Decimal(product['display_price'])
                 if product['image']['src'] == '':
-                    picture_urls = [tag['src'] for tag in
-                                    soup.find('div', 'woocommerce-product'
-                                                     '-gallery').findAll(
-                                        'img')]
+                    picture_urls = ['https://www.ultrapc.cl' + tag['src']
+                                    for tag in soup.find(
+                            'div', 'woocommerce-product-gallery').findAll(
+                            'img')]
                 else:
-                    picture_urls = [product['image']['src']]
+                    picture_urls = ['https://www.ultrapc.cl' + product['image']['src']]
                 products.append(Product(
                     variant_name,
                     cls.__name__,
