@@ -86,11 +86,15 @@ class CCLink(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.cclink.cl/productos/{}/page/{}/'. \
-                    format(url_extension, page)
+                url_webpage = 'https://www.cclink.cl/productos/{}/'. \
+                    format(url_extension)
+
+                if page > 1:
+                    url_webpage += 'page/{}/'.format(page)
+
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, 'html5lib')
                 product_containers = soup.find('ul', {
                     'data-bs-toggle': 'shop-products'})
                 if not product_containers:
