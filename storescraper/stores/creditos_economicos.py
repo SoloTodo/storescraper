@@ -35,8 +35,11 @@ class CreditosEconomicos(Store):
 
             url = 'https://www.creditoseconomicos.com/lg?_q=lg&map=ft&page=' \
                 '{}&sc=2'.format(page)
+            print(url)
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            soup = BeautifulSoup(session.get(url).text, 'html5lib')
+            # import ipdb
+            # ipdb.set_trace()
             product_containers = json.loads(
                 '{' +
                 re.search(r'__STATE__ = {(.+)}', soup.text).groups()[0] +
@@ -77,7 +80,7 @@ class CreditosEconomicos(Store):
         if response.status_code != 200:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html5lib')
         product_data = json.loads('{' + re.search(r'__STATE__ = {(.+)}',
                                                   soup.text).groups()[0] + '}')
 

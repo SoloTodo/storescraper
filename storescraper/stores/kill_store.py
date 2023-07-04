@@ -90,7 +90,7 @@ class KillStore(Store):
                 soup = BeautifulSoup(data, 'html.parser')
                 page_state_tag = soup.find(
                     'template', {'data-varname': '__STATE__'})
-                page_state = json.loads(page_state_tag.text)
+                page_state = json.loads(page_state_tag.find('script').text)
                 done = True
 
                 for key, value in page_state.items():
@@ -118,7 +118,7 @@ class KillStore(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         product_data = json.loads(
-            soup.find('template', {'data-varname': '__STATE__'}).text)
+            soup.find('template', {'data-varname': '__STATE__'}).find('script').string)
 
         base_json_keys = list(product_data.keys())
 

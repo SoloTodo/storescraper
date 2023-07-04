@@ -59,12 +59,12 @@ class Rodelag(Store):
 
         part_number_tag = soup.find('div', 'product-part_number')
         if part_number_tag:
-            part_number = part_number_tag.find('span').text.strip()
+            part_number = part_number_tag.find('span').string.strip()
         else:
             part_number = None
 
         json_data = json.loads(soup.find(
-            'script', {'data-section-id': 'static-product'}).text)
+            'script', {'data-section-id': 'static-product'}).string)
         json_product = json_data['product']
 
         description = html_to_markdown(json_product['description'])

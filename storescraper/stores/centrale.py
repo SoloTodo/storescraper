@@ -96,10 +96,10 @@ class Centrale(Store):
                                                    page)
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-small box ')
+                product_containers = soup.findAll('div', 'product-small box')
                 if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category; ' + url_extension)
+                        logging.warning('Empty category; ' + url_webpage)
                     break
                 for container in product_containers:
                     product_url = container.find('a')['href']

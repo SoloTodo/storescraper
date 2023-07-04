@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import TELEVISION
 
 
@@ -57,11 +57,12 @@ class PlazaLama(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/json'})[-1].text)
+        json_data_tag = soup.findAll(
+            'script', {'type': 'application/json'})[-1]
+        json_data = json.loads(json_data_tag.string)
         json_product = json_data['product']
 
-        description = json_product['description']
+        description = html_to_markdown(json_product['description'])
         picture_urls = ['https:' + i for i in json_product['images']]
 
         json_data_variants = json_product['variants']

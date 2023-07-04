@@ -41,7 +41,7 @@ class Diunsa(Store):
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
             page_state_tag = soup.find('template',
                                        {'data-varname': '__STATE__'})
-            page_state = json.loads(page_state_tag.text)
+            page_state = json.loads(page_state_tag.find('script').string)
 
             done = True
             for key, product in page_state.items():
@@ -67,7 +67,7 @@ class Diunsa(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         product_data = json.loads(
-            soup.find('template', {'data-varname': '__STATE__'}).text)
+            soup.find('template', {'data-varname': '__STATE__'}).find('script').string)
 
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]

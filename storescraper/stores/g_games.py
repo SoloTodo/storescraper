@@ -119,7 +119,7 @@ class GGames(Store):
         else:
             stock = -1
         json_container = json.loads(soup.find('script', {
-            'id': 'ProductJson-product-template'}).text.strip())
+            'id': 'ProductJson-product-template'}).string.strip())
         products = []
         name = json_container['title']
 

@@ -46,7 +46,7 @@ class Woow(Store):
                     break
 
                 template = soup.find('template', {'data-varname': '__STATE__'})
-                item_list = json.loads(template.text)
+                item_list = json.loads(template.find('script').string)
                 for k in item_list.keys():
                     if 'linkText' in item_list[k]:
                         product = item_list[k]['linkText']
@@ -64,7 +64,7 @@ class Woow(Store):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         product_data = json.loads(soup.find(
-            'template', {'data-varname': '__STATE__'}).text)
+            'template', {'data-varname': '__STATE__'}).find('script').string)
 
         base_json_keys = list(product_data.keys())
 

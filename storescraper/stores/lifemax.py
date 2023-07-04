@@ -135,14 +135,13 @@ class Lifemax(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         json_container = soup.find('main', 'bs-main').find(
-            'script').text.strip()
+            'script').string.strip()
         json_container = json.loads(
-            re.search(r"window.INIT.products.push\(([\s\S]+)\);",
-                      json_container).groups()[0])
+            re.search(r"window.INIT.products.push\(([\s\S]+)\);", json_container).groups()[0])
 
         product_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json',
-                       'data-schema': 'Product'}).text)
+                       'data-schema': 'Product'}).string)
 
         picture_urls = product_data['image']
 

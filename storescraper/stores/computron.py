@@ -83,7 +83,7 @@ class Computron(Store):
             stock = 0
 
         picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         picture_urls = [tag['href']
                         for tag in picture_container.findAll('a')
                         if tag['href'] != '#']

@@ -1,5 +1,5 @@
+import base64
 import json
-import logging
 from collections import defaultdict
 from decimal import Decimal
 
@@ -145,39 +145,49 @@ class Easy(Store):
             if category not in local_categories:
                 continue
 
-            page = 1
+            page = 0
             while True:
                 if page > 20:
                     raise Exception('page overflow: ' + category_path)
 
-                url_webpage = 'https://www.easy.cl/{}?page={}'.format(
-                    category_path, page)
-                print(url_webpage)
+                facets = [{"key": "c", "value": x} for x in category_path.split('/')]
 
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                page_state_tag = soup.find(
-                    'template', {'data-varname': '__STATE__'})
-                page_state = json.loads(page_state_tag.text)
-                done = True
+                variables = {
+                    "from": page * 40,
+                    "to": (page + 1) * 40 - 1,
+                    "selectedFacets": facets
+                }
 
-                idx = 0
-                for key, value in page_state.items():
-                    if key.startswith('Product:') and 'linkText' in value:
-                        product_url = 'https://www.easy.cl/' + \
-                            value['linkText'] + '/p'
-                        product_entries[product_url].append({
-                            'category_weight': category_weight,
-                            'section_name': section_name,
-                            'value': idx + 1
-                        })
-                        idx += 1
-                        done = False
+                payload = {
+                    "persistedQuery": {
+                        "version": 1,
+                        "sha256Hash": "40e207fe75d9dce4dfb3154442da4615f2b"
+                                      "097b53887a0ae5449eb92d42e84db",
+                        "sender": "vtex.store-resources@0.x",
+                        "provider": "vtex.search-graphql@0.x"
+                    },
+                    "variables": base64.b64encode(json.dumps(
+                        variables).encode('utf-8')).decode('utf-8')
+                }
 
-                if done:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_path)
+                endpoint = 'https://www.easy.cl/_v/segment/graphql/v1?' \
+                           'extensions={}'.format(json.dumps(payload))
+                response = session.get(endpoint).json()
+
+                products_data = response['data']['productSearch']['products']
+
+                if not products_data:
                     break
+
+                for idx, product_data in enumerate(products_data):
+                    product_url = 'https://www.easy.cl/{}/p'.format(
+                        product_data['linkText'])
+                    product_entries[product_url].append({
+                        'category_weight': category_weight,
+                        'section_name': section_name,
+                        'value': idx + 1
+                    })
+
                 page += 1
 
         return product_entries
@@ -256,8 +266,9 @@ class Easy(Store):
         session = session_with_proxy(extra_args)
         res = session.get(url)
         soup = BeautifulSoup(res.text, 'html.parser')
-        product_data = json.loads(soup.find(
-            'template', {'data-varname': '__STATE__'}).text)
+        product_data = json.loads(str(soup.find(
+            'template', {'data-varname': '__STATE__'}).find(
+            'script').contents[0]))
 
         base_json_keys = list(product_data.keys())
 

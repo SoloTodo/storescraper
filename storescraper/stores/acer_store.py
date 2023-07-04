@@ -1,8 +1,9 @@
+import base64
 import json
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from storescraper.categories import MONITOR, NOTEBOOK
+from storescraper.categories import MONITOR, NOTEBOOK, ALL_IN_ONE, MOUSE
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -18,6 +19,8 @@ class AcerStore(Store):
         return [
             NOTEBOOK,
             MONITOR,
+            ALL_IN_ONE,
+            MOUSE
         ]
 
     @classmethod
@@ -25,7 +28,11 @@ class AcerStore(Store):
         category_paths = [
             ['notebook-gamer', NOTEBOOK],
             ['notebook', NOTEBOOK],
-            ['monitores/monitores-pc', MONITOR],
+            ['corporativo', NOTEBOOK],
+            ['outlet', NOTEBOOK],
+            ['monitores', MONITOR],
+            ['aio', ALL_IN_ONE],
+            ['accesorios', MOUSE],
         ]
 
         product_urls = []
@@ -35,35 +42,41 @@ class AcerStore(Store):
             if local_category != category:
                 continue
 
-            page = 1
-            done = False
-            while not done:
-                if page >= 10:
+            offset = 0
+            while True:
+                if offset >= 120:
                     raise Exception('Page overflow')
 
-                category_url = 'https://www.acerstore.cl/{}/' \
-                               '?page={}'.format(category_id, page)
-                print(category_url)
+                variables = {
+                    "from": offset,
+                    "to": offset + 12,
+                    "selectedFacets": [{"key": "c", "value": category_id}]
+                }
 
-                data = session.get(category_url).text
-                soup = BeautifulSoup(data, 'html.parser')
-                page_state_tag = soup.find('template',
-                                           {'data-varname': '__STATE__'})
-                page_state = json.loads(page_state_tag.text)
+                payload = {
+                    "persistedQuery": {
+                        "version": 1,
+                        "sha256Hash": "40e207fe75d9dce4dfb3154442da4615f2b097b53887a0ae5449eb92d42e84db"
+                    },
+                    "variables": base64.b64encode(json.dumps(
+                        variables).encode('utf-8')).decode('utf-8')
+                }
 
-                done = True
-                for key, product in page_state.items():
-                    if 'productId' not in product:
-                        continue
-                    done = False
+                endpoint = 'https://www.acerstore.cl/_v/segment/graphql/v1?extensions={}'.format(
+                    json.dumps(payload))
+                response = session.get(endpoint).json()
+
+                product_entries = response['data']['productSearch']['products']
+
+                if not product_entries:
+                    break
+
+                for product_entry in product_entries:
                     product_url = 'https://www.acerstore.cl/{}/p'.format(
-                        product['linkText'])
+                        product_entry['linkText'])
                     product_urls.append(product_url)
 
-                if done and page == 1:
-                    raise Exception('Empty site')
-
-                page += 1
+                offset += 12
 
         return product_urls
 
@@ -74,8 +87,9 @@ class AcerStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
 
-        product_data = json.loads(
-            soup.find('template', {'data-varname': '__STATE__'}).text)
+        product_data_tag = soup.find('template', {'data-varname': '__STATE__'})
+        product_data = json.loads(str(
+            product_data_tag.find('script').contents[0]))
 
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
@@ -84,6 +98,13 @@ class AcerStore(Store):
         name = product_specs['productName']
         sku = product_specs['productReference']
         description = product_specs.get('description', None)
+
+        for section in product_specs['categories']['json']:
+            if 'OUTLET' in section.upper():
+                condition = 'https://schema.org/RefurbishedCondition'
+                break
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
             base_json_key)
@@ -133,7 +154,8 @@ class AcerStore(Store):
             part_number=part_number,
             ean=ean,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]

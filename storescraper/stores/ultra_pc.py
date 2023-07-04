@@ -146,9 +146,9 @@ class UltraPc(Store):
             else:
                 raise Exception('No normal price found')
 
-            picture_urls = [tag['src'] for tag in soup.find(
-                'div', 'woocommerce-product-gallery').findAll(
-                'img')]
+            picture_urls = ['https://www.ultrapc.cl/' + tag['src']
+                            for tag in soup.find(
+                    'div', 'woocommerce-product-gallery').findAll('img')]
 
             condition_span = soup.find('span', 'condicion_item_ultrapc')
             condition = 'https://schema.org/NewCondition'

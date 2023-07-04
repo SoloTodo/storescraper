@@ -45,7 +45,7 @@ class Siman(Store):
                 page_state_tag = soup.find('template',
                                            {'data-varname': '__STATE__'})
                 if page_state_tag:
-                    page_state_tag = page_state_tag.text
+                    page_state_tag = page_state_tag.find('script').string
                 else:
                     page_state_tag = '{' + re.search(
                         r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'
@@ -79,7 +79,7 @@ class Siman(Store):
         product_state_tag = soup.find('template',
                                       {'data-varname': '__STATE__'})
         if product_state_tag:
-            product_state_tag = product_state_tag.text
+            product_state_tag = product_state_tag.find('script').string
         else:
             product_state_tag = '{' + re.search(
                 r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'

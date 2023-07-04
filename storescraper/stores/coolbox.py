@@ -33,10 +33,10 @@ class Coolbox(Store):
             url = 'https://www.coolbox.pe/lg?page={}'.format(page)
             print(url)
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            res = session.get(url)
             product_containers = json.loads(
                 '{' + re.search(r'__STATE__ = {(.+)}',
-                                soup.text).groups()[0] + '}')
+                                res.text).groups()[0] + '}')
 
             r = re.compile(r'Product:sp-(\d+$)')
 
@@ -65,9 +65,8 @@ class Coolbox(Store):
         if response.status_code != 200:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads('{' + re.search(r'__STATE__ = {(.+)}',
-                                                  soup.text).groups()[0] + '}')
+                                  response.text).groups()[0] + '}')
 
         base_json_keys = list(product_data.keys())
 
