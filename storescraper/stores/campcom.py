@@ -76,10 +76,10 @@ class Campcom(Store):
         soup_json = soup.findAll(
             'script', {'type': 'application/ld+json'})
 
-        if len(soup_json) == 0:
-            return []
-
         json_data = json.loads(soup_json[-1].text)
+
+        if 'name' not in json_data:
+            return []
 
         name = json_data['name']
         sku = str(json_data['sku'])

@@ -99,8 +99,7 @@ class NotebooksYa(Store):
             name = soup.find('div', 'et_pb_module et_pb_wc_title '
                                     'et_pb_wc_title_0 '
                                     'et_pb_bg_layout_light').text.strip()
-        key = soup.find('link', {'rel': 'shortlink'})[
-            'href'].split('=')[-1]
+        key = soup.find('input', {'name': 'comment_post_ID'})['value']
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
             if qty_input['max']:
