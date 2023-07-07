@@ -135,6 +135,8 @@ class UltraPc(Store):
                     stock = -1
 
             price_tags = soup.findAll('span', 'precio_oferta')
+            if not price_tags:
+                price_tags = soup.findAll('span', 'precio_con_iva_tbk')
 
             assert len(price_tags) == 2
 
