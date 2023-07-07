@@ -2,7 +2,6 @@ import json
 import logging
 import re
 
-import time
 from collections import defaultdict
 
 from bs4 import BeautifulSoup
@@ -17,7 +16,7 @@ from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, HeadlessChrome
+from storescraper.utils import session_with_proxy
 from storescraper import banner_sections as bs
 
 
@@ -451,7 +450,7 @@ class Hites(Store):
         base_url = 'https://www.hites.com/{}'
 
         sections_data = [
-            [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
+            # [bs.HOME, 'Home', bs.SUBSECTION_TYPE_HOME, ''],
             [bs.TELEVISIONS, 'TV Video', bs.SUBSECTION_TYPE_MOSAIC,
              'tecnologia/tv-video'],
             [bs.TELEVISIONS, 'Smart TV', bs.SUBSECTION_TYPE_MOSAIC,
@@ -504,108 +503,7 @@ class Hites(Store):
             url = base_url.format(url_suffix)
             print(url)
 
-            if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True,
-                                    timeout=120, proxy=proxy) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
-
-                    pictures = []
-
-                    banner_container = driver\
-                        .find_element_by_class_name('slick-list')
-
-                    # banner_container = driver \
-                    #     .find_element_by_class_name('owl-stage-outer')
-
-                    controls = driver.find_element_by_class_name(
-                        'slick-dots')\
-                        .find_elements_by_tag_name('li')
-
-                    # controls = driver.find_elements_by_class_name('owl-dot')
-
-                    for control in controls:
-                        control.click()
-                        time.sleep(1)
-                        pictures.append(
-                            banner_container.screenshot_as_base64)
-
-                    soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-                    images = soup.find('div', 'slick-track')\
-                        .findAll('div', 'slick-slide')
-
-                    # images = soup.find('div', 'owl-stage') \
-                    #     .findAll('div', 'owl-item')
-
-                    images = [a for a in images if
-                              'slick-cloned' not in a['class']]
-
-                    # images = [a for a in images if
-                    #           'cloned' not in a['class']]
-
-                    assert len(images) == len(pictures)
-
-                    for index, image in enumerate(images):
-                        product_box = image.find('div', 'boxproductos')
-
-                        if not product_box:
-                            product_box = image.find('div', 'box-producto')
-
-                        if not product_box:
-                            product_box = image.find('div', 'box-foto')
-
-                        if not product_box:
-                            product_box = image.find(
-                                'div', 'slide-new__products')
-
-                        if not product_box:
-                            product_box = image.find('div', 'images_llamados')
-
-                        if not product_box:
-                            product_box = image.find(
-                                'div', 'products-item__img')
-
-                        if not product_box:
-                            product_box = image.find('a', 'boxproducto')
-
-                        if not product_box:
-                            product_box = image
-
-                        if not (product_box.find('source') or
-                                product_box.find('img')):
-                            product_box = image.find('div', 'img_boxproducto')
-
-                        if not product_box:
-                            product_box = image.find('div', 'logocampana')
-
-                        key_container = product_box.find('source')
-
-                        if key_container:
-                            key = key_container['srcset']
-                        else:
-                            key = product_box.find('img')['src']
-
-                        destinations = [d for d in image.findAll('a')]
-                        destination_urls = []
-
-                        for destination in destinations:
-                            if destination.get('href'):
-                                destination_urls.append(destination['href'])
-
-                        destination_urls = list(set(destination_urls))
-
-                        banners.append({
-                            'url': url,
-                            'picture': pictures[index],
-                            'destination_urls': destination_urls,
-                            'key': key,
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
-            elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
+            if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -619,51 +517,20 @@ class Hites(Store):
                     destination_urls = list(set(destination_urls))
 
                     picture_container = banner.find('picture')
+                    picture_source = picture_container.find('source')
 
-                    if picture_container:
-                        picture_source = picture_container.find('source')
+                    if not picture_source:
+                        continue
 
-                        if not picture_source:
-                            continue
-
-                        picture_url = picture_source['srcset']
-                        banners.append({
-                            'url': url,
-                            'picture_url': picture_url,
-                            'destination_urls': destination_urls,
-                            'key': picture_url,
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
-                    else:
-                        with HeadlessChrome(images_enabled=True, timeout=120,
-                                            proxy=proxy) as driver:
-                            driver.set_window_size(1920, 1080)
-                            driver.get(url)
-
-                            s_banner = driver.find_elements_by_css_selector(
-                                '#main>.espot')[index]
-
-                            key_container = banner.find('img')
-
-                            if not key_container or \
-                                    s_banner.size['height'] == 0:
-                                continue
-
-                            key = key_container['src']
-
-                            picture = s_banner.screenshot_as_base64
-                            banners.append({
-                                'url': url,
-                                'picture': picture,
-                                'destination_urls': destination_urls,
-                                'key': key,
-                                'position': index + 1,
-                                'section': section,
-                                'subsection': subsection,
-                                'type': subsection_type
-                            })
-
+                    picture_url = picture_source['srcset']
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
         return banners

@@ -1,6 +1,5 @@
 import logging
 
-import time
 import json
 
 from collections import defaultdict
@@ -15,8 +14,7 @@ from storescraper.categories import GAMING_CHAIR, NOTEBOOK, CELL, WEARABLE, \
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    HeadlessChrome
+from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper import banner_sections as bs
 
 
@@ -366,63 +364,22 @@ class LaPolar(Store):
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                with HeadlessChrome(images_enabled=True) as driver:
-                    driver.set_window_size(1920, 1080)
-                    driver.get(url)
+                banner_tags = soup.findAll('div', 'rojoPolar')
 
-                    pictures = []
-                    banner_container = driver.find_element_by_class_name(
-                        'slick-list')
+                for index, banner_tag in enumerate(banner_tags):
+                    picture_url = banner_tag.find('source')['srcset']
+                    destination_urls = [banner_tag.find('a')['href']]
 
-                    controls = driver \
-                        .find_element_by_class_name('slick-dots') \
-                        .find_elements_by_tag_name('li')
-
-                    for control in controls:
-                        if len(controls) > 1:
-                            control.click()
-                            time.sleep(2)
-                        pictures.append(banner_container.screenshot_as_base64)
-
-                    soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-                    images = soup.find('div', 'slick-track') \
-                        .findAll('div', 'slick-slide')
-
-                    images = [a for a in images if
-                              'slick-cloned' not in a['class']]
-
-                    assert len(images) == len(pictures)
-
-                    for index, image in enumerate(images):
-                        key = None
-                        key_options = image.findAll('img', 'responsive_prod')
-
-                        destination_urls = [d['href'][:500] for d in
-                                            image.findAll('a')]
-                        destination_urls = list(set(destination_urls))
-
-                        for key_option in key_options:
-                            if 'llamado_logo_img' in key_option['class']:
-                                continue
-                            key = key_option['src']
-                            break
-
-                        if not key:
-                            if not destination_urls:
-                                continue
-                            key = destination_urls[0]
-
-                        banners.append({
-                            'url': url,
-                            'picture': pictures[index],
-                            'destination_urls': destination_urls,
-                            'key': key[:250],
-                            'position': index + 1,
-                            'section': section,
-                            'subsection': subsection,
-                            'type': subsection_type
-                        })
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url[:250],
+                        'position': index + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 banner_tag = soup.find('div', 'category-banner-module__image')
 

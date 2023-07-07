@@ -16,7 +16,7 @@ from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
-    check_ean13, HeadlessChrome
+    check_ean13
 from storescraper import banner_sections as bs
 
 
@@ -423,34 +423,3 @@ class Lider(Store):
             })
 
         return banners
-
-    @classmethod
-    def preflight(cls, extra_args=None):
-        # Query a specific LG SKU in Lider to verify that the LiveChat
-        # implementation is up, this will break when the SKU goes
-        # out of stock and it needs to be replaced with another
-
-        livechat_sku = extra_args and extra_args.get('livechat_sku', None)
-
-        if not livechat_sku:
-            # If no SKU is given, skip validation
-            return {}
-
-        with HeadlessChrome() as driver:
-            sku_url = 'https://www.lider.cl/catalogo/product/sku/{}/a'.format(
-                livechat_sku)
-            driver.get(sku_url)
-
-            for i in range(10):
-                print(i)
-                try:
-                    # If livechat is not loaded the command raises an exception
-                    driver.execute_script('LC_API')
-                    break
-                except Exception:
-                    # Wait a little and try again in the next iteration
-                    time.sleep(1)
-            else:
-                raise Exception('No LiveChat implementaton found: ' + sku_url)
-
-        return {}
