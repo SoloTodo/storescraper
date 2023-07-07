@@ -3,12 +3,12 @@ import json
 import time
 from decimal import Decimal
 
-import requests
 import validators
 from playwright.sync_api import sync_playwright
 from ..categories import TELEVISION
 from ..product import Product
 from ..store import Store
+from ..utils import session_with_proxy
 
 
 class RipleyPeru(Store):
@@ -30,7 +30,8 @@ class RipleyPeru(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = requests.Session()
+        print(extra_args)
+        session = session_with_proxy(extra_args)
         session.headers = extra_args['headers']
         for cookie in extra_args['cookies']:
             cookie['rest'] = {}
@@ -132,12 +133,12 @@ class RipleyPeru(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
-        if not extra_args or 'proxy' not in extra_args:
-            raise Exception('Proxy args is required for this scraper')
+        if not extra_args or 'pw_proxy' not in extra_args:
+            raise Exception('Playwright proxy args is required')
 
         with sync_playwright() as pw:
             print('connecting')
-            browser = pw.chromium.connect_over_cdp(extra_args['proxy'])
+            browser = pw.chromium.connect_over_cdp(extra_args['pw_proxy'])
             context = browser.new_context()
             print('connected')
             page = context.new_page()
