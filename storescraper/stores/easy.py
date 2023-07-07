@@ -150,31 +150,34 @@ class Easy(Store):
                 if page > 20:
                     raise Exception('page overflow: ' + category_path)
 
-                facets = [{"key": "c", "value": x} for x in category_path.split('/')]
+                facets = [{'key': 'c', 'value': x} for x in category_path.split('/')]
 
                 variables = {
-                    "from": page * 40,
-                    "to": (page + 1) * 40 - 1,
-                    "selectedFacets": facets
+                    'from': page * 40,
+                    'to': (page + 1) * 40 - 1,
+                    'selectedFacets': facets
                 }
 
+                # The sha256Hash may change
+
                 payload = {
-                    "persistedQuery": {
-                        "version": 1,
-                        "sha256Hash": "40e207fe75d9dce4dfb3154442da4615f2b"
-                                      "097b53887a0ae5449eb92d42e84db",
-                        "sender": "vtex.store-resources@0.x",
-                        "provider": "vtex.search-graphql@0.x"
+                    'persistedQuery': {
+                        'version': 1,
+                        'sha256Hash': '53c45ed756878aa9fa770fd155da8562471e'
+                                      '99f0b9cdc4c5785f0b14c77d6654',
+                        'sender': 'vtex.store-resources@0.x',
+                        'provider': 'vtex.search-graphql@0.x'
                     },
-                    "variables": base64.b64encode(json.dumps(
+                    'variables': base64.b64encode(json.dumps(
                         variables).encode('utf-8')).decode('utf-8')
                 }
 
                 endpoint = 'https://www.easy.cl/_v/segment/graphql/v1?' \
                            'extensions={}'.format(json.dumps(payload))
-                response = session.get(endpoint).json()
+                response = session.get(endpoint)
 
-                products_data = response['data']['productSearch']['products']
+                products_data = response.json()['data']['productSearch'][
+                    'products']
 
                 if not products_data:
                     break
@@ -202,45 +205,45 @@ class Easy(Store):
         prods_url = 'https://www.easy.cl/api//prodeasy/_search'
 
         prods_data = {
-            "query": {
-                "function_score": {
-                    "query": {
-                        "bool": {
-                            "must": [{
-                                "bool": {
-                                    "should": [{
-                                        "function_score": {
-                                            "query": {
-                                                "multi_match": {
-                                                    "query": keyword,
-                                                    "fields": [
-                                                        "name^1000",
-                                                        "brand",
-                                                        "cat_3.stop",
-                                                        "partNumber"],
-                                                    "type":"best_fields",
-                                                    "operator":"and"}},
-                                            "field_value_factor": {
-                                                "field": "boost",
-                                                "factor": 6}}}, {
-                                        "multi_match": {
-                                            "query": keyword,
-                                            "fields": [
-                                                "name^8",
-                                                "cat_3.stop"],
-                                            "type": "best_fields",
-                                            "operator": "or"}}, {
-                                        "span_first": {
-                                            "match": {
-                                                "span_term": {
-                                                    "name.dym": keyword}},
-                                            "end": 1,
-                                            "boost": 2000}}],
-                                    "minimum_should_match": "1"}}]}},
-                    "boost_mode": "sum",
-                    "score_mode": "max"}},
-            "size": 450,
-            "from": 0}
+            'query': {
+                'function_score': {
+                    'query': {
+                        'bool': {
+                            'must': [{
+                                'bool': {
+                                    'should': [{
+                                        'function_score': {
+                                            'query': {
+                                                'multi_match': {
+                                                    'query': keyword,
+                                                    'fields': [
+                                                        'name^1000',
+                                                        'brand',
+                                                        'cat_3.stop',
+                                                        'partNumber'],
+                                                    'type':'best_fields',
+                                                    'operator':'and'}},
+                                            'field_value_factor': {
+                                                'field': 'boost',
+                                                'factor': 6}}}, {
+                                        'multi_match': {
+                                            'query': keyword,
+                                            'fields': [
+                                                'name^8',
+                                                'cat_3.stop'],
+                                            'type': 'best_fields',
+                                            'operator': 'or'}}, {
+                                        'span_first': {
+                                            'match': {
+                                                'span_term': {
+                                                    'name.dym': keyword}},
+                                            'end': 1,
+                                            'boost': 2000}}],
+                                    'minimum_should_match': '1'}}]}},
+                    'boost_mode': 'sum',
+                    'score_mode': 'max'}},
+            'size': 450,
+            'from': 0}
 
         prods_response = session.post(
             prods_url, data=json.dumps(prods_data))

@@ -195,7 +195,6 @@ from .index_store import IndexStore
 from .infographics_solutions import InfographicsSolutions
 from .infosep import Infosep
 from .infor_ingen import InforIngen
-from .ingram_micro import IngramMicro
 from .ingtech import Ingtech
 from .intcomex import Intcomex
 from .invasion_gamer import InvasionGamer
@@ -210,7 +209,6 @@ from .johnson import Johnson
 from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
-from .jumbo_store import JumboStore
 from .k_d_tec import KDTec
 from .kalunga import Kalunga
 from .key_teks import KeyTeks

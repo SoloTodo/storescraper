@@ -141,7 +141,7 @@ class TecnoPro(Store):
             variant_url = '{}?variant={}'.format(url, key)
 
             if variant['featured_image']:
-                picture_urls = [variant['featured_image']['src']]
+                picture_urls = ['https:' + variant['featured_image']['src']]
             else:
                 picture_urls = None
 

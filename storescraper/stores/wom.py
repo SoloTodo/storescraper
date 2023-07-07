@@ -1,14 +1,10 @@
 import json
-import time
-
 from collections import defaultdict
 from decimal import Decimal
 
-from bs4 import BeautifulSoup
-
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, HeadlessChrome
+from storescraper.utils import session_with_proxy
 
 
 class Wom(Store):

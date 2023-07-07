@@ -102,7 +102,7 @@ class Ibeam(Store):
         picture_urls = []
         for image in product_data['media']:
             if 'src' in image:
-                picture_urls.append(image['src'])
+                picture_urls.append('https:' + image['src'])
 
         products = []
         for variant in product_data['variants']:

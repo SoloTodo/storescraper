@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR, NOTEBOOK, TABLET, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class UltraPc(Store):
@@ -111,12 +112,11 @@ class UltraPc(Store):
         else:
             key = soup.find('link', {'type': 'application/json'}
                             )['href'].split('/')[-1]
-            json_data = json.loads(
-                soup.findAll(
-                    'script', {'type': 'application/ld+json'}
-                )[1].text)['@graph'][1]
-            sku = json_data['sku']
-            description = json_data['description']
+            sku = soup.find('meta', {'property': 'product:retailer_item_id'}
+                            )['content']
+            description = html_to_markdown(str(
+                soup.find('div',
+                          'woocommerce-product-details__short-description')))
 
             product_container = soup.find('div', 'post-' + key)
 
@@ -134,17 +134,12 @@ class UltraPc(Store):
                 else:
                     stock = -1
 
-            offer_price = Decimal(
-                json_data['offers'][0]['priceSpecification']['price'])
+            price_tags = soup.findAll('span', 'precio_oferta')
 
-            normal_price_tags = ['precio_oferta', 'precio_con_iva_tbk']
-            for tag in normal_price_tags:
-                price_tag = soup.find('span', tag)
-                if price_tag:
-                    normal_price = Decimal(remove_words(price_tag.text))
-                    break
-            else:
-                raise Exception('No normal price found')
+            assert len(price_tags) == 2
+
+            normal_price = Decimal(remove_words(price_tags[0].text))
+            offer_price = Decimal(remove_words(price_tags[1].text))
 
             picture_urls = ['https://www.ultrapc.cl/' + tag['src']
                             for tag in soup.find(
