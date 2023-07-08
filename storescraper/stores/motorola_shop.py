@@ -1,9 +1,6 @@
 import json
-import logging
 import re
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL
 from storescraper.product import Product
@@ -34,16 +31,16 @@ class MotorolaShop(Store):
                 url_extension)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div',
-                                              'vtex-search-result-3-'
-                                              'x-galleryItem')
-            if not product_containers:
-                logging.warning('empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append('https://www.motorola.cl' + product_url)
+            products_state_text = '{' + re.search(
+                r'__STATE__ = \{(.+)}', response.text).groups()[0] + '}'
+            products_json = json.loads(products_state_text)
+            for key, product in products_json.items():
+                if 'productId' not in product:
+                    continue
+
+                product_url = 'https://www.motorola.cl/{}/p'.format(
+                    product['linkText'])
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
