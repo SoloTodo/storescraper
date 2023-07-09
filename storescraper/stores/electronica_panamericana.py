@@ -56,10 +56,10 @@ class ElectronicaPanamericana(Store):
         name = '{} - {}'.format(
             sku, soup.find('h1', 'product_title').text.strip())[:255]
 
-        if soup.find('p', 'out-of-stock'):
-            stock = 0
-        else:
+        if soup.find('button', {'name': 'add-to-cart'}):
             stock = -1
+        else:
+            stock = 0
 
         price_container = soup.find('span', 'woocommerce-Price-amount')
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
