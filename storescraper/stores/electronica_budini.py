@@ -127,8 +127,8 @@ class ElectronicaBudini(Store):
         offer_price = Decimal(product_data['offers'][0]['price'])
         normal_price = (offer_price * Decimal('1.04')).quantize(0)
 
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        if soup.find('button', {'name': 'add-to-cart'}):
+            stock = -1
         else:
             stock = 0
 
