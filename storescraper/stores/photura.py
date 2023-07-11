@@ -60,7 +60,7 @@ class Photura(Store):
         stock = -1
         price = Decimal(json_data['offers'][0]['price']).quantize(
             Decimal('0.01'))
-        sku = json_data['productId']
+        sku = json_data['sku']
         picture_urls = ['https:' + x['href'] for x in
                         soup.findAll('a', 'product-gallery__thumbnail')]
 
