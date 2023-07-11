@@ -54,6 +54,10 @@ class Novey(Store):
         product_data = re.search(
             r'CCRZ.detailData.jsonProductData = {([\S\s]+?)};',
             response.text)
+
+        if not product_data:
+            return []
+
         product_json = demjson3.decode(
             '{' + product_data.groups()[0] + '}')['product']
 

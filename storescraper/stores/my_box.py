@@ -61,11 +61,21 @@ class MyBox(Store):
                 if page > 10:
                     raise Exception('page overlfow: ' + url_extension)
 
-                url_webpage = 'https://mybox.cl/{}?page={}'.format(
-                    url_extension, page)
+                url_webpage = 'https://mybox.cl/{}'.format(
+                    url_extension)
+
+                if page > 1:
+                    url_webpage += '?page={}'.format(page)
                 print(url_webpage)
 
                 response = session.get(url_webpage)
+
+                if response.url != url_webpage:
+                    print(response.url, url_webpage)
+                    if page == 1:
+                        logging.warning('Empy category: ' + url_webpage)
+                    break
+
                 soup = BeautifulSoup(response.text, 'html.parser')
                 product_containers = soup.findAll('div', 'js-product-'
                                                          'miniature-wrapper')

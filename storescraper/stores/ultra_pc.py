@@ -138,7 +138,10 @@ class UltraPc(Store):
             if not price_tags:
                 price_tags = soup.findAll('span', 'precio_con_iva_tbk')
 
-            assert len(price_tags) == 2
+            assert len(price_tags) in [1, 2]
+
+            if len(price_tags) == 1:
+                price_tags.append(price_tags[0])
 
             normal_price = Decimal(remove_words(price_tags[0].text))
             offer_price = Decimal(remove_words(price_tags[1].text))
