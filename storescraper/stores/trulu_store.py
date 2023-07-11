@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, POWER_SUPPLY, COMPUTER_CASE, \
     RAM, PROCESSOR, CPU_COOLER, VIDEO_CARD, KEYBOARD_MOUSE_COMBO, MOUSE, \
     STEREO_SYSTEM, GAMING_CHAIR, KEYBOARD, MONITOR, GAMING_DESK, MICROPHONE, \
-    SOLID_STATE_DRIVE, MOTHERBOARD
+    SOLID_STATE_DRIVE, MOTHERBOARD, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -33,6 +33,7 @@ class TruluStore(Store):
             MICROPHONE,
             SOLID_STATE_DRIVE,
             MOTHERBOARD,
+            VIDEO_GAME_CONSOLE,
         ]
 
     @classmethod
@@ -55,7 +56,7 @@ class TruluStore(Store):
             ['perifericos/parlantes', STEREO_SYSTEM],
             ['perifericos/teclados', KEYBOARD],
             ['sillas', GAMING_CHAIR],
-
+            ['consolas', VIDEO_GAME_CONSOLE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
