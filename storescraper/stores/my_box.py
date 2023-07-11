@@ -104,23 +104,15 @@ class MyBox(Store):
             sku = span_sku.text.strip()
         else:
             sku = None
-        if soup.find('div', 'stock-disponible').text.strip() == 'No hay ' \
-                                                                'suficientes' \
-                                                                ' productos ' \
-                                                                'en stock':
-            stock = 0
-        else:
+        if soup.find('button', 'add-to-cart'):
             stock = -1
-        normal_price = Decimal(
-            soup.find('span', 'current-price').find('span', 'product-price')[
-                'content'])
-        offer_price = Decimal(remove_words(
-            soup.find('span', 'transf-price').text.strip().split()[0]))
-        if normal_price == 0 or offer_price == 0:
+        else:
             stock = 0
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'images-container').
-                        findAll('img') if tag.get('src')]
+        normal_price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
+        offer_price = (normal_price * Decimal('0.95')).quantize(0)
+
+        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
         p = Product(
             name,
             cls.__name__,
