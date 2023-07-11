@@ -343,6 +343,7 @@ from .pc_nitro import PcNitro
 from .pcx import Pcx
 from .peta import Peta
 from .philips import Philips
+from .photura import Photura
 from .pichau import Pichau
 from .plaza_lama import PlazaLama
 from .plaza_vea import PlazaVea
