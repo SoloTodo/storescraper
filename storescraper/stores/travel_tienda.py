@@ -123,57 +123,63 @@ class TravelTienda(Store):
                 time.sleep(2)
                 return cls.products_for_url(url, category, extra_args)
 
-        product_json = json.loads(script_tag.text)[0]
-
-        price_text = product_json['offers']['price']
-        if not price_text:
-            return []
-
         data = soup.find('body').find('script').text
 
         data_clean = urllib.parse.unquote(
             re.search(r'window.state = JSON.parse\(decodeURI\((.+)\)\)',
                       data).groups()[0])
-        json_container = list(
-            json.loads(data_clean[1:-1])['catalogRepository'][
-                'products'].values())[0]
-        name = product_json['name']
-        sku = product_json['sku']
-        normal_price = Decimal(price_text)
+        page_json = json.loads(data_clean[1:-1])
+        publication_id = page_json['clientRepository']['context'][
+            'request']['productId']
+        publication_entry = page_json['catalogRepository']['products'][
+            publication_id]
+        products = []
+        skus_data = page_json['catalogRepository']['skus']
 
-        offer_price_text = json_container['listPrices']['tiendaBancoDeChile']
-        if offer_price_text:
-            if Decimal(offer_price_text) > normal_price:
-                return []
-            offer_price = Decimal(offer_price_text)
-        else:
-            offer_price = normal_price
+        for sku, sku_data in skus_data.items():
+            name = sku_data['displayName']
 
-        part_number = json_container.get('x_codigoProveedor', None)
+            prices_dict = page_json['priceRepository']['skus'][sku]
+            normal_price = Decimal(prices_dict[
+                'salePrice'] or prices_dict['listPrice'])
 
-        picture_urls = ['https://tienda.travel.cl' +
-                        picture.replace(' ', '%20') for picture in
-                        json_container['fullImageURLs']]
+            # This is very sus, the offer price appears in the publication
+            # entry, not in the sku entry
+            if publication_entry['listPrices']['tiendaBancoDeChile']:
+                offer_price = Decimal(
+                    publication_entry['listPrices']['tiendaBancoDeChile'])
+            else:
+                offer_price = normal_price
 
-        stock_endpoint = 'https://tienda.travel.cl/ccstore/v1/stockStatus?' \
-            'products={}&actualStockStatus=true'.format(sku)
-        stock_res = session.get(stock_endpoint)
-        stock = stock_res.json()['items'][0]['productSkuInventoryStatus'][sku]
+            if len(skus_data) > 1:
+                # All the SKUs share the same part number according to the
+                # webpage, which is suspicious if there is more than one
+                part_number = None
+            else:
+                part_number = publication_entry.get('x_codigoProveedor', None)
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls,
-            part_number=part_number
-        )
+            picture_urls = ['https://tienda.travel.cl' +
+                            picture.replace(' ', '%20') for picture in
+                            publication_entry['fullImageURLs']]
 
-        return [p]
+            stock = page_json['inventoryRepository']['skus'][sku][
+                'default']['orderableQuantity']
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls,
+                part_number=part_number
+            )
+            products.append(p)
+
+        return products

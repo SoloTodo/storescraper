@@ -278,7 +278,7 @@ class Hites(Store):
                     break
 
                 for product_entry in products:
-                    path = product_entry.find('a')['href']
+                    path = product_entry.find('a')['href'].split('?')[0]
 
                     if 'hites.com' in path:
                         product_url = path

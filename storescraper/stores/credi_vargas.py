@@ -1,5 +1,5 @@
+import urllib
 from decimal import Decimal
-import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
@@ -71,7 +71,11 @@ class CrediVargas(Store):
         picture_urls = []
         picture_container = soup.find('div', {'id': 'sliderSyncingNav'})
         for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'].replace(' ', '%20'))
+            parsed_url = urllib.parse.urlparse(i['src'])
+            picture_url = parsed_url._replace(
+                path=urllib.parse.quote(parsed_url.path)
+            ).geturl()
+            picture_urls.append(picture_url)
 
         p = Product(
             name,

@@ -1,5 +1,6 @@
 import json
 import logging
+import urllib
 from decimal import Decimal
 
 import demjson3
@@ -100,6 +101,7 @@ class CtMan(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        response.encoding = response.apparent_encoding
         soup = BeautifulSoup(response.text, 'html.parser')
         key_tag = soup.find('div', 'title-description').find(
             'input', {'name': 'cart_item[variant_id]'})
@@ -123,7 +125,14 @@ class CtMan(Store):
         else:
             stock = int(stock_text.split(':')[1])
 
-        picture_urls = [json_data['image']]
+        picture_urls = []
+        for i in soup.findAll('li', 'product-asset'):
+            parsed_url = urllib.parse.urlparse(i.find('a')['href'])
+            picture_url = parsed_url._replace(
+                path=urllib.parse.quote(parsed_url.path)
+            ).geturl()
+            picture_urls.append(picture_url)
+
         part_number_tag = soup.find('p', 'part-number')
         if part_number_tag:
             part_number = soup.find('p', 'part-number').contents[1].strip()
