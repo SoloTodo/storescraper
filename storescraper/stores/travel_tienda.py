@@ -162,8 +162,9 @@ class TravelTienda(Store):
                             picture.replace(' ', '%20') for picture in
                             publication_entry['fullImageURLs']]
 
+            print(page_json['inventoryRepository']['skus'][sku])
             stock = page_json['inventoryRepository']['skus'][sku][
-                'default']['orderableQuantity']
+                'default'].get('orderableQuantity', 0)
 
             p = Product(
                 name,
