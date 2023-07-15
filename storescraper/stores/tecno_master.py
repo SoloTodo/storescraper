@@ -8,7 +8,7 @@ from storescraper.categories import MOTHERBOARD, PROCESSOR, UPS, VIDEO_CARD, \
     POWER_SUPPLY, COMPUTER_CASE, CPU_COOLER, HEADPHONES, MONITOR, MOUSE, \
     STEREO_SYSTEM, KEYBOARD, PRINTER, KEYBOARD_MOUSE_COMBO, MEMORY_CARD, \
     USB_FLASH_DRIVE, GAMING_CHAIR, GAMING_DESK, ALL_IN_ONE, NOTEBOOK, \
-    MICROPHONE
+    MICROPHONE, TABLET
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -45,55 +45,39 @@ class TecnoMaster(Store):
             ALL_IN_ONE,
             NOTEBOOK,
             UPS,
-            MICROPHONE
+            MICROPHONE,
+            TABLET,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['pc_armados/notebook-laptop-pc_armados', NOTEBOOK],
-            ['pc_armados/pc-escritorio-all-in-one', ALL_IN_ONE],
-            ['productos/almacenamiento-productos/discos-duros-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['productos/almacenamiento-productos/discos-duros-hdd',
-             STORAGE_DRIVE],
-            ['productos/almacenamiento-productos/discos-estado-solido-sdd',
-             SOLID_STATE_DRIVE],
-            ['productos/almacenamiento-productos/flash-drivers-usb-almacenam'
-             'iento-productos', USB_FLASH_DRIVE],
-            ['productos/almacenamiento-productos/tarjetas-de-memoria-sdd',
-             MEMORY_CARD],
-            ['productos/hardware-productos/fuentes-de-poder', POWER_SUPPLY],
-            ['productos/hardware-productos/gabinetes-hardware-productos',
-             COMPUTER_CASE],
-            ['productos/hardware-productos/memorias-ram-hardware-productos',
-             RAM],
-            ['productos/hardware-productos/placas-madres', MOTHERBOARD],
-            ['productos/hardware-productos/placas-madres/amd-am4-placas-'
-             'madres', MOTHERBOARD],
-            ['productos/hardware-productos/procesadores-hardware-productos',
-             PROCESSOR],
-            ['productos/hardware-productos/refrigeracion-ventiladores-hardwa'
-             're-productos', CPU_COOLER],
-            ['productos/hardware-productos/tarjetas-de-video', VIDEO_CARD],
-            ['productos/perifericos-productos/audifonos-perifericos-productos',
-             HEADPHONES],
-            ['productos/perifericos-productos/impresoras-perifericos-produc'
-             'tos', PRINTER],
-            ['productos/perifericos-productos/kit-teclados-y-mouse',
-             KEYBOARD_MOUSE_COMBO],
-            ['productos/perifericos-productos/microfonos-y-streaming',
-             MICROPHONE],
-            ['productos/perifericos-productos/monitores-perifericos-productos',
-             MONITOR],
-            ['productos/perifericos-productos/mouse-perifericos-productos',
-             MOUSE],
-            ['productos/perifericos-productos/parlantes-perifericos-productos',
-             STEREO_SYSTEM],
-            ['productos/perifericos-productos/teclados-perifericos-productos',
-             KEYBOARD],
-            ['productos/ups-respaldos-de-energia', UPS],
+            ['notebook-laptop-pc_armados', NOTEBOOK],
+            ['pc-escritorio-all-in-one', ALL_IN_ONE],
+            ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+            ['discos-duros-hdd', STORAGE_DRIVE],
+            ['discos-estado-solido-sdd', SOLID_STATE_DRIVE],
+            ['flash-drivers-usb-almacenamiento-productos', USB_FLASH_DRIVE],
+            ['tarjetas-de-memoria-sdd', MEMORY_CARD],
+            ['fuentes-de-poder', POWER_SUPPLY],
+            ['gabinetes-hardware-productos', COMPUTER_CASE],
+            ['memorias-ram-hardware-productos', RAM],
+            ['placas-madres', MOTHERBOARD],
+            ['amd-am4-placas-madres', MOTHERBOARD],
+            ['procesadores-hardware-productos', PROCESSOR],
+            ['refrigeracion-ventiladores-hardware-productos', CPU_COOLER],
+            ['tarjetas-de-video', VIDEO_CARD],
+            ['audifonos-perifericos-productos', HEADPHONES],
+            ['impresoras-perifericos-productos', PRINTER],
+            ['kit-teclados-y-mouse', KEYBOARD_MOUSE_COMBO],
+            ['microfonos-y-streaming', MICROPHONE],
+            ['monitores-perifericos-productos', MONITOR],
+            ['mouse-perifericos-productos', MOUSE],
+            ['parlantes-perifericos-productos', STEREO_SYSTEM],
+            ['teclados-perifericos-productos', KEYBOARD],
+            ['ups-respaldos-de-energia', UPS],
             ['sillasgamer', GAMING_CHAIR],
+            ['tablet-ipad', TABLET],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
@@ -114,6 +98,9 @@ class TecnoMaster(Store):
                 response = session.get(url_webpage)
 
                 if response.status_code == 404:
+                    if page == 1:
+                        import ipdb
+                        ipdb.set_trace()
                     break
 
                 soup = BeautifulSoup(response.text, 'html.parser')
