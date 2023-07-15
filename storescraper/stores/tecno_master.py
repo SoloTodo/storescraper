@@ -98,9 +98,6 @@ class TecnoMaster(Store):
                 response = session.get(url_webpage)
 
                 if response.status_code == 404:
-                    if page == 1:
-                        import ipdb
-                        ipdb.set_trace()
                     break
 
                 soup = BeautifulSoup(response.text, 'html.parser')
