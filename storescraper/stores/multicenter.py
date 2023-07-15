@@ -1,3 +1,5 @@
+import base64
+import urllib
 from decimal import Decimal
 import json
 import logging
@@ -5,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class Multicenter(Store):
@@ -26,26 +28,44 @@ class Multicenter(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        page = 1
+
+        offset = 0
         while True:
-            if page > 25:
+            if offset >= 120:
                 raise Exception('Page overflow')
 
-            url_webpage = '{}/lg?_q=lg&map=ft&page={}'.format(
-                cls.base_url, page)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            variables = {
+                'from': offset,
+                'to': offset + 40,
+                'fullText': 'lg',
+            }
 
-            product_containers = soup.findAll(
-                'section', 'vtex-product-summary-2-x-container')
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category')
+            payload = {
+                'persistedQuery': {
+                    'version': 1,
+                    'sha256Hash': '40e207fe75d9dce4dfb3154442da4615f2b0'
+                                  '97b53887a0ae5449eb92d42e84db'
+                },
+                'variables': base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
+
+            endpoint = 'https://www.multicenter.com.bo/_v/segment/graphql/' \
+                       'v1?extensions={}'.format(
+                urllib.parse.quote(json.dumps(payload)))
+            response = session.get(endpoint).json()
+
+            product_entries = response['data']['productSearch']['products']
+
+            if not product_entries:
                 break
-            for container in product_containers:
-                product_urls.append(cls.base_url + container.find('a')['href'])
-            page += 1
+
+            for product_entry in product_entries:
+                product_url = 'https://www.multicenter.com.bo/{}/p'.format(
+                    product_entry['linkText'])
+                product_urls.append(product_url)
+
+            offset += 40
         return product_urls
 
     @classmethod

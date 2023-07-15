@@ -124,6 +124,9 @@ class Lenovo(Store):
                 sku = model_container['data-code']
                 price_tag = model_container.find(
                     'dd', 'pricingSummary-details-final-price')
+                if not price_tag:
+                    price_tag = model_container.find(
+                    'dd', 'webPriceValue')
                 price = Decimal(remove_words(price_tag.text))
                 description = html_to_markdown(str(model_container.find(
                     'div', 'tabbedBrowse-productListing-featureList')))
