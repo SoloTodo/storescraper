@@ -51,8 +51,8 @@ class Multicenter(Store):
             }
 
             endpoint = 'https://www.multicenter.com.bo/_v/segment/graphql/' \
-                       'v1?extensions={}'.format(
-                urllib.parse.quote(json.dumps(payload)))
+                       'v1?extensions={}'.format(urllib.parse.quote(
+                        json.dumps(payload)))
             response = session.get(endpoint).json()
 
             product_entries = response['data']['productSearch']['products']

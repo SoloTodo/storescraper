@@ -150,7 +150,8 @@ class Easy(Store):
                 if page > 20:
                     raise Exception('page overflow: ' + category_path)
 
-                facets = [{'key': 'c', 'value': x} for x in category_path.split('/')]
+                facets = [{'key': 'c', 'value': x}
+                          for x in category_path.split('/')]
 
                 variables = {
                     'from': page * 40,

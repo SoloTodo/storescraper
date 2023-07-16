@@ -154,7 +154,8 @@ class Store:
 
                         if positions:
                             for pos in positions:
-                                entry_positions[url].append((pos['section_name'], pos['value']))
+                                entry_positions[url].append(
+                                    (pos['section_name'], pos['value']))
                                 url_category_weights[url][category] += \
                                     pos['category_weight']
                         else:
@@ -171,7 +172,8 @@ class Store:
 
                     if positions:
                         for pos in positions:
-                            entry_positions[url].append((pos['section_name'], pos['value']))
+                            entry_positions[url].append(
+                                (pos['section_name'], pos['value']))
                             url_category_weights[url][category] += \
                                 pos['category_weight']
                     else:

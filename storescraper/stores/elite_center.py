@@ -150,7 +150,7 @@ class EliteCenter(Store):
         name = product_data['name'][:250]
         sku = product_data.get('sku', None)
 
-        offer_price = Decimal(product_data['offers'][0]['price']).quantize(0)
+        offer_price = Decimal(product_data['offers']['price']).quantize(0)
         normal_price = (offer_price * Decimal('1.05')).quantize(0)
         stock = int(re.findall(r'stock_quantity_sum\":\"(\d+)\"',
                                response.text)[1])

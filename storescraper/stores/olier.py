@@ -54,7 +54,8 @@ class Olier(Store):
         res = session.get(url)
         soup = BeautifulSoup(res.text, 'html.parser')
         product_id = soup.find('p', 'product-cod').text.split(':')[1].strip()
-        endpoint = 'https://www.olier.com.py/get-productos?query_string={}'.format(product_id)
+        endpoint = 'https://www.olier.com.py/get-productos?query_string={}' \
+                   ''.format(product_id)
         product_entries = session.get(endpoint).json()
 
         for entry in product_entries['paginacion']['data']:

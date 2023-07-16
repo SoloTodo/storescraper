@@ -503,7 +503,8 @@ class Falabella(Store):
             stock = 0
 
             if seller_entry:
-                seller = seller_entry.get('sellerName', seller_entry['sellerId']) or None
+                seller = seller_entry.get('sellerName',
+                                          seller_entry['sellerId']) or None
 
                 if is_international_shipping:
                     stock = 0

@@ -94,7 +94,8 @@ class UltraPc(Store):
                             'div', 'woocommerce-product-gallery').findAll(
                             'img')]
                 else:
-                    picture_urls = ['https://www.ultrapc.cl' + product['image']['src']]
+                    picture_urls = ['https://www.ultrapc.cl' +
+                                    product['image']['src']]
                 products.append(Product(
                     variant_name,
                     cls.__name__,

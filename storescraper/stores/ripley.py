@@ -205,65 +205,57 @@ class Ripley(Store):
                     raise Exception('Invalid section: ' + category_url)
 
                 soup = BeautifulSoup(response.text, 'html.parser')
-                products_data = soup.find('script',
-                                          {'type': 'application/ld+json'})
+
+                page_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
+                                      response.text)
+                page_json = json.loads(page_data.groups()[0])
+                products_json_1 = page_json['products']
+
+                products_json_2 = json.loads(
+                    soup.find('script', {'type': 'application/ld+json'}).string
+                )['itemListElement']
 
                 products_soup = soup.find('div', 'catalog-container')
 
-                if not products_data or not products_soup:
+                if not products_json_1 or not products_soup or \
+                        not products_json_2:
                     if page == 1:
                         logging.warning('Empty path: {}'.format(category_url))
                     break
 
-                products_elements = products_soup.findAll(
-                    'div', 'ProductItem__Row')
+                assert (len(products_json_1) == len(products_json_2))
 
-                if not products_elements:
-                    products_elements = products_soup.findAll(
-                        'a', 'catalog-product-item')
+                for product_json_1, product_json_2 in \
+                        zip(products_json_1, products_json_2):
 
-                products_json = json.loads(products_data.text)[
-                    'itemListElement']
+                    product = cls._assemble_product(product_json_1, category)
+                    brand = product_json_2['item'].get('brand', '').upper()
 
-                assert (len(products_elements) == len(products_json))
-
-                for product_json in products_json:
-                    product_element = products_elements[
-                        int(product_json['position']) - 1]
-                    product_data = product_json['item']
-
-                    brand = product_data.get('brand', '').upper()
-
-                    if brand in ['LG', 'SAMSUNG'] and 'MPM' not in \
-                            product_data['sku'] and not fast_mode:
+                    if brand in ['LG', 'SAMSUNG'] and not product.seller and \
+                            not fast_mode:
                         # If the product is LG or Samsung and is sold directly
                         # by Ripley (not marketplace) obtain the full data
 
-                        product = product_dict.get(product_data['sku'], None)
-                        if not product:
-                            url = cls._get_entry_url(product_element)
-                            product = cls._assemble_full_product(
-                                url, category, extra_args)
-                    elif category == HEADPHONES and 'MPM' in \
-                            product_data['sku']:
+                        cls._append_metadata(product, extra_args)
+                    elif category == HEADPHONES and 'MPM' in product.sku:
                         # Skip the thousands of headphones sold in marketplace
                         continue
                     else:
                         product = cls._assemble_product(
-                            product_data, product_element, category)
+                            product_json_1, category)
 
-                    if product:
-                        if product.normal_price == Decimal('9999999') or \
-                                product.offer_price == Decimal('9999999'):
-                            continue
+                    if product.normal_price == Decimal('9999999') or \
+                            product.offer_price == Decimal('9999999'):
+                        continue
 
-                        if product.sku in product_dict:
-                            product_to_update = product_dict[product.sku]
-                        else:
-                            product_dict[product.sku] = product
-                            product_to_update = product
+                    if product.sku in product_dict:
+                        product_to_update = product_dict[product.sku]
+                    else:
+                        product_dict[product.sku] = product
+                        product_to_update = product
 
-                        product_to_update.positions.append((section_name, position))
+                    product_to_update.positions.append(
+                        (section_name, position))
 
                     position += 1
 
@@ -284,47 +276,51 @@ class Ripley(Store):
         return products_list
 
     @classmethod
-    def _get_entry_url(cls, element):
-        # Element Data (Varies by page)
-        if element.name == 'div':
-            url_extension = element.find('a')['href']
-        else:
-            url_extension = element['href']
-
-        url = '{}{}'.format(cls.domain, url_extension)
-        return url
-
-    @classmethod
-    def _assemble_full_product(cls, url, category, extra_args, retries=5):
+    def _append_metadata(cls, product, extra_args, retries=5):
         session = session_with_proxy(extra_args)
         if extra_args and 'user-agent' in extra_args:
             session.headers['user-agent'] = extra_args['user-agent']
 
-        print(url)
-        page_source = session.get(url, timeout=30).text
+        print(product.url)
+        page_source = session.get(product.url, timeout=30).text
 
         soup = BeautifulSoup(page_source, 'html.parser')
 
         if soup.find('div', 'error-page'):
-            return []
+            return
 
         product_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                  page_source)
         if not product_data:
             if retries:
-                return cls._assemble_full_product(url, category, extra_args,
-                                                  retries=retries - 1)
+                cls._append_metadata(product, extra_args, retries=retries - 1)
             else:
-                return None
+                return
 
-        product_json = json.loads(product_data.groups()[0])
+        flixmedia_id = None
+        video_urls = []
 
-        if 'product' not in product_json:
-            return None
+        flixmedia_urls = [
+            '//media.flixfacts.com/js/loader.js',
+            'https://media.flixfacts.com/js/loader.js'
+        ]
 
-        specs_json = product_json['product']['product']
+        for flixmedia_url in flixmedia_urls:
+            flixmedia_tag = soup.find(
+                'script', {'src': flixmedia_url})
+            if flixmedia_tag and flixmedia_tag.has_attr('data-flix-mpn'):
+                flixmedia_id = flixmedia_tag['data-flix-mpn']
+                video_urls = flixmedia_video_urls(flixmedia_id)
+                break
 
+        product.flixmedia_id = flixmedia_id
+        product.video_urls = video_urls
+        return
+
+    @classmethod
+    def _assemble_product(cls, specs_json, category):
         sku = specs_json['partNumber']
+        url = specs_json['url']
         name = specs_json['name'].encode('ascii', 'ignore').decode(
             'ascii').strip()
         short_description = specs_json.get('shortDescription', '')
@@ -356,11 +352,6 @@ class Ripley(Store):
 
         description = ''
 
-        refurbished_notice = soup.find('div', 'emblemaReaccondicionados19')
-
-        if refurbished_notice:
-            description += html_to_markdown(str(refurbished_notice))
-
         if 'longDescription' in specs_json:
             description += html_to_markdown(specs_json['longDescription'])
 
@@ -377,14 +368,6 @@ class Ripley(Store):
         if 'reacondicionado' in description.lower() or \
                 'reacondicionado' in name.lower() or \
                 'reacondicionado' in short_description.lower():
-            condition = 'https://schema.org/RefurbishedCondition'
-
-        if soup.find('img', {'src': '//home.ripley.cl/promo-badges/'
-                                    'reacondicionado.png'}):
-            condition = 'https://schema.org/RefurbishedCondition'
-
-        if soup.find('img', {'src': '//home.ripley.cl/promo-badges/'
-                                    'openbox-telefonia-mz.png'}):
             condition = 'https://schema.org/RefurbishedCondition'
 
         picture_urls = []
@@ -405,22 +388,6 @@ class Ripley(Store):
         if not picture_urls:
             picture_urls = None
 
-        flixmedia_id = None
-        video_urls = []
-
-        flixmedia_urls = [
-            '//media.flixfacts.com/js/loader.js',
-            'https://media.flixfacts.com/js/loader.js'
-        ]
-
-        for flixmedia_url in flixmedia_urls:
-            flixmedia_tag = soup.find(
-                'script', {'src': flixmedia_url})
-            if flixmedia_tag and flixmedia_tag.has_attr('data-flix-mpn'):
-                flixmedia_id = flixmedia_tag['data-flix-mpn']
-                video_urls = flixmedia_video_urls(flixmedia_id)
-                break
-
         review_count = int(specs_json['powerReview']['fullReviews'])
 
         if review_count:
@@ -429,14 +396,15 @@ class Ripley(Store):
         else:
             review_avg_score = None
 
-        if 'shopName' in specs_json['marketplace']:
-            seller = specs_json['marketplace']['shopName']
+        if 'shop_name' in specs_json['sellerOp']:
+            seller = specs_json['sellerOp']['shop_name']
         elif specs_json['isMarketplaceProduct']:
             seller = 'Mercado R'
         else:
             seller = None
 
-        print(url)
+        if seller == 'Shop Ecsa':
+            seller = None
 
         p = Product(
             name,
@@ -453,101 +421,45 @@ class Ripley(Store):
             description=description,
             picture_urls=picture_urls,
             condition=condition,
-            flixmedia_id=flixmedia_id,
             review_count=review_count,
             review_avg_score=review_avg_score,
-            video_urls=video_urls,
             seller=seller
         )
 
         return p
 
     @classmethod
-    def _assemble_product(cls, data, element, category):
-        # Element Data (Varies by page)
-        if element.name == 'div':
-            element_name = element.find(
-                'a', 'ProductItem__Name').text.replace('  ', ' ').strip()
-        else:
-            element_name = element.find(
-                'div', 'catalog-product-details__name') \
-                .text.replace('  ', ' ').strip()
+    def _assemble_full_product(cls, url, category, extra_args, retries=5):
+        session = session_with_proxy(extra_args)
+        if extra_args and 'user-agent' in extra_args:
+            session.headers['user-agent'] = extra_args['user-agent']
 
-        # Common
+        print(url)
+        page_source = session.get(url, timeout=30).text
 
-        # This is removing extra white spaces in between words
-        # If not done, sometimes it will not be equal to element name
-        data_name = " ".join([a for a in data['name'].split(' ') if a != '']) \
-            .strip()
+        soup = BeautifulSoup(page_source, 'html.parser')
 
-        assert (element_name == data_name)
+        if soup.find('div', 'error-page'):
+            return []
 
-        # Remove weird characters, e.g.
-        # https://simple.ripley.cl/tv-portatil-7-negro-mpm00003032468
-        name = data_name.encode('ascii', 'ignore').decode('ascii')
-        sku = data['sku']
-        url = cls._get_entry_url(element)
-
-        if 'image' in data:
-            picture_url = 'https:{}'.format(data['image'])
-            if validators.url(picture_url):
-                picture_urls = [picture_url]
+        product_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
+                                 page_source)
+        if not product_data:
+            if retries:
+                return cls._assemble_full_product(url, category, extra_args,
+                                                  retries=retries - 1)
             else:
-                picture_urls = None
-        else:
-            picture_urls = None
+                return None
 
-        if data['offers']['price'] == 'undefined':
+        product_json = json.loads(product_data.groups()[0])
+
+        if 'product' not in product_json:
             return None
 
-        offer_price = Decimal(data['offers']['price']).quantize(0)
-        normal_price_container = element.find(
-            'li', 'catalog-prices__offer-price')
-
-        if normal_price_container:
-            normal_price = Decimal(
-                element.find('li', 'catalog-prices__offer-price')
-                .text.replace('$', '').replace('.', '')).quantize(0)
-        else:
-            normal_price = offer_price
-
-        if normal_price < offer_price:
-            offer_price = normal_price
-
-        stock = 0
-        if data['offers']['availability'] == 'http://schema.org/InStock':
-            stock = -1
-
-        if '-mpm' in url:
-            seller = 'External seller'
-        else:
-            seller = None
-
-        if element.find('img', {'src': '//home.ripley.cl/'
-                                       'promo-badges/reacondicionado.png'}) \
-                or 'REACONDICIONADO' in name.upper():
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            cls.currency,
-            sku=sku,
-            picture_urls=picture_urls,
-            seller=seller,
-            condition=condition
-        )
-
-        return p
+        specs_json = product_json['product']['product']
+        product = cls._assemble_product(specs_json, category)
+        cls._append_metadata(product, extra_args)
+        return product
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):

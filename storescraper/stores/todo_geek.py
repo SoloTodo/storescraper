@@ -108,12 +108,12 @@ class TodoGeek(Store):
         assert category_tags
 
         for tag in category_tags:
-            if 'ESPERALO' in tag.text.upper() or 'ESPERALO' in tag['href'].upper():
+            if 'ESPERALO' in tag.text.upper() or \
+                    'ESPERALO' in tag['href'].upper():
                 a_pedido = True
                 break
         else:
             a_pedido = False
-
 
         picture_urls = []
 
@@ -187,13 +187,15 @@ class TodoGeek(Store):
             'product': defaultdict(lambda: []),
             'collection': defaultdict(lambda: [])
         }
-        for specificTarget in raw_rules['estimatedDate']['specificRuleTargets']:
+        for specificTarget in raw_rules['estimatedDate'][
+                'specificRuleTargets']:
             rule = shipping_rules_dict[specificTarget['rule_id']]
 
             if rule['enable'] != '1':
                 raise Exception('Disabled rule?')
 
-            shipping_rules[specificTarget['type']][specificTarget['value']].append(rule)
+            shipping_rules[specificTarget['type']][
+                specificTarget['value']].append(rule)
 
         # print(json.dumps(shipping_rules))
         return shipping_rules

@@ -107,6 +107,8 @@ class Dust2(Store):
             'productDetails__productModel--info-productName'
         ).text.strip()
 
+        preventa = 'PREVENTA' in name
+
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'productDetails__productModel--image-moreImages'
         ).findAll('img') if tag['src'] != ""]
@@ -125,8 +127,8 @@ class Dust2(Store):
 
                 variant_name = name + ' - ' + variant_suffix
                 variant_sku = str(variant['variation_id'])
-                variant_stock = 0 if variant['max_qty'] == '' else variant[
-                    'max_qty']
+                variant_stock = 0 if variant['max_qty'] == '' or preventa \
+                    else variant['max_qty']
                 variant_normal_price = Decimal(variant['display_price'])
                 variant_offer_price = Decimal(
                     round(variant['display_price'] * 0.93))
@@ -162,7 +164,7 @@ class Dust2(Store):
                 stock_text = soup.find(
                     'div', 'productDetails__productModel--info-productInStock'
                 ).find('span').text
-                if stock_text == '':
+                if stock_text == '' or preventa:
                     stock = 0
                 else:
                     stock = int(stock_text)

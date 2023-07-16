@@ -99,7 +99,8 @@ class SantisPrime(Store):
             offer_price = normal_price
 
         description = html_to_markdown(str(description_tag))
-        picture_urls = [x.find('a')['href'] for x in soup.findAll('div', 'woocommerce-product-gallery__image')]
+        picture_urls = [x.find('a')['href'] for x in soup.findAll(
+            'div', 'woocommerce-product-gallery__image')]
 
         p = Product(
             name,

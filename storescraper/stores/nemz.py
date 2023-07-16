@@ -56,7 +56,8 @@ class Nemz(Store):
             while True:
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.nemz.cl/product-category/{}/'.format(url_extension)
+                url_webpage = 'https://www.nemz.cl/product-category/{}/' \
+                              ''.format(url_extension)
 
                 if page > 1:
                     url_webpage += 'page/{}/'.format(page)

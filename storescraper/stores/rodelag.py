@@ -99,5 +99,4 @@ class Rodelag(Store):
             description=description
         )
 
-
         return [p]

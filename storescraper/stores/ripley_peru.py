@@ -64,8 +64,8 @@ class RipleyPeru(Store):
                 'sort': 'score'
             }
             print(json.dumps(payload))
-            response = session.post('https://simple.ripley.com.pe/api/v2/search',
-                                    json=payload)
+            response = session.post(
+                'https://simple.ripley.com.pe/api/v2/search', json=payload)
             json_data = response.json()
 
             if 'products' not in json_data:
@@ -93,10 +93,14 @@ class RipleyPeru(Store):
                 else:
                     stock = 0
 
-                normal_price = Decimal(sku_entry['prices']['offerPrice']).quantize(Decimal('0.01'))
+                normal_price = Decimal(
+                    sku_entry['prices']['offerPrice']
+                ).quantize(Decimal('0.01'))
 
                 if 'cardPrice' in sku_entry['prices']:
-                    offer_price = Decimal(sku_entry['prices']['cardPrice']).quantize(Decimal('0.01'))
+                    offer_price = Decimal(
+                        sku_entry['prices']['cardPrice']
+                    ).quantize(Decimal('0.01'))
                 else:
                     offer_price = normal_price
 

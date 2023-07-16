@@ -56,14 +56,15 @@ class AcerStore(Store):
                 payload = {
                     "persistedQuery": {
                         "version": 1,
-                        "sha256Hash": "40e207fe75d9dce4dfb3154442da4615f2b097b53887a0ae5449eb92d42e84db"
+                        "sha256Hash": "40e207fe75d9dce4dfb3154442da4615f2"
+                                      "b097b53887a0ae5449eb92d42e84db"
                     },
                     "variables": base64.b64encode(json.dumps(
                         variables).encode('utf-8')).decode('utf-8')
                 }
 
-                endpoint = 'https://www.acerstore.cl/_v/segment/graphql/v1?extensions={}'.format(
-                    json.dumps(payload))
+                endpoint = 'https://www.acerstore.cl/_v/segment/graphql/v1' \
+                           '?extensions={}'.format(json.dumps(payload))
                 response = session.get(endpoint).json()
 
                 product_entries = response['data']['productSearch']['products']
