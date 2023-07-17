@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, \
     PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, \
-    COMPUTER_CASE
+    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -20,7 +20,8 @@ class TecnoMas(Store):
     def categories(cls):
         return [
             VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, PROCESSOR, MOTHERBOARD,
-            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, COMPUTER_CASE
+            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, COMPUTER_CASE,
+            EXTERNAL_STORAGE_DRIVE
         ]
 
     @classmethod
@@ -34,13 +35,16 @@ class TecnoMas(Store):
             ['Impresoras de Hogar', PRINTER],
             ['Placas Madre', MOTHERBOARD],
             ['Impresoras de Oficina', PRINTER],
+            ['Impresoras', PRINTER],
             ['Almacenamiento', SOLID_STATE_DRIVE],
             ['Teclados y Mouse', MOUSE],
             ['Tarjetas de Video', VIDEO_CARD],
             ['All in One (AIO)', ALL_IN_ONE],
             ['AIOs Reacondicionados', ALL_IN_ONE],
+            ['RAM', RAM],
             ['SO-DIMM', RAM],
             ['Gabinetes', COMPUTER_CASE],
+            ['Almacenamiento Externo', EXTERNAL_STORAGE_DRIVE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
