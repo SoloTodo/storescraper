@@ -94,6 +94,8 @@ class BestStore(Store):
             ['288-perifericos-microfonos', MICROPHONE],
             ['143-impresoras-y-escaneres-impresoras-ink-jet', PRINTER],
             ['174-impresoras-y-escaneres-impresoras-laser', PRINTER],
+            ['144-impresoras-y-escaneres-impresoras-multifuncionales',
+             PRINTER],
             ['1028-plotters', PRINTER],
         ]
 
