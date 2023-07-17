@@ -6,7 +6,8 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, \
-    PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE
+    PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, \
+    COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,7 +20,7 @@ class TecnoMas(Store):
     def categories(cls):
         return [
             VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, PROCESSOR, MOTHERBOARD,
-            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE
+            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, COMPUTER_CASE
         ]
 
     @classmethod
@@ -39,6 +40,7 @@ class TecnoMas(Store):
             ['All in One (AIO)', ALL_IN_ONE],
             ['AIOs Reacondicionados', ALL_IN_ONE],
             ['SO-DIMM', RAM],
+            ['Gabinetes', COMPUTER_CASE],
         ]
         session = session_with_proxy(extra_args)
         product_urls = []
