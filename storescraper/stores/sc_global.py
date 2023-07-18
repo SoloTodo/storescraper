@@ -105,7 +105,10 @@ class ScGlobal(Store):
 
         pricing_container = soup.find('span', {'itemprop': 'price'})
         price = Decimal(pricing_container['content'])
-        part_number = soup.find('span', {'itemprop': 'sku'}).text.strip()
+        part_number_tag = soup.find('span', {'itemprop': 'sku'})
+        if not part_number_tag:
+            return []
+        part_number = part_number_tag.text.strip()
         add_to_cart_button = soup.find('button', 'add-to-cart')
 
         if add_to_cart_button.get('disabled') is None:
