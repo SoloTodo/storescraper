@@ -9,7 +9,8 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
     STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS, \
-    GAMING_CHAIR, WEARABLE, MICROPHONE, PRINTER
+    GAMING_CHAIR, WEARABLE, MICROPHONE, PRINTER, OVEN, REFRIGERATOR, \
+    AIR_CONDITIONER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -45,6 +46,9 @@ class BestStore(Store):
             WEARABLE,
             MICROPHONE,
             PRINTER,
+            OVEN,
+            REFRIGERATOR,
+            AIR_CONDITIONER,
         ]
 
     @classmethod
@@ -97,6 +101,9 @@ class BestStore(Store):
             ['144-impresoras-y-escaneres-impresoras-multifuncionales',
              PRINTER],
             ['1028-plotters', PRINTER],
+            ['1144-cocina', OVEN],
+            ['1145-electrodomesticos', REFRIGERATOR],
+            ['254-electrodomesticos-climatizacion', AIR_CONDITIONER],
         ]
 
         session = session_with_proxy(extra_args)
