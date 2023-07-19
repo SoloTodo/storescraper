@@ -377,8 +377,8 @@ class Hites(Store):
         offer_price_container = prices.find('span', 'hites-price')
         offer_price = None
         if offer_price_container:
-            offer_price = Decimal(offer_price_container.text.strip()
-                                  .replace('$', '').replace('.', ''))
+            offer_price = Decimal(offer_price_container.text
+                                  .split('$')[1].replace('.', '').strip())
 
         normal_price_container = prices.find('span', 'sales')
         if not normal_price_container:
