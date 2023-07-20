@@ -4,10 +4,11 @@ from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, VIDEO_CARD, \
     PROCESSOR, MOTHERBOARD, RAM, STORAGE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
-    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM, MICROPHONE, CASE_FAN
+    COMPUTER_CASE, MONITOR, HEADPHONES, STEREO_SYSTEM, MICROPHONE, CASE_FAN, \
+    UPS, USB_FLASH_DRIVE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class MyBox(Store):
@@ -29,26 +30,33 @@ class MyBox(Store):
             STEREO_SYSTEM,
             MICROPHONE,
             CASE_FAN,
+            UPS,
+            USB_FLASH_DRIVE,
+            NOTEBOOK
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['20-teclados-mouse', KEYBOARD],
-            ['25-sillas-gamer', GAMING_CHAIR],
-            ['68-tarjeta-de-video', VIDEO_CARD],
             ['64-procesador', PROCESSOR],
+            ['68-tarjeta-de-video', VIDEO_CARD],
             ['65-placa-madre', MOTHERBOARD],
             ['66-memoria-ram', RAM],
             ['67-almacenamiento', STORAGE_DRIVE],
             ['92-enfriamiento-refrigeracion', CPU_COOLER],
             ['63-fuentes-de-poder', POWER_SUPPLY],
             ['62-gabinetes', COMPUTER_CASE],
-            ['28-pantallasmonitores', MONITOR],
+            ['89-ventiladores-fans', CASE_FAN],
+            ['91-respaldo-energetico-ups', UPS],
+            ['28-monitor', MONITOR],
+            ['20-teclados-mouse', KEYBOARD],
             ['21-audifonos-headset', HEADPHONES],
             ['22-parlantes', STEREO_SYSTEM],
+            ['26-iluminacion-rgb', CASE_FAN],
+            ['210-memorias-sd-microsd-y-pendrives', USB_FLASH_DRIVE],
+            ['16-notebook', NOTEBOOK],
+            ['25-sillas-gamer', GAMING_CHAIR],
             ['24-microfonos', MICROPHONE],
-            ['89-ventiladores-fans', CASE_FAN],
         ]
 
         session = session_with_proxy(extra_args)
