@@ -21,6 +21,10 @@ class Dismac(Store):
             return []
 
         session = session_with_proxy(extra_args)
+        session.headers['x-algolia-api-key'] = \
+            'ZDFkYTRkNWE1YzY3ODkzMjlhZjA3MzhhZTg4MTI2MzZlYzNiZT' \
+            'BkYjRkMDA2OGU4MDAwMGEyNDFiNzliNmZmOXRhZ0ZpbHRlcnM9'
+        session.headers['x-algolia-application-id'] = 'BJPB6CPN3G'
         product_urls = []
 
         page = 0
@@ -32,20 +36,14 @@ class Dismac(Store):
                 "requests": [
                     {
                         "indexName": "dis_prod_scz_products",
-                        "params": "facetFilters=%5B%5B%22marca%3ALG%22%5D%2C"
-                                  "%5B%22categories.level0%3ACategor%C3%ADas"
-                                  "%22%5D%5D&page={}".format(page)
+                        "params": "query=LG&page={}".format(page)
                     }
                 ]
             })
-            url_webpage = 'https://bjpb6cpn3g-dsn.algolia.net/1/indexes/*/' \
-                          'queries?x-algolia-application-id=BJPB6CPN3G&x-' \
-                          'algolia-api-key=ZGU2YTkyOTc3YjA4YzZmMGQ3ODBlNDg3O' \
-                          'GZiN2U3MzMxZWIyMzhiOTMxNzQwZDdmNzJhM2NiNGQ1YWFkZT' \
-                          'UxMnRhZ0ZpbHRlcnM9'
-            print(url_webpage)
+            url_webpage = 'https://bjpb6cpn3g-dsn.algolia.net/1/indexes/' \
+                          '*/queries'
             response = session.post(url_webpage, data=body)
-            product_json = json.loads(response.text)['results'][0]['hits']
+            product_json = response.json()['results'][0]['hits']
             if not product_json:
                 if page == 1:
                     logging.warning('empty site')

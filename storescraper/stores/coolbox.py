@@ -105,6 +105,10 @@ class Coolbox(Store):
             return []
 
         price = Decimal(str(seller_entry['Price']))
+
+        if not price:
+            return []
+
         stock = seller_entry['AvailableQuantity']
 
         picture_list_key = '{}.items.0'.format(base_json_key)
