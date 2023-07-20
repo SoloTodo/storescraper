@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
     STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET, CELL, \
-    GAMING_CHAIR, UPS
+    GAMING_CHAIR, UPS, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, \
+    PROCESSOR, CPU_COOLER, VIDEO_CARD, MOTHERBOARD
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -15,18 +16,10 @@ class NotebooksYa(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK,
-            PRINTER,
-            MONITOR,
-            STORAGE_DRIVE,
-            HEADPHONES,
-            KEYBOARD,
-            WEARABLE,
-            ALL_IN_ONE,
-            TABLET,
-            CELL,
-            GAMING_CHAIR,
-            UPS,
+            NOTEBOOK, PRINTER, MONITOR, STORAGE_DRIVE, HEADPHONES, KEYBOARD,
+            WEARABLE, ALL_IN_ONE, TABLET, CELL, GAMING_CHAIR, UPS,
+            SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, PROCESSOR,
+            CPU_COOLER, VIDEO_CARD, MOTHERBOARD
         ]
 
     @classmethod
@@ -46,7 +39,22 @@ class NotebooksYa(Store):
             ['audifonos', HEADPHONES],
             ['teclados-mouse', KEYBOARD],
             ['relojes', WEARABLE],
-            ['partes-y-piezas', STORAGE_DRIVE],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'unidad-de-estado-solido', SOLID_STATE_DRIVE],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'fuente-de-poder', POWER_SUPPLY],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'gabinetes', COMPUTER_CASE],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'memoria%2Cmemoria-ram', RAM],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'procesador', PROCESSOR],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'refrigeracion', CPU_COOLER],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'tarjeta-de-video', VIDEO_CARD],
+            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
+             'placa-madre', MOTHERBOARD],
             ['impresion', PRINTER],
             ['sillas', GAMING_CHAIR],
             ['audio-y-video', HEADPHONES],
@@ -65,8 +73,14 @@ class NotebooksYa(Store):
                 if page > 10:
                     raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://notebooksya.cl/{}/page/{}'.format(
-                    url_extension, page)
+                url_webpage = 'https://notebooksya.cl/{}'.format(
+                    url_extension)
+
+                if '?' in url_webpage:
+                    url_webpage += '&wpf_page={}'.format(page)
+                else:
+                    url_webpage += '/page/{}'.format(page)
+
                 print(url_webpage)
 
                 response = session.get(url_webpage)
