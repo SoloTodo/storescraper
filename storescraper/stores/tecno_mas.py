@@ -98,6 +98,10 @@ class TecnoMas(Store):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
+
+        if response.status_code == 500:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text.strip()
         key = soup.find('input', {'id': 'product_id'})['value']
