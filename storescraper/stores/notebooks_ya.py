@@ -55,7 +55,7 @@ class NotebooksYa(Store):
              'tarjeta-de-video', VIDEO_CARD],
             ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
              'placa-madre', MOTHERBOARD],
-            ['impresion', PRINTER],
+            ['impresion-ya', PRINTER],
             ['sillas', GAMING_CHAIR],
             ['audio-y-video', HEADPHONES],
             ['ups', UPS],

@@ -221,6 +221,9 @@ class PcFactory(Store):
             r'window.pcFactory.dataGlobal.serverData\s+= (.+);', res.text)
         product_data = json.loads(match.groups()[0])['producto']
 
+        if not product_data:
+            return []
+
         sku = product_data['id_producto']
         part_number = product_data['partno']
         name = product_data['nombre']

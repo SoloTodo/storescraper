@@ -5,7 +5,7 @@ from decimal import Decimal
 import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, CELL, MOTHERBOARD
+from storescraper.categories import NOTEBOOK, MOTHERBOARD, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -15,17 +15,18 @@ class SmartDeal(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK,
-            CELL,
-            MOTHERBOARD,
+            NOTEBOOK, MOTHERBOARD, ALL_IN_ONE
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
-            # ('smart-to-school', NOTEBOOK),
-            ('computacion', NOTEBOOK),
-            ('smartphones-y-tablets', CELL),
+            ('notebooks', NOTEBOOK),
+            ('empresa', NOTEBOOK),
+            ('gamer', NOTEBOOK),
+            ('hogar', NOTEBOOK),
+            ('notebooks/macdesign', NOTEBOOK),
+            ('desktop', ALL_IN_ONE),
             ('componentes-y-otros', MOTHERBOARD),
         ]
 
