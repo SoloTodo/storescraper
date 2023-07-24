@@ -1,5 +1,4 @@
 import json
-import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from storescraper.categories import TELEVISION
@@ -25,16 +24,29 @@ class Efe(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        url_webpage = 'https://www.efe.com.pe/webapp/wcs/stores/servlet/' \
-                      'ScrollableProductListingView?' \
-                      'manufacturer=LG&resultsPerPage=1000&storeId=10152'
-        print(url_webpage)
-        data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, 'html.parser')
-        product_containers = soup.findAll('div', 'product')
-        for container in product_containers:
-            product_url = container.find('a')['href']
-            product_urls.append(product_url)
+
+        page = 1
+        done = False
+
+        while not done:
+            if page >= 20:
+                raise Exception('Page overflow')
+
+            url_webpage = 'https://www.efe.com.pe/tecnologia/marcas/' \
+                          'lg.html?p={}'.format(page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    done = True
+                    break
+                product_urls.append(product_url)
+
+            page += 1
+
         return product_urls
 
     @classmethod
@@ -43,40 +55,30 @@ class Efe(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+        key = soup.find('input', {'name': 'product'})['value']
+        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        description = html_to_markdown(str(soup.find('div', 'description')))
+        price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
 
-        if soup.select_one('div#WC_GenericError_6'):
-            return []
-
-        key = re.search(r'id="ProductInfoName_(\d*)"',
-                        response.text).groups()[0].split('_')[-1]
-
-        name = soup.find('input', {'id': f'ProductInfoName_{key}'})[
-            'value'].strip()
-        sku = soup.find('span', {'id': f'product_SKU_{key}'}).text.split(
-            'SKU:')[-1].strip()
-        price = Decimal(str(soup.find(
-            'input', {'id': f'ProductInfoPrice_{key}'}
-        )['value']).replace(",", ""))
-
-        page_id = soup.find('meta', {'name': 'pageId'})['content']
-        stock_tag = soup.find('div', {'id': 'entitledItem_' + page_id})
-        json_stock = json.loads(stock_tag.text)[0]
-
-        if json_stock['buyable'] == 'true':
+        if soup.find('button', 'tocart'):
             stock = -1
         else:
             stock = 0
 
-        pictures_data = soup.find(
-            'div', {'id': 'ProductAngleProdImagesAreaProdList'})
-        if pictures_data:
-            picture_urls = ['https://www.efe.com.pe' + tag['src'].replace(
-                '200x310', '646x1000') for tag in pictures_data.findAll('img')]
-        else:
-            picture_urls = []
+        magento_tags = soup.findAll('script', {'type': 'text/x-magento-init'})
 
-        description = html_to_markdown(
-            soup.find('div', {'id': f'product_longdescription_{key}'}).text)
+        for tag in magento_tags:
+            if 'data-gallery-role=gallery-placeholder' in tag.text:
+                pictures_json = json.loads(tag.text)
+                break
+        else:
+            raise Exception('No pictures tag found')
+
+        picture_urls = [tag['full'] for tag in pictures_json[
+            '[data-gallery-role=gallery-placeholder]'][
+            'mage/gallery/gallery']['data']]
 
         p = Product(
             name,

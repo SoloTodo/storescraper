@@ -69,6 +69,8 @@ class Reuse(Store):
             soup.find('script', {'data-section-id': 'static-product'}).text)[
             'product']
         description = html_to_markdown(product_json['description'])
+        vendor = product_json['vendor']
+        seller = vendor if vendor != 'Reuse Chile' else None
 
         products = []
         for variant in product_json['variants']:
@@ -96,7 +98,8 @@ class Reuse(Store):
                 sku=sku,
                 picture_urls=picture_urls,
                 condition='https://schema.org/RefurbishedCondition',
-                description=description
+                description=description,
+                seller=seller
             )
             products.append(p)
 
