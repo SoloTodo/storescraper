@@ -82,7 +82,7 @@ class Hites(Store):
              'Inicio > Electro Hogar > Lavado y Secado', 1],
             ['electro-hogar/lavado-y-secado/lavadoras', [WASHING_MACHINE],
              'Inicio > Electro Hogar > Lavado y Secado > Lavadoras', 1],
-            ['electro-hogar/lavado-y-secado/secadoras-y-centrifugas',
+            ['electro-hogar/lavado-y-secado/secadoras/',
              [WASHING_MACHINE],
              'Inicio > Electro Hogar > Lavado y Secado > Secadoras', 1],
             ['electro-hogar/lavado-y-secado/lavadoras-secadoras',

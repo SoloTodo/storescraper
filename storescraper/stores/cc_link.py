@@ -129,7 +129,7 @@ class CCLink(Store):
                     summary_h5.find('strong').text))
             else:
                 normal_price = Decimal(remove_words(
-                    summary_h5.find('span').text))
+                    summary_h5.contents[0]))
         else:
             normal_price = offer_price
         picture_urls = [urllib.parse.quote(tag['src'], safe='/:') for tag in
