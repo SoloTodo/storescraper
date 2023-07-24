@@ -133,10 +133,12 @@ class TecnoPro(Store):
         products = []
         for variant in json_products['variants']:
             name = variant['name']
+            preventa = 'PREVENTA' in description.upper() or \
+                       'PREVENTA' in name.upper()
+
             sku = variant['sku']
             key = str(variant['id'])
-            stock = -1 if variant['available'] and 'preventa' not in \
-                name.lower() else 0
+            stock = -1 if variant['available'] and not preventa else 0
             price = Decimal(variant['price'] / 100)
             variant_url = '{}?variant={}'.format(url, key)
 
