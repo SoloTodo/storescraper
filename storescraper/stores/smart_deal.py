@@ -26,6 +26,7 @@ class SmartDeal(Store):
             ('gamer', NOTEBOOK),
             ('hogar', NOTEBOOK),
             ('notebooks/macdesign', NOTEBOOK),
+            ('notebooks/2-en-1/', NOTEBOOK),
             ('desktop', ALL_IN_ONE),
             ('componentes-y-otros', MOTHERBOARD),
         ]
