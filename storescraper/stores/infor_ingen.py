@@ -116,13 +116,13 @@ class InforIngen(Store):
             category,
             url,
             url,
-            name,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            description=key,
+            description=description,
             picture_urls=picture_urls
         )
 
