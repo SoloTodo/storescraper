@@ -1,99 +1,80 @@
+import json
 import logging
 import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import CPU_COOLER
+from storescraper.categories import CPU_COOLER, MOTHERBOARD, PROCESSOR, RAM, \
+    STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, \
+    COMPUTER_CASE, POWER_SUPPLY, CASE_FAN, MONITOR, KEYBOARD_MOUSE_COMBO, \
+    HEADPHONES, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class InforIngen(Store):
+    url_extensions = [
+        ['placas-madres', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['memorias', RAM],
+        ['discos-duros-pc', STORAGE_DRIVE],
+        ['discos-duros-ssd', SOLID_STATE_DRIVE],
+        ['discos-externos', EXTERNAL_STORAGE_DRIVE],
+        ['video', VIDEO_CARD],
+        ['gabinetes', COMPUTER_CASE],
+        ['fuentes-reales', POWER_SUPPLY],
+        ['fuentes-genericas', POWER_SUPPLY],
+        ['aire-cpu', CPU_COOLER],
+        ['refrigeracion-liquida-cpu', CPU_COOLER],
+        ['refrigeracion-gabinete', CASE_FAN],
+        ['monitores', MONITOR],
+        ['teclados-y-mouse', KEYBOARD_MOUSE_COMBO],
+        ['audifonos', HEADPHONES],
+        ['pendrives', USB_FLASH_DRIVE],
+    ]
+
     @classmethod
     def categories(cls):
-        return [
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            CPU_COOLER,
-            'Television',
-            'Mouse',
-            'Notebook',
-            'Printer',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'ExternalStorageDrive',
-            'Headphones',
-        ]
+        cats = []
+        for category_id, category in cls.url_extensions:
+            if category not in cats:
+                cats.append(category)
+        return cats
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['60', 'Processor'],  # Procesadores
-            ['61', 'Motherboard'],  # MB
-            ['73', 'Ram'],  # RAM
-            ['75_102', 'StorageDrive'],  # HDD Notebook
-            ['75_76', 'StorageDrive'],  # HDD Desktop
-            ['75_77', 'SolidStateDrive'],  # SSD
-            ['78', 'VideoCard'],  # Tarjetas de video
-            ['81_84', 'ComputerCase'],  # Gabinetes c/fuente
-            ['81_85', 'ComputerCase'],  # Gabinetes s/fuente
-            ['81_82', 'PowerSupply'],  # Fuentes de poder Genericas
-            ['81_83', 'PowerSupply'],  # Fuentes de poder Reales
-            ['92_95', CPU_COOLER],  # Coolers CPU Aire
-            ['92_96', CPU_COOLER],  # Coolers CPU Liquido
-            ['98', 'Monitor'],  # Monitores LCD
-            ['105_106', 'Mouse'],  # Teclados y mouse
-            ['105_123', 'Notebook'],  # Notebooks
-            ['75_103', 'ExternalStorageDrive'],  # Discos duros externos
-            ['90_91', 'Headphones'],  # Audífonos
-        ]
-
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in url_extensions:
+        for category_path, local_category in cls.url_extensions:
             if local_category != category:
                 continue
 
             page = 1
 
             while True:
-                if page >= 5:
+                if page >= 50:
                     raise Exception('Page overflow: ' + category_path)
 
-                url_webpage = 'https://www.infor-ingen.com/tienda/index.php?' \
-                              'route=product/category&limit=100&path={}' \
-                              '&page={}'.format(category_path, page)
+                url_webpage = 'https://store.infor-ingen.com/' \
+                              'categoria-producto/{}/page/{}/'.format(
+                                category_path, page)
 
                 print(url_webpage)
+                response = session.get(url_webpage)
 
-                soup = BeautifulSoup(session.get(url_webpage).text,
-                                     'html.parser')
-
-                link_containers = soup.findAll('div', 'product-layout')
-
-                if not link_containers:
+                if response.status_code == 404:
                     if page == 1:
                         logging.warning('Empty category: ' + category_path)
                     break
 
+                soup = BeautifulSoup(response.text, 'html.parser')
+                link_containers = soup.findAll('li', 'product')
+
                 for link_container in link_containers:
-                    original_product_url = link_container.find('a')['href']
-                    product_id = re.search(r'product_id=(\d+)',
-                                           original_product_url).groups()[0]
-                    product_url = 'https://www.infor-ingen.com/tienda/' \
-                                  'index.php?route=product/product&' \
-                                  'product_id=' + product_id
+                    product_url = link_container.find('a')['href']
                     product_urls.append(product_url)
 
                 page += 1
@@ -105,34 +86,29 @@ class InforIngen(Store):
         print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        pricing_container = soup.find('div', {'id': 'product'}).parent
-        name = pricing_container.find('h1').text.strip()
-        sku = soup.find('input', {'name': 'product_id'})['value']
 
-        stock = int(soup.find('b', text='STOCK WEB:').next.next) + \
-            int(soup.find('b', text='STOCK TIENDA:').next.next)
+        json_tag = soup.find('script', {'type': 'application/ld+json'})
+        json_data = json.loads(json_tag.text)
+        name = json_data['name'].strip()
 
-        offer_price_image_tag = pricing_container.find(
-            'img', {'align': 'absmiddle'})
+        canonical_url_tag = soup.find('link', {'rel': 'alternate',
+                                               'type': 'application/json'})
+        key = canonical_url_tag['href'].split('/')[-1]
+        sku = json_data['sku']
+        summary_tag = soup.find('div', 'summary')
+        stock_tags = summary_tag.findAll('li')[:2]  # Web and Store
 
-        if offer_price_image_tag:
-            price_containers = offer_price_image_tag.parent.findAll('h2')
-            normal_price = Decimal(remove_words(price_containers[1].text))
-            offer_price = Decimal(remove_words(price_containers[2].text))
+        stock = 0
+        for stock_tag in stock_tags:
+            raw_stock_text = stock_tag.contents[1]
+            stock_match = re.search(r'(\d+)', raw_stock_text)
+            if stock_match:
+                stock += int(stock_match.groups()[0])
 
-            if offer_price > normal_price:
-                offer_price = normal_price
-        else:
-            normal_price = Decimal(soup.find(
-                'meta', {'property': 'product:price:amount'})['content'])
-            offer_price = normal_price
-
-        description = html_to_markdown(str(soup.find(
-            'div', {'id': 'tab-description'})))
-
-        picture_urls = [tag['href'].replace(' ', '%20')
-                        for tag in soup.findAll('a', 'thumbnail')
-                        if tag['href']]
+        offer_price = Decimal(json_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.06')).quantize(0)
+        description = json_data['description']
+        picture_urls = [json_data['image']]
 
         p = Product(
             name,
@@ -140,13 +116,13 @@ class InforIngen(Store):
             category,
             url,
             url,
-            sku,
+            name,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=sku,
-            description=description,
+            description=key,
             picture_urls=picture_urls
         )
 

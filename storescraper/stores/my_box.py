@@ -112,7 +112,9 @@ class MyBox(Store):
             sku = span_sku.text.strip()
         else:
             sku = None
-        if soup.find('button', 'add-to-cart'):
+
+        availability_tag = soup.find('link', {'itemprop': 'availability'})
+        if availability_tag['href'] == 'https://schema.org/InStock':
             stock = -1
         else:
             stock = 0
