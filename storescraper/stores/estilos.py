@@ -1,3 +1,4 @@
+import urllib
 from decimal import Decimal
 import json
 import logging
@@ -21,35 +22,38 @@ class Estilos(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        # Yes, we hardcode a URL because it doesn't appear in any index in the
-        # Estilos page
-        product_urls = [
-            'https://www.estilos.com.pe/cierra-puertas-online/52601-'
-            'Televisor-LG-UHD-65-Inteligencia-Artificial-4k-Smart.html'
+        product_urls = []
+
+        url_templates = [
+            'https://www.estilos.com.pe/buscar?controller=search&s=LG&page={}',
+            'https://www.estilos.com.pe/54_lg?page={}',
+            'https://www.estilos.com.pe/3934-cierra-puertas-online?page={}'
         ]
 
-        page = 1
-        while True:
-            if page > 20:
-                raise Exception('Page overflow')
+        for url_template in url_templates:
+            page = 1
+            while True:
+                if page > 20:
+                    raise Exception('Page overflow')
 
-            url_webpage = 'https://www.estilos.com.pe/buscar?' \
-                          'controller=search&s=LG&order=product.name.asc' \
-                          '&page={}'.format(page)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+                url_webpage = url_template.format(page)
+                print(url_webpage)
+                data = session.get(url_webpage).text
+                soup = BeautifulSoup(data, 'html.parser')
 
-            product_containers = soup.findAll('div', 'ajax_block_product')
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category')
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+                product_containers = soup.findAll('div', 'ajax_block_product')
+                if not product_containers:
+                    if page == 1:
+                        logging.warning('Empty category')
+                    break
+                for container in product_containers:
+                    raw_product_url = container.find('a')['href']
+                    decoded_url = urllib.parse.urlparse(raw_product_url)
+                    product_path = decoded_url.path.split('/')[-1]
+                    product_url = 'https://www.estilos.com.pe/' + product_path
+                    product_urls.append(product_url)
 
-            page += 1
+                page += 1
         return product_urls
 
     @classmethod
@@ -58,9 +62,6 @@ class Estilos(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        # if 'Este paquete contiene' in soup.text:
-        #     return []
 
         product_tag = soup.find('div', {'id': 'product-details'})
 
