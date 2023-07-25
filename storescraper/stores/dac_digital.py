@@ -1,8 +1,8 @@
 import logging
-from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import KEYBOARD, VIDEO_GAME_CONSOLE
+from storescraper.categories import VIDEO_GAME_CONSOLE, MOUSE, \
+    VIDEO_CARD, TABLET, PRINTER, HEADPHONES
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -11,15 +11,22 @@ class DacDigital(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [
-            KEYBOARD,
+            MOUSE,
             VIDEO_GAME_CONSOLE,
+            VIDEO_CARD,
+            TABLET,
+            PRINTER,
+            HEADPHONES,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computacion', KEYBOARD],
-            ['consolas-videojuegos', VIDEO_GAME_CONSOLE],
+            ['computacion/perifericos-pc', MOUSE],
+            ['computacion/componentes-pc', VIDEO_CARD],
+            ['computacion/tablets-accesorios', TABLET],
+            ['computacion/impresion', PRINTER],
+            ['electronica-audio-video', HEADPHONES],
         ]
 
         session = session_with_proxy(extra_args)
