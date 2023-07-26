@@ -101,24 +101,15 @@ class Wom(Store):
 
     @classmethod
     def _plans(cls, url, extra_args):
-        session = session_with_proxy(extra_args)
-
-        response = session.get('https://store.wom.cl/page-data/sq/d/'
-                               '1342060432.json')
-
-        data = response.json()
         variants = [
             'sin cuota de arriendo',
             'con cuota de arriendo',
         ]
         products = []
 
-        for product_entry in data['data']['allContentfulProduct']['nodes']:
-            if not product_entry['offer'] and not product_entry['offerPdp']:
-                continue
-
-            plan_name = product_entry['name']
-            product_data = json.loads(product_entry['context']['context'])
+        for plan_json in extra_args['plans_json']:
+            plan_name = plan_json['name']
+            product_data = json.loads(plan_json['context']['context'])
             plan_price = Decimal(product_data['price'])
 
             for variant in variants:
@@ -163,14 +154,8 @@ class Wom(Store):
             condition = 'https://schema.org/NewCondition'
 
         products = []
-        plans = []
-
-        for plan_choice in json_data['result']['data']['planData']['edges']:
-            plan_fatures = json.loads(
-                plan_choice['node']['context']['context'])
-            if plan_fatures['voice feature'] and \
-                    plan_fatures['data service feature']:
-                plans.append('WOM ' + plan_choice['node']['name'])
+        plans = ['WOM ' + plan_choice['name']
+                 for plan_choice in extra_args['plans_json']]
 
         variations = json_data['result']['data']['contentfulProduct'][
                 'productVariations']
@@ -291,3 +276,24 @@ class Wom(Store):
             ))
 
         return products
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        # Obtain valid plans
+        session = session_with_proxy(extra_args)
+
+        response = session.get('https://store.wom.cl/page-data/sq/d/'
+                               '1342060432.json')
+
+        data = response.json()
+        plans_json = []
+
+        for product_entry in data['data']['allContentfulProduct']['nodes']:
+            if not product_entry['offer'] and not product_entry['offerPdp']:
+                continue
+
+            plans_json.append(product_entry)
+
+        return {
+            'plans_json': plans_json
+        }
