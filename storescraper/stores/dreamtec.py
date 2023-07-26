@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, GAMING_CHAIR, HEADPHONES, \
     KEYBOARD, MONITOR, NOTEBOOK, PRINTER, STEREO_SYSTEM, TABLET, TELEVISION, \
-    VIDEO_GAME_CONSOLE, WEARABLE
+    VIDEO_GAME_CONSOLE, WEARABLE, RAM, MOUSE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy
@@ -26,7 +26,9 @@ class Dreamtec(Store):
             STEREO_SYSTEM,
             TABLET,
             WEARABLE,
-            HEADPHONES
+            HEADPHONES,
+            RAM,
+            MOUSE
         ]
 
     @classmethod
@@ -37,12 +39,14 @@ class Dreamtec(Store):
             ['gamer-zone/monitores-gamer-zone', MONITOR],
             ['gamer-zone/notebooks-gamer-zone', NOTEBOOK],
             ['gamer-zone/sillas-gamer', GAMING_CHAIR],
+            ['gamer-zone/accesorios-gamer-zone', MOUSE],
             ['home-office/all-in-one', ALL_IN_ONE],
             ['home-office/escaner', PRINTER],
             ['home-office/impresoras', PRINTER],
             ['home-office/macbook', NOTEBOOK],
             ['home-office/monitores', MONITOR],
             ['home-office/notebooks', NOTEBOOK],
+            ['home-office/accesorios-home-office', RAM],
             ['smart-home/audifonos', HEADPHONES],
             ['smart-home/ipad', TABLET],
             ['smart-home/smart-tv', TELEVISION],
