@@ -102,19 +102,9 @@ class Wom(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
-        session.headers['authorization'] = \
-            'Bearer Zrm-3HalMaeFIiR83iiKZCzCn7FK2BNSqs8_VLfSfBE'
 
-        params = {
-            "query": "query getContentfulPlansProducts($productType: String) "
-                     "{ productCollection(where: { productType: "
-                     "$productType }) { total items { referenceId name "
-                     "context } } }", "variables": {"productType": "plan"}}
-
-        response = session.post('https://graphql.contentful.com/content/'
-                                'v1/spaces/vlub6abkwzvo/environments/master',
-                                json=params)
+        response = session.get('https://store.wom.cl/page-data/sq/d/'
+                               '1342060432.json')
 
         data = response.json()
         variants = [
@@ -123,13 +113,12 @@ class Wom(Store):
         ]
         products = []
 
-        for product_entry in data['data']['productCollection']['items']:
-            plan_name = product_entry['name']
-            product_data = json.loads(product_entry['context'])
-
-            if not product_data['individuales'] or 'Womers' in plan_name:
+        for product_entry in data['data']['allContentfulProduct']['nodes']:
+            if not product_entry['offer'] and not product_entry['offerPdp']:
                 continue
 
+            plan_name = product_entry['name']
+            product_data = json.loads(product_entry['context']['context'])
             plan_price = Decimal(product_data['price'])
 
             for variant in variants:
