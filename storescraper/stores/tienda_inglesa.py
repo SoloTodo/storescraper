@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, check_ean13
 
 
 class TiendaInglesa(Store):
@@ -74,7 +74,8 @@ class TiendaInglesa(Store):
         name = json_data['Info']['Name']
         description = json_data['Info']['ProductObs']
         sku = json_data['Info']['ProductCode']
-        ean = json_data['Info']['ProductBarCode']
+        raw_ean = json_data['Info']['ProductBarCode']
+        ean = raw_ean if check_ean13(raw_ean) else None
         price = Decimal(str(json_data['Prices'][0]['Price']))
         stock = json_data['QuickBuy']['StockMax']
 
