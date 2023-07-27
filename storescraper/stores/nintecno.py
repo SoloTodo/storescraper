@@ -82,7 +82,8 @@ class Nintecno(Store):
         key = str(json_data['sku'])
         description = json_data['description']
 
-        if soup.find('button', {'name': 'add-to-cart'}):
+        if json_data['offers'][0]['availability'] == \
+                'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
