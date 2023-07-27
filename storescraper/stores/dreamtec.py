@@ -86,7 +86,13 @@ class Dreamtec(Store):
 
         name = soup.find('h1').text.strip()
         description = soup.find('div', {'id': 'nav-home'}).text.strip()
-        sku = str(soup.find('span', 'sku-detalle').find('strong').text)
+        sku_detalle_tags = soup.findAll('span', 'sku-detalle')
+        sku = str(sku_detalle_tags[0].find('strong').text)
+
+        if len(sku_detalle_tags) == 3:
+            part_number = str(sku_detalle_tags[1].find('strong').text)
+        else:
+            part_number = None
 
         price_tag = soup.find('strong', 'fs-3')
         if not price_tag:
@@ -112,6 +118,7 @@ class Dreamtec(Store):
             offer_price,
             'CLP',
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls,
             description=description
         )
