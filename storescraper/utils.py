@@ -8,14 +8,15 @@ import re
 import math
 
 import requests
-from seleniumwire import webdriver
 
 
 CLP_BLACKLIST = ['CLP$', 'CLP', 'precio', 'internet', 'normal',
                  '$', '.', ',', '&nbsp;', '\r', '\n', '\t', '\xa0']
 
 
-def remove_words(text, blacklist=CLP_BLACKLIST):
+def remove_words(text, blacklist=None):
+    blacklist = blacklist if blacklist is not None else CLP_BLACKLIST
+
     for word in blacklist:
         text = text.replace(word, '')
 
@@ -137,40 +138,11 @@ CF_REQUEST_HEADERS = {
 }
 
 
-def trim(text):
-    return ' '.join(text.split())
-
-
-class HeadlessChrome:
-    def __init__(self, images_enabled=False, proxy=None, headless=True,
-                 timeout=30, user_agent=None):
-        options = webdriver.ChromeOptions()
-        if headless:
-            options.add_argument('headless')
-        if not images_enabled:
-            options.add_argument('--blink-settings=imagesEnabled=false')
-        if user_agent:
-            options.add_argument('--user-agent=' + user_agent)
-
-        options.add_argument("start-maximized")
-        options.add_experimental_option("excludeSwitches",
-                                        ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-
-        seleniumwire_options = {}
-        if proxy:
-            seleniumwire_options['proxy'] = {
-                'http': proxy,
-                'https': proxy
-            }
-
-        self.driver = webdriver.Chrome(
-            chrome_options=options, seleniumwire_options=seleniumwire_options)
-        self.driver.set_page_load_timeout(timeout)
-        self.driver.header_overrides = CF_REQUEST_HEADERS
-
-    def __enter__(self):
-        return self.driver
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.driver.close()
+def parse_categories_from_url_extensions(url_extensions):
+    # Extracts the unique categories from the given list, which is assumed to
+    # come as a list of (path, category) tuples
+    cats = []
+    for _category_path, category in url_extensions:
+        if category not in cats:
+            cats.append(category)
+    return cats

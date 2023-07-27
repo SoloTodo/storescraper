@@ -11,7 +11,8 @@ from storescraper.categories import CPU_COOLER, MOTHERBOARD, PROCESSOR, RAM, \
     HEADPHONES, USB_FLASH_DRIVE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, \
+    parse_categories_from_url_extensions
 
 
 class InforIngen(Store):
@@ -37,11 +38,7 @@ class InforIngen(Store):
 
     @classmethod
     def categories(cls):
-        cats = []
-        for category_id, category in cls.url_extensions:
-            if category not in cats:
-                cats.append(category)
-        return cats
+        return parse_categories_from_url_extensions(cls.url_extensions)
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):

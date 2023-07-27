@@ -300,6 +300,7 @@ from .next_pc import NextPc
 from .new_game import NewGame
 from .nemz import Nemz
 from .noe_computacion import NoeComputacion
+from .nintecno import Nintecno
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notebooks_ya import NotebooksYa
