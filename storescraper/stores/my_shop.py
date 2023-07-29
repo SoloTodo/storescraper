@@ -111,7 +111,9 @@ class MyShop(StoreWithUrlExtensions):
         normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
         stock_p = soup.find('p', 'stock in-stock')
-        if stock_p:
+        if 'PREVENTA' in description.upper():
+            stock = 0
+        elif stock_p:
             if 'más de' in stock_p.text.lower():
                 stock = -1
             else:
