@@ -7,87 +7,81 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, \
     PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, \
-    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE
+    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class TecnoMas(Store):
+class TecnoMas(StoreWithUrlExtensions):
     domain = 'https://www.tecnomas.cl/'
 
-    @classmethod
-    def categories(cls):
-        return [
-            VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, PROCESSOR, MOTHERBOARD,
-            SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, COMPUTER_CASE,
-            EXTERNAL_STORAGE_DRIVE
-        ]
+    url_extensions = [
+        ['Notebooks', NOTEBOOK],
+        ['Notebooks Reacondicionados', NOTEBOOK],
+        ['Macbook', NOTEBOOK],
+        ['Apple', NOTEBOOK],
+        ['SSD - Disco Sólido', SOLID_STATE_DRIVE],
+        ['HDD - Disco Duros', STORAGE_DRIVE],
+        ['Monitores', MONITOR],
+        ['Procesadores', PROCESSOR],
+        ['Impresoras de Hogar', PRINTER],
+        ['Placas Madre', MOTHERBOARD],
+        ['Impresoras de Oficina', PRINTER],
+        ['Impresoras', PRINTER],
+        ['Almacenamiento', SOLID_STATE_DRIVE],
+        ['Teclados y Mouse', MOUSE],
+        ['Tarjetas de Video', VIDEO_CARD],
+        ['All in One (AIO)', ALL_IN_ONE],
+        ['AIOs Reacondicionados', ALL_IN_ONE],
+        ['PC Oficina', ALL_IN_ONE],
+        ['RAM', RAM],
+        ['SO-DIMM', RAM],
+        ['Gabinetes', COMPUTER_CASE],
+        ['Almacenamiento Externo', EXTERNAL_STORAGE_DRIVE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['Notebooks', NOTEBOOK],
-            ['Notebooks Reacondicionados', NOTEBOOK],
-            ['SSD - Disco Sólido', SOLID_STATE_DRIVE],
-            ['Monitores', MONITOR],
-            ['Procesadores', PROCESSOR],
-            ['Impresoras de Hogar', PRINTER],
-            ['Placas Madre', MOTHERBOARD],
-            ['Impresoras de Oficina', PRINTER],
-            ['Impresoras', PRINTER],
-            ['Almacenamiento', SOLID_STATE_DRIVE],
-            ['Teclados y Mouse', MOUSE],
-            ['Tarjetas de Video', VIDEO_CARD],
-            ['All in One (AIO)', ALL_IN_ONE],
-            ['AIOs Reacondicionados', ALL_IN_ONE],
-            ['RAM', RAM],
-            ['SO-DIMM', RAM],
-            ['Gabinetes', COMPUTER_CASE],
-            ['Almacenamiento Externo', EXTERNAL_STORAGE_DRIVE],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 0
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
+        page = 0
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
 
-                facet_filters = urllib.parse.quote(json.dumps(
-                    [["category:{}".format(url_extension)]]
-                ))
+            facet_filters = urllib.parse.quote(json.dumps(
+                [['category:{}'.format(url_extension)]]
+            ))
 
-                payload = {
-                    "requests": [
-                        {
-                            "indexName": "Product_production",
-                            "params": "facetFilters={}&hitsPerPage=48"
-                                      "&page={}".format(facet_filters, page)
-                        }
-                    ]
-                }
+            payload = {
+                'requests': [
+                    {
+                        'indexName': 'Product_production',
+                        'params': 'facetFilters={}&hitsPerPage=48'
+                                  '&page={}'.format(facet_filters, page)
+                    }
+                ]
+            }
 
-                response = session.post(
-                    'https://wnp9zg9fi5-dsn.algolia.net/1/indexes/*/queries?'
-                    'x-algolia-api-key=290ed9c571e4c27390d1e57e291379f0&'
-                    'x-algolia-application-id=WNP9ZG9FI5',
-                    json=payload
-                )
+            response = session.post(
+                'https://wnp9zg9fi5-dsn.algolia.net/1/indexes/*/queries?'
+                'x-algolia-api-key=290ed9c571e4c27390d1e57e291379f0&'
+                'x-algolia-application-id=WNP9ZG9FI5',
+                json=payload
+            )
 
-                json_data = response.json()
+            json_data = response.json()
 
-                product_containers = json_data['results'][0]['hits']
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_urls.append(
-                        '{}producto/{}'.format(cls.domain, container['slug']))
-                page += 1
+            product_containers = json_data['results'][0]['hits']
+            if not product_containers:
+                if page == 0:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_urls.append(
+                    '{}producto/{}'.format(cls.domain, container['slug']))
+            page += 1
         return product_urls
 
     @classmethod
