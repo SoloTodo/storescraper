@@ -7,12 +7,11 @@ from decimal import Decimal
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
     VIDEO_GAME_CONSOLE, NOTEBOOK
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, \
-    parse_categories_from_url_extensions, remove_words
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, remove_words
 
 
-class Nintecno(Store):
+class Nintecno(StoreWithUrlExtensions):
     url_extensions = [
         ['audifonos', HEADPHONES],
         ['parlantes-inalambricos', STEREO_SYSTEM],
@@ -23,50 +22,36 @@ class Nintecno(Store):
     ]
 
     @classmethod
-    def categories(cls):
-        return parse_categories_from_url_extensions(cls.url_extensions)
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         product_urls = []
         session = session_with_proxy(extra_args)
+        page = 1
 
-        for category_path, local_category in cls.url_extensions:
-            if local_category != category:
-                continue
+        while True:
+            if page >= 50:
+                raise Exception('Page overflow: ' + url_extension)
 
-            page = 1
-            local_urls = []
-            done = False
+            url_webpage = 'https://nintecno.cl/index.php/' \
+                          'product-category/{}/?page={}'.format(
+                            url_extension, page)
 
-            while not done:
-                if page >= 50:
-                    raise Exception('Page overflow: ' + category_path)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                url_webpage = 'https://nintecno.cl/index.php/' \
-                              'product-category/{}/?page={}'.format(
-                                category_path, page)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            link_containers = soup.findAll('div', 'product')
 
-                print(url_webpage)
-                response = session.get(url_webpage)
+            if not link_containers:
+                logging.warning('Empty category: ' + url_webpage)
+                break
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                link_containers = soup.findAll('div', 'product')
+            for link_container in link_containers:
+                product_url = link_container.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
 
-                if not link_containers:
-                    logging.warning('Empty category: ' + url_webpage)
-                    break
-
-                for link_container in link_containers:
-                    product_url = link_container.find('a')['href']
-                    if product_url in local_urls:
-                        done = True
-                        break
-                    local_urls.append(product_url)
-
-                page += 1
-
-            product_urls.extend(local_urls)
+            page += 1
 
         return product_urls
 

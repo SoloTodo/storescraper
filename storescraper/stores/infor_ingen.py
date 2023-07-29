@@ -10,12 +10,11 @@ from storescraper.categories import CPU_COOLER, MOTHERBOARD, PROCESSOR, RAM, \
     COMPUTER_CASE, POWER_SUPPLY, CASE_FAN, MONITOR, KEYBOARD_MOUSE_COMBO, \
     HEADPHONES, USB_FLASH_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, \
-    parse_categories_from_url_extensions
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy
 
 
-class InforIngen(Store):
+class InforIngen(StoreWithUrlExtensions):
     url_extensions = [
         ['placas-madres', MOTHERBOARD],
         ['procesadores', PROCESSOR],
@@ -37,44 +36,35 @@ class InforIngen(Store):
     ]
 
     @classmethod
-    def categories(cls):
-        return parse_categories_from_url_extensions(cls.url_extensions)
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         product_urls = []
         session = session_with_proxy(extra_args)
+        page = 1
 
-        for category_path, local_category in cls.url_extensions:
-            if local_category != category:
-                continue
+        while True:
+            if page >= 50:
+                raise Exception('Page overflow: ' + url_extension)
 
-            page = 1
+            url_webpage = 'https://store.infor-ingen.com/' \
+                          'categoria-producto/{}/page/{}/'.format(
+                            url_extension, page)
 
-            while True:
-                if page >= 50:
-                    raise Exception('Page overflow: ' + category_path)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                url_webpage = 'https://store.infor-ingen.com/' \
-                              'categoria-producto/{}/page/{}/'.format(
-                                category_path, page)
+            if response.status_code == 404:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-                print(url_webpage)
-                response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            link_containers = soup.findAll('li', 'product')
 
-                if response.status_code == 404:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_path)
-                    break
+            for link_container in link_containers:
+                product_url = link_container.find('a')['href']
+                product_urls.append(product_url)
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                link_containers = soup.findAll('li', 'product')
-
-                for link_container in link_containers:
-                    product_url = link_container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 

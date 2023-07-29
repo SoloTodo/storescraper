@@ -136,13 +136,3 @@ CF_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) '
                   'Gecko/20100101 Firefox/84.0'
 }
-
-
-def parse_categories_from_url_extensions(url_extensions):
-    # Extracts the unique categories from the given list, which is assumed to
-    # come as a list of (path, category) tuples
-    cats = []
-    for _category_path, category in url_extensions:
-        if category not in cats:
-            cats.append(category)
-    return cats
