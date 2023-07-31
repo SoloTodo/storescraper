@@ -4,100 +4,99 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import *
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class AdisStore(Store):
+class AdisStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['452-tarjeta_sd', MEMORY_CARD],
+        ['511-notebook', NOTEBOOK],
+        ['512-probook', NOTEBOOK],
+        ['513-aio_todo_en_uno', ALL_IN_ONE],
+        ['514-disco_duro_interno', STORAGE_DRIVE],
+        ['515-memoria_ram', RAM],
+        ['516-pendrive', USB_FLASH_DRIVE],
+        ['517-disco_estado_solido', SOLID_STATE_DRIVE],
+        ['518-laptop', NOTEBOOK],
+        ['519-teclado', KEYBOARD],
+        ['520-elitebook', NOTEBOOK],
+        ['521-combo_teclado_y_mouse', KEYBOARD_MOUSE_COMBO],
+        ['523-monitor', MONITOR],
+        ['526-kit_teclado_y_mouse', KEYBOARD_MOUSE_COMBO],
+        ['527-mouse_cableado', MOUSE],
+        ['529-mouse_gamer', MOUSE],
+        ['530-teclado_gamer', KEYBOARD],
+        ['531-tablet', TABLET],
+        ['532-procesador', PROCESSOR],
+        ['533-mouse_inalambrico', MOUSE],
+        ['534-memoria_ram_para_servidor', RAM],
+        ['535-mouse_inalanbrico', MOUSE],
+        ['536-mouse', MOUSE],
+        ['537-mouse_mp_com', MOUSE],
+        ['539-juego_de_teclado_y_raton', KEYBOARD_MOUSE_COMBO],
+        ['540-teclado_mp_com', KEYBOARD],
+        ['542-disco_duro', STORAGE_DRIVE],
+        ['544-ps2usb', MOUSE],
+        ['545-mosue_gamer', MOUSE],
+        ['546-refrigeracion_para_procesador', CPU_COOLER],
+        ['548-disco_duro_para_servidor', STORAGE_DRIVE],
+        ['550-parlante', STEREO_SYSTEM],
+        ['392-memoria_ram', RAM],
+        ['393-fuente_de_poder', POWER_SUPPLY],
+        ['394-disco_estado_solido', SOLID_STATE_DRIVE],
+        ['395-gabinete', COMPUTER_CASE],
+        ['396-tarjeta_madre', MOTHERBOARD],
+        ['397-mouse_cableado', MOUSE],
+        ['398-refrigeracion_liquida_para_procesador', CPU_COOLER],
+        ['399-audifonos', HEADPHONES],
+        ['400-tarjeta_de_video', VIDEO_CARD],
+        ['401-tarjeta_micro_sd', MEMORY_CARD],
+        ['403-teclado', KEYBOARD],
+        ['404-ssd_disco_de_estado_solido', SOLID_STATE_DRIVE],
+        ['406-tarjeta_sd', MEMORY_CARD],
+        ['501-disco_duro', STORAGE_DRIVE],
+        ['502-placa_madre', MOTHERBOARD],
+        ['505-power_supply', POWER_SUPPLY],
+        ['508-pendrive', USB_FLASH_DRIVE],
+        ['509-procesador', PROCESSOR],
+        ['408-tarjetas_de_memoria_flash', MEMORY_CARD],
+        ['410-prendrive', USB_FLASH_DRIVE],
+        ['562-ipad', TABLET],
+        ['563-macbook', NOTEBOOK],
+        ['564-imac', ALL_IN_ONE],
+        ['566-teclado_apple', KEYBOARD],
+        ['567-audifonos', HEADPHONES],
+        ['568-mouse_inalambrico', MOUSE],
+        ['570-notebook', NOTEBOOK],
+        ['571-tablet', TABLET],
+        ['572-reloj_watch', WEARABLE],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            KEYBOARD_MOUSE_COMBO,
-            MOUSE,
-            KEYBOARD,
-            NOTEBOOK,
-            ALL_IN_ONE,
-            TABLET,
-            CELL,
-            COMPUTER_CASE,
-            POWER_SUPPLY,
-            RAM,
-            PROCESSOR,
-            MEMORY_CARD,
-            VIDEO_CARD,
-            MOTHERBOARD,
-            USB_FLASH_DRIVE,
-            MONITOR,
-            TELEVISION,
-            STEREO_SYSTEM,
-            PRINTER,
-            UPS,
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['accesorios-y-perifericos/auriculares-y-manos-libres',
-                HEADPHONES],
-            ['accesorios-y-perifericos/combos-de-teclado-y-mouses',
-                KEYBOARD_MOUSE_COMBO],
-            ['accesorios-y-perifericos/mouses', MOUSE],
-            ['accesorios-y-perifericos/teclados-y-teclados-de-numeros',
-                KEYBOARD],
-            ['computadores-y-notebooks/notebooks', NOTEBOOK],
-            ['computadores-y-notebooks/all-in-one', ALL_IN_ONE],
-            ['computadores-y-notebooks/pc-de-escritorio', ALL_IN_ONE],
-            ['computadores-y-notebooks/tablets', TABLET],
-            ['audio-video-tecnologia/celulares', CELL],
-            ['almacenamiento-partes-y-piezas/cajas-gabinetes', COMPUTER_CASE],
-            ['almacenamiento-partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
-            ['almacenamiento-partes-y-piezas/modulos-ram-genericos', RAM],
-            ['almacenamiento-partes-y-piezas/modulos-ram-propietarios', RAM],
-            ['almacenamiento-partes-y-piezas/procesadores', PROCESSOR],
-            ['almacenamiento-partes-y-piezas/tarjetas-de-memoria-flash',
-             MEMORY_CARD],
-            ['almacenamiento-partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
-            ['almacenamiento-partes-y-piezas/tarjetas-madre-placas-madre',
-             MOTHERBOARD],
-            ['almacenamiento-partes-y-piezas/unidades-flash-usb',
-             USB_FLASH_DRIVE],
-            ['audio-video-tecnologia/monitores', MONITOR],
-            ['audio-video-tecnologia/televisores', TELEVISION],
-            ['audio-video-tecnologia/audifonos', HEADPHONES],
-            ['audio-video-tecnologia/audio-parlantes', STEREO_SYSTEM],
-            ['impresion-y-escaner/impresoras-ink-jet', PRINTER],
-            ['impresion-y-escaner/impresoras-laser', PRINTER],
-            ['impresion-y-escaner/impresoras-multifuncionales', PRINTER],
-            ['proteccion-de-poder-y-ups/ups-respaldo-de-energia', UPS],
-            ['mundo-apple/imac-apple', ALL_IN_ONE],
-            ['mundo-apple/ipad', TABLET],
-            ['mundo-apple/apple-macbook', NOTEBOOK],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://adis-store.cl/categoria/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    if 'shop' in product_url:
-                        product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://adis-store.cl/{}?page={}'.format(
+                url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.find(
+                'div', {'id': 'js-product-list'}).findAll(
+                'article', 'product-miniature')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
 
         return product_urls
 
@@ -108,44 +107,16 @@ class AdisStore(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        shortlink = soup.find('link', {'rel': 'shortlink'})
-
-        if not shortlink:
-            return []
-
-        key = shortlink['href'].split('p=')[1]
-
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)['@graph'][-1]
-        name = json_data['name'][:256]
-        sku = json_data['sku']
-
-        if 'description' in json_data:
-            description = json_data['description']
-        else:
-            description = None
-
-        price = Decimal(str(soup.find(
-            'span', 'woocommerce-Price-amount')
-            .find('bdi').text.replace('$', '').replace('.', '')))
-        part_number = soup.find('span', 'stl_codenum').text.strip()
-
-        quantity_tag = soup.find('div', 'qty-box')
-
-        if quantity_tag:
-            input_stock = quantity_tag.find('input')
-            if input_stock['max']:
-                stock = int(input_stock['max'])
-            else:
-                stock = -1
-        else:
-            stock = -1
-
-        picture_urls = []
-        picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
-        for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'])
+        json_tag = soup.find('div', 'js-product-details')
+        json_data = json.loads(json_tag['data-product'])
+        name = json_data['name']
+        key = str(json_data['id'])
+        stock = json_data['quantity']
+        price = Decimal(json_data['price_amount'])
+        part_number = json_data['reference']
+        picture_urls = [image['bySize']['large_default']['url'] for image in
+                        json_data['images']]
+        description = html_to_markdown(json_data['description'])
 
         p = Product(
             name,
@@ -158,7 +129,7 @@ class AdisStore(Store):
             price,
             price,
             'CLP',
-            sku=sku,
+            sku=part_number,
             picture_urls=picture_urls,
             description=description,
             part_number=part_number
