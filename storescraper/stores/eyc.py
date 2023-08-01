@@ -76,6 +76,7 @@ class Eyc(StoreWithUrlExtensions):
             condition = 'https://schema.org/NewCondition'
 
         sku = soup.find('input', {'name': 'id_product'})['value']
+        part_number = soup.find('span', {'itemprop': 'sku'}).text.strip()
         stock = -1
         price = Decimal(soup.find('span', 'price')['content'])
         picture_urls = [tag['src'] for tag in
@@ -93,6 +94,7 @@ class Eyc(StoreWithUrlExtensions):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            condition=condition
+            condition=condition,
+            part_number=part_number
         )
         return [p]
