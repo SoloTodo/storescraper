@@ -7,66 +7,49 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR, PROCESSOR, STEREO_SYSTEM, \
     VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, VIDEO_GAME_CONSOLE, WEARABLE, CELL
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class TodoGeek(Store):
+class TodoGeek(StoreWithUrlExtensions):
     OPEN_BOX_COLLECTION = 401041227988
     REFURBISHED_COLLECTION = 401041326292
     ESPERALO_Y_PAGA_MENOS_COLLECTION = 411533082836
 
-    @classmethod
-    def categories(cls):
-        return [
-            PROCESSOR,
-            VIDEO_CARD,
-            MONITOR,
-            STEREO_SYSTEM,
-            NOTEBOOK,
-            GAMING_CHAIR,
-            WEARABLE,
-            VIDEO_GAME_CONSOLE,
-            CELL,
-        ]
+    url_extensions = [
+        ['procesadores', PROCESSOR],
+        ['tarjetas-graficas', VIDEO_CARD],
+        ['monitores', MONITOR],
+        ['parlantes-inteligentes', STEREO_SYSTEM],
+        ['laptops-computer', NOTEBOOK],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['watches', WEARABLE],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['celulares', CELL],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['procesadores', PROCESSOR],
-            ['tarjetas-graficas', VIDEO_CARD],
-            ['monitores', MONITOR],
-            ['parlantes-inteligentes', STEREO_SYSTEM],
-            ['laptops-computer', NOTEBOOK],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['watches', WEARABLE],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['celulares', CELL],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://todogeek.cl/collections/{}?' \
-                              'page={}'.format(url_extension, page)
-                res = session.get(url_webpage)
-                soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.findAll('product-card')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find(
-                        'h3', 'product-card_title').find('a')['href']
-                    product_urls.append('https://todogeek.cl' + product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://todogeek.cl/collections/{}?' \
+                          'page={}'.format(url_extension, page)
+            res = session.get(url_webpage)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            product_containers = soup.findAll('product-card')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find(
+                    'h3', 'product-card_title').find('a')['href']
+                product_urls.append('https://todogeek.cl' + product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -126,8 +109,9 @@ class TodoGeek(Store):
         for variant in json_data['variants']:
             key = str(variant['id'])
             name = variant['name']
-            price = (Decimal(variant['price']) /
-                     Decimal(100)).quantize(0)
+            offer_price = (Decimal(variant['price']) /
+                           Decimal(100)).quantize(0)
+            normal_price = (offer_price * Decimal('1.035')).quantize(0)
 
             if preventa or a_pedido or \
                     cls.ESPERALO_Y_PAGA_MENOS_COLLECTION in collections or \
@@ -154,8 +138,8 @@ class TodoGeek(Store):
                 url,
                 key,
                 stock,
-                price,
-                price,
+                normal_price,
+                offer_price,
                 'CLP',
                 picture_urls=picture_urls,
                 description=description,

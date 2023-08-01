@@ -5,134 +5,116 @@ from storescraper.categories import NOTEBOOK, CELL, TABLET, WEARABLE, \
     WASHING_MACHINE, OVEN, DISH_WASHER, VACUUM_CLEANER, AIR_CONDITIONER, \
     MONITOR
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy
 
 import json
 
 
-class SamsungChile(Store):
+class SamsungChile(StoreWithUrlExtensions):
+    url_extensions = [
+        ('01010000', CELL),
+        ('01020000', TABLET),
+        ('01030000', WEARABLE),
+        ('01040000', HEADPHONES),
+        ('01050000', CELL_ACCESORY),
+        ('04010000', TELEVISION),
+        ('05010000', STEREO_SYSTEM),
+        ('08030000', REFRIGERATOR),
+        ('08010000', WASHING_MACHINE),
+        ('08110000', OVEN),
+        ('08090000', DISH_WASHER),
+        ('08070000', VACUUM_CLEANER),
+        ('08050000', AIR_CONDITIONER),
+        ('08080000', OVEN),
+        ('07010000', MONITOR),
+        ('03010000', NOTEBOOK),
+    ]
+
     @classmethod
-    def categories(cls):
-        cats = []
-
-        for cat_id, path, cat in cls._category_info():
-            if cat not in cats:
-                cats.append(cat)
-
-        return cats
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_info = cls._category_info()
-
-        urls = []
-
-        for category_id, category_path, local_category \
-                in category_info:
-            if local_category != category:
-                continue
-
-            url = 'https://www.samsung.com/cl/{}'.format(category_path)
-            urls.append(url)
-
-        return urls
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
+        return url_extension
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        category_info = cls._category_info()
         session = session_with_proxy(extra_args)
-
-        api_url = 'https://searchapi.samsung.com/v6/front/b2c/product/' \
-                  'finder/newhybris?siteCode=cl&start=0&num=600' \
-                  '&onlyFilterInfoYN=N'
+        RESULTS_PER_PAGE = 100
+        api_url = ('https://searchapi.samsung.com/v6/front/b2c/product/'
+                   'finder/newhybris?siteCode=cl&num={}'
+                   '&onlyFilterInfoYN=N'.format(RESULTS_PER_PAGE))
 
         products = []
 
-        for category_id, category_path, category_name in category_info:
+        for category_id, category_name in cls.url_extensions:
             if category_name != category:
                 continue
 
-            category_endpoint = api_url + '&type=' + category_id
+            offset = 0
+            while True:
+                if offset > RESULTS_PER_PAGE * 10:
+                    raise Exception('Page overflow')
 
-            json_data = json.loads(
-                session.get(category_endpoint).text)['response']
-            product_list = json_data['resultData']['productList']
+                category_endpoint = api_url + '&type={}&start={}'.format(
+                    category_id, offset)
+                print(category_endpoint)
 
-            for product in product_list:
-                for model in product['modelList']:
-                    name = model['displayName']
-                    variant_specs = []
+                response = session.get(category_endpoint)
+                json_data = json.loads(response.text)['response']
+                product_list = json_data['resultData']['productList']
 
-                    for spec_entry in model['fmyChipList']:
-                        variant_specs.append(spec_entry['fmyChipName'].strip())
+                if not product_list:
+                    break
 
-                    if variant_specs:
-                        name += ' ({})'.format(' / '.join(variant_specs))
+                for product in product_list:
+                    for model in product['modelList']:
+                        name = model['displayName']
+                        variant_specs = []
 
-                    if 'www.samsung.com' in model['pdpUrl']:
-                        model_url = 'https:{}'.format(model['pdpUrl'])
-                    else:
-                        model_url = 'https://www.samsung.com{}'\
-                            .format(model['pdpUrl'])
-                    key = model['modelCode']
-                    picture_urls = ['https:' + model['thumbUrl']]
+                        for spec_entry in model['fmyChipList']:
+                            variant_specs.append(spec_entry['fmyChipName'].strip())
 
-                    for picture in model['galleryImage'] or []:
-                        picture_urls.append('https:' + picture)
+                        if variant_specs:
+                            name += ' ({})'.format(' / '.join(variant_specs))
 
-                    if model['promotionPrice']:
-                        price = Decimal(model['promotionPrice'])
-                    elif model['priceDisplay']:
-                        price = Decimal(model['priceDisplay'])
-                    else:
-                        price = Decimal(0)
-                    price = price.quantize(0)
+                        if 'www.samsung.com' in model['pdpUrl']:
+                            model_url = 'https:{}'.format(model['pdpUrl'])
+                        else:
+                            model_url = 'https://www.samsung.com{}'\
+                                .format(model['pdpUrl'])
+                        key = model['modelCode']
+                        picture_urls = ['https:' + model['thumbUrl']]
 
-                    if model['stockStatusText'] == 'inStock':
-                        stock = -1
-                    else:
-                        stock = 0
+                        for picture in model['galleryImage'] or []:
+                            picture_urls.append('https:' + picture)
 
-                    products.append(Product(
-                        '{} ({})'.format(name, key),
-                        cls.__name__,
-                        category,
-                        model_url,
-                        url,
-                        key,
-                        stock,
-                        price,
-                        price,
-                        'CLP',
-                        sku=key,
-                        picture_urls=picture_urls,
-                        allow_zero_prices=True
-                    ))
+                        if model['promotionPrice']:
+                            price = Decimal(model['promotionPrice'])
+                        elif model['priceDisplay']:
+                            price = Decimal(model['priceDisplay'])
+                        else:
+                            price = Decimal(0)
+                        price = price.quantize(0)
+
+                        if model['stockStatusText'] == 'inStock':
+                            stock = -1
+                        else:
+                            stock = 0
+
+                        products.append(Product(
+                            '{} ({})'.format(name, key),
+                            cls.__name__,
+                            category,
+                            model_url,
+                            url,
+                            key,
+                            stock,
+                            price,
+                            price,
+                            'CLP',
+                            sku=key,
+                            picture_urls=picture_urls,
+                            allow_zero_prices=True
+                        ))
+                offset += RESULTS_PER_PAGE
 
         return products
-
-    @classmethod
-    def _category_info(cls):
-        return [
-            ('01010000', 'smartphones/all-smartphones', CELL),
-            ('01020000', 'tablets/all-tablets', TABLET),
-            ('01030000', 'watches/all-watches', WEARABLE),
-            ('01040000', 'audio-sound', HEADPHONES),
-            ('01050000', 'mobile-accessories/all-mobile-accessories/',
-             CELL_ACCESORY),
-            ('04010000', 'tvs/all-tvs', TELEVISION),
-            ('05010000', 'audio-devices/all-audio-devices', STEREO_SYSTEM),
-            ('08030000', 'refrigerators/all-refrigerators', REFRIGERATOR),
-            ('08010000', 'washers-and-dryers/all-washers-and-dryers',
-             WASHING_MACHINE),
-            ('08110000', 'microwave-ovens/all-microwave-ovens', OVEN),
-            ('08090000', 'dishwashers/all-dishwashers', DISH_WASHER),
-            ('08070000', 'vacuum-cleaners/all-vacuum-cleaners',
-             VACUUM_CLEANER),
-            ('08050000', 'air-conditioners/all-air-conditioners',
-             AIR_CONDITIONER),
-            ('08080000', 'cooking-appliances/all-cooking-appliances', OVEN),
-            ('07010000', 'monitors/all-monitors', MONITOR),
-            ('03010000', 'computers/all-computers', NOTEBOOK),
-        ]
