@@ -29,7 +29,7 @@ class PlayFactory(StoreWithUrlExtensions):
         ['zona-gamer/refrigeracion-y-ventilacion', CPU_COOLER],
         ['zona-gamer/parlantes', STEREO_SYSTEM],
         ['computacion/gabinetes-pc', COMPUTER_CASE],
-        ['mobiliario', GAMING_CHAIR],
+        ['mobiliario/sillas-gamer-mobiliario', GAMING_CHAIR],
         ['imagen-y-video/monitores-para-pc', MONITOR],
     ]
 
