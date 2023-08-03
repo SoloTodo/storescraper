@@ -219,7 +219,7 @@ class Paris(Store):
             page = 0
 
             while True:
-                if page > 300:
+                if page > (15000 / cls.RESULTS_PER_PAGE):
                     raise Exception('Page overflow: ' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?sz={}&start={}' \
