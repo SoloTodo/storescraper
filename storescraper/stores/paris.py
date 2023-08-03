@@ -221,8 +221,8 @@ class Paris(Store):
                 if page > 300:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www.paris.cl/{}/?sz=40&start={}' \
-                               ''.format(category_path, page * 40)
+                category_url = 'https://www.paris.cl/{}/?sz=24&start={}' \
+                               ''.format(category_path, page * 24)
                 print(category_url)
                 response = session.get(category_url)
 
@@ -258,7 +258,7 @@ class Paris(Store):
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
-                        'value': 40 * page + idx + 1,
+                        'value': 24 * page + idx + 1,
                     })
 
                 page += 1
@@ -277,8 +277,8 @@ class Paris(Store):
             if page > 40:
                 raise Exception('Page overflow')
 
-            search_url = 'https://www.paris.cl/search?q={}&sz=40&start={}' \
-                .format(keyword, page * 40)
+            search_url = 'https://www.paris.cl/search?q={}&sz=24&start={}' \
+                .format(keyword, page * 24)
 
             soup = BeautifulSoup(session.get(search_url).text, 'html.parser')
             containers = soup.findAll('li', 'flex-item-products')
