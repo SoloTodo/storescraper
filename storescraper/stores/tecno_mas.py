@@ -14,8 +14,6 @@ from storescraper.utils import session_with_proxy, remove_words
 
 
 class TecnoMas(StoreWithUrlExtensions):
-    domain = 'https://www.tecnomas.cl/'
-
     url_extensions = [
         ['Notebooks', NOTEBOOK],
         ['Notebooks Reacondicionados', NOTEBOOK],
@@ -81,7 +79,8 @@ class TecnoMas(StoreWithUrlExtensions):
                 break
             for container in product_containers:
                 product_urls.append(
-                    '{}producto/{}'.format(cls.domain, container['slug']))
+                    'https://www.tecnomas.cl/producto/{}'.format(
+                        container['slug']))
             page += 1
         return product_urls
 
