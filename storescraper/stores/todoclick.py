@@ -86,7 +86,6 @@ class Todoclick(StoreWithUrlExtensions):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        # TODO invert key and sku
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
