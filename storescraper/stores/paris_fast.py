@@ -51,8 +51,9 @@ class ParisFast(Store):
                 if page > 150:
                     raise Exception('Page overflow:' + category_path)
 
-                category_url = 'https://www.paris.cl/{}/?start={}&sz=24'\
-                    .format(category_path, page * 24)
+                category_url = 'https://www.paris.cl/{}/?start={}&sz={}'\
+                    .format(category_path, page * Paris.RESULTS_PER_PAGE.
+                            Paris.RESULTS_PER_PAGE)
                 print(category_url)
                 response = session.get(category_url)
 
@@ -90,7 +91,8 @@ class ParisFast(Store):
                         product_to_update = product
 
                     product_to_update.positions.append(
-                        (section_name, 24 * page + idx + 1))
+                        (section_name,
+                         Paris.RESULTS_PER_PAGE * page + idx + 1))
 
                 page += 1
 

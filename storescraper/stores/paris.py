@@ -19,6 +19,7 @@ from storescraper import banner_sections as bs
 
 class Paris(Store):
     USER_AGENT = 'solotodobot'
+    RESULTS_PER_PAGE = 24
 
     category_paths = [
         ['electro/television', ['Television'], 'Electro > Televisión', 1],
@@ -221,8 +222,9 @@ class Paris(Store):
                 if page > 300:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www.paris.cl/{}/?sz=24&start={}' \
-                               ''.format(category_path, page * 24)
+                category_url = 'https://www.paris.cl/{}/?sz={}&start={}' \
+                               ''.format(category_path, cls.RESULTS_PER_PAGE,
+                                         page * cls.RESULTS_PER_PAGE)
                 print(category_url)
                 response = session.get(category_url)
 
@@ -258,7 +260,7 @@ class Paris(Store):
                     product_entries[product_url].append({
                         'category_weight': category_weight,
                         'section_name': section_name,
-                        'value': 24 * page + idx + 1,
+                        'value': cls.RESULTS_PER_PAGE * page + idx + 1,
                     })
 
                 page += 1
@@ -277,8 +279,9 @@ class Paris(Store):
             if page > 40:
                 raise Exception('Page overflow')
 
-            search_url = 'https://www.paris.cl/search?q={}&sz=24&start={}' \
-                .format(keyword, page * 24)
+            search_url = 'https://www.paris.cl/search?q={}&sz={}&start={}' \
+                .format(keyword, cls.RESULTS_PER_PAGE,
+                        page * cls.RESULTS_PER_PAGE)
 
             soup = BeautifulSoup(session.get(search_url).text, 'html.parser')
             containers = soup.findAll('li', 'flex-item-products')
