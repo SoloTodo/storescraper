@@ -71,7 +71,8 @@ class SamsungChile(StoreWithUrlExtensions):
                         variant_specs = []
 
                         for spec_entry in model['fmyChipList']:
-                            variant_specs.append(spec_entry['fmyChipName'].strip())
+                            variant_specs.append(
+                                spec_entry['fmyChipName'].strip())
 
                         if variant_specs:
                             name += ' ({})'.format(' / '.join(variant_specs))
