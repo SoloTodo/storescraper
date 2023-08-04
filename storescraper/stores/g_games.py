@@ -7,98 +7,70 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MOUSE, KEYBOARD, MONITOR, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, COMPUTER_CASE, RAM, GAMING_CHAIR, STEREO_SYSTEM, \
     TABLET, EXTERNAL_STORAGE_DRIVE, VIDEO_CARD, MOTHERBOARD, \
-    SOLID_STATE_DRIVE, MICROPHONE, POWER_SUPPLY, CPU_COOLER, MEMORY_CARD, \
+    SOLID_STATE_DRIVE, POWER_SUPPLY, CPU_COOLER, MEMORY_CARD, \
     ALL_IN_ONE, NOTEBOOK, WEARABLE, UPS
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class GGames(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            MOUSE,
-            KEYBOARD,
-            MONITOR,
-            HEADPHONES,
-            KEYBOARD_MOUSE_COMBO,
-            RAM,
-            COMPUTER_CASE,
-            GAMING_CHAIR,
-            STEREO_SYSTEM,
-            TABLET,
-            EXTERNAL_STORAGE_DRIVE,
-            VIDEO_CARD,
-            MOTHERBOARD,
-            SOLID_STATE_DRIVE,
-            MICROPHONE,
-            POWER_SUPPLY,
-            MEMORY_CARD,
-            ALL_IN_ONE,
-            NOTEBOOK,
-            WEARABLE,
-            UPS,
-        ]
+class GGames(StoreWithUrlExtensions):
+    url_extensions = [
+        ['mouse', MOUSE],
+        ['monitores', MONITOR],
+        ['headsets', HEADPHONES],
+        ['lifestyle', HEADPHONES],
+        ['sillas-gamers', GAMING_CHAIR],
+        ['accesorios-gamer', MONITOR],
+        ['teclado', KEYBOARD],
+        ['combos', KEYBOARD_MOUSE_COMBO],
+        ['parlantes-1', STEREO_SYSTEM],
+        ['smart-home/asistente-de-voz', STEREO_SYSTEM],
+        ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['refrigeracion', CPU_COOLER],
+        ['almacenamiento', SOLID_STATE_DRIVE],
+        ['gabinete', COMPUTER_CASE],
+        ['memoria-sd', MEMORY_CARD],
+        ['placa-madre', MOTHERBOARD],
+        ['memoria-ram', RAM],
+        ['all-in-one', ALL_IN_ONE],
+        ['notebook', NOTEBOOK],
+        ['tablet', TABLET],
+        ['accesorio-homeoffice', NOTEBOOK],
+        ['hd-portatil', EXTERNAL_STORAGE_DRIVE],
+        ['smart-home/smartwatch', WEARABLE],
+        ['ups', UPS],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['mouse', MOUSE],
-            ['monitores', MONITOR],
-            ['headsets', HEADPHONES],
-            ['lifestyle', HEADPHONES],
-            ['sillas-gamers', GAMING_CHAIR],
-            ['accesorios-gamer', MONITOR],
-            ['teclado', KEYBOARD],
-            ['combos', KEYBOARD_MOUSE_COMBO],
-            ['parlantes-1', STEREO_SYSTEM],
-            ['smart-home/asistente-de-voz', STEREO_SYSTEM],
-            ['componentes-pc/fuente-de-poder', POWER_SUPPLY],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['refrigeracion', CPU_COOLER],
-            ['almacenamiento', SOLID_STATE_DRIVE],
-            ['gabinete', COMPUTER_CASE],
-            ['memoria-sd', MEMORY_CARD],
-            ['placa-madre', MOTHERBOARD],
-            ['memoria-ram', RAM],
-            ['all-in-one', ALL_IN_ONE],
-            ['notebook', NOTEBOOK],
-            ['tablet', TABLET],
-            ['accesorio-homeoffice', NOTEBOOK],
-            ['hd-portatil', EXTERNAL_STORAGE_DRIVE],
-            ['smart-home/smartwatch', WEARABLE],
-            ['ups', UPS],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 30:
-                    raise Exception('page overflow: ' + url_extension)
+        page = 1
+        while True:
+            if page > 30:
+                raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://ggames.cl/collections/{}?page={}' \
-                    .format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
+            url_webpage = 'https://ggames.cl/collections/{}?page={}' \
+                .format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                data = response.text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'grid__item')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append('https://ggames.cl' + product_url)
-                page += 1
+            data = response.text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'grid__item')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append('https://ggames.cl' + product_url)
+            page += 1
         return product_urls
 
     @classmethod
