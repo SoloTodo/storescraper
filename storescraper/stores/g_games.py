@@ -86,7 +86,8 @@ class GGames(StoreWithUrlExtensions):
                         soup.find('div', 'product-single').
                         find('div', 'grid__item').findAll('img')
                         if tag.has_attr('src')]
-        if 'AGOTADO' in soup.find('dl', 'price').text.strip():
+        text_stock = soup.find('dl', 'price').text.strip().upper()
+        if 'AGOTADO' in text_stock or 'CONSULTAR' in text_stock:
             stock = 0
         else:
             stock = -1
