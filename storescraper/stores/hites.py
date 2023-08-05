@@ -231,7 +231,7 @@ class Hites(Store):
             ['celulares/smartphones/celulares-basicos', [CELL],
              'Inicio > Celulares > Smartphone > Celulares Basicos', 1],
 
-            ['celulares/accesorios-para-celulares/smartwatch', [WEARABLE],
+            ['celulares/wearables/smartwatch', [WEARABLE],
              'Inicio > Celulares > Accesorios para celulares > Smartwatch', 1],
             ['celulares/accesorios-para-celulares/audifonos', [HEADPHONES],
              'Inicio > Celulares > Accesorios para celulares > Audífonos', 1],
@@ -262,7 +262,7 @@ class Hites(Store):
                 response = session.get(category_url, timeout=60)
 
                 if response.url != category_url:
-                    raise Exception('Page mismatch. Expencting {} Got {}'
+                    raise Exception('Page mismatch. Expecting {} Got {}'
                                     ''.format(category_url, response.url))
 
                 if response.status_code in [404, 500]:
