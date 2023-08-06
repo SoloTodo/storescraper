@@ -197,6 +197,7 @@ from .infosep import Infosep
 from .infor_ingen import InforIngen
 from .ingtech import Ingtech
 from .intcomex import Intcomex
+from .interstock import Interstock
 from .invasion_gamer import InvasionGamer
 from .inverfin import Inverfin
 from .iprotech import Iprotech
