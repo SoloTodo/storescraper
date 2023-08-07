@@ -1,7 +1,5 @@
 from decimal import Decimal
 import json
-import logging
-import re
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
@@ -26,18 +24,31 @@ class LaCuracao(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        url_webpage = 'https://www.lacuracao.pe/webapp/wcs/stores/se' \
-            'rvlet/CategoryNavigationResultsGridScrollView?categoryI' \
-            'd=3074457345616720688&storeId=10151&pageSize=1000'
-        print(url_webpage)
-        data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, 'html.parser')
-        product_containers = soup.findAll('div', 'product')
-        if not product_containers:
-            logging.warning('Empty category')
-        for container in product_containers:
-            product_url = container.find('a')['href']
-            product_urls.append(product_url)
+        page = 1
+        done = False
+
+        while not done:
+            if page > 50:
+                raise Exception('Page overflow')
+
+            url_webpage = ('https://www.lacuracao.pe/curacao/marca-lg.html'
+                           '?brand=LG&p={}').format(page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+
+            if not product_containers:
+                break
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    done = True
+                    break
+                product_urls.append(product_url)
+
+            page += 1
         return product_urls
 
     @classmethod
@@ -47,38 +58,34 @@ class LaCuracao(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        if soup.find('div', 'error-lc-404'):
-            return []
-
-        key = re.search(r'id="ProductInfoName_(\d*)"',
-                        response.text).groups()[0].split('_')[-1]
-
-        name = soup.find('input', {'id': f'ProductInfoName_{key}'})[
-            'value'].strip()
-        sku = soup.find('span', {'id': f'product_SKU_{key}'}).text.split(
-            'SKU:')[-1].strip()
-        price = Decimal(str(soup.find(
-            'input', {'id': f'ProductInfoPrice_{key}'}
-        )['value']).replace(",", ""))
-
-        page_id = soup.find('meta', {'name': 'pageId'})['content']
-        stock_tag = soup.find('div', {'id': 'entitledItem_' + page_id})
-        json_stock = json.loads(stock_tag.text)[0]
-        if json_stock['buyable'] == 'true':
+        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        if soup.find('button', {'id': 'product-addtocart-button'}):
             stock = -1
         else:
             stock = 0
+        price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})[
+                'content'])
 
-        pictures_data = soup.find(
-            'div', {'id': 'ProductAngleProdImagesAreaProdList'})
-        if pictures_data:
-            picture_urls = ['https://www.lacuracao.pe' + tag['src'].replace(
-                '200x310', '646x1000') for tag in pictures_data.findAll('img')]
-        else:
+        picture_tag_candidates = soup.findAll(
+            'script', {'type': 'text/x-magento-init'})
+        for picture_tag_candidate in picture_tag_candidates:
+            if '[data-gallery-role=gallery-placeholder]' not in \
+                    picture_tag_candidate.text:
+                continue
+            pictures_data = json.loads(picture_tag_candidate.text)
             picture_urls = []
+            for entry in pictures_data[
+                '[data-gallery-role=gallery-placeholder]'][
+                    'mage/gallery/gallery']['data']:
+                picture_urls.append(entry['full'])
+            break
+        else:
+            picture_urls = None
 
-        description = html_to_markdown(
-            soup.find('div', {'id': f'product_longdescription_{key}'}).text)
+        description = html_to_markdown(str(
+            soup.find('div', 'product-view-bottom-content')))
 
         p = Product(
             name,
