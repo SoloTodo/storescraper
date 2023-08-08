@@ -122,7 +122,7 @@ class PlayFactory(StoreWithUrlExtensions):
 
             return products
         else:
-            sku_match = re.search(r'"postID":(\d+),', response.text)
+            sku_match = re.search(r'"postID":(\d+)', response.text)
             sku = sku_match.groups()[0]
             offer_price = Decimal(json_data['offers'][0]['price'])
             normal_price = (offer_price * Decimal('1.025')).quantize(0)
