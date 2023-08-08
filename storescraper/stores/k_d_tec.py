@@ -11,7 +11,7 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM, CELL
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class KDTec(Store):
@@ -166,8 +166,11 @@ class KDTec(Store):
         name = product_data['name']
         sku = product_data.get('sku', None)
         description = product_data['description']
-        offer_price = Decimal(product_data['offers']['price'])
-        normal_price = (offer_price * Decimal(1.02951)).quantize(0)
+        price_tags = soup.findAll('span', 'woocommerce-Price-amount')
+        assert len(price_tags) == 2
+
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
 
         input_qty = soup.find('input', 'qty')
         if input_qty:
