@@ -1,3 +1,4 @@
+import re
 from decimal import Decimal
 import json
 import logging
@@ -121,8 +122,8 @@ class PlayFactory(StoreWithUrlExtensions):
 
             return products
         else:
-            sku = soup.find('button', 'single_add_to_cart_button')[
-                'value'].strip()
+            sku_match = re.search(r'"postID":(\d+)', response.text)
+            sku = sku_match.groups()[0]
             offer_price = Decimal(json_data['offers'][0]['price'])
             normal_price = (offer_price * Decimal('1.025')).quantize(0)
             stock = 0
