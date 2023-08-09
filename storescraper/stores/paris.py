@@ -1,5 +1,4 @@
 import json
-import demjson3
 import logging
 import re
 from collections import defaultdict
@@ -305,21 +304,6 @@ class Paris(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        return cls._products_for_url(url, category, extra_args)
-
-    @classmethod
-    def _products_for_url(cls, url, category, extra_args, retries=5):
-        try:
-            return cls._get_product(url, category, extra_args)
-        except Exception:
-            if retries:
-                return cls._products_for_url(url, category, extra_args,
-                                             retries=retries - 1)
-            else:
-                raise
-
-    @classmethod
-    def _get_product(cls, url, category, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = cls.USER_AGENT
@@ -330,55 +314,43 @@ class Paris(Store):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        model = soup.find('h1', {'itemprop': 'name'})
+        product_match = re.search(
+            r'window.productJSON = ([\s\S]+)window.device', response.text)
+        product_data = json.loads(product_match.groups()[0])
 
-        if not model:
-            return []
-        json_script = soup.find('script', {'type': 'application/ld+json'})
-        if not json_script:
-            return []
-        try:
-            json_data = json.loads(json_script.text, strict=False)
-        except Exception:
-            json_data = demjson3.decode(json_script.text, strict=False)
+        brand = product_data.get('brand', 'Unknown')
+        name = '{} - {}'.format(brand, product_data['name'])
+        sku = product_data['id']
 
-        model = json_data['name']
-        if 'brand' in json_data:
-            brand = json_data['brand']
-            name = '{} - {}'.format(brand, model)
-        else:
-            name = 'Unknown - {}'.format(model)
-        sku = json_data['sku']
+        normal_price = None
+        offer_price = None
+        list_price = None
 
-        if soup.find('button', 'buy-it-now'):
-            stock = -1
-        else:
-            stock = 0
+        for price_entry in product_data['prices']:
+            if price_entry['priceBookId'] == 'clp-internet-prices':
+                normal_price = Decimal(remove_words(price_entry['price']))
+            elif price_entry['priceBookId'] == 'clp-cencosud-prices':
+                offer_price = Decimal(remove_words(price_entry['price']))
+            elif price_entry['priceBookId'] == 'clp-list-prices':
+                list_price = Decimal(remove_words(price_entry['price']))
 
-        price_tags = soup.findAll('div', 'price__text')
-        if len(price_tags) == 2:
-            offer_price = Decimal(remove_words(price_tags[0].text))
-            normal_price = Decimal(remove_words(price_tags[1].text))
-        elif len(price_tags) == 1:
-            price_text = price_tags[0].text.strip()
-            if price_text == 'N/A':
-                return []
-            normal_price = Decimal(remove_words(price_text))
+        if normal_price is None:
+            normal_price = list_price
+
+        assert normal_price is not None
+
+        if offer_price is None:
             offer_price = normal_price
+
+        stock = -1 if product_data['orderable'] else 0
+        picture_urls = [x['link'] for x in
+                        product_data['image_groups'][0]['images']]
+        raw_seller = product_data['seller']
+
+        if raw_seller == 'Paris.cl':
+            seller = None
         else:
-            raise Exception('Invalid number of tags')
-
-        picture_urls = []
-        pictures_tag = soup.find('ul', {'id': 'GTM_pdp_modal_zoom_mobile'})
-        if not pictures_tag:
-            pictures_tag = soup.find('div', 'box-thumbs')
-
-        for tag in pictures_tag.findAll('img'):
-            picture_url = tag['data-src'].split('?')[0]
-            if '.webm' in picture_url:
-                continue
-            picture_urls.append(
-                picture_url.replace(' ', '%20').replace('href=', ''))
+            seller = raw_seller
 
         video_urls = []
         for iframe in soup.findAll('iframe'):
@@ -400,7 +372,7 @@ class Paris(Store):
                 flixmedia_id = mpn
 
         description = html_to_markdown(
-            str(soup.find('div', {'id': 'collapseDetails'})))
+            str(soup.find('ul', 'pdp-product-info')))
 
         reviews_endpoint = 'https://api.bazaarvoice.com/data/display/' \
                            '0.2alpha/product/summary?PassKey=cawhDUNXMzzke7y' \
@@ -411,26 +383,20 @@ class Paris(Store):
         review_avg_score = review_data['reviewSummary'][
             'primaryRating']['average']
 
-        seller_container = soup.find('b', 'sellerMkp')
-        if seller_container:
-            seller = seller_container.text.strip()
-        else:
-            seller = None
+        conditions_dict = {
+            'REACONDICIONADO': 'https://schema.org/RefurbishedCondition',
+            'SEGUNDA MANO': 'https://schema.org/UsedCondition',
+        }
 
-        gtm_brand = soup.find('a', {'id': 'GTM_pdp_brand'})
+        condition = 'https://schema.org/NewCondition'
+        for promotion in product_data['promotions']:
+            for label in promotion['labels']:
+                for condition_text, condition_cadidate in (
+                        conditions_dict.items()):
+                    if condition_text in label.upper():
+                        condition = condition_cadidate
 
-        if gtm_brand and gtm_brand.text == 'LG':
-            has_virtual_assistant = True
-        else:
-            has_virtual_assistant = False
-
-        if soup.find('div', 'product-image-wrapper')\
-                .find('img', {'alt': 'Productos Reacondicionados'}):
-            condition = 'https://schema.org/RefurbishedCondition'
-        elif 'REACONDICIONADO' in name.upper():
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
+        has_virtual_assistant = brand == 'LG'
 
         p = Product(
             name[:200],

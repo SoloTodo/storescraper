@@ -7,6 +7,8 @@ from collections import defaultdict
 from collections import OrderedDict
 from decimal import Decimal
 
+import validators
+
 from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
     DISH_WASHER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, KEYBOARD, MEMORY_CARD, \
     MONITOR, NOTEBOOK, MOUSE, HEADPHONES, OVEN, PRINTER, PROJECTOR, \
@@ -358,7 +360,8 @@ class Lider(Store):
         if description:
             description = html_to_markdown(description)
 
-        picture_urls = [img for img in entry['images']['availableImages']]
+        picture_urls = [img for img in entry['images']['availableImages']
+                        if validators.url(img)]
 
         if 'REACONDICIONADO' in name.upper():
             condition = 'https://schema.org/RefurbishedCondition'
