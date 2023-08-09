@@ -4,6 +4,7 @@ import re
 from collections import defaultdict
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
@@ -345,7 +346,8 @@ class Paris(Store):
 
         stock = -1 if product_data['orderable'] else 0
         picture_urls = [x['link'] for x in
-                        product_data['image_groups'][0]['images']]
+                        product_data['image_groups'][0]['images']
+                        if validators.url(x['link'])]
         raw_seller = product_data['seller']
 
         if raw_seller == 'Paris.cl':
