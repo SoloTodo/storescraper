@@ -1,5 +1,4 @@
 import logging
-import json
 
 from decimal import Decimal
 
@@ -25,22 +24,17 @@ class Multimax(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
-        page = 0
-        page_size = 10
+        page = 1
         while True:
             if page >= 20:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://searchserverapi.com/getresults?restrictBy' \
-                '%5Bvendor%5D=LG&startIndex={}&api_key=8b0u9V' \
-                '5d8D'.format(page*page_size)
+            url_webpage = ('https://www.multimax.net/collections/lg?page={}'
+                           ).format(page)
 
-            data = session.get(url_webpage).text
-            json_data = json.loads(data)
-
-            assert json_data['itemsPerPage'] == page_size
-
-            items = json_data['items']
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            items = soup.findAll('div', 'product__grid-item')
 
             if len(items) == 0:
                 if page == 1:
@@ -48,7 +42,8 @@ class Multimax(Store):
                 break
 
             for item in items:
-                product_urls.append('https://www.multimax.net' + item['link'])
+                product_urls.append(
+                    'https://www.multimax.net' + item.find('a')['href'])
 
             page += 1
 
