@@ -155,7 +155,7 @@ class Paris(Store):
          ['DishWasher'],
          'Línea Blanca > Lavado y Secado > Lavavajillas', 1],
         # Also includes campanas
-        ['linea-blanca/cocina', ['Oven', 'Stove'],
+        ['linea-blanca/cocina', ['Oven'],
          'Línea Blanca > Cocinas', 0],
         ['linea-blanca/cocina/encimeras', ['Oven'],
          'Línea Blanca > Cocinas > Encimeras', 1],
@@ -337,9 +337,10 @@ class Paris(Store):
         if normal_price is None:
             normal_price = list_price
 
-        assert normal_price is not None
+        if normal_price is None:
+            return []
 
-        if offer_price is None:
+        if offer_price is None or offer_price > normal_price:
             offer_price = normal_price
 
         stock = -1 if product_data['orderable'] else 0
