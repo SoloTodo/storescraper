@@ -7,63 +7,52 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import NOTEBOOK, MOTHERBOARD, ALL_IN_ONE, CELL
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class SmartDeal(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK, MOTHERBOARD, ALL_IN_ONE, CELL
-        ]
+class SmartDeal(StoreWithUrlExtensions):
+    url_extensions = [
+        ('notebooks', NOTEBOOK),
+        ('empresa', NOTEBOOK),
+        ('gamer', NOTEBOOK),
+        ('hogar', NOTEBOOK),
+        ('notebooks/macdesign', NOTEBOOK),
+        ('notebooks/apple', NOTEBOOK),
+        ('notebooks/2-en-1/', NOTEBOOK),
+        ('desktop', ALL_IN_ONE),
+        ('componentes-y-otros', MOTHERBOARD),
+        ('smartphones-y-tablets', CELL),
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ('notebooks', NOTEBOOK),
-            ('empresa', NOTEBOOK),
-            ('gamer', NOTEBOOK),
-            ('hogar', NOTEBOOK),
-            ('notebooks/macdesign', NOTEBOOK),
-            ('notebooks/apple', NOTEBOOK),
-            ('notebooks/2-en-1/', NOTEBOOK),
-            ('desktop', ALL_IN_ONE),
-            ('componentes-y-otros', MOTHERBOARD),
-            ('smartphones-y-tablets', CELL),
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
+        page = 1
 
-        for category_path, local_category in category_paths:
-            if category != local_category:
-                continue
+        while True:
+            if page > 20:
+                raise Exception('Page overflow')
 
-            page = 1
+            page_url = 'https://www.smartdeal.cl/categoria-producto/{}/' \
+                       '?product-page={}'.format(category_path, page)
+            print(page_url)
+            response = session.get(page_url)
+            data = response.text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
 
-            while True:
-                if page > 20:
-                    raise Exception('Page overflow')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + category_path)
+                break
 
-                page_url = 'https://www.smartdeal.cl/categoria-producto/{}/' \
-                           '?product-page={}'.format(category_path, page)
-                print(page_url)
-                response = session.get(page_url)
-                data = response.text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_path)
-                    break
-
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 

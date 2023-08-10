@@ -7,76 +7,56 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, RAM, \
     SOLID_STATE_DRIVE, COMPUTER_CASE, MONITOR, NOTEBOOK, MOUSE, \
     POWER_SUPPLY, CPU_COOLER, HEADPHONES, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class MegaBytes(Store):
+class MegaBytes(StoreWithUrlExtensions):
     preferred_products_for_url_concurrency = 3
 
-    @classmethod
-    def categories(cls):
-        return [
-            PROCESSOR,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            RAM,
-            SOLID_STATE_DRIVE,
-            COMPUTER_CASE,
-            MONITOR,
-            NOTEBOOK,
-            MOUSE,
-            POWER_SUPPLY,
-            HEADPHONES,
-            CPU_COOLER,
-            VIDEO_GAME_CONSOLE,
-        ]
+    url_extensions = [
+        ['accesorios/mas-accesorios', MOUSE],
+        ['accesorios/mouse-teclados', MOUSE],
+        ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
+        ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
+        ['componentes-pc/gabinetes', COMPUTER_CASE],
+        ['componentes-pc/memorias', RAM],
+        ['componentes-pc/placa-madre', MOTHERBOARD],
+        ['componentes-pc/procesador', PROCESSOR],
+        ['componentes-pc/tarjetas-graficas', VIDEO_CARD],
+        ['componentes-pc/ventilacion', CPU_COOLER],
+        ['monitores', MONITOR],
+        ['notebooks', NOTEBOOK],
+        ['accesorios/audifonos-headsets', HEADPHONES],
+        ['otros', VIDEO_GAME_CONSOLE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['accesorios/mas-accesorios', MOUSE],
-            ['accesorios/mouse-teclados', MOUSE],
-            ['componentes-pc/almacenamiento', SOLID_STATE_DRIVE],
-            ['componentes-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-pc/memorias', RAM],
-            ['componentes-pc/placa-madre', MOTHERBOARD],
-            ['componentes-pc/procesador', PROCESSOR],
-            ['componentes-pc/tarjetas-graficas', VIDEO_CARD],
-            ['componentes-pc/ventilacion', CPU_COOLER],
-            ['monitores', MONITOR],
-            ['notebooks', NOTEBOOK],
-            ['accesorios/audifonos-headsets', HEADPHONES],
-            ['otros', VIDEO_GAME_CONSOLE],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'curl/7.68.0'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://megabytes.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage)
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://megabytes.cl/categoria-producto/{}/' \
+                          'page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage)
 
-                if data.status_code == 404:
-                    if page == 1:
-                        # raise Exception(url_webpage)
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                soup = BeautifulSoup(data.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-wrapper')
+            if data.status_code == 404:
+                if page == 1:
+                    # raise Exception(url_webpage)
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            soup = BeautifulSoup(data.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-wrapper')
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
