@@ -72,7 +72,7 @@ class CasaRoyal(Store):
                 if page >= 15:
                     raise Exception('Page overflow: ' + category_path)
 
-                category_url = 'https://www.casaroyal.cl/{}.html?p={}' \
+                category_url = 'https://casaroyal.cl/{}.html?p={}' \
                     .format(category_path, page)
                 print(category_url)
                 soup = BeautifulSoup(
