@@ -5,7 +5,7 @@ from decimal import Decimal
 import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MOTHERBOARD, ALL_IN_ONE
+from storescraper.categories import NOTEBOOK, MOTHERBOARD, ALL_IN_ONE, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -15,7 +15,7 @@ class SmartDeal(Store):
     @classmethod
     def categories(cls):
         return [
-            NOTEBOOK, MOTHERBOARD, ALL_IN_ONE
+            NOTEBOOK, MOTHERBOARD, ALL_IN_ONE, CELL
         ]
 
     @classmethod
@@ -26,9 +26,11 @@ class SmartDeal(Store):
             ('gamer', NOTEBOOK),
             ('hogar', NOTEBOOK),
             ('notebooks/macdesign', NOTEBOOK),
+            ('notebooks/apple', NOTEBOOK),
             ('notebooks/2-en-1/', NOTEBOOK),
             ('desktop', ALL_IN_ONE),
             ('componentes-y-otros', MOTHERBOARD),
+            ('smartphones-y-tablets', CELL),
         ]
 
         session = session_with_proxy(extra_args)
