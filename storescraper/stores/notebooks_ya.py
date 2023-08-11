@@ -132,16 +132,10 @@ class NotebooksYa(StoreWithUrlExtensions):
         key = soup.find('a', 'single_add_to_wishlist')['data-product-id']
 
         qty_input = soup.find('input', 'qty')
-        # if qty_input:
         if 'max' in qty_input.attrs:
             stock = int(qty_input['max'])
         else:
             stock = 1
-        # else:
-        #     if soup.find('button', 'single_add_to_cart_button'):
-        #         stock = 1
-        #     else:
-        #         stock = 0
         price_tags = soup.findAll('span', 'woocommerce-Price-amount')
         assert len(price_tags) in [2, 3]
 
@@ -165,7 +159,7 @@ class NotebooksYa(StoreWithUrlExtensions):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
@@ -173,6 +167,6 @@ class NotebooksYa(StoreWithUrlExtensions):
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
-            description=key
+            description=description
         )
         return [p]
