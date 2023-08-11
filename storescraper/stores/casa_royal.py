@@ -1,4 +1,5 @@
-import logging
+import base64
+import json
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -6,95 +7,93 @@ from decimal import Decimal
 from storescraper.categories import STORAGE_DRIVE, TABLET, STEREO_SYSTEM, \
     KEYBOARD, HEADPHONES, MOUSE, WEARABLE, VIDEO_GAME_CONSOLE, MICROPHONE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, \
     session_with_proxy
 
 
-class CasaRoyal(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            STORAGE_DRIVE,
-            TABLET,
-            STEREO_SYSTEM,
-            KEYBOARD,
-            HEADPHONES,
-            MOUSE,
-            WEARABLE,
-            VIDEO_GAME_CONSOLE,
-            MICROPHONE
-        ]
+class CasaRoyal(StoreWithUrlExtensions):
+    url_extensions = [
+        ['audio/audifonos', HEADPHONES],
+        ['audio/portable', STEREO_SYSTEM],
+        ['audio/parlantes', STEREO_SYSTEM],
+        ['audio/hogar', STEREO_SYSTEM],
+        ['audifono', HEADPHONES],
+        ['computacion/almacenamiento', STORAGE_DRIVE],
+        ['computacion/tablet-y-proyectores/tablets', TABLET],
+        ['computacion/accesorios-computacion/teclados-de-computacion',
+         KEYBOARD],
+        ['computacion/accesorios-computacion/mouse', MOUSE],
+        ['computacion/accesorios-computacion/parlantes-de-computacion',
+         STEREO_SYSTEM],
+        ['computacion/accesorios-computacion/teclados', KEYBOARD],
+        ['computacion/accesorios-computacion/parlantes-computacion',
+         STEREO_SYSTEM],
+        ['telefonia/wearables', WEARABLE],
+        ['telefonia/audifonos', HEADPHONES],
+        ['gamer/consolas', VIDEO_GAME_CONSOLE],
+        ['gamer/audifonos-gamer', HEADPHONES],
+        ['gamer/teclados-gamer', KEYBOARD],
+        ['gamer/mouse-gamer', MOUSE],
+        ['gamer/mouse', MOUSE],
+        ['gamer/teclados', KEYBOARD],
+        ['electronica-y-electricidad/computacion/mouse', MOUSE],
+        ['electronica-y-electricidad/computacion/teclados-de-'
+         'computacion.html', KEYBOARD],
+        ['audio/microfonos', MICROPHONE]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['audio/audifonos', HEADPHONES],
-            ['audio/portable', STEREO_SYSTEM],
-            ['audio/parlantes', STEREO_SYSTEM],
-            ['audio/hogar', STEREO_SYSTEM],
-            ['audifono', HEADPHONES],
-            ['computacion/almacenamiento', STORAGE_DRIVE],
-            ['computacion/tablet-y-proyectores/tablets', TABLET],
-            ['computacion/accesorios-computacion/teclados-de-computacion',
-             KEYBOARD],
-            ['computacion/accesorios-computacion/mouse', MOUSE],
-            ['computacion/accesorios-computacion/parlantes-de-computacion',
-             STEREO_SYSTEM],
-            ['computacion/accesorios-computacion/teclados', KEYBOARD],
-            ['computacion/accesorios-computacion/parlantes-computacion',
-             STEREO_SYSTEM],
-            ['telefonia/wearables', WEARABLE],
-            ['telefonia/audifonos', HEADPHONES],
-            ['gamer/consolas', VIDEO_GAME_CONSOLE],
-            ['gamer/audifonos-gamer', HEADPHONES],
-            ['gamer/teclados-gamer', KEYBOARD],
-            ['gamer/mouse-gamer', MOUSE],
-            ['gamer/mouse', MOUSE],
-            ['gamer/teclados', KEYBOARD],
-            ['electronica-y-electricidad/computacion/mouse', MOUSE],
-            ['electronica-y-electricidad/computacion/teclados-de-'
-             'computacion.html', KEYBOARD],
-            ['audio/microfonos', MICROPHONE]
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in url_extensions:
-            if local_category != category:
-                continue
+        done = False
+        page = 0
+        print(url_extension)
 
-            done = False
-            page = 1
+        while not done:
+            if page >= 15:
+                raise Exception('Page overflow: ' + url_extension)
 
-            while not done:
-                if page >= 15:
-                    raise Exception('Page overflow: ' + category_path)
+            facets = [{'key': 'c', 'value': x}
+                      for x in url_extension.split('/')]
 
-                category_url = 'https://casaroyal.cl/{}.html?p={}' \
-                    .format(category_path, page)
-                print(category_url)
-                soup = BeautifulSoup(
-                    session.get(category_url).text, 'html.parser')
+            variables = {
+                'from': page * 20,
+                'to': (page + 1) * 20 - 1,
+                'selectedFacets': facets
+            }
 
-                link_container = soup.find('ol', 'product-items')
+            # The sha256Hash may change
 
-                if not link_container:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_path)
-                    break
+            payload = {
+                'persistedQuery': {
+                    'version': 1,
+                    'sha256Hash': '40e207fe75d9dce4dfb3154442da4615'
+                                  'f2b097b53887a0ae5449eb92d42e84db',
+                    'sender': 'vtex.store-resources@0.x',
+                    'provider': 'vtex.search-graphql@0.x'
+                },
+                'variables': base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-                link_containers = soup.find('ol', 'product-items')
+            endpoint = 'https://www.casaroyal.cl/_v/segment/graphql/v1?' \
+                       'extensions={}'.format(json.dumps(payload))
+            response = session.get(endpoint)
 
-                for link_container in link_containers.findAll('li', 'item'):
-                    product_url = link_container.find('a')['href']
-                    if product_url in product_urls:
-                        done = True
-                        break
-                    product_urls.append(product_url)
+            products_data = response.json()['data']['productSearch'][
+                'products']
 
-                page += 1
+            if not products_data:
+                break
+
+            for idx, product_data in enumerate(products_data):
+                product_url = 'https://www.casaroyal.cl/{}/p'.format(
+                    product_data['linkText'])
+                product_urls.append(product_url)
+            page += 1
 
         return product_urls
 
@@ -102,38 +101,39 @@ class CasaRoyal(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
-        key = soup.find('input', {'name': 'product'})['value']
-        sku = soup.find('div', 'sku').find('div', 'value').text.strip()
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        product_data = json.loads(str(soup.find(
+            'template', {'data-varname': '__STATE__'}).find(
+            'script').contents[0]))
 
-        if soup.find('p', 'redalert').text == 'Disponible':
-            stock = -1
-        else:
-            stock = 0
-            stock_container = soup.findAll('p', 'stocktienda')
-            for stock in stock_container:
-                if int(stock.text.split()[1]) > 0:
-                    stock = -1
-                    break
-        price = Decimal(
-            soup.find('meta', {'property': 'product:price:amount'})['content'])
+        base_json_keys = list(product_data.keys())
 
-        product_tab = soup.find('div', 'productTabs-container')
-        description_div = product_tab.find('div', {'id': 'description'})
-        if description_div:
-            description = html_to_markdown(description_div.text)
-        else:
-            description = None
+        if not base_json_keys:
+            return []
 
-        if description and ('reacond' in name.lower() or
-                            'reacond' in description.lower()):
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
+        base_json_key = base_json_keys[0]
+        product_specs = product_data[base_json_key]
 
-        picture_urls = [tag['content'] for tag in
-                        soup.findAll('meta', {'property': 'og:image'})]
+        key = product_specs['productId']
+        name = product_specs['productName']
+        sku = product_specs['productReference']
+        description = html_to_markdown(product_specs.get('description', None))
+
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        price = Decimal(pricing_data['Price'])
+        stock = pricing_data['AvailableQuantity']
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
+
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -147,9 +147,8 @@ class CasaRoyal(Store):
             price,
             'CLP',
             sku=sku,
-            description=description,
             picture_urls=picture_urls,
-            condition=condition
+            description=description,
         )
 
         return [p]

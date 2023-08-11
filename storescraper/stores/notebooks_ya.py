@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -6,99 +7,116 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, PRINTER, MONITOR, \
     STORAGE_DRIVE, HEADPHONES, KEYBOARD, WEARABLE, ALL_IN_ONE, TABLET, CELL, \
     GAMING_CHAIR, UPS, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, \
-    PROCESSOR, CPU_COOLER, VIDEO_CARD, MOTHERBOARD
+    PROCESSOR, VIDEO_CARD, MOTHERBOARD, EXTERNAL_STORAGE_DRIVE, \
+    MEMORY_CARD, MOUSE, STEREO_SYSTEM
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
-class NotebooksYa(Store):
+class NotebooksYa(StoreWithUrlExtensions):
+    url_extensions = [
+        ['apple-watch', WEARABLE],
+        ['ipad', TABLET],
+        ['imac', ALL_IN_ONE],
+        ['macbooks', NOTEBOOK],
+        ['accesorios-gamer/?filter_producto-gamer=tarjeta-de-video',
+         VIDEO_CARD],
+        ['accesorios-gamer/?filter_producto-almacenamiento=tarjeta-de-memoria',
+         EXTERNAL_STORAGE_DRIVE],
+        ['audifonos-gamer', HEADPHONES],
+        ['monitores-gamer', MONITOR],
+        ['portatiles-ya/notebooks-ya/notebooks-gamer', NOTEBOOK],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['teclados-gamer', KEYBOARD],
+        ['notebooks-ya', NOTEBOOK],
+        ['tablets', TABLET],
+        ['celulares-ya', CELL],
+        ['computadores-ya/?filter_producto-computadores=all-in-one',
+         ALL_IN_ONE],
+        ['computadores-ya/?filter_producto-computadores=imac', ALL_IN_ONE],
+        ['monitores-ya', MONITOR],
+        ['almacenamiento-ya/?filter_producto-almacenamiento='
+         'disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['almacenamiento-ya/?filter_producto-almacenamiento='
+         'disco-duro-interno', STORAGE_DRIVE],
+        ['almacenamiento-ya/?filter_producto-almacenamiento='
+         'disco-ssd-interno', SOLID_STATE_DRIVE],
+        ['almacenamiento-ya/?filter_producto-almacenamiento='
+         'tarjeta-de-memoria', MEMORY_CARD],
+        ['audifonos-ya', HEADPHONES],
+        ['teclados-mouse-ya', MOUSE],
+        ['relojes-ya', WEARABLE],
+        ['sillas-ya', GAMING_CHAIR],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas='
+         'fuente-de-poder', POWER_SUPPLY],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas=gabinetes',
+         COMPUTER_CASE],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas='
+         'memoria-ram-para-laptops', RAM],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas='
+         'memoria-ram-para-pc', RAM],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas=placa-madre',
+         MOTHERBOARD],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas=procesadores',
+         PROCESSOR],
+        ['partes-y-piezas-ya/?filter_producto-partes-y-piezas='
+         'tarjeta-de-video', VIDEO_CARD],
+        ['impresion-ya', PRINTER],
+        ['audio-y-video-ya/?filter_producto-audio-y-video=audifonos',
+         HEADPHONES],
+        ['audio-y-video-ya/?filter_producto-audio-y-video=parlante-portatil',
+         STEREO_SYSTEM],
+        ['audio-y-video-ya/?filter_producto-audio-y-video=sound-bar',
+         STEREO_SYSTEM],
+        ['ups-ya/?filter_producto-ups=ups', UPS],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK, PRINTER, MONITOR, STORAGE_DRIVE, HEADPHONES, KEYBOARD,
-            WEARABLE, ALL_IN_ONE, TABLET, CELL, GAMING_CHAIR, UPS,
-            SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, RAM, PROCESSOR,
-            CPU_COOLER, VIDEO_CARD, MOTHERBOARD
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['product-category/accesorios-apple', KEYBOARD],
-            ['product-category/apple-watch', WEARABLE],
-            ['product-category/ipads-ya', TABLET],
-            ['product-category/imac-ya', ALL_IN_ONE],
-            ['product-category/macbook', NOTEBOOK],
-            ['product-category/notebooks-ya', NOTEBOOK],
-            ['product-category/tablets-ya', TABLET],
-            ['product-category/celulares-ya', CELL],
-            ['computadores', ALL_IN_ONE],
-            ['pantallas-y-tvs', MONITOR],
-            ['almacenamiento', STORAGE_DRIVE],
-            ['audifonos', HEADPHONES],
-            ['teclados-mouse', KEYBOARD],
-            ['relojes', WEARABLE],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'unidad-de-estado-solido', SOLID_STATE_DRIVE],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'fuente-de-poder', POWER_SUPPLY],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'gabinetes', COMPUTER_CASE],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'memoria%2Cmemoria-ram', RAM],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'procesador', PROCESSOR],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'refrigeracion', CPU_COOLER],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'tarjeta-de-video', VIDEO_CARD],
-            ['partes-y-piezas/?wpf=partes_y_piezas&wpf_producto='
-             'placa-madre', MOTHERBOARD],
-            ['product-category/impresion-ya', PRINTER],
-            ['sillas', GAMING_CHAIR],
-            ['audio-y-video', HEADPHONES],
-            ['ups', UPS],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
+        session.headers['X-Requested-With'] = 'XMLHttpRequest'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            local_product_urls = []
-            done = False
-            while not done:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
+        page = 1
+        done = False
+        while not done:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://notebooksya.cl/{}'.format(
-                    url_extension)
+            url_components = url_extension.split('?')
 
-                if '?' in url_webpage:
-                    url_webpage += '&wpf_page={}'.format(page)
-                else:
-                    url_webpage += '/page/{}'.format(page)
+            if len(url_components) > 1:
+                query = url_components[1]
+            else:
+                query = ''
 
-                print(url_webpage)
+            url_webpage = ('https://notebooksya.cl/product-category/{}/'
+                           'page/{}/?load_posts_only=1&{}').format(url_extension, page, query)
 
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+            print(url_webpage)
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    if product_url in local_product_urls:
-                        done = True
-                        break
-                    local_product_urls.append(product_url)
-                page += 1
-            product_urls.extend(local_product_urls)
+            response = session.get(url_webpage)
+
+            if response.status_code == 404:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -106,39 +124,40 @@ class NotebooksYa(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        if soup.find('h1', 'product_title'):
-            name = soup.find('h1', 'product_title').text
-        else:
-            name = soup.find('div', 'et_pb_module et_pb_wc_title '
-                                    'et_pb_wc_title_0 '
-                                    'et_pb_bg_layout_light').text.strip()
-        key = soup.find('button', {'name': 'add-to-cart'})['value']
-        qty_input = soup.find('input', 'input-text qty text')
-        if qty_input:
-            if qty_input['max']:
-                stock = int(qty_input['max'])
-            else:
-                stock = -1
+        raw_soup = BeautifulSoup(response.text, 'html.parser')
+        content_tag = raw_soup.find('script', {'type': 'text/template'})
+        soup = BeautifulSoup(json.loads(content_tag.text), 'html.parser')
+
+        name = soup.find('h2').text.strip()
+        key = soup.find('a', 'single_add_to_wishlist')['data-product-id']
+
+        qty_input = soup.find('input', 'qty')
+        # if qty_input:
+        if 'max' in qty_input.attrs:
+            stock = int(qty_input['max'])
         else:
             stock = 1
-        price_container = soup.find('div', 'wds')
-        offer_container = price_container.find('div', 'wds-first')
-        offer_price = Decimal(remove_words(
-            offer_container.findAll('bdi')[-1].text))
-        normal_container = price_container.find('div', 'wds-second')
-        normal_price = Decimal(remove_words(
-            normal_container.findAll('bdi')[-1].text))
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                        'woocommerce-product-gallery').findAll('img')]
-        description = soup.find(
-            'meta', {'property': 'og:description'})['content']
+        # else:
+        #     if soup.find('button', 'single_add_to_cart_button'):
+        #         stock = 1
+        #     else:
+        #         stock = 0
+        price_tags = soup.findAll('span', 'woocommerce-Price-amount')
+        assert len(price_tags) in [2, 3]
 
-        sku_tag = soup.find('span', 'sku')
-        if sku_tag:
-            sku = sku_tag.text.strip()
-        else:
-            sku = None
+        offer_price = Decimal(remove_words(price_tags[-2].text))
+        normal_price = Decimal(remove_words(price_tags[-1].text))
+        sku = soup.find('span', 'sku').text.strip()
+
+        picture_containers = soup.find(
+            'div', 'product-image-slider').findAll('div', 'img-thumbnail')
+        picture_urls = []
+
+        for picture in picture_containers:
+            picture_url = picture.find('img')['href']
+            picture_urls.append(picture_url)
+
+        description = html_to_markdown(str(soup.find('div', 'description')))
 
         p = Product(
             name,
@@ -146,7 +165,7 @@ class NotebooksYa(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
@@ -154,6 +173,6 @@ class NotebooksYa(Store):
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
-            description=description
+            description=key
         )
         return [p]

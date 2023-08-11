@@ -9,88 +9,61 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, MOUSE, \
     STORAGE_DRIVE, RAM, POWER_SUPPLY, CPU_COOLER, COMPUTER_CASE, KEYBOARD, \
     HEADPHONES, NOTEBOOK, MONITOR, CASE_FAN, GAMING_CHAIR
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class MegaDriveStore(Store):
+class MegaDriveStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['59-tarjetas-graficas', VIDEO_CARD],
+        ['77-disco-ssd', SOLID_STATE_DRIVE],
+        ['78-discos-hdd', STORAGE_DRIVE],
+        ['79-discos-externos-y-cofres', EXTERNAL_STORAGE_DRIVE],
+        ['80-memorias', RAM],
+        ['84-usb-flah', USB_FLASH_DRIVE],
+        ['85-fuentes-de-poder', POWER_SUPPLY],
+        ['89-refrigeracion-liquida', CPU_COOLER],
+        ['90-refrigeracion-por-aire', CPU_COOLER],
+        ['92-ventiladores', CASE_FAN],
+        ['94-gabinetes', COMPUTER_CASE],
+        ['99-mouse', MOUSE],
+        ['101-teclados', KEYBOARD],
+        ['105-notebook', NOTEBOOK],
+        ['110-monitores', MONITOR],
+        ['112-audifonos', HEADPHONES],
+        ['122-placas-madres-amd', MOTHERBOARD],
+        ['123-placas-madres-intel', MOTHERBOARD],
+        ['124-procesadores-amd', PROCESSOR],
+        ['125-procesadores-intel', PROCESSOR],
+        ['132-sillas-gamers', GAMING_CHAIR],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            VIDEO_CARD,
-            PROCESSOR,
-            MOTHERBOARD,
-            STORAGE_DRIVE,
-            RAM,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            COMPUTER_CASE,
-            KEYBOARD,
-            HEADPHONES,
-            NOTEBOOK,
-            MONITOR,
-            CASE_FAN,
-            USB_FLASH_DRIVE,
-            SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            MOUSE,
-            GAMING_CHAIR,
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['59-tarjetas-graficas', VIDEO_CARD],
-            ['77-disco-ssd', SOLID_STATE_DRIVE],
-            ['78-discos-hdd', STORAGE_DRIVE],
-            ['79-discos-externos-y-cofres', EXTERNAL_STORAGE_DRIVE],
-            ['80-memorias', RAM],
-            ['84-usb-flah', USB_FLASH_DRIVE],
-            ['85-fuentes-de-poder', POWER_SUPPLY],
-            ['89-refrigeracion-liquida', CPU_COOLER],
-            ['90-refrigeracion-por-aire', CPU_COOLER],
-            ['92-ventiladores', CASE_FAN],
-            ['94-gabinetes', COMPUTER_CASE],
-            ['99-mouse', MOUSE],
-            ['101-teclados', KEYBOARD],
-            ['105-notebook', NOTEBOOK],
-            ['110-monitores', MONITOR],
-            ['112-audifonos', HEADPHONES],
-            ['122-placas-madres-amd', MOTHERBOARD],
-            ['123-placas-madres-intel', MOTHERBOARD],
-            ['124-procesadores-amd', PROCESSOR],
-            ['125-procesadores-intel', PROCESSOR],
-            ['132-sillas-gamers', GAMING_CHAIR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://megadrivestore.cl/{}?page={}'.format(
-                    url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.find(
-                    'section', {'id': 'products'}).findAll('article')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://megadrivestore.cl/{}?page={}'.format(
+                url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.find(
+                'section', {'id': 'products'}).findAll('article')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
