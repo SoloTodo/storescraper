@@ -92,7 +92,8 @@ class NotebooksYa(StoreWithUrlExtensions):
                 query = ''
 
             url_webpage = ('https://notebooksya.cl/product-category/{}/'
-                           'page/{}/?load_posts_only=1&{}').format(url_extension, page, query)
+                           'page/{}/?load_posts_only=1&{}').format(
+                url_extension, page, query)
 
             print(url_webpage)
 
