@@ -30,7 +30,7 @@ class ElectronicaPanamericana(Store):
         url = 'https://electronicapanamericana.com/marcas/lg/?' \
               'product_count=1000&avia_extended_shop_select=yes'
         print(url)
-        response = session.get(url, verify=False)
+        response = session.get(url, verify=False, timeout=30)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         for container in soup.findAll('li', 'product'):
@@ -46,7 +46,7 @@ class ElectronicaPanamericana(Store):
 
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, verify=False)
+        response = session.get(url, verify=False, timeout=30)
         soup = BeautifulSoup(response.text, 'html5lib')
 
         sku = soup.find('span', 'sku')
