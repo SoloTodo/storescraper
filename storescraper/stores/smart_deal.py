@@ -36,7 +36,7 @@ class SmartDeal(StoreWithUrlExtensions):
                 raise Exception('Page overflow')
 
             page_url = 'https://www.smartdeal.cl/categoria-producto/{}/' \
-                       '?product-page={}'.format(category_path, page)
+                       '?product-page={}'.format(url_extension, page)
             print(page_url)
             response = session.get(page_url)
             data = response.text
@@ -45,7 +45,7 @@ class SmartDeal(StoreWithUrlExtensions):
 
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + category_path)
+                    logging.warning('Empty category: ' + url_extension)
                 break
 
             for container in product_containers:
