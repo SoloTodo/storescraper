@@ -41,6 +41,7 @@ class MyShop(StoreWithUrlExtensions):
         ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
         ['audifonos-in-ear', HEADPHONES],
         ['audifonos-on-ear', HEADPHONES],
+        ['video-conferencia', HEADPHONES],
         ['parlantes', STEREO_SYSTEM],
         ['monitores', MONITOR],
         ['televisores', TELEVISION],
