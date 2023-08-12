@@ -1,8 +1,8 @@
-import json
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -12,25 +12,25 @@ class ElectronicaPanamericana(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television',
+            TELEVISION,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # Only gets LG products
 
-        if category != 'Television':
+        if not extra_args or 'proxy' not in extra_args:
+            raise Exception('BrightData Web Unlocker proxy arg is required')
+
+        if category != TELEVISION:
             return []
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, ' \
-            'like Gecko) Chrome/66.0.3359.117 Safari/537.36'
-
         product_urls = []
         url = 'https://electronicapanamericana.com/marcas/lg/?' \
               'product_count=1000&avia_extended_shop_select=yes'
-        response = session.get(url)
+        print(url)
+        response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         for container in soup.findAll('li', 'product'):
@@ -41,10 +41,13 @@ class ElectronicaPanamericana(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        if not extra_args or 'proxy' not in extra_args:
+            raise Exception('BrightData Web Unlocker proxy arg is required')
+
         print(url)
         session = session_with_proxy(extra_args)
-        data = session.get(url).text
-        soup = BeautifulSoup(data, 'html5lib')
+        response = session.get(url, verify=False)
+        soup = BeautifulSoup(response.text, 'html5lib')
 
         sku = soup.find('span', 'sku')
 
