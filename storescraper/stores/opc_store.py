@@ -78,6 +78,9 @@ class OpcStore(Store):
 
         price = Decimal(json_data['offers'][0]['price'])
 
+        if not price:
+            return []
+
         if soup.find('button', 'shopify-payment-button__button'):
             stock = -1
         else:
