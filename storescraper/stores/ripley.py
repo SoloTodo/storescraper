@@ -698,21 +698,22 @@ class Ripley(Store):
                     })
         else:
             carousel_tag = soup.find('ul', 'splide__list')
-            for idx, banner_tag in enumerate(carousel_tag.findAll('li')):
-                banner_link = banner_tag.find('a')
-                destination_urls = [banner_link['href']]
-                picture_url = banner_link.find('img')['src']
+            if carousel_tag:
+                for idx, banner_tag in enumerate(carousel_tag.findAll('li')):
+                    banner_link = banner_tag.find('a')
+                    destination_urls = [banner_link['href']]
+                    picture_url = banner_link.find('img')['src']
 
-                banners.append({
-                    'url': url,
-                    'picture_url': picture_url,
-                    'destination_urls': destination_urls,
-                    'key': picture_url,
-                    'position': idx + 1,
-                    'section': section,
-                    'subsection': subsection,
-                    'type': subsection_type
-                })
+                    banners.append({
+                        'url': url,
+                        'picture_url': picture_url,
+                        'destination_urls': destination_urls,
+                        'key': picture_url,
+                        'position': idx + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
 
         return banners
 
