@@ -11,89 +11,72 @@ from storescraper.categories import PRINTER, UPS, MOUSE, \
     MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE, \
     CASE_FAN
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy, \
     remove_words
 
 
-class Dust2(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            PRINTER, UPS, MOUSE, KEYBOARD, HEADPHONES, STEREO_SYSTEM,
-            GAMING_CHAIR, COMPUTER_CASE, CPU_COOLER, RAM, POWER_SUPPLY,
-            PROCESSOR, MOTHERBOARD, VIDEO_CARD, STORAGE_DRIVE, MEMORY_CARD,
-            EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, MONITOR,
-            KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE,
-            CASE_FAN
-        ]
+class Dust2(StoreWithUrlExtensions):
+    url_extensions = [
+        ['mouse-gamer', MOUSE],
+        ['teclados-gamer', KEYBOARD],
+        ['kits-gamer', KEYBOARD_MOUSE_COMBO],
+        ['audifonos-gamer', HEADPHONES],
+        ['parlantes-gamer', STEREO_SYSTEM],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['monitores-gamer', MONITOR],
+        ['equipos', NOTEBOOK],
+        ['memorias-ram-notebooks', RAM],
+        ['impresoras', PRINTER],
+        ['respaldo-energia', UPS],
+        ['smartband', WEARABLE],
+        ['tarjetas-de-memoria-electronica', MEMORY_CARD],
+        ['pendrives', USB_FLASH_DRIVE],
+        ['gabinetes', COMPUTER_CASE],
+        ['fans-y-controladores', CASE_FAN],
+        ['cooler-para-cpu', CPU_COOLER],
+        ['refrigeracion-liquida', CPU_COOLER],
+        ['memorias-ram', RAM],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['procesadores', PROCESSOR],
+        ['placas-madres', MOTHERBOARD],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['ssd-y-discos-duros', STORAGE_DRIVE],
+        ['tarjetas-de-memoria', MEMORY_CARD],
+        ['discos-y-ssd-externos', EXTERNAL_STORAGE_DRIVE],
+        ['discos-m-2', SOLID_STATE_DRIVE],
+        ['teclados-perifericos', KEYBOARD],
+        ['mouse-perifericos', MOUSE],
+        ['combo-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+        ['audifonos-audio', HEADPHONES],
+        ['parlantes-audio', STEREO_SYSTEM],
+        ['monitores-oficina', MONITOR],
+        ['audifonos-ps5', HEADPHONES],
+        ['audifonos-xbox', HEADPHONES],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['mundo-gamer/mouse-gamer', MOUSE],
-            ['mundo-gamer/teclados-gamer', KEYBOARD],
-            ['mundo-gamer/kits-gamer', KEYBOARD_MOUSE_COMBO],
-            ['mundo-gamer/audifonos-gamer', HEADPHONES],
-            ['mundo-gamer/parlantes-gamer', STEREO_SYSTEM],
-            ['mundo-gamer/sillas-gamer', GAMING_CHAIR],
-            ['mundo-gamer/monitores-gamer', MONITOR],
-            ['electronica/notebooks/equipos', NOTEBOOK],
-            ['electronica/notebooks/memorias-ram-notebooks', RAM],
-            ['electronica/impresoras', PRINTER],
-            ['electronica/respaldo-energia', UPS],
-            ['electronica/smartband', WEARABLE],
-            ['electronica/tarjetas-de-memoria-electronica', MEMORY_CARD],
-            ['electronica/pendrives', USB_FLASH_DRIVE],
-            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-de-pc/fans-y-controladores', CASE_FAN],
-            ['componentes-de-pc/cooler-para-cpu', CPU_COOLER],
-            ['componentes-de-pc/refrigeracion-liquida', CPU_COOLER],
-            ['componentes-de-pc/memorias-ram', RAM],
-            ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/procesadores', PROCESSOR],
-            ['componentes-de-pc/placas-madres', MOTHERBOARD],
-            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-de-pc/almacenamiento/ssd-y-discos-duros',
-             STORAGE_DRIVE],
-            ['componentes-de-pc/almacenamiento/tarjetas-de-memoria',
-             MEMORY_CARD],
-            ['componentes-de-pc/almacenamiento/discos-y-ssd-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['componentes-de-pc/almacenamiento/discos-m-2',
-             SOLID_STATE_DRIVE],
-            ['oficina/teclados-perifericos', KEYBOARD],
-            ['oficina/mouse-perifericos', MOUSE],
-            ['oficina/combo-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
-            ['oficina/audifonos-audio', HEADPHONES],
-            ['oficina/parlantes-audio', STEREO_SYSTEM],
-            ['oficina/monitores-oficina', MONITOR],
-            ['consolas-y-videojuegos/playstation-5/audifonos-ps5', HEADPHONES],
-            ['consolas-y-videojuegos/xbox/audifonos-xbox', HEADPHONES],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 25:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://dust2.gg/categoria-producto/{}/page' \
-                              '/{}/?orderby=price'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 25:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://dust2.gg/categoria-producto/{}/page' \
+                          '/{}/?orderby=price'.format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -161,13 +144,12 @@ class Dust2(Store):
             if agotado_btn:
                 stock = 0
             else:
-                stock_text = soup.find(
-                    'div', 'productDetails__productModel--info-productInStock'
-                ).find('span').text
-                if stock_text == '' or preventa:
-                    stock = 0
-                else:
-                    stock = int(stock_text)
+                qty_input = soup.find('input', 'qty')
+                stock = int(qty_input['max'])
+                #if 'max' in qty_input.attrs:
+                #    stock = int(qty_input['max'])
+                #else:
+                #    stock = 1
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'productDetails__productModel--info-productCardPrice'
             ).find('h3').text))
