@@ -74,6 +74,8 @@ class Dust2(StoreWithUrlExtensions):
                     logging.warning('Empty category: ' + url_extension)
                 break
             for container in product_containers:
+                if container.find('span', 'woostify-out-of-stock-label'):
+                    return product_urls
                 product_url = container.find('a')['href']
                 product_urls.append(product_url)
             page += 1
