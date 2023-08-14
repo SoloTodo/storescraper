@@ -5,62 +5,58 @@ import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
-    MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR, VIDEO_GAME_CONSOLE, GAMING_DESK
+    MOUSE, NOTEBOOK, TABLET, GAMING_CHAIR, VIDEO_GAME_CONSOLE, GAMING_DESK, \
+    CELL, COMPUTER_CASE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class LoiChile(Store):
+class LoiChile(StoreWithUrlExtensions):
     CURRENCY = 'CLP'
     IMAGE_DOMAIN = 'd660b7b9o0mxk'
 
-    @classmethod
-    def categories(cls):
-        return [
-            MONITOR,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            MOUSE,
-            NOTEBOOK,
-            TABLET,
-            GAMING_CHAIR,
-            VIDEO_GAME_CONSOLE,
-            GAMING_DESK
-        ]
+    # URL Extensions are in a input with name "categ_id" in category pages
+    url_extensions = [
+        ['16', CELL],
+        ['17', TABLET],
+        ['10', MONITOR],
+        ['1', HEADPHONES],
+        ['25', STEREO_SYSTEM],
+        ['2', NOTEBOOK],
+        ['23', MOUSE],
+        ['208', COMPUTER_CASE],
+        ['207', VIDEO_GAME_CONSOLE],
+        ['154', GAMING_CHAIR],
+        ['155', GAMING_DESK],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['10', MONITOR],
-            ['1', HEADPHONES],
-            ['25', STEREO_SYSTEM],
-            ['23', MOUSE],
-            ['2', NOTEBOOK],
-            ['17', TABLET],
-            ['154', GAMING_CHAIR],
-            ['207', VIDEO_GAME_CONSOLE],
-            ['155', GAMING_DESK]
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         products_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            url_webpage = 'https://loichile.cl/index.php?ctrl=productos&' \
-                          'act=productosPorCategoriaAjax'
-            payload = {'categ_id': url_extension}
+        page_size = 50
+        page = 0
+
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
+            url_webpage = ('https://loichile.cl/index.php?ctrl=productos&'
+                           'act=categoriasReact&categ_id={}&cantidad={}'
+                           ''.format(url_extension, page * page_size))
             print(url_webpage)
-            data = session.post(url_webpage, data=payload)
-            products_ids = data.json()['html']
-            soup = BeautifulSoup(products_ids, 'html.parser')
-            product_containers = soup.findAll('li')
-            if not product_containers:
-                logging.warning('Empty category: ' + url_extension)
+            response = session.get(url_webpage)
+            product_entries = response.json()['listaProductos']
+
+            if not product_entries:
+                if page == 0:
+                    logging.warning('Empty category: ' + url_extension)
                 break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                products_urls.append('https://loichile.cl/' + product_url)
+
+            for product_entry in product_entries:
+                product_path = product_entry['urlseo']
+                products_urls.append('https://loichile.cl/' + product_path)
+            page += 1
         return products_urls
 
     @classmethod

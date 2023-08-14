@@ -148,10 +148,6 @@ class Dust2(StoreWithUrlExtensions):
             else:
                 qty_input = soup.find('input', 'qty')
                 stock = int(qty_input['max'])
-                #if 'max' in qty_input.attrs:
-                #    stock = int(qty_input['max'])
-                #else:
-                #    stock = 1
             normal_price = Decimal(remove_words(soup.find(
                 'div', 'productDetails__productModel--info-productCardPrice'
             ).find('h3').text))
