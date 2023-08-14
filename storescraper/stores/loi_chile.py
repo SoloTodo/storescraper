@@ -9,7 +9,7 @@ from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
     CELL, COMPUTER_CASE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class LoiChile(StoreWithUrlExtensions):
@@ -66,16 +66,17 @@ class LoiChile(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        if not soup.find('div', 'pv3-pv-loi'):
-            return []
-
         name = soup.find('h1', 'nombre-producto-info').text.replace('\t', '') \
             .replace('\n', '')
         sku = soup.find('span', {'id': 'idProducto'}).text
 
-        price = Decimal(soup.find(
+        price_tag = soup.find(
             'div', {'id': 'contenedor_precio_detalle_producto'})
-                        ['data-precio'].replace(',', '.')).quantize(0)
+        if price_tag:
+            price = Decimal(price_tag['data-precio'].replace(',', '.')).quantize(0)
+        else:
+            price_tag = soup.find('p', 'hotsale-precio-hotsale').find('span')
+            price = Decimal(remove_words(price_tag.text))
 
         picture_urls = []
 
