@@ -13,105 +13,72 @@ from storescraper.categories import STEREO_SYSTEM, MEMORY_CARD, \
     POWER_SUPPLY, NOTEBOOK, TABLET, GAMING_DESK, MICROPHONE, \
     VIDEO_GAME_CONSOLE, SOLID_STATE_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class SipoOnline(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            STEREO_SYSTEM,
-            MEMORY_CARD,
-            PROCESSOR,
-            USB_FLASH_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            RAM,
-            HEADPHONES,
-            KEYBOARD,
-            MOUSE,
-            KEYBOARD_MOUSE_COMBO,
-            COMPUTER_CASE,
-            MONITOR,
-            WEARABLE,
-            GAMING_CHAIR,
-            CPU_COOLER,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            POWER_SUPPLY,
-            NOTEBOOK,
-            TABLET,
-            GAMING_DESK,
-            MICROPHONE,
-            VIDEO_GAME_CONSOLE,
-            SOLID_STATE_DRIVE,
-        ]
+class SipoOnline(StoreWithUrlExtensions):
+    url_extensions = [
+        ['disipadores-cooler', CPU_COOLER],
+        ['placa_madres', MOTHERBOARD],
+        ['tarjeta_de_video', VIDEO_CARD],
+        ['procesadores', PROCESSOR],
+        ['fuente_poder', POWER_SUPPLY],
+        ['monitor-gamer', MONITOR],
+        ['gabinetes', COMPUTER_CASE],
+        ['memoria-ram', RAM],
+        ['parlante-musica', STEREO_SYSTEM],
+        ['memorias', MEMORY_CARD],
+        ['pendrives', USB_FLASH_DRIVE],
+        ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['hdd-disco-duro', STORAGE_DRIVE],
+        ['ssd-unidad-estado-solido',
+         SOLID_STATE_DRIVE],
+        ['audifonos', HEADPHONES],
+        ['parlantes-pc', STEREO_SYSTEM],
+        ['audifono-pc', HEADPHONES],
+        ['teclado', KEYBOARD],
+        ['mouse', MOUSE],
+        ['combo-computacion', KEYBOARD_MOUSE_COMBO],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['silla-gamer', GAMING_CHAIR],
+        ['audifono-gamer', HEADPHONES],
+        ['teclado-gamer', KEYBOARD],
+        ['mouse-gamer', MOUSE],
+        ['kit-gamer', KEYBOARD_MOUSE_COMBO],
+        ['smartwatch', WEARABLE],
+        ['notebooks', NOTEBOOK],
+        ['tablets', TABLET],
+        ['microfono', MICROPHONE],
+        ['escritorio-gamer', GAMING_DESK]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['componentes-pc/disipadores-cooler', CPU_COOLER],
-            ['componentes-pc/placa_madres', MOTHERBOARD],
-            ['componentes-pc/tarjeta_de_video', VIDEO_CARD],
-            ['componentes-pc/procesadores', PROCESSOR],
-            ['componentes-pc/fuente_poder', POWER_SUPPLY],
-            ['gamers-y-streaming/monitor-gamer', MONITOR],
-            ['componentes-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-pc/memoria-ram', RAM],
-            ['parlante-musica', STEREO_SYSTEM],
-            ['almacenamiento/memorias', MEMORY_CARD],
-            ['almacenamiento/pendrives', USB_FLASH_DRIVE],
-            ['almacenamiento/disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['componentes-pc/disco-interno/hdd-disco-duro', STORAGE_DRIVE],
-            ['componentes-pc/disco-interno/ssd-unidad-estado-solido',
-             SOLID_STATE_DRIVE],
-            ['audifonos', HEADPHONES],
-            ['computacion/parlantes-pc', STEREO_SYSTEM],
-            ['computacion/audifono-pc', HEADPHONES],
-            ['computacion/teclado', KEYBOARD],
-            ['computacion/mouse', MOUSE],
-            ['computacion/combo-computacion', KEYBOARD_MOUSE_COMBO],
-            ['zona-gamer/consolas', VIDEO_GAME_CONSOLE],
-            ['zona-gamer/silla-gamer', GAMING_CHAIR],
-            ['zona-gamer/audifono-gamer', HEADPHONES],
-            ['zona-gamer/teclado-gamer', KEYBOARD],
-            ['zona-gamer/mouse-gamer', MOUSE],
-            ['zona-gamer/kit-gamer', KEYBOARD_MOUSE_COMBO],
-            ['smartwatch', WEARABLE],
-            ['computadores/notebooks', NOTEBOOK],
-            ['tablets', TABLET],
-            ['parlante-musica/microfono', MICROPHONE],
-            ['zona-gamer/escritorio-gamer', GAMING_DESK]
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://sipoonline.cl/product-category/' \
-                              '{}/page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                main = soup.find('main', 'site-main')
-                if not main:
-                    if page == 1:
-                        print(url_webpage)
-                        import ipdb
-                        ipdb.set_trace()
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                product_containers = soup.findAll('li', 'product')
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://sipoonline.cl/product-category/' \
+                          '{}/page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            main = soup.find('main', 'site-main')
+            if not main:
+                if page == 1:
+                    print(url_webpage)
+                    import ipdb
+                    ipdb.set_trace()
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            product_containers = soup.findAll('li', 'product')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -131,6 +98,7 @@ class SipoOnline(Store):
 
         name = product_data['name']
         description = product_data['description']
+        is_reserva = 'VENTA' in description.upper()
         variants = soup.find('form', 'variations_form')
         if not variants:
             variants = soup.find('div', 'variations_form')
@@ -147,7 +115,9 @@ class SipoOnline(Store):
                     variant_name = name
                 sku = str(product['variation_id'])
 
-                if product['availability_html'] != '':
+                if is_reserva:
+                    stock = 0
+                elif product['availability_html'] != '':
                     stock = int(
                         BeautifulSoup(product['availability_html'],
                                       'html.parser').text.split()[0])
@@ -179,7 +149,9 @@ class SipoOnline(Store):
             return products
         else:
             stock_container = soup.find('p', 'stock in-stock')
-            if stock_container:
+            if is_reserva:
+                stock = 0
+            elif stock_container:
                 stock = int(stock_container.text.split()[0])
             elif soup.find('p', 'stock out-of-stock'):
                 stock = 0
