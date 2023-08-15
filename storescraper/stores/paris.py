@@ -169,7 +169,7 @@ class Paris(Store):
          'Línea Blanca > Electrodomésticos > Microondas', 1],
         # Also includes ventiladores
         ['linea-blanca/climatizacion',
-         ['SpaceHeater', 'WaterHeater', 'AirConditioner'],
+         ['SpaceHeater', 'AirConditioner'],
          'Línea Blanca > Climatización', 0],
         ['linea-blanca/climatizacion/aires-acondicionado',
          ['AirConditioner'],

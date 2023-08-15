@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import NOTEBOOK, MOTHERBOARD, ALL_IN_ONE, CELL
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class SmartDeal(StoreWithUrlExtensions):
@@ -80,8 +80,11 @@ class SmartDeal(StoreWithUrlExtensions):
         sku = str(product_data['sku'])
         price = Decimal(product_data['offers'][0]['price'])
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        description = html_to_markdown(str(soup.find('div', 'et_pb_tabs')))
 
-        if soup.find('p', 'stock out-of-stock'):
+        if 'PEDIDO' in description.upper():
+            stock = 0
+        elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
