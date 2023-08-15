@@ -19,6 +19,8 @@ from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class MercadoLibreChile(Store):
+    price_accuracy = '0'
+
     categories_code = [('MLC1051', 'Celulares y Telefonía', None),
                        ('MLC1648', 'Computación', None),
                        ('MLC1000', 'Electrónica, Audio y Video', None),
@@ -824,7 +826,7 @@ class MercadoLibreChile(Store):
         sku = data['initialState']['id']
         base_name = data['initialState']['schema'][0]['name']
         price = Decimal(data['initialState']['schema'][0][
-            'offers']['price'])
+            'offers']['price']).quantize(Decimal(cls.price_accuracy))
 
         # description = data['initialState']['components']['description'][
         #     'content']

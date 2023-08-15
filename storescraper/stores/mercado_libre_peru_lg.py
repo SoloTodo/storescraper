@@ -7,6 +7,7 @@ from ..utils import session_with_proxy
 
 class MercadoLibrePeruLg(MercadoLibreChile):
     official_store_id = 445
+    price_accuracy = '0.01'
 
     @classmethod
     def categories(cls):
