@@ -52,7 +52,7 @@ class TecnoMegaStore(Store):
         response = session.get('https://coretms.tecnomegastore.ec/admin/'
                                'api/product/{}'.format(product_extension))
         json_product = json.loads(response.text)['Product'][0]
-        part_number = json_product['numparte']
+        part_number = json_product['numparte'] or None
         name = part_number + ' - ' + json_product['description']
         sku = json_product['sku']
         stock = json_product['stock'][0]['S3']

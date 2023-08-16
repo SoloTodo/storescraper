@@ -78,7 +78,7 @@ class WebRedes(Store):
         print(json.dumps(json_info))
         name = json_info['reference'] + ' - ' + json_info['name']
         key = str(json_info['id_product'])
-        sku = str(json_info['reference'])
+        sku = str(json_info['reference']) or None
         stock = json_info['quantity']
         normal_price = Decimal(json_info['price_amount'])
         offer_price = (normal_price * Decimal(0.95)).quantize(0)

@@ -147,7 +147,7 @@ class TecnoPro(Store):
             else:
                 picture_urls = None
 
-            part_number = variant['barcode']
+            part_number = variant['barcode'] or None
 
             p = Product(
                 name,

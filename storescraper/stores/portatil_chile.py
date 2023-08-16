@@ -61,7 +61,7 @@ class PortatilChile(Store):
             soup.find('div', {'id': 'product-details'})['data-product'])
 
         sku = str(json_data['id_product'])
-        part_number = json_data['reference']
+        part_number = json_data['reference'] or None
         name = json_data['name']
         price = Decimal(json_data['price_amount'])
 
