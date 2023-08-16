@@ -53,7 +53,10 @@ class TecnoMegaStore(Store):
                                'api/product/{}'.format(product_extension))
         json_product = json.loads(response.text)['Product'][0]
         part_number = json_product['numparte'] or None
-        name = part_number + ' - ' + json_product['description']
+        if part_number:
+            name = part_number + ' - ' + json_product['description']
+        else:
+            name = json_product['description']
         sku = json_product['sku']
         stock = json_product['stock'][0]['S3']
         price = Decimal(str(json_product['priceW']))
