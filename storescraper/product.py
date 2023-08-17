@@ -56,6 +56,8 @@ class Product:
         if part_number and len(part_number) > 50:
             raise Exception('Invalid part number: {}'.format(part_number))
 
+        assert part_number != ''
+
         if sku and len(sku) > 50:
             raise Exception('Invalid SKU: {}'.format(sku))
 

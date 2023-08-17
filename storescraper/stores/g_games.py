@@ -98,7 +98,7 @@ class GGames(StoreWithUrlExtensions):
 
         for variant in json_container['variants']:
             variant_name = '{} {}'.format(name, variant['title']).strip()
-            part_number = variant['sku'].strip()
+            part_number = variant['sku'].strip() or None
             key = str(variant['id'])
             sku = str(variant['sku'])
             price = Decimal(variant['price'] / 100)

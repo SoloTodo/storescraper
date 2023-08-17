@@ -133,7 +133,7 @@ class Cintegral(Store):
         picture_urls = [x['large']['url'] for x in product_json['images']]
 
         part_number = soup.find('div', {'id': 'description'})[
-            'data-part_number']
+            'data-part_number'].strip() or None
 
         p = Product(
             name,

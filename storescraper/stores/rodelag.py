@@ -59,7 +59,7 @@ class Rodelag(Store):
 
         part_number_tag = soup.find('div', 'product-part_number')
         if part_number_tag:
-            part_number = part_number_tag.find('span').string.strip()
+            part_number = part_number_tag.find('span').string.strip() or None
         else:
             part_number = None
 
