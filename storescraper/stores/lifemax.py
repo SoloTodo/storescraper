@@ -126,6 +126,10 @@ class Lifemax(StoreWithUrlExtensions):
             sku = variant['sku']
             stock = int(variant['stock'][0]['quantityAvailable'])
             normal_price = Decimal(variant['finalPrice'])
+
+            if not normal_price:
+                continue
+
             offer_price = (normal_price * Decimal('0.96')).quantize(0)
 
             p = Product(
