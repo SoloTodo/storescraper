@@ -17,21 +17,21 @@ from storescraper.utils import session_with_proxy
 
 class PlayFactory(StoreWithUrlExtensions):
     url_extensions = [
-        ['componentes/tarjeta-de-video', VIDEO_CARD],
-        ['componentes/placa-madre', MOTHERBOARD],
-        ['componentes/procesadores-componentes', PROCESSOR],
-        ['componentes/almacenamiento', SOLID_STATE_DRIVE],
-        ['componentes/memoria-ram', RAM],
-        ['componentes/fuente-de-poder', POWER_SUPPLY],
-        ['zona-gamer/teclados-zona-gamer', KEYBOARD],
-        ['zona-gamer/audifonos-zona-gamer', HEADPHONES],
-        ['zona-gamer/kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
-        ['zona-gamer/mouse', MOUSE],
-        ['zona-gamer/refrigeracion-y-ventilacion', CPU_COOLER],
-        ['zona-gamer/parlantes', STEREO_SYSTEM],
-        ['computacion/gabinetes-pc', COMPUTER_CASE],
-        ['mobiliario/sillas-gamer-mobiliario', GAMING_CHAIR],
-        ['imagen-y-video/monitores-para-pc', MONITOR],
+        ['tarjeta-de-video', VIDEO_CARD],
+        ['placa-madre', MOTHERBOARD],
+        ['procesadores-componentes', PROCESSOR],
+        ['almacenamiento', SOLID_STATE_DRIVE],
+        ['memoria-ram', RAM],
+        ['fuente-de-poder', POWER_SUPPLY],
+        ['teclados-zona-gamer', KEYBOARD],
+        ['audifonos-zona-gamer', HEADPHONES],
+        ['kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+        ['mouse', MOUSE],
+        ['refrigeracion-y-ventilacion', CPU_COOLER],
+        ['parlantes', STEREO_SYSTEM],
+        ['gabinetes-pc', COMPUTER_CASE],
+        ['sillas-gamer-mobiliario', GAMING_CHAIR],
+        ['monitores-para-pc', MONITOR],
     ]
 
     @classmethod

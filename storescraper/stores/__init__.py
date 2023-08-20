@@ -350,6 +350,7 @@ from .pichau import Pichau
 from .plaza_lama import PlazaLama
 from .plaza_vea import PlazaVea
 from .play_factory import PlayFactory
+from .play_power import PlayPower
 from .pontofrio import Pontofrio
 from .portatil_chile import PortatilChile
 from .power_play import PowerPlay
