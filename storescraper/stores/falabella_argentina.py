@@ -19,7 +19,6 @@ class FalabellaArgentina(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -29,7 +28,6 @@ class FalabellaArgentina(Store):
         url_paths = [
             ['cat140020/Heladeras', 'Refrigerator'],
             ['cat10044/Aires-acondicionados', 'AirConditioner'],
-            ['cat10158/Calefones', 'WaterHeater'],
             ['cat10076/Lavarropas', 'WashingMachine'],
             ['cat10078/Secarropas', 'WashingMachine'],
             ['cat140022/Lavasecarropas', 'WashingMachine'],

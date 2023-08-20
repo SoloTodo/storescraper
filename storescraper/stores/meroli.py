@@ -13,7 +13,6 @@ class \
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -24,7 +23,6 @@ class \
             ['Heladeras/9', 'Refrigerator'],
             ['Freezer/76', 'Refrigerator'],
             ['Aire-Acondicionado/17', 'AirConditioner'],
-            ['Calefones/24', 'WaterHeater'],
             ['Lavarropas/11', 'WashingMachine'],
             # ['Lavasecarropas/25', 'WashingMachine'],
             # ['Secarropas-por-Calor/31', 'WashingMachine'],

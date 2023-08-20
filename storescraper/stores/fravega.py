@@ -17,7 +17,6 @@ class Fravega(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
             'UsbFlashDrive',
@@ -32,7 +31,6 @@ class Fravega(Store):
             # ['C:/1000174/1000179/', 'Refrigerator'],
             # ['C:/1000174/1000183/', 'Refrigerator'],
             # ['C:/1000128/1000129/1000130/', 'AirConditioner'],
-            # ['C:/1000209/1000211/', 'WaterHeater'],
             # ['C:/1000190/1000191/', 'WashingMachine'],
             # ['C:/1000157/1000158/', 'Stove'],
             # ['C:/1000157/1000166/', 'Stove'],

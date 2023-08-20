@@ -15,7 +15,6 @@ class Carrefour(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -26,7 +25,6 @@ class Carrefour(Store):
             ['electrohogar-1/heladeras-freezers.html', 'Refrigerator'],
             ['climatizacion/aire-acondicionado/split-frio-calor.html',
              'AirConditioner'],
-            ['electrohogar-1/calefones.html', 'WaterHeater'],
             ['electrohogar-1/lavado-y-secado/lavarropas.html',
              'WashingMachine'],
             ['electrohogar-1/cocinas-y-purificadores.html?cat=460',

@@ -13,7 +13,6 @@ class Musimundo(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
             'UsbFlashDrive',
@@ -31,10 +30,6 @@ class Musimundo(Store):
             #  'Refrigerator'],
             # ['1551~clima/1552~aire-acondicionado/1554~split',
             #  'AirConditioner'],
-            # ['1661~electrohogar/1662~calefones/1664~electrico',
-            #  'WaterHeater'],
-            # ['1661~electrohogar/1662~calefones/1663~gas',
-            #  'WaterHeater'],
             # ['1683~lavarropas/1686~automatico',
             #  'WashingMachine'],
             # ['1683~lavarropas/1685~semiautomatico',

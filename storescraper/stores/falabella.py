@@ -141,8 +141,6 @@ class Falabella(Store):
                                     'Side by side', 1],
         ['cat4054', [OVEN], 'Home > Electrohogar-Línea blanca > Cocina > Horno'
          's Empotrables', 1],
-        ['cat2013', [WATER_HEATER], 'Home > Cocina y Baño-Baño > Calefont y Te'
-         'rmos', 1],
         ['cat2019', [AIR_CONDITIONER], 'Home > Electrohogar-Climatización > Ai'
          're acondicionado', 1],
         ['cat4850013', [NOTEBOOK], 'Home > Especiales-Otras categorias > PC ga'

@@ -12,7 +12,6 @@ class OrtizYOrtega(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -24,7 +23,6 @@ class OrtizYOrtega(Store):
             # ['hogar/heladeras-y-freezers/freezers', 'Refrigerator'],
             ['climatizacion/refrigeracion/aires-acondicionados',
              'AirConditioner'],
-            ['hogar/agua-caliente/calefones-a-gas', 'WaterHeater'],
             ['hogar/lavarropas-y-secarropas', 'WashingMachine'],
             ['hogar/cocinas-hornos-y-anafes/anafes-a-gas', 'Stove'],
             ['hogar/cocinas-hornos-y-anafes/anafes-electricos', 'Stove'],

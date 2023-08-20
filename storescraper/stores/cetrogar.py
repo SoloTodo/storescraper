@@ -12,7 +12,6 @@ class Cetrogar(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -26,8 +25,6 @@ class Cetrogar(Store):
              'Refrigerator'],
             ['electrodomesticos/climatizacion/aires-acondicionados.html',
              'AirConditioner'],
-            # ['electrodomesticos/calefones.html',
-            #  'WaterHeater'],
             ['electrodomesticos/lavarropas-secarropas/lavarropas.html',
              'WashingMachine'],
             ['electrodomesticos/lavarropas-secarropas/secarropas.html',

@@ -17,7 +17,6 @@ class Megatone(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -27,7 +26,6 @@ class Megatone(Store):
         category_paths = [
             [('61', '36,35,34,'), 'Refrigerator'],
             [('48', '246,63,205,245,64,172,'), 'AirConditioner'],
-            [('66', '28,26,27,'), 'WaterHeater'],
             [('6', '38,39,37,'), 'WashingMachine'],
             [('55', '31,241,29,30,'), 'Stove'],
             [('57', '25,'), 'Stove'],

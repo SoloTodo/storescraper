@@ -13,7 +13,6 @@ class AmaHogar(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -25,7 +24,6 @@ class AmaHogar(Store):
             ['1523-heladeras-con-congelador', 'Refrigerator'],
             ['1481-freezer', 'Refrigerator'],
             ['1470-split', 'AirConditioner'],
-            ['1487-calefones', 'WaterHeater'],
             ['1492-lavarropas', 'WashingMachine'],
             ['1491-secarropas', 'WashingMachine'],
             ['1483-cocinas', 'Stove'],

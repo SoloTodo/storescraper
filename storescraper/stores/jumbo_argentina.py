@@ -14,7 +14,6 @@ class JumboArgentina(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -26,7 +25,6 @@ class JumboArgentina(Store):
             ['24966', 'Refrigerator'],
             ['24967', 'Refrigerator'],
             ['24940', 'AirConditioner'],
-            ['24950', 'WaterHeater'],
             ['24976', 'WashingMachine'],
             ['24977', 'WashingMachine'],
             ['24953', 'Stove'],
