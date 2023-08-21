@@ -116,13 +116,15 @@ class GoldenGamers(Store):
             stock = int(stock_container)
         else:
             stock = 0
-        price = Decimal(remove_words(
+        offer_price = Decimal(remove_words(
             product_container.find('ul', 'product-item-caption-price').find(
                 'li', 'product-item-caption-price-current').text.replace('CLP',
                                                                          '')))
 
-        if not price:
+        if not offer_price:
             return []
+
+        normal_price = offer_price * Decimal('1.03')
 
         picture_urls = [
             'https:' + tag['src'].replace('_small', '').split('?')[0] for tag
@@ -141,8 +143,8 @@ class GoldenGamers(Store):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,

@@ -1,7 +1,6 @@
 from decimal import Decimal
 import json
 import logging
-import re
 from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, GAMING_DESK, \
@@ -10,101 +9,64 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, COMPUTER_CASE, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, TELEVISION, UPS, \
     USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, RAM, CELL
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class KDTec(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            ALL_IN_ONE,
-            TABLET,
-            GAMING_CHAIR,
-            GAMING_DESK,
-            VIDEO_GAME_CONSOLE,
-            KEYBOARD,
-            HEADPHONES,
-            MOUSE,
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            MONITOR,
-            KEYBOARD_MOUSE_COMBO,
-            STEREO_SYSTEM,
-            MICROPHONE,
-            RAM,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            PROCESSOR,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            CPU_COOLER,
-            CASE_FAN,
-            TELEVISION,
-            PRINTER,
-            CELL,
-            UPS,
-        ]
+class KDTec(StoreWithUrlExtensions):
+    url_extensions = [
+        ['notebook-2', NOTEBOOK],
+        ['notebook-gamer', NOTEBOOK],
+        ['all-in-one', ALL_IN_ONE],
+        ['tablet', TABLET],
+        ['macbook', NOTEBOOK],
+        ['imac', ALL_IN_ONE],
+        ['ipad', TABLET],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['escritorios-gamer', GAMING_DESK],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['teclado-gamer', KEYBOARD],
+        ['audifonos-gamer', HEADPHONES],
+        ['mouse-gamer', MOUSE],
+        ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['disco-duro-interno', STORAGE_DRIVE],
+        ['disco-ssd', SOLID_STATE_DRIVE],
+        ['monitor', MONITOR],
+        ['monitor-gamer', MONITOR],
+        ['mouse', MOUSE],
+        ['teclados', KEYBOARD],
+        ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+        ['audifonos', HEADPHONES],
+        ['parlante-pc', STEREO_SYSTEM],
+        ['microfonos', MICROPHONE],
+        ['memoria-ram-notebook', RAM],
+        ['memoria-ram-pc', RAM],
+        ['pendrive', USB_FLASH_DRIVE],
+        ['memoria-flash', MEMORY_CARD],
+        ['procesadores', PROCESSOR],
+        ['placas-madres', MOTHERBOARD],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['fuente-de-poder', POWER_SUPPLY],
+        ['ups', UPS],
+        ['gabinetes', COMPUTER_CASE],
+        ['refrigeracion-cpu', CPU_COOLER],
+        ['ventiladores-pc', CASE_FAN],
+        ['smart-tv', TELEVISION],
+        ['impresoras-laser', PRINTER],
+        ['impresoras-tinta', PRINTER],
+        ['impresora-multifuncional', PRINTER],
+        ['matriz-de-punto', PRINTER],
+        ['plotter', PRINTER],
+        ['procesador-servidor', PROCESSOR],
+        ['memoria-ram-servidor', RAM],
+        ['discos-servidor', SOLID_STATE_DRIVE],
+        ['celulares', CELL],
+        ['pantallas-interactivas', MONITOR],
+        ['parlantes-audio', STEREO_SYSTEM],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['computacion/notebook/notebook-2', NOTEBOOK],
-            ['computacion/notebook/notebook-gamer', NOTEBOOK],
-            ['computacion/pc-de-escritorio/all-in-one', ALL_IN_ONE],
-            ['computacion/tablets/tablet', TABLET],
-            ['computacion/apple/macbook', NOTEBOOK],
-            ['computacion/apple/imac', ALL_IN_ONE],
-            ['computacion/apple/ipad', TABLET],
-            ['computacion/gamer/sillas-gamer', GAMING_CHAIR],
-            ['computacion/gamer/escritorios-gamer', GAMING_DESK],
-            ['computacion/gamer/consolas', VIDEO_GAME_CONSOLE],
-            ['computacion/gamer/teclado-gamer', KEYBOARD],
-            ['computacion/gamer/audifonos-gamer', HEADPHONES],
-            ['computacion/gamer/mouse-gamer', MOUSE],
-            ['computacion/almacenamiento/disco-duro-externo',
-             EXTERNAL_STORAGE_DRIVE],
-            ['computacion/almacenamiento/disco-duro-interno', STORAGE_DRIVE],
-            ['computacion/almacenamiento/disco-ssd', SOLID_STATE_DRIVE],
-            ['computacion/monitores/monitor', MONITOR],
-            ['computacion/gamer/monitor-gamer', MONITOR],
-            ['computacion/perifericos/mouse', MOUSE],
-            ['computacion/perifericos/teclados', KEYBOARD],
-            ['computacion/perifericos/combo-teclado-mouse',
-             KEYBOARD_MOUSE_COMBO],
-            ['computacion/perifericos/audifonos', HEADPHONES],
-            ['computacion/perifericos/parlante-pc', STEREO_SYSTEM],
-            ['computacion/perifericos/microfonos', MICROPHONE],
-            ['computacion/memorias-ram/memoria-ram-notebook', RAM],
-            ['computacion/memorias-ram/memoria-ram-pc', RAM],
-            ['computacion/memorias-ram/pendrive', USB_FLASH_DRIVE],
-            ['computacion/perifericos/memoria-flash', MEMORY_CARD],
-            ['componentes/procesadores', PROCESSOR],
-            ['componentes/placas-madres', MOTHERBOARD],
-            ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['componentes/fuentes-de-poder-ups/fuente-de-poder', POWER_SUPPLY],
-            ['componentes/fuentes-de-poder-ups/ups', UPS],
-            ['oficina/gabinetes', COMPUTER_CASE],
-            ['componentes/refrigeracion/refrigeracion-cpu', CPU_COOLER],
-            ['componentes/refrigeracion/ventiladores-pc', CASE_FAN],
-            ['television/smart-tv', TELEVISION],
-            ['oficina/impresoras/impresoras-laser', PRINTER],
-            ['oficina/impresoras/impresoras-tinta', PRINTER],
-            ['oficina/impresoras/impresora-multifuncional', PRINTER],
-            ['oficina/impresoras/matriz-de-punto', PRINTER],
-            ['oficina/impresoras/plotter', PRINTER],
-            ['redes/servidores/procesador-servidor', PROCESSOR],
-            ['redes/servidores/memoria-ram-servidor', RAM],
-            ['redes/servidores/discos-servidor', SOLID_STATE_DRIVE],
-            ['telefonia/celulares', CELL],
-            ['audio/pantallas-interactivas', MONITOR],
-            ['audio/parlantes-audio', STEREO_SYSTEM],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers.update({
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/'
@@ -112,32 +74,29 @@ class KDTec(Store):
                           'Safari/537.36'
         })
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 20:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://kdtec.cl/categoria-producto/{}/'.format(
-                    url_extension)
+        page = 1
+        while True:
+            if page > 20:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://kdtec.cl/categoria-producto/{}/'.format(
+                url_extension)
 
-                if page > 1:
-                    url_webpage += 'page/{}/'.format(page)
+            if page > 1:
+                url_webpage += 'page/{}/'.format(page)
 
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a', 'woocommerce-Loop'
-                                                      'Product-link')['href']
-                    product_urls.append(product_url)
-                page += 1
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a', 'woocommerce-Loop'
+                                                  'Product-link')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
