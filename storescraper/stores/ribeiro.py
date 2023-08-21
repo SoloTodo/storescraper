@@ -12,7 +12,6 @@ class Ribeiro(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
             'UsbFlashDrive',
@@ -27,10 +26,6 @@ class Ribeiro(Store):
             # 'Refrigerator'],
             # ['aires-y-climatizacion-aire-acondicionado-aire-acondicionado-'
             #  'split/_/N-4g7p32', 'AirConditioner'],
-            # ['aires-y-climatizacion-calefones-calefones-a-gas/_/N-lhc2v4',
-            #  'WaterHeater'],
-            # ['aires-y-climatizacion-calefones-calefones-electrico/_/N-sdg43p',
-            #  'WaterHeater'],
             # ['heladeras-cocina-y-lavado-lavado-lavarropas-automatico/'
             #  '_/N-vlbaf6', 'WashingMachine'],
             # ['heladeras-cocina-y-lavado-lavado-lavarropas-semi-automatico/'

@@ -10,8 +10,7 @@ from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
     DISH_WASHER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, HEADPHONES, KEYBOARD, \
     MEMORY_CARD, MONITOR, MOUSE, NOTEBOOK, OVEN, PRINTER, PROJECTOR, \
     REFRIGERATOR, SPACE_HEATER, STEREO_SYSTEM, STOVE, TABLET, TELEVISION, \
-    USB_FLASH_DRIVE, VIDEO_GAME_CONSOLE, WASHING_MACHINE, WATER_HEATER, \
-    WEARABLE
+    USB_FLASH_DRIVE, VIDEO_GAME_CONSOLE, WASHING_MACHINE, WEARABLE
 
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -44,7 +43,6 @@ class Hites(Store):
             MONITOR,
             PROJECTOR,
             AIR_CONDITIONER,
-            WATER_HEATER,
             USB_FLASH_DRIVE,
             WEARABLE,
             DISH_WASHER,
@@ -116,8 +114,7 @@ class Hites(Store):
              [OVEN], 'Inicio > Electro Hogar > Electrodomesticos Cocina > '
              'Hornos Eléctricos', 1],
 
-            ['electro-hogar/calefaccion',
-             [SPACE_HEATER, WATER_HEATER],
+            ['electro-hogar/calefaccion', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción', 0],
             ['electro-hogar/calefaccion/estufas-a-gas', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción > Estufas a Gas', 1],
@@ -125,10 +122,6 @@ class Hites(Store):
              'Inicio > Electro Hogar > Calefacción > Estufa a Leña', 1],
             ['electro-hogar/calefaccion/estufas-electricas', [SPACE_HEATER],
              'Inicio > Electro Hogar > Calefacción > Estufas Eléctricas', 1],
-            ['electro-hogar/calefaccion/calefont-y-termos',
-             [WATER_HEATER],
-             'Inicio > Electro Hogar > Calefacción > Calefont y Termos', 1],
-
             ['electro-hogar/climatizacion',
              [AIR_CONDITIONER],
              'Inicio > Electro Hogar > Climatización', 0],

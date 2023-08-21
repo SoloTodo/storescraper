@@ -16,7 +16,6 @@ class SodimacArgentina(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -26,7 +25,6 @@ class SodimacArgentina(Store):
         category_paths = [
             ['cat1730006/Heladeras', 'Refrigerator'],
             ['cat20630/Aires-Acondicionados', 'AirConditioner'],
-            ['cat20528/Calefones', 'WaterHeater'],
             ['cat260052/Lavarropas', 'WashingMachine'],
             ['cat20592/Hornos-Empotrados', 'Stove'],
             ['cat20590/Anafes,-hornos-y-cocinas', 'Stove'],

@@ -9,8 +9,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import GAMING_CHAIR, NOTEBOOK, CELL, WEARABLE, \
     HEADPHONES, TELEVISION, STEREO_SYSTEM, ALL_IN_ONE, MONITOR, TABLET, \
     PRINTER, VIDEO_GAME_CONSOLE, MOUSE, EXTERNAL_STORAGE_DRIVE, REFRIGERATOR, \
-    WASHING_MACHINE, OVEN, DISH_WASHER, AIR_CONDITIONER, WATER_HEATER, \
-    SPACE_HEATER
+    WASHING_MACHINE, OVEN, DISH_WASHER, AIR_CONDITIONER, SPACE_HEATER
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
@@ -41,7 +40,6 @@ class LaPolar(Store):
             OVEN,
             DISH_WASHER,
             AIR_CONDITIONER,
-            WATER_HEATER,
             SPACE_HEATER
         ]
 
@@ -126,8 +124,6 @@ class LaPolar(Store):
             ['aires-acondicionados', [AIR_CONDITIONER],
              'Inicio > Línea Blanca > Climatización > '
              'Aires Acondicionados', 1],
-            ['calefont-y-termos', [WATER_HEATER],
-             'Inicio > Línea Blanca > Climatización > Calefont y Termos', 1],
             ['estufas', [SPACE_HEATER],
              'Inicio > Línea Blanca > Climatización > Estufas', 1],
         ]

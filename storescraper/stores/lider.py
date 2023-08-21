@@ -14,7 +14,7 @@ from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
     MONITOR, NOTEBOOK, MOUSE, HEADPHONES, OVEN, PRINTER, PROJECTOR, \
     REFRIGERATOR, SOLID_STATE_DRIVE, SPACE_HEATER, STEREO_SYSTEM, TABLET, \
     TELEVISION, USB_FLASH_DRIVE, VACUUM_CLEANER, VIDEO_GAME_CONSOLE, \
-    WASHING_MACHINE, WATER_HEATER, WEARABLE
+    WASHING_MACHINE, WEARABLE
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy, \
@@ -145,8 +145,6 @@ class Lider(Store):
          'Electrohogar > Cocinas > Hornos Empotrables', 1.0],
         ['Electrohogar/Climatización/Calefacción', [SPACE_HEATER],
          'Electrohogar > Climatización > Calefacción', 1.0],
-        ['Electrohogar/Climatización/Termos_y_Calefonts', [WATER_HEATER],
-         'Electrohogar > Climatización > Termos y Calefonts', 1.0],
         ['Electrohogar/Climatización/Ventilación/Aire_Acondicionado',
          [AIR_CONDITIONER],
          'Electrohogar > Climatización > Ventilación > Aire Acondicionado',
@@ -179,7 +177,6 @@ class Lider(Store):
             KEYBOARD,
             HEADPHONES,
             WEARABLE,
-            WATER_HEATER,
             GAMING_CHAIR,
             SOLID_STATE_DRIVE,
             DISH_WASHER,

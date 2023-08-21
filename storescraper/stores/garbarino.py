@@ -14,7 +14,6 @@ class Garbarino(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
             'UsbFlashDrive',
@@ -29,7 +28,6 @@ class Garbarino(Store):
             # ['heladeras-sin-freezer/4291', 'Refrigerator'],
             # ['freezers/4292', 'Refrigerator'],
             # ['aires-acondicionados-split/4278', 'AirConditioner'],
-            # ['calefones/4251', 'WaterHeater'],
             # ['lavarropas/4298', 'WashingMachine'],
             # ['lavasecarropas/4300', 'WashingMachine'],
             # ['cocinas/4282', 'Stove'],

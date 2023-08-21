@@ -15,7 +15,6 @@ class EasyArgentina(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -25,7 +24,6 @@ class EasyArgentina(Store):
         category_paths = [
             ['14829', 'Refrigerator'],
             ['14831', 'AirConditioner'],
-            ['14826', 'WaterHeater'],
             ['14846', 'WashingMachine'],
             ['14825', 'Stove'],
             ['14828', 'Stove'],

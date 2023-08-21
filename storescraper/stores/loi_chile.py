@@ -76,7 +76,7 @@ class LoiChile(StoreWithUrlExtensions):
             price = Decimal(price_tag['data-precio'].replace(',', '.')).quantize(0)
         else:
             price_tag = soup.find('p', 'hotsale-precio-hotsale').find('span')
-            price = Decimal(remove_words(price_tag.text))
+            price = Decimal(remove_words(price_tag.text.replace('USD', '')))
 
         picture_urls = []
 

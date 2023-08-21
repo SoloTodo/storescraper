@@ -9,70 +9,52 @@ from storescraper.categories import ALL_IN_ONE, NOTEBOOK, MONITOR, \
     EXTERNAL_STORAGE_DRIVE, MOUSE, HEADPHONES, RAM
 from storescraper.product import Product
 from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class Syd(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            ALL_IN_ONE,
-            MONITOR,
-            EXTERNAL_STORAGE_DRIVE,
-            MOUSE,
-            RAM,
-            HEADPHONES
-        ]
+class Syd(StoreWithUrlExtensions):
+    url_extensions = [
+        ['imac-m1', ALL_IN_ONE],
+        ['macbook-pro-16-m1-de-apple', NOTEBOOK],
+        ['macbook-air-m1', NOTEBOOK],
+        ['studio-display', MONITOR],
+        ['macbook-pro-13-m2-nuevo', NOTEBOOK],
+        ['usb-c', EXTERNAL_STORAGE_DRIVE],
+        ['thunderbolt-3', EXTERNAL_STORAGE_DRIVE],
+        ['ssd', EXTERNAL_STORAGE_DRIVE],
+        ['raid', EXTERNAL_STORAGE_DRIVE],
+        ['mouse-y-teclados', MOUSE],
+        ['audio', HEADPHONES],
+        ['memorias', RAM],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         url_base = 'https://syd.cl'
-
-        category_paths = [
-            ['imac-m1', ALL_IN_ONE],
-            ['macbook-air-m1', NOTEBOOK],
-            ['macbook-pro-13-m2-nuevo', NOTEBOOK],
-            ['macbook-pro-14-m1-de-apple', NOTEBOOK],
-            ['macbook-pro-16-m1-de-apple', NOTEBOOK],
-            ['studio-display', MONITOR],
-            ['usb-c', EXTERNAL_STORAGE_DRIVE],
-            ['thunderbolt-3', EXTERNAL_STORAGE_DRIVE],
-            ['ssd', EXTERNAL_STORAGE_DRIVE],
-            ['raid', EXTERNAL_STORAGE_DRIVE],
-            ['mouse-y-teclados', MOUSE],
-            ['audio', HEADPHONES],
-            ['memorias', RAM],
-        ]
-
         product_urls = []
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        category_url = url_base + '/collection/' + url_extension
 
-            category_url = url_base + '/collection/' + category_path
+        response = session.get(category_url)
 
-            response = session.get(category_url)
+        if response.url != category_url:
+            raise Exception('Invalid category: ' + category_url)
 
-            if response.url != category_url:
-                raise Exception('Invalid category: ' + category_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        titles = soup.findAll('div', 'bs-product')
 
-            soup = BeautifulSoup(response.text, 'html.parser')
-            titles = soup.findAll('div', 'bs-product')
+        if not titles:
+            logging.warning('Empty category: ' + category_url)
 
-            if not titles:
-                logging.warning('Empty category: ' + category_url)
-                continue
-
-            for title in titles:
-                product_link = title.find('a')
-                product_url = url_base + product_link['href']
-                product_urls.append(product_url)
+        for title in titles:
+            product_link = title.find('a')
+            product_url = url_base + product_link['href']
+            product_urls.append(product_url)
 
         return product_urls
 

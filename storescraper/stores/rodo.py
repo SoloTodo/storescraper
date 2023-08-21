@@ -12,7 +12,6 @@ class Rodo(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -21,7 +20,6 @@ class Rodo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = [
             ['hogar.html?cat=34', 'Refrigerator'],
-            ['hogar/agua-caliente/calefones.html?cat=', 'WaterHeater'],
             ['climatizacion/aire-acondicionado/split.html?cat=',
              'AirConditioner'],
             ['hogar/lavado-y-secado/lavarropas.html?cat=',

@@ -14,7 +14,6 @@ class CasaDelAudio(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -24,7 +23,6 @@ class CasaDelAudio(Store):
         category_paths = [
             ['127', 'Refrigerator'],
             ['101', 'AirConditioner'],
-            ['17', 'WaterHeater'],
             ['4191', 'WashingMachine'],
             ['123', 'Stove'],
         ]

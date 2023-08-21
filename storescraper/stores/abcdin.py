@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs, urlencode
 
 from storescraper.categories import TELEVISION, STEREO_SYSTEM, HEADPHONES, \
     SPACE_HEATER, REFRIGERATOR, WASHING_MACHINE, DISH_WASHER, VACUUM_CLEANER, \
-    OVEN, WATER_HEATER, CELL, WEARABLE, CELL_ACCESORY, NOTEBOOK, TABLET, \
+    OVEN, CELL, WEARABLE, CELL_ACCESORY, NOTEBOOK, TABLET, \
     MOUSE, GAMING_CHAIR, ALL_IN_ONE, MONITOR, EXTERNAL_STORAGE_DRIVE, \
     PRINTER, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
@@ -31,7 +31,6 @@ class AbcDin(Store):
             DISH_WASHER,
             VACUUM_CLEANER,
             OVEN,
-            WATER_HEATER,
             CELL,
             WEARABLE,
             CELL_ACCESORY,
@@ -118,8 +117,6 @@ class AbcDin(Store):
              'Línea Blanca / Electrodomésticos / Microondas', 1],
             ['linea-blanca/electrodomesticos/hornos-electricos', [OVEN],
              'Línea Blanca / Electrodomésticos / Hornos Eléctricos', 1],
-            ['linea-blanca/calefont', [WATER_HEATER],
-             'Línea Blanca / Calefont', 1],
             ['telefonia/smartphones', [CELL], 'Telefonía / Smartphones', 1],
             ['telefonia/smartwatch', [WEARABLE], 'Telefonía / Smartwatch', 1],
             ['telefonia/accesorios-telefonia', [CELL_ACCESORY],

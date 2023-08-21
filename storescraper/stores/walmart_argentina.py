@@ -15,7 +15,6 @@ class WalmartArgentina(Store):
         return [
             'Refrigerator',
             'AirConditioner',
-            'WaterHeater',
             'WashingMachine',
             'Stove',
         ]
@@ -25,7 +24,6 @@ class WalmartArgentina(Store):
         category_paths = [
             ['C:/488/', 'Refrigerator'],
             ['C:/467/', 'AirConditioner'],
-            # ['C:/506/', 'WaterHeater'],
             ['C:/497/', 'WashingMachine'],
             ['C:/509/511/', 'Stove'],  # Cocina
             # ['C:/509/512/', 'Stove'],  # Anafe
