@@ -112,7 +112,7 @@ class BestStore(StoreWithUrlExtensions):
         key = container.find('meta', {'itemprop': 'sku'})['content']
         name = container.find('h1', {'itemprop': 'name'}).text
         part_number = container.find('div', 'product-reference-supplier').find(
-            'span').text
+            'span').text.strip()
         sku = container.find(
             'div', 'product-reference').find('span').text.strip()
 

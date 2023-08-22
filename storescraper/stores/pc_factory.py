@@ -226,6 +226,10 @@ class PcFactory(Store):
 
         sku = product_data['id_producto']
         part_number = product_data['partno']
+
+        if part_number:
+            part_number = part_number.strip()
+
         name = product_data['nombre']
         stock = int(product_data['stock_web']) + \
             int(product_data['stock_tienda'])
