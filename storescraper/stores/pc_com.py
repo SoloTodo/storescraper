@@ -12,7 +12,8 @@ from storescraper.categories import PROCESSOR, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     HEADPHONES, MONITOR, MOUSE, KEYBOARD, STORAGE_DRIVE, CPU_COOLER, \
     MOTHERBOARD, GAMING_CHAIR, VIDEO_GAME_CONSOLE, MEMORY_CARD, \
-    USB_FLASH_DRIVE, STEREO_SYSTEM, GAMING_DESK, MICROPHONE, CASE_FAN
+    USB_FLASH_DRIVE, STEREO_SYSTEM, GAMING_DESK, MICROPHONE, CASE_FAN, \
+    EXTERNAL_STORAGE_DRIVE
 
 
 class PcCom(StoreWithUrlExtensions):
@@ -43,12 +44,14 @@ class PcCom(StoreWithUrlExtensions):
         ['mouse-inalambricos', MOUSE],
         ['teclado-alambricos', KEYBOARD],
         ['teclado-inalambricos', KEYBOARD],
+        ['teclado-smart-tv', KEYBOARD],
         ['mouse-gamers', MOUSE],
         ['teclados-membrana', KEYBOARD],
         ['teclados-mecanicos', KEYBOARD],
         ['sillas-gamers', GAMING_CHAIR],
         ['escritorios-gamers', GAMING_DESK],
-        ['microfonos', MICROPHONE]
+        ['microfonos', MICROPHONE],
+        ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
     ]
 
     @classmethod
