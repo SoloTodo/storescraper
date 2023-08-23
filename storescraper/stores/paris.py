@@ -254,6 +254,9 @@ class Paris(Store):
                     if product_url == "null":
                         continue
 
+                    if product_url == 'javascript:void(0);':
+                        continue
+
                     if 'https' not in product_url:
                         product_url = 'https://www.paris.cl' + product_url
 
