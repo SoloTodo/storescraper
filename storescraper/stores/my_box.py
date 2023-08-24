@@ -23,13 +23,13 @@ class MyBox(StoreWithUrlExtensions):
         ['62-gabinetes', COMPUTER_CASE],
         ['89-ventiladores-fans', CASE_FAN],
         ['91-respaldo-energetico-ups', UPS],
-        ['28-monitor', MONITOR],
+        ['28-pantallas-y-monitores', MONITOR],
         ['20-teclados-mouse', KEYBOARD],
         ['21-audifonos-headset', HEADPHONES],
         ['22-parlantes', STEREO_SYSTEM],
         ['26-iluminacion-rgb', CASE_FAN],
         ['210-memorias-sd-microsd-y-pendrives', USB_FLASH_DRIVE],
-        ['16-notebook', NOTEBOOK],
+        ['16-notebooks', NOTEBOOK],
         ['25-sillas-gamer', GAMING_CHAIR],
         ['24-microfonos', MICROPHONE],
     ]
@@ -54,9 +54,8 @@ class MyBox(StoreWithUrlExtensions):
             response = session.get(url_webpage)
 
             if response.url != url_webpage:
-                print(response.url, url_webpage)
                 if page == 1:
-                    logging.warning('Empy category: ' + url_webpage)
+                    raise Exception('Empy category: ' + url_webpage)
                 break
 
             soup = BeautifulSoup(response.text, 'html.parser')
