@@ -70,8 +70,8 @@ class CasaRoyal(StoreWithUrlExtensions):
             payload = {
                 'persistedQuery': {
                     'version': 1,
-                    'sha256Hash': '40e207fe75d9dce4dfb3154442da4615'
-                                  'f2b097b53887a0ae5449eb92d42e84db',
+                    'sha256Hash': '97f345cd1295d67e2e7c6e46f67b7d4e'
+                                  '4593b2f97c26b22b9e6b68f787eb12ac',
                     'sender': 'vtex.store-resources@0.x',
                     'provider': 'vtex.search-graphql@0.x'
                 },
