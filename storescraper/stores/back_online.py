@@ -71,6 +71,8 @@ class BackOnline(StoreWithUrlExtensions):
 
         if 'NUEVO' in json_data['brand']['name'].upper():
             condition = 'https://schema.org/NewCondition'
+        elif 'OPEN BOX' in json_data['brand']['name'].upper():
+            condition = 'https://schema.org/OpenBoxCondition'
         else:
             condition = 'https://schema.org/RefurbishedCondition'
 
