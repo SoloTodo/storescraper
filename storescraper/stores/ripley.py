@@ -209,6 +209,10 @@ class Ripley(Store):
                 page_data = re.search(r'window.__PRELOADED_STATE__ = (.+);',
                                       response.text)
                 page_json = json.loads(page_data.groups()[0])
+
+                if 'products' not in page_json:
+                    break
+
                 products_json_1 = page_json['products']
 
                 products_json_2 = json.loads(
