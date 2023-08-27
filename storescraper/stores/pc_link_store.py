@@ -13,149 +13,100 @@ from storescraper.categories import ALL_IN_ONE, GAMING_DESK, HEADPHONES, \
     VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE, CELL, \
     POWER_SUPPLY, MICROPHONE, WEARABLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class PcLinkStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            MOUSE,
-            KEYBOARD,
-            KEYBOARD_MOUSE_COMBO,
-            CPU_COOLER,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            RAM,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            COMPUTER_CASE,
-            VIDEO_GAME_CONSOLE,
-            NOTEBOOK,
-            MONITOR,
-            STEREO_SYSTEM,
-            GAMING_CHAIR,
-            TABLET,
-            PROCESSOR,
-            MEMORY_CARD,
-            USB_FLASH_DRIVE,
-            CELL,
-            POWER_SUPPLY,
-            MICROPHONE,
-            ALL_IN_ONE,
-            PRINTER,
-            TELEVISION,
-            GAMING_DESK,
-            UPS,
-            WEARABLE,
-        ]
+class PcLinkStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['audifonos-y-manos-libres-2', HEADPHONES],
+        ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
+        ['microfonos-3', MICROPHONE],
+        ['mouse', MOUSE],
+        ['parlantes-subwoofer-altavoz-inteligente', STEREO_SYSTEM],
+        ['teclados-2', KEYBOARD],
+        ['unidad-de-estado-solido-ssd', SOLID_STATE_DRIVE],
+        ['discos-duros-externos-portatiles', EXTERNAL_STORAGE_DRIVE],
+        ['discos-duros-internos', STORAGE_DRIVE],
+        ['smart-band', WEARABLE],
+        ['smartphone', CELL],
+        ['smartwatch', WEARABLE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['gabinetes', COMPUTER_CASE],
+        ['modulos-ram-propietarios', RAM],
+        ['tarjetas-madre-placas-madre', MOTHERBOARD],
+        ['procesador', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
+        ['all-in-one', ALL_IN_ONE],
+        ['apple-2', NOTEBOOK],
+        ['notebook', NOTEBOOK],
+        ['tableta', TABLET],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['escaner', PRINTER],
+        ['impresoras-ink-jet', PRINTER],
+        ['impresoras-laser', PRINTER],
+        ['impresoras-multifuncionales', PRINTER],
+        ['pendrive-unidades-flash-usb', USB_FLASH_DRIVE],
+        ['tarjetas-de-memoria-flash', MEMORY_CARD],
+        ['monitores-2', MONITOR],
+        ['televisores', TELEVISION],
+        ['escritorios', GAMING_DESK],
+        ['sillas-de-escritorio', GAMING_CHAIR],
+        ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
+        ['ups-respaldo-de-energia', UPS],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['accesorios-para-computadores/audifonos-y-manos-libres-2',
-             HEADPHONES],
-            ['accesorios-para-computadores/kit-teclado-y-mouse-2',
-             KEYBOARD_MOUSE_COMBO],
-            ['accesorios-para-computadores/microfonos-3', MICROPHONE],
-            ['accesorios-para-computadores/mouse', MOUSE],
-            ['parlantes-subwoofer-altavoz-inteligente', STEREO_SYSTEM],
-            ['accesorios-para-computadores/teclados-2', KEYBOARD],
-            ['componentes-informaticos/almacenamiento/'
-             'unidad-de-estado-solido-ssd', SOLID_STATE_DRIVE],
-            ['componentes-informaticos/almacenamiento/discos-duros-'
-             'externos-portatiles', EXTERNAL_STORAGE_DRIVE],
-            ['componentes-informaticos/almacenamiento/'
-             'discos-duros-internos', STORAGE_DRIVE],
-            ['celulares-accesorios/smart-band', WEARABLE],
-            ['celulares-accesorios/smartphone', CELL],
-            ['celulares-accesorios/smartwatch', WEARABLE],
-            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-informaticos/gabinetes', COMPUTER_CASE],
-            ['componentes-informaticos/modulos-ram-propietarios', RAM],
-            ['componentes-informaticos/tarjetas-madre-placas-madre',
-             MOTHERBOARD],
-            ['componentes-informaticos/procesador', PROCESSOR],
-            ['componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-informaticos/ventiladores-y-sistemas-de-'
-             'enfriamiento', CPU_COOLER],
-            ['computacion/all-in-one', ALL_IN_ONE],
-            ['computacion/apple-2', NOTEBOOK],
-            ['computacion/notebook', NOTEBOOK],
-            ['computacion/tableta', TABLET],
-            ['consolas-volantes-accesorios/consolas', VIDEO_GAME_CONSOLE],
-            ['impresoras-escaner-suministros/escaner', PRINTER],
-            ['impresoras-escaner-suministros/impresoras-ink-jet', PRINTER],
-            ['impresoras-escaner-suministros/impresoras-laser', PRINTER],
-            ['impresoras-escaner-suministros/impresoras-multifuncionales',
-             PRINTER],
-            ['memorias-flash-pendrive/pendrive-unidades-flash-usb',
-             USB_FLASH_DRIVE],
-            ['memorias-flash-pendrive/tarjetas-de-memoria-flash',
-             MEMORY_CARD],
-            ['monitores-televisores/monitores-2', MONITOR],
-            ['monitores-televisores/televisores', TELEVISION],
-            ['muebles-sillas-escritorios/escritorios', GAMING_DESK],
-            ['muebles-sillas-escritorios/sillas-gamer', GAMING_CHAIR],
-            ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
-            ['ups-reguladores/ups-respaldo-de-energia', UPS],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded'
         session.headers['x-requested-with'] = 'XMLHttpRequest'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
+        url_webpage = 'https://www.pclinkstore.cl/categorias/{}' \
+            ''.format(url_extension)
+        print(url_webpage)
+        data = session.get(url_webpage).text
+        soup = BeautifulSoup(data, 'html5lib')
 
-            url_webpage = 'https://www.pclinkstore.cl/categorias/{}' \
-                ''.format(url_extension)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html5lib')
+        token = soup.find('meta', {'name': 'csrf-token'})['content']
+        id_category = re.search('"id_category":(\\d+)', data).groups()[0]
 
-            token = soup.find('meta', {'name': 'csrf-token'})['content']
-            id_category = re.search('"id_category":(\\d+)', data).groups()[0]
+        query_url = 'https://www.pclinkstore.cl/productos'
 
-            query_url = 'https://www.pclinkstore.cl/productos'
+        page = 1
+        done = False
+        while not done:
+            if page > 50:
+                raise Exception('Page overflow')
 
-            page = 1
-            done = False
-            while not done:
-                if page > 50:
-                    raise Exception('Page overflow')
+            query_params = {
+                "_token": token,
+                "id_category": id_category,
+                "register": 48,
+                "page": page
+            }
 
-                query_params = {
-                    "_token": token,
-                    "id_category": id_category,
-                    "register": 48,
-                    "page": page
-                }
+            product_data = session.post(query_url, query_params).text
+            product_json = json.loads(product_data)['data']
+            product_soup = BeautifulSoup(product_json, 'html5lib')
 
-                product_data = session.post(query_url, query_params).text
-                product_json = json.loads(product_data)['data']
-                product_soup = BeautifulSoup(product_json, 'html5lib')
+            product_containers = product_soup.findAll(
+                'div', 'sv-producto-mod')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-                product_containers = product_soup.findAll(
-                    'div', 'sv-producto-mod')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+            for container in product_containers:
+                if 'Avisame' in container.text:
+                    done = True
                     break
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
-                for container in product_containers:
-                    if 'Avisame' in container.text:
-                        done = True
-                        break
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 

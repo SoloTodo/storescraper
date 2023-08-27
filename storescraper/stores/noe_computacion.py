@@ -5,68 +5,50 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, CELL, GAMING_CHAIR, MONITOR, \
     NOTEBOOK, PRINTER, RAM, SOLID_STATE_DRIVE, TABLET, TELEVISION
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class NoeComputacion(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            ALL_IN_ONE,
-            SOLID_STATE_DRIVE,
-            CELL,
-            PRINTER,
-            RAM,
-            MONITOR,
-            NOTEBOOK,
-            GAMING_CHAIR,
-            TABLET,
-            TELEVISION
-        ]
+class NoeComputacion(StoreWithUrlExtensions):
+    url_extensions = [
+        ['199', ALL_IN_ONE],
+        ['147', SOLID_STATE_DRIVE],
+        ['212', CELL],
+        ['188', PRINTER],
+        ['223', RAM],
+        ['184', MONITOR],
+        ['61', NOTEBOOK],
+        ['215', GAMING_CHAIR],
+        ['95', TABLET],
+        ['178', TELEVISION],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['199', ALL_IN_ONE],
-            ['147', SOLID_STATE_DRIVE],
-            ['212', CELL],
-            ['188', PRINTER],
-            ['223', RAM],
-            ['184', MONITOR],
-            ['61', NOTEBOOK],
-            ['215', GAMING_CHAIR],
-            ['95', TABLET],
-            ['178', TELEVISION],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://noecomputacion.com/tienda/page/{}/' \
-                    '?filter_cat={}&_pjax=.site-content'.format(
-                        page, url_extension)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                if response.status_code == 404:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                product_containers = soup.findAll('div', 'product')
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://noecomputacion.com/tienda/page/{}/' \
+                '?filter_cat={}&_pjax=.site-content'.format(
+                    page, url_extension)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            if response.status_code == 404:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            product_containers = soup.findAll('div', 'product')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -114,7 +96,7 @@ class NoeComputacion(Store):
 
         picture_urls = []
         image_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
+            'div', 'woocommerce-product-gallery__wrapper')
         for image in image_container.findAll(
                 'div', 'woocommerce-product-gallery__image'):
             picture_urls.append(image.find('img')['src'])
