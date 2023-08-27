@@ -73,7 +73,8 @@ class LoiChile(StoreWithUrlExtensions):
         price_tag = soup.find(
             'div', {'id': 'contenedor_precio_detalle_producto'})
         if price_tag:
-            price = Decimal(price_tag['data-precio'].replace(',', '.')).quantize(0)
+            price = Decimal(price_tag['data-precio'].replace(
+                ',', '.')).quantize(0)
         else:
             price_tag = soup.find('p', 'hotsale-precio-hotsale').find('span')
             price = Decimal(remove_words(price_tag.text.replace('USD', '')))
