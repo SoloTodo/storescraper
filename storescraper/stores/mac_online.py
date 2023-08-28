@@ -112,7 +112,9 @@ class MacOnline(Store):
                 description += '\n\n' + html_to_markdown(
                     json_product['description'])
 
-                if json_product['in_stock']:
+                if 'INTERNACIONAL' in name.upper():
+                    stock = 0
+                elif json_product['in_stock']:
                     stock = sum(json.loads(
                         json_product['stock_locations']).values())
                 else:
@@ -155,6 +157,11 @@ class MacOnline(Store):
             description = html_to_markdown(json_data['description'])
             picture_urls = [x.split('?')[0] for x in json_data['image']]
 
+            if 'INTERNACIONAL' in name.upper():
+                stock = 0
+            else:
+                stock = -1
+
             products.append(Product(
                 name,
                 cls.__name__,
@@ -162,7 +169,7 @@ class MacOnline(Store):
                 url,
                 url,
                 sku,
-                -1,
+                stock,
                 price,
                 price,
                 'CLP',
