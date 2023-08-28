@@ -7,7 +7,8 @@ from storescraper.categories import MOTHERBOARD, NOTEBOOK, RAM, VIDEO_CARD, \
     SOLID_STATE_DRIVE, PROCESSOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class SamuraiStore(Store):
@@ -86,7 +87,12 @@ class SamuraiStore(Store):
         else:
             sku = None
 
-        if 'preventa' in name.lower():
+        description = html_to_markdown(str(
+            soup.find('div', 'woocommerce-Tabs-panel--description')))
+
+        if 'IMPORTADO' in description.upper():
+            stock = 0
+        elif 'preventa' in name.lower():
             stock = 0
         elif soup.find('p', 'available-on-backorder'):
             stock = 0
@@ -128,6 +134,7 @@ class SamuraiStore(Store):
             'CLP',
             sku=sku,
             part_number=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]

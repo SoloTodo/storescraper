@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import VIDEO_CARD, ALL_IN_ONE, NOTEBOOK, \
     PROCESSOR, MOTHERBOARD, SOLID_STATE_DRIVE, RAM, PRINTER, MONITOR, MOUSE, \
-    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, TABLET
+    COMPUTER_CASE, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, TABLET, POWER_SUPPLY, \
+    GAMING_CHAIR, CELL, TELEVISION, UPS
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -38,6 +39,11 @@ class TecnoMas(StoreWithUrlExtensions):
         ['Gabinetes', COMPUTER_CASE],
         ['Almacenamiento Externo', EXTERNAL_STORAGE_DRIVE],
         ['Tablets', TABLET],
+        ['Fuentes de Poder', POWER_SUPPLY],
+        ['Sillas', GAMING_CHAIR],
+        ['Celulares', CELL],
+        ['Televisores', TELEVISION],
+        ['UPS', UPS],
     ]
 
     @classmethod
