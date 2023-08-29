@@ -6,7 +6,7 @@ import validators
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     HEADPHONES, MOUSE, SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, \
@@ -15,82 +15,68 @@ from storescraper.categories import MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, \
     TELEVISION, PRINTER
 
 
-class InfographicsSolutions(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            MOTHERBOARD, RAM, PROCESSOR, VIDEO_CARD, HEADPHONES, MOUSE,
-            SOLID_STATE_DRIVE, KEYBOARD, COMPUTER_CASE, STORAGE_DRIVE,
-            POWER_SUPPLY, CPU_COOLER, GAMING_CHAIR, USB_FLASH_DRIVE, CASE_FAN,
-            EXTERNAL_STORAGE_DRIVE, NOTEBOOK, MONITOR, VIDEO_GAME_CONSOLE,
-            TELEVISION, PRINTER
-        ]
+class InfographicsSolutions(StoreWithUrlExtensions):
+    url_extensions = [
+        ['gabinetes', COMPUTER_CASE],
+        ['refrigeracion-liquida', CPU_COOLER],
+        ['refrigeracion-aire', CPU_COOLER],
+        ['ventiladores-fans', CASE_FAN],
+        ['disco-duro', STORAGE_DRIVE],
+        ['ssd-sata-2-5', SOLID_STATE_DRIVE],
+        ['ssd-sata-m-2', SOLID_STATE_DRIVE],
+        ['ssd-nvme-pcie', SOLID_STATE_DRIVE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['placas-madre', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['memorias-ram', RAM],
+        ['tarjetas-graficas', VIDEO_CARD],
+        ['audifonos-headset', HEADPHONES],
+        ['teclados-gamer', KEYBOARD],
+        ['mouse-gamer', MOUSE],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['audifonos', HEADPHONES],
+        ['teclados', KEYBOARD],
+        ['mouse', MOUSE],
+        ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['ssd-externo', EXTERNAL_STORAGE_DRIVE],
+        ['pendrive', USB_FLASH_DRIVE],
+        ['memorias-ram-notebook-ddr4', RAM],
+        ['notebook-gamer', NOTEBOOK],
+        ['notebook-ofimatica', NOTEBOOK],
+        ['monitores', MONITOR],
+        ['todas-las-consolas', VIDEO_GAME_CONSOLE],
+        ['televisores', TELEVISION],
+        ['impresoras', PRINTER],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['gabinetes', COMPUTER_CASE],
-            ['refrigeracion-liquida', CPU_COOLER],
-            ['refrigeracion-aire', CPU_COOLER],
-            ['ventiladores-fans', CASE_FAN],
-            ['disco-duro', STORAGE_DRIVE],
-            ['ssd-sata-2-5', SOLID_STATE_DRIVE],
-            ['ssd-sata-m-2', SOLID_STATE_DRIVE],
-            ['ssd-nvme-pcie', SOLID_STATE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['placas-madre', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['memorias-ram', RAM],
-            ['tarjetas-graficas', VIDEO_CARD],
-            ['audifonos-headset', HEADPHONES],
-            ['teclados-gamer', KEYBOARD],
-            ['mouse-gamer', MOUSE],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['audifonos', HEADPHONES],
-            ['teclados', KEYBOARD],
-            ['mouse', MOUSE],
-            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['ssd-externo', EXTERNAL_STORAGE_DRIVE],
-            ['pendrive', USB_FLASH_DRIVE],
-            ['memorias-ram-notebook-ddr4', RAM],
-            ['notebook-gamer', NOTEBOOK],
-            ['monitores', MONITOR],
-            ['todas-las-consolas', VIDEO_GAME_CONSOLE],
-            ['televisores', TELEVISION],
-            ['impresoras', PRINTER],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['Cookie'] = '_lscache_vary=a'
         product_urls = []
+        page = 1
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        while True:
+            url = 'https://infographicssolutions.cl/categoria-producto/' \
+                  '{}/page/{}/'.format(url_extension, page)
+            print(url)
 
-            page = 1
+            if page > 15:
+                raise Exception('Page overflow: ' + str(page))
 
-            while True:
-                url = 'https://infographicssolutions.cl/categoria-producto/' \
-                      '{}/page/{}/'.format(category_path, page)
-                print(url)
+            res = session.get(url)
+            if res.status_code == 404:
+                if page == 1:
+                    logging.warning('Invalid category: ' + url)
+                break
 
-                if page > 15:
-                    raise Exception('Page overflow: ' + str(page))
+            soup = BeautifulSoup(res.text, 'html.parser')
+            products = soup.findAll('div', 'product-grid-item')
 
-                res = session.get(url)
-                if res.status_code == 404:
-                    if page == 1:
-                        logging.warning('Invalid category: ' + url)
-                    break
+            for product in products:
+                product_urls.append(product.find('a')['href'])
 
-                soup = BeautifulSoup(res.text, 'html.parser')
-                products = soup.findAll('div', 'product-grid-item')
-
-                for product in products:
-                    product_urls.append(product.find('a')['href'])
-
-                page += 1
+            page += 1
 
         return product_urls
 
