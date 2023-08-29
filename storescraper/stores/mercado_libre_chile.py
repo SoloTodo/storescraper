@@ -828,8 +828,11 @@ class MercadoLibreChile(Store):
         price = Decimal(data['initialState']['schema'][0][
             'offers']['price']).quantize(Decimal(cls.price_accuracy))
 
-        description = data['initialState']['components']['description'][
-            'content']
+        if 'description' in data['initialState']['components']:
+            description = data['initialState']['components']['description'][
+                'content']
+        else:
+            description = ''
 
         picker = None
         condition = 'https://schema.org/NewCondition'
