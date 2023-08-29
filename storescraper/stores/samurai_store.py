@@ -94,7 +94,8 @@ class SamuraiStore(Store):
         importado = 'IMPORTADO' in description.upper()
 
         # Exactly one must be True
-        assert entrega_inmediata != importado
+        if entrega_inmediata == importado:
+            return []
 
         if importado:
             stock = 0
