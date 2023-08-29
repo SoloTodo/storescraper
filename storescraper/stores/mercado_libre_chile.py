@@ -837,7 +837,8 @@ class MercadoLibreChile(Store):
         picker = None
         condition = 'https://schema.org/NewCondition'
 
-        if 'USADO' in data['initialState']['components']['header']['subtitle'].upper():
+        if 'USADO' in data['initialState']['components']['header'].get(
+                'subtitle', '').upper():
             condition = 'https://schema.org/UsedCondition'
 
         if 'short_description' in data['initialState']['components']:
