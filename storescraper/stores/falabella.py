@@ -18,7 +18,7 @@ from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, session_with_proxy, \
-    CF_REQUEST_HEADERS
+    CF_REQUEST_HEADERS, html_to_markdown
 from storescraper import banner_sections as bs
 
 
@@ -383,7 +383,7 @@ class Falabella(Store):
             next_container.text)[
             'props']['pageProps']['productData']
 
-        specification = soup.find('div', 'productInfoContainer')
+        specification_tag = soup.find('div', 'productInfoContainer')
         long_description = product_data['longDescription']
 
         if long_description:
@@ -392,12 +392,15 @@ class Falabella(Store):
         else:
             description_soup = None
 
-        panels = [specification, description_soup]
+        panels = [specification_tag, description_soup]
         video_urls = []
+        description = ''
 
         for panel in panels:
             if not panel:
                 continue
+
+            description += html_to_markdown(str(panel))
 
             for iframe in panel.findAll('iframe'):
                 if 'src' not in iframe.attrs:
@@ -532,6 +535,8 @@ class Falabella(Store):
 
             if 'reacondicionado' in base_name.lower():
                 condition = 'https://schema.org/RefurbishedCondition'
+            elif 'reacondicionado' in description.lower():
+                condition = 'https://schema.org/RefurbishedCondition'
             else:
                 condition = 'https://schema.org/NewCondition'
 
@@ -557,7 +562,7 @@ class Falabella(Store):
                 review_avg_score=review_avg_score,
                 condition=condition,
                 seller=seller,
-                description='OLD'
+                description=description
             )
 
             products.append(p)

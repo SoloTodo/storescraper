@@ -402,6 +402,9 @@ class Paris(Store):
                     if condition_text in label.upper():
                         condition = condition_cadidate
 
+        if 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+
         has_virtual_assistant = brand == 'LG'
 
         p = Product(
