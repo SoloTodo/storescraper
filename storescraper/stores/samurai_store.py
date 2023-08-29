@@ -90,7 +90,13 @@ class SamuraiStore(Store):
         description = html_to_markdown(str(
             soup.find('div', 'woocommerce-Tabs-panel--description')))
 
-        if 'IMPORTADO' in description.upper():
+        entrega_inmediata = 'ENTREGA INMEDIATA' in description.upper()
+        importado = 'IMPORTADO' in description.upper()
+
+        # Exactly one must be True
+        assert entrega_inmediata != importado
+
+        if importado:
             stock = 0
         elif 'preventa' in name.lower():
             stock = 0

@@ -836,6 +836,10 @@ class MercadoLibreChile(Store):
 
         picker = None
         condition = 'https://schema.org/NewCondition'
+
+        if 'USADO' in data['initialState']['components']['header']['subtitle'].upper():
+            condition = 'https://schema.org/UsedCondition'
+
         if 'short_description' in data['initialState']['components']:
             for x in data['initialState']['components']['short_description']:
                 if x['id'] == 'variations' and 'pickers' in x:
