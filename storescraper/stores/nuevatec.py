@@ -4,99 +4,72 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     EXTERNAL_STORAGE_DRIVE, HEADPHONES, KEYBOARD, MONITOR, \
-    MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
+    MOTHERBOARD, MOUSE, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    VIDEO_CARD, CPU_COOLER, MEMORY_CARD, STEREO_SYSTEM, VIDEO_GAME_CONSOLE
+    VIDEO_CARD, CPU_COOLER, MEMORY_CARD, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, \
+    GAMING_CHAIR
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class Nuevatec(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            MONITOR,
-            MOTHERBOARD,
-            PROCESSOR,
-            VIDEO_CARD,
-            RAM,
-            COMPUTER_CASE,
-            CASE_FAN,
-            POWER_SUPPLY,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            MOUSE,
-            KEYBOARD,
-            USB_FLASH_DRIVE,
-            PRINTER,
-            HEADPHONES,
-            NOTEBOOK,
-            CPU_COOLER,
-            CASE_FAN,
-            MEMORY_CARD,
-            STEREO_SYSTEM,
-            VIDEO_GAME_CONSOLE
-        ]
+class Nuevatec(StoreWithUrlExtensions):
+    url_extensions = [
+        ['placas-madres', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['memorias-ram', RAM],
+        ['disco-hdd', STORAGE_DRIVE],
+        ['disco-duro-ssd', SOLID_STATE_DRIVE],
+        ['m2-y-nvme', SOLID_STATE_DRIVE],
+        ['tarjeta-sdxc', MEMORY_CARD],
+        ['refrigeracion-aire-cpu', CPU_COOLER],
+        ['refrigeracion-liquida-cpu', CPU_COOLER],
+        ['ventiladores-gabinete', CASE_FAN],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['gabinetes', COMPUTER_CASE],
+        ['monitor', MONITOR],
+        ['mouses', MOUSE],
+        ['teclados', KEYBOARD],
+        ['audifonos', HEADPHONES],
+        ['parlantes', STEREO_SYSTEM],
+        ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['pendrives', USB_FLASH_DRIVE],
+        ['micro-sd', MEMORY_CARD],
+        ['impresoras-scanner', PRINTER],
+        ['playstation-5', VIDEO_GAME_CONSOLE],
+        ['impresoras', PRINTER],
+        ['discos-duros', STORAGE_DRIVE],
+        ['unidades-de-estado-solido-ssd-m2-y-nvme', SOLID_STATE_DRIVE],
+        ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
+        ['silla-gamer', GAMING_CHAIR],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['placas-madres', MOTHERBOARD],
-            ['procesadores', PROCESSOR],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['memorias-ram', RAM],
-            ['disco-hdd', STORAGE_DRIVE],
-            ['disco-duro-ssd', SOLID_STATE_DRIVE],
-            ['m2-y-nvme', SOLID_STATE_DRIVE],
-            ['tarjeta-sdxc', MEMORY_CARD],
-            ['refrigeracion-aire-cpu', CPU_COOLER],
-            ['refrigeracion-liquida-cpu', CPU_COOLER],
-            ['ventiladores-gabinete', CASE_FAN],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['monitor', MONITOR],
-            ['mouses', MOUSE],
-            ['teclados', KEYBOARD],
-            ['audifonos', HEADPHONES],
-            ['parlantes', STEREO_SYSTEM],
-            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['pendrives', USB_FLASH_DRIVE],
-            ['micro-sd', MEMORY_CARD],
-            ['impresoras-scanner', PRINTER],
-            ['playstation-5', VIDEO_GAME_CONSOLE],
-            ['impresoras', PRINTER],
-            ['discos-duros', STORAGE_DRIVE],
-            ['unidades-de-estado-solido-ssd-m2-y-nvme', SOLID_STATE_DRIVE],
-            ['almacenamiento-externo', EXTERNAL_STORAGE_DRIVE],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.nuevatec.cl/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-grid-item')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://www.nuevatec.cl/{}/' \
+                          'page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', 'product-grid-item')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
