@@ -52,8 +52,7 @@ class TiendaEntel(Store):
         except json.decoder.JSONDecodeError:
             return []
 
-        # if json_data['isAccessory']:
-        #     return []
+        base_name = json_data['renderVOBean']['productName']
 
         for sku in json_data['renderSkusBean']['skus']:
             price_container = sku['skuPrice']
@@ -80,7 +79,7 @@ class TiendaEntel(Store):
                               container['heroImage']
                 picture_urls.append(picture_url.replace(' ', '%20'))
 
-            if 'semi' in sku['skuName'].lower():
+            if 'semi' in sku['skuName'].lower() or 'semi' in base_name.lower():
                 condition = 'https://schema.org/RefurbishedCondition'
             else:
                 condition = 'https://schema.org/NewCondition'
