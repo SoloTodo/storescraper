@@ -78,7 +78,7 @@ class PlazaVea(PeruStores):
                 "\n      fuzzy\n      correction {\n        misspelled\n  "
                 "    }\n    }\n  }",
                 "variables": {
-                    "fullText": "lg",
+                    "fullText": "lg lg",
                     "selectedFacets": [{"key": "vendido-por",
                                         "value": "plazavea"}],
                     "from": page * page_size,
