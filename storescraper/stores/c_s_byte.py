@@ -8,103 +8,73 @@ from storescraper.categories import ALL_IN_ONE, COMPUTER_CASE, CPU_COOLER, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, UPS, \
     USB_FLASH_DRIVE, VIDEO_CARD
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class CSByte(Store):
+class CSByte(StoreWithUrlExtensions):
     preferred_products_for_url_concurrency = 3
 
-    @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            MICROPHONE,
-            STEREO_SYSTEM,
-            SOLID_STATE_DRIVE,
-            STORAGE_DRIVE,
-            USB_FLASH_DRIVE,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            RAM,
-            MOTHERBOARD,
-            PROCESSOR,
-            CPU_COOLER,
-            VIDEO_CARD,
-            ALL_IN_ONE,
-            NOTEBOOK,
-            PRINTER,
-            MONITOR,
-            MOUSE,
-            KEYBOARD,
-            GAMING_CHAIR,
-            TABLET,
-            UPS
-        ]
+    url_extensions = [
+        ['audifonos', HEADPHONES],
+        ['microfonos', MICROPHONE],
+        ['parlantes', STEREO_SYSTEM],
+        ['almacenamiento', SOLID_STATE_DRIVE],
+        ['ssd-almacenamiento-componentes-gamer', SOLID_STATE_DRIVE],
+        ['hdd', STORAGE_DRIVE],
+        ['pendrive', USB_FLASH_DRIVE],
+        ['fuente-de-poder', POWER_SUPPLY],
+        ['gabinete', COMPUTER_CASE],
+        ['memoria-ram', RAM],
+        ['placa-madre', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['refrigeracion', CPU_COOLER],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['all-in-one', ALL_IN_ONE],
+        ['notebook', NOTEBOOK],
+        ['impresoras', PRINTER],
+        ['monitores', MONITOR],
+        ['mouse', MOUSE],
+        ['teclado', KEYBOARD],
+        ['sillas', GAMING_CHAIR],
+        ['tablets', TABLET],
+        ['ups', UPS],
+        ['audifonos-zona-gamer', HEADPHONES],
+        ['mouse-zona-gamer', MOUSE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['audio/audifonos', HEADPHONES],
-            ['audio/microfonos', MICROPHONE],
-            ['audio/parlantes', STEREO_SYSTEM],
-            ['componentes-armado/almacenamiento/sdd', SOLID_STATE_DRIVE],
-            ['componentes-armado/almacenamiento/hdd', STORAGE_DRIVE],
-            ['componentes-armado/almacenamiento/usb', USB_FLASH_DRIVE],
-            ['componentes-armado/fuente-de-poder', POWER_SUPPLY],
-            ['componentes-armado/gabinete', COMPUTER_CASE],
-            ['componentes-armado/memoria-ram', RAM],
-            ['componentes-armado/placa-madre', MOTHERBOARD],
-            ['componentes-armado/procesadores', PROCESSOR],
-            ['componentes-armado/refrigeracion', CPU_COOLER],
-            ['componentes-armado/tarjetas-de-video', VIDEO_CARD],
-            ['computacion/all-in-one', ALL_IN_ONE],
-            ['computacion/notebook', NOTEBOOK],
-            ['impresoras', PRINTER],
-            ['monitores-y-soportes/monitores', MONITOR],
-            ['perifericos/mouse', MOUSE],
-            ['perifericos/teclado', KEYBOARD],
-            ['sillas', GAMING_CHAIR],
-            ['tablets', TABLET],
-            ['ups', UPS],
-            ['zona-gamer/audifonos-zona-gamer', HEADPHONES],
-            ['zona-gamer/mouse-zona-gamer', MOUSE],
-            ['zona-gamer/teclados', KEYBOARD],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.csbyte.cl/product-category/{}/' \
-                              ''.format(url_extension)
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.csbyte.cl/product-category/{}/' \
+                          ''.format(url_extension)
 
-                if page > 1:
-                    url_webpage += 'page/{}/'.format(page)
+            if page > 1:
+                url_webpage += 'page/{}/'.format(page)
 
-                print(url_webpage)
-                response = session.get(url_webpage)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.find('div', 'site-content').findAll(
-                    'div', 'products')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers[-1].findAll(
-                        'div', 'product-grid-item'):
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.find('div', 'site-content').findAll(
+                'div', 'products')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers[-1].findAll(
+                    'div', 'product-grid-item'):
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
