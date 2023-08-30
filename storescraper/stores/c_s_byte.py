@@ -6,7 +6,7 @@ from storescraper.categories import ALL_IN_ONE, COMPUTER_CASE, CPU_COOLER, \
     GAMING_CHAIR, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, MOTHERBOARD, \
     MOUSE, NOTEBOOK, POWER_SUPPLY, PRINTER, PROCESSOR, RAM, \
     SOLID_STATE_DRIVE, STEREO_SYSTEM, STORAGE_DRIVE, TABLET, UPS, \
-    USB_FLASH_DRIVE, VIDEO_CARD
+    USB_FLASH_DRIVE, VIDEO_CARD, WEARABLE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -19,28 +19,42 @@ class CSByte(StoreWithUrlExtensions):
         ['audifonos', HEADPHONES],
         ['microfonos', MICROPHONE],
         ['parlantes', STEREO_SYSTEM],
+        ['parlantes-gamer', STEREO_SYSTEM],
         ['almacenamiento', SOLID_STATE_DRIVE],
+        ['almacenamiento-componentes-gamer', SOLID_STATE_DRIVE],
         ['ssd-almacenamiento-componentes-gamer', SOLID_STATE_DRIVE],
         ['hdd', STORAGE_DRIVE],
+        ['almacenamiento-seguridad', STORAGE_DRIVE],
         ['pendrive', USB_FLASH_DRIVE],
         ['fuente-de-poder', POWER_SUPPLY],
         ['gabinete', COMPUTER_CASE],
+        ['gabinete-gamer', COMPUTER_CASE],
         ['memoria-ram', RAM],
+        ['memoria-ram-componentes-gamer', RAM],
         ['placa-madre', MOTHERBOARD],
+        ['placas-madre', MOTHERBOARD],
         ['procesadores', PROCESSOR],
+        ['procesadores-componentes-gamer', PROCESSOR],
         ['refrigeracion', CPU_COOLER],
+        ['refrigeracion-gamer', CPU_COOLER],
         ['tarjetas-de-video', VIDEO_CARD],
+        ['tarjetas-de-video-componentes-gamer', VIDEO_CARD],
         ['all-in-one', ALL_IN_ONE],
         ['notebook', NOTEBOOK],
         ['impresoras', PRINTER],
         ['monitores', MONITOR],
+        ['monitores-gamer', MONITOR],
         ['mouse', MOUSE],
         ['teclado', KEYBOARD],
+        ['teclados_zona_gamer', KEYBOARD],
         ['sillas', GAMING_CHAIR],
+        ['silla-gamer', GAMING_CHAIR],
         ['tablets', TABLET],
         ['ups', UPS],
         ['audifonos-zona-gamer', HEADPHONES],
         ['mouse-zona-gamer', MOUSE],
+        ['wearables', WEARABLE],
+        ['fuentes-de-poder', POWER_SUPPLY],
     ]
 
     @classmethod
