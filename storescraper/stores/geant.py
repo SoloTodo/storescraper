@@ -76,12 +76,8 @@ class Geant(Store):
         pricing_data = product_data[pricing_key]
 
         exchange_rate = extra_args['exchange_rate']
-        price = Decimal(str(pricing_data['Price'] / exchange_rate))
-
-        # if not price:
-        #     pricing_key = '{}.specificationGroups.2.specifications.0'.format(
-        #         base_json_key)
-        #     price = Decimal(remove_words(product_data[pricing_key]['name']))
+        price = Decimal(str(pricing_data['Price'] / exchange_rate)).quantize(
+            Decimal('0.01'))
 
         stock = pricing_data['AvailableQuantity']
         picture_list_key = '{}.items.0'.format(base_json_key)
