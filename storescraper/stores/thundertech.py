@@ -89,7 +89,13 @@ class Thundertech(StoreWithUrlExtensions):
         else:
             price = Decimal(remove_words(soup.find(
                 'h2', 'product-heading__pricing').text))
-        sku = soup.find('span', 'product-heading__detail--sku').text.split('SKU: ')[1]
+
+        sku_tag = soup.find('span', 'product-heading__detail--sku')
+        if sku_tag:
+            sku = sku_tag.text.split('SKU: ')[1]
+        else:
+            sku = None
+
         picture_urls = [x['data-src'] for x in soup.findAll('img', 'product-gallery__image')]
 
         p = Product(
