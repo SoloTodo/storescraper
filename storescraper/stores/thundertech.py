@@ -1,5 +1,5 @@
 from decimal import Decimal
-import json
+import demjson3
 import logging
 from bs4 import BeautifulSoup
 
@@ -10,7 +10,8 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     TABLET, WEARABLE, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    remove_words
 
 
 class Thundertech(StoreWithUrlExtensions):
@@ -77,24 +78,14 @@ class Thundertech(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
-        for entry in json_data:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
-
-        name = product_data['name']
+        name = soup.find('h1', 'product-heading__title').text.strip()
         key = soup.find('meta', {'property': 'og:id'})['content']
-
-        stock = -1 if product_data['offers']['availability'] == 'http://schema.org/InStock' else 0
-        price = Decimal(product_data['offers']['price']).quantize(0)
-        sku = product_data['sku']
-        picture_urls = [product_data['image']]
-        description = product_data['description']
+        # TODO: check for una unavailable product in the future
+        stock = -1
+        price = Decimal(remove_words(soup.find(
+            'h2', 'product-heading__pricing').text))
+        sku = soup.find('span', 'product-heading__detail--sku').text.split('SKU: ')[1]
+        picture_urls = [x['data-src'] for x in soup.findAll('img', 'product-gallery__image')]
 
         p = Product(
             name,
@@ -109,7 +100,6 @@ class Thundertech(StoreWithUrlExtensions):
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
-            description=description,
             part_number=sku
         )
         return [p]
