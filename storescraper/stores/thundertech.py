@@ -1,5 +1,4 @@
 from decimal import Decimal
-import demjson3
 import logging
 from bs4 import BeautifulSoup
 
@@ -10,8 +9,7 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     TABLET, WEARABLE, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Thundertech(StoreWithUrlExtensions):
@@ -82,8 +80,15 @@ class Thundertech(StoreWithUrlExtensions):
         key = soup.find('meta', {'property': 'og:id'})['content']
         # TODO: check for una unavailable product in the future
         stock = -1
-        price = Decimal(remove_words(soup.find(
-            'h2', 'product-heading__pricing').text))
+
+        discount_price_tag = soup.find('h2', 'product-heading__pricing--has-discount')
+
+        if discount_price_tag:
+            price = Decimal(remove_words(discount_price_tag.find(
+                'span',).text))
+        else:
+            price = Decimal(remove_words(soup.find(
+                'h2', 'product-heading__pricing').text))
         sku = soup.find('span', 'product-heading__detail--sku').text.split('SKU: ')[1]
         picture_urls = [x['data-src'] for x in soup.findAll('img', 'product-gallery__image')]
 
