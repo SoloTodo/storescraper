@@ -54,7 +54,8 @@ class Fama(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        sku = soup.find('input', {'id': 'id_portafolio'})['value']
+        key = soup.find('input', {'name': 'ids[]'})['value']
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock = -1
         price = Decimal(soup.find('span', {'itemprop': 'price'}).text.strip())
         picture_urls = [tag['src'] for tag in
@@ -65,7 +66,7 @@ class Fama(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,

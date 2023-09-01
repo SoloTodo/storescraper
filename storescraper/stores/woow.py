@@ -1,8 +1,6 @@
 import json
 from decimal import Decimal
 import logging
-import re
-import time
 
 from bs4 import BeautifulSoup
 
@@ -72,45 +70,60 @@ class Woow(Store):
             return []
 
         base_json_key = base_json_keys[0]
+        products = []
+        for item_idx in range(10):
+            item_key = '{}.items.{}'.format(
+                base_json_key, item_idx)
 
-        item_key = '{}.items.0'.format(
-            base_json_key)
+            if item_key not in product_data:
+                break
 
-        product_specs = product_data[item_key]
+            product_specs = product_data[item_key]
 
-        name = product_specs['name']
-        sku = str(product_specs['itemId'])
+            name = product_specs['name']
+            sku = str(product_specs['itemId'])
+            pricing_data = None
 
-        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
-            base_json_key)
-        pricing_data = product_data[pricing_key]
-        price = Decimal(str(pricing_data['Price']))
+            for seller_idx in range(10):
+                seller_key = '${}.sellers.{}'.format(item_key, seller_idx)
+                if seller_key not in product_data:
+                    break
+                seller_entry = product_data[seller_key]
+                if seller_entry['sellerId'] != '1':
+                    continue
+                pricing_key = '${}.commertialOffer'.format(seller_key)
+                pricing_data = product_data[pricing_key]
 
-        if not price:
-            return []
+            if not pricing_data:
+                continue
 
-        stock = pricing_data['AvailableQuantity']
-        picture_list_key = '{}.items.0'.format(base_json_key)
-        picture_list_node = product_data[picture_list_key]
-        picture_ids = [x['id'] for x in picture_list_node['images']]
+            price = Decimal(str(pricing_data['Price']))
+            if not price:
+                continue
 
-        picture_urls = []
-        for picture_id in picture_ids:
-            picture_node = product_data[picture_id]
-            picture_urls.append(picture_node['imageUrl'].split('?')[0])
+            stock = pricing_data['AvailableQuantity']
+            picture_list_node = product_data[item_key]
+            picture_ids = [x['id'] for x in picture_list_node['images']]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'UYU',
-            sku=sku,
-            picture_urls=picture_urls
-        )
-        return [p]
+            picture_urls = []
+            for picture_id in picture_ids:
+                picture_node = product_data[picture_id]
+                picture_urls.append(picture_node['imageUrl'].split('?')[0])
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'UYU',
+                sku=sku,
+                picture_urls=picture_urls
+            )
+            products.append(p)
+
+        return products
