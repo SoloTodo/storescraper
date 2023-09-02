@@ -19,34 +19,29 @@ class Bristol(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            TELEVISION
-        ]
-
         session = session_with_proxy(extra_args)
         product_urls = []
-        for local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow')
+        if category != TELEVISION:
+            return []
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
 
-                url_webpage = ('https://www.bristol.com.py/catalogo?marca=lg'
-                               '&js=1&pag={}').format(page)
-                print(url_webpage)
-                response = session.get(url_webpage)
+            url_webpage = ('https://www.bristol.com.py/catalogo?marca=lg'
+                           '&js=1&pag={}').format(page)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                if response.url != url_webpage:
-                    break
+            if response.url != url_webpage:
+                break
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'it')
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'it')
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod

@@ -4,107 +4,59 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words, \
-    html_to_markdown
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
-    POWER_SUPPLY, SOLID_STATE_DRIVE, MOUSE, COMPUTER_CASE, RAM, CPU_COOLER, \
-    NOTEBOOK, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
-    USB_FLASH_DRIVE, PRINTER, MONITOR
+    POWER_SUPPLY, SOLID_STATE_DRIVE, COMPUTER_CASE, RAM, CPU_COOLER, \
+    NOTEBOOK, USB_FLASH_DRIVE, PRINTER, MONITOR, KEYBOARD
 
 
-class Alfaomega(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            PROCESSOR,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            POWER_SUPPLY,
-            SOLID_STATE_DRIVE,
-            MOUSE,
-            COMPUTER_CASE,
-            RAM,
-            CPU_COOLER,
-            NOTEBOOK,
-            STORAGE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            MEMORY_CARD,
-            USB_FLASH_DRIVE,
-            PRINTER,
-            MONITOR,
-        ]
+class Alfaomega(StoreWithUrlExtensions):
+    url_extensions = [
+        ['procesador', PROCESSOR],
+        ['refrigeracion-cpu', CPU_COOLER],
+        ['placas-madres', MOTHERBOARD],
+        ['memorias', RAM],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['discos-duros', SOLID_STATE_DRIVE],
+        ['pendrive', USB_FLASH_DRIVE],
+        ['gabinetes', COMPUTER_CASE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['teclado-y-mouse', KEYBOARD],
+        ['notebooks', NOTEBOOK],
+        ['monitores', MONITOR],
+        ['impresoras', PRINTER],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['componentes-partes-y-piezas/procesador', PROCESSOR],
-            ['componentes-partes-y-piezas/placas-madres', MOTHERBOARD],
-            ['disco-de-estado-solido', SOLID_STATE_DRIVE],
-            ['componentes-partes-y-piezas/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-partes-y-piezas/gabinetes', COMPUTER_CASE],
-            ['componentes-partes-y-piezas/memorias', RAM],
-            ['componentes-partes-y-piezas/'
-             'mouse-y-teclados-componentes-partes-y-piezas', MOUSE],
-            ['componentes-partes-y-piezas/refrigeracion', CPU_COOLER],
-            ['componentes-partes-y-piezas/tarjetas-graficas', VIDEO_CARD],
-            ['computadores-y-tables/mouse-y-teclados', MOUSE],
-            ['computadores-y-tables/notebooks', NOTEBOOK],
-            ['disco-duro', STORAGE_DRIVE],
-            ['discos-duros-almacenamiento/disco-duros-para-pc', STORAGE_DRIVE],
-            ['discos-duros-almacenamiento/discos-video-vigilancia',
-             STORAGE_DRIVE],
-            ['discos-duros-almacenamiento/discos-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['discos-duros-almacenamiento/discos-ssd', SOLID_STATE_DRIVE],
-            ['discos-duros-almacenamiento/memorias-micro-sd', MEMORY_CARD],
-            ['discos-duros-almacenamiento/pendrive', USB_FLASH_DRIVE],
-            ['fuente-de-poder', POWER_SUPPLY],
-            ['gabinetes-2', COMPUTER_CASE],
-            ['impresora-hogar-y-oficina', PRINTER],
-            ['impresoras-y-suministros', PRINTER],
-            ['memorias-2', RAM],
-            ['monitores-y-proyectores/monitores', MONITOR],
-            ['mouse-y-teclados-2', MOUSE],
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['placa-madre', MOTHERBOARD],
-            ['placas-am4', MOTHERBOARD],
-            ['placas-intel', MOTHERBOARD],
-            ['procesador-2', PROCESSOR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         product_urls = []
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        page = 1
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        while True:
+            url = 'https://aopc.cl/categoria/{}/page/{}'\
+                .format(url_extension, page)
+            print(url)
+            response = session.get(url)
 
-            page = 1
+            if response.status_code == 404:
+                break
 
-            while True:
-                url = 'https://aopc.cl/categoria/{}/page/{}'\
-                    .format(category_path, page)
-                print(url)
-                response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            products = soup.findAll('li', 'product-col')
 
-                if response.status_code == 404:
-                    break
+            if not products:
+                break
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                products = soup.findAll('li', 'product-col')
+            for product in products:
+                product_url = product.find('a')['href']
+                product_urls.append(product_url)
 
-                if not products:
-                    break
-
-                for product in products:
-                    product_url = product.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 

@@ -165,6 +165,10 @@ class HuaweiShop(Store):
 
             else:
                 sku = product['sbomCode']
+
+                if sku not in price_per_sbom:
+                    continue
+
                 price = price_per_sbom[sku]
 
                 p = Product(

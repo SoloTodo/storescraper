@@ -8,6 +8,8 @@ import time
 
 from collections import defaultdict
 from decimal import Decimal
+
+import validators
 from bs4 import BeautifulSoup
 from html import unescape
 
@@ -412,8 +414,10 @@ class Falabella(Store):
                     match = re.search(
                         r'//www.youtube.com/embed/(.+)', iframe['src'])
                 if match:
-                    video_urls.append('https://www.youtube.com/watch?v={}'
-                                      .format(match.groups()[0].strip()))
+                    video_url = 'https://www.youtube.com/watch?v={}'.format(
+                        match.groups()[0].strip())
+                    if validators.url(video_url):
+                        video_urls.append(video_url)
 
         slug = product_data['slug']
         publication_id = product_data['id']

@@ -252,7 +252,7 @@ class Hites(Store):
                 if start >= step * 50:
                     raise Exception('Page overflow: ' + category_url)
 
-                response = session.get(category_url, timeout=60)
+                response = session.get(category_url, timeout=60, verify=False)
 
                 if response.url != category_url:
                     raise Exception('Page mismatch. Expecting {} Got {}'
@@ -308,7 +308,7 @@ class Hites(Store):
                 .format(keyword, page)
             print(search_url)
 
-            response = session.get(search_url, timeout=60)
+            response = session.get(search_url, timeout=60, verify=False)
 
             if response.status_code in [404, 500]:
                 return []
@@ -336,7 +336,7 @@ class Hites(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=60)
+        response = session.get(url, timeout=60, verify=False)
 
         if response.status_code in [404, 410]:
             return []
@@ -487,17 +487,12 @@ class Hites(Store):
         session = session_with_proxy(extra_args)
         banners = []
 
-        if extra_args and 'proxy' in extra_args:
-            proxy = extra_args['proxy']
-        else:
-            proxy = None
-
         for section, subsection, subsection_type, url_suffix in sections_data:
             url = base_url.format(url_suffix)
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                response = session.get(url)
+                response = session.get(url, verify=False)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
                 banners_container = soup.find('section')\
