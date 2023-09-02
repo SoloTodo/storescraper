@@ -81,7 +81,10 @@ class MiStore(Store):
                 stock = 0 if variation['max_qty'] == '' else variation[
                     'max_qty']
                 price = Decimal(variation['display_price'])
-                picture_urls = [variation['image']['src']]
+                if validators.url(variation['image']['src']):
+                    picture_urls = [variation['image']['src']]
+                else:
+                    picture_urls = None
                 p = Product(
                     variation_name,
                     cls.__name__,
