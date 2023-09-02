@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, TABLET, HEADPHONES, TELEVISION, \
@@ -121,10 +122,13 @@ class MiStore(Store):
             if picture_container.find('div', 'product-thumbnails'):
                 picture_urls = [tag['src'] for tag in
                                 picture_container.find('div',
-                                'product-thumbnails').findAll('img')]
+                                'product-thumbnails').findAll('img')
+                                if validators.url(tag['src'])
+                                ]
             else:
                 picture_urls = [tag['src'] for tag in
-                                picture_container.findAll('img')]
+                                picture_container.findAll('img')
+                                if validators.url(tag['src'])]
 
             p = Product(
                 name,

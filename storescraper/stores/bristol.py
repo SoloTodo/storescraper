@@ -1,5 +1,4 @@
 import json
-import logging
 
 from decimal import Decimal
 
@@ -32,19 +31,18 @@ class Bristol(Store):
             page = 1
             while True:
                 if page > 10:
-                    raise Exception('Page overflow: ' + page)
+                    raise Exception('Page overflow')
 
-                url_webpage = 'https://www.bristol.com.py/brand/5-lg' \
-                    '?page={}'.format(page)
+                url_webpage = ('https://www.bristol.com.py/catalogo?marca=lg'
+                               '&js=1&pag={}').format(page)
                 print(url_webpage)
-                data = session.get(url_webpage)
-                soup = BeautifulSoup(data.text, 'html.parser')
-                product_containers = soup.find(
-                    'section', {'id': 'products'}).findAll('div', 'item')
-                if not len(product_containers):
-                    if page == 1:
-                        logging.warning('Empty category')
+                response = session.get(url_webpage)
+
+                if response.url != url_webpage:
                     break
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('div', 'it')
                 for container in product_containers:
                     product_url = container.find('a')['href']
                     product_urls.append(product_url)
@@ -56,21 +54,17 @@ class Bristol(Store):
         print(url)
         session = session_with_proxy(extra_args)
         res = session.get(url)
-
-        if res.status_code == 500:
-            return []
-
         soup = BeautifulSoup(res.text, 'html.parser')
         product_info = json.loads(
-            soup.find('div', {'id': 'product-details'})['data-product'])
+            soup.find('div', {'id': '_jsonDataFicha_'}).text)
 
-        product_id = str(product_info['id_product'])
-        name = product_info['name']
-        sku = product_info['reference']
-        description = html_to_markdown(product_info['description'])
-        stock = product_info['quantity']
-        price = Decimal(product_info['price_amount'])
-        picture_urls = [x['large']['url'] for x in product_info['images']]
+        key = product_info['sku']['fen']
+        name = product_info['producto']['nombre']
+        sku = product_info['producto']['codigo']
+        description = html_to_markdown(str(soup.find('div', 'blkDetalle')))
+        stock = 0 if soup.find('div', {'id': 'plazosProdAgotado'}) else -1
+        price = Decimal(product_info['precioMonto'])
+        picture_urls = ['https:' + product_info['variante']['img']['u']]
 
         p = Product(
             name,
@@ -78,7 +72,7 @@ class Bristol(Store):
             category,
             url,
             url,
-            product_id,
+            key,
             stock,
             price,
             price,

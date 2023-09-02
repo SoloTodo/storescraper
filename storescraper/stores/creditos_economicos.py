@@ -33,7 +33,7 @@ class CreditosEconomicos(Store):
             if page > 10:
                 raise Exception('Page overflow')
 
-            url = 'https://www.creditoseconomicos.com/lg?_q=lg&map=ft&page=' \
+            url = 'https://www.crecos.com/lg?_q=lg&map=ft&page=' \
                 '{}&sc=2'.format(page)
             print(url)
 
@@ -58,7 +58,7 @@ class CreditosEconomicos(Store):
             for product_key in products_to_find:
                 product_url = product_containers[product_key]['link']
                 product_urls.append(
-                    'https://www.creditoseconomicos.com' + product_url)
+                    'https://www.crecos.com' + product_url)
 
             page += 1
 
@@ -66,6 +66,7 @@ class CreditosEconomicos(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         session.cookies['vtex_segment'] = 'eyJjYW1wYWlnbnMiOm51bGwsImNoYW5uZ' \
             'WwiOiIyIiwicHJpY2VUYWJsZXMiOm51bGwsInJlZ2lvbklkIjpudWxsLCJ1dG1f' \

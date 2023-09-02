@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Olier(Store):
@@ -53,7 +53,7 @@ class Olier(Store):
         session = session_with_proxy(extra_args)
         res = session.get(url)
         soup = BeautifulSoup(res.text, 'html.parser')
-        product_id = soup.find('p', 'product-cod').text.split(':')[1].strip()
+        product_id = soup.find('span', 'product-cod').text.replace('SKU: ', '')
         endpoint = 'https://www.olier.com.py/get-productos?query_string={}' \
                    ''.format(product_id)
         product_entries = session.get(endpoint).json()
@@ -73,6 +73,7 @@ class Olier(Store):
         url_ver = product_entry['url_ver']
         price = Decimal(product_entry['precio_retail'])
         stock = product_entry['existencia']
+        description = html_to_markdown(product_entry['producto']['descripcion'] or '')
         picture_urls = []
         for i in product_entry['imagenes']:
             if i['url_imagen']:
@@ -93,6 +94,7 @@ class Olier(Store):
             'PYG',
             sku=sku,
             ean=ean,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
