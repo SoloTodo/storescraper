@@ -49,7 +49,7 @@ class PlayPower(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
+            'script', {'type': 'application/ld+json'})[-1].text)
         name = product_data['name']
         description = product_data['description']
         offer = product_data['offers'][0]
