@@ -4,59 +4,48 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, NOTEBOOK, RAM, VIDEO_CARD, \
-    SOLID_STATE_DRIVE, PROCESSOR
+    SOLID_STATE_DRIVE, PROCESSOR, MONITOR
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
 
-class SamuraiStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            RAM,
-            VIDEO_CARD,
-            SOLID_STATE_DRIVE,
-            PROCESSOR,
-            MOTHERBOARD,
-            NOTEBOOK,
-        ]
+class SamuraiStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['procesador', PROCESSOR],
+        ['ram', RAM],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
+        ['placa-madre', MOTHERBOARD],
+        ['notebooks', NOTEBOOK],
+        ['placas-madre', MOTHERBOARD],
+        ['monitor', MONITOR],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['procesador', PROCESSOR],
-            ['ram', RAM],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
-            ['placa-madre', MOTHERBOARD],
-            ['notebooks', NOTEBOOK],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 50:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.samuraistorejp.cl/' \
-                              'product-category/{}/page/{}/'.format(
-                                  url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-small')
-                if not product_containers or soup.find('section', 'error-404'):
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 50:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.samuraistorejp.cl/' \
+                          'product-category/{}/page/{}/'.format(
+                              url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-small')
+            if not product_containers or soup.find('section', 'error-404'):
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -90,14 +79,19 @@ class SamuraiStore(Store):
         description = html_to_markdown(str(
             soup.find('div', 'woocommerce-Tabs-panel--description')))
 
-        entrega_inmediata = 'ENTREGA INMEDIATA' in description.upper()
-        importado = 'IMPORTADO' in description.upper()
+        tags_label = soup.find('span', 'tagged_as')
 
-        # Exactly one must be True
-        if entrega_inmediata == importado:
+        if not tags_label:
             return []
 
-        if importado:
+        tags = tags_label.findAll('a')
+
+        assert len(tags) == 1
+        tag = tags[0]
+
+        entrega_inmediata = 'ENTREGA INMEDIATA' in tag.text.upper()
+
+        if not entrega_inmediata:
             stock = 0
         elif 'preventa' in name.lower():
             stock = 0
