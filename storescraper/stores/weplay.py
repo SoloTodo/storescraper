@@ -3,84 +3,57 @@ from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, VIDEO_GAME_CONSOLE, \
     HEADPHONES, MOUSE, KEYBOARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
-    MEMORY_CARD, STEREO_SYSTEM, MICROPHONE
+    MEMORY_CARD, STEREO_SYSTEM
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
 
 
-class Weplay(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            VIDEO_GAME_CONSOLE,
-            HEADPHONES,
-            MOUSE,
-            KEYBOARD,
-            EXTERNAL_STORAGE_DRIVE,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            STEREO_SYSTEM,
-            GAMING_CHAIR,
-            MICROPHONE
-        ]
+class Weplay(StoreWithUrlExtensions):
+    url_extensions = [
+        ['consolas.html', VIDEO_GAME_CONSOLE],
+        ['computacion/audifonos-gamer.html', HEADPHONES],
+        ['tecnologia/audifonos.html', HEADPHONES],
+        ['computacion/teclados.html', KEYBOARD],
+        ['tecnologia/teclados-tecnologia.html', KEYBOARD],
+        ['computacion/discos-duros-externos.html', EXTERNAL_STORAGE_DRIVE],
+        ['computacion/mouse.html', MOUSE],
+        ['computacion/pendrives.html', USB_FLASH_DRIVE],
+        ['computacion/tarjetas-de-memoria.html', MEMORY_CARD],
+        ['tecnologia/parlantes.html', STEREO_SYSTEM],
+        ['computacion/sillas-gamer.html', GAMING_CHAIR]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['consolas.html', VIDEO_GAME_CONSOLE],
-            ['computacion/audifonos-gamer.html', HEADPHONES],
-            ['tecnologia/audifonos.html', HEADPHONES],
-            ['computacion/teclados.html', KEYBOARD],
-            ['tecnologia/teclados-tecnologia.html', KEYBOARD],
-            ['computacion/discos-duros-externos.html', EXTERNAL_STORAGE_DRIVE],
-            ['computacion/mouse.html', MOUSE],
-            ['computacion/pendrives.html', USB_FLASH_DRIVE],
-            ['computacion/tarjetas-de-memoria.html', MEMORY_CARD],
-            ['tecnologia/parlantes.html', STEREO_SYSTEM],
-            ['computacion/sillas-gamer.html', GAMING_CHAIR],
-            ['computacion/microfono-computacion.html', MICROPHONE]
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         product_urls = []
         session = session_with_proxy(extra_args)
+        page = 1
 
-        for e in category_paths:
-            category_path, local_category = e
+        while True:
+            if page > 20:
+                raise Exception('Page overflow: ' + url_extension)
 
-            if local_category != category:
-                continue
+            url = 'https://www.weplay.cl/{}?p={}'.format(
+                url_extension, page)
+            print(url)
 
-            page = 1
-            done = False
+            response = session.get(url).text
+            soup = BeautifulSoup(response, 'html.parser')
+            products = soup.findAll('a', 'product-item-link')
 
-            while not done:
-                if page > 20:
-                    raise Exception('Page overflow: ' + category_path)
+            if not products:
+                return product_urls
 
-                url = 'https://www.weplay.cl/{}?p={}'.format(
-                    category_path, page)
-                print(url)
+            for product in products:
+                product_url = product['href']
 
-                response = session.get(url).text
-                soup = BeautifulSoup(response, 'html.parser')
-                products = soup.findAll('a', 'product-item-link')
+                if product_url in product_urls:
+                    return product_urls
 
-                if not products:
-                    break
+                product_urls.append(product_url)
 
-                for product in products:
-                    product_url = product['href']
-
-                    if product_url in product_urls:
-                        done = True
-                        break
-
-                    product_urls.append(product_url)
-
-                page += 1
-
-        return product_urls
+            page += 1
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -92,7 +65,12 @@ class Weplay(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        name_tag = soup.find('span', {'itemprop': 'name'})
+
+        if not name_tag:
+            return []
+
+        name = name_tag.text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
 
         web_stock = True

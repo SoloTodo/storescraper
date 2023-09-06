@@ -7,121 +7,81 @@ import validators
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
-from storescraper.store import Store
 from storescraper.categories import HEADPHONES, SOLID_STATE_DRIVE, \
     MOUSE, KEYBOARD, CPU_COOLER, COMPUTER_CASE, \
     POWER_SUPPLY, RAM, MONITOR, MOTHERBOARD, \
     PROCESSOR, VIDEO_CARD, STEREO_SYSTEM, STORAGE_DRIVE, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, GAMING_DESK, MICROPHONE, \
+    GAMING_CHAIR, NOTEBOOK, EXTERNAL_STORAGE_DRIVE, \
     ALL_IN_ONE, TABLET, TELEVISION, MEMORY_CARD, USB_FLASH_DRIVE, \
     KEYBOARD_MOUSE_COMBO, UPS, PRINTER, CELL, WEARABLE
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class EliteCenter(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            STEREO_SYSTEM,
-            STORAGE_DRIVE,
-            MOUSE,
-            KEYBOARD,
-            SOLID_STATE_DRIVE,
-            CPU_COOLER,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            RAM,
-            MONITOR,
-            MOTHERBOARD,
-            PROCESSOR,
-            VIDEO_CARD,
-            VIDEO_GAME_CONSOLE,
-            GAMING_CHAIR,
-            NOTEBOOK,
-            EXTERNAL_STORAGE_DRIVE,
-            GAMING_DESK,
-            MICROPHONE,
-            ALL_IN_ONE,
-            TABLET,
-            TELEVISION,
-            MEMORY_CARD,
-            CELL,
-            WEARABLE,
-            USB_FLASH_DRIVE,
-            KEYBOARD_MOUSE_COMBO,
-            UPS,
-            PRINTER
-        ]
+class EliteCenter(StoreWithUrlExtensions):
+    url_extensions = [
+        ['todo-en-uno', ALL_IN_ONE],
+        ['portatiles', NOTEBOOK],
+        ['tableta', TABLET],
+        ['cajas-gabinetes', COMPUTER_CASE],
+        ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
+        ['tarjetas-madre-placas-madre', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['discos-de-estado-solido', SOLID_STATE_DRIVE],
+        ['discos-duros-internos', STORAGE_DRIVE],
+        ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+        ['monitores-monitores', MONITOR],
+        ['televisores', TELEVISION],
+        ['tarjetas-de-memoria-flash', MEMORY_CARD],
+        ['modulos-ram-genericos', RAM],
+        ['modulos-ram-propietarios', RAM],
+        ['unidades-flash-usb', USB_FLASH_DRIVE],
+        ['audifonos', HEADPHONES],
+        ['parlantes', STEREO_SYSTEM],
+        ['teclados-y-teclados-de-numeros', KEYBOARD],
+        ['combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
+        ['ratones', MOUSE],
+        ['ups-respaldo-de-energia', UPS],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['sillas', GAMING_CHAIR],
+        ['impresoras-ink-jet', PRINTER],
+        ['impresoras-laser', PRINTER],
+        ['impresoras-multifuncionales', PRINTER],
+        ['celulares-desbloqueados', CELL],
+        ['trackers-de-actividad', WEARABLE],
+        ['relojes', WEARABLE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['computadores/todo-en-uno', ALL_IN_ONE],
-            ['computadores/portatiles', NOTEBOOK],
-            ['computadores/tableta', TABLET],
-            ['componentes-informaticos/cajas-gabinetes', COMPUTER_CASE],
-            ['componentes-informaticos/ventiladores-y-sistemas-de-'
-             'enfriamiento', CPU_COOLER],
-            ['componentes-informaticos/tarjetas-madre-placas-madre',
-             MOTHERBOARD],
-            ['componentes-informaticos/procesadores', PROCESSOR],
-            ['componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
-            ['almacenamiento/discos-de-estado-solido', SOLID_STATE_DRIVE],
-            ['almacenamiento/discos-duros-internos', STORAGE_DRIVE],
-            ['almacenamiento/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
-            ['monitores/monitores-monitores', MONITOR],
-            ['monitores/televisores', TELEVISION],
-            ['memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
-            ['memorias/modulos-ram-genericos', RAM],
-            ['memorias/modulos-ram-propietarios', RAM],
-            ['memorias/unidades-flash-usb', USB_FLASH_DRIVE],
-            ['audio-y-video/audifonos', HEADPHONES],
-            ['audio-y-video/parlantes', STEREO_SYSTEM],
-            ['perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
-            ['perifericos/combos-de-teclado-y-raton', KEYBOARD_MOUSE_COMBO],
-            ['perifericos/ratones', MOUSE],
-            ['proteccion-de-poder/ups-respaldo-de-energia', UPS],
-            ['videojuegos/consolas', VIDEO_GAME_CONSOLE],
-            ['muebles/sillas', GAMING_CHAIR],
-            ['impresoras-y-escaneres/impresoras-ink-jet', PRINTER],
-            ['impresoras-y-escaneres/impresoras-laser', PRINTER],
-            ['impresoras-y-escaneres/impresoras-multifuncionales', PRINTER],
-            ['celulares/celulares-desbloqueados', CELL],
-            ['tecnologia-portatil/trackers-de-actividad', WEARABLE],
-            ['tecnologia-portatil/relojes', WEARABLE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 15:
-                    raise Exception('page overflow: ' + url_extension)
+        page = 1
+        while True:
+            if page > 15:
+                raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://elitecenter.cl/product-category/{}/' \
-                              'page/{}/?per_page=28'.format(
-                                  url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
+            url_webpage = 'https://elitecenter.cl/product-category/{}/' \
+                          'page/{}/?per_page=28'.format(
+                              url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
 
-                data = response.text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_containers = soup.findAll('div', 'product-grid-item')
+            data = response.text
+            soup = BeautifulSoup(data, 'html5lib')
+            product_containers = soup.findAll('div', 'product-grid-item')
 
-                if soup.find('div', {'data-elementor-type': 'error-404'}):
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
+            if soup.find('div', {'data-elementor-type': 'error-404'}):
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -169,7 +129,7 @@ class EliteCenter(Store):
             description = None
 
         part_number_text = soup.find(
-            'div', {'data-id': '15dad90'}).text.strip()
+            'div', {'data-id': '8b2d4dd'}).text.strip()
         if part_number_text:
             part_number = part_number_text.split(': ')[1].strip()
         else:
