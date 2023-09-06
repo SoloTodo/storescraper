@@ -19,6 +19,7 @@ class Alfaomega(StoreWithUrlExtensions):
         ['placas-madres', MOTHERBOARD],
         ['memorias', RAM],
         ['tarjetas-graficas', VIDEO_CARD],
+        ['tarjeta-de-video', VIDEO_CARD],
         ['discos-duros-almacenamiento', SOLID_STATE_DRIVE],
         ['disco-duros-para-pc', SOLID_STATE_DRIVE],
         ['discos-ssd', SOLID_STATE_DRIVE],
