@@ -17,6 +17,7 @@ class Alfaomega(StoreWithUrlExtensions):
         ['procesador-2', PROCESSOR],
         ['refrigeracion', CPU_COOLER],
         ['placas-madres', MOTHERBOARD],
+        ['placa-madre', MOTHERBOARD],
         ['memorias', RAM],
         ['tarjetas-graficas', VIDEO_CARD],
         ['tarjeta-de-video', VIDEO_CARD],
