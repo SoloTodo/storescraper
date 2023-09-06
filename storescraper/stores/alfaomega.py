@@ -14,18 +14,25 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
 class Alfaomega(StoreWithUrlExtensions):
     url_extensions = [
         ['procesador', PROCESSOR],
-        ['refrigeracion-cpu', CPU_COOLER],
+        ['procesador-2', PROCESSOR],
+        ['refrigeracion', CPU_COOLER],
         ['placas-madres', MOTHERBOARD],
         ['memorias', RAM],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['discos-duros', SOLID_STATE_DRIVE],
+        ['tarjetas-graficas', VIDEO_CARD],
+        ['discos-duros-almacenamiento', SOLID_STATE_DRIVE],
+        ['disco-duros-para-pc', SOLID_STATE_DRIVE],
+        ['discos-ssd', SOLID_STATE_DRIVE],
+        ['disco-de-estado-solido', SOLID_STATE_DRIVE],
+        ['disco-duro', SOLID_STATE_DRIVE],
         ['pendrive', USB_FLASH_DRIVE],
         ['gabinetes', COMPUTER_CASE],
         ['fuentes-de-poder', POWER_SUPPLY],
-        ['teclado-y-mouse', KEYBOARD],
+        ['mouse-y-teclados', KEYBOARD],
+        ['mouse-y-teclados-componentes-partes-y-piezas', KEYBOARD],
+        ['mouse-y-teclados-2', KEYBOARD],
         ['notebooks', NOTEBOOK],
         ['monitores', MONITOR],
-        ['impresoras', PRINTER],
+        ['impresoras-y-suministros', PRINTER],
     ]
 
     @classmethod
