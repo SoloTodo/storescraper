@@ -29,21 +29,24 @@ class Multimax(Store):
             if page >= 20:
                 raise Exception('Page overflow')
 
-            url_webpage = ('https://www.multimax.net/collections/lg?page={}'
+            url_webpage = ('https://services.mybcapps.com/bc-sf-filter/filter'
+                           '?shop=tienda-multimax.myshopify.com'
+                           '&page={}&collection_scope=137413394474'
                            ).format(page)
+            print(url_webpage)
 
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            items = soup.findAll('div', 'product__grid-item')
+            data = response.json()
+            items = data['products']
 
-            if len(items) == 0:
+            if not items:
                 if page == 1:
                     logging.warning('Empty category')
                 break
 
             for item in items:
                 product_urls.append(
-                    'https://www.multimax.net' + item.find('a')['href'])
+                    'https://www.multimax.net/products/' +item['handle'])
 
             page += 1
 
