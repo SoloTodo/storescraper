@@ -34,8 +34,8 @@ class SamuraiStore(StoreWithUrlExtensions):
         while True:
             if page > 50:
                 raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://www.samuraistorejp.cl/' \
-                          'product-category/{}/page/{}/'.format(
+            url_webpage = ('https://www.samuraistorejp.cl/product-category/'
+                           '{}/page/{}/?product-tag=entrega-inmediata').format(
                               url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
