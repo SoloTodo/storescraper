@@ -348,9 +348,15 @@ class Paris(Store):
             offer_price = normal_price
 
         stock = -1 if product_data['orderable'] else 0
-        picture_urls = [x['link'] for x in
-                        product_data['image_groups'][0]['images']
-                        if validators.url(x['link'])]
+
+        image_groups = product_data['image_groups']
+        if image_groups:
+            picture_urls = [x['link'] for x in
+                            image_groups[0]['images']
+                            if validators.url(x['link'])]
+        else:
+            picture_urls = None
+
         raw_seller = product_data['seller']
 
         if raw_seller == 'Paris.cl':

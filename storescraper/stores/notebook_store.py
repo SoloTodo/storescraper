@@ -1,164 +1,120 @@
-import json
 import logging
 
 from decimal import Decimal
+
+import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import GAMING_CHAIR, GAMING_DESK, MICROPHONE, \
+from storescraper.categories import GAMING_CHAIR, \
     CPU_COOLER, CELL, TABLET, WEARABLE, NOTEBOOK, ALL_IN_ONE, MEMORY_CARD, \
     RAM, EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
     USB_FLASH_DRIVE, UPS, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, PROCESSOR, \
     VIDEO_CARD, MOTHERBOARD, POWER_SUPPLY, COMPUTER_CASE, MONITOR, \
     TELEVISION, HEADPHONES, STEREO_SYSTEM, PRINTER, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class NotebookStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            CELL,
-            TABLET,
-            WEARABLE,
-            NOTEBOOK,
-            ALL_IN_ONE,
-            MEMORY_CARD,
-            RAM,
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            UPS,
-            MOUSE,
-            KEYBOARD,
-            KEYBOARD_MOUSE_COMBO,
-            PROCESSOR,
-            VIDEO_CARD,
-            MOTHERBOARD,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            MONITOR,
-            TELEVISION,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            PRINTER,
-            VIDEO_GAME_CONSOLE,
-            CPU_COOLER,
-            GAMING_CHAIR,
-            GAMING_DESK,
-            MICROPHONE,
-        ]
+class NotebookStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['equipos/computadores/portatiles', NOTEBOOK],
+        ['equipos/computadores/ultrabooks', NOTEBOOK],
+        ['equipos/computadores/todo-en-uno', ALL_IN_ONE],
+        ['equipos/computadores/2-en-1', NOTEBOOK],
+        ['equipos/computadores/computadores-de-mesa', ALL_IN_ONE],
+        ['equipos/almacenamiento/discos-duros-externos',
+         EXTERNAL_STORAGE_DRIVE],
+        ['equipos/almacenamiento/discos-duros-internos', STORAGE_DRIVE],
+        ['equipos/almacenamiento/discos-de-estado-solido', SOLID_STATE_DRIVE],
+        ['equipos/almacenamiento/unidades-flash-usb', USB_FLASH_DRIVE],
+        ['equipos/perifericos/mouse', MOUSE],
+        ['equipos/perifericos/teclados', KEYBOARD],
+        ['equipos/perifericos/combos-de-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+        ['equipos/perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
+        ['equipos/perifericos/ratones', MOUSE],
+        ['equipos/componentes-informaticos/procesadores', PROCESSOR],
+        ['equipos/componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
+        ['equipos/componentes-informaticos/tarjetas-y-placas-madre',
+         MOTHERBOARD],
+        ['equipos/componentes-informaticos/fuentes-de-poder', POWER_SUPPLY],
+        ['cajas/gabinetes', COMPUTER_CASE],
+        ['equipos/componentes-informaticos/ventiladores-y-'
+         'sistemas-de-enfriamiento', CPU_COOLER],
+        ['equipos/memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
+        ['equipos/memorias/ram-para-notebooks', RAM],
+        ['equipos/memorias/ram-para-pc-y-servidores', RAM],
+        ['ups/respaldo-de-energia', UPS],
+        ['equipos/muebles/sillas', UPS],
+        ['portabilidad/celulares-y-tablets/celulares-desbloqueados', CELL],
+        ['portabilidad/celulares-y-tablets/tablets-ipads', TABLET],
+        ['reloj/trackers-de-actividad', WEARABLE],
+        ['audio-video-y-foto/monitores-proyectores/monitores', MONITOR],
+        ['audio-video-y-foto/monitores-proyectores/televisores', TELEVISION],
+        ['audio-video-y-foto/audio-y-video/parlantes', STEREO_SYSTEM],
+        ['audio-video-y-foto/audio-y-video/audifonos-y-headset', HEADPHONES],
+        ['impresion/impresoras-y-escaneres/impresoras-ink-jet', PRINTER],
+        ['impresion/impresoras-y-escaneres/impresoras-laser', PRINTER],
+        ['impresion/impresoras-y-escaneres/impresoras-multifuncionales', PRINTER],
+        ['impresion/impresoras-y-escaneres/impresoras-fotograficas', PRINTER],
+        ['impresion/impresoras-y-escaneres/impresoras-plotter', PRINTER],
+        ['gaming/equipos/notebooks', NOTEBOOK],
+        ['gaming/equipos/monitores', MONITOR],
+        ['gaming/componentes/procesadores', MONITOR],
+        ['gaming/componentes/placas-madre', MOTHERBOARD],
+        ['gaming/componentes/tarjetas-de-video', VIDEO_CARD],
+        ['gaming/componentes/memoria-ram', RAM],
+        ['gaming/componentes/almacenamiento', SOLID_STATE_DRIVE],
+        ['gaming/componentes/enfriamiento', CPU_COOLER],
+        ['gaming/componentes/fuentes-de-poder', POWER_SUPPLY],
+        ['gaming/componentes/gabinetes', COMPUTER_CASE],
+        ['gaming/perifericos/headset', HEADPHONES],
+        ['gaming/perifericos/teclados-y-mouse', KEYBOARD_MOUSE_COMBO],
+        ['gaming/perifericos/sillas', GAMING_CHAIR],
+        ['gaming/videojuegos/consolas', VIDEO_GAME_CONSOLE],
+        ['apple/equipos/macbook', NOTEBOOK],
+        ['imac-/-mini-/-pro/studio', ALL_IN_ONE],
+        ['ipad/ipod', TABLET],
+        ['apple/articulos/apple-watch', WEARABLE],
+        ['apple-tv/airpods', HEADPHONES],
+        ['apple/articulos/perifericos', KEYBOARD],
+        ['apple/articulos/monitores-studio', MONITOR],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            # Portabilidad
-            ['tecnologia-portatil/celulares/celulares-desbloqueados', CELL],
-            ['tecnologia-portatil/celulares/tableta-2', TABLET],
-            ['tecnologia-portatil/relojes-y-trackers/trackers-de-actividad',
-             WEARABLE],
-            # Equipos
-            ['equipos/computadores-1/portatiles-1', NOTEBOOK],
-            ['equipos/computadores-1/ultrabooks', NOTEBOOK],
-            ['equipos/computadores-1/todo-en-uno', ALL_IN_ONE],
-            ['equipos/memorias/tarjetas-de-memoria-flash', MEMORY_CARD],
-            ['equipos/memorias/ram-para-notebooks', RAM],
-            ['equipos/memorias/ram-para-pc-y-servidores', RAM],
-            ['equipos/alm/discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
-            ['equipos/alm/discos-duros-internos', STORAGE_DRIVE],
-            ['equipos/alm/discos-de-estado-solido', SOLID_STATE_DRIVE],
-            ['equipos/alm/unidades-flash-usb', USB_FLASH_DRIVE],
-            ['equipos/seguridad/ups-respaldo-de-energia', UPS],
-            ['equipos/perifericos/ratones', MOUSE],
-            ['equipos/perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
-            ['equipos/perifericos/combos-de-teclado-y-raton',
-             KEYBOARD_MOUSE_COMBO],
-            ['equipos/muebles/sillas', GAMING_CHAIR],
-            ['equipos/muebles/escritorios', GAMING_DESK],
-            ['equipos/componentes-informaticos/procesadores', PROCESSOR],
-            ['equipos/componentes-informaticos/tarjetas-de-video', VIDEO_CARD],
-            ['equipos/componentes-informaticos/tarjetas-madre-placas-madre',
-             MOTHERBOARD],
-            ['equipos/componentes-informaticos/fuentes-de-poder',
-             POWER_SUPPLY],
-            ['equipos/componentes-informaticos/cajas-gabinetes',
-             COMPUTER_CASE],
-            ['equipos/componentes-informaticos/'
-             'ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
-            # Audio Video y Foto
-            ['audio-y-video/monitores-proyectores/monitores', MONITOR],
-            ['audio-y-video/monitores-proyectores/televisores', TELEVISION],
-            ['audio-y-video/audio-y-video/auriculares', HEADPHONES],
-            ['audio-y-video/audio-y-video/parlantes-bocinas-cornetas-1',
-             STEREO_SYSTEM],
-            ['audio-y-video/audio-y-video/microfonos', MICROPHONE],
-            # Impresion
-            ['impresion/impresoras-y-escaneres', PRINTER],
-            # Gaming
-            ['gaming/equipos/notebooks', NOTEBOOK],
-            ['gaming/equipos/monitores', MONITOR],
-            ['gaming/componentes/procesadores', PROCESSOR],
-            ['gaming/componentes/tarjetas-madre', MOTHERBOARD],
-            ['gaming/componentes/tarjetas-de-video', VIDEO_CARD],
-            ['gaming/componentes/almacenamiento', SOLID_STATE_DRIVE],
-            ['gaming/componentes/memoria-ram', RAM],
-            ['gaming/componentes/enfriamiento', CPU_COOLER],
-            ['gaming/componentes/fuentes-de-poder', POWER_SUPPLY],
-            ['gaming/componentes/gabinetes', COMPUTER_CASE],
-            ['gaming/accesorios/audifonos', HEADPHONES],
-            ['gaming/accesorios/teclados-y-mouse', MOUSE],
-            ['gaming/accesorios/sillas', GAMING_CHAIR],
-            ['gaming/accesorios/accesorios', KEYBOARD],
-            ['gaming/videojuegos/consolas', VIDEO_GAME_CONSOLE],
-            # Apple
-            ['apple/computadores/macbook', NOTEBOOK],
-            ['apple/computadores/imac', ALL_IN_ONE],
-            ['apple/computadores/ipad', TABLET],
-            ['apple/accesorios/apple-watch', WEARABLE],
-            ['apple/accesorios/teclados-y-mouse', MOUSE],
-            ['apple/accesorios/apple-tv', HEADPHONES],
-            ['apple/accesorios/monitores-studio', MONITOR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        page = 1
 
-            page = 1
-            done = False
+        while True:
+            if page > 15:
+                raise Exception('Page overflow')
 
-            while not done:
-                if page > 15:
-                    raise Exception('Page overflow')
+            url = 'https://notebookstore.cl/{}?page={}'.format(
+                url_extension, page)
+            print(url)
 
-                url = 'https://notebookstore.cl/{}.html?p={}'.format(
-                    category_path, page)
-                print(url)
+            soup = BeautifulSoup(session.get(url).text, 'html5lib')
+            products = soup.findAll('div', 'product-block')
 
-                soup = BeautifulSoup(session.get(url).text, 'html5lib')
-                products = soup.findAll('li', 'product')
+            if not products:
+                if page == 1:
+                    logging.warning('Empty category: ' + url)
+                break
 
-                if not products:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url)
-                    break
+            for product in products:
+                product_url = ('https://notebookstore.cl' +
+                               product.find('a')['href'])
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
 
-                for product in products:
-                    product_url = product.find('a')['href']
-                    if product_url in product_urls:
-                        done = True
-                        break
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
@@ -175,40 +131,24 @@ class NotebookStore(Store):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        name = soup.find('span', {'itemprop': 'name'}).text
-        sku = soup.find('div', {'itemprop': 'sku'}).text
-        key = soup.find('div', {'data-role': 'priceBox'})['data-product-id']
+        name = soup.find('h1', 'product-form_title').text.strip()
+        key = soup.find('span', 'sku_elem').text.strip()
 
         stock = 0
-        stock_container = soup.find('div', 'product-stock')
+        stock_container = soup.find('span', 'product-form-stock')
 
         if stock_container:
-            stock = int(stock_container.text.strip().split(
-                ' ')[1].replace('+', ''))
+            stock = int(stock_container.text.strip())
 
-        offer_price = Decimal(soup.find('span', 'efectivo').find(
-            'span', 'price').text.replace('$', '').replace('.', '')
-        ).quantize(Decimal('1.'))
-        normal_price = (offer_price * Decimal(1.034)
-                        ).quantize(Decimal('1.'))
+        normal_price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content']).quantize(0)
+        offer_price = (normal_price * Decimal('0.966')).quantize(Decimal(0))
 
-        image_scripts = soup.findAll('script', {'type': 'text/x-magento-init'})
-        picture_urls = []
-
-        for script in image_scripts:
-            if 'mage/gallery/gallery' in script.text:
-                image_data = json.loads(script.text)[
-                    '[data-gallery-role=gallery-placeholder]'][
-                    'mage/gallery/gallery']['data']
-                for data in image_data:
-                    picture_urls.append(data['img'])
+        picture_urls = [x['src'] for x in
+                        soup.find('div', 'product-images').findAll('img')
+                        if validators.url(x['src'])]
 
         description = html_to_markdown(
-            str(soup.find('div', 'description')))
-
-        if len(sku) > 50:
-            sku = sku[0:50]
+            str(soup.find('div', 'product-description_custom_fields')))
 
         p = Product(
             name,
@@ -216,13 +156,13 @@ class NotebookStore(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=key,
-            part_number=sku,
+            part_number=key,
             picture_urls=picture_urls,
             description=description,
         )

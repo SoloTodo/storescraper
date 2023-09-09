@@ -8,7 +8,7 @@ from storescraper.utils import session_with_proxy
 
 
 class Wom(Store):
-    prepago_url = 'http://www.wom.cl/prepago/'
+    prepago_url = 'https://www.wom.cl/prepago/'
     planes_url = 'https://store.wom.cl/planes/'
 
     @classmethod
@@ -283,7 +283,7 @@ class Wom(Store):
         session = session_with_proxy(extra_args)
 
         response = session.get('https://store.wom.cl/page-data/sq/d/'
-                               '1342060432.json')
+                               '2591293040.json')
 
         data = response.json()
         plans_json = []
