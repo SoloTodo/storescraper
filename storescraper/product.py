@@ -32,7 +32,7 @@ class Product:
         assert isinstance(stock, int)
         assert len(name) <= 256
         assert len(key) <= 256
-        assert offer_price <= normal_price
+        assert normal_price >= offer_price, (normal_price, offer_price)
 
         for price in [normal_price, offer_price]:
             price_metadata = price.as_tuple()
