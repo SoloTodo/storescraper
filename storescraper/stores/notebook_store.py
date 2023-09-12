@@ -30,7 +30,8 @@ class NotebookStore(StoreWithUrlExtensions):
         ['equipos/almacenamiento/unidades-flash-usb', USB_FLASH_DRIVE],
         ['equipos/perifericos/mouse', MOUSE],
         ['equipos/perifericos/teclados', KEYBOARD],
-        ['equipos/perifericos/combos-de-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
+        ['equipos/perifericos/combos-de-teclado-y-mouse',
+         KEYBOARD_MOUSE_COMBO],
         ['equipos/perifericos/teclados-y-teclados-de-numeros', KEYBOARD],
         ['equipos/perifericos/ratones', MOUSE],
         ['equipos/componentes-informaticos/procesadores', PROCESSOR],
@@ -55,7 +56,8 @@ class NotebookStore(StoreWithUrlExtensions):
         ['audio-video-y-foto/audio-y-video/audifonos-y-headset', HEADPHONES],
         ['impresion/impresoras-y-escaneres/impresoras-ink-jet', PRINTER],
         ['impresion/impresoras-y-escaneres/impresoras-laser', PRINTER],
-        ['impresion/impresoras-y-escaneres/impresoras-multifuncionales', PRINTER],
+        ['impresion/impresoras-y-escaneres/impresoras-multifuncionales',
+         PRINTER],
         ['impresion/impresoras-y-escaneres/impresoras-fotograficas', PRINTER],
         ['impresion/impresoras-y-escaneres/impresoras-plotter', PRINTER],
         ['gaming/equipos/notebooks', NOTEBOOK],
@@ -140,7 +142,9 @@ class NotebookStore(StoreWithUrlExtensions):
         if stock_container:
             stock = int(stock_container.text.strip())
 
-        normal_price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content']).quantize(0)
+        normal_price = Decimal(soup.find(
+            'meta', {'property':
+                     'product:price:amount'})['content']).quantize(0)
         offer_price = (normal_price * Decimal('0.966')).quantize(Decimal(0))
 
         picture_urls = [x['src'] for x in

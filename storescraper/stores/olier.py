@@ -73,7 +73,8 @@ class Olier(Store):
         url_ver = product_entry['url_ver']
         price = Decimal(product_entry['precio_retail'])
         stock = product_entry['existencia']
-        description = html_to_markdown(product_entry['producto']['descripcion'] or '')
+        description = html_to_markdown(
+            product_entry['producto']['descripcion'] or '')
         picture_urls = []
         for i in product_entry['imagenes']:
             if i['url_imagen']:

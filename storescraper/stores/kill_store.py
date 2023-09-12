@@ -28,8 +28,8 @@ class KillStore(StoreWithUrlExtensions):
             if page > 50:
                 raise Exception('page overflow: ' + url_extension)
 
-            url_webpage = 'https://www.killstore.cl/collections/{}?page={}'.format(
-                url_extension, page)
+            url_webpage = ('https://www.killstore.cl/collections/{}'
+                           '?page={}').format(url_extension, page)
             print(url_webpage)
 
             res = session.get(url_webpage)

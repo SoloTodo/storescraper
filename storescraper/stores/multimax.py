@@ -46,7 +46,7 @@ class Multimax(Store):
 
             for item in items:
                 product_urls.append(
-                    'https://www.multimax.net/products/' +item['handle'])
+                    'https://www.multimax.net/products/' + item['handle'])
 
             page += 1
 

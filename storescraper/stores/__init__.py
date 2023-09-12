@@ -98,6 +98,7 @@ from .digitalife import Digitalife
 from .dimercom import Dimercom
 from .dismac import Dismac
 from .diunsa import Diunsa
+from .divino import Divino
 from .do_it_center import DoItCenter
 from .dreamtec import Dreamtec
 from .dust2 import Dust2
@@ -402,6 +403,7 @@ from .smart_mobile import SmartMobile
 from .sodimac import Sodimac
 from .sodimac_argentina import SodimacArgentina
 from .sodimac_peru import SodimacPeru
+from .sodimac_uruguay import SodimacUruguay
 from .solar_led import SolarLed
 from .soluservi import Soluservi
 from .sony_store import SonyStore

@@ -2,11 +2,12 @@ from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 
-from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
-    SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, \
-    USB_FLASH_DRIVE, VIDEO_CARD, POWER_SUPPLY, CPU_COOLER, MONITOR, KEYBOARD, \
-    MOUSE, HEADPHONES, STEREO_SYSTEM, KEYBOARD_MOUSE_COMBO, PRINTER, NOTEBOOK, \
-    TABLET, WEARABLE, ALL_IN_ONE
+from storescraper.categories import (
+    PROCESSOR, MOTHERBOARD, RAM,
+    SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD,
+    USB_FLASH_DRIVE, VIDEO_CARD, POWER_SUPPLY, CPU_COOLER, MONITOR, KEYBOARD,
+    MOUSE, HEADPHONES, STEREO_SYSTEM, KEYBOARD_MOUSE_COMBO, PRINTER, NOTEBOOK,
+    TABLET, WEARABLE, ALL_IN_ONE)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -64,7 +65,8 @@ class Thundertech(StoreWithUrlExtensions):
                     logging.warning('Empty category: ' + url_extension)
                 break
             for container in product_containers:
-                product_url = 'https://www.thundertech.cl' + container.find('a')['href']
+                product_url = ('https://www.thundertech.cl' +
+                               container.find('a')['href'])
                 product_urls.append(product_url)
             page += 1
 
@@ -81,7 +83,8 @@ class Thundertech(StoreWithUrlExtensions):
         # TODO: check for una unavailable product in the future
         stock = -1
 
-        discount_price_tag = soup.find('h2', 'product-heading__pricing--has-discount')
+        discount_price_tag = soup.find(
+            'h2', 'product-heading__pricing--has-discount')
 
         if discount_price_tag:
             price = Decimal(remove_words(discount_price_tag.find(
@@ -96,7 +99,8 @@ class Thundertech(StoreWithUrlExtensions):
         else:
             sku = None
 
-        picture_urls = [x['data-src'] for x in soup.findAll('img', 'product-gallery__image')]
+        picture_urls = [x['data-src'] for x in
+                        soup.findAll('img', 'product-gallery__image')]
 
         p = Product(
             name,
