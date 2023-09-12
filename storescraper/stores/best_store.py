@@ -13,7 +13,7 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     AIR_CONDITIONER
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class BestStore(StoreWithUrlExtensions):
@@ -124,10 +124,9 @@ class BestStore(StoreWithUrlExtensions):
             stock = -1
 
         normal_price = Decimal(
-            soup.find('div', 'current-price').find('span')['content'])
+            remove_words(soup.find('div', 'current-price').find('span').text))
         offer_price = Decimal(
-            soup.find('div', 'current-price-money').find('span').text.replace(
-                '$\xa0', '').replace('.', ''))
+            soup.find('div', 'current-price-money').find('span')['content'])
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'images-container').findAll('img')
                        if validators.url(tag['src'])
