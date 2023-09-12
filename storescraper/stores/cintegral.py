@@ -1,118 +1,99 @@
-import json
-import logging
+import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    remove_words
 from storescraper.categories import NOTEBOOK, ALL_IN_ONE, TABLET, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
+    EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, MEMORY_CARD, \
     USB_FLASH_DRIVE, PROCESSOR, COMPUTER_CASE, POWER_SUPPLY, MOTHERBOARD, \
     RAM, VIDEO_CARD, MOUSE, PRINTER, HEADPHONES, STEREO_SYSTEM, UPS, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, KEYBOARD, PROJECTOR, GAMING_CHAIR
+    KEYBOARD_MOUSE_COMBO, KEYBOARD, GAMING_CHAIR, WEARABLE, \
+    STORAGE_DRIVE
 
 
-class Cintegral(Store):
+class Cintegral(StoreWithUrlExtensions):
+    url_extensions = [
+        ['109', NOTEBOOK],
+        ['110', ALL_IN_ONE],
+        ['176', TABLET],
+        ['157', PRINTER],
+        ['156', PRINTER],
+        ['129', PRINTER],
+        ['152', PRINTER],
+        ['181', STORAGE_DRIVE],
+        ['182', EXTERNAL_STORAGE_DRIVE],
+        ['183', SOLID_STATE_DRIVE],
+        ['184', MEMORY_CARD],
+        ['185', USB_FLASH_DRIVE],
+        ['116', POWER_SUPPLY],
+        ['115', COMPUTER_CASE],
+        ['118', RAM],
+        ['117', MOTHERBOARD],
+        ['114', PROCESSOR],
+        ['119', VIDEO_CARD],
+        ['96', MONITOR],
+        ['122', KEYBOARD_MOUSE_COMBO],
+        ['123', MOUSE],
+        ['121', KEYBOARD],
+        ['161', NOTEBOOK],
+        ['163', WEARABLE],
+        ['162', TABLET],
+        ['164', KEYBOARD],
+        ['139', HEADPHONES],
+        ['140', STEREO_SYSTEM],
+        ['153', GAMING_CHAIR],
+        ['86', WEARABLE],
+        ['168', VIDEO_CARD],
+        ['160', MONITOR],
+        ['159', NOTEBOOK],
+        ['172', SOLID_STATE_DRIVE],
+        ['171', POWER_SUPPLY],
+        ['167', MOUSE],
+        ['170', MOTHERBOARD],
+        ['169', PROCESSOR],
+        ['166', GAMING_CHAIR],
+        ['178', RAM],
+        ['106', NOTEBOOK],
+        ['141', UPS],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            ALL_IN_ONE,
-            TABLET,
-            STORAGE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            MEMORY_CARD,
-            USB_FLASH_DRIVE,
-            PROCESSOR,
-            COMPUTER_CASE,
-            POWER_SUPPLY,
-            MOTHERBOARD,
-            RAM,
-            VIDEO_CARD,
-            MOUSE,
-            PRINTER,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            UPS,
-            MONITOR,
-            KEYBOARD_MOUSE_COMBO,
-            KEYBOARD,
-            PROJECTOR,
-            GAMING_CHAIR
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_base = 'https://cintegral.cl/{}-?page={}'
-
-        url_extensions = [
-            ['24', NOTEBOOK],  # Notebooks
-            ['25', ALL_IN_ONE],  # All in One
-            ['27', TABLET],  # Tablet
-            ['94', GAMING_CHAIR],
-            ['66', STORAGE_DRIVE],  # Discos duros PC
-            ['67', EXTERNAL_STORAGE_DRIVE],  # Discos duros externos
-            ['68', SOLID_STATE_DRIVE],  # Unidades de estado sólido
-            ['69', MEMORY_CARD],  # Memorias Flash
-            ['70', USB_FLASH_DRIVE],  # Pendrive
-            ['31', PROCESSOR],  # Procesadores
-            ['33', POWER_SUPPLY],  # Fuentes de poder
-            ['34', MOTHERBOARD],  # Placas madre
-            ['36', VIDEO_CARD],  # Tarjetas de video
-            ['35', RAM],
-            ['32', COMPUTER_CASE],  # Gabinetes
-            ['18', MONITOR],  # Monitores
-            ['56', PROJECTOR],  # Proyectores
-            ['15', PRINTER],
-            ['59', HEADPHONES],  # Audífonos / Micrófonos
-            ['60', STEREO_SYSTEM],  # Parlantes
-            ['61', UPS],  # UPS
-            ['38', KEYBOARD],  # Teclados
-            ['40', MOUSE],  # Mouse
-            ['39', KEYBOARD_MOUSE_COMBO],  # Combos teclado mouse
-            ['112', NOTEBOOK],  # Notebooks gamer
-            ['124', MONITOR],  # Monitores gamer
-            ['113', GAMING_CHAIR],
-            ['114', MOUSE],  # Periféricos gamer
-            ['115', VIDEO_CARD],  # Tarjetas de video gamer
-            ['116', PROCESSOR],  # Procesadores gamer
-            ['117', RAM],  # RAM gamer
-            ['118', MOTHERBOARD],  # Placas madre gamer
-            ['119', COMPUTER_CASE],  # Gabinetes gamer
-            ['120', SOLID_STATE_DRIVE],  # Almacenamiento gamer
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        page = 1
 
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow: ' + url_extension)
 
-            page = 1
+            payload = ('action=jet_smart_filters&provider=jet-engine/default&'
+                       'query[_tax_query_product_cat][]={}&'
+                       'settings[lisitng_id]=645&referrer[uri]=/'
+                       '?jsf=jet-engine&pagenum={}').format(
+                url_extension, page)
+            print(payload)
 
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow: ' + url_extension)
+            res = session.post('https://cintegral.cl/wp-admin/admin-ajax.php',
+                               payload)
+            json_data = res.json()
+            soup = BeautifulSoup(json_data['content'], 'html.parser')
+            product_tags = soup.findAll('div', 'jet-listing-grid__item')
 
-                url = url_base.format(url_extension, page)
-                source = session.get(url, verify=False).text
-                soup = BeautifulSoup(source, 'html.parser')
-                product_tags = soup.findAll('article', 'item')
+            if not product_tags:
+                break
 
-                if not product_tags:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url)
-                    break
+            for product_tag in product_tags:
+                product_url = product_tag.find(
+                    'a', 'jet-listing-dynamic-image__link')['href']
+                product_urls.append(product_url)
 
-                for product_tag in product_tags:
-                    product_url = product_tag.find('a')['href']
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
@@ -120,20 +101,43 @@ class Cintegral(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        page_source = session.get(url, verify=False).text
-        soup = BeautifulSoup(page_source, 'html.parser')
-        product_json_tag = soup.find('div', {'id': 'product-details'})
-        product_json = json.loads(product_json_tag['data-product'])
-        stock = product_json['quantity']
-        key = str(product_json['id'])
-        description = html_to_markdown(product_json['description'])
-        sku = product_json['reference']
-        name = product_json['name']
-        price = Decimal(product_json['price_amount'])
-        picture_urls = [x['large']['url'] for x in product_json['images']]
+        res = session.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
 
-        part_number = soup.find('div', {'id': 'description'})[
-            'data-part_number'].strip() or None
+        name = soup.find('h1', 'product_title').text.strip()
+        new_key = soup.find('link', {'rel': 'shortlink'})['href'].split(
+            '?p=')[-1]
+        old_key = re.match(r'https://cintegral.cl/producto/(\d+)',
+                           url).groups()[0]
+
+        stock_label_tag = soup.find('span', text='Stock Web:')
+        stock_tag = stock_label_tag.next.next
+        stock_match = re.search(r'(\d+)', stock_tag.text.strip())
+        stock = int(stock_match.groups()[0])
+
+        offer_price_label_tag = soup.find('div', text='Pago transferencia')
+        offer_price = Decimal(remove_words(
+            offer_price_label_tag.next.next.text))
+
+        normal_price_label_tag = soup.find('div', text='Pago con Tarjeta')
+        normal_price = Decimal(
+            remove_words(normal_price_label_tag.next.next.text))
+
+        mpn_label_tag = soup.find('span', text='Part Number:')
+        if mpn_label_tag:
+            part_number = mpn_label_tag.next.next.strip()
+        else:
+            part_number = None
+
+        description = html_to_markdown(str(
+            soup.find('div', 'woocommerce-Tabs-panel--description')))
+
+        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
+
+        if 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         p = Product(
             name,
@@ -141,15 +145,16 @@ class Cintegral(Store):
             category,
             url,
             url,
-            key,
+            old_key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
-            sku=sku,
+            sku=new_key,
             part_number=part_number,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            condition=condition
         )
 
         return [p]
