@@ -1,57 +1,45 @@
 import json
-import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, MONITOR, MOUSE
+from storescraper.categories import HEADPHONES, MONITOR, MOUSE, STEREO_SYSTEM
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import remove_words, session_with_proxy
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy
 
 
-class LapShop(Store):
+class LapShop(StoreWithUrlExtensions):
+    url_extensions = [
+        ['26-27-29-31', MONITOR],
+        ['21', HEADPHONES],
+        ['22', STEREO_SYSTEM],
+        ['33', MOUSE],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            MONITOR,
-            HEADPHONES,
-            MOUSE,
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['monitores-gamer', MONITOR],
-            ['monitores-business', MONITOR],
-            ['audio', HEADPHONES],
-            ['teclados-y-mouse', MOUSE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow')
-                url_webpage = 'https://www.lapshop.cl/collections/{}?' \
-                              'page={}'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_container = soup.find('ul', 'productgrid--items')
-                if not product_container:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_container.findAll(
-                        'a', 'productitem--image-link'):
-                    product_url = container['href']
-                    product_urls.append('https://www.lapshop.cl' + product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow')
+            url_webpage = ('https://lapshop.cl/page/{}/?post_type=product&'
+                           'filters=product_cat[{}]').format(
+                page, url_extension)
+            print(url_webpage)
+            res = session.get(url_webpage)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+
+            if not product_containers:
+                break
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -60,23 +48,40 @@ class LapShop(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_info = json.loads(
-            soup.find('script', {'data-section-type': 'static-product'}).text
-        )['product']
-        name = json_info['title']
-        sku = str(json_info['id'])
-        stock = -1 if json_info['available'] else 0
-        normal_price = Decimal(json_info['price'] // 100)
-        prices = soup.find('div', 'product-block--price')
-        offer_price = Decimal(remove_words(
-            prices.find('span', 'money').text))
-        picture_urls = ['https:' + image_url.split('?')[0] for image_url in
-                        json_info['images']]
+
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
+
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        name = product_data['name']
+        sku = product_data['sku']
+
+        input_qty = soup.find('input', 'qty')
+        if input_qty:
+            if 'max' in input_qty.attrs and input_qty['max']:
+                stock = int(input_qty['max'])
+            else:
+                stock = -1
+        else:
+            stock = 0
+
+        offer_price = Decimal(
+            product_data['offers'][0]['priceSpecification']['price'])
+        normal_price = (offer_price * Decimal('1.04')).quantize(0)
 
         if 'SEGUNDA' in name.upper():
             condition = 'https://schema.org/RefurbishedCondition'
         else:
             condition = 'https://schema.org/NewCondition'
+
+        picture_urls = [x['href'] for x in soup.findAll(
+            'a', {'data-fancybox': 'product-gallery'})]
 
         p = Product(
             name,
@@ -84,7 +89,7 @@ class LapShop(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,

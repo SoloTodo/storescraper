@@ -53,7 +53,7 @@ class Sukasa(Store):
         stock = -1 if not brand or brand == 'LG' else 0
         variants_container = soup.find('div', 'attribute-list')
         sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
-        name = soup.find('h1', 'page-heading').text.strip()
+        name = soup.find('h1', 'page-heading').text.strip()[:250]
 
         if variants_container:
             product_id = soup.find('input', {'name': 'id_product'})['value']
