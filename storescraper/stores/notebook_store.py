@@ -1,4 +1,5 @@
 import logging
+import re
 
 from decimal import Decimal
 
@@ -134,7 +135,12 @@ class NotebookStore(StoreWithUrlExtensions):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-form_title').text.strip()
-        key = soup.find('span', 'sku_elem').text.strip()
+        sku = soup.find('span', 'sku_elem').text.strip()
+
+        if not sku:
+            sku = re.search(r'"sku":"(.+?)"', response.text).groups()[0]
+
+        key = soup.find('meta', {'property': 'og:id'})['content']
 
         stock = 0
         stock_container = soup.find('span', 'product-form-stock')
@@ -160,13 +166,13 @@ class NotebookStore(StoreWithUrlExtensions):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
             'CLP',
             sku=key,
-            part_number=key,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description,
         )
