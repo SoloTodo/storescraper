@@ -1,3 +1,4 @@
+import re
 from decimal import Decimal
 import json
 import logging
@@ -6,7 +7,7 @@ from storescraper.categories import ALL_IN_ONE, CELL, GAMING_CHAIR, MONITOR, \
     NOTEBOOK, PRINTER, RAM, SOLID_STATE_DRIVE, TABLET, TELEVISION
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class NoeComputacion(StoreWithUrlExtensions):
@@ -75,12 +76,17 @@ class NoeComputacion(StoreWithUrlExtensions):
         name = product_data['name']
         sku = str(product_data['sku'])
         description = product_data['description']
+
         offer = product_data['offers'][0]
-        if 'price' in offer:
-            normal_price = offer_price = Decimal(offer['price'])
+        normal_price = Decimal(offer['price'])
+
+        offer_price_match = re.search(r'\$([\d|.]+)', description)
+        if offer_price_match:
+            offer_price_text = offer_price_match.groups()[0]
+            offer_price = Decimal(remove_words(offer_price_text))
         else:
-            offer_price = Decimal(offer['lowPrice'])
-            normal_price = Decimal(offer['highPrice'])
+            offer_price = normal_price
+
 
         qty_input = soup.find('input', 'input-text qty text')
         if qty_input:
