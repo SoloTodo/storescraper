@@ -62,12 +62,11 @@ class Coolbox(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        if response.status_code != 200:
+        product_match = re.search(r'__STATE__ = {(.+)}', response.text)
+        if not product_match:
             return []
 
-        product_data = json.loads('{' + re.search(r'__STATE__ = {(.+)}',
-                                  response.text).groups()[0] + '}')
-
+        product_data = json.loads('{' + product_match.groups()[0] + '}')
         base_json_keys = list(product_data.keys())
 
         if not base_json_keys:
