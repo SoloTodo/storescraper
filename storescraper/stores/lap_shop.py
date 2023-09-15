@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import HEADPHONES, MONITOR, MOUSE, STEREO_SYSTEM
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class LapShop(StoreWithUrlExtensions):
@@ -71,9 +71,9 @@ class LapShop(StoreWithUrlExtensions):
         else:
             stock = 0
 
-        offer_price = Decimal(
+        normal_price = Decimal(
             product_data['offers'][0]['priceSpecification']['price'])
-        normal_price = (offer_price * Decimal('1.04')).quantize(0)
+        offer_price = Decimal(remove_words(soup.find('div', 'price').text))
 
         if 'SEGUNDA' in name.upper():
             condition = 'https://schema.org/RefurbishedCondition'
