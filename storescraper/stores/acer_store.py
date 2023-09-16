@@ -1,5 +1,6 @@
 import base64
 import json
+import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -7,77 +8,65 @@ from storescraper.categories import MONITOR, NOTEBOOK, ALL_IN_ONE, MOUSE
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import check_ean13, session_with_proxy, remove_words
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import check_ean13, session_with_proxy, remove_words, \
+    vtex_preflight
 
 
-class AcerStore(Store):
+class AcerStore(StoreWithUrlExtensions):
     preferred_discover_urls_concurrency = 1
     preferred_products_for_url_concurrency = 1
 
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            MONITOR,
-            ALL_IN_ONE,
-            MOUSE
-        ]
+    url_extensions = [
+        ['notebook-gamer', NOTEBOOK],
+        ['notebook', NOTEBOOK],
+        ['corporativo', NOTEBOOK],
+        ['outlet', NOTEBOOK],
+        ['monitores', MONITOR],
+        ['aio', ALL_IN_ONE],
+        ['accesorios', MOUSE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['notebook-gamer', NOTEBOOK],
-            ['notebook', NOTEBOOK],
-            ['corporativo', NOTEBOOK],
-            ['outlet', NOTEBOOK],
-            ['monitores', MONITOR],
-            ['aio', ALL_IN_ONE],
-            ['accesorios', MOUSE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_id, local_category in category_paths:
-            if local_category != category:
-                continue
+        offset = 0
+        while True:
+            if offset >= 120:
+                raise Exception('Page overflow')
 
-            offset = 0
-            while True:
-                if offset >= 120:
-                    raise Exception('Page overflow')
+            variables = {
+                "from": offset,
+                "to": offset + 12,
+                "selectedFacets": [{"key": "c", "value": url_extension}]
+            }
 
-                variables = {
-                    "from": offset,
-                    "to": offset + 12,
-                    "selectedFacets": [{"key": "c", "value": category_id}]
-                }
+            payload = {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args['sha256Hash']
+                },
+                "variables": base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-                payload = {
-                    "persistedQuery": {
-                        "version": 1,
-                        "sha256Hash": "97f345cd1295d67e2e7c6e46f67b7d4e"
-                                      "4593b2f97c26b22b9e6b68f787eb12ac"
-                    },
-                    "variables": base64.b64encode(json.dumps(
-                        variables).encode('utf-8')).decode('utf-8')
-                }
+            endpoint = 'https://www.acerstore.cl/_v/segment/graphql/v1' \
+                       '?extensions={}'.format(json.dumps(payload))
+            response = session.get(endpoint).json()
 
-                endpoint = 'https://www.acerstore.cl/_v/segment/graphql/v1' \
-                           '?extensions={}'.format(json.dumps(payload))
-                response = session.get(endpoint).json()
+            product_entries = response['data']['productSearch']['products']
 
-                product_entries = response['data']['productSearch']['products']
+            if not product_entries:
+                break
 
-                if not product_entries:
-                    break
+            for product_entry in product_entries:
+                product_url = 'https://www.acerstore.cl/{}/p'.format(
+                    product_entry['linkText'])
+                product_urls.append(product_url)
 
-                for product_entry in product_entries:
-                    product_url = 'https://www.acerstore.cl/{}/p'.format(
-                        product_entry['linkText'])
-                    product_urls.append(product_url)
-
-                offset += 12
+            offset += 12
 
         return product_urls
 
@@ -163,3 +152,8 @@ class AcerStore(Store):
         )
 
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.acerstore.cl/notebook/notebook-clasico')

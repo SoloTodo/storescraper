@@ -9,7 +9,7 @@ from storescraper.categories import STORAGE_DRIVE, TABLET, STEREO_SYSTEM, \
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, vtex_preflight
 
 
 class CasaRoyal(StoreWithUrlExtensions):
@@ -65,13 +65,10 @@ class CasaRoyal(StoreWithUrlExtensions):
                 'selectedFacets': facets
             }
 
-            # The sha256Hash may change
-
             payload = {
                 'persistedQuery': {
                     'version': 1,
-                    'sha256Hash': '97f345cd1295d67e2e7c6e46f67b7d4e'
-                                  '4593b2f97c26b22b9e6b68f787eb12ac',
+                    'sha256Hash': extra_args['sha256Hash'],
                     'sender': 'vtex.store-resources@0.x',
                     'provider': 'vtex.search-graphql@0.x'
                 },
@@ -156,3 +153,8 @@ class CasaRoyal(StoreWithUrlExtensions):
         )
 
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.casaroyal.cl/audio/audifonos')

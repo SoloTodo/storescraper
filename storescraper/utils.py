@@ -132,6 +132,16 @@ def session_with_proxy(extra_args):
     return session
 
 
+def vtex_preflight(extra_args, target_url):
+    session = session_with_proxy(extra_args)
+    res = session.get(target_url)
+    hash_match = re.search(r'hash\\":\\"([0-9a-f]+)', res.text)
+    sha256Hash = hash_match.groups()[0]
+    return {
+        'sha256Hash': sha256Hash
+    }
+
+
 CF_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) '
                   'Gecko/20100101 Firefox/84.0'

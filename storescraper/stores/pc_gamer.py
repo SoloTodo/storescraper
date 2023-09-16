@@ -8,52 +8,31 @@ from storescraper.categories import PROCESSOR, MOTHERBOARD, RAM, \
     MOUSE, HEADPHONES, MONITOR, GAMING_CHAIR, PRINTER, GAMING_DESK, CASE_FAN, \
     NOTEBOOK
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class PcGamer(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            PROCESSOR,
-            MOTHERBOARD,
-            RAM,
-            SOLID_STATE_DRIVE,
-            VIDEO_CARD,
-            COMPUTER_CASE,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            MOUSE,
-            HEADPHONES,
-            MONITOR,
-            GAMING_CHAIR,
-            PRINTER,
-            GAMING_DESK,
-            CASE_FAN,
-            NOTEBOOK,
-        ]
+class PcGamer(StoreWithUrlExtensions):
+    url_extensions = [
+        ['1', HEADPHONES],  # AUDIO
+        ['6', MONITOR],  # MONITORES
+        ['8', CPU_COOLER],  # REFRIGERACION
+        ['9', MOUSE],  # TECLADOS/MOUSE
+        ['10', MOTHERBOARD],  # PLACAS MADRE
+        ['11', PROCESSOR],  # PROCESADORES
+        ['12', RAM],  # MEMORIAS
+        ['13', SOLID_STATE_DRIVE],  # DISCOS DUROS
+        ['14', COMPUTER_CASE],  # GABINETES
+        ['15', POWER_SUPPLY],  # FUENTES DE PODER
+        ['16', VIDEO_CARD],  # TARJETAS DE VIDEO
+        ['21', GAMING_CHAIR],  # SILLAS GAMER
+        ['33', GAMING_DESK],  # ESCRITORIOS
+        ['27', PRINTER],  # IMPRESORAS
+        ['17', NOTEBOOK],  # Computadores
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['1', HEADPHONES],  # AUDIO
-            ['6', MONITOR],  # MONITORES
-            ['8', CPU_COOLER],  # REFRIGERACION
-            ['9', MOUSE],  # TECLADOS/MOUSE
-            ['10', MOTHERBOARD],  # PLACAS MADRE
-            ['11', PROCESSOR],  # PROCESADORES
-            ['12', RAM],  # MEMORIAS
-            ['13', SOLID_STATE_DRIVE],  # DISCOS DUROS
-            ['14', COMPUTER_CASE],  # GABINETES
-            ['15', POWER_SUPPLY],  # FUENTES DE PODER
-            ['16', VIDEO_CARD],  # TARJETAS DE VIDEO
-            ['21', GAMING_CHAIR],  # SILLAS GAMER
-            ['33', GAMING_DESK],  # ESCRITORIOS
-            ['27', PRINTER],  # IMPRESORAS
-            ['17', NOTEBOOK],  # Computadores
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
@@ -61,21 +40,19 @@ class PcGamer(Store):
 
         product_urls = []
 
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            data = session.post(
-                'https://tienda.pc-gamer.cl/php/traer_productos.php',
-                data={'search_cat': url_extension}).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('div', 'product-wrapper')
-            if not product_containers:
-                logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://tienda.pc-gamer.cl/' + product_url)
+        data = session.post(
+            'https://tienda.pc-gamer.cl/php/traer_productos.php',
+            data={'search_cat': url_extension}).text
+        soup = BeautifulSoup(data, 'html.parser')
+        product_containers = soup.findAll('div', 'product-wrapper')
+
+        if not product_containers:
+            logging.warning('Empty category: ' + url_extension)
+
+        for container in product_containers:
+            product_url = container.find('a')['href']
+            product_urls.append(
+                'https://tienda.pc-gamer.cl/' + product_url)
 
         return product_urls
 

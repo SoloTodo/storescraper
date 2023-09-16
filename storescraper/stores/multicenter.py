@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, vtex_preflight
 
 
 class Multicenter(Store):
@@ -43,8 +43,7 @@ class Multicenter(Store):
             payload = {
                 'persistedQuery': {
                     'version': 1,
-                    'sha256Hash': '97f345cd1295d67e2e7c6e46f67b7d4e'
-                                  '4593b2f97c26b22b9e6b68f787eb12ac'
+                    'sha256Hash': extra_args['sha256Hash']
                 },
                 'variables': base64.b64encode(json.dumps(
                     variables).encode('utf-8')).decode('utf-8')
@@ -108,3 +107,8 @@ class Multicenter(Store):
             picture_urls=picture_urls,
         )
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.multicenter.com.bo/electrohogar')

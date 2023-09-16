@@ -66,7 +66,7 @@ class Jasaltec(Store):
             ['all-in-one', ALL_IN_ONE],
             ['notebook', NOTEBOOK],
             ['notebook-gamer', NOTEBOOK],
-            ['tabletas', TABLET],
+            ['tablet', TABLET],
             ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
             ['combo-teclado-mouse-gamer', KEYBOARD_MOUSE_COMBO],
             ['audifonos-oficina', HEADPHONES],

@@ -1,5 +1,6 @@
 import base64
 import json
+import re
 from collections import defaultdict
 from decimal import Decimal
 
@@ -9,7 +10,8 @@ from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, \
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    vtex_preflight
 
 
 class Easy(Store):
@@ -147,13 +149,10 @@ class Easy(Store):
                     'selectedFacets': facets
                 }
 
-                # The sha256Hash may change
-
                 payload = {
                     'persistedQuery': {
                         'version': 1,
-                        'sha256Hash': '97f345cd1295d67e2e7c6e46f67b7d4e'
-                                      '4593b2f97c26b22b9e6b68f787eb12ac',
+                        'sha256Hash': extra_args['sha256Hash'],
                         'sender': 'vtex.store-resources@0.x',
                         'provider': 'vtex.search-graphql@0.x'
                     },
@@ -319,3 +318,9 @@ class Easy(Store):
         )
 
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.easy.cl/electrohogar-y-climatizacion/'
+                        'refrigeracion')
