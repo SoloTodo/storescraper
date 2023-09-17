@@ -8,94 +8,65 @@ from storescraper.categories import EXTERNAL_STORAGE_DRIVE, STORAGE_DRIVE, \
     KEYBOARD, MOUSE, HEADPHONES, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
     VIDEO_CARD, CASE_FAN, GAMING_CHAIR, USB_FLASH_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class Natcom(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            RAM,
-            MONITOR,
-            NOTEBOOK,
-            KEYBOARD,
-            MOUSE,
-            HEADPHONES,
-            MOTHERBOARD,
-            PROCESSOR,
-            CPU_COOLER,
-            VIDEO_CARD,
-            CASE_FAN,
-            GAMING_CHAIR,
-            USB_FLASH_DRIVE,
-        ]
+class Natcom(StoreWithUrlExtensions):
+    url_extensions = [
+        ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
+        ['discos-duros', STORAGE_DRIVE],
+        ['discos-ssd', SOLID_STATE_DRIVE],
+        ['certificada', POWER_SUPPLY],
+        ['no-certificada', POWER_SUPPLY],
+        ['gabinetes', COMPUTER_CASE],
+        ['ram-pc-escritorio', RAM],
+        ['ram-portatiles', RAM],
+        ['monitores', MONITOR],
+        ['notebooks', NOTEBOOK],
+        ['teclados', KEYBOARD],
+        ['mouse', MOUSE],
+        ['audifonos', HEADPHONES],
+        ['placa-madre-amd', MOTHERBOARD],
+        ['placa-madre-intel', MOTHERBOARD],
+        ['procesadores-amd', PROCESSOR],
+        ['procesadores-intel', PROCESSOR],
+        ['refrigeracion-liquida', CPU_COOLER],
+        ['ventiladores', CASE_FAN],
+        ['tarjetas-de-video-amd', VIDEO_CARD],
+        ['tarjetas-de-video-nvidia', VIDEO_CARD],
+        ['categoria-producto/sillas-gamer', GAMING_CHAIR],
+        ['pendrive', USB_FLASH_DRIVE]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['disco-duro-externo', EXTERNAL_STORAGE_DRIVE],
-            ['discos-duros', STORAGE_DRIVE],
-            ['discos-ssd', SOLID_STATE_DRIVE],
-            ['certificada', POWER_SUPPLY],
-            ['no-certificada', POWER_SUPPLY],
-            ['gabinetes', COMPUTER_CASE],
-            ['ram-pc-escritorio', RAM],
-            ['ram-portatiles', RAM],
-            ['monitores', MONITOR],
-            ['notebooks', NOTEBOOK],
-            ['teclados', KEYBOARD],
-            ['mouse', MOUSE],
-            ['audifonos', HEADPHONES],
-            ['placa-madre-amd', MOTHERBOARD],
-            ['placa-madre-intel', MOTHERBOARD],
-            ['procesadores-amd', PROCESSOR],
-            ['procesadores-intel', PROCESSOR],
-            ['refrigeracion-liquida', CPU_COOLER],
-            ['ventiladores', CASE_FAN],
-            ['tarjetas-de-video-amd', VIDEO_CARD],
-            ['tarjetas-de-video-nvidia', VIDEO_CARD],
-            ['categoria-producto/sillas-gamer', GAMING_CHAIR],
-            ['pendrive', USB_FLASH_DRIVE]
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            local_urls = []
-            done = False
-            while not done:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://natcomchile.cl/{}/page/{}/'.format(
-                    url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage, timeout=60)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll(
-                    'article', 'w-grid-item') + soup.findAll('li', 'product')
+        page = 1
+        done = False
+        while not done:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://natcomchile.cl/{}/page/{}/'.format(
+                url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage, timeout=60)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll(
+                'article', 'w-grid-item') + soup.findAll('li', 'product')
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    if product_url in local_urls:
-                        done = True
-                        break
-                    local_urls.append(product_url)
-                page += 1
-            product_urls.extend(local_urls)
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -103,6 +74,10 @@ class Natcom(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=60)
+
+        if response.status_code == 404:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
