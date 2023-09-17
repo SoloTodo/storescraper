@@ -10,5 +10,5 @@ pycodestyle==2.10.0
 pyjson5==1.6.4
 pytz==2023.3
 requests==2.31.0
-validators==0.20.0
+validators==0.22.0
 wheel==0.40.0
