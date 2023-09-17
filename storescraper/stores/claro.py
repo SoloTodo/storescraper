@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 from decimal import Decimal
 
-import demjson3
+import pyjson5
 from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
@@ -72,7 +72,7 @@ class Claro(Store):
                            'storeId=10151&beginIndex={}'.format(offset)
             print(category_url)
             soup = BeautifulSoup(
-                session.get(category_url, verify=False).text,
+                session.get(category_url).text,
                 'html5lib'
             )
 
@@ -180,7 +180,7 @@ class Claro(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
-        res = session.get(url, verify=False)
+        res = session.get(url)
         soup = BeautifulSoup(res.text, 'html5lib')
         product_id = soup.find('meta', {'name': 'pageId'})['content']
         base_name = soup.find('h1', 'main_header').text.strip()
@@ -206,7 +206,8 @@ class Claro(Store):
             res = session.post(
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView',
                 payload)
-            data = demjson3.decode(res.text)['catalogEntry']
+
+            data = pyjson5.decode(res.text)['catalogEntry']
 
             stock_payload = 'storeId=10151&catalogId=10052&quantity=1' \
                             '&catEntryId={}'.format(c['catentry_id'])

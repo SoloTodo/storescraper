@@ -1,6 +1,5 @@
 from decimal import Decimal
 import json
-import demjson3
 import logging
 import re
 
@@ -58,7 +57,7 @@ class Novey(Store):
         if not product_data:
             return []
 
-        product_json = demjson3.decode(
+        product_json = json.loads(
             '{' + product_data.groups()[0] + '}')['product']
 
         if product_json['canAddtoCart']:

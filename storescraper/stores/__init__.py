@@ -35,20 +35,17 @@ from .bgod_gaming import BgodGaming
 from .bios_play import BiosPlay
 from .bristol import Bristol
 from .bulldog_pc import BulldogPc
-from .byp import Byp
 from .c_nava import CNava
 from .c_network import CNetwork
 from .c_s_byte import CSByte
 from .cafe_digital import CafeDigital
 from .campcom import Campcom
-from .carrefour import Carrefour
 from .carrefour_brasil import CarrefourBrasil
 from .carsa import Carsa
 from .casa_confort import CasaConfort
 from .casa_del_audio import CasaDelAudio
 from .casa_musa import CasaMusa
 from .casa_royal import CasaRoyal
-from .casas_bahia import CasasBahia
 from .cc_link import CCLink
 from .cesa_pro import CesaPro
 from .cetrogar import Cetrogar
@@ -128,7 +125,6 @@ from .estilos import Estilos
 from .et_chile import ETChile
 from .eurogen import Eurogen
 from .exito import Exito
-from .extra_brasil import ExtraBrasil
 from .eyc import Eyc
 from .falabella import Falabella
 from .falabella_colombia import FalabellaColombia
@@ -213,7 +209,6 @@ from .jumbo import Jumbo
 from .jumbo_argentina import JumboArgentina
 from .jumbo_colombia import JumboColombia
 from .k_d_tec import KDTec
-from .kalunga import Kalunga
 from .key_teks import KeyTeks
 from .kill_store import KillStore
 from .kompu import Kompu
@@ -253,7 +248,6 @@ from .loi_uruguay import LoiUruguay
 from .lucila import Lucila
 from .mac_online import MacOnline
 from .macrotel import Macrotel
-from .magazine_luiza import MagazineLuiza
 from .marcimex import Marcimex
 from .martin_arismendi import MartinArismendi
 from .manco_store import MancoStore
@@ -261,7 +255,6 @@ from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_mamute import MegaMatute
 from .mega_store import MegaStore
-from .megatone import Megatone
 from .mega_drive_store import MegaDriveStore
 from .mercado_tech import MercadoTech
 from .mercadolibre_argentina import MercadoLibreArgentina
@@ -307,7 +300,6 @@ from .nintecno import Nintecno
 from .nice_one import NiceOne
 from .notebook_store import NotebookStore
 from .notebooks_ya import NotebooksYa
-from .notetop import Notetop
 from .novey import Novey
 from .nuevatec import Nuevatec
 from .ofimania import Ofimania
@@ -378,7 +370,6 @@ from .sams import Sams
 from .samsung_chile import SamsungChile
 from .samsung_shop import SamsungShop
 from .samurai_store import SamuraiStore
-from .sanborns import Sanborns
 from .sandos import Sandos
 from .santa_isabel import SantaIsabel
 from .santis_prime import SantisPrime
@@ -480,7 +471,6 @@ from .vtr import Vtr
 from .v2 import V2
 from .waren_house import WarenHouse
 from .walmart_argentina import WalmartArgentina
-from .walmart_brazil import WalmartBrazil
 from .walmart_mexico import WalmartMexico
 from .web_redes import WebRedes
 from .wei import Wei

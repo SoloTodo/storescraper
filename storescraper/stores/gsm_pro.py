@@ -2,7 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
-import demjson3
+import pyjson5
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, HEADPHONES, MOUSE, STEREO_SYSTEM, \
@@ -137,13 +137,12 @@ class GsmPro(Store):
             'https://cdn.shopify.com/s/files/1/0448/8921/1040/t/28/assets/'
             'bss-file-configdata.js').text.split('\n')[0]
         json_body = config[16:-1]
-        json_data = demjson3.decode(json_body)
+        json_data = pyjson5.decode(json_body)
 
         blacklist = [
-            72534,  # Encargo
-            71437,  # Preventa
+            86207,  # Preventa
+            75352,  # En transito
             64852,  # Descontinuado
-            63091,  # Stock en transito
             63078,  # Stock en transito
             63069,  # Encargo
             63064,  # Encargo

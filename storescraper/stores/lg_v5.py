@@ -2,7 +2,7 @@ import json
 import logging
 import re
 
-import demjson3
+import pyjson5
 import requests
 import validators
 from bs4 import BeautifulSoup
@@ -152,7 +152,7 @@ class LgV5(Store):
         if not section_data:
             return None
 
-        section_data = demjson3.decode(section_data.groups()[0])
+        section_data = pyjson5.decode(section_data.groups()[0])
 
         field_candidates = [
             'page_category_l4', 'page_category_l3', 'page_category_l2',

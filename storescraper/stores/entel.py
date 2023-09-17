@@ -1,9 +1,9 @@
 import json
-
-import demjson3
 import re
 
 from collections import defaultdict
+
+import pyjson5
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -116,7 +116,7 @@ class Entel(Store):
             raw_plans = re.search(
                 r'const Planes_Parrilla_1plan = (\[[\s\S]*?])',
                 res.text).groups()[0]
-        plans = demjson3.decode(raw_plans)
+        plans = pyjson5.decode(raw_plans)
 
         products = []
 

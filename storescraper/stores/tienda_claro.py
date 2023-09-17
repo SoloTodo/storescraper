@@ -1,6 +1,6 @@
 import json
 
-import demjson3
+import pyjson5
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -32,7 +32,7 @@ class TiendaClaro(Store):
                                '&beginIndex={}'.format(offset)
                 print(category_url)
                 soup = BeautifulSoup(
-                    session.get(category_url, verify=False).text,
+                    session.get(category_url).text,
                     'html.parser'
                 )
 
@@ -64,7 +64,7 @@ class TiendaClaro(Store):
         stock_session.headers['Content-Type'] = \
             'application/x-www-form-urlencoded; charset=UTF-8'
         stock_session.cookies = session.cookies
-        response = session.get(url, verify=False)
+        response = session.get(url)
 
         if response.status_code == 400:
             return []
@@ -74,7 +74,7 @@ class TiendaClaro(Store):
 
         json_container = soup.find('div', {'id': 'entitledItem_{}'.format(
             page_id)})
-        json_data = demjson3.decode(json_container.text)
+        json_data = pyjson5.decode(json_container.text)
         description = html_to_markdown(
             str(soup.find('div', 'billing_method_div_custom')))
         description += '\n\n{}'.format(html_to_markdown(
@@ -91,7 +91,7 @@ class TiendaClaro(Store):
 
             res = json.loads(session.get(
                 'https://tienda.clarochile.cl/GetCatalogEntryDetailsByIDView?'
-                'storeId=10151&catalogEntryId=' + sku, verify=False).text)
+                'storeId=10151&catalogEntryId=' + sku).text)
 
             if not res['catalogEntry']['offerPrice']:
                 return []
@@ -107,7 +107,7 @@ class TiendaClaro(Store):
             stock_payload = 'storeId=10151&quantity=1&catEntryId=' + sku
             stock_res = stock_session.post(
                 'https://tienda.clarochile.cl/AjaxRESTOrderItemAdd',
-                stock_payload, verify=False)
+                stock_payload)
             stock_data = json.loads(stock_res.text.strip()[2:-2])
 
             if 'orderId' in stock_data:

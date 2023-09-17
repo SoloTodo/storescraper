@@ -1,80 +1,58 @@
-import json
 import logging
 import re
 from decimal import Decimal
 
-import demjson3
+import pyjson5
 from bs4 import BeautifulSoup
 
 from storescraper.categories import GAMING_CHAIR, KEYBOARD, HEADPHONES, \
     MONITOR, MOUSE, COMPUTER_CASE, MOTHERBOARD, POWER_SUPPLY, CPU_COOLER, \
     VIDEO_CARD, RAM, STEREO_SYSTEM, GAMING_DESK, MICROPHONE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class Sepuls(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            POWER_SUPPLY,
-            GAMING_CHAIR,
-            KEYBOARD,
-            HEADPHONES,
-            MONITOR,
-            MOUSE,
-            COMPUTER_CASE,
-            MOTHERBOARD,
-            CPU_COOLER,
-            VIDEO_CARD,
-            RAM,
-            GAMING_DESK,
-            MICROPHONE
-        ]
+class Sepuls(StoreWithUrlExtensions):
+    url_extensions = [
+        ['sillas-gamer', GAMING_CHAIR],
+        ['audifonos-gamer', HEADPHONES],
+        ['teclado-gamer', KEYBOARD],
+        ['mouse-gamer', MOUSE],
+        ['monitor-gamer', MONITOR],
+        ['componentes-para-pc/tarjeta-de-video', VIDEO_CARD],
+        ['componentes-para-pc/refrigeracion', CPU_COOLER],
+        ['componentes-para-pc/gabinete-gamer', COMPUTER_CASE],
+        ['componentes-para-pc/memoria-ram', RAM],
+        ['accesorios/placa-madre', MOTHERBOARD],
+        ['componentes-para-pc/fuente-de-poder', POWER_SUPPLY],
+        ['accesorios/parlantes', STEREO_SYSTEM],
+        ['accesorios/escritorios', GAMING_DESK],
+        ['streaming/microfonos', MICROPHONE]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['sillas-gamer', GAMING_CHAIR],
-            ['audifonos-gamer', HEADPHONES],
-            ['teclado-gamer', KEYBOARD],
-            ['mouse-gamer', MOUSE],
-            ['monitor-gamer', MONITOR],
-            ['componentes-para-pc/tarjeta-de-video', VIDEO_CARD],
-            ['componentes-para-pc/refrigeracion', CPU_COOLER],
-            ['componentes-para-pc/gabinete-gamer', COMPUTER_CASE],
-            ['componentes-para-pc/memoria-ram', RAM],
-            ['accesorios/placa-madre', MOTHERBOARD],
-            ['componentes-para-pc/fuente-de-poder', POWER_SUPPLY],
-            ['accesorios/parlantes', STEREO_SYSTEM],
-            ['accesorios/escritorios', GAMING_DESK],
-            ['streaming/microfonos', MICROPHONE]
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.sepuls.cl/{}/?page={}' \
-                    .format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-block')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append('https://sepuls.cl' + product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.sepuls.cl/{}/?page={}' \
+                .format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', 'product-block')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append('https://sepuls.cl' + product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -83,7 +61,7 @@ class Sepuls(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = demjson3.decode(
+        product_data = pyjson5.decode(
             soup.find('script', {'type': 'application/ld+json'})
             .text)
 

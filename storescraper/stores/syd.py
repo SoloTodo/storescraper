@@ -1,14 +1,12 @@
-import json
 import logging
 
-import demjson3
+import pyjson5
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, MONITOR, \
     EXTERNAL_STORAGE_DRIVE, MOUSE, HEADPHONES, RAM
 from storescraper.product import Product
-from storescraper.store import Store
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
@@ -67,7 +65,7 @@ class Syd(StoreWithUrlExtensions):
             '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
 
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        json_data = demjson3.decode(soup.findAll(
+        json_data = pyjson5.decode(soup.findAll(
             'script', {'type': 'application/ld+json'})[2].text)
         name = json_data['name']
         sku = json_data['sku']
