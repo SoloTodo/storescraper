@@ -966,12 +966,6 @@ class MercadoLibreChile(Store):
         products = MercadoLibreChile.products_for_url(
             url, category=category, extra_args=extra_args)
 
-        # DAC digital has this publication with two variants,
-        # but both have the same price
-        # https://www.dacdigital.cl/MLC-1329330315-pc-gamer-i5-13600k-
-        # rtx-3060-16gb-ram-ssd-m2-_JM
-        # assert len(products) == 1, 'Method only supports single product'
-
         final_products = []
         for product in products:
             print(product.url)
