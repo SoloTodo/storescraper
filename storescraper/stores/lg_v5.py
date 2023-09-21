@@ -18,7 +18,7 @@ class LgV5(Store):
     region_code = property(lambda self: 'Subclasses must implement this')
     currency = 'USD'
     price_approximation = '0.01'
-    skip_unavailable = False
+    skip_products_without_price = False
 
     @classmethod
     def categories(cls):
@@ -51,9 +51,6 @@ class LgV5(Store):
             payload = 'categoryId={}&modelStatusCode={}&bizType=B2C&viewAll' \
                       '=Y'.format(category_id, status)
 
-            if cls.skip_unavailable:
-                payload += '&obsOnly=Y'
-
             json_response = json.loads(
                 session.post(endpoint_url, payload).text)
             product_entries = json_response['data'][0]['productList']
@@ -63,6 +60,12 @@ class LgV5(Store):
                     category_id, is_active))
 
             for product_entry in product_entries:
+                if cls.skip_products_without_price:
+                    price = (Decimal(product_entry['obsSellingPrice']) or
+                             Decimal(product_entry['msrp']))
+                    if not price:
+                        continue
+
                 product_url = cls.base_url + product_entry['modelUrlPath']
                 discovered_urls.append(product_url)
 
@@ -95,8 +98,6 @@ class LgV5(Store):
         for sibling_id in sibling_ids:
             sibling = cls._retrieve_single_product(sibling_id, category)
             if sibling:
-                if cls.skip_unavailable and sibling.stock == 0:
-                    continue
                 products.append(sibling)
 
         return products
@@ -127,14 +128,20 @@ class LgV5(Store):
         # Unavailable products do not have a price, but we still need to
         # return them by default because the Where To Buy (WTB) system
         # needs to consider all products, so use zero as default.
-        if model_data['obsInventoryFlag'] == 'Y':
-            price = Decimal(model_data['obsSellingPrice']).quantize(
-                Decimal(cls.price_approximation))
-            stock = -1
-        elif cls.skip_unavailable:
-            return None
+        for price_key in ['obsSellingPrice', 'msrp']:
+            price_value = Decimal(model_data[price_key])
+            if price_value:
+                price = price_value.quantize(Decimal(cls.price_approximation))
+                break
         else:
             price = Decimal(0)
+
+        if cls.skip_products_without_price and not price:
+            return None
+
+        if model_data['obsInventoryFlag'] == 'Y':
+            stock = -1
+        else:
             stock = 0
 
         picture_urls = [cls.base_url + x['largeImageAddr'].replace(' ', '%20')
@@ -200,7 +207,7 @@ class LgV5(Store):
             part_number=sku,
             positions=positions,
             description=description,
-            allow_zero_prices=not cls.skip_unavailable
+            allow_zero_prices=not cls.skip_products_without_price
         )
 
     @classmethod

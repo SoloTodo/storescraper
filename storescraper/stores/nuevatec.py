@@ -84,8 +84,8 @@ class Nuevatec(StoreWithUrlExtensions):
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
 
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[1].text)
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
                 product_data = entry
@@ -111,10 +111,7 @@ class Nuevatec(StoreWithUrlExtensions):
             else:
                 stock = 0
 
-        picture_urls = []
-        image_container = soup.find('div', 'product-images')
-        for image in image_container.findAll('div', 'product-image-wrap'):
-            picture_urls.append(image.find('img')['src'])
+        picture_urls = [x.find('a')['href'] for x in soup.findAll('figure', 'woocommerce-product-gallery__image')]
 
         p = Product(
             name,

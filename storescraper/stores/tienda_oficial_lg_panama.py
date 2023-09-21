@@ -2,4 +2,4 @@ from .lg_cac_en import LgCacEn
 
 
 class TiendaOficialLgPanama(LgCacEn):
-    skip_unavailable = True
+    skip_products_without_price = True
