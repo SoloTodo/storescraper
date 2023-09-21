@@ -176,6 +176,9 @@ class Winpy(Store):
             normal_price = Decimal(remove_words(soup.find(
                 'p', {'itemprop': 'highPrice'}).string))
 
+        if not normal_price or not offer_price:
+            return []
+
         description = html_to_markdown(str(soup.find('div', 'info')))
 
         picture_tags = soup.findAll('img', {'itemprop': 'image'})

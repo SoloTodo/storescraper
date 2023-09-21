@@ -34,7 +34,7 @@ class DigitalChoice(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 20:
                 raise Exception('Page overflow')
 
             url_webpage = 'https://www.digitalchoice.cl/collection/{}?' \
