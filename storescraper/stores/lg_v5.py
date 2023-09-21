@@ -107,7 +107,7 @@ class LgV5(Store):
         print(model_id)
         model_data = cls._retrieve_api_model(model_id)
 
-        if model_data['modelStatusCode'] == 'SUSPENDED':
+        if model_data['modelStatusCode'] in ['SUSPENDED', 'DISCONTINUED']:
             return None
 
         model_name = model_data['modelName']
