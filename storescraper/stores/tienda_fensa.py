@@ -2,70 +2,59 @@ from decimal import Decimal
 import json
 import logging
 import re
-from bs4 import BeautifulSoup
 from storescraper.categories import OVEN, REFRIGERATOR, WASHING_MACHINE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class TiendaFensa(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            REFRIGERATOR,
-            WASHING_MACHINE,
-            OVEN,
-        ]
+class TiendaFensa(StoreWithUrlExtensions):
+    url_extensions = [
+        ['linea-blanca/refrigerador', REFRIGERATOR],
+        ['linea-blanca/lavadoras', WASHING_MACHINE],
+        ['linea-blanca/secadoras', WASHING_MACHINE],
+        ['linea-blanca/lavadora-secadora', WASHING_MACHINE],
+        ['linea-blanca/hornos', OVEN],
+        ['linea-blanca/freezer', REFRIGERATOR],
+        ['linea-blanca/microondas', OVEN],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['linea-blanca/refrigerador', REFRIGERATOR],
-            ['linea-blanca/lavadoras', WASHING_MACHINE],
-            ['linea-blanca/secadoras', WASHING_MACHINE],
-            ['linea-blanca/lavadora-secadora', WASHING_MACHINE],
-            ['linea-blanca/hornos', OVEN],
-            ['linea-blanca/freezer', REFRIGERATOR],
-            ['linea-blanca/microondas', OVEN],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
 
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://www.tiendafensa.cl/{}?page={}'.format(
+                url_extension, page)
+            print(url_webpage)
 
-                url_webpage = 'https://www.tiendafensa.cl/{}?page={}'.format(
-                    url_extension, page)
-                print(url_webpage)
+            response = session.get(url_webpage)
 
-                response = session.get(url_webpage)
+            product_container = re.search(r'__STATE__ = {(.+)}',
+                                          response.text).groups()[0]
 
-                product_container = re.search(r'__STATE__ = {(.+)}',
-                                              response.text).groups()[0]
+            json_product = json.loads('{' + product_container + '}')
+            done = True
 
-                json_product = json.loads('{' + product_container + '}')
-                done = True
+            for key, value in json_product.items():
+                if key.startswith('Product:') and 'linkText' in value:
+                    product_url = 'https://www.tiendafensa.cl/' + \
+                        value['linkText'] + '/p'
 
-                for key, value in json_product.items():
-                    if key.startswith('Product:') and 'linkText' in value:
-                        product_url = 'https://www.tiendafensa.cl/' + \
-                            value['linkText'] + '/p'
+                    product_urls.append(product_url)
+                    done = False
 
-                        product_urls.append(product_url)
-                        done = False
-
-                if done:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_webpage)
-                    break
-                page += 1
+            if done:
+                if page == 1:
+                    import ipdb
+                    ipdb.set_trace()
+                    logging.warning('Empty category: ' + url_webpage)
+                break
+            page += 1
 
         return product_urls
 

@@ -75,6 +75,9 @@ class LaCuracaoOnline(Store):
             # Called if no "break" was executed
             raise Exception('Could not bypass Incapsulata')
 
+        if response.url != url:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
