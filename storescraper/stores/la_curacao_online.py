@@ -32,32 +32,26 @@ class LaCuracaoOnline(Store):
             return []
 
         page = 1
-        done = False
 
-        while not done:
+        while True:
             if page >= 15:
                 raise Exception('Page overflow')
 
-            url = 'https://www.lacuracaonline.com/{}/catalogsearch/' \
-                  'result/index/?q=marca+lg&p={}' \
-                  ''.format(cls.country, page)
+            url = ('https://www.lacuracaonline.com/{}/catalogsearch/'
+                   'result/index/?marca=42974&p={}&q=lg'.format(cls.country, page))
+            print(url)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
             product_containers = soup.findAll('li', 'product')
 
-            if not product_containers and page == 1:
-                raise Exception('Empty section: {}'.format(url))
+            if not product_containers:
+                if page == 1:
+                    raise Exception('Empty section: {}'.format(url))
+                break
 
             for container in product_containers:
-                brand = container.find('strong', 'product-item-category')
-                if brand is None or "LG" != brand.text.strip():
-                    continue
                 product_url = container.find('a')['href']
-
-                if product_url in product_urls:
-                    done = True
-                    break
                 product_urls.append(product_url)
 
             page += 1

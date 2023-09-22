@@ -191,6 +191,9 @@ class LgV5(Store):
         description = '. '.join([x['bulletFeatureDesc']
                                  for x in model_data['bulletFeatures']])
 
+        review_count = model_data['pCount']
+        review_avg_score = model_data['sRating2']
+
         return Product(
             name[:250],
             cls.__name__,
@@ -207,7 +210,9 @@ class LgV5(Store):
             part_number=sku,
             positions=positions,
             description=description,
-            allow_zero_prices=not cls.skip_products_without_price
+            allow_zero_prices=not cls.skip_products_without_price,
+            review_count=review_count,
+            review_avg_score=review_avg_score
         )
 
     @classmethod
