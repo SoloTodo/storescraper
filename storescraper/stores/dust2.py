@@ -58,6 +58,10 @@ class Dust2(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+             '(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
+
         product_urls = []
         page = 1
         while True:
@@ -85,6 +89,10 @@ class Dust2(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+             '(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
+
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find(
