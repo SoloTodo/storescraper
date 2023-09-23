@@ -78,7 +78,12 @@ class CSByte(StoreWithUrlExtensions):
             response = session.get(url_webpage)
 
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.find('div', 'site-content').findAll(
+            product_wrapper = soup.find('div', 'site-content')
+
+            if not product_wrapper:
+                raise Exception(response.text)
+
+            product_containers = product_wrapper.findAll(
                 'div', 'products')
             if not product_containers:
                 if page == 1:

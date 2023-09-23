@@ -113,6 +113,8 @@ class Cintegral(StoreWithUrlExtensions):
         stock_label_tag = soup.find('span', text='Stock Web:')
         stock_tag = stock_label_tag.next.next
         stock_match = re.search(r'(\d+)', stock_tag.text.strip())
+        if not stock_match:
+            return []
         stock = int(stock_match.groups()[0])
 
         offer_price_label_tag = soup.find('div', text='Pago transferencia')

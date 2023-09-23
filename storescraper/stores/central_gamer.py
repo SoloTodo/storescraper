@@ -5,79 +5,54 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, MONITOR, HEADPHONES, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    PROCESSOR, VIDEO_CARD, VIDEO_GAME_CONSOLE, STORAGE_DRIVE, GAMING_DESK, \
-    MICROPHONE, CASE_FAN
+    PROCESSOR, VIDEO_CARD, RAM, SOLID_STATE_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class CentralGamer(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            MOTHERBOARD,
-            COMPUTER_CASE,
-            CPU_COOLER,
-            POWER_SUPPLY,
-            MONITOR,
-            HEADPHONES,
-            MOUSE,
-            KEYBOARD,
-            GAMING_CHAIR,
-            PROCESSOR,
-            VIDEO_CARD,
-            VIDEO_GAME_CONSOLE,
-            STORAGE_DRIVE,
-            GAMING_DESK,
-            MICROPHONE,
-            CASE_FAN,
-        ]
+class CentralGamer(StoreWithUrlExtensions):
+    url_extensions = [
+        ['open-box/tarjetas-de-video-openbox', VIDEO_CARD],
+        ['open-box/sillas-open-box', GAMING_CHAIR],
+        ['sillas-gamer-y-alfombras', GAMING_CHAIR],
+        ['monitores-gamers', MONITOR],
+        ['audifonos-gamer', HEADPHONES],
+        ['teclados-gamer', KEYBOARD],
+        ['mouses-gamer', MOUSE],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['placas-madre-pc', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['todo-para-pc-gamer/memoria-ram', RAM],
+        ['almacenamiento-para-pc', SOLID_STATE_DRIVE],
+        ['gabinetes-gamer', COMPUTER_CASE],
+        ['todo-para-pc-gamer/refrigeracion', CPU_COOLER],
+        ['fuentes-de-poder', POWER_SUPPLY],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['almacenamiento-para-pc', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['gabinetes-gamer', COMPUTER_CASE],
-            ['placas-madre-pc', MOTHERBOARD],
-            ['todo-para-pc-gamer/refrigeracion', CPU_COOLER],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['audifonos-gamer', HEADPHONES],
-            ['monitores-gamers', MONITOR],
-            ['mouses-gamer', MOUSE],
-            ['teclados-gamer', KEYBOARD],
-            ['sillas-gamer-y-alfombras', GAMING_CHAIR],
-            ['procesadores', PROCESSOR],
-            ['escritorios-gamer', GAMING_DESK],
-            ['microfonos-streamer-gamer', MICROPHONE],
-            ['todo-para-pc-gamer/refrigeracion/ventiladores-para-gabinete',
-             CASE_FAN],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.centralgamer.cl/{}?page={}'.format(
-                    url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div',
-                                                  'product-block__wrapper')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(
-                        'https://www.centralgamer.cl' + product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.centralgamer.cl/{}?page={}'.format(
+                url_extension, page)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div',
+                                              'product-block__wrapper')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(
+                    'https://www.centralgamer.cl' + product_url)
+            page += 1
         return product_urls
 
     @classmethod
