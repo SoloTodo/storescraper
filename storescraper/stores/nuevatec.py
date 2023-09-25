@@ -85,7 +85,7 @@ class Nuevatec(StoreWithUrlExtensions):
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
 
         json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
+            'script', {'type': 'application/ld+json'})[0].text)
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
                 product_data = entry
