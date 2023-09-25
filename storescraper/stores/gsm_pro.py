@@ -6,69 +6,59 @@ import pyjson5
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, HEADPHONES, MOUSE, STEREO_SYSTEM, \
-    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, WEARABLE
+    USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, WEARABLE, COMPUTER_CASE, \
+    CPU_COOLER, PROCESSOR
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class GsmPro(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            CELL,
-            HEADPHONES,
-            STEREO_SYSTEM,
-            WEARABLE,
-            VIDEO_GAME_CONSOLE,
-            MOUSE,
-            VIDEO_CARD,
-            USB_FLASH_DRIVE,
-        ]
+class GsmPro(StoreWithUrlExtensions):
+    url_extensions = [
+        ['smartphones', CELL],
+        ['celulares-gamer', CELL],
+        ['audifonos-in-ear', HEADPHONES],
+        ['parlantes', STEREO_SYSTEM],
+        ['smartwatches', WEARABLE],
+        ['audifonos-gamer', HEADPHONES],
+        ['smartphones-gamer', CELL],
+        ['mouses-y-teclados', MOUSE],
+        ['mouses-y-teclados-gamer', MOUSE],
+        ['audifonos', HEADPHONES],
+        ['consolas-de-video-juegos', VIDEO_GAME_CONSOLE],
+        ['gabinetes', COMPUTER_CASE],
+        ['fan-cooler-para-pc', CPU_COOLER],
+        ['procesadores', PROCESSOR],
+        ['tarjetas-graficas-para-pc', VIDEO_CARD],
+        ['memorias-usb-y-pendrives', USB_FLASH_DRIVE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['smartphones', CELL],
-            ['audifonos-in-ear', HEADPHONES],
-            ['parlantes', STEREO_SYSTEM],
-            ['smartwatch', WEARABLE],
-            ['audifonos-gamer', HEADPHONES],
-            ['smartphones-gamer', CELL],
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['mouses-y-teclados', MOUSE],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['audifonos', HEADPHONES],
-            ['memorias-y-pendrive', USB_FLASH_DRIVE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.gsmpro.cl/collections/{}'\
-                              '?page={}'.format(url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                collection = soup.find('div', 'product-list--collection')
-                product_containers = collection.findAll('div', 'product-item')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = \
-                        container.findAll(
-                            'button', 'product-item__action-button'
-                        )[-1]['data-product-url']
-                    product_urls.append(
-                        'https://www.gsmpro.cl{}'.format(product_url))
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://www.gsmpro.cl/collections/{}'\
+                          '?page={}'.format(url_extension, page)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            collection = soup.find('div', 'product-list--collection')
+            product_containers = collection.findAll('div', 'product-item')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = \
+                    container.findAll(
+                        'button', 'product-item__action-button'
+                    )[-1]['data-product-url']
+                product_urls.append(
+                    'https://www.gsmpro.cl{}'.format(product_url))
+            page += 1
         return product_urls
 
     @classmethod
