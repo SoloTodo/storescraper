@@ -841,6 +841,9 @@ class MercadoLibreChile(Store):
                 'subtitle', '').upper():
             condition = 'https://schema.org/UsedCondition'
 
+        review_count = None
+        review_avg_score = None
+
         if 'short_description' in data['initialState']['components']:
             for x in data['initialState']['components']['short_description']:
                 if x['id'] == 'variations' and 'pickers' in x:
@@ -854,6 +857,10 @@ class MercadoLibreChile(Store):
                 if x['id'] == 'header' and 'tag' in x:
                     if 'REACONDICIONADO' in x['tag']['text'].upper():
                         condition = 'https://schema.org/RefurbishedCondition'
+
+                if 'reviews' in x:
+                    review_count = x['reviews']['amount']
+                    review_avg_score = float(x['reviews']['rating'])
 
         products = []
 
@@ -895,6 +902,8 @@ class MercadoLibreChile(Store):
                     sku=sku,
                     seller=seller,
                     condition=condition,
+                    review_count=review_count,
+                    review_avg_score=review_avg_score,
                     description='{} Type2'.format(description)
                 ))
         else:
@@ -916,6 +925,8 @@ class MercadoLibreChile(Store):
                 seller=seller,
                 picture_urls=picture_urls,
                 condition=condition,
+                review_count=review_count,
+                review_avg_score=review_avg_score,
                 description='{} Type2'.format(description)
             ))
         return products

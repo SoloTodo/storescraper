@@ -319,6 +319,20 @@ class Ripley(Store):
 
         product.flixmedia_id = flixmedia_id
         product.video_urls = video_urls
+
+        reviews_endpoint = ('https://display.powerreviews.com/m/'
+                            '1243872956/l/all/product/{}/reviews?'
+                            'apikey=22c8538c-1cba-41bb-8d47-234a796148bf'
+                            '&_noconfig=true'.format(product.sku))
+        print(reviews_endpoint)
+        res = session.get(reviews_endpoint)
+        reviews_data = res.json()['results'][0]
+        if 'rollup' in reviews_data:
+            product.review_count = reviews_data['rollup']['rating_count']
+            product.review_avg_score = reviews_data['rollup']['average_rating']
+        else:
+            product.review_count = 0
+
         return
 
     @classmethod
@@ -392,17 +406,9 @@ class Ripley(Store):
         if not picture_urls:
             picture_urls = None
 
-        review_count = int(specs_json['powerReview']['fullReviews'])
-
-        if review_count:
-            review_avg_score = float(
-                specs_json['powerReview']['averageRatingDecimal'])
-        else:
-            review_avg_score = None
-
         if 'shop_name' in specs_json['sellerOp']:
             seller = specs_json['sellerOp']['shop_name']
-        elif specs_json['isMarketplaceProduct']:
+        elif specs_json['isMarketplaceProduLgRsEntct']:
             seller = 'Mercado R'
         else:
             seller = None
@@ -425,8 +431,6 @@ class Ripley(Store):
             description=description,
             picture_urls=picture_urls,
             condition=condition,
-            review_count=review_count,
-            review_avg_score=review_avg_score,
             seller=seller
         )
 

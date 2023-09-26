@@ -416,6 +416,16 @@ class Hites(Store):
         if seller == 'Hites':
             seller = None
 
+        review_count_tag = soup.findAll('span', 'top-stars-rating-details')[0]
+
+        review_count = int(review_count_tag.text.replace('(', '').replace(')', ''))
+
+        if review_count:
+            review_score_tag = soup.find('div', 'yotpo-score-average')
+            review_avg_score = float(review_score_tag.find('span').text)
+        else:
+            review_avg_score = None
+
         p = Product(
             name,
             cls.__name__,
@@ -433,7 +443,9 @@ class Hites(Store):
             video_urls=video_urls,
             has_virtual_assistant=has_virtual_assistant,
             flixmedia_id=flixmedia_id,
-            seller=seller
+            seller=seller,
+            review_count=review_count,
+            review_avg_score=review_avg_score
         )
 
         return [p]
