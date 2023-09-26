@@ -3,43 +3,32 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import AIR_CONDITIONER, SPACE_HEATER
+from storescraper.categories import AIR_CONDITIONER
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class Enel(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            AIR_CONDITIONER,
-            SPACE_HEATER,
-        ]
+class Enel(StoreWithUrlExtensions):
+    url_extensions = [
+        ['aire-acondicionado/split-muro.list.html', AIR_CONDITIONER],
+        ['aire-acondicionado/aire-acondicionado-portatil.list.html',
+         AIR_CONDITIONER],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['aire-acondicionado.list.html',
-             AIR_CONDITIONER],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
+        category_url = 'https://www.enelxstore.com/content/enel-x-store/' \
+                       'cl/es/e-shop/{}'.format(url_extension)
+        print(category_url)
+        products_data = json.loads(session.get(category_url).text)
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
-
-            category_url = 'https://www.enelxstore.com/content/enel-x-store/' \
-                           'cl/es/e-shop/{}'.format(category_path)
-            print(category_url)
-            products_data = json.loads(session.get(category_url).text)
-
-            for product_entry in products_data:
-                product_url = 'https://www.enelxstore.com' + \
-                              product_entry['path']
-                product_urls.append(product_url)
+        for product_entry in products_data:
+            product_url = 'https://www.enelxstore.com' + \
+                          product_entry['path']
+            product_urls.append(product_url)
 
         return product_urls
 

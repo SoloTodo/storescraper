@@ -6,54 +6,39 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR, NOTEBOOK, TABLET, MOUSE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
 
-class UltraPc(Store):
+class UltraPc(StoreWithUrlExtensions):
+    url_extensions = [
+        ['equipos-de-computo', NOTEBOOK],
+        ['tablets-e-ipads', TABLET],
+        ['monitores', MONITOR],
+        ['accesorios', MOUSE],
+
+    ]
 
     @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            TABLET,
-            MOUSE,
-            MONITOR
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['equipos-de-computo', NOTEBOOK],
-            ['tablets-e-ipads', TABLET],
-            ['monitores', MONITOR],
-            ['accesorios', MOUSE],
-
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            url_webpage = 'https://www.ultrapc.cl/categoria-producto/{}/' \
-                          '?ppp=-1'.format(url_extension)
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            products_container = soup.find('ul', 'products')
+        url_webpage = 'https://www.ultrapc.cl/categoria-producto/{}/' \
+                      '?ppp=-1'.format(url_extension)
+        print(url_webpage)
+        response = session.get(url_webpage)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        products_container = soup.find('ul', 'products')
 
-            if not products_container:
-                continue
-
-            for cont in products_container.findAll('div', 'product-outer'):
-                product_url = \
-                    cont.find('a', 'woocommerce-LoopProduct-link')[
-                        'href']
-                product_urls.append(product_url)
+        for cont in products_container.findAll('div', 'product-outer'):
+            product_url = \
+                cont.find('a', 'woocommerce-LoopProduct-link')[
+                    'href']
+            product_urls.append(product_url)
         return product_urls
 
     @classmethod
@@ -94,8 +79,7 @@ class UltraPc(Store):
                             'div', 'woocommerce-product-gallery').findAll(
                             'img')]
                 else:
-                    picture_urls = ['https://www.ultrapc.cl' +
-                                    product['image']['src']]
+                    picture_urls = [product['image']['src']]
                 products.append(Product(
                     variant_name,
                     cls.__name__,
