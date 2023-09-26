@@ -15,7 +15,7 @@ from storescraper.categories import CELL, NOTEBOOK, STEREO_SYSTEM, KEYBOARD, \
     ALL_IN_ONE, VACUUM_CLEANER, PRINTER, MICROPHONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class MercadoLibreChile(Store):
@@ -735,18 +735,20 @@ class MercadoLibreChile(Store):
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
         elif url.startswith('https://www.mercadolibre.'):
-            return cls.retrieve_type3_products(data, session, category)
+            return cls.retrieve_type3_products(data, soup, extra_args, category)
         else:
             # Another scraper with embedded ML pages
             try:
                 return cls.retrieve_type2_products(session, url, soup,
                                                    category, data)
             except Exception:
-                return cls.retrieve_type3_products(data, session, category)
+                return cls.retrieve_type3_products(data, soup, extra_args, category)
 
     @classmethod
-    def retrieve_type3_products(cls, data, session, category):
+    def retrieve_type3_products(cls, data, soup, extra_args, category):
         print('Type3')
+        api_session = session_with_proxy(extra_args)
+        api_session.headers['Authorization'] = 'Bearer {}'.format(extra_args['access_token'])
         variations = set()
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
@@ -761,6 +763,13 @@ class MercadoLibreChile(Store):
         else:
             variations.add(data['initialState']['id'])
 
+        review_endpoint = ('https://api.mercadolibre.com/reviews/item/'
+                           '{}').format(data['initialState']['components']['bookmark']['item_id'])
+        reviews_response = api_session.get(review_endpoint)
+        reviews_data = reviews_response.json()
+        review_count = reviews_data['paging']['total']
+        review_avg_score = reviews_data['rating_average']
+
         products = []
 
         for variation in variations:
@@ -772,7 +781,7 @@ class MercadoLibreChile(Store):
                 endpoint += '?{}'.format(
                     official_store_or_seller_filter.replace(':', '='))
 
-            variation_data = json.loads(session.get(endpoint).text)
+            variation_data = json.loads(api_session.get(endpoint).text)
 
             if variation_data.get('status', None) != 'active':
                 continue
@@ -794,7 +803,7 @@ class MercadoLibreChile(Store):
 
             seller_endpoint = 'https://api.mercadolibre.com/users/' \
                 '{}'.format(box_winner['seller_id'])
-            seller_info = json.loads(session.get(seller_endpoint).text)
+            seller_info = json.loads(api_session.get(seller_endpoint).text)
             seller = seller_info['nickname']
             picture_urls = [p['url'] for p in variation_data['pictures']]
 
@@ -812,6 +821,8 @@ class MercadoLibreChile(Store):
                 sku=sku,
                 seller=seller,
                 picture_urls=picture_urls,
+                review_count=review_count,
+                review_avg_score=review_avg_score,
                 description='Type3'
             ))
 
@@ -1002,3 +1013,25 @@ class MercadoLibreChile(Store):
             final_products.append(product)
 
         return final_products
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        session = session_with_proxy(extra_args)
+        url = "https://api.mercadolibre.com/oauth/token"
+        session.headers['accept'] = 'application/json'
+        session.headers['content-type'] = 'application/x-www-form-urlencoded'
+
+        payload = ('grant_type=refresh_token'
+                   '&client_id={}'
+                   '&client_secret={}'
+                   '&refresh_token={}').format(
+            extra_args['app_id'],
+            extra_args['app_secret'],
+            extra_args['refresh_token'],
+        )
+
+        response = session.post(url, data=payload)
+        access_token = response.json()['access_token']
+        return {
+            'access_token': access_token
+        }
