@@ -32,7 +32,7 @@ class Ripley(Store):
          'Tecno > Computación > Notebooks gamer', 1],
         ['tecno/computacion/tablets-y-e-readers', [TABLET],
          'Tecno > Computación > Tablets y E-readers', 1],
-        ['tecno/impresoras-y-tintas/impresoras', [PRINTER],
+        ['tecno/computacion/impresoras-y-tintas', [PRINTER],
          'Tecno > Computación > Impresoras', 1],
         ['tecno/computacion/almacenamiento',
          [USB_FLASH_DRIVE, EXTERNAL_STORAGE_DRIVE],

@@ -111,7 +111,8 @@ class Nuevatec(StoreWithUrlExtensions):
             else:
                 stock = 0
 
-        picture_urls = [x.find('a')['href'] for x in soup.findAll('figure', 'woocommerce-product-gallery__image')]
+        picture_urls = [x.find('a')['href'] for x in soup.findAll(
+            'figure', 'woocommerce-product-gallery__image')]
 
         p = Product(
             name,

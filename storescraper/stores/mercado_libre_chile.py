@@ -735,20 +735,23 @@ class MercadoLibreChile(Store):
             return cls.retrieve_type2_products(session, url, soup,
                                                category, data)
         elif url.startswith('https://www.mercadolibre.'):
-            return cls.retrieve_type3_products(data, soup, extra_args, category)
+            return cls.retrieve_type3_products(
+                data, soup, extra_args, category)
         else:
             # Another scraper with embedded ML pages
             try:
                 return cls.retrieve_type2_products(session, url, soup,
                                                    category, data)
             except Exception:
-                return cls.retrieve_type3_products(data, soup, extra_args, category)
+                return cls.retrieve_type3_products(
+                    data, soup, extra_args, category)
 
     @classmethod
     def retrieve_type3_products(cls, data, soup, extra_args, category):
         print('Type3')
         api_session = session_with_proxy(extra_args)
-        api_session.headers['Authorization'] = 'Bearer {}'.format(extra_args['access_token'])
+        api_session.headers['Authorization'] = 'Bearer {}'.format(
+            extra_args['access_token'])
         variations = set()
         pickers = data['initialState']['components'].get('variations', {}).get(
             'pickers', None)
@@ -764,7 +767,9 @@ class MercadoLibreChile(Store):
             variations.add(data['initialState']['id'])
 
         review_endpoint = ('https://api.mercadolibre.com/reviews/item/'
-                           '{}').format(data['initialState']['components']['bookmark']['item_id'])
+                           '{}').format(
+            data['initialState']['components']['track']['melidata_event']
+            ['event_data']['item_id'])
         reviews_response = api_session.get(review_endpoint)
         reviews_data = reviews_response.json()
         review_count = reviews_data['paging']['total']

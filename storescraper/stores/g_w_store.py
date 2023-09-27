@@ -81,8 +81,10 @@ class GWStore(StoreWithUrlExtensions):
         key = key_input['value']
         name = soup.find('h1', 'h1').text.strip()
         sku = soup.find('div', 'product-reference').find('span').text.strip()
-        price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content'])
-        picture_urls = [x['data-image-large-src'] for x in soup.findAll('img', 'js-thumb')]
+        price = Decimal(soup.find(
+            'meta', {'property': 'product:price:amount'})['content'])
+        picture_urls = [x['data-image-large-src']
+                        for x in soup.findAll('img', 'js-thumb')]
         stock_div = soup.find('div', 'product-quantities')
 
         if stock_div:

@@ -38,7 +38,8 @@ class LaCuracaoOnline(Store):
                 raise Exception('Page overflow')
 
             url = ('https://www.lacuracaonline.com/{}/catalogsearch/'
-                   'result/index/?marca=42974&p={}&q=lg'.format(cls.country, page))
+                   'result/index/?marca=42974&p={}&q=lg'.format(
+                    cls.country, page))
             print(url)
 
             response = session.get(url)

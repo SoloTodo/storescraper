@@ -44,7 +44,8 @@ class BodegaOportunidades(StoreWithUrlExtensions):
                 raise Exception('Page overflow: ' + url_extension)
             url_webpage = 'https://bodegaoportunidades.cl/collections/' \
                           'todos-los-productos?filter.p.product_type=' \
-                          '{}&page={}'.format(urllib.parse.quote(url_extension), page)
+                          '{}&page={}'.format(
+                            urllib.parse.quote(url_extension), page)
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')

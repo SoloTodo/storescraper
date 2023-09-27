@@ -417,8 +417,8 @@ class Hites(Store):
             seller = None
 
         review_count_tag = soup.findAll('span', 'top-stars-rating-details')[0]
-
-        review_count = int(review_count_tag.text.replace('(', '').replace(')', ''))
+        review_count = int(review_count_tag.text.replace(
+            '(', '').replace(')', ''))
 
         if review_count:
             review_score_tag = soup.find('div', 'yotpo-score-average')
