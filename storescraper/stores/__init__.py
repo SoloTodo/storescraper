@@ -295,6 +295,7 @@ from .nario_hogar import NarioHogar
 from .natcom import Natcom
 from .next_pc import NextPc
 from .new_game import NewGame
+from .new_horizons import NewHorizons
 from .nemz import Nemz
 from .noe_computacion import NoeComputacion
 from .nintecno import Nintecno

@@ -115,8 +115,7 @@ class Ripley(Store):
         ['electro/climatizacion/purificadores-y-humificadores',
          [AIR_CONDITIONER],
          'Electro > Climatización > Purificadores y humidificadores', 1],
-        ['electro/especial-calefaccion',
-         [SPACE_HEATER],
+        ['electro/calefaccion', [SPACE_HEATER],
          'Electro > Climatización > Estufas y calefactores', 1],
         ['tecno/smartwatches-y-smartbands/garmin', [WEARABLE],
          'Tecno > Telefonía > Smartwatches y Wearables > Garmin', 1],
@@ -128,7 +127,7 @@ class Ripley(Store):
          'Tecno > Telefonía > Smartwatches y Wearables > Samsung', 1],
         ['tecno/smartwatches-y-smartbands/huawei', [WEARABLE],
          'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
-        ['tecno/especial-audifonos', [HEADPHONES],
+        ['tecno/audio-y-musica/audifonos', [HEADPHONES],
          'Tecno > Audio y Música > Audífonos', 1],
         ['tecno/computacion-gamer/sillas-gamer', [GAMING_CHAIR],
          'Tecno > Computación Gamer > Sillas Gamer', 1]
