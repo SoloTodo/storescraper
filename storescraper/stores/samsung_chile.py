@@ -33,7 +33,7 @@ class SamsungChile(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        return url_extension
+        return [url_extension]
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
@@ -63,6 +63,10 @@ class SamsungChile(StoreWithUrlExtensions):
                 product_list = json_data['resultData']['productList']
 
                 if not product_list:
+                    if offset == 0:
+                        import ipdb
+                        ipdb.set_trace()
+                        a=5
                     break
 
                 for product in product_list:
