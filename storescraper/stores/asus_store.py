@@ -3,64 +3,54 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD, MOUSE
+from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD, MOUSE, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class AsusStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            ALL_IN_ONE,
-            VIDEO_CARD,
-            MOUSE,
-        ]
+class AsusStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ('laptops', NOTEBOOK),
+        ('displays-desktops', ALL_IN_ONE),
+        ('motherboards-components', VIDEO_CARD),
+        ('accessories', MOUSE),
+        ('mobile-handhelds', VIDEO_GAME_CONSOLE),
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 
-        category_paths = [
-            ('laptops', NOTEBOOK),
-            ('displays-desktops', ALL_IN_ONE),
-            ('motherboards-components', VIDEO_CARD),
-            ('accessories', MOUSE),
-        ]
+
         product_urls = []
+        page = 1
 
-        for category_id, local_category in category_paths:
-            if local_category != category:
-                continue
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-            page = 1
+            url_webpage = 'https://odinapi.asus.com/recent-data/apiv2/' \
+                          'ShopAPI/ShopFilterResult?SystemCode=asus&' \
+                          'WebsiteCode=cl&ProductLevel1Code={}&' \
+                          'PageSize=25&PageIndex={}&Sort=' \
+                          'Newsest&siteID=www'.format(url_extension, page)
+            print(url_webpage)
+            page += 1
+            response = session.get(url_webpage).json()
+            product_entries = response['Result']['ProductList']
+            if not product_entries:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-            while True:
-                if page >= 10:
-                    raise Exception('Page overflow')
-
-                url_webpage = 'https://odinapi.asus.com/recent-data/apiv2/' \
-                              'ShopAPI/ShopFilterResult?SystemCode=asus&' \
-                              'WebsiteCode=cl&ProductLevel1Code={}&' \
-                              'PageSize=25&PageIndex={}&Sort=' \
-                              'Newsest&siteID=www'.format(category_id, page)
-                print(url_webpage)
-                page += 1
-                response = session.get(url_webpage).json()
-                product_entries = response['Result']['ProductList']
-                if not product_entries:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_id)
-                    break
-
-                for product_entry in product_entries:
-                    product_url = product_entry['ProductCardURL']
-                    product_urls.append(product_url)
+            for product_entry in product_entries:
+                product_url = product_entry['ProductCardURL']
+                product_urls.append(product_url)
         return product_urls
 
     @classmethod
