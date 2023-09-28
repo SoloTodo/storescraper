@@ -56,6 +56,7 @@ class SipoOnline(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
+        session.headers['Cookie'] = '_lscache_vary=a'
         product_urls = []
         page = 1
         while True:
@@ -85,6 +86,7 @@ class SipoOnline(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['Cookie'] = '_lscache_vary=a'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
