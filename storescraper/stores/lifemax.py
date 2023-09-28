@@ -17,9 +17,7 @@ class Lifemax(StoreWithUrlExtensions):
     url_extensions = [
         ['audifonos-bluetooth', HEADPHONES],
         ['audifonos-con-cable', HEADPHONES],
-        ['tarjeta-de-memoria-microsdxc', MEMORY_CARD],
-        ['tarjeta-de-memoria-microsd', MEMORY_CARD],
-        ['tarjeta-de-memoria-microsdhc', MEMORY_CARD],
+        ['tarjeta-flash-micro-sd', MEMORY_CARD],
         ['discos-ssd', SOLID_STATE_DRIVE],
         ['discos-ssd-m-2', SOLID_STATE_DRIVE],
         ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
@@ -68,6 +66,9 @@ class Lifemax(StoreWithUrlExtensions):
                        '?page={}'.format(url_extension, page)
             print(page_url)
             response = session.get(page_url)
+            if response.url != page_url:
+                raise Exception('Url mismatch: {} - {}'.format(
+                    page_url, response.url))
             data = response.text
             soup = BeautifulSoup(data, 'html5lib')
             product_container = soup.find('div', 'bs-collection')
