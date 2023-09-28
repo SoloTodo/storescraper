@@ -71,9 +71,12 @@ class LapShop(StoreWithUrlExtensions):
         else:
             stock = 0
 
-        normal_price = Decimal(
-            product_data['offers'][0]['priceSpecification']['price'])
-        offer_price = Decimal(remove_words(soup.find('div', 'price').text))
+        summary_tag = soup.find('div', 'entry-summary')
+        price_tags = summary_tag.findAll('span', 'woocommerce-Price-amount')
+        assert len(price_tags) in [2, 3]
+
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[-1].text))
 
         if 'SEGUNDA' in name.upper():
             condition = 'https://schema.org/RefurbishedCondition'
