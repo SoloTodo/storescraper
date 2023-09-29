@@ -52,7 +52,7 @@ class ParisFast(Store):
                     raise Exception('Page overflow:' + category_path)
 
                 category_url = 'https://www.paris.cl/{}/?start={}&sz={}'\
-                    .format(category_path, page * Paris.RESULTS_PER_PAGE.
+                    .format(category_path, page * Paris.RESULTS_PER_PAGE,
                             Paris.RESULTS_PER_PAGE)
                 print(category_url)
                 response = session.get(category_url)
