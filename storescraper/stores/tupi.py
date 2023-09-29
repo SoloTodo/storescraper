@@ -79,6 +79,9 @@ class Tupi(Store):
             soup.find('p', 'monto_precio_contado').text.strip()
                 .replace('Gs.', '').replace('.', '').strip())
 
+        if not price:
+            return []
+
         description = html_to_markdown(
             str(soup.find('div', {'itemprop': 'description'})))
 

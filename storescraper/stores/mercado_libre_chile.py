@@ -766,14 +766,18 @@ class MercadoLibreChile(Store):
         else:
             variations.add(data['initialState']['id'])
 
-        review_endpoint = ('https://api.mercadolibre.com/reviews/item/'
-                           '{}').format(
-            data['initialState']['components']['track']['melidata_event']
-            ['event_data']['item_id'])
-        reviews_response = api_session.get(review_endpoint)
-        reviews_data = reviews_response.json()
-        review_count = reviews_data['paging']['total']
-        review_avg_score = float(reviews_data['rating_average'])
+        review_entry = data['initialState']['components']['track']['melidata_event']['event_data']
+
+        if 'item_id' in review_entry:
+            review_endpoint = ('https://api.mercadolibre.com/reviews/item/'
+                               '{}').format(review_entry['item_id'])
+            reviews_response = api_session.get(review_endpoint)
+            reviews_data = reviews_response.json()
+            review_count = reviews_data['paging']['total']
+            review_avg_score = float(reviews_data['rating_average'])
+        else:
+            review_count = None
+            review_avg_score = None
 
         products = []
 
