@@ -129,6 +129,10 @@ class ParisFast(Store):
         else:
             offer_price = normal_price
 
+        if not normal_price or not offer_price:
+            return None
+
+
         stock = -1
 
         p = Product(
