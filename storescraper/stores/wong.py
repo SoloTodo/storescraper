@@ -1,3 +1,4 @@
+import base64
 from decimal import Decimal
 import json
 import logging
@@ -7,7 +8,7 @@ from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import check_ean13, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, vtex_preflight
 
 
 class Wong(Store):
@@ -17,35 +18,47 @@ class Wong(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # Only returns LG products
-
         if category != TELEVISION:
             return []
-
-        session = session_with_proxy(extra_args)
         product_urls = []
+        session = session_with_proxy(extra_args)
 
-        page = 1
+        offset = 0
         while True:
-            if page > 20:
+            if offset >= 100:
                 raise Exception('Page overflow')
 
-            url_webpage = 'https://www.wong.pe/lg?page={}'.format(page)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            variables = {
+                "from": offset,
+                "to": offset + 10,
+                "selectedFacets": [{"key": "b", "value": 'lg'}]
+            }
 
-            json_data = json.loads(soup.findAll(
-                'script', {'type': 'application/ld+json'})[-1].text)
+            payload = {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args['sha256Hash']
+                },
+                "variables": base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-            product_containers = json_data['itemListElement']
-            if len(product_containers) == 0:
-                if page == 1:
-                    logging.warning('Empty category')
+            endpoint = 'https://www.wong.pe/_v/segment/graphql/v1' \
+                       '?extensions={}'.format(json.dumps(payload))
+            response = session.get(endpoint).json()
+
+            product_entries = response['data']['productSearch']['products']
+
+            if not product_entries:
                 break
-            for container in product_containers:
-                product_urls.append(container['item']['@id'])
-            page += 1
+
+            for product_entry in product_entries:
+                product_url = 'https://www.wong.pe/{}/p'.format(
+                    product_entry['linkText'])
+                product_urls.append(product_url)
+
+            offset += 10
+
         return product_urls
 
     @classmethod
@@ -105,3 +118,8 @@ class Wong(Store):
             ean=ean,
         )
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.wong.pe/tecnologia/televisores/tv')

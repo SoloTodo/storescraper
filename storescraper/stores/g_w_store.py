@@ -17,7 +17,6 @@ class GWStore(StoreWithUrlExtensions):
     url_extensions = [
         ['3-procesadores', PROCESSOR],
         ['6-placas-madres', MOTHERBOARD],
-        ['27-memorias-ram', RAM],
         ['71-hdd', STORAGE_DRIVE],
         ['72-ssd-o-m2', SOLID_STATE_DRIVE],
         ['70-nvme', SOLID_STATE_DRIVE],

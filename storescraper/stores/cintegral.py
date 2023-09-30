@@ -117,15 +117,23 @@ class Cintegral(StoreWithUrlExtensions):
             return []
         stock = int(stock_match.groups()[0])
 
-        offer_price_label_tag = soup.find('div', text='Pago transferencia')
-        offer_price = Decimal(remove_words(
-            offer_price_label_tag.next.next.text))
+        prices_tag = soup.find('div', 'elementor-element-9386c30')
 
-        normal_price_label_tag = soup.find('div', text='Pago con Tarjeta')
-        normal_price = Decimal(
-            remove_words(normal_price_label_tag.next.next.text))
+        normal_price_label_tag = prices_tag.find('div', text='Pago con Tarjeta')
+        if normal_price_label_tag:
+            normal_price = Decimal(
+                remove_words(normal_price_label_tag.next.next.text))
 
-        mpn_label_tag = soup.find('span', text='Part Number:')
+            offer_price_label_tag = prices_tag.find('div', text='Pago transferencia')
+            offer_price = Decimal(remove_words(
+                offer_price_label_tag.next.next.text))
+        else:
+            price_label_tag = prices_tag.find('div', text='Todo Medio de Pago')
+            price = Decimal(
+                remove_words(price_label_tag.next.next.text))
+            normal_price = offer_price = price
+
+        mpn_label_tag = prices_tag.find('span', text='Part Number:')
         if mpn_label_tag:
             part_number = mpn_label_tag.next.next.strip()
         else:

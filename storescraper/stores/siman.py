@@ -1,3 +1,4 @@
+import base64
 import json
 from decimal import Decimal
 import re
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, vtex_preflight
 
 
 class Siman(Store):
@@ -22,53 +23,47 @@ class Siman(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            TELEVISION
-        ]
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-             '(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
+        if category != TELEVISION:
+            return []
         product_urls = []
+        session = session_with_proxy(extra_args)
 
-        for local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            done = False
-            while not done:
-                if page > 30:
-                    raise Exception('Page overflow')
+        offset = 0
+        while True:
+            if offset >= 190:
+                raise Exception('Page overflow')
 
-                url_webpage = 'https://{}.siman.com/lg?page={}'.format(
-                    cls.country_url, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                page_state_tag = soup.find('template',
-                                           {'data-varname': '__STATE__'})
-                if page_state_tag:
-                    page_state_tag = page_state_tag.find('script').string
-                else:
-                    page_state_tag = '{' + re.search(
-                        r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'
-                page_state = json.loads(page_state_tag)
-                done = True
+            variables = {
+                "from": offset,
+                "to": offset + 19,
+                "selectedFacets": [{"key": "b", "value": 'lg'}]
+            }
 
-                for key, product in page_state.items():
-                    if 'productId' not in product:
-                        continue
-                    done = False
-                    # if product['brand'].upper() != 'LG':
-                    #     continue
-                    product_url = 'https://{}.siman.com/{}/p'.format(
-                        cls.country_url, product['linkText'])
-                    product_urls.append(product_url)
+            payload = {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args['sha256Hash']
+                },
+                "variables": base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-                if done and page == 1:
-                    raise Exception('Empty site')
+            endpoint = 'https://{}.siman.com/_v/segment/graphql/v1' \
+                       '?extensions={}'.format(
+                        cls.country_url, json.dumps(payload))
+            response = session.get(endpoint).json()
 
-                page += 1
+            product_entries = response['data']['productSearch']['products']
+
+            if not product_entries:
+                break
+
+            for product_entry in product_entries:
+                product_url = 'https://{}.siman.com/{}/p'.format(
+                    cls.country_url, product_entry['linkText'])
+                product_urls.append(product_url)
+
+            offset += 19
 
         return product_urls
 
@@ -87,6 +82,9 @@ class Siman(Store):
             product_state_tag = '{' + re.search(
                 r'__STATE__ = {(.+)}', soup.text).groups()[0] + '}'
         product_data = json.loads(product_state_tag)
+
+        if not product_data:
+            return []
 
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
@@ -131,3 +129,9 @@ class Siman(Store):
         )
 
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://{}.siman.com/tecnologia/pantallas'.format(
+                cls.country_url))

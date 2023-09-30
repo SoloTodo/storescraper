@@ -1,3 +1,4 @@
+import base64
 import json
 import logging
 
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import check_ean13, session_with_proxy
+from storescraper.utils import check_ean13, session_with_proxy, vtex_preflight
 from storescraper.categories import AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
     REFRIGERATOR, STEREO_SYSTEM, TELEVISION
 
@@ -21,43 +22,44 @@ class Marcimex(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         if category != WASHING_MACHINE:
             return []
-
-        session = session_with_proxy(extra_args)
         product_urls = []
+        session = session_with_proxy(extra_args)
 
-        page = 1
+        offset = 0
         while True:
-            if page >= 10:
+            if offset >= 100:
                 raise Exception('Page overflow')
 
-            url = 'https://www.marcimex.com/lg?page={}'.format(page)
-            print(url)
+            variables = {
+                "from": offset,
+                "to": offset + 10,
+                "selectedFacets": [{"key": "b", "value": 'lg'}]
+            }
 
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
+            payload = {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args['sha256Hash']
+                },
+                "variables": base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-            page_state = json.loads(
-                soup.find('template', {'data-varname': '__STATE__'}).find(
-                    'script').string)
-            product_ids = []
+            endpoint = 'https://www.marcimex.com/_v/public/graphql/v1' \
+                       '?extensions={}'.format(json.dumps(payload))
+            response = session.get(endpoint).json()
 
-            for key, value in page_state.items():
-                if value.get('__typename', None) != 'ProductSearch':
-                    continue
-                product_ids = [x['id'] for x in value['products']]
+            product_entries = response['data']['productSearch']['products']
+
+            if not product_entries:
                 break
 
-            if not product_ids:
-                if page == 1:
-                    raise Exception('Empty page')
-                break
-
-            for product_id in product_ids:
-                product_entry = page_state[product_id]
+            for product_entry in product_entries:
                 product_url = 'https://www.marcimex.com/{}/p'.format(
                     product_entry['linkText'])
                 product_urls.append(product_url)
 
-            page += 1
+            offset += 10
 
         return product_urls
 
@@ -121,3 +123,9 @@ class Marcimex(Store):
         )
 
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.marcimex.com/audio-y-video/tv-y-video/'
+                        'televisores')

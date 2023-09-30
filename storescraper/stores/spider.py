@@ -8,94 +8,65 @@ from storescraper.categories import STEREO_SYSTEM, HEADPHONES, NOTEBOOK, \
     CPU_COOLER, KEYBOARD_MOUSE_COMBO, MOUSE, KEYBOARD, MONITOR, PRINTER, \
     GAMING_CHAIR, UPS, WEARABLE, MEMORY_CARD, ALL_IN_ONE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class Spider(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            STEREO_SYSTEM,
-            HEADPHONES,
-            NOTEBOOK,
-            TABLET,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            RAM,
-            MOTHERBOARD,
-            PROCESSOR,
-            VIDEO_CARD,
-            STORAGE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            CPU_COOLER,
-            KEYBOARD_MOUSE_COMBO,
-            MOUSE,
-            KEYBOARD,
-            MONITOR,
-            PRINTER,
-            GAMING_CHAIR,
-            UPS,
-            WEARABLE,
-            MEMORY_CARD,
-            ALL_IN_ONE,
-        ]
+class Spider(StoreWithUrlExtensions):
+    url_extensions = [
+        ['257-parlantes', STEREO_SYSTEM],
+        ['271-audio', STEREO_SYSTEM],
+        ['23-audifonos', HEADPHONES],
+        ['41-notebooks-portatiles', NOTEBOOK],
+        ['25-tablets', TABLET],
+        ['32-fuentes-de-poder', POWER_SUPPLY],
+        ['31-gabinetes', COMPUTER_CASE],
+        ['36-memorias-ram', RAM],
+        ['29-placas-madre', MOTHERBOARD],
+        ['28-procesadores', PROCESSOR],
+        ['30-tarjetas-de-video', VIDEO_CARD],
+        ['26-discos-duros', STORAGE_DRIVE],
+        ['235-discos-duros-externo', EXTERNAL_STORAGE_DRIVE],
+        ['44-discos-ssd', SOLID_STATE_DRIVE],
+        ['34-refrigeracion', CPU_COOLER],
+        ['57-kits-teclados-mouse', KEYBOARD_MOUSE_COMBO],
+        ['55-mouse', MOUSE],
+        ['242-mouse', MOUSE],
+        ['56-teclados', KEYBOARD],
+        ['21-monitores', MONITOR],
+        ['49-multifuncionales', PRINTER],
+        ['48-laser', PRINTER],
+        ['50-tinta', PRINTER],
+        ['59-sillas-gamer', GAMING_CHAIR],
+        ['269-upsrespaldo-de-energia', UPS],
+        ['273-smartwatch', WEARABLE],
+        ['274-memoria-flashpendrive', MEMORY_CARD],
+        ['40-pc-fijos', ALL_IN_ONE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['257-parlantes', STEREO_SYSTEM],
-            ['271-audio', STEREO_SYSTEM],
-            ['23-audifonos', HEADPHONES],
-            ['41-notebooks-portatiles', NOTEBOOK],
-            ['25-tablets', TABLET],
-            ['32-fuentes-de-poder', POWER_SUPPLY],
-            ['31-gabinetes', COMPUTER_CASE],
-            ['36-memorias-ram', RAM],
-            ['29-placas-madre', MOTHERBOARD],
-            ['28-procesadores', PROCESSOR],
-            ['30-tarjetas-de-video', VIDEO_CARD],
-            ['26-discos-duros', STORAGE_DRIVE],
-            ['235-discos-duros-externo', EXTERNAL_STORAGE_DRIVE],
-            ['44-discos-ssd', SOLID_STATE_DRIVE],
-            ['34-refrigeracion', CPU_COOLER],
-            ['57-kits-teclados-mouse', KEYBOARD_MOUSE_COMBO],
-            ['55-mouse', MOUSE],
-            ['242-mouse', MOUSE],
-            ['56-teclados', KEYBOARD],
-            ['21-monitores', MONITOR],
-            ['47-impresoras', PRINTER],
-            ['59-sillas-gamer', GAMING_CHAIR],
-            ['269-upsrespaldo-de-energia', UPS],
-            ['273-smartwatch', WEARABLE],
-            ['274-memoria-flashpendrive', MEMORY_CARD],
-            ['40-pc-fijos', ALL_IN_ONE],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 20:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.spider.cl/{}?page={}'.format(
-                    url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('article',
-                                                  'product-miniature')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for product_container in product_containers:
-                    product_url = product_container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 20:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.spider.cl/{}?page={}'.format(
+                url_extension, page)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('article',
+                                              'product-miniature')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for product_container in product_containers:
+                product_url = product_container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
 
         return product_urls
 

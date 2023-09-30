@@ -78,6 +78,10 @@ class MyBox(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.url != url:
+            return []
+
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
         key = soup.find('input', {'name': 'id_product'})['value']
