@@ -10,13 +10,28 @@ from storescraper.utils import session_with_proxy
 
 class OpcStore(StoreWithUrlExtensions):
     url_extensions = [
+        ['asus', NOTEBOOK],
+        ['dell', NOTEBOOK],
+        ['hp', NOTEBOOK],
         ['outlet', NOTEBOOK],
+        ['notebook', NOTEBOOK],
+        ['notebook-portada', NOTEBOOK],
         ['notebook-tradicional', NOTEBOOK],
+        ['notebook-lenovo', NOTEBOOK],
+        ['ofertas-outlet', NOTEBOOK],
+        ['open-box', NOTEBOOK],
+        ['open-box-2', NOTEBOOK],
         ['chromebook', NOTEBOOK],
         ['notebook-corporativo', NOTEBOOK],
         ['tablet', TABLET],
+        ['open-box-1', TABLET],
         ['all-in-one', ALL_IN_ONE],
+        ['dell-aio', ALL_IN_ONE],
+        ['hp-aio', ALL_IN_ONE],
+        ['lenovo-aio', ALL_IN_ONE],
         ['monitores', MONITOR],
+        ['monitores-hp', MONITOR],
+        ['monitores-lenovo', MONITOR],
     ]
 
     @classmethod
