@@ -13,42 +13,44 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class SamuraiStore(StoreWithUrlExtensions):
     url_extensions = [
-        ['procesador', PROCESSOR],
-        ['ram', RAM],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
-        ['placa-madre', MOTHERBOARD],
-        ['notebooks', NOTEBOOK],
+        ['perifericos', MOUSE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['cooler-cpu', CPU_COOLER],
         ['placas-madre', MOTHERBOARD],
         ['monitor', MONITOR],
-        ['perifericos', MOUSE],
-        ['cooler-cpu', CPU_COOLER],
-        ['fuentes-de-poder', POWER_SUPPLY],
+        ['notebooks', NOTEBOOK],
+        ['procesador', PROCESSOR],
+        ['ram', RAM],
+        ['ram-notebook', RAM],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['unidades-de-almacenamiento', SOLID_STATE_DRIVE],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        page = 1
-        while True:
-            if page > 50:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = ('https://www.samuraistorejp.cl/product-category/'
-                           '{}/page/{}/?product-tag=entrega-inmediata').format(
-                              url_extension, page)
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'product-small')
-            if not product_containers or soup.find('section', 'error-404'):
-                if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+        for tag in ['stock-online', 'entrega-inmediata']:
+            page = 1
+            while True:
+                if page > 50:
+                    raise Exception('page overflow: ' + url_extension)
+                url_webpage = ('https://www.samuraistorejp.cl/shop/page/{}/'
+                               '?product-category={}&product-tag={}').format(
+                                page, url_extension, tag)
+                print(url_webpage)
+                response = session.get(url_webpage)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                product_containers = soup.findAll('div', 'product-small')
+                if not product_containers or soup.find('section', 'error-404'):
+                    if page == 1:
+                        logging.warning('Empty category: {} ({})'.format(
+                            url_extension, tag))
+                    break
+                for container in product_containers:
+                    product_url = container.find('a')['href']
+                    product_urls.append(product_url)
+                page += 1
         return product_urls
 
     @classmethod
@@ -89,12 +91,15 @@ class SamuraiStore(StoreWithUrlExtensions):
 
         tags = tags_label.findAll('a')
 
-        assert len(tags) == 1
-        tag = tags[0]
+        for tag in tags:
+            tag_text = tag.text.upper()
+            if 'ENTREGA INMEDIATA' in tag_text or 'STOCK ONLINE' in tag_text:
+                available_for_purchase = True
+                break
+        else:
+            available_for_purchase = False
 
-        entrega_inmediata = 'ENTREGA INMEDIATA' in tag.text.upper()
-
-        if not entrega_inmediata:
+        if not available_for_purchase:
             stock = 0
         elif 'preventa' in name.lower():
             stock = 0
