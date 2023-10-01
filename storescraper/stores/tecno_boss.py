@@ -2,63 +2,49 @@ from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 
-from storescraper.categories import HEADPHONES, MONITOR, MOUSE, POWER_SUPPLY, \
-    RAM, SOLID_STATE_DRIVE, VIDEO_CARD
+from storescraper.categories import HEADPHONES, MONITOR, MOUSE, \
+    RAM, SOLID_STATE_DRIVE, VIDEO_CARD, STEREO_SYSTEM, PRINTER
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class TecnoBoss(Store):
+class TecnoBoss(StoreWithUrlExtensions):
+    url_extensions = [
+        ['audifonos', HEADPHONES],
+        ['smart-home', STEREO_SYSTEM],
+        ['memorias-ram', RAM],
+        ['ssd', SOLID_STATE_DRIVE],
+        ['home-office', MONITOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['mouse-y-teclados', MOUSE],
+        ['computadores', MONITOR],
+        ['impresoras', PRINTER],
+    ]
 
     @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            RAM,
-            SOLID_STATE_DRIVE,
-            VIDEO_CARD,
-            MOUSE,
-            POWER_SUPPLY,
-            MONITOR
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['audifonos', HEADPHONES],
-            ['memorias-ram', RAM],
-            ['ssd', SOLID_STATE_DRIVE],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['mouse-y-teclados', MOUSE],
-            ['todos-los-productos-1/fuente-de-poder', POWER_SUPPLY],
-            ['home-office', MONITOR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.tecnoboss.cl/{}' \
-                              '?page={}'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('div', 'product-block')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a', 'product-image')['href']
-                    product_urls.append(
-                        'https://www.tecnoboss.cl' + product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://www.tecnoboss.cl/{}' \
+                          '?page={}'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('div', 'product-block')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a', 'product-image')['href']
+                product_urls.append(
+                    'https://www.tecnoboss.cl' + product_url)
+            page += 1
         return product_urls
 
     @classmethod
