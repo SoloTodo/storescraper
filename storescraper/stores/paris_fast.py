@@ -132,6 +132,10 @@ class ParisFast(Store):
         if not normal_price or not offer_price:
             return None
 
+        if 'REACONDICIONADO' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         stock = -1
 
@@ -147,7 +151,8 @@ class ParisFast(Store):
             offer_price,
             'CLP',
             sku=sku,
-            seller=seller
+            seller=seller,
+            condition=condition
         )
 
         return p
