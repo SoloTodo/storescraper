@@ -148,6 +148,11 @@ class FalabellaFast(Store):
 
         variants = product_data['variants'][0]['options']
 
+        if 'REACONDICIONADO' in product_name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         if variants:
             for variant in variants:
                 variant_sku = variant['extraInfo']
@@ -164,7 +169,8 @@ class FalabellaFast(Store):
                     offer_price,
                     'CLP',
                     sku=variant_sku,
-                    seller=seller
+                    seller=seller,
+                    condition=condition
                 )
                 products.append(p)
 
@@ -181,7 +187,8 @@ class FalabellaFast(Store):
                 offer_price,
                 'CLP',
                 sku=product_sku,
-                seller=seller
+                seller=seller,
+                condition=condition
             )
             products.append(p)
 
