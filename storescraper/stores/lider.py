@@ -65,9 +65,9 @@ class Lider(Store):
         ['Tecno/Videojuegos/XBOX', [VIDEO_GAME_CONSOLE],
          'Tecno > Videojuegos > XBOX', 1],
         # CELULARES
-        ['Celulares/Celulares_y_Teléfonos', [CELL],
+        ['Celulares/Telefonía', [CELL],
          'Celulares > Celulares y Teléfonos', 1],
-        ['Celulares/Smartwatches_y_Wearables', [WEARABLE],
+        ['Celulares/Relojes_Inteligentes', [WEARABLE],
          'Celulares > Smartwatches y Wearables', 1],
         # COMPUTACION
         ['Computación/Computadores/Notebooks', [NOTEBOOK],
@@ -76,7 +76,7 @@ class Lider(Store):
          'Computación > Computadores > Tablets', 1],
         ['Computación/Computadores/Computadores_All_in_One', [ALL_IN_ONE],
          'Computación > Computadores > Computadores All in One', 1],
-        ['Computación/Computadores/Monitores_y_Proyectores', [MONITOR],
+        ['Tecno/Computación/Monitores', [MONITOR],
          'Computación > Computadores > Monitores y Proyectores', 1.0],
         ['Computación/Computadores/Accesorios_Computación', [MOUSE],
          'Computación > Computadores > Accesorios Computación', 1.0],
