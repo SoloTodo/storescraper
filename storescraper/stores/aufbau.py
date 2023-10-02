@@ -44,15 +44,16 @@ class Aufbau(Store):
         ]
 
         session = session_with_proxy(extra_args)
+        session.headers['origin'] = 'https://aufbau.cl'
         product_urls = []
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
 
-            url_webpage = 'https://api.cxl8rgz-articulos1-p1-public.mod' \
-                'el-t.cc.commerce.ondemand.com/rest/v2/reifst' \
-                'oreb2cstore/products/search?query=%3Arelevan' \
-                'ce%3AallCategories%3A{}'.format(url_extension)
+            url_webpage = ('https://api-prd.ynk.cl/rest/v2/reifstoreb2cstore/'
+                           'products/search?fields=products(url, code)&'
+                           'query=%3Arelevance%3AallCategories%3A{}').format(
+                            url_extension)
             data = session.get(url_webpage).text
 
             product_containers = json.loads(data)['products']
@@ -72,9 +73,8 @@ class Aufbau(Store):
         code = url.split('/p/')[-1].replace('--', '/')
         session = session_with_proxy(extra_args)
         response = session.get(
-            'https://api.cxl8rgz-articulos1-p1-public.model-t.cc.commerce.'
-            'ondemand.com/rest/v2/reifstoreb2cstore/products/reifstore-enc'
-            'oding?productCode={}'.format(code)
+            'https://api-prd.ynk.cl/rest/v2/reifstoreb2cstore/products/'
+            'reifstore-encoding?productCode={}'.format(code)
         )
 
         if response.status_code == 400:

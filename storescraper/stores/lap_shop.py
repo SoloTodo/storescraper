@@ -49,8 +49,8 @@ class LapShop(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
+        json_data = json.loads(soup.findAll(
+            'script', {'type': 'application/ld+json'})[1].text)
         for entry in json_data['@graph']:
             if entry['@type'] == 'Product':
                 product_data = entry
