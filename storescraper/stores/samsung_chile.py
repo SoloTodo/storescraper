@@ -63,10 +63,6 @@ class SamsungChile(StoreWithUrlExtensions):
                 product_list = json_data['resultData']['productList']
 
                 if not product_list:
-                    if offset == 0:
-                        import ipdb
-                        ipdb.set_trace()
-                        a=5
                     break
 
                 for product in product_list:

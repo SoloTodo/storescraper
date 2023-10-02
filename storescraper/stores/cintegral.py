@@ -119,12 +119,14 @@ class Cintegral(StoreWithUrlExtensions):
 
         prices_tag = soup.find('div', 'elementor-element-9386c30')
 
-        normal_price_label_tag = prices_tag.find('div', text='Pago con Tarjeta')
+        normal_price_label_tag = prices_tag.find(
+            'div', text='Pago con Tarjeta')
         if normal_price_label_tag:
             normal_price = Decimal(
                 remove_words(normal_price_label_tag.next.next.text))
 
-            offer_price_label_tag = prices_tag.find('div', text='Pago transferencia')
+            offer_price_label_tag = prices_tag.find(
+                'div', text='Pago transferencia')
             offer_price = Decimal(remove_words(
                 offer_price_label_tag.next.next.text))
         else:

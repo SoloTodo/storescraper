@@ -766,7 +766,8 @@ class MercadoLibreChile(Store):
         else:
             variations.add(data['initialState']['id'])
 
-        review_entry = data['initialState']['components']['track']['melidata_event']['event_data']
+        review_entry = data['initialState']['components']['track']
+        review_entry = review_entry['melidata_event']['event_data']
 
         if 'item_id' in review_entry:
             review_endpoint = ('https://api.mercadolibre.com/reviews/item/'

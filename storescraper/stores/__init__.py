@@ -291,6 +291,7 @@ from .musimundo import Musimundo
 from .mutant import Mutant
 from .my_box import MyBox
 from .my_shop import MyShop
+from .mya_outlet import MyaOutlet
 from .nario_hogar import NarioHogar
 from .natcom import Natcom
 from .next_pc import NextPc
