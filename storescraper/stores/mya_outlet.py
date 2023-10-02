@@ -82,6 +82,21 @@ class MyaOutlet(StoreWithUrlExtensions):
 
         description = json_data['description']
 
+        if 'SELLADO' in description:
+            condition = 'https://schema.org/NewCondition'
+        elif 'SIN CAJA' in description:
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif 'VITRINA' in description:
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif 'OPEN BOX' in description:
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif 'SEGUNDA MANO' in description:
+            condition = 'https://schema.org/UsedCondition'
+        elif 'EXHIBICIÓN' in description:
+            condition = 'https://schema.org/UsedCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -97,6 +112,6 @@ class MyaOutlet(StoreWithUrlExtensions):
             picture_urls=picture_urls,
             description=description,
             part_number=part_number,
-            condition='https://schema.org/RefurbishedCondition'
+            condition=condition
         )
         return [p]
