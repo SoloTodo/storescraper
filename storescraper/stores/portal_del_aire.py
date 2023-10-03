@@ -38,7 +38,8 @@ class PortalDelAire(StoreWithUrlExtensions):
 
             for product in products:
                 product_url = ('https://portaldelaire.cl' +
-                               product.find('a')['href'])
+                               product.find('a',
+                                            'product-item__title')['href'])
                 product_urls.append(product_url)
 
             page += 1
