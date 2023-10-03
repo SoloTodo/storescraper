@@ -349,6 +349,7 @@ from .plaza_vea import PlazaVea
 from .play_factory import PlayFactory
 from .play_power import PlayPower
 from .pontofrio import Pontofrio
+from .portal_del_aire import PortalDelAire
 from .portatil_chile import PortatilChile
 from .power_play import PowerPlay
 from .pro_gamer_afta import ProGamerAfta
