@@ -5,7 +5,8 @@ import logging
 import re
 from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR, PROCESSOR, STEREO_SYSTEM, \
-    VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, VIDEO_GAME_CONSOLE, WEARABLE, CELL
+    VIDEO_CARD, NOTEBOOK, GAMING_CHAIR, VIDEO_GAME_CONSOLE, WEARABLE, CELL, \
+    KEYBOARD
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -26,6 +27,7 @@ class TodoGeek(StoreWithUrlExtensions):
         ['watches', WEARABLE],
         ['consolas', VIDEO_GAME_CONSOLE],
         ['celulares', CELL],
+        ['Teclados', KEYBOARD],
     ]
 
     @classmethod

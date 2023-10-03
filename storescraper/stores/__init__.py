@@ -82,6 +82,7 @@ from .danaus import Danaus
 from .david_and_joseph import DavidAndJoseph
 from .dazbog_store import DazbogStore
 from .dd_tech import DdTech
+from .de_aires import DeAires
 from .dell import Dell
 from .demasled import Demasled
 from .deuva import Deuva
