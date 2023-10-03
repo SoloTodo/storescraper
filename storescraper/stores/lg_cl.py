@@ -1,7 +1,7 @@
 from .lg_v5 import LgV5
 from storescraper.categories import TELEVISION, OPTICAL_DISK_PLAYER, \
     STEREO_SYSTEM, HEADPHONES, CELL, REFRIGERATOR, WASHING_MACHINE, OVEN, \
-    MONITOR, PROJECTOR, CELL_ACCESORY, DISH_WASHER
+    MONITOR, PROJECTOR, CELL_ACCESORY, DISH_WASHER, AIR_CONDITIONER
 
 
 class LgCl(LgV5):
@@ -65,4 +65,6 @@ class LgCl(LgV5):
             ('CT30006480', PROJECTOR, False),
             # Styler
             ('CT40013711', CELL_ACCESORY, True),
+            # Aires acondicionados
+            ('CT40005309', AIR_CONDITIONER, True),
         ]
