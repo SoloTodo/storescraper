@@ -10,8 +10,10 @@ from storescraper.categories import AIR_CONDITIONER
 
 
 class PortalDelAire(StoreWithUrlExtensions):
+    # ONLY CONSIDERS LG PRODUCTS
+
     url_extensions = [
-        ['aire-acondicionado-mini-split', AIR_CONDITIONER],
+        ['lg', AIR_CONDITIONER],
     ]
 
     @classmethod

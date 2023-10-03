@@ -9,11 +9,12 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import AIR_CONDITIONER
 
 
-class DeAires(StoreWithUrlExtensions):
+class CosmoClima(StoreWithUrlExtensions):
     # ONLY CONSIDERS LG PRODUCTS
 
     url_extensions = [
-        ['aires-acondicionados-lg', AIR_CONDITIONER],
+        ['aire-acondicionado/aire-acondicionado-residencial/'
+         'split-muro?filter[cfv][42869][]=117715', AIR_CONDITIONER],
     ]
 
     @classmethod
@@ -26,19 +27,18 @@ class DeAires(StoreWithUrlExtensions):
             if page > 10:
                 raise Exception('Page overflow')
 
-            url = 'https://deaires.cl/{}/page/{}/'.format(url_extension, page)
+            url = 'https://www.cosmoclima.cl/{}&page={}'.format(url_extension, page)
             print(url)
             response = session.get(url)
 
             soup = BeautifulSoup(response.text, 'html.parser')
-            products = soup.findAll('li', 'product')
+            products = soup.findAll('div', 'product-block')
 
             if not products:
                 break
 
             for product in products:
-                product_url = product.find(
-                    'a', 'woocommerce-LoopProduct-link')['href']
+                product_url = 'https://www.cosmoclima.cl' + product.find('a')['href']
                 product_urls.append(product_url)
 
             page += 1
@@ -51,25 +51,25 @@ class DeAires(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        json_container = \
-            json.loads(soup.findAll(
-                'script', {'type': 'application/ld+json'})[1].text)
-        product_data = json_container['@graph'][0]
+        buy_form_tag = soup.find('form', 'product-form')
+        key = buy_form_tag['data-id']
+        sku_tag = soup.find('span', 'product-heading__sku')
+        sku = sku_tag.text.replace('SKU:', '').strip()
+        product_data = \
+            json.loads(soup.find(
+                'script', {'type': 'application/ld+json'}).text)
+
         name = product_data['name']
-        if product_data['offers'][0]['availability'] == \
+        if product_data['offers']['availability'] == \
                 'http://schema.org/InStock':
             stock = -1
         else:
             stock = 0
 
-        price = Decimal(
-            product_data['offers'][0]['priceSpecification']['price'])
+        price = Decimal(product_data['offers']['price'].replace('.', ''))
+        picture_urls = [product_data['image']]
 
-        picture_urls = [x.find('img')['src'] for x in
-                        soup.findAll('picture', 'wp-post-image')]
-
-        description = html_to_markdown(product_data['description'])
+        description = html_to_markdown(str(soup.find('ul', 'product-accordion__list')))
 
         p = Product(
             name,
@@ -82,6 +82,8 @@ class DeAires(StoreWithUrlExtensions):
             price,
             price,
             'CLP',
+            sku=sku,
+            part_number=sku,
             description=description,
             picture_urls=picture_urls
         )
