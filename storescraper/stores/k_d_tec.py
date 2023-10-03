@@ -35,6 +35,7 @@ class KDTec(StoreWithUrlExtensions):
         ['monitor-gamer', MONITOR],
         ['mouse', MOUSE],
         ['teclados', KEYBOARD],
+        ['accesorios-apple', KEYBOARD],
         ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
         ['audifonos', HEADPHONES],
         ['parlante-pc', STEREO_SYSTEM],

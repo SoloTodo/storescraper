@@ -33,9 +33,9 @@ def main():
             if "picture" in banner:
                 banner.pop('picture')
             print(json.dumps(banner, indent=4), '\n')
-            if len(banner.pop('picture_url', '')) > 200:
+            if len(banner.pop('picture_url', '')) > 250:
                 raise Exception(
-                    'Picture URLs must be less than 200 characters long')
+                    'Picture URLs must be less than 250 characters long')
     else:
         print('No banners found')
 
