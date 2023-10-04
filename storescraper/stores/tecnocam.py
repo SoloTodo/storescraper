@@ -11,100 +11,66 @@ from storescraper.categories import ALL_IN_ONE, CASE_FAN, CELL, CPU_COOLER, \
     RAM, MONITOR, HEADPHONES, NOTEBOOK, USB_FLASH_DRIVE, STEREO_SYSTEM, \
     MICROPHONE, VIDEO_GAME_CONSOLE, PRINTER
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 
 
-class Tecnocam(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            PROCESSOR,
-            CPU_COOLER,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            RAM,
-            MOTHERBOARD,
-            VIDEO_CARD,
-            CASE_FAN,
-            GAMING_CHAIR,
-            KEYBOARD_MOUSE_COMBO,
-            MOUSE,
-            KEYBOARD,
-            HEADPHONES,
-            MICROPHONE,
-            MONITOR,
-            STEREO_SYSTEM,
-            TELEVISION,
-            CELL,
-            ALL_IN_ONE,
-            VIDEO_GAME_CONSOLE,
-            NOTEBOOK,
-            PRINTER,
-        ]
+class Tecnocam(StoreWithUrlExtensions):
+    url_extensions = [
+        ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
+        ['almacenamiento/disco-hdd', STORAGE_DRIVE],
+        ['almacenamiento/disco-ssd', SOLID_STATE_DRIVE],
+        ['almacenamiento/pendrive', USB_FLASH_DRIVE],
+        ['almacenamiento/tarjeta-de-memoria', MEMORY_CARD],
+        ['componentes-de-pc/cpu-amd', PROCESSOR],
+        ['componentes-de-pc/cpu-intel', PROCESSOR],
+        ['componentes-de-pc/disipador', CPU_COOLER],
+        ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
+        ['componentes-de-pc/gabinetes', COMPUTER_CASE],
+        ['componentes-de-pc/memorias-ram-notebook', RAM],
+        ['componentes-de-pc/memorias-ram-pc', RAM],
+        ['componentes-de-pc/placas-madre', MOTHERBOARD],
+        ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
+        ['componentes-de-pc/ventilador-pc', CASE_FAN],
+        ['articulos-de-oficina/sillas-gamer', GAMING_CHAIR],
+        ['accesorios-de-pc/kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+        ['accesorios-de-pc/mouse', MOUSE],
+        ['accesorios-de-pc/teclado', KEYBOARD],
+        ['audiovisual/audifonos', HEADPHONES],
+        ['audiovisual/microfono', MICROPHONE],
+        ['audiovisual/monitores', MONITOR],
+        ['audiovisual/parlante', STEREO_SYSTEM],
+        ['audiovisual/smart-tv', TELEVISION],
+        ['celulares', CELL],
+        ['celulares/celulares-y-tablets', TABLET],
+        ['computadores/all-in-one', ALL_IN_ONE],
+        ['computadores/consolas-de-videojuegos', VIDEO_GAME_CONSOLE],
+        ['computadores/notebook', NOTEBOOK],
+        ['impresoras-y-escaner/impresoras', PRINTER],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['almacenamiento/disco-externo', EXTERNAL_STORAGE_DRIVE],
-            ['almacenamiento/disco-hdd', STORAGE_DRIVE],
-            ['almacenamiento/disco-ssd', SOLID_STATE_DRIVE],
-            ['almacenamiento/pendrive', USB_FLASH_DRIVE],
-            ['almacenamiento/tarjeta-de-memoria', MEMORY_CARD],
-            ['componentes-de-pc/cpu-amd', PROCESSOR],
-            ['componentes-de-pc/cpu-intel', PROCESSOR],
-            ['componentes-de-pc/disipador', CPU_COOLER],
-            ['componentes-de-pc/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-pc/gabinetes', COMPUTER_CASE],
-            ['componentes-de-pc/memorias-ram-notebook', RAM],
-            ['componentes-de-pc/memorias-ram-pc', RAM],
-            ['componentes-de-pc/placas-madre', MOTHERBOARD],
-            ['componentes-de-pc/tarjetas-de-video', VIDEO_CARD],
-            ['componentes-de-pc/ventilador-pc', CASE_FAN],
-            ['articulos-de-oficina/sillas-gamer', GAMING_CHAIR],
-            ['accesorios-de-pc/kit-teclado-mouse', KEYBOARD_MOUSE_COMBO],
-            ['accesorios-de-pc/mouse', MOUSE],
-            ['accesorios-de-pc/teclado', KEYBOARD],
-            ['audiovisual/audifonos', HEADPHONES],
-            ['audiovisual/microfono', MICROPHONE],
-            ['audiovisual/monitores', MONITOR],
-            ['audiovisual/parlante', STEREO_SYSTEM],
-            ['audiovisual/smart-tv', TELEVISION],
-            ['celulares', CELL],
-            ['celulares/celulares-y-tablets', TABLET],
-            ['computadores/all-in-one', ALL_IN_ONE],
-            ['computadores/consolas-de-videojuegos', VIDEO_GAME_CONSOLE],
-            ['computadores/notebook', NOTEBOOK],
-            ['impresoras-y-escaner/impresoras', PRINTER],
-        ]
+    def discover_urls_for_category(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         products_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://tecnocam.cl/product-category/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage, timeout=60).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('section', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    products_url = container.find('a')['href']
-                    products_urls.append(products_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://tecnocam.cl/product-category/{}/' \
+                          'page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage, timeout=60).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('section', 'product')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                products_url = container.find('a')['href']
+                products_urls.append(products_url)
+            page += 1
         return products_urls
 
     @classmethod
@@ -145,7 +111,7 @@ class Tecnocam(Store):
         price = Decimal(product_data['offers'][0]['price'])
 
         picture_urls = [tag['href'] for tag in soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper').findAll('a')]
+            'div', 'woocommerce-product-gallery__wrapper').findAll('a')]
 
         p = Product(
             name,

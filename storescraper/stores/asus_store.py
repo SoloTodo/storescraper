@@ -1,3 +1,4 @@
+import json
 import logging
 from decimal import Decimal
 
@@ -7,7 +8,7 @@ from storescraper.categories import NOTEBOOK, ALL_IN_ONE, VIDEO_CARD, MOUSE, \
     VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class AsusStore(StoreWithUrlExtensions):
@@ -65,34 +66,72 @@ class AsusStore(StoreWithUrlExtensions):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        base_name = soup.find('span', {'data-dynamic': 'product_name'})\
-            .text.replace('\u200b', '').strip()
-        model_name = soup.find('div', 'simple-sku').text.split(' - ')[-1]\
-            .strip()
-        name = '{} ({})'.format(base_name, model_name)
-        sku = soup.find('div', 'price-box')['data-product-id']
-        part_number = soup.find('div', 'simple-part').text.split(' - ')[-1]
-        if soup.find('div', 'box-tocart').find('div', 'out-stock'):
-            stock = 0
+
+        for script_tag in soup.findAll('script', {'type': 'text/x-magento-init'}):
+            if 'jsonConfig' in script_tag.text:
+                variations_data = json.loads(script_tag.text)
+                break
         else:
-            stock = -1
-        price = Decimal(soup.find('span', {'data-price-type': 'finalPrice'})[
-                            'data-price-amount'])
-        picture_urls = [tag['src'] for tag in
-                        soup.find('div', 'product media').findAll('img')]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=part_number,
-            picture_urls=picture_urls
-        )
-        return [p]
+            variations_data = None
+
+        products = []
+
+        if variations_data:
+            variations_data = variations_data['[data-role=swatch-options]']['Magento_Swatches/js/swatch-renderer']['jsonConfig']
+            for key, sku in variations_data['sku'].items():
+                name = variations_data['sales_model_name'][key]
+                price = Decimal(variations_data['optionPrices'][key]['finalPrice']['amount'])
+                picture_urls = [x['full'] for x in variations_data['images'][key]]
+                description = html_to_markdown(variations_data['dynamic']['short_description'][key]['value'])
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    sku,
+                    -1,
+                    price,
+                    price,
+                    'CLP',
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description
+                )
+                products.append(p)
+
+        else:
+            base_name = soup.find('span', {'data-dynamic': 'product_name'})\
+                .text.replace('\u200b', '').strip()
+            model_name = soup.find('div', 'simple-sku').text.split(' - ')[-1]\
+                .strip()
+            name = '{} ({})'.format(base_name, model_name)
+            key = soup.find('div', 'price-box')['data-product-id']
+            sku = soup.find('div', 'simple-part').text.split(' - ')[-1]
+            if soup.find('div', 'box-tocart').find('div', 'out-stock'):
+                stock = 0
+            else:
+                stock = -1
+            price = Decimal(soup.find('span', {'data-price-type': 'finalPrice'})[
+                                'data-price-amount'])
+            picture_urls = [tag['src'] for tag in
+                            soup.find('div', 'product media').findAll('img')]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                'CLP',
+                sku=sku,
+                part_number=sku,
+                picture_urls=picture_urls
+            )
+            products.append(p)
+        return products
