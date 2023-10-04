@@ -136,6 +136,7 @@ class Oportutek(Store):
             price,
             'CLP',
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description
         )
