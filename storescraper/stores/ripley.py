@@ -471,6 +471,7 @@ class Ripley(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['Content-Type'] = 'application/json'
 
         filters = []
 
@@ -500,6 +501,7 @@ class Ripley(Store):
                 "sessionkey": "",
                 "sort": "score"
             }
+            session.post(search_url, json=search_body)
             response = session.post(search_url, json=search_body)
             search_results = json.loads(response.text)
 
