@@ -50,7 +50,7 @@ class Tecnocam(StoreWithUrlExtensions):
     ]
 
     @classmethod
-    def discover_urls_for_category(cls, url_extension, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         products_urls = []
         page = 1
