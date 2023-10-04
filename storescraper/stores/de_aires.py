@@ -13,7 +13,7 @@ class DeAires(StoreWithUrlExtensions):
     # ONLY CONSIDERS LG PRODUCTS
 
     url_extensions = [
-        ['aires-acondicionados-lg', AIR_CONDITIONER],
+        ['categoria-producto/lg', AIR_CONDITIONER],
     ]
 
     @classmethod
