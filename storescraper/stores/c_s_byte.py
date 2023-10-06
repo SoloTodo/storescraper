@@ -10,11 +10,11 @@ from storescraper.categories import ALL_IN_ONE, COMPUTER_CASE, CPU_COOLER, \
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
-from requests_toolbelt.utils import dump
 
 
 class CSByte(StoreWithUrlExtensions):
-    preferred_products_for_url_concurrency = 3
+    preferred_products_for_url_concurrency = 1
+    preferred_discover_urls_concurrency = 1
 
     url_extensions = [
         ['audifonos', HEADPHONES],
@@ -82,8 +82,7 @@ class CSByte(StoreWithUrlExtensions):
             product_wrapper = soup.find('div', 'site-content')
 
             if not product_wrapper:
-                data = dump.dump_all(response)
-                raise Exception(data.decode('utf-8'))
+                raise Exception(response.text)
 
             product_containers = product_wrapper.findAll(
                 'div', 'products')
