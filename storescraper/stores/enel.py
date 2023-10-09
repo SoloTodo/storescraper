@@ -12,8 +12,6 @@ from storescraper.utils import session_with_proxy
 class Enel(StoreWithUrlExtensions):
     url_extensions = [
         ['aire-acondicionado/split-muro.list.html', AIR_CONDITIONER],
-        ['aire-acondicionado/aire-acondicionado-portatil.list.html',
-         AIR_CONDITIONER],
     ]
 
     @classmethod

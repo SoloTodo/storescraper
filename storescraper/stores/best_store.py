@@ -113,8 +113,13 @@ class BestStore(StoreWithUrlExtensions):
         name = container.find('h1', {'itemprop': 'name'}).text
         part_number = container.find('div', 'product-reference-supplier').find(
             'span').text.strip()
-        sku = container.find(
-            'div', 'product-reference').find('span').text.strip()
+        sku_tag = container.find(
+            'div', 'product-reference')
+
+        if sku_tag:
+            sku = sku_tag.find('span').text.strip()
+        else:
+            sku = None
 
         add_to_cart_button = soup.find('button', 'btn btn-primary add-to-cart')
 
