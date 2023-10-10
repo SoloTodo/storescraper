@@ -45,6 +45,8 @@ class Hiraoka(Store):
 
             for p in product_containers.findAll('li', 'product'):
                 product_url = p.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
                 product_urls.append(product_url)
 
             page += 1
