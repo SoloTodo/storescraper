@@ -9,9 +9,7 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import check_ean13, session_with_proxy, vtex_preflight
-from storescraper.categories import AIR_CONDITIONER, OVEN, WASHING_MACHINE, \
-    REFRIGERATOR, STEREO_SYSTEM, TELEVISION
-
+from storescraper.categories import WASHING_MACHINE
 
 class Marcimex(Store):
     @classmethod
