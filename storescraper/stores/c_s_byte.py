@@ -172,6 +172,7 @@ class CSByte(StoreWithUrlExtensions):
                 soup.findAll('script', {'type': 'application/ld+json'})[-1]
                     .text)['@graph'][1]
             sku = str(json_data['sku'])
+            part_number = json_data.get('gtin', None)
             offer = json_data['offers'][0]
             if offer['availability'] == 'http://schema.org/InStock':
                 stock_p = soup.find('p', 'stock')
@@ -201,6 +202,7 @@ class CSByte(StoreWithUrlExtensions):
                 'CLP',
                 sku=sku,
                 picture_urls=picture_urls,
-                condition=condition
+                condition=condition,
+                part_number=part_number
             )
             return [p]
