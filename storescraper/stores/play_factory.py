@@ -71,15 +71,7 @@ class PlayFactory(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        soup_jsons = soup.findAll(
-            'script', {'type': 'application/ld+json'})
-
-        if len(soup_jsons) <= 1:
-            return []
-
-        json_data = json.loads(soup_jsons[1].text)['@graph'][0]
-        base_name = json_data['name']
+        base_name = soup.find('h1', 'product_title').text.strip()
 
         picture_urls = []
         figures = soup.find(
@@ -124,7 +116,7 @@ class PlayFactory(StoreWithUrlExtensions):
         else:
             sku_match = re.search(r'"postID":(\d+)', response.text)
             sku = sku_match.groups()[0]
-            offer_price = Decimal(json_data['offers'][0]['price'])
+            offer_price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content'])
             normal_price = (offer_price * Decimal('1.025')).quantize(0)
             stock = 0
             qty_input = soup.find('input', 'qty')
