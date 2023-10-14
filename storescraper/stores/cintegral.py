@@ -3,6 +3,8 @@ import re
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from requests import TooManyRedirects
+
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown, \
@@ -101,7 +103,10 @@ class Cintegral(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        res = session.get(url)
+        try:
+            res = session.get(url)
+        except TooManyRedirects:
+            return []
         soup = BeautifulSoup(res.text, 'html.parser')
 
         name = soup.find('h1', 'product_title').text.strip()

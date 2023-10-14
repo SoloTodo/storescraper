@@ -1,3 +1,4 @@
+import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -90,7 +91,8 @@ class Tupi(Store):
 
         for picture in pictures:
             picture_url = picture.find('a')['href'].replace(' ', '%20')
-            picture_urls.append(picture_url)
+            if validators.url(picture_url):
+                picture_urls.append(picture_url)
 
         return [Product(
             name,
