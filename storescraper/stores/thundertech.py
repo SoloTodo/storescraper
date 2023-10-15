@@ -93,6 +93,9 @@ class Thundertech(StoreWithUrlExtensions):
             price = Decimal(remove_words(soup.find(
                 'h2', 'product-heading__pricing').text))
 
+        if not price:
+            return []
+
         sku_tag = soup.find('span', 'product-heading__detail--sku')
         if sku_tag:
             sku = sku_tag.text.split('SKU: ')[1]
