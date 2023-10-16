@@ -87,14 +87,16 @@ class Thundertech(StoreWithUrlExtensions):
             'h2', 'product-heading__pricing--has-discount')
 
         if discount_price_tag:
-            price = Decimal(remove_words(discount_price_tag.find(
+            normal_price = Decimal(remove_words(discount_price_tag.find(
                 'span',).text))
         else:
-            price = Decimal(remove_words(soup.find(
+            normal_price = Decimal(remove_words(soup.find(
                 'h2', 'product-heading__pricing').text))
 
-        if not price:
+        if not normal_price:
             return []
+
+        offer_price = (normal_price * Decimal('0.954')).quantize(0)
 
         sku_tag = soup.find('span', 'product-heading__detail--sku')
         if sku_tag:
@@ -113,8 +115,8 @@ class Thundertech(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls,
