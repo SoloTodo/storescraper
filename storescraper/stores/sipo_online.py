@@ -125,12 +125,8 @@ class SipoOnline(StoreWithUrlExtensions):
                                       'html.parser').text.split()[0])
                 else:
                     stock = -1
-                normal_price = Decimal(product['display_price'])
-                if soup.find('p', 'price').text == '':
-                    offer_price = (
-                        normal_price * Decimal('0.98004')).quantize(0)
-                else:
-                    offer_price = normal_price
+                offer_price = Decimal(product['display_price'])
+                normal_price = (offer_price * Decimal('1.03')).quantize(0)
                 picture_urls = [product['image']['src']]
                 p = Product(
                     variant_name,
@@ -161,11 +157,8 @@ class SipoOnline(StoreWithUrlExtensions):
                 stock = -1
             sku = soup.find(
                 'link', {'rel': 'shortlink'})['href'].split('p=')[1]
-            normal_price = Decimal(product_data['offers'][0]['price'])
-            if soup.find('p', 'price').text == '':
-                offer_price = (normal_price * Decimal('0.98004')).quantize(0)
-            else:
-                offer_price = normal_price
+            offer_price = Decimal(product_data['offers'][0]['price'])
+            normal_price = (offer_price * Decimal('1.03')).quantize(0)
             picture_containers = soup.find('ul',
                                            'swiper-wrapper') \
                 .findAll('img')
