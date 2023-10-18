@@ -8,77 +8,54 @@ from storescraper.categories import TABLET, HEADPHONES, MOUSE, KEYBOARD, \
     GAMING_CHAIR, MONITOR, MOTHERBOARD, RAM, POWER_SUPPLY, CPU_COOLER, \
     COMPUTER_CASE, PROCESSOR, SOLID_STATE_DRIVE, NOTEBOOK, VIDEO_CARD
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class Sandos(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            VIDEO_CARD,
-            HEADPHONES,
-            MOUSE,
-            KEYBOARD,
-            GAMING_CHAIR,
-            MONITOR,
-            MOTHERBOARD,
-            RAM,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            COMPUTER_CASE,
-            PROCESSOR,
-            SOLID_STATE_DRIVE,
-            NOTEBOOK,
-            TABLET,
-        ]
+class Sandos(StoreWithUrlExtensions):
+    url_extensions = [
+        ['tablet', TABLET],
+        ['almacenamiento', SOLID_STATE_DRIVE],
+        ['cooler', CPU_COOLER],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['gabinetes', COMPUTER_CASE],
+        ['memorias-ram', RAM],
+        ['placas-madre', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['monitores', MONITOR],
+        ['audifonos', HEADPHONES],
+        ['mouse', MOUSE],
+        ['teclados', KEYBOARD],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['notebooks', NOTEBOOK],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['computacion/notebook', NOTEBOOK],
-            ['computacion/tablet', TABLET],
-            ['componentes/almacenamiento', SOLID_STATE_DRIVE],
-            ['componentes/cooler', CPU_COOLER],
-            ['componentes/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes/gabinetes', COMPUTER_CASE],
-            ['componentes/memorias-ram', RAM],
-            ['componentes/placas-madre', MOTHERBOARD],
-            ['componentes/procesadores', PROCESSOR],
-            ['componentes/tarjetas-de-video', VIDEO_CARD],
-            ['monitores', MONITOR],
-            ['accesorios/audifonos', HEADPHONES],
-            ['accesorios/mouse', MOUSE],
-            ['accesorios/teclados', KEYBOARD],
-            ['sillas-gamer', GAMING_CHAIR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://sandos.cl/product-category' \
-                              '/{}/page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                if soup.find('body', 'error404'):
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://sandos.cl/product-category' \
+                          '/{}/page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            if soup.find('body', 'error404'):
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-                product_containers = soup.find(
-                    'div', 'site-content').findAll('div', 'product')
+            product_containers = soup.find(
+                'div', 'site-content').findAll('div', 'product')
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
