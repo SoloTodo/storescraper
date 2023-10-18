@@ -1,10 +1,10 @@
 from decimal import Decimal
-import json
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    magento_picture_urls
 
 
 class LaCuracao(Store):
@@ -68,21 +68,7 @@ class LaCuracao(Store):
             soup.find('meta', {'property': 'product:price:amount'})[
                 'content'])
 
-        picture_tag_candidates = soup.findAll(
-            'script', {'type': 'text/x-magento-init'})
-        for picture_tag_candidate in picture_tag_candidates:
-            if '[data-gallery-role=gallery-placeholder]' not in \
-                    picture_tag_candidate.text:
-                continue
-            pictures_data = json.loads(picture_tag_candidate.text)
-            picture_urls = []
-            for entry in pictures_data[
-                '[data-gallery-role=gallery-placeholder]'][
-                    'mage/gallery/gallery']['data']:
-                picture_urls.append(entry['full'])
-            break
-        else:
-            picture_urls = None
+        picture_urls = magento_picture_urls(soup)
 
         description = html_to_markdown(str(
             soup.find('div', 'product-view-bottom-content')))

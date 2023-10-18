@@ -5,7 +5,8 @@ from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    magento_picture_urls
 
 
 class Efe(Store):
@@ -67,18 +68,7 @@ class Efe(Store):
         else:
             stock = 0
 
-        magento_tags = soup.findAll('script', {'type': 'text/x-magento-init'})
-
-        for tag in magento_tags:
-            if 'data-gallery-role=gallery-placeholder' in tag.text:
-                pictures_json = json.loads(tag.text)
-                break
-        else:
-            raise Exception('No pictures tag found')
-
-        picture_urls = [tag['full'] for tag in pictures_json[
-            '[data-gallery-role=gallery-placeholder]'][
-            'mage/gallery/gallery']['data']]
+        picture_urls = magento_picture_urls(soup)
 
         p = Product(
             name,

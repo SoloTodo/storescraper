@@ -1,4 +1,3 @@
-import json
 import logging
 
 from bs4 import BeautifulSoup
@@ -8,7 +7,8 @@ from storescraper.categories import MONITOR, NOTEBOOK, PRINTER, ALL_IN_ONE, \
     MOUSE, HEADPHONES
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    magento_picture_urls
 
 
 class HpOnline(Store):
@@ -101,24 +101,7 @@ class HpOnline(Store):
         description = html_to_markdown(str(soup.find(
             'div', 'product info detailed').find('div', 'overview')))
 
-        script_containers = soup.findAll(
-            'script', {'type': 'text/x-magento-init'})
-        images_json = None
-
-        for script in script_containers:
-            if 'data-gallery-role' in script.text:
-                images_json = json.loads(script.text)
-                break
-
-        picture_urls = []
-
-        if images_json and 'mage/gallery/gallery' in images_json[
-                '[data-gallery-role=gallery-placeholder]']:
-            images_data = images_json[
-                '[data-gallery-role=gallery-placeholder]'][
-                'mage/gallery/gallery']['data']
-            for image_data in images_data:
-                picture_urls.append(image_data['img'])
+        picture_urls = magento_picture_urls(soup)
 
         p = Product(
             name,

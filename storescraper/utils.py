@@ -1,5 +1,6 @@
 import functools
 import importlib
+import json
 from decimal import Decimal
 
 import html2text
@@ -140,6 +141,30 @@ def vtex_preflight(extra_args, target_url):
     return {
         'sha256Hash': sha256Hash
     }
+
+
+def magento_picture_urls(soup):
+    script_containers = soup.findAll(
+        'script', {'type': 'text/x-magento-init'})
+
+    for script in script_containers:
+        if 'data-gallery-role' in script.contents[0]:
+            images_json = (json.loads(script.contents[0]))
+            break
+    else:
+        return None
+
+    picture_urls = []
+
+    if images_json and 'mage/gallery/gallery' in images_json[
+        '[data-gallery-role=gallery-placeholder]']:
+        images_data = images_json[
+            '[data-gallery-role=gallery-placeholder]'][
+            'mage/gallery/gallery']['data']
+        for image_data in images_data:
+            picture_urls.append(image_data['img'])
+
+    return picture_urls
 
 
 CF_REQUEST_HEADERS = {

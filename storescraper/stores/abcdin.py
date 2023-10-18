@@ -14,7 +14,7 @@ from storescraper.categories import TELEVISION, STEREO_SYSTEM, HEADPHONES, \
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
-    session_with_proxy
+    session_with_proxy, magento_picture_urls
 from storescraper import banner_sections as bs
 
 
@@ -319,19 +319,7 @@ class AbcDin(Store):
         for tag in soup.findAll('div', 'item-content-container'):
             description += '\n\n' + html_to_markdown(str(tag))
 
-        picture_urls = []
-        picture_tag_candidates = soup.findAll(
-            'script', {'type': 'text/x-magento-init'})
-        for picture_tag_candidate in picture_tag_candidates:
-            if '[data-gallery-role=gallery-placeholder]' not in \
-                    picture_tag_candidate.text:
-                continue
-            pictures_data = json.loads(picture_tag_candidate.text)
-            for entry in pictures_data[
-                    '[data-gallery-role=gallery-placeholder]'][
-                    'mage/gallery/gallery']['data']:
-                picture_urls.append(entry['full'])
-            break
+        picture_urls = magento_picture_urls(soup)
 
         if 'reacondicionado' in name.lower():
             condition = 'https://schema.org/RefurbishedCondition'

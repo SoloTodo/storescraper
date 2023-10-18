@@ -1,4 +1,3 @@
-import json
 import logging
 from decimal import Decimal
 
@@ -6,7 +5,8 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    magento_picture_urls
 from storescraper.categories import TELEVISION
 
 
@@ -70,13 +70,7 @@ class Max(Store):
 
         price_container = soup.find('span', {'data-price-type': 'finalPrice'})
         price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
-        picture_container = json.loads(
-            soup.find('div', 'product media').findAll('script', {
-                'type': 'text/x-magento-init'})[-2].text)[
-            '[data-gallery-role=gallery-placeholder]']['mage/gallery/gallery'][
-            'data']
-
-        picture_urls = [tag['img'] for tag in picture_container]
+        picture_urls = magento_picture_urls(soup)
         description = html_to_markdown(
             str(soup.find('table', {'id': 'product-attribute-specs-table'})))
 

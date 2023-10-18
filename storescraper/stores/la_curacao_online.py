@@ -1,12 +1,11 @@
-import json
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    magento_picture_urls
 from storescraper.categories import TELEVISION
 
 
@@ -86,10 +85,7 @@ class LaCuracaoOnline(Store):
             'meta', {'property': 'product:price:amount'})['content'].strip())
         stock = -1
 
-        pictures_data = re.search(r'"mage/gallery/gallery": ([\s\S]*?)\}\n',
-                                  response.text).groups()[0]
-        pictures_json = json.loads(pictures_data + '}')
-        picture_urls = [tag['full'] for tag in pictures_json['data']]
+        picture_urls = magento_picture_urls(soup)
 
         description = '{}\n\n{}'.format(
             html_to_markdown(

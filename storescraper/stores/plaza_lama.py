@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, magento_picture_urls
 from storescraper.categories import TELEVISION
 
 
@@ -28,15 +28,15 @@ class PlazaLama(Store):
 
         page = 1
         while True:
-            if page >= 15:
+            if page >= 30:
                 raise Exception('Page overflow')
 
-            url = 'https://www.plazalama.com.do/collections/lg' \
-                '?page={}'.format(page)
+            url = 'https://plazalama.com.do/catalogsearch/result/?marca=368&q=LG+LG' \
+                '&p={}'.format(page)
             print(url)
             response = session.get(url)
             soup = BeautifulSoup(response.text, 'html5lib')
-            product_containers = soup.findAll('div', 'product-item')
+            product_containers = soup.findAll('li', 'product-item')
 
             if not product_containers:
                 if page == 1:
@@ -44,9 +44,8 @@ class PlazaLama(Store):
                 break
 
             for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://www.plazalama.com.do' + product_url)
+                product_url = container.find('a', 'product')['href']
+                product_urls.append(product_url)
             page += 1
         return product_urls
 
@@ -57,43 +56,26 @@ class PlazaLama(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html5lib')
 
-        json_data_tag = soup.findAll(
-            'script', {'type': 'application/json'})[-1]
-        json_data = json.loads(json_data_tag.string)
-        json_product = json_data['product']
+        name = soup.find('span', {'itemprop': 'name'}).text.strip()
+        description = soup.find('div', {'id': 'product.specifications'}).text.strip()
+        key = soup.find('input', {'name': 'product'})['value']
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
+        picture_urls = magento_picture_urls(soup)
 
-        description = html_to_markdown(json_product['description'])
-        picture_urls = ['https:' + i for i in json_product['images']]
-
-        json_data_variants = json_product['variants']
-
-        products = []
-        for v_data in json_data_variants:
-
-            # key = str(v_data['id'])
-            sku = v_data['sku']
-            name = v_data['name']
-            if v_data['available']:
-                stock = -1
-            else:
-                stock = 0
-            price = Decimal(v_data['price']) / Decimal(100)
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'DOP',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description
-            )
-            products.append(p)
-
-        return products
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            -1,
+            price,
+            price,
+            'DOP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description
+        )
+        return [p]

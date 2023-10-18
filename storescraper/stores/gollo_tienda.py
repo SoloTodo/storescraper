@@ -4,9 +4,8 @@ from decimal import Decimal
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
-
-import json
+from storescraper.utils import session_with_proxy, html_to_markdown, \
+    magento_picture_urls
 
 
 class GolloTienda(Store):
@@ -87,20 +86,7 @@ class GolloTienda(Store):
             str(soup.find('div', 'dimensions-wrapper'))
         ))
 
-        scripts = soup.findAll('script', {'type': 'text/x-magento-init'})
-        img_json_data = None
-
-        for script in scripts:
-            if 'mage/gallery/gallery' in script.text:
-                img_json_data = json.loads(script.text)[
-                    '[data-gallery-role=gallery-placeholder]'][
-                    'mage/gallery/gallery']['data']
-                break
-
-        if not img_json_data:
-            picture_urls = None
-        else:
-            picture_urls = [image['full'] for image in img_json_data]
+        picture_urls = magento_picture_urls(soup)
 
         p = Product(
             name,
