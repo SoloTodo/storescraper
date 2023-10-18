@@ -536,13 +536,20 @@ class Paris(Store):
                     'subsection': subsection,
                     'type': subsection_type
                 })
-
-            else:
-                if subsection_type not in [bs.SUBSECTION_TYPE_HOME,
-                                           bs.SUBSECTION_TYPE_CATEGORY_PAGE]:
-                    raise Exception('Invalid subsection type '
-                                    '{}'.format(subsection_type))
-
+            elif subsection_type == bs.SUBSECTION_TYPE_HOME:
+                res = session.get('https://cl-ccom-parisweb-bff-web.ecomm.cencosud.com/api/v1/cms-home')
+                for idx, entry in enumerate(res.json()['data']['content'][0]['items']):
+                    banners.append({
+                        'url': url,
+                        'picture_url': entry['image'],
+                        'destination_urls': [entry['link']],
+                        'key': entry['image'],
+                        'position': idx + 1,
+                        'section': section,
+                        'subsection': subsection,
+                        'type': subsection_type
+                    })
+            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 image_container = soup.find('div', 'home-slider')
 
                 if not image_container:
@@ -582,6 +589,9 @@ class Paris(Store):
                         'subsection': subsection,
                         'type': subsection_type
                     })
+            else:
+                raise Exception('Invalid subsection type '
+                                '{}'.format(subsection_type))
 
         return banners
 
