@@ -32,6 +32,8 @@ class Product:
         assert isinstance(stock, int)
         assert len(name) <= 256
         assert len(key) <= 256
+        assert len(url) <= 512
+        assert len(discovery_url) <= 512
         assert normal_price >= offer_price, (normal_price, offer_price)
 
         for price in [normal_price, offer_price]:
