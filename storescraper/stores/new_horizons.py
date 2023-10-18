@@ -53,9 +53,10 @@ class NewHorizons(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'}
                          )[0].text)
-        offer = json_data['offers'][0]
+        assert len(json_data['offers']) == 1
 
-        key = offer['name']
+        offer = json_data['offers'][0]
+        key = str(json_data['productID'])
         name = json_data['name']
         sku = json_data['sku']
         description = json_data['description']
