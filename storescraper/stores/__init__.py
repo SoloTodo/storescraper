@@ -126,6 +126,7 @@ from .llevatelo import Llevatelo
 from .loi_chile import LoiChile
 from .loi_uruguay import LoiUruguay
 from .mac_online import MacOnline
+from .manco_store import MancoStore
 from .marcimex import Marcimex
 from .max import Max
 from .mega_bytes import MegaBytes
