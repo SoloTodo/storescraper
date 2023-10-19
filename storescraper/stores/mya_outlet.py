@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, STEREO_SYSTEM, NOTEBOOK, VIDEO_CARD, \
-    MONITOR
+    MONITOR, TABLET
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -19,6 +19,7 @@ class MyaOutlet(StoreWithUrlExtensions):
         ['tecnologia/notebook-gamer', NOTEBOOK],
         ['computacion/componentes', VIDEO_CARD],
         ['perifericos/monitores', MONITOR],
+        ['tablet', TABLET],
     ]
 
     @classmethod
