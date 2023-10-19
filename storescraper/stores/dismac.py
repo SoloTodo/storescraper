@@ -1,13 +1,12 @@
 from decimal import Decimal
 import json
 import logging
-import re
 
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, magento_picture_urls
 
 
 class Dismac(Store):
@@ -78,21 +77,15 @@ class Dismac(Store):
         else:
             price = Decimal(json_data['offers']['offers'][0]['price'])
 
+        if not price:
+            return []
+
         if soup.find('button', {'id': 'buy-now'}):
             stock = -1
         else:
             stock = 0
 
-        picture_urls = []
-        picture_json = json.loads(
-            '{' +
-            re.search(
-                r"\"mage\/gallery\/gallery\": {([\S\s]+)\"fullscreen",
-                response.text
-            ).groups()[0] + '"xd": "xd"}')
-
-        for p in picture_json['data']:
-            picture_urls.append(p['img'])
+        picture_urls = magento_picture_urls(soup)
 
         p = Product(
             name,
