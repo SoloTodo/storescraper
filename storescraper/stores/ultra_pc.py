@@ -4,7 +4,8 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import MONITOR, NOTEBOOK, TABLET, MOUSE
+from storescraper.categories import MONITOR, NOTEBOOK, TABLET, MOUSE, \
+    VIDEO_GAME_CONSOLE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -17,7 +18,7 @@ class UltraPc(StoreWithUrlExtensions):
         ['tablets-e-ipads', TABLET],
         ['monitores', MONITOR],
         ['accesorios', MOUSE],
-
+        ['consolas-videojuegos', VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
