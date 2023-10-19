@@ -70,6 +70,7 @@ from .estilos import Estilos
 from .et_chile import ETChile
 from .eurogen import Eurogen
 from .eyc import Eyc
+from .eylstore import Eylstore
 from .falabella import Falabella
 from .falabella_fast import FalabellaFast
 from .falabella_peru import FalabellaPeru
