@@ -58,7 +58,12 @@ class AppleStore(StoreWithUrlExtensions):
                                             ' / '.join(dimensions))
                 else:
                     mpn = product_entry['part']
-                    name = mpn
+
+                    for key, value in product_entry['dimensions'].items():
+                        label = key.replace('watch_cases-dimension', '')
+                        dimensions.append('{} {}'.format(label, value))
+
+                    name = '{} ({})'.format(mpn, ' / '.join(dimensions))
 
                 if 'fullPrice' in product_entry:
                     price = Decimal(
