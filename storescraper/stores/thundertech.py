@@ -82,21 +82,18 @@ class Thundertech(StoreWithUrlExtensions):
         key = soup.find('meta', {'property': 'og:id'})['content']
         # TODO: check for una unavailable product in the future
         stock = -1
+        normal_price = Decimal(
+            soup.find('meta', {'property': 'product:price:amount'})['content'])
 
         discount_price_tag = soup.find(
             'h2', 'product-heading__pricing--has-discount')
 
         if discount_price_tag:
-            normal_price = Decimal(remove_words(discount_price_tag.find(
+            offer_price = Decimal(remove_words(discount_price_tag.find(
                 'span',).text))
         else:
-            normal_price = Decimal(remove_words(soup.find(
+            offer_price = Decimal(remove_words(soup.find(
                 'h2', 'product-heading__pricing').text))
-
-        if not normal_price:
-            return []
-
-        offer_price = (normal_price * Decimal('0.954')).quantize(0)
 
         sku_tag = soup.find('span', 'product-heading__detail--sku')
         if sku_tag:
