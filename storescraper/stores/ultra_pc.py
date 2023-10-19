@@ -100,9 +100,9 @@ class UltraPc(StoreWithUrlExtensions):
                             )['href'].split('/')[-1]
             sku = soup.find('meta', {'property': 'product:retailer_item_id'}
                             )['content']
-            description = html_to_markdown(str(
-                soup.find('div',
-                          'woocommerce-product-details__short-description')))
+            description_tag = soup.find('div', {'id': 'tab-description'})
+            description = html_to_markdown(
+                str(description_tag)).split('————————')[1]
 
             product_container = soup.find('div', 'post-' + key)
 
