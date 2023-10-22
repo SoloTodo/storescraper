@@ -19,7 +19,6 @@ class Infosep(StoreWithUrlExtensions):
     url_extensions = [
         ['audifonos', HEADPHONES],
         ['memoria-micro-sdhc', MEMORY_CARD],
-
         ['todo-en-uno', ALL_IN_ONE],
         ['notebooks', NOTEBOOK],
         ['celulares', CELL],
@@ -101,6 +100,10 @@ class Infosep(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[-1]
             .text)
+
+        if '@graph' not in json_data:
+            return []
+
         json_data = json_data['@graph'][1]
 
         name = json_data['name']
