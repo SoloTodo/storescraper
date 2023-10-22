@@ -53,6 +53,8 @@ class Eylstore(StoreWithUrlExtensions):
             'div', {'data-widget_type': 'uael-woo-products.grid-franko'})
         if len(widget_tags) > 1:
             widget_id = widget_tags[0]['data-id']
+            match = re.search(r'"get_product_nonce":"(.+?)"', res.text)
+            nonce = match.groups()[0]
             page_tag = soup.find(
                 'div', {'data-elementor-type': 'product-archive'})
             page_id = page_tag['data-elementor-id']
@@ -63,8 +65,7 @@ class Eylstore(StoreWithUrlExtensions):
                 payload = (
                     'action=uael_get_products&page_id={}&skin=grid_franko&'
                     'widget_id={}&page_number={}'
-                    '&nonce=39baf63879').format(page_id, widget_id, page)
-
+                    '&nonce={}').format(page_id, widget_id, page, nonce)
                 res = session.post(
                     'https://eylstore.cl/wp-admin/admin-ajax.php', payload)
                 soup = BeautifulSoup(

@@ -17,6 +17,9 @@ from storescraper.utils import session_with_proxy
 
 class Infosep(StoreWithUrlExtensions):
     url_extensions = [
+        ['audifonos', HEADPHONES],
+        ['memoria-micro-sdhc', MEMORY_CARD],
+
         ['todo-en-uno', ALL_IN_ONE],
         ['notebooks', NOTEBOOK],
         ['celulares', CELL],
@@ -43,7 +46,6 @@ class Infosep(StoreWithUrlExtensions):
         ['teclado', KEYBOARD],
         ['fuente-de-poder-pc', POWER_SUPPLY],
         ['audifonos-gamer', HEADPHONES],
-        ['audifonos', HEADPHONES],
         ['fuentes-gamer', POWER_SUPPLY],
         ['gabinetes-gamer', COMPUTER_CASE],
         ['memoria-hyperx', RAM],
@@ -56,7 +58,6 @@ class Infosep(StoreWithUrlExtensions):
         ['teclado-gamer', KEYBOARD],
         ['tarjetas-de-video-gamer', VIDEO_CARD],
         ['consolas-y-video-juegos', VIDEO_GAME_CONSOLE],
-        ['memoria-micro-sdhc', MEMORY_CARD],
         ['pendrive', USB_FLASH_DRIVE],
         ['parlantes', STEREO_SYSTEM],
         ['ups-respaldo-de-energia', UPS],
@@ -79,12 +80,12 @@ class Infosep(StoreWithUrlExtensions):
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.find('ul', 'products')
+            product_containers = soup.find('div', 'products')
             if not product_containers:
                 if page == 1:
                     logging.warning('Empty category: ' + url_extension)
                 break
-            for container in product_containers.findAll('li'):
+            for container in product_containers.findAll('div', 'product-grid-item'):
                 product_url = container.find('a')['href']
                 product_urls.append(product_url)
             page += 1
@@ -100,9 +101,7 @@ class Infosep(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll('script', {'type': 'application/ld+json'})[-1]
             .text)
-
-        if '@type' not in json_data:
-            return []
+        json_data = json_data['@graph'][1]
 
         name = json_data['name']
         sku = json_data['sku']
@@ -112,11 +111,8 @@ class Infosep(StoreWithUrlExtensions):
             return []
 
         normal_price = (offer_price * Decimal('1.026')).quantize(0)
-
-        if soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-        else:
-            stock = 0
+        stock = -1 if (json_data['offers'][0]['availability'] ==
+                       'http://schema.org/InStock') else 0
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'woocommerce-product-gallery').findAll('img')]
@@ -127,12 +123,12 @@ class Infosep(StoreWithUrlExtensions):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
             'CLP',
-            sku=sku,
+            sku=key,
             part_number=sku,
             picture_urls=picture_urls
         )
