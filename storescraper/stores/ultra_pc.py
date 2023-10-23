@@ -111,7 +111,8 @@ class UltraPc(StoreWithUrlExtensions):
             if query_stock_button:
                 stock = 0
             else:
-                blacklist = ['outofstock', 'product_tag-proximamente']
+                blacklist = ['outofstock', 'product_tag-proximamente',
+                             'product_tag-reservado']
 
                 for keyword in blacklist:
                     if keyword in product_container.attrs['class']:
