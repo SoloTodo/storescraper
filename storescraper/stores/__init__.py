@@ -266,6 +266,7 @@ from .winpy import Winpy
 from .wom import Wom
 from .wong import Wong
 from .x_com import XCom
+from .yokan import Yokan
 from .you_tech import YouTech
 from .zacto import Zacto
 from .zmart import Zmart
