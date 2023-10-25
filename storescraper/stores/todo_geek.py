@@ -152,7 +152,7 @@ class TodoGeek(StoreWithUrlExtensions):
 
     @classmethod
     def _get_shipping_rules(cls, response):
-        match = re.search(r'\sotEstAppData = (.+)', response.text)
+        match = re.search(r'window\.otEstAppData = (.+)', response.text)
         json_data = json.loads(match.groups()[0])
         # print(json.dumps(json_data))
         raw_rules = json_data['data']['app']

@@ -142,9 +142,8 @@ class ZonaPortatil(Store):
             stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         else:
             stock = 0
-        picture_urls = [tag['src'] for tag in soup.find('div', 'woocommerce'
-                                                               '-product'
-                                                               '-gallery')
+        picture_urls = ['https://www.zonaportatil.cl' + tag['src'] for tag in
+                        soup.find('div', 'woocommerce-product-gallery')
                         .findAll('img')]
         p = Product(
             name,

@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from decimal import Decimal
 
 import pyjson5
@@ -71,6 +72,12 @@ class GsmPro(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        match = re.search(r"window.location.href = '(.+)';", response.text)
+        if match:
+            path = match.groups()[0]
+            real_url = 'https://www.gsmpro.cl/' + path
+            response = session.get(real_url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
         publication_data = json.loads(soup.find(
