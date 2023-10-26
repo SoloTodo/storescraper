@@ -131,7 +131,8 @@ class BestStore(StoreWithUrlExtensions):
         normal_price = Decimal(
             remove_words(soup.find('div', 'current-price').find('span').text))
         offer_price = Decimal(
-            soup.find('div', 'current-price-money').find('span')['content'])
+            soup.find('div', 'current-price-money').find('span').text.replace(
+                '$\xa0', '').replace('.', ''))
         picture_url = [tag['src'] for tag in
                        soup.find('div', 'images-container').findAll('img')
                        if validators.url(tag['src'])

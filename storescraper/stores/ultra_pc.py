@@ -35,6 +35,9 @@ class UltraPc(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, 'html.parser')
         products_container = soup.find('ul', 'products')
 
+        if not products_container:
+            return []
+
         for cont in products_container.findAll('div', 'product-outer'):
             product_url = \
                 cont.find('a', 'woocommerce-LoopProduct-link')[
