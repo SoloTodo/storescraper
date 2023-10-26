@@ -100,7 +100,12 @@ class Dust2(StoreWithUrlExtensions):
             'productDetails__productModel--info-productName'
         ).text.strip()
 
-        preventa = 'PREVENTA' in name
+        description = html_to_markdown(
+            str(soup.find(
+                'div', 'productDetails__productData--specs-info')))
+
+        preventa = ('PREVENTA' in name.upper() or
+                    'PREVENTA' in description.upper())
 
         picture_urls = [tag['src'] for tag in soup.find(
             'div', 'productDetails__productModel--image-moreImages'
@@ -151,7 +156,7 @@ class Dust2(StoreWithUrlExtensions):
             ).find('h5').text.strip()
             agotado_btn = soup.find('div',
                                     'productModel__info--productAgotado')
-            if agotado_btn:
+            if agotado_btn or preventa:
                 stock = 0
             else:
                 qty_input = soup.find('input', 'qty')
@@ -164,10 +169,6 @@ class Dust2(StoreWithUrlExtensions):
                     'div',
                     'productDetails__productModel--info-productTransferPrice'
                 ).find('h3').text))
-
-            description = html_to_markdown(
-                str(soup.find(
-                    'div', 'productDetails__productData--specs-info')))
 
             p = Product(
                 name,
