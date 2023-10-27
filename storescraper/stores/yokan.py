@@ -1,4 +1,5 @@
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -64,12 +65,11 @@ class Yokan(StoreWithUrlExtensions):
         else:
             sku = None
 
-        if soup.find('p', 'available-on-backorder'):
-            stock = 0
-        elif soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock').text.strip().split()[0])
+        stock_tag = soup.find('p', 'in-stock')
+        if stock_tag:
+            stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
         else:
-            stock = -1
+            stock = 0
 
         price_container = soup.find('p', 'price')
         if price_container.find('ins'):
