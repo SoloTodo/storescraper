@@ -544,7 +544,7 @@ class Falabella(Store):
             else:
                 condition = 'https://schema.org/NewCondition'
 
-            picture_urls = [x['url'] + '?scl=1.0' for x in model['medias']]
+            picture_urls = [x['url'] + '?scl=1.0' for x in model['medias'] if validators.url(x['url'])]
             model_name = model['name'].encode(
                 'ascii', 'ignore').decode('ascii')
 

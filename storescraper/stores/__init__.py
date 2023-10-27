@@ -43,7 +43,7 @@ from .dac_digital import DacDigital
 from .dark_light_pc import DarkLightPc
 from .dazbog_store import DazbogStore
 from .de_aires import DeAires
-from .deuva import Deuva
+from .all_tech_market import AllTechMarket
 from .de_prati import DePrati
 from .diamond_pc import DiamondPc
 from .digiplot import Digiplot

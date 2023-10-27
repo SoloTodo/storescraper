@@ -8,7 +8,7 @@ from storescraper.store import Store
 from storescraper.utils import html_to_markdown, session_with_proxy
 
 
-class Deuva(Store):
+class AllTechMarket(Store):
     @classmethod
     def categories(cls):
         return [
@@ -47,8 +47,13 @@ class Deuva(Store):
 
         product_details = soup.find('div', 'product-details')
         name = product_details.find('h1').text
-        price = Decimal(product_details.select_one('#pdx-variant-price')
-                        .text.strip().replace('$', '').replace(',', ''))
+        price_tag = product_details.select_one('#pdx-variant-price')
+        if price_tag.find('span'):
+            price = Decimal(price_tag.find('span').text.strip().replace('$', '').replace(',', ''))
+        else:
+            price = Decimal(
+                price_tag.text.strip().replace('$', '').replace(
+                    ',', ''))
         sku = product_details.find('span', 'text-muted').text.strip()
         stock = 0
         if soup.find('div', 'product-badge').text.strip() \

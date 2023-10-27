@@ -82,11 +82,9 @@ class Computron(Store):
         else:
             stock = 0
 
-        picture_container = soup.find(
-            'div', 'woocommerce-product-gallery__wrapper')
-        picture_urls = [tag['href']
-                        for tag in picture_container.findAll('a')
-                        if tag['href'] != '#']
+        picture_urls = [tag['data-zoom-image']
+                        for tag in soup.findAll(
+                'img', 'attachment-woocommerce_single')]
 
         p = Product(
             name,
