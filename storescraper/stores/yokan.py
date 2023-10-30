@@ -65,18 +65,17 @@ class Yokan(StoreWithUrlExtensions):
         products = []
         if variants_tag:
             variations_data = json.loads(variants_tag['data-product_variations'])
-            print(json.dumps(variations_data))
 
             for variant in variations_data:
                 if variant['attributes']:
                     variant_name = '{} ({})'.format(name, variant['attributes'][
-                        'attribute_style']),
+                        'attribute_style'])
                 else:
                     variant_name = name
 
                 key = str(variant['variation_id'])
                 sku = variant['sku']
-                stock = variant['max_qty']
+                stock = variant['max_qty'] or 0
                 offer_price = Decimal(variant['display_price'])
                 normal_price = (offer_price * Decimal('1.05')).quantize(0)
                 p = Product(
