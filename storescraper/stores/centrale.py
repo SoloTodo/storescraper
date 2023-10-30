@@ -88,7 +88,17 @@ class Centrale(StoreWithUrlExtensions):
         else:
             raise Exception('No JSON product data found')
 
-        part_number = product_data['mpn'] or None
+        modified_notebook_parts_label = soup.find('strong', text='COMPONENTES')
+        if modified_notebook_parts_label:
+            part_number_components = []
+            table_tag = modified_notebook_parts_label.parent.find('table')
+            for row in table_tag.findAll('tr')[1:]:
+                component_mpn = row.findAll('td')[1].text
+                part_number_components.append(component_mpn)
+            part_number = ' + '.join(part_number_components)
+        else:
+            part_number = product_data['mpn'] or None
+
         name = product_data['name'].strip()
         sku = product_data['sku'].strip()
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]

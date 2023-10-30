@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import MONITOR, HEADPHONES, STEREO_SYSTEM, \
-    VIDEO_GAME_CONSOLE, NOTEBOOK
+    VIDEO_GAME_CONSOLE, NOTEBOOK, CELL
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,6 +19,7 @@ class Nintecno(StoreWithUrlExtensions):
         ['notebooks', NOTEBOOK],
         ['monitores', MONITOR],
         ['parlantes-inteligentes', STEREO_SYSTEM],
+        ['celulares', CELL],
     ]
 
     @classmethod

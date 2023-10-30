@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from decimal import Decimal
@@ -57,44 +58,78 @@ class Yokan(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[-1]
-        sku_tag = soup.find('span', 'sku')
-
-        if sku_tag:
-            sku = soup.find('span', 'sku').text.strip()
-        else:
-            sku = None
-
-        stock_tag = soup.find('p', 'in-stock')
-        if stock_tag:
-            stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
-        else:
-            stock = 0
-
-        price_container = soup.find('p', 'price')
-        if price_container.find('ins'):
-            offer_price = Decimal(remove_words(
-                price_container.find('ins').text.strip()))
-        else:
-            offer_price = Decimal(remove_words(
-                price_container.text.strip()))
-
-        normal_price = (offer_price * Decimal('1.05')).quantize(0)
-
         picture_urls = [tag['src'] for tag in
                         soup.find('div', 'product-gallery').findAll('img')]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            picture_urls=picture_urls)
-        return [p]
+        variants_tag = soup.find('form', 'variations_form')
+        products = []
+        if variants_tag:
+            variations_data = json.loads(variants_tag['data-product_variations'])
+            print(json.dumps(variations_data))
+
+            for variant in variations_data:
+                if variant['attributes']:
+                    variant_name = '{} ({})'.format(name, variant['attributes'][
+                        'attribute_style']),
+                else:
+                    variant_name = name
+
+                key = str(variant['variation_id'])
+                sku = variant['sku']
+                stock = variant['max_qty']
+                offer_price = Decimal(variant['display_price'])
+                normal_price = (offer_price * Decimal('1.05')).quantize(0)
+                p = Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    'CLP',
+                    sku=sku,
+                    picture_urls=picture_urls)
+                products.append(p)
+        else:
+            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
+                -1]
+            sku_tag = soup.find('span', 'sku')
+
+            if sku_tag:
+                sku = soup.find('span', 'sku').text.strip()
+            else:
+                sku = None
+            stock_tag = soup.find('p', 'in-stock')
+            if stock_tag:
+                stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
+            else:
+                stock = 0
+
+            price_container = soup.find('p', 'price')
+            if price_container.find('ins'):
+                offer_price = Decimal(remove_words(
+                    price_container.find('ins').text.strip()))
+            else:
+                offer_price = Decimal(remove_words(
+                    price_container.text.strip()))
+
+            normal_price = (offer_price * Decimal('1.05')).quantize(0)
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                normal_price,
+                offer_price,
+                'CLP',
+                sku=sku,
+                picture_urls=picture_urls)
+            products.append(p)
+        return products
