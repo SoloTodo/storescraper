@@ -73,7 +73,7 @@ class Novey(Store):
         price = Decimal(str(prodBean['price']))
         description = prodBean['filterData']
 
-        picture_urls = [i['uri'] for i in prodBean['EProductMediasS']]
+        picture_urls = [i['uri'] for i in prodBean.get('EProductMediasS', [])]
 
         p = Product(
             name,

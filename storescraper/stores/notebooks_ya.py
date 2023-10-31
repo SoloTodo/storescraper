@@ -133,6 +133,10 @@ class NotebooksYa(StoreWithUrlExtensions):
         key = soup.find('a', 'single_add_to_wishlist')['data-product-id']
 
         qty_input = soup.find('input', 'qty')
+
+        if not qty_input:
+            return []
+
         if 'max' in qty_input.attrs:
             stock = int(qty_input['max'])
         else:
