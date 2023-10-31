@@ -7,106 +7,78 @@ from bs4 import BeautifulSoup
 from storescraper.categories import ALL_IN_ONE, NOTEBOOK, STORAGE_DRIVE, \
     EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, \
     MOTHERBOARD, PROCESSOR, VIDEO_CARD, MOUSE, KEYBOARD, TELEVISION, MONITOR, \
-    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR, CASE_FAN
+    MEMORY_CARD, RAM, HEADPHONES, CPU_COOLER, UPS, GAMING_CHAIR, CASE_FAN, CELL
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class CCLink(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            NOTEBOOK,
-            EXTERNAL_STORAGE_DRIVE,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            MOTHERBOARD,
-            PROCESSOR,
-            VIDEO_CARD,
-            MOUSE,
-            KEYBOARD,
-            TELEVISION,
-            MONITOR,
-            MEMORY_CARD,
-            RAM,
-            HEADPHONES,
-            CPU_COOLER,
-            UPS,
-            GAMING_CHAIR,
-            CASE_FAN,
-            ALL_IN_ONE,
-        ]
+class CCLink(StoreWithUrlExtensions):
+    url_extensions = [
+        ['computadores/notebook', NOTEBOOK],
+        ['computadores/todo-en-uno', ALL_IN_ONE],
+        ['partes-y-piezas/almacenamiento/discos-opticos-externos',
+         EXTERNAL_STORAGE_DRIVE],
+        ['partes-y-piezas/almacenamiento/discos-opticos-internos',
+         STORAGE_DRIVE],
+        ['partes-y-piezas/almacenamiento/discos-duros-externos',
+         EXTERNAL_STORAGE_DRIVE],
+        ['partes-y-piezas/almacenamiento/discos-duros-internos',
+         STORAGE_DRIVE],
+        ['partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
+        ['partes-y-piezas/componentes/fuente-de-poder', POWER_SUPPLY],
+        ['partes-y-piezas/componentes/gabinetes', COMPUTER_CASE],
+        ['partes-y-piezas/componentes/placa-madre', MOTHERBOARD],
+        ['partes-y-piezas/componentes/procesadores', PROCESSOR],
+        ['partes-y-piezas/componentes/tarjetas-de-video', VIDEO_CARD],
+        ['partes-y-piezas/componentes/mouse', MOUSE],
+        ['partes-y-piezas/componentes/teclado', KEYBOARD],
+        ['partes-y-piezas/componentes/ventiladores', CASE_FAN],
+        ['partes-y-piezas/componentes/cooler-cpu', CPU_COOLER],
+        ['partes-y-piezas/tv-y-proyeccion/televisores', TELEVISION],
+        ['partes-y-piezas/tv-y-proyeccion/monitores', MONITOR],
+        ['partes-y-piezas/memorias/flash', MEMORY_CARD],
+        ['partes-y-piezas/memorias/ram', RAM],
+        ['partes-y-piezas/componentes/gabinetes-gamer', COMPUTER_CASE],
+        ['partes-y-piezas/componentes/tarjeta-de-video', VIDEO_CARD],
+        ['gamer/juegos-y-consolas/audifonos', HEADPHONES],
+        ['energia/ups', UPS],
+        ['gamer/comodidad-gamer', HEADPHONES],
+        ['gamer/juegos-y-consolas/consolas-xbox', EXTERNAL_STORAGE_DRIVE],
+        ['gamer/componentes-rgb', MOTHERBOARD],
+        ['gamer/comodidad-gamer/sillas-gamer', GAMING_CHAIR],
+        ['celulares', CELL],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['computadores/notebook', NOTEBOOK],
-            ['computadores/todo-en-uno', ALL_IN_ONE],
-            ['partes-y-piezas/almacenamiento/discos-opticos-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['partes-y-piezas/almacenamiento/discos-opticos-internos',
-             STORAGE_DRIVE],
-            ['partes-y-piezas/almacenamiento/discos-duros-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['partes-y-piezas/almacenamiento/discos-duros-internos',
-             STORAGE_DRIVE],
-            ['partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
-            ['partes-y-piezas/componentes/fuente-de-poder', POWER_SUPPLY],
-            ['partes-y-piezas/componentes/gabinetes', COMPUTER_CASE],
-            ['partes-y-piezas/componentes/placa-madre', MOTHERBOARD],
-            ['partes-y-piezas/componentes/procesadores', PROCESSOR],
-            ['partes-y-piezas/componentes/tarjetas-de-video', VIDEO_CARD],
-            ['partes-y-piezas/componentes/mouse', MOUSE],
-            ['partes-y-piezas/componentes/teclado', KEYBOARD],
-            ['partes-y-piezas/componentes/ventiladores', CASE_FAN],
-            ['partes-y-piezas/componentes/cooler-cpu', CPU_COOLER],
-            ['partes-y-piezas/tv-y-proyeccion/televisores', TELEVISION],
-            ['partes-y-piezas/tv-y-proyeccion/monitores', MONITOR],
-            ['partes-y-piezas/memorias/flash', MEMORY_CARD],
-            ['partes-y-piezas/memorias/ram', RAM],
-            ['partes-y-piezas/componentes/gabinetes-gamer', COMPUTER_CASE],
-            ['partes-y-piezas/componentes/tarjeta-de-video', VIDEO_CARD],
-            ['gamer/juegos-y-consolas/audifonos', HEADPHONES],
-            ['energia/ups', UPS],
-            ['gamer/comodidad-gamer', HEADPHONES],
-            ['gamer/juegos-y-consolas/consolas-xbox', EXTERNAL_STORAGE_DRIVE],
-            ['gamer/componentes-rgb', MOTHERBOARD],
-            ['gamer/comodidad-gamer/sillas-gamer', GAMING_CHAIR],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://www.cclink.cl/productos/{}/'. \
-                    format(url_extension)
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://www.cclink.cl/productos/{}/'. \
+                format(url_extension)
 
-                if page > 1:
-                    url_webpage += 'page/{}/'.format(page)
+            if page > 1:
+                url_webpage += 'page/{}/'.format(page)
 
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_containers = soup.find('ul', {
-                    'data-bs-toggle': 'shop-products'})
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers.findAll('li', 'product'):
-                    product_url = \
-                        container.find('a', 'woocommerce-LoopProduct-link')[
-                            'href']
-                    product_urls.append(product_url)
-                page += 1
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html5lib')
+            product_containers = soup.find('ul', {
+                'data-bs-toggle': 'shop-products'})
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers.findAll('li', 'product'):
+                product_url = \
+                    container.find('a', 'woocommerce-LoopProduct-link')[
+                        'href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
