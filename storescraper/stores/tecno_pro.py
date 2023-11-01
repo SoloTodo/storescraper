@@ -72,7 +72,7 @@ class TecnoPro(StoreWithUrlExtensions):
             raise Exception('No JSON product data found')
 
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
-        name = product_data['name']
+        name = soup.find('h1', 'product_title').text.strip()
         sku = product_data.get('sku', None)
         description = product_data.get('description', None)
         stock_tag = soup.find('p', 'stock')
