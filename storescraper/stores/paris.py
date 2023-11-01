@@ -347,6 +347,9 @@ class Paris(Store):
         if offer_price is None or offer_price > normal_price:
             offer_price = normal_price
 
+        if normal_price > Decimal('1000000') or offer_price > Decimal('1000000'):
+            return[]
+
         stock = -1 if product_data['orderable'] else 0
 
         image_groups = product_data['image_groups']

@@ -1,170 +1,107 @@
 import json
 import logging
+import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.banner_sections import TELEVISIONS
-from storescraper.categories import MICROPHONE, STEREO_SYSTEM, UPS, \
-    VIDEO_GAME_CONSOLE, NOTEBOOK, VIDEO_CARD, PROCESSOR, RAM, STORAGE_DRIVE, \
-    SOLID_STATE_DRIVE, USB_FLASH_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, \
-    COMPUTER_CASE, MONITOR, MOTHERBOARD, POWER_SUPPLY, KEYBOARD, MOUSE, \
-    CPU_COOLER, GAMING_CHAIR, HEADPHONES, CELL, ALL_IN_ONE, TABLET, WEARABLE, \
-    PRINTER, CASE_FAN
+from storescraper.categories import (STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MONITOR,
+                                     HEADPHONES, WEARABLE)
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import session_with_proxy
 
 
-class TecnoPro(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            VIDEO_GAME_CONSOLE,
-            NOTEBOOK,
-            VIDEO_CARD,
-            PROCESSOR,
-            RAM,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            MEMORY_CARD,
-            EXTERNAL_STORAGE_DRIVE,
-            COMPUTER_CASE,
-            MONITOR,
-            MOTHERBOARD,
-            POWER_SUPPLY,
-            KEYBOARD,
-            MOUSE,
-            CPU_COOLER,
-            GAMING_CHAIR,
-            TELEVISIONS,
-            HEADPHONES,
-            CELL,
-            ALL_IN_ONE,
-            TABLET,
-            WEARABLE,
-            PRINTER,
-            CASE_FAN,
-            MICROPHONE,
-            STEREO_SYSTEM,
-            UPS
-        ]
+class TecnoPro(StoreWithUrlExtensions):
+    url_extensions = [
+        ['audifonos', HEADPHONES],
+        ['consolas-y-videojuegos', VIDEO_GAME_CONSOLE],
+        ['computacion', HEADPHONES],
+        ['electronica-audio-y-video', HEADPHONES],
+        ['parlantes', STEREO_SYSTEM],
+        ['apple', HEADPHONES],
+        ['celulares-y-telefonia', WEARABLE],
+        ['monitores', MONITOR],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['consolas', VIDEO_GAME_CONSOLE],
-            ['notebook-y-computadores', NOTEBOOK],
-            ['tarjetas-de-video', VIDEO_CARD],
-            ['procesadores', PROCESSOR],
-            ['memoria-ram', RAM],
-            ['disco-duro', STORAGE_DRIVE],
-            ['disco-ssd', SOLID_STATE_DRIVE],
-            ['pendrives', USB_FLASH_DRIVE],
-            ['memorias-y-pendrive', MEMORY_CARD],
-            ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
-            ['gabinetes', COMPUTER_CASE],
-            ['monitores', MONITOR],
-            ['placas-madres', MOTHERBOARD],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['teclados', KEYBOARD],
-            ['mouses-y-teclados', MOUSE],
-            ['impresora-laser', PRINTER],
-            ['impresora-tinta', PRINTER],
-            ['refrigeracion-cpu', CPU_COOLER],
-            ['ventilador-pc', CASE_FAN],
-            ['perifericos-pc', HEADPHONES],
-            ['sillas-y-mesas-gamers', GAMING_CHAIR],
-            ['televisores', TELEVISIONS],
-            ['audifonos', HEADPHONES],
-            ['microfonos', MICROPHONE],
-            ['parlantes', STEREO_SYSTEM],
-            ['ups-y-energia', UPS],
-            ['iphone-1', CELL],
-            ['imac', ALL_IN_ONE],
-            ['macbook', NOTEBOOK],
-            ['ipad', TABLET],
-            ['apple-watch', WEARABLE],
-            ['audifonos-apple', HEADPHONES],
-            ['celulares-y-telefonia', CELL],
-            ['smartwatch', WEARABLE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://tecnopro.cl/collections/{}?' \
-                              'page={}'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('li', 'productgrid--item')
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://tecnopro.cl/categoria-producto/{}/page/{}'.format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-grid-item')
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href'].split('?')[0]
-                    product_urls.append('https://tecnopro.cl' + product_url)
-                page += 1
+            if not product_containers:
+                if page == 1:
+                    logging.warning('empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         response = session.get(url)
 
         soup = BeautifulSoup(response.text, 'html.parser')
-        json_products = json.loads(soup.find('script', {
-            'data-section-type': "static-product"
-        }).text)['product']
+        json_data = json.loads(soup.find(
+            'script', {'type': 'application/ld+json'}).text)
 
-        description = html_to_markdown(json_products['description'])
+        for entry in json_data['@graph']:
+            if entry['@type'] == 'Product':
+                product_data = entry
+                break
+        else:
+            raise Exception('No JSON product data found')
 
-        products = []
-        for variant in json_products['variants']:
-            name = variant['name']
-            preventa = 'PREVENTA' in description.upper() or \
-                       'PREVENTA' in name.upper()
+        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        name = product_data['name']
+        sku = product_data.get('sku', None)
+        description = product_data.get('description', None)
+        stock_tag = soup.find('p', 'stock')
+        stock_match = re.match(r'(\d+)', stock_tag.text)
+        if stock_match:
+            stock = int(stock_match.groups()[0])
+        else:
+            stock = 0
 
-            sku = variant['sku']
-            key = str(variant['id'])
-            stock = -1 if variant['available'] and not preventa else 0
-            price = Decimal(variant['price'] / 100)
-            variant_url = '{}?variant={}'.format(url, key)
+        normal_price = Decimal(product_data['offers']['price'])
+        offer_price = (normal_price * Decimal('0.98')).quantize(0)
 
-            if variant['featured_image']:
-                picture_urls = ['https:' + variant['featured_image']['src']]
-            else:
-                picture_urls = None
+        picture_urls = [tag.find('a')['href'] for tag in
+                        soup.findAll('div', 'product-image-wrap')]
 
-            part_number = variant['barcode'] or None
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description
+        )
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                variant_url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description,
-                part_number=part_number,
-            )
-            products.append(p)
-
-        return products
+        return [p]
