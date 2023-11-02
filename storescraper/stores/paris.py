@@ -57,8 +57,6 @@ class Paris(Store):
          'Electro > HiFi > Parlantes HIFI', 1],
         ['electro/audio-hifi', ['StereoSystem'],
          'Electro > HiFi > Combos HIFI', 1],
-        ['electro/elige-tu-pulgada', ['Television'],
-         'Electro > Elige tu pulgada', 1],
         ['tecnologia/computadores', ['Notebook', 'Tablet', 'AllInOne'],
          'Tecno > Computadores', 0.5],
         ['tecnologia/computadores/notebooks', ['Notebook'],
@@ -347,8 +345,9 @@ class Paris(Store):
         if offer_price is None or offer_price > normal_price:
             offer_price = normal_price
 
-        if normal_price > Decimal('1000000') or offer_price > Decimal('1000000'):
-            return[]
+        if (normal_price > Decimal('100000000') or
+                offer_price > Decimal('100000000')):
+            return []
 
         stock = -1 if product_data['orderable'] else 0
 
