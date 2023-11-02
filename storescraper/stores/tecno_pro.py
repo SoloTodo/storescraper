@@ -3,6 +3,7 @@ import logging
 import re
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MONITOR,
@@ -94,7 +95,9 @@ class TecnoPro(StoreWithUrlExtensions):
         offer_price = (normal_price * Decimal('0.98')).quantize(0)
 
         picture_urls = [tag.find('a')['href'] for tag in
-                        soup.findAll('div', 'product-image-wrap')]
+                        soup.findAll('div', 'product-image-wrap')
+                        if validators.url(tag.find('a')['href'])
+                        ]
 
         p = Product(
             name,
