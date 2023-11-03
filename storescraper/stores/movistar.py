@@ -1,9 +1,10 @@
-import base64
+import logging
+import re
 import time
-from collections import defaultdict
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CELL_PLAN, CELL
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, remove_words
@@ -13,109 +14,84 @@ class Movistar(Store):
     preferred_discover_urls_concurrency = 1
     prepago_url = 'http://ww2.movistar.cl/prepago/'
     planes_url = 'https://ww2.movistar.cl/movil/planes-portabilidad/'
-    required_method_id = '1'
     variations = [{
-            'base_plan': 'EMP_NUM_TAR_5GLibreFullAltasParr',
+            'base_plan': 'skuLineaNuevaTienda',
             'methods': [
                 (1, ''),
             ]
         },
         {
-            'base_plan': 'EMP_POR_TAR_5GLibreFullPortaParr',
+            'base_plan': 'skuPortabilidadTienda',
             'methods': [
                 (1, ' Portabilidad'),
                 (2, ' Portabilidad Cuotas'),
             ]}
     ]
+    include_prepago = True
+    category_paths = [
+        ('celulares', CELL),
+    ]
 
     @classmethod
     def categories(cls):
         return [
-            'CellPlan',
-            'Cell'
+            CELL_PLAN,
+            CELL
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
-        product_entries = defaultdict(lambda: [])
+    def discover_urls_for_category(cls, category, extra_args=None):
+        product_entries = []
 
-        if category == 'CellPlan':
+        if category == CELL_PLAN:
             time.sleep(5)
-            product_entries[cls.prepago_url].append({
-                'category_weight': 1,
-                'section_name': 'Planes',
-                'value': 1
-            })
+            product_entries.append(cls.prepago_url)
+            product_entries.append(cls.planes_url)
+        else:
+            for category_path, local_category in cls.category_paths:
+                if local_category != category:
+                    continue
 
-            product_entries[cls.planes_url].append({
-                'category_weight': 1,
-                'section_name': 'Planes',
-                'value': 2
-            })
-        elif category == 'Cell':
-            page = 1
-            idx = 1
+                page = 1
 
-            while True:
-                if page >= 30:
-                    raise Exception('Page overflow')
+                while True:
+                    if page >= 30:
+                        raise Exception('Page overflow')
 
-                catalogo_url = 'https://catalogo.movistar.cl/tienda/' \
-                               'celulares?prfilter_ajax=0&prfilter_variables' \
-                               '%5Bmodalidades%5D=831&prfilter_ajax=1&p=' \
-                               '{}'.format(page)
-                print(catalogo_url)
-                session = session_with_proxy(extra_args)
-                session.headers['user-agent'] = 'python-requests/2.21.0'
-                soup = BeautifulSoup(session.get(
-                    catalogo_url).json()['productlist'], 'html.parser')
-                containers = soup.findAll('li', 'product')
+                    catalogo_url = ('https://catalogo.movistar.cl/tienda/{}'
+                                    '?p={}&prfilter_ajax=1').format(
+                        category_path, page)
+                    print(catalogo_url)
+                    session = session_with_proxy(extra_args)
+                    session.headers['user-agent'] = 'python-requests/2.21.0'
+                    soup = BeautifulSoup(session.get(
+                        catalogo_url).json()['productlist'], 'html.parser')
+                    containers = soup.findAll('li', 'product')
 
-                if not containers:
-                    if page == 1:
-                        raise Exception('No cells found')
-                    break
+                    if not containers:
+                        if page == 1:
+                            logging.warning('Empty category: ' + catalogo_url)
+                        break
 
-                for container in containers:
-                    product_url = container.find('a')['href'].split('?')[0]
-                    print(product_url)
+                    for container in containers:
+                        product_url = container.find('a')['href'].split('?')[0]
+                        print(product_url)
 
-                    product_entries[product_url].append({
-                        'category_weight': 1,
-                        'section_name': 'Smartphones',
-                        'value': idx
-                    })
+                        product_entries.append(product_url)
 
-                    if len(container.findAll('div', 'color-label')) > 1:
-                        product_soup = BeautifulSoup(
-                            session.get(product_url).text, 'html.parser')
+                        if len(container.findAll('div', 'color-label')) > 1:
+                            product_soup = BeautifulSoup(
+                                session.get(product_url).text, 'html.parser')
 
-                        color_list = product_soup.find(
-                            'div', 'container-colores')
+                            color_list = product_soup.findAll(
+                                'li', 'selectOptions-listOptions-list')
 
-                        if color_list:
-                            for color_element in color_list.findAll('a')[1:]:
-                                sku_url = color_element['href'].split('?')[0]
-                                product_entries[sku_url].append({
-                                    'category_weight': 1,
-                                    'section_name': 'Smartphones',
-                                    'value': idx
-                                })
-                        else:
-                            color_list = product_soup.find('ul',
-                                                           'colorEMP')
-
-                            if color_list:
-                                for color_element in color_list.findAll('a'):
-                                    sku_url = color_element[
-                                        'data-url-key'].split('?')[0]
-                                    product_entries[sku_url].append({
-                                        'category_weight': 1,
-                                        'section_name': 'Smartphones',
-                                        'value': idx
-                                    })
-                    idx += 1
-                page += 1
+                            for color_element in color_list:
+                                sku_url = color_element['data-url']
+                                if sku_url in product_entries:
+                                    continue
+                                product_entries.append(sku_url)
+                    page += 1
 
         return product_entries
 
@@ -155,15 +131,15 @@ class Movistar(Store):
         soup = BeautifulSoup(session.get(url, timeout=30).text, 'html5lib')
         products = []
 
-        plan_containers = soup.findAll('div', 'np-s')
+        plan_containers = soup.findAll('div', 'card')
 
         for plan_container in plan_containers:
             plan_link = plan_container.find('a')
             plan_url = plan_link['href']
             base_plan_name = plan_container.find('h3').text.strip()
 
-            price_text = plan_container.find('span', 'np-s-price-col').find(
-                'em').text
+            price_text = plan_container.find('div', 'precio').find(
+                'span').text
             price = Decimal(remove_words(price_text.split()[0]))
 
             portability_suffixes = ['', ' Portabilidad']
@@ -198,6 +174,9 @@ class Movistar(Store):
 
         session = session_with_proxy(extra_args)
         session.headers['user-agent'] = 'python-requests/2.21.0'
+        session.headers['content-type'] = \
+            'application/x-www-form-urlencoded; charset=UTF-8'
+        session.headers['x-requested-with'] = 'XMLHttpRequest'
         page = session.get(url)
 
         if page.url == 'https://catalogo.movistar.cl/tienda/celulares':
@@ -214,47 +193,77 @@ class Movistar(Store):
         else:
             raise Exception('No base name found')
 
-        sku_status = soup.find('div', 'current-status')
-
-        if not sku_status:
-            return []
-
-        if not soup.find('div', {'data-method': cls.required_method_id}):
-            return []
-
+        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         products = []
-        base_url = url.split('?')[0]
-        base_sku = sku_status['data-sku'].split('EMP')[0]
 
+        # Prepago
+        if cls.include_prepago:
+            product_id = soup.find('input', {'id': 'du-product-id'})['value']
+            payload = 'id={}'.format(product_id)
+            prepago_res = session.post(
+                'https://catalogo.movistar.cl/tienda/detalleequipo/'
+                'ajax/dataproducto', payload)
+            prepago_json = prepago_res.json()
+            prepago_price = Decimal(remove_words(prepago_json['special_price']))
+            products.append(Product(
+                name,
+                cls.__name__,
+                'Cell',
+                url,
+                url,
+                '{} - Movistar Prepago'.format(sku),
+                -1,
+                prepago_price,
+                prepago_price,
+                'CLP',
+                sku=sku,
+                cell_plan_name='Movistar Prepago',
+                cell_monthly_payment=Decimal(0)
+            ))
+
+        # Planes
         for variation in cls.variations:
-            code = '{}{}'.format(base_sku, variation['base_plan'])
-            url = '{}?codigo={}'.format(base_url, base64.b64encode(
-                    code.encode('utf-8')).decode('utf-8'))
+            regex = "var {} = '(.*)';".format(variation['base_plan'])
+            match = re.search(regex, page.text)
+            codigo_oferta = match.groups()[0]
+            if not codigo_oferta:
+                continue
+            payload = 'sku={}&codigo_oferta={}'.format(sku, codigo_oferta)
 
-            res = session.get(url)
-            assert res.url == url, res.url
-            soup = BeautifulSoup(res.text, 'html.parser')
+            planes_res = session.post('https://catalogo.movistar.cl/tienda/'
+                                      'detalleequipo/ajax/dataplanesproducto',
+                                      payload)
+            planes = planes_res.json()
 
-            for method_id, plan_name_suffix in variation['methods']:
-                plan_tags = soup.findAll(
-                    'div', {'data-method': str(method_id)})
+            for plan in planes:
+                precio_payload = 'sku_plan={}&sku={}&sku_oferta={}'.format(
+                    plan['sku_plan'].replace(' ', '+'), sku, codigo_oferta)
+                precio_res = session.post(
+                    'https://catalogo.movistar.cl/tienda/detalleequipo/'
+                    'ajax/datafinanciamientoproducto',
+                    precio_payload)
+                precio_data = precio_res.json()
 
-                for plan_tag in plan_tags:
-                    cell_plan_name = plan_tag.select_one(
-                        'p.boxPlanesEmp-plan b').text.split(
-                        ':')[0].strip() + plan_name_suffix
-
+                for method_id, plan_name_suffix in variation['methods']:
+                    cell_plan_name = plan['name'].strip() + plan_name_suffix
                     if method_id == 1:
-                        price = Decimal(plan_tag['data-price']).quantize(0)
-                        cell_monthly_payment = Decimal(0)
-                    elif method_id in [2, 3]:
                         price = Decimal(remove_words(
-                            plan_tag.find('p',
-                                          'boxEMPlan-int-box-pie').text.split(
-                                '$')[1]))
-                        cell_monthly_payment = Decimal(remove_words(
-                            plan_tag.select_one(
-                                'p.boxEMPlan-int-meses b').text))
+                            precio_data['tarjeta']['total']))
+                        cell_monthly_payment = Decimal(0)
+                    elif method_id == 2:
+                        if 'boleta' not in precio_data:
+                            continue
+                        price = Decimal(remove_words(
+                            precio_data['boleta']['pieFormated']))
+                        cell_monthly_payment = Decimal(
+                            remove_words(precio_data['boleta']['precioCuotas']))
+                    elif method_id == 3:
+                        if 'mone' not in precio_data:
+                            continue
+                        price = Decimal(remove_words(
+                            precio_data['mone']['pieFormated']))
+                        cell_monthly_payment = Decimal(
+                            remove_words(precio_data['mone']['precioCuotas']))
                     else:
                         raise Exception('Invalid method ID ', method_id)
 
@@ -264,12 +273,12 @@ class Movistar(Store):
                         'Cell',
                         url,
                         url,
-                        '{} - {}'.format(base_sku, cell_plan_name),
+                        '{} - {}'.format(sku, cell_plan_name),
                         -1,
                         price,
                         price,
                         'CLP',
-                        sku=base_sku,
+                        sku=sku,
                         cell_plan_name=cell_plan_name,
                         cell_monthly_payment=cell_monthly_payment,
                         allow_zero_prices=True

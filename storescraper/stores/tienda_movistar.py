@@ -1,23 +1,25 @@
-import json
-import logging
-import re
-import urllib
-
-from collections import defaultdict
-from bs4 import BeautifulSoup
-from decimal import Decimal
-
 from storescraper.categories import HEADPHONES, TABLET, CELL, WEARABLE, \
-    VIDEO_GAME_CONSOLE, STEREO_SYSTEM
-from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+    VIDEO_GAME_CONSOLE, STEREO_SYSTEM, TELEVISION, NOTEBOOK
+from .movistar import Movistar
 
 
-class TiendaMovistar(Store):
-    # preferred_discover_urls_concurrency = 1
-    # preferred_products_for_url_concurrency = 1
+class TiendaMovistar(Movistar):
+    variations = []
+    category_paths = [
+        ('celulares', CELL),
+        ('outlet/celulares-reacondicionados', CELL),
+        ('outlet/tablets', TABLET),
+        ('outlet/smartwatch', WEARABLE),
+        ('outlet/accesorios', HEADPHONES),
+        ('smartwatch', WEARABLE),
+        ('tablets', TABLET),
+        ('audifonos', HEADPHONES),
+        ('gaming/consolas', VIDEO_GAME_CONSOLE),
+        ('gaming/accesorios-gamer', HEADPHONES),
+        ('smarthome', TELEVISION),
+        ('accesorios/parlantes-bluetooth', STEREO_SYSTEM),
+        ('notebooks', NOTEBOOK),
+    ]
 
     @classmethod
     def categories(cls):
@@ -31,143 +33,12 @@ class TiendaMovistar(Store):
         ]
 
     @classmethod
-    def discover_entries_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['celulares', [CELL], 'Celulares', 1],
-            ['outlet/celulares-reacondicionados', [CELL],
-             'Celulares Reacondicionados', 1],
-            ['outlet.html', [CELL], 'Outlet', 1],
-            ['tablets', [TABLET], 'Tablets', 1],
-            ['outlet/tablets', [TABLET], 'Outlet Tablets', 1],
-            ['audifonos', [HEADPHONES], 'Audífonos', 1],
-            ['smartwatch', [WEARABLE], 'SmartWatch', 1],
-            ['outlet/smartwatch', [WEARABLE], 'Outlet Smartwatch', 1],
-            ['gaming/consolas', [VIDEO_GAME_CONSOLE],
-             'Consolas de Videojuegos', 1],
-            ['accesorios/parlantes-bluetooth', [STEREO_SYSTEM],
-             'Parlantes Bluetooth', 1],
-        ]
-
-        session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'python-requests/2.21.0'
-        product_entries = defaultdict(lambda: [])
-
-        for e in category_paths:
-            category_path, local_categories, section_name, category_weight = e
-
-            if category not in local_categories:
-                continue
-
-            page = 1
-            current_position = 1
-            done = False
-
-            while not done:
-                category_url = 'https://catalogo.movistar.cl/tienda/{}/' \
-                               '?p={}'.format(category_path, page)
-
-                if page >= 80:
-                    raise Exception('Page overflow: ' + category_url)
-
-                soup = BeautifulSoup(session.get(category_url).text,
-                                     'html.parser')
-
-                items = soup.findAll('li', 'product')
-
-                if not items:
-                    if page == 1:
-                        logging.warning('Empty category: ' + category_url)
-                    break
-
-                empty_page = True
-
-                for cell_item in items:
-                    if not cell_item.find('div', 'sin-stock'):
-                        empty_page = False
-                    product_url = cell_item.find('a')['href']
-                    if product_url in product_entries:
-                        done = True
-                        break
-
-                    product_entries[product_url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': current_position
-                    })
-
-                    current_position += 1
-
-                if empty_page:
-                    break
-
-                page += 1
-
-        return product_entries
-
-    @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        print(url)
-        session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'python-requests/2.21.0'
-        response = session.get(url)
-
-        if response.status_code == 404:
-            return []
-
-        page_source = response.text
-        soup = BeautifulSoup(page_source, 'html.parser')
-
-        if not soup.find('body') or \
-                not soup.find('h1', {'id': 'nombre-producto'}):
-            return []
-
-        name = soup.find('h1', {'id': 'nombre-producto'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-
-        stock_headers = {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Referer': url,
-        }
-        stock_session = session_with_proxy(extra_args)
-        stock_session.headers = stock_headers
-
-        stock_data = stock_session.post(
-            'https://catalogo.movistar.cl/fullprice/stockproducto/validar/',
-            'sku={}&cookie_detail=0'.format(sku),
-        ).json()
-
-        if 'cantidad' in stock_data['respuesta']:
-            stock = int(stock_data['respuesta']['cantidad'])
-        else:
-            stock = 0
-
-        price_container = soup.find('span', 'special-price').find('p')
-        price = Decimal(remove_words(price_container.text))
-
-        description = html_to_markdown(str(
-            soup.find('div', 'detailed-desktop')))
-
-        if 'seminuevo' in description.lower() or 'seminuevo' in name.lower():
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
-
-        picture_urls = [soup.find('meta', {'property': 'og:image'})['content']]
-
-        return [Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'CLP',
-            condition=condition,
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls
-        )]
+        products = super(TiendaMovistar, cls).products_for_url(url)
+        for product in products:
+            product.key = product.sku
+            product.cell_plan_name = None
+            product.cell_monthly_payment = None
+            if 'seminuevo' in product.url:
+                product.condition = 'https://schema.org/RefurbishedCondition'
+        return products

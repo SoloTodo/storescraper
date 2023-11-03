@@ -3,19 +3,19 @@ from .movistar import Movistar
 
 
 class MovistarOne(Movistar):
-    required_method_id = '3'
     variations = [{
-        'base_plan': 'EMP_NUM_MOV_5GLibreUltraAltasPar',
+        'base_plan': 'skuLineaNuevaTienda',
         'methods': [
             (3, ' Cuotas'),
         ]
     },
         {
-            'base_plan': 'EMP_POR_MOV_5GLibreUltraPortaPar',
+            'base_plan': 'skuPortabilidadTienda',
             'methods': [
                 (3, ' Portabilidad Cuotas'),
             ]}
     ]
+    include_prepago = False
 
     @classmethod
     def categories(cls):
