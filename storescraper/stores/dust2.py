@@ -1,188 +1,127 @@
-import json
-import logging
+import re
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
-
 from storescraper.categories import PRINTER, UPS, MOUSE, \
     KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
     CPU_COOLER, RAM, POWER_SUPPLY, PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     STORAGE_DRIVE, MEMORY_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, \
     MONITOR, KEYBOARD_MOUSE_COMBO, NOTEBOOK, WEARABLE, SOLID_STATE_DRIVE, \
-    CASE_FAN
+    CASE_FAN, ALL_IN_ONE, TABLET
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    remove_words
+from storescraper.utils import session_with_proxy
 
 
 class Dust2(StoreWithUrlExtensions):
     url_extensions = [
-        ['mouse-gamer', MOUSE],
         ['teclados-gamer', KEYBOARD],
-        ['kits-gamer', KEYBOARD_MOUSE_COMBO],
+        ['mouse-gamer', MOUSE],
         ['audifonos-gamer', HEADPHONES],
-        ['parlantes-gamer', STEREO_SYSTEM],
         ['sillas-gamer', GAMING_CHAIR],
-        ['monitores-gamer', MONITOR],
-        ['equipos', NOTEBOOK],
-        ['memorias-ram-notebooks', RAM],
+        ['kits-gamer', KEYBOARD_MOUSE_COMBO],
+        ['parlantes-gamer', STEREO_SYSTEM],
+        ['24-a-27-pulgadas', MONITOR],
+        ['29-superior', MONITOR],
+        ['procesadores', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['placas-madres', MOTHERBOARD],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['gabinetes', COMPUTER_CASE],
+        ['memorias-ram', RAM],
+        ['refrigeracion-liquida', CPU_COOLER],
+        ['fans-y-controladores', CASE_FAN],
+        ['cooler-para-cpu', CPU_COOLER],
+        ['discos-m-2', SOLID_STATE_DRIVE],
+        ['ssd-y-discos-duros', STORAGE_DRIVE],
+        ['discos-y-ssd-externos', EXTERNAL_STORAGE_DRIVE],
+        ['audifonos-ps5', HEADPHONES],
+        ['audifonos-xbox', HEADPHONES],
         ['impresoras', PRINTER],
         ['respaldo-energia', UPS],
         ['smartband', WEARABLE],
         ['tarjetas-de-memoria-electronica', MEMORY_CARD],
         ['pendrives', USB_FLASH_DRIVE],
-        ['gabinetes', COMPUTER_CASE],
-        ['fans-y-controladores', CASE_FAN],
-        ['cooler-para-cpu', CPU_COOLER],
-        ['refrigeracion-liquida', CPU_COOLER],
-        ['memorias-ram', RAM],
-        ['fuentes-de-poder', POWER_SUPPLY],
-        ['procesadores', PROCESSOR],
-        ['placas-madres', MOTHERBOARD],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['ssd-y-discos-duros', STORAGE_DRIVE],
-        ['tarjetas-de-memoria', MEMORY_CARD],
-        ['discos-y-ssd-externos', EXTERNAL_STORAGE_DRIVE],
-        ['discos-m-2', SOLID_STATE_DRIVE],
+        ['accesorios-tablets', TABLET],
+        ['notebooks', NOTEBOOK],
+        ['equipos', NOTEBOOK],
+        ['memorias-ram-notebooks', RAM],
         ['teclados-perifericos', KEYBOARD],
         ['mouse-perifericos', MOUSE],
-        ['combo-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
         ['audifonos-audio', HEADPHONES],
         ['parlantes-audio', STEREO_SYSTEM],
+        ['combo-teclado-y-mouse', KEYBOARD_MOUSE_COMBO],
         ['monitores-oficina', MONITOR],
-        ['audifonos-ps5', HEADPHONES],
-        ['audifonos-xbox', HEADPHONES],
+        ['24-a-27-pulgadas-oficina', MONITOR],
+        ['27-a-32-pulgadas-oficina', MONITOR],
+        ['29-o-superior-oficina', MONITOR],
+        ['aio', ALL_IN_ONE],
+        ['tarjetas-de-memoria', MEMORY_CARD],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-             '(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
-
+        categories_data = extra_args['categories_data']
         product_urls = []
-        page = 1
-        while True:
-            if page > 25:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://dust2.gg/categoria-producto/{}/page' \
-                          '/{}/?orderby=price'.format(url_extension, page)
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                if container.find('span', 'woostify-out-of-stock-label'):
-                    return product_urls
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+        for node in categories_data[url_extension]['products'] or []:
+            product_urls.append('https://dust2.gg/producto/{}/'.format(node['slug']))
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        products_data = extra_args['products_data']
+        slug = re.search(r'/producto/(.+)/', url).groups()[0]
+        product_data = products_data[slug]
+        name = product_data['name']
+        sku = product_data['sku']
+        key = str(product_data['wordpress_id'])
+        stock = product_data['stock_quantity'] or 0
+        normal_price = Decimal(product_data['price'])
+        offer_price = (normal_price * Decimal('0.93')).quantize(0)
+        picture_urls = [tag['src'] for tag in product_data['images']]
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+
+        )
+        return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-             '(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
+        session.headers['User-Agent'] = 'PostmanRuntime/7.29.3'
+        initial_page_url = ('https://dust2.gg/page-data/categoria-producto/{}/'
+                            'page-data.json').format(cls.url_extensions[0][0])
+        page_data_json = session.get(initial_page_url).json()
+        products_data = {}
+        categories_data = {}
+        for static_query_hash in page_data_json['staticQueryHashes']:
+            static_query_url = 'https://dust2.gg/page-data/sq/d/{}.json'.format(
+                static_query_hash)
+            static_query_json = session.get(static_query_url).json()['data']
+            if 'allWcProductsCategories' in static_query_json:
+                for node in static_query_json['allWcProductsCategories']['edges']:
+                    categories_data[node['node']['slug']] = node['node']
+            if ('allWcProducts' not in static_query_json or 'nodes' not in
+                    static_query_json['allWcProducts']):
+                continue
+            for node in static_query_json['allWcProducts']['nodes']:
+                products_data[node['slug']] = node
 
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find(
-            'div',
-            'productDetails__productModel--info-productName'
-        ).text.strip()
+        assert categories_data
+        assert products_data
 
-        description = html_to_markdown(
-            str(soup.find(
-                'div', 'productDetails__productData--specs-info')))
-
-        preventa = ('PREVENTA' in name.upper() or
-                    'PREVENTA' in description.upper())
-
-        picture_urls = [tag['src'] for tag in soup.find(
-            'div', 'productDetails__productModel--image-moreImages'
-        ).findAll('img') if tag['src'] != ""]
-        variants = soup.find('form', 'variations_form cart')
-        if variants:
-            products = []
-            json_variants = json.loads(variants['data-product_variations'])
-            for variant in json_variants:
-                variant_suffix = ''
-
-                if isinstance(variant['attributes'], dict):
-                    for key, value in variant['attributes'].items():
-                        variant_suffix += '{} {}'.format(key, value)
-                else:
-                    variant_suffix = 'variante invalida'
-
-                variant_name = name + ' - ' + variant_suffix
-                variant_sku = str(variant['variation_id'])
-                variant_stock = 0 if variant['max_qty'] == '' or preventa \
-                    else variant['max_qty']
-                variant_normal_price = Decimal(variant['display_price'])
-                variant_offer_price = Decimal(
-                    round(variant['display_price'] * 0.93))
-                p = Product(
-                    variant_name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    variant_sku,
-                    variant_stock,
-                    variant_normal_price,
-                    variant_offer_price,
-                    'CLP',
-                    sku=variant['sku'],
-                    picture_urls=picture_urls,
-
-                )
-                products.append(p)
-
-            return products
-        else:
-            key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[
-                1]
-            sku = soup.find(
-                'div', 'productDetails__productModel--info-productSKU'
-            ).find('h5').text.strip()
-            agotado_btn = soup.find('div',
-                                    'productModel__info--productAgotado')
-            if agotado_btn or preventa:
-                stock = 0
-            else:
-                qty_input = soup.find('input', 'qty')
-                stock = int(qty_input['max'])
-            normal_price = Decimal(remove_words(soup.find(
-                'div', 'productDetails__productModel--info-productCardPrice'
-            ).find('h3').text))
-            offer_price = Decimal(remove_words(
-                soup.find(
-                    'div',
-                    'productDetails__productModel--info-productTransferPrice'
-                ).find('h3').text))
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description
-            )
-            return [p]
+        return {
+            'products_data': products_data,
+            'categories_data': categories_data
+        }
