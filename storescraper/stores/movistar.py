@@ -205,21 +205,22 @@ class Movistar(Store):
                 'ajax/dataproducto', payload)
             prepago_json = prepago_res.json()
             prepago_price = Decimal(remove_words(prepago_json['special_price']))
-            products.append(Product(
-                name,
-                cls.__name__,
-                'Cell',
-                url,
-                url,
-                '{} - Movistar Prepago'.format(sku),
-                -1,
-                prepago_price,
-                prepago_price,
-                'CLP',
-                sku=sku,
-                cell_plan_name='Movistar Prepago',
-                cell_monthly_payment=Decimal(0)
-            ))
+            if prepago_price:
+                products.append(Product(
+                    name,
+                    cls.__name__,
+                    'Cell',
+                    url,
+                    url,
+                    '{} - Movistar Prepago'.format(sku),
+                    -1,
+                    prepago_price,
+                    prepago_price,
+                    'CLP',
+                    sku=sku,
+                    cell_plan_name='Movistar Prepago',
+                    cell_monthly_payment=Decimal(0)
+                ))
 
         # Planes
         for variation in cls.variations:

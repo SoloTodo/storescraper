@@ -110,7 +110,7 @@ class MacOnline(Store):
                 description = html_to_markdown(
                     json_product['technical_details'])
                 description += '\n\n' + html_to_markdown(
-                    json_product['description'])
+                    json_product.get('description', ''))
 
                 if 'INTERNACIONAL' in name.upper():
                     stock = 0
