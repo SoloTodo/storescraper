@@ -248,6 +248,8 @@ class Movistar(Store):
                 for method_id, plan_name_suffix in variation['methods']:
                     cell_plan_name = plan['name'].strip() + plan_name_suffix
                     if method_id == 1:
+                        if 'tarjeta' not in precio_data:
+                            continue
                         price = Decimal(remove_words(
                             precio_data['tarjeta']['total']))
                         cell_monthly_payment = Decimal(0)

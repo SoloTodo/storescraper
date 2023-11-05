@@ -154,7 +154,7 @@ class MacOnline(Store):
             name = json_data['name']
             sku = json_data['sku']
             price = Decimal(json_data['offers']['price'])
-            description = html_to_markdown(json_data['description'])
+            description = html_to_markdown(json_data.get('description', ''))
             picture_urls = [x.split('?')[0] for x in json_data['image']]
 
             if 'INTERNACIONAL' in name.upper():
