@@ -1,5 +1,4 @@
 import re
-import time
 from decimal import Decimal
 from storescraper.categories import PRINTER, UPS, MOUSE, \
     KEYBOARD, HEADPHONES, STEREO_SYSTEM, GAMING_CHAIR, COMPUTER_CASE, \
@@ -13,6 +12,8 @@ from storescraper.utils import session_with_proxy
 
 
 class Dust2(StoreWithUrlExtensions):
+    prefer_async = False
+
     url_extensions = [
         ['teclados-gamer', KEYBOARD],
         ['mouse-gamer', MOUSE],
@@ -60,7 +61,6 @@ class Dust2(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        time.sleep(3)
         categories_data = extra_args['categories_data']
         product_urls = []
         for node in categories_data[url_extension]['products'] or []:
@@ -70,7 +70,6 @@ class Dust2(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        time.sleep(3)
         products_data = extra_args['products_data']
         slug = re.search(r'/producto/(.+)/', url).groups()[0]
         product_data = products_data[slug]
