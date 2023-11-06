@@ -2,6 +2,7 @@ import json
 import logging
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import SOLID_STATE_DRIVE, \
@@ -123,6 +124,9 @@ class Centrale(StoreWithUrlExtensions):
             picture_urls.append(
                 soup.find('div', 'woocommerce-product-gallery__image').find(
                     'img')['src'])
+
+        picture_urls = [x for x in picture_urls if validators.url(x)]
+
         p = Product(
             name,
             cls.__name__,
