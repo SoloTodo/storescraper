@@ -105,7 +105,7 @@ class LgV6(Store):
             stock = 0
 
         picture_urls = ['https://www.lg.com/content/dam/channel/wcms' +
-                        json_data['ec_large_image_addr']]
+                        json_data['ec_large_image_addr'].replace(' ', '%20')]
 
         section_path_components = []
         for i in range(1, 5):
