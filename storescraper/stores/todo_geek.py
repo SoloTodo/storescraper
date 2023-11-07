@@ -1,4 +1,3 @@
-from collections import defaultdict
 from decimal import Decimal
 import json
 import logging
@@ -13,10 +12,6 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class TodoGeek(StoreWithUrlExtensions):
-    OPEN_BOX_COLLECTION = 401041227988
-    REFURBISHED_COLLECTION = 401041326292
-    ESPERALO_Y_PAGA_MENOS_COLLECTION = 411533082836
-
     url_extensions = [
         ['procesadores', PROCESSOR],
         ['tarjetas-graficas', VIDEO_CARD],
@@ -60,45 +55,34 @@ class TodoGeek(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        shipping_rules = cls._get_shipping_rules(response)
 
-        json_match = re.search(r'var otEstProduct = (.+)\n', response.text)
-        json_data = json.loads(json_match.groups()[0])
+        match = re.search(r'"delivery__app_setting": (.+),', response.text)
+        json_data = json.loads(match.groups()[0])
+        order_ready_day_range = \
+        json_data['main_delivery_setting']['order_delivery_day_range']
+        max_day = max(order_ready_day_range)
 
-        collections_endpoint = 'https://apps3.omegatheme.com/' \
-                               'estimated-shipping/client/services/' \
-                               '_shopify.php?shop=todogeek4.myshopify.com&' \
-                               'action=getCollectionsByProductId' \
-                               '&productId=' + str(json_data['id'])
-        collections = session.get(collections_endpoint).json()
-
-        rules = shipping_rules['product'][str(json_data['id'])]
-
-        for collection in collections:
-            rules.extend(shipping_rules['collection'][str(collection)])
-
-        if not rules:
-            print('No rules: ' + url)
-
-        rules.sort(key=lambda rule: int(rule['shipping_method']['position']))
-        preventa = rules and int(rules[0]['minimum_days']) > 1
-
-        if not preventa and rules:
-            for rule in rules[1:]:
-                if int(rule['minimum_days']) > 1:
-                    raise Exception('Conflicting rules found')
+        match = re.search(r'const productJson = (.+);', response.text)
+        json_data = json.loads(match.groups()[0])
 
         category_tags = soup.find(
             'span', text='Categoria: ').parent.findAll('a')
         assert category_tags
 
-        for tag in category_tags:
-            if 'ESPERALO' in tag.text.upper() or \
-                    'ESPERALO' in tag['href'].upper():
-                a_pedido = True
-                break
+        if max_day > 2:
+            a_pedido = True
         else:
-            a_pedido = False
+            for tag in category_tags:
+                if 'ESPERALO' in tag.text.upper() or \
+                        'ESPERALO' in tag['href'].upper():
+                    a_pedido = True
+                    break
+                if 'RESERVA' in tag.text.upper() or \
+                        'RESERVA' in tag['href'].upper():
+                    a_pedido = True
+                    break
+            else:
+                a_pedido = False
 
         picture_urls = []
 
@@ -115,8 +99,7 @@ class TodoGeek(StoreWithUrlExtensions):
                            Decimal(100)).quantize(0)
             normal_price = (offer_price * Decimal('1.035')).quantize(0)
 
-            if preventa or a_pedido or \
-                    cls.ESPERALO_Y_PAGA_MENOS_COLLECTION in collections or \
+            if a_pedido or \
                     'RESERVA' in description.upper() or \
                     'VENTA' in name.upper():
                 stock = 0
@@ -125,10 +108,15 @@ class TodoGeek(StoreWithUrlExtensions):
             else:
                 stock = 0
 
-            if cls.OPEN_BOX_COLLECTION in collections:
-                condition = 'https://schema.org/OpenBoxCondition'
-            elif cls.REFURBISHED_COLLECTION in collections:
-                condition = 'https://schema.org/RefurbishedCondition'
+            for tag in category_tags:
+                if 'OPEN BOX' in tag.text.upper() or \
+                        'OPEN BOX' in tag['href'].upper():
+                    condition = 'https://schema.org/OpenBoxCondition'
+                    break
+                if 'REACONDICIONADO' in tag.text.upper() or \
+                        'REACONDICIONADO' in tag['href'].upper():
+                    condition = 'https://schema.org/OpenBoxCondition'
+                    break
             else:
                 condition = 'https://schema.org/NewCondition'
 
@@ -149,39 +137,3 @@ class TodoGeek(StoreWithUrlExtensions):
             )
             products.append(p)
         return products
-
-    @classmethod
-    def _get_shipping_rules(cls, response):
-        match = re.search(r'window\.otEstAppData = (.+)', response.text)
-        json_data = json.loads(match.groups()[0])
-        # print(json.dumps(json_data))
-        raw_rules = json_data['data']['app']
-
-        shipping_methods_dict = {
-            x['id']: x
-            for x in raw_rules['shippingMethods']
-        }
-
-        shipping_rules_dict = {}
-
-        for shipping_rule in raw_rules['estimatedDate']['specificRules']:
-            shipping_rule['shipping_method'] = \
-                shipping_methods_dict[shipping_rule['shipping_method_id']]
-            shipping_rules_dict[shipping_rule['id']] = shipping_rule
-
-        shipping_rules = {
-            'product': defaultdict(lambda: []),
-            'collection': defaultdict(lambda: [])
-        }
-        for specificTarget in raw_rules['estimatedDate'][
-                'specificRuleTargets']:
-            rule = shipping_rules_dict[specificTarget['rule_id']]
-
-            if rule['enable'] != '1':
-                raise Exception('Disabled rule?')
-
-            shipping_rules[specificTarget['type']][
-                specificTarget['value']].append(rule)
-
-        # print(json.dumps(shipping_rules))
-        return shipping_rules

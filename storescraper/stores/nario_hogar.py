@@ -58,7 +58,7 @@ class NarioHogar(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('meta', {'property': 'og:title'})['content']
-        sku = url.split('/')[-1]
+        sku = url.split('/')[-1][:45]
         stock = -1
         price = Decimal(
             soup.find('div', 'product-price').find('span').text.split()[-1])

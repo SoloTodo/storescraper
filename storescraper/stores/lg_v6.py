@@ -36,6 +36,7 @@ class LgV6(Store):
                 category_paths:
             if local_category != category:
                 continue
+            print(category_id)
 
             payload = {
                 "aq": '@ec_sub_category_id=="{0}" OR @ec_category_id=="{0}"'.format(category_id),
@@ -163,7 +164,7 @@ class LgV6(Store):
                 "ec_cheaper_price": "NOT_LOGGED_IN",
                 "ec_discount_tooltip": "NOT_LOGGED_IN"
             },
-            "tokenId": "vvwm536y6cb44qkvradmotcppy",
+            "tokenId": "sizgubppc52iv5u65vjds52a6e",
             "organization": "lgcorporationproduction0fxcu0qx",
             "userIds": [
                 {
@@ -176,11 +177,11 @@ class LgV6(Store):
                 "queryExecutor"
             ],
             "iss": "SearchApi",
-            "exp": 1699307335,
-            "iat": 1699220935
+            "exp": 1699451223,
+            "iat": 1699364823
         }
 
-        auth_p3 = 'KwTrHw02H1V3BFJCAkk2F_tFQfrCV0WUPs0-Wu2pTfE'
+        auth_p3 = 'UXz3z_nb2n9rv9n7HCjpz_p6b4Gjw8SkldbCCPIhnts'
         auth_p1 = base64.b64encode(
             json.dumps(auth_p1_d, separators=(',', ':')).encode(
                 'utf-8')).decode('utf-8')

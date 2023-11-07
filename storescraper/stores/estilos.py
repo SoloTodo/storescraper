@@ -1,12 +1,12 @@
-import urllib
+import base64
 from decimal import Decimal
 import json
-import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy, \
+    vtex_preflight, check_ean13
 
 
 class Estilos(Store):
@@ -16,44 +16,47 @@ class Estilos(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # Only returns LG products
-
         if category != TELEVISION:
             return []
-
-        session = session_with_proxy(extra_args)
         product_urls = []
+        session = session_with_proxy(extra_args)
 
-        url_templates = [
-            'https://www.estilos.com.pe/buscar?controller=search&s=LG&page={}',
-            'https://www.estilos.com.pe/54_lg?page={}',
-            'https://www.estilos.com.pe/3934-cierra-puertas-online?page={}'
-        ]
+        offset = 0
+        while True:
+            if offset >= 400:
+                raise Exception('Page overflow')
 
-        for url_template in url_templates:
-            page = 1
-            while True:
-                if page > 20:
-                    raise Exception('Page overflow')
+            variables = {
+                "from": offset,
+                "to": offset + 24,
+                "selectedFacets": [{"key": "b", "value": 'lg'}]
+            }
 
-                url_webpage = url_template.format(page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+            payload = {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args['sha256Hash']
+                },
+                "variables": base64.b64encode(json.dumps(
+                    variables).encode('utf-8')).decode('utf-8')
+            }
 
-                product_containers = soup.findAll('div', 'ajax_block_product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category')
-                    break
-                for container in product_containers:
-                    raw_product_url = container.find('a')['href']
-                    decoded_url = urllib.parse.urlparse(raw_product_url)
-                    product_path = decoded_url.path.split('/')[-1]
-                    product_url = 'https://www.estilos.com.pe/' + product_path
-                    product_urls.append(product_url)
+            endpoint = 'https://www.estilos.com.pe/_v/segment/graphql/v1' \
+                       '?extensions={}'.format(json.dumps(payload))
+            response = session.get(endpoint).json()
 
-                page += 1
+            product_entries = response['data']['productSearch']['products']
+
+            if not product_entries:
+                break
+
+            for product_entry in product_entries:
+                product_url = 'https://www.estilos.com.pe/{}/p'.format(
+                    product_entry['linkText'])
+                product_urls.append(product_url)
+
+            offset += 24
+
         return product_urls
 
     @classmethod
@@ -63,26 +66,40 @@ class Estilos(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        product_tag = soup.find('div', {'id': 'product-details'})
+        product_data = json.loads(
+            soup.find('template', {'data-varname': '__STATE__'}).find(
+                'script').string)
 
-        if not product_tag:
-            return []
+        base_json_key = list(product_data.keys())[0]
+        product_specs = product_data[base_json_key]
 
-        product_data = json.loads(product_tag['data-product'])
+        item_key = '{}.items.0'.format(base_json_key)
+        key = product_data[item_key]['itemId']
+        ean = product_data[item_key]['ean']
+        if not check_ean13(ean):
+            ean = None
 
-        key = str(product_data['id'])
-        name = product_data['name']
-        sku = product_data['reference']
-        price = Decimal(str(product_data['price_amount']))
-        stock = product_data['quantity']
-        picture_urls = [image['bySize']['large_default']['url'] for image in
-                        product_data['images']]
+        name = product_specs['productName']
+        sku_key = '{}.items.0.referenceId.0'.format(base_json_key)
+        sku = product_data[sku_key]['Value']
+        description = html_to_markdown(product_specs.get('description', ''))
 
-        description_section = soup.find('section', 'product-features')
-        if description_section:
-            description = html_to_markdown(description_section.text)
-        else:
-            description = None
+        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
+            base_json_key)
+        pricing_data = product_data[pricing_key]
+
+        price = Decimal(str(pricing_data['Price'])) + \
+                Decimal(str(pricing_data['Tax']))
+        stock = pricing_data['AvailableQuantity']
+
+        picture_list_key = '{}.items.0'.format(base_json_key)
+        picture_list_node = product_data[picture_list_key]
+        picture_ids = [x['id'] for x in picture_list_node['images']]
+
+        picture_urls = []
+        for picture_id in picture_ids:
+            picture_node = product_data[picture_id]
+            picture_urls.append(picture_node['imageUrl'].split('?')[0])
 
         p = Product(
             name,
@@ -96,7 +113,14 @@ class Estilos(Store):
             price,
             'PEN',
             sku=sku,
-            picture_urls=picture_urls,
+            ean=ean,
             description=description,
+            picture_urls=picture_urls
         )
+
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        return vtex_preflight(
+            extra_args, 'https://www.estilos.com.pe/electro/electro/video')
