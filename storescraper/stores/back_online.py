@@ -116,6 +116,9 @@ class BackOnline(StoreWithUrlExtensions):
                 price = Decimal(variation['price'] / 100).quantize(0)
                 sku = variation['sku']
 
+                if not sku:
+                    continue
+
                 if variation['featured_image']:
                     picture_urls = ['https:' +
                                     variation['featured_image']['src']]
