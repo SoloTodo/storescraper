@@ -129,7 +129,12 @@ class BookComputer(Store):
 
                 sku = str(product['variant']['id'])
                 price = Decimal(product['variant']['price'])
-                stock = product['variant']['stock']
+
+                if 'PEDIDO' in name.upper():
+                    stock = 0
+                else:
+                    stock = product['variant']['stock']
+
                 picture_urls = [tag['src'] for tag in
                                 soup.find('div', 'product-images').findAll(
                                     'img')]
@@ -168,7 +173,11 @@ class BookComputer(Store):
 
             key = soup.find('form', 'product-form form-horizontal')[
                 'action'].split('/')[-1]
-            stock = int(soup.find('input', {'id': 'input-qty'})['max'])
+
+            if 'PEDIDO' in name.upper():
+                stock = 0
+            else:
+                stock = int(soup.find('input', {'id': 'input-qty'})['max'])
 
             price = Decimal(json_info['offers']['price'])
             picture_urls = []
