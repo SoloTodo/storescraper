@@ -118,7 +118,5 @@ PROJECTOR = 'Projector'
 DISH_WASHER = 'DishWasher'
 # Accesorios de celular (carcasas, cables)
 CELL_ACCESORY = 'CellAccesory'
-# Productos para empresas (solo usado como placeholder para LG)
-B_2_B = 'B2B'
 # Cocinas
 STOVE = 'Stove'

@@ -7,7 +7,14 @@ import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MONITOR,
-                                     HEADPHONES, WEARABLE)
+                                     HEADPHONES, WEARABLE, VIDEO_CARD,
+                                     PROCESSOR, RAM, COMPUTER_CASE, MOTHERBOARD,
+                                     POWER_SUPPLY, CASE_FAN, CPU_COOLER,
+                                     NOTEBOOK, SOLID_STATE_DRIVE,
+                                     USB_FLASH_DRIVE, MEMORY_CARD,
+                                     EXTERNAL_STORAGE_DRIVE, MOUSE, KEYBOARD,
+                                     GAMING_CHAIR, KEYBOARD_MOUSE_COMBO, UPS,
+                                     TABLET)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -15,14 +22,34 @@ from storescraper.utils import session_with_proxy
 
 class TecnoPro(StoreWithUrlExtensions):
     url_extensions = [
+        ['alexa', STEREO_SYSTEM],
         ['audifonos', HEADPHONES],
-        ['consolas-y-videojuegos', VIDEO_GAME_CONSOLE],
-        ['computacion', HEADPHONES],
-        ['electronica-audio-y-video', HEADPHONES],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['procesadores', PROCESSOR],
+        ['memoria-ram', RAM],
+        ['gabinetes', COMPUTER_CASE],
+        ['placas-madre', MOTHERBOARD],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['ventilador-pc', CASE_FAN],
+        ['refrigeracion-cpu', CPU_COOLER],
+        ['notebook-y-computadores', NOTEBOOK],
+        ['disco-duro', SOLID_STATE_DRIVE],
+        ['disco-ssd-interno', SOLID_STATE_DRIVE],
+        ['pendrives', USB_FLASH_DRIVE],
+        ['memorias-flash', MEMORY_CARD],
+        ['discos-duros-externos', EXTERNAL_STORAGE_DRIVE],
+        ['mouses', MOUSE],
+        ['teclados', KEYBOARD],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['mouses-y-teclados', KEYBOARD_MOUSE_COMBO],
         ['parlantes', STEREO_SYSTEM],
+        ['ups-y-energia', UPS],
+        ['monitores', MONITOR],
+        ['electronica-audio-y-video', HEADPHONES],
+        ['tablets', TABLET],
+        ['consolas', VIDEO_GAME_CONSOLE],
         ['apple', HEADPHONES],
         ['celulares-y-telefonia', WEARABLE],
-        ['monitores', MONITOR],
     ]
 
     @classmethod
