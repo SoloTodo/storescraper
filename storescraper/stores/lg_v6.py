@@ -1,5 +1,3 @@
-import base64
-import json
 import logging
 import urllib
 
@@ -16,7 +14,8 @@ class LgV6(Store):
     currency = 'USD'
     price_approximation = '0.01'
     skip_products_without_price = False
-    endpoint_url = 'https://lgcorporationproduction0fxcu0qx.org.coveo.com/rest/search/v2'
+    endpoint_url = ('https://lgcorporationproduction0fxcu0qx.org.coveo.com/'
+                    'rest/search/v2')
 
     @classmethod
     def categories(cls):
@@ -29,7 +28,9 @@ class LgV6(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_paths = cls._category_paths()
-        session = cls._auth_session(extra_args)
+        session = session_with_proxy(extra_args)
+        session.headers['Authorization'] = 'Bearer {}'.format(
+            extra_args['coveo_token'])
         discovered_urls = []
 
         for category_id, local_category in \
@@ -69,7 +70,9 @@ class LgV6(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = cls._auth_session(extra_args)
+        session = session_with_proxy(extra_args)
+        session.headers['Authorization'] = 'Bearer {}'.format(
+            extra_args['coveo_token'])
         path = urllib.parse.urlparse(url).path
         payload = {
             "aq": '@ec_model_url_path=="{}"'.format(path),
@@ -148,47 +151,14 @@ class LgV6(Store):
         raise NotImplementedError('Subclasses must implement this method')
 
     @classmethod
-    def _auth_session(cls, extra_args):
+    def preflight(cls, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers['content-type'] = 'application/json'
-
-        auth_p1_d = {
-            "alg": "HS256"
+        coveo_token_url = ('https://www.lg.com/{}/jcr:'
+                           'content.coveoToken.json').format(
+            cls.region_code.lower())
+        response = session.get(coveo_token_url)
+        json_response = response.json()
+        coveo_token = json_response['token']
+        return {
+            'coveo_token': coveo_token
         }
-
-        auth_p2_d = {
-            "v8": True,
-            "enforcedDictionaryFieldContext": {
-                "ec_intro_text": "NOT_LOGGED_IN",
-                "ec_price": "NOT_LOGGED_IN",
-                "ec_cheaper_price": "NOT_LOGGED_IN",
-                "ec_discount_tooltip": "NOT_LOGGED_IN"
-            },
-            "tokenId": "sizgubppc52iv5u65vjds52a6e",
-            "organization": "lgcorporationproduction0fxcu0qx",
-            "userIds": [
-                {
-                    "type": "User",
-                    "name": "anonymous",
-                    "provider": "Email Security Provider"
-                }
-            ],
-            "roles": [
-                "queryExecutor"
-            ],
-            "iss": "SearchApi",
-            "exp": 1699451223,
-            "iat": 1699364823
-        }
-
-        auth_p3 = 'UXz3z_nb2n9rv9n7HCjpz_p6b4Gjw8SkldbCCPIhnts'
-        auth_p1 = base64.b64encode(
-            json.dumps(auth_p1_d, separators=(',', ':')).encode(
-                'utf-8')).decode('utf-8')
-        auth_p2 = base64.b64encode(
-            json.dumps(auth_p2_d, separators=(',', ':')).encode(
-                'utf-8')).decode('utf-8')
-        auth = '{}.{}.{}'.format(auth_p1, auth_p2, auth_p3)
-        auth = auth.replace('=', '')
-        session.headers['authorization'] = 'Bearer {}'.format(auth)
-        return session

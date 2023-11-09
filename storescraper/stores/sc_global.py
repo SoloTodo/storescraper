@@ -14,7 +14,8 @@ from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
 class ScGlobal(StoreWithUrlExtensions):
     url_extensions = [
         ['workstations-31', NOTEBOOK],
-        ['rendimiento-32', NOTEBOOK],
+        ['alto-rendimiento-32', NOTEBOOK],
+        ['hogar-y-empresa-33', NOTEBOOK],
         ['equipos-empresariales-23', NOTEBOOK],
         ['notebook-gamer-89', NOTEBOOK],
         ['notebook-10', NOTEBOOK],
