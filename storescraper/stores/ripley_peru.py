@@ -104,6 +104,9 @@ class RipleyPeru(Store):
                 else:
                     offer_price = normal_price
 
+                if offer_price > normal_price:
+                    offer_price = normal_price
+
                 picture_urls = []
                 for x in product_entry['images']:
                     if x.startswith('http'):

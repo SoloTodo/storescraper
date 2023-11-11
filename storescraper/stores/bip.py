@@ -119,7 +119,7 @@ class Bip(Store):
             offset = 0
 
             while True:
-                if offset >= 200:
+                if offset >= 300:
                     raise Exception('Page overflow: ' + url_extension)
 
                 url_webpage = 'https://bip.cl/categoria/{}/{}'.format(
