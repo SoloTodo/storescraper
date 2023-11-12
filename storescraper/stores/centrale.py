@@ -79,15 +79,8 @@ class Centrale(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        json_data = json.loads(soup.find(
+        product_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json'}).text)
-
-        for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
 
         modified_notebook_parts_label = soup.find('strong', text='COMPONENTES')
         if modified_notebook_parts_label:
@@ -98,7 +91,8 @@ class Centrale(StoreWithUrlExtensions):
                 part_number_components.append(component_mpn)
             part_number = ' + '.join(part_number_components)
         else:
-            part_number = product_data['mpn'] or None
+            mpn_tag = soup.find('strong', text='NÚMERO DE PARTE:')
+            part_number = mpn_tag.next.next.strip()
 
         name = product_data['name'].strip()
         sku = product_data['sku'].strip()

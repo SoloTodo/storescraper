@@ -4,7 +4,10 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import GAMING_CHAIR, USB_FLASH_DRIVE, \
-    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, CELL, CPU_COOLER, CASE_FAN
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD, CELL, CPU_COOLER, CASE_FAN, \
+    VIDEO_CARD, PROCESSOR, MONITOR, MOTHERBOARD, RAM, STORAGE_DRIVE, \
+    SOLID_STATE_DRIVE, POWER_SUPPLY, COMPUTER_CASE, MOUSE, KEYBOARD, \
+    KEYBOARD_MOUSE_COMBO, HEADPHONES, STEREO_SYSTEM, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -17,22 +20,22 @@ class AllTec(Store):
     @classmethod
     def categories(cls):
         return [
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
+            VIDEO_CARD,
+            PROCESSOR,
+            MONITOR,
+            MOTHERBOARD,
+            RAM,
+            STORAGE_DRIVE,
+            SOLID_STATE_DRIVE,
+            POWER_SUPPLY,
+            COMPUTER_CASE,
             CPU_COOLER,
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'Headphones',
-            'StereoSystem',
-            'Notebook',
+            MOUSE,
+            KEYBOARD,
+            KEYBOARD_MOUSE_COMBO,
+            HEADPHONES,
+            STEREO_SYSTEM,
+            NOTEBOOK,
             GAMING_CHAIR,
             USB_FLASH_DRIVE,
             EXTERNAL_STORAGE_DRIVE,
@@ -46,30 +49,30 @@ class AllTec(Store):
         base_url = 'https://www.alltec.cl/'
 
         category_urls = [
-            ['16-gabinetes', 'ComputerCase'],
-            ['18-fuentes-de-poder', 'PowerSupply'],
-            ['17-placas-madre', 'Motherboard'],
-            ['20-procesadores', 'Processor'],
-            ['19-memorias', 'Ram'],
-            ['100-sodimm', 'Ram'],
-            ['24-mouse', 'Mouse'],
+            ['16-gabinetes', COMPUTER_CASE],
+            ['18-fuentes-de-poder', POWER_SUPPLY],
+            ['17-placas-madre', MOTHERBOARD],
+            ['20-procesadores', PROCESSOR],
+            ['19-memorias', RAM],
+            ['100-sodimm', RAM],
+            ['24-mouse', MOUSE],
             ['43-impresoras', 'Printer'],
-            ['55-tarjetas-de-video', 'VideoCard'],
-            ['23-teclados', 'Keyboard'],
-            ['62-gamer', 'Keyboard'],
+            ['55-tarjetas-de-video', VIDEO_CARD],
+            ['23-teclados', KEYBOARD],
+            ['62-gamer', KEYBOARD],
         ]
 
         url_extensions = [
-            ['33-mecanicos-rigidos', 'StorageDrive'],
-            ['34-ssd', 'SolidStateDrive'],
-            ['27-monitores', 'Monitor'],
+            ['33-mecanicos-rigidos', STORAGE_DRIVE],
+            ['34-ssd', SOLID_STATE_DRIVE],
+            ['27-monitores', MONITOR],
             ['93-cpu-cooler', CPU_COOLER],
             ['92-water-cooling', CPU_COOLER],
-            ['25-auriculares', 'Headphones'],
-            ['110-pc', 'Headphones'],
-            ['111-consolas', 'Headphones'],
-            ['26-parlantes', 'StereoSystem'],
-            ['65-notebook-tablet', 'Notebook'],
+            ['25-auriculares', HEADPHONES],
+            ['110-pc', HEADPHONES],
+            ['111-consolas', HEADPHONES],
+            ['26-parlantes', STEREO_SYSTEM],
+            ['65-notebook-tablet', NOTEBOOK],
             ['96-sillas', GAMING_CHAIR],
             ['35-flashpendrive', USB_FLASH_DRIVE],
             ['58-pendrive', USB_FLASH_DRIVE],
