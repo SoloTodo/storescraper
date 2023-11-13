@@ -81,6 +81,8 @@ class Centrale(StoreWithUrlExtensions):
 
         product_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json'}).text)
+        if '@graph' in product_data:
+            product_data = product_data['@graph'][-1]
 
         modified_notebook_parts_label = soup.find('strong', text='COMPONENTES')
         if modified_notebook_parts_label:
