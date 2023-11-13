@@ -30,7 +30,7 @@ class SamuraiStore(StoreWithUrlExtensions):
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for tag in ['stock-online', 'entrega-inmediata']:
+        for tag in ['entrega-inmediata']:
             page = 1
             while True:
                 if page > 50:
