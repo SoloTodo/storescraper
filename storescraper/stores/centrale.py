@@ -35,7 +35,6 @@ class Centrale(StoreWithUrlExtensions):
         ['plotters', PRINTER],
         ['monitores', MONITOR],
         ['sillas-muebles-y-sillas', GAMING_CHAIR],
-        ['plotters', PRINTER],
         ['almacenamiento', SOLID_STATE_DRIVE],
         ['fuentes-de-poder', POWER_SUPPLY],
         ['gabinetes-desktop', COMPUTER_CASE],
