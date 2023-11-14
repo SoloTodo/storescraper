@@ -218,6 +218,7 @@ from .syd import Syd
 from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
+from .tekmachine import Tekmachine
 from .tecno_boss import TecnoBoss
 from .tecno_mas import TecnoMas
 from .tecno_mega_store import TecnoMegaStore
