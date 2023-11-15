@@ -61,10 +61,6 @@ class CentralGamer(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        if 'Lo sentimos, no pudimos encontrar esa página' in soup.text:
-            return []
-
         name = soup.find('h1', 'product-heading__title').text
         form = soup.find('form', 'product-form')
         if form:
@@ -106,6 +102,9 @@ class CentralGamer(StoreWithUrlExtensions):
             normal_price = offer_price
         else:
             raise Exception('Invalid price tags')
+
+        if not normal_price or not offer_price:
+            return []
 
         picture_slider = soup.find('div', 'product-gallery__slider')
         if picture_slider:
