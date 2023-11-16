@@ -539,13 +539,18 @@ class Paris(Store):
                     'type': subsection_type
                 })
             elif subsection_type == bs.SUBSECTION_TYPE_HOME:
-                res = session.get('https://cl-ccom-parisweb-bff-web.ecomm.cencosud.com/api/v1/cms-home')
-                for idx, entry in enumerate(res.json()['data']['content'][0]['items']):
+                res = session.get('https://www.paris.cl/')
+                soup = BeautifulSoup(res.text, 'html.parser')
+                tags = soup.find('div', 'slider-magazine').findAll('a', 'GTM-promoclick')
+
+                for idx, tag in enumerate(tags):
+                    picture_url = tag.find('source')['srcset']
+
                     banners.append({
                         'url': url,
-                        'picture_url': entry['image'],
-                        'destination_urls': [entry['link']],
-                        'key': entry['image'],
+                        'picture_url': picture_url,
+                        'destination_urls': [tag['href']],
+                        'key': picture_url,
                         'position': idx + 1,
                         'section': section,
                         'subsection': subsection,
