@@ -723,6 +723,9 @@ class Falabella(Store):
                 else:
                     raise Exception('No showcase container found')
 
+                if not showcase_container['components']:
+                    continue
+
                 slides = showcase_container['components'][0]['data']['slides']
 
                 for idx, slide in enumerate(slides):
