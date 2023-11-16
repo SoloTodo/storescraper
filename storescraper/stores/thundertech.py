@@ -7,7 +7,7 @@ from storescraper.categories import (
     SOLID_STATE_DRIVE, STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, MEMORY_CARD,
     USB_FLASH_DRIVE, VIDEO_CARD, POWER_SUPPLY, CPU_COOLER, MONITOR, KEYBOARD,
     MOUSE, HEADPHONES, STEREO_SYSTEM, KEYBOARD_MOUSE_COMBO, PRINTER, NOTEBOOK,
-    TABLET, WEARABLE, ALL_IN_ONE)
+    TABLET, WEARABLE, ALL_IN_ONE, COMPUTER_CASE)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,6 +29,7 @@ class Thundertech(StoreWithUrlExtensions):
         ['tarjeta-de-video', VIDEO_CARD],
         ['componentes/fuentes-de-poder', POWER_SUPPLY],
         ['componentes/disipadores', CPU_COOLER],
+        ['componentes/gabinetes', COMPUTER_CASE],
         ['monitores', MONITOR],
         ['teclados', KEYBOARD],
         ['mouse', MOUSE],
