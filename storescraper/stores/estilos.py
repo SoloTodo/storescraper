@@ -23,7 +23,7 @@ class Estilos(Store):
 
         offset = 0
         while True:
-            if offset >= 400:
+            if offset >= 600:
                 raise Exception('Page overflow')
 
             variables = {

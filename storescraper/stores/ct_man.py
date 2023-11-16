@@ -79,7 +79,7 @@ class CtMan(StoreWithUrlExtensions):
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product-item')
+            product_containers = soup.findAll('div', 'product-item')
             if not product_containers:
                 if page == 1:
                     logging.warning('Empty category: ' + url_extension)
@@ -104,19 +104,20 @@ class CtMan(StoreWithUrlExtensions):
             return []
 
         key = key_tag['value']
-        name = soup.find('h1', 'product-title').text.strip()
-        sku = soup.find('p', 'product-sku').text.split(':')[1].strip()
+        name = soup.find('h1', 'product-name').text.strip()
+        sku = soup.find('div', 'sku').text.split(':')[1].strip()
         description = html_to_markdown(
             str(soup.find('div', 'product-description')))
-        price_tag = soup.find('div', 'precio-product').find(
+        price_tag = soup.find('big', 'product-price').find(
             'span', 'bootic-price')
         price = Decimal(remove_words(price_tag.text))
-        stock_text = soup.find('p', 'units-in-stock').text.strip()
 
-        if stock_text == 'Producto agotado':
-            stock = 0
+        add_to_cart_tag = soup.find('button', text='Agregar al carro')
+
+        if add_to_cart_tag:
+            stock = -1
         else:
-            stock = int(stock_text.split(':')[1])
+            stock = 0
 
         picture_urls = []
         for i in soup.findAll('li', 'product-asset'):
@@ -132,17 +133,12 @@ class CtMan(StoreWithUrlExtensions):
         else:
             part_number = None
 
-        special_tags = soup.find('div', 'special-tags').findAll(
-            'span', 'special-tag')
+        special_tags = soup.findAll('div', 'special-tags')
 
-        condition = 'https://schema.org/NewCondition'
-
-        for special_tag in special_tags:
-            if 'special-tag-3' in special_tag.attrs['class']:
-                # Sin accesorios
-                condition = 'https://schema.org/RefurbishedCondition'
-            if 'special-tag-4' in special_tag.attrs['class']:
-                condition = 'https://schema.org/DamagedCondition'
+        if special_tags:
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
 
         p = Product(
             name,
