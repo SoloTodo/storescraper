@@ -1,12 +1,10 @@
 from decimal import Decimal
-import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Tekmachine(StoreWithUrlExtensions):
@@ -25,6 +23,7 @@ class Tekmachine(StoreWithUrlExtensions):
         ['cpu-cooling', CPU_COOLER],
         ['monitores', MONITOR],
         ['sistema-de-sonido', STEREO_SYSTEM],
+        ['sillas-gamers', GAMING_CHAIR],
     ]
 
     @classmethod
