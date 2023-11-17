@@ -90,7 +90,7 @@ class Centrale(StoreWithUrlExtensions):
             for row in table_tag.findAll('tr')[1:]:
                 component_mpn = row.findAll('td')[1].text
                 part_number_components.append(component_mpn)
-            part_number = ' + '.join(part_number_components)
+            part_number = ' + '.join(part_number_components) or None
         else:
             mpn_tag = soup.find('strong', text='NÚMERO DE PARTE:')
             part_number = mpn_tag.next.next.strip()

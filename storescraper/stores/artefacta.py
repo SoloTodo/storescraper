@@ -29,11 +29,14 @@ class Artefacta(Store):
         done = False
 
         while not done:
-            url = 'https://www.artefacta.com/catalogsearch/result/?' \
-                  'q=LG&p={}&product_list_limit=36'.format(page)
+            if page > 10:
+                raise Exception('Page overflow')
+
+            url = ('https://www.artefacta.com/c?marca=42974&p={}&'
+                   'product_list_limit=36').format(page)
             print(url)
             soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('li', 'product-item')
+            products = soup.findAll('li', 'item product product-item')
 
             if not products:
                 if page == 1:
