@@ -76,15 +76,20 @@ class Tekmachine(StoreWithUrlExtensions):
         else:
             stock = -1
 
-        if soup.find('p', 'price').text == "":
-            return []
-
-        if soup.find('p', 'price').find('ins'):
-            price = Decimal(
-                remove_words(soup.find('p', 'price').find('ins').text))
+        prices_container = soup.find('p', 'price')
+        if prices_container.find('span', 'regular-price').find('ins'):
+            normal_price = Decimal(
+                remove_words(prices_container.find('span', 'regular-price').find('ins').text))
         else:
-            price = Decimal(remove_words(
-                soup.find('p', 'price').find('bdi').text))
+            normal_price = Decimal(remove_words(
+                remove_words(prices_container.find('span', 'regular-price').find('bdi').text)))
+
+        if prices_container.find('span', 'sale-price').find('ins'):
+            offer_price = Decimal(
+                remove_words(prices_container.find('span', 'sale-price').find('ins').text))
+        else:
+            offer_price = Decimal(remove_words(
+                remove_words(prices_container.find('span', 'sale-price').find('bdi').text)))
 
         picture_urls = [tag['src'] for tag in soup.find('div',
                                                         'woocommerce-product'
@@ -98,8 +103,8 @@ class Tekmachine(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,
