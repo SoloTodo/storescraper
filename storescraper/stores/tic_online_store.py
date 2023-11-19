@@ -6,72 +6,55 @@ from storescraper.categories import HEADPHONES, MICROPHONE, MONITOR, \
     NOTEBOOK, PRINTER, TABLET, TELEVISION, WEARABLE, USB_FLASH_DRIVE, UPS, \
     ALL_IN_ONE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class TicOnlineStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            USB_FLASH_DRIVE,
-            NOTEBOOK,
-            TELEVISION,
-            TABLET,
-            HEADPHONES,
-            WEARABLE,
-            UPS,
-            ALL_IN_ONE,
-            MICROPHONE,
-            MONITOR,
-            PRINTER,
-        ]
+class TicOnlineStore(StoreWithUrlExtensions):
+    preferred_products_for_url_concurrency = 3
+
+    url_extensions = [
+        ['accesorios/categoria-removibles', USB_FLASH_DRIVE],
+        ['audiovisual/categoria-audifonos', HEADPHONES],
+        ['audiovisual/audio-y-video', HEADPHONES],
+        ['audiovisual/categoria-microfono', MICROPHONE],
+        ['computacion/categoria-computadores-de-mesa', MONITOR],
+        ['computacion/notebook', NOTEBOOK],
+        ['computacion/tabletas', TABLET],
+        ['computacion/categoria-todo-en-uno', ALL_IN_ONE],
+        ['computacion/categoria-ups', UPS],
+        ['computacion/categoria-impresoras', PRINTER],
+        ['electro/categoria-de-monitores', MONITOR],
+        ['electro/televisores', TELEVISION],
+        ['wearables', WEARABLE],
+        ['zona-gamer', HEADPHONES],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['accesorios/categoria-removibles', USB_FLASH_DRIVE],
-            ['audiovisual/categoria-audifonos', HEADPHONES],
-            ['audiovisual/audio-y-video', HEADPHONES],
-            ['audiovisual/categoria-microfono', MICROPHONE],
-            ['computacion/categoria-computadores-de-mesa', MONITOR],
-            ['computacion/notebook', NOTEBOOK],
-            ['computacion/tabletas', TABLET],
-            ['computacion/categoria-todo-en-uno', ALL_IN_ONE],
-            ['computacion/categoria-ups', UPS],
-            ['computacion/categoria-impresoras', PRINTER],
-            ['electro/categoria-de-monitores', MONITOR],
-            ['electro/televisores', TELEVISION],
-            ['wearables', WEARABLE],
-            ['zona-gamer', HEADPHONES],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://tic-online-store.cl/categoria-prod' \
-                              'ucto/{}/page/{}'.format(url_extension, page)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll(
-                    'li', 'product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://tic-online-store.cl/categoria-prod' \
+                          'ucto/{}/page/{}'.format(url_extension, page)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll(
+                'li', 'product')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
