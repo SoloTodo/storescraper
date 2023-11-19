@@ -52,6 +52,10 @@ class CosmoClima(StoreWithUrlExtensions):
         soup = BeautifulSoup(session.get(url).text, 'html.parser')
 
         buy_form_tag = soup.find('form', 'product-form')
+
+        if not buy_form_tag:
+            return []
+
         key = buy_form_tag['data-id']
         sku_tag = soup.find('span', 'product-heading__sku')
         sku = sku_tag.text.replace('SKU:', '').strip()
