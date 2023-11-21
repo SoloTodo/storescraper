@@ -40,15 +40,15 @@ class ImportacionesRubi(Store):
             soup = BeautifulSoup(response, 'html.parser')
             product_containers = soup.findAll('li', 'product')
 
-            current = soup.find('li', 'item current').text
-
-            if len(product_containers) == 0 or str(page) not in current:
+            if not product_containers:
                 if page == 1:
                     logging.warning('Empty category: ' + category)
                 break
 
             for container in product_containers:
                 product_url = container.find('a')['href']
+                if product_url in product_urls:
+                    return product_urls
                 product_urls.append(product_url)
             page += 1
 

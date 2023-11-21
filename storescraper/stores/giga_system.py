@@ -5,34 +5,30 @@ from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, CELL, COMPUTER_CASE, \
     CPU_COOLER, GAMING_CHAIR, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
     MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STORAGE_DRIVE, TABLET, VIDEO_CARD
+    SOLID_STATE_DRIVE, STORAGE_DRIVE, TABLET, VIDEO_CARD, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class APTech(StoreWithUrlExtensions):
+class GigaSystem(StoreWithUrlExtensions):
     url_extensions = [
-        ['almacenamiento/hdd-disco-duro-mecanico', STORAGE_DRIVE],
-        ['almacenamiento/ssd-unidad-estado-solido', SOLID_STATE_DRIVE],
-        ['celulares', CELL],
-        ['fuente-de-poder', POWER_SUPPLY],
+        ['discos-duros', STORAGE_DRIVE],
+        ['ram', RAM],
+        ['ssd-unidades-de-estado-solido', SOLID_STATE_DRIVE],
+        ['cooler-cpu', CPU_COOLER],
+        ['fuentes-de-poder', POWER_SUPPLY],
         ['gabinetes', COMPUTER_CASE],
-        ['memorias-ram', RAM],
-        ['monitores', MONITOR],
-        ['notebooks', NOTEBOOK],
-        ['perifericos/audifonos', HEADPHONES],
-        ['perifericos/microfonos', MICROPHONE],
-        ['perifericos/mouse', MOUSE],
-        ['perifericos/teclados', KEYBOARD],
         ['placa-madre', MOTHERBOARD],
-        ['procesadores', PROCESSOR],
-        ['refrigeracion-y-ventilacion/disipador-cpu', CPU_COOLER],
-        ['refrigeracion-y-ventilacion/refrigeracion-liquida', CPU_COOLER],
-        ['refrigeracion-y-ventilacion/ventilador-gabinete', CASE_FAN],
-        ['sillas', GAMING_CHAIR],
-        ['tablet', TABLET],
-        ['tarjeta-de-video', VIDEO_CARD],
+        ['procesador', PROCESSOR],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['ventilador', CASE_FAN],
+        ['auriculares', HEADPHONES],
+        ['monitores', MONITOR],
+        ['mouse', MOUSE],
+        ['pack-teclado-mouse', KEYBOARD_MOUSE_COMBO],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['teclados', KEYBOARD],
     ]
 
     @classmethod
@@ -42,26 +38,18 @@ class APTech(StoreWithUrlExtensions):
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         product_urls = []
-        page = 1
-        while True:
-            if page > 10:
-                raise Exception('page overflow: ' + url_extensions)
-            url_webpage = 'https://aptech.cl/product-category/' \
-                          '{}/page/{}/'.format(
-                              url_extension, page)
-            print(url_webpage)
-            response = session.get(url_webpage, timeout=60)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'product-grid-item')
+        url_webpage = 'https://gigasystem.cl/Categoria-Producto/{}'.format(
+                          url_extension)
+        print(url_webpage)
+        response = session.get(url_webpage)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        import ipdb
+        ipdb.set_trace()
+        product_containers = soup.findAll('a', 'woocommerce-LoopProduct-link')
 
-            if not product_containers:
-                if page == 1:
-                    logging.warning('empty category: ' + url_extension)
-                break
-            for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
-            page += 1
+        for container in product_containers:
+            product_url = container['href']
+            product_urls.append(product_url)
         return product_urls
 
     @classmethod
@@ -128,3 +116,16 @@ class APTech(StoreWithUrlExtensions):
             description=description,
         )
         return [p]
+
+    @classmethod
+    def preflight(cls, extra_args=None):
+        session = session_with_proxy(extra_args)
+        res = session.get('https://gigasystem.cl/')
+        soup = BeautifulSoup(res.text, 'html.parser')
+        meta_tag = soup.find('meta')
+        path = meta_tag['content'].split(';')[1]
+        url = 'https://gigasystem.cl{}'.format(path)
+        res = session.get(url)
+        import ipdb
+        ipdb.set_trace()
+        return {}
