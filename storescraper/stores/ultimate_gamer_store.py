@@ -86,8 +86,11 @@ class UltimateGamerStore(StoreWithUrlExtensions):
         else:
             stock = 0
 
-        price = Decimal(remove_words(
+        normal_price = Decimal(remove_words(
             soup.find('span', 'product-info__price-current').text).strip())
+
+        offer_price = Decimal(remove_words(
+            soup.find('span', 'discount-value').text).strip())
 
         description = html_to_markdown(
             str(soup.find('section', {'id': 'product-description'})))
@@ -104,8 +107,8 @@ class UltimateGamerStore(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=key,
             picture_urls=picture_urls,
