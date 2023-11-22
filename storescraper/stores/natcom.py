@@ -81,7 +81,11 @@ class Natcom(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product_title').text
         sku = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        stock_tag = soup.find('p', 'stock in-stock')
+        if stock_tag:
+            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+        else:
+            stock = -1
         price_container = soup.find('p', 'price')
 
         part_number_tag = soup.find(

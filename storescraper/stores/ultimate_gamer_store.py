@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown, \
     remove_words
 from storescraper.categories import VIDEO_CARD, PROCESSOR, MONITOR, RAM, \
@@ -12,77 +12,53 @@ from storescraper.categories import VIDEO_CARD, PROCESSOR, MONITOR, RAM, \
     CPU_COOLER, COMPUTER_CASE, GAMING_CHAIR, NOTEBOOK
 
 
-class UltimateGamerStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            VIDEO_CARD,
-            PROCESSOR,
-            MONITOR,
-            RAM,
-            SOLID_STATE_DRIVE,
-            MOTHERBOARD,
-            HEADPHONES,
-            STORAGE_DRIVE,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            COMPUTER_CASE,
-            GAMING_CHAIR,
-            NOTEBOOK,
-        ]
+class UltimateGamerStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['tarjeta-de-video', VIDEO_CARD],
+        ['procesadores', PROCESSOR],
+        ['productos/memorias', RAM],
+        ['productos/ssd', SOLID_STATE_DRIVE],
+        ['productos/accesorios', MONITOR],
+        ['placas-madre', MOTHERBOARD],
+        ['p-e-r-i-f-e-r-i-c-o-s', HEADPHONES],
+        ['d-i-s-c-o-d-u-r-o-1', STORAGE_DRIVE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['productos/refrigeracion', CPU_COOLER],
+        ['productos/gabinetes', COMPUTER_CASE],
+        ['productos/sillas', GAMING_CHAIR],
+        ['productos/notebook', NOTEBOOK],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['tarjeta-de-video', VIDEO_CARD],
-            ['procesadores', PROCESSOR],
-            ['productos/memorias', RAM],
-            ['productos/ssd', SOLID_STATE_DRIVE],
-            ['productos/accesorios', MONITOR],
-            ['placas-madre', MOTHERBOARD],
-            ['p-e-r-i-f-e-r-i-c-o-s', HEADPHONES],
-            ['d-i-s-c-o-d-u-r-o-1', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['productos/refrigeracion', CPU_COOLER],
-            ['productos/gabinetes', COMPUTER_CASE],
-            ['productos/sillas', GAMING_CHAIR],
-            ['productos/notebook', NOTEBOOK],
-        ]
-
-        product_urls = []
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
+        product_urls = []
+        page = 1
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        while True:
+            if page >= 10:
+                raise Exception('Page overflow')
 
-            page = 1
-            done = False
+            url = 'https://www.ugstore.cl/{}?page={}'.format(
+                url_extension, page)
+            print(url)
 
-            while not done:
-                if page >= 10:
-                    raise Exception('Page overflow')
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-                url = 'https://www.ugstore.cl/{}?page={}'.format(
-                    category_path, page)
-                print(url)
+            items = soup.findAll('article', 'product-block')
 
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
+            if not items:
+                if page == 1:
+                    logging.warning('Emtpy Path: {}'.format(url))
+                break
 
-                items = soup.findAll('article', 'product-block')
+            for item in items:
+                product_url = 'https://www.ugstore.cl{}'.format(
+                    item.find('a', 'product-block__anchor')['href'])
+                product_urls.append(product_url)
 
-                if not items:
-                    if page == 1:
-                        logging.warning('Emtpy Path: {}'.format(url))
-                    break
-
-                for item in items:
-                    product_url = 'https://www.ugstore.cl{}'.format(
-                        item.find('a', 'product-block__anchor')['href'])
-                    product_urls.append(product_url)
-
-                page += 1
+            page += 1
 
         return product_urls
 
