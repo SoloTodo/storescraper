@@ -43,8 +43,6 @@ class GigaSystem(StoreWithUrlExtensions):
         print(url_webpage)
         response = session.get(url_webpage)
         soup = BeautifulSoup(response.text, 'html.parser')
-        import ipdb
-        ipdb.set_trace()
         product_containers = soup.findAll('a', 'woocommerce-LoopProduct-link')
 
         for container in product_containers:
@@ -116,16 +114,3 @@ class GigaSystem(StoreWithUrlExtensions):
             description=description,
         )
         return [p]
-
-    @classmethod
-    def preflight(cls, extra_args=None):
-        session = session_with_proxy(extra_args)
-        res = session.get('https://gigasystem.cl/')
-        soup = BeautifulSoup(res.text, 'html.parser')
-        meta_tag = soup.find('meta')
-        path = meta_tag['content'].split(';')[1]
-        url = 'https://gigasystem.cl{}'.format(path)
-        res = session.get(url)
-        import ipdb
-        ipdb.set_trace()
-        return {}

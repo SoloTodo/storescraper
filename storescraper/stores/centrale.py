@@ -41,7 +41,7 @@ class Centrale(StoreWithUrlExtensions):
         ['memorias-ram', RAM],
         ['placas-madres', MOTHERBOARD],
         ['procesadores-pc', PROCESSOR],
-        ['refrigeración', CPU_COOLER],
+        ['refrigeracion', CPU_COOLER],
         ['tarjetas-de-video', VIDEO_CARD],
         ['smartphones', CELL],
         ['micrófono', MICROPHONE]
