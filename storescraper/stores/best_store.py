@@ -8,8 +8,8 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     VIDEO_CARD, CPU_COOLER, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, SOLID_STATE_DRIVE, UPS, \
-    GAMING_CHAIR, WEARABLE, MICROPHONE, PRINTER, OVEN, REFRIGERATOR, \
+    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, UPS, \
+    GAMING_CHAIR, WEARABLE, PRINTER, OVEN, REFRIGERATOR, \
     AIR_CONDITIONER
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -26,42 +26,32 @@ class BestStore(StoreWithUrlExtensions):
         ['181-componentes-informaticos-tarjetas-de-video', VIDEO_CARD],
         ['115-componentes-informaticos-ventiladores-y-sistemas'
          '-de-enfriamiento', CPU_COOLER],
-        ['231-computadores-notebook', NOTEBOOK],
-        ['236-computadores-tableta', TABLET],
-        ['284-computadores-todo-en-uno', ALL_IN_ONE],
-        ['232-computadores-computadores-de-mesa', ALL_IN_ONE],
-        ['173-memorias-modulos-ram-propietarios', RAM],
-        ['194-memorias-modulos-ram-genericos', RAM],
-        ['1152-memorias-ram-notebook', RAM],
-        ['1153-memoria-ram-pc', RAM],
-        ['207-memorias-sd-y-micro-sd', MEMORY_CARD],
-        ['209-pendrive', USB_FLASH_DRIVE],
+        ['230-computadores?q=Tipo-Notebook', NOTEBOOK],
+        ['230-computadores?q=Tipo-Tablet', TABLET],
+        ['230-computadores?q=Tipo-All+in+One', ALL_IN_ONE],
+        ['172-memorias?q=Tipo-RAM+Notebook-RAM+PC-RAM+Servidor', RAM],
+        ['172-memorias?q=Tipo-Memorias+SD+y+Micro+Sd', MEMORY_CARD],
+        ['122-almacenamiento?q=Tipo-Pendrive', USB_FLASH_DRIVE],
         ['152-monitores-monitores', MONITOR],
         ['233-monitores-televisores', TELEVISION],
         ['117-perifericos-auriculares-y-manos-libres', HEADPHONES],
         ['112-perifericos-combos-de-teclado-y-raton',
          KEYBOARD_MOUSE_COMBO],
         ['160-perifericos-parlantes-bocinas-cornetas', STEREO_SYSTEM],
-        # ['153-audio-y-video-auriculares', HEADPHONES],
-        # ['162-audio-y-video-parlantes-bocinas-cornetas', STEREO_SYSTEM],
         ['1097-monitores-gamer', MONITOR],
         ['1098-notebook-gamer', NOTEBOOK],
         ['1101-gabinetes-gamer', COMPUTER_CASE],
         ['1102-auriculares-gamer', HEADPHONES],
         ['1120-sillas-gamer', GAMING_CHAIR],
         ['228-celulares-celulares-desbloqueados', CELL],
-        ['123-almacenamiento-discos-duros-externos',
+        ['122-almacenamiento?q=Tipo-Discos+Duros+Externos',
          EXTERNAL_STORAGE_DRIVE],
-        ['198-almacenamiento-almacenamiento-de-redes-nas', STORAGE_DRIVE],
-        ['285-almacenamiento-area-de-redes-de-almacenamiento-san',
-         STORAGE_DRIVE],
-        ['72-discos-duros-servidores', STORAGE_DRIVE],
-        ['124-almacenamiento-discos-duros-internos', STORAGE_DRIVE],
-        ['146-almacenamiento-discos-de-estado-solido', SOLID_STATE_DRIVE],
+        ['122-almacenamiento?q=Tipo-Almacenamiento+'
+         'de+Redes+%28NAS%29-Area+de+Redes+de+Almacenamiento+%28SAN%29-'
+         'Discos+Duros+Internos-Discos+Duros+Servidores', STORAGE_DRIVE],
         ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
         ['1099-accesorios-gamer', GAMING_CHAIR],
         ['226-tecnologia-portatil-relojes', WEARABLE],
-        ['288-perifericos-microfonos', MICROPHONE],
         ['143-impresoras-y-escaneres-impresoras-ink-jet', PRINTER],
         ['174-impresoras-y-escaneres-impresoras-laser', PRINTER],
         ['144-impresoras-y-escaneres-impresoras-multifuncionales',
@@ -80,8 +70,12 @@ class BestStore(StoreWithUrlExtensions):
         while True:
             if page > 30:
                 raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://www.beststore.cl/{}?page={}'.format(
-                url_extension, page)
+            if '?' in url_extension:
+                separator = '&'
+            else:
+                separator = '?'
+            url_webpage = 'https://www.beststore.cl/{}{}page={}'.format(
+                url_extension, separator, page)
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, 'html.parser')
