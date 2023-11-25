@@ -49,7 +49,9 @@ class Alfaomega(StoreWithUrlExtensions):
             response = session.get(url)
 
             if response.status_code == 404:
-                raise Exception('Invalid section: ' + url)
+                if page == 1:
+                    raise Exception('Invalid section: ' + url)
+                break
 
             soup = BeautifulSoup(response.text, 'html.parser')
             products = soup.findAll('li', 'product-col')
