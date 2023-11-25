@@ -113,7 +113,7 @@ class MyShop(StoreWithUrlExtensions):
         sku = product_data['sku']
         description = product_data['description']
         offer_price = Decimal(product_data['offers'][0]['price'])
-        normal_price = (offer_price * Decimal('1.03')).quantize(0)
+        normal_price = (offer_price * Decimal('1.05')).quantize(0)
 
         stock_p = soup.find('p', 'stock in-stock')
         if 'PREVENTA' in description.upper():
