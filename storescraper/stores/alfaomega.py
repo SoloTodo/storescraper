@@ -8,32 +8,28 @@ from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import PROCESSOR, MOTHERBOARD, VIDEO_CARD, \
     POWER_SUPPLY, SOLID_STATE_DRIVE, COMPUTER_CASE, RAM, CPU_COOLER, \
-    NOTEBOOK, USB_FLASH_DRIVE, PRINTER, MONITOR, KEYBOARD
+    NOTEBOOK, USB_FLASH_DRIVE, PRINTER, MONITOR, KEYBOARD, \
+    EXTERNAL_STORAGE_DRIVE, MEMORY_CARD
 
 
 class Alfaomega(StoreWithUrlExtensions):
     url_extensions = [
-        ['procesador', PROCESSOR],
-        ['procesador-2', PROCESSOR],
+        ['intel', PROCESSOR],
+        ['ryzen', PROCESSOR],
         ['refrigeracion', CPU_COOLER],
         ['placas-intel', MOTHERBOARD],
         ['placas-amd', MOTHERBOARD],
         ['memorias', RAM],
-        ['tarjetas-graficas', VIDEO_CARD],
-        ['tarjeta-de-video', VIDEO_CARD],
-        ['discos-duros-almacenamiento', SOLID_STATE_DRIVE],
-        ['disco-duros-para-pc', SOLID_STATE_DRIVE],
         ['discos-ssd', SOLID_STATE_DRIVE],
-        ['disco-de-estado-solido', SOLID_STATE_DRIVE],
-        ['disco-duro', SOLID_STATE_DRIVE],
-        ['pendrive', USB_FLASH_DRIVE],
-        ['gabinetes', COMPUTER_CASE],
+        ['discos-externos', EXTERNAL_STORAGE_DRIVE],
         ['fuentes-de-poder', POWER_SUPPLY],
-        ['mouse-y-teclados', KEYBOARD],
-        ['mouse-y-teclados-componentes-partes-y-piezas', KEYBOARD],
-        ['mouse-y-teclados-2', KEYBOARD],
-        ['notebooks', NOTEBOOK],
+        ['gabinetes', COMPUTER_CASE],
+        ['tarjetas-graficas', VIDEO_CARD],
         ['monitores', MONITOR],
+        ['mouse-y-teclados', KEYBOARD],
+        ['memorias-micro-sd', MEMORY_CARD],
+        ['pendrive', USB_FLASH_DRIVE],
+        ['notebooks', NOTEBOOK],
         ['impresoras-y-suministros', PRINTER],
     ]
 
@@ -53,7 +49,7 @@ class Alfaomega(StoreWithUrlExtensions):
             response = session.get(url)
 
             if response.status_code == 404:
-                break
+                raise Exception('Invalid section: ' + url)
 
             soup = BeautifulSoup(response.text, 'html.parser')
             products = soup.findAll('li', 'product-col')
