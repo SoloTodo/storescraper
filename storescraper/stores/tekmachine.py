@@ -65,7 +65,7 @@ class Tekmachine(StoreWithUrlExtensions):
         sku_tag = soup.find('span', 'sku')
 
         if sku_tag:
-            sku = soup.find('span', 'sku').text.strip()
+            sku = soup.find('span', 'sku').text.strip()[:45]
         else:
             sku = None
 
