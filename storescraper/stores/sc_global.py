@@ -7,7 +7,7 @@ from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
 from storescraper.categories import NOTEBOOK, PRINTER, ALL_IN_ONE, MOUSE, \
-    KEYBOARD, MONITOR, HEADPHONES, UPS, GAMING_CHAIR, TABLET, RAM, \
+    MONITOR, HEADPHONES, UPS, GAMING_CHAIR, TABLET, RAM, \
     SOLID_STATE_DRIVE, PROCESSOR, VIDEO_CARD
 
 

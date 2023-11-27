@@ -201,6 +201,7 @@ from .samsung_shop import SamsungShop
 from .samurai_store import SamuraiStore
 from .sandos import Sandos
 from .sc_global import ScGlobal
+from .serco_import import SercoImport
 from .sevenwin import Sevenwin
 from .seven_gamer import SevenGamer
 from .sicot import Sicot

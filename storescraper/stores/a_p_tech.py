@@ -45,7 +45,7 @@ class APTech(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('page overflow: ' + url_extensions)
+                raise Exception('page overflow: ' + url_extension)
             url_webpage = 'https://aptech.cl/product-category/' \
                           '{}/page/{}/'.format(
                               url_extension, page)
