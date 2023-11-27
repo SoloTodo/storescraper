@@ -74,6 +74,11 @@ class BestStore(StoreWithUrlExtensions):
                 separator = '&'
             else:
                 separator = '?'
+
+            print('https://www.beststore.cl/{}'.format(
+                url_extension))
+            break
+
             url_webpage = 'https://www.beststore.cl/{}{}page={}'.format(
                 url_extension, separator, page)
             print(url_webpage)
@@ -132,12 +137,12 @@ class BestStore(StoreWithUrlExtensions):
                        if validators.url(tag['src'])
                        ]
 
-        condition_tag = soup.find('link', {'itemprop': 'itemCondition'})
-        if condition_tag and condition_tag['href'] != \
-                'https://schema.org/NewCondition':
-            condition = 'https://schema.org/RefurbishedCondition'
-        else:
+        condition_tag = soup.find('div', 'product-condition')
+        condition_text = condition_tag.find('span').text.strip()
+        if condition_text.upper() == 'NUEVO':
             condition = 'https://schema.org/NewCondition'
+        else:
+            condition = 'https://schema.org/RefurbishedCondition'
 
         p = Product(
             name,
