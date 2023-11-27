@@ -75,10 +75,6 @@ class BestStore(StoreWithUrlExtensions):
             else:
                 separator = '?'
 
-            print('https://www.beststore.cl/{}'.format(
-                url_extension))
-            break
-
             url_webpage = 'https://www.beststore.cl/{}{}page={}'.format(
                 url_extension, separator, page)
             print(url_webpage)
