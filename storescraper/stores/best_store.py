@@ -137,8 +137,16 @@ class BestStore(StoreWithUrlExtensions):
         condition_text = condition_tag.find('span').text.strip()
         if condition_text.upper() == 'NUEVO':
             condition = 'https://schema.org/NewCondition'
-        else:
+        elif condition_text.upper() == 'UTILIZADO':
+            condition = 'https://schema.org/UsedCondition'
+        elif condition_text.upper() == 'CAJA ABIERTA':
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif condition_text.upper() == 'CAJA DAÑADA':
+            condition = 'https://schema.org/OpenBoxCondition'
+        elif condition_text.upper() == 'REFACCIONADO':
             condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            raise Exception('Invalid condition: ' + condition_text)
 
         p = Product(
             name,

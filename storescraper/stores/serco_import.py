@@ -1,5 +1,4 @@
 from decimal import Decimal
-import json
 import logging
 from bs4 import BeautifulSoup
 from storescraper.categories import CELL, NOTEBOOK, VIDEO_CARD
@@ -10,6 +9,9 @@ from storescraper.utils import remove_words, session_with_proxy, \
 
 
 class SercoImport(StoreWithUrlExtensions):
+    preferred_discover_urls_concurrency = 2
+    preferred_products_for_url_concurrency = 2
+
     url_extensions = [
         ['gamer', NOTEBOOK],
         ['computacion', NOTEBOOK],
