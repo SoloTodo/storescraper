@@ -164,6 +164,7 @@ from .notebooks_ya import NotebooksYa
 from .novey import Novey
 from .nuevatec import Nuevatec
 from .olier import Olier
+from .oltouch import Oltouch
 from .omnisport import Omnisport
 from .opc_store import OpcStore
 from .oportutek import Oportutek
