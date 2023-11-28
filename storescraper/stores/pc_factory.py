@@ -229,8 +229,14 @@ class PcFactory(Store):
 
         # precio_cash for efectivo
         # precio_fpago for tarjeta bancoestado
-        offer_price = Decimal(remove_words(product_data['precio_cash']))
+        precio_fpago = Decimal(remove_words(product_data['precio_fpago']))
+        precio_cash = Decimal(remove_words(product_data['precio_cash']))
         normal_price = Decimal(remove_words(product_data['precio_normal']))
+
+        if precio_fpago:
+            offer_price = precio_fpago
+        else:
+            offer_price = precio_cash
 
         picture_urls = [x.split('?')[0] for x in product_data['imagen_1000']]
 
