@@ -1,4 +1,5 @@
 from .a_p_tech import APTech
+from .abastible import Abastible
 from .abcdin import AbcDin
 from .acer_store import AcerStore
 from .adventure_store import AdventureStore
