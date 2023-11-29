@@ -75,7 +75,13 @@ class Yokan(StoreWithUrlExtensions):
 
                 key = str(variant['variation_id'])
                 sku = variant['sku']
-                stock = variant['max_qty'] or 0
+
+                # Yokan website has a bug where a variant with no name cannot
+                # be purchased
+                if not variant['attributes']:
+                    stock = 0
+                else:
+                    stock = variant['max_qty'] or 0
                 offer_price = Decimal(variant['display_price'])
                 normal_price = (offer_price * Decimal('1.05')).quantize(0)
                 p = Product(
