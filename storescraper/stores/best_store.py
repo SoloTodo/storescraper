@@ -8,9 +8,9 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     VIDEO_CARD, CPU_COOLER, NOTEBOOK, TABLET, ALL_IN_ONE, RAM, \
     USB_FLASH_DRIVE, MEMORY_CARD, MONITOR, TELEVISION, HEADPHONES, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
-    STORAGE_DRIVE, EXTERNAL_STORAGE_DRIVE, UPS, \
+    EXTERNAL_STORAGE_DRIVE, UPS, \
     GAMING_CHAIR, WEARABLE, PRINTER, OVEN, REFRIGERATOR, \
-    AIR_CONDITIONER
+    AIR_CONDITIONER, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -48,7 +48,7 @@ class BestStore(StoreWithUrlExtensions):
          EXTERNAL_STORAGE_DRIVE],
         ['122-almacenamiento?q=Tipo-Almacenamiento+'
          'de+Redes+%28NAS%29-Area+de+Redes+de+Almacenamiento+%28SAN%29-'
-         'Discos+Duros+Internos-Discos+Duros+Servidores', STORAGE_DRIVE],
+         'Discos+Duros+Internos-Discos+Duros+Servidores', SOLID_STATE_DRIVE],
         ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
         ['1099-accesorios-gamer', GAMING_CHAIR],
         ['226-tecnologia-portatil-relojes', WEARABLE],
