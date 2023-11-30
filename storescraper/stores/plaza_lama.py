@@ -6,7 +6,8 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, magento_picture_urls
+from storescraper.utils import session_with_proxy, magento_picture_urls, \
+    html_to_markdown
 from storescraper.categories import TELEVISION
 
 
@@ -57,11 +58,16 @@ class PlazaLama(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        description = soup.find('div', 'additional-attributes-wrapper').text.strip()
         key = soup.find('input', {'name': 'product'})['value']
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
         picture_urls = magento_picture_urls(soup)
+
+        description_tag = soup.find('div', 'additional-attributes-wrapper')
+        if description_tag:
+            description = html_to_markdown(description_tag.text)
+        else:
+            description = None
 
         p = Product(
             name,
