@@ -57,7 +57,7 @@ class PlazaLama(Store):
         soup = BeautifulSoup(response.text, 'html5lib')
 
         name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        description = soup.find('div', {'id': 'product.specifications'}).text.strip()
+        description = soup.find('div', 'additional-attributes-wrapper').text.strip()
         key = soup.find('input', {'name': 'product'})['value']
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
