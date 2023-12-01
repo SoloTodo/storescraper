@@ -46,9 +46,8 @@ class BestStore(StoreWithUrlExtensions):
         ['228-celulares-celulares-desbloqueados', CELL],
         ['122-almacenamiento?q=Tipo-Discos+Duros+Externos',
          EXTERNAL_STORAGE_DRIVE],
-        ['122-almacenamiento?q=Tipo-Almacenamiento+'
-         'de+Redes+%28NAS%29-Area+de+Redes+de+Almacenamiento+%28SAN%29-'
-         'Discos+Duros+Internos-Discos+Duros+Servidores', SOLID_STATE_DRIVE],
+        ['122-almacenamiento?q=Tipo-All+in+One-Desktop-Discos+Duros+'
+         'Servidores-Notebook', SOLID_STATE_DRIVE],
         ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
         ['1099-accesorios-gamer', GAMING_CHAIR],
         ['226-tecnologia-portatil-relojes', WEARABLE],
