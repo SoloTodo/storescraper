@@ -31,6 +31,10 @@ class GigaSystem(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+
         product_urls = []
         url_webpage = 'https://gigasystem.cl/Categoria-Producto/{}'.format(
                           url_extension)

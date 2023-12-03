@@ -30,7 +30,7 @@ class BestStore(StoreWithUrlExtensions):
         ['230-computadores?q=Tipo-Tablet', TABLET],
         ['230-computadores?q=Tipo-All+in+One', ALL_IN_ONE],
         ['172-memorias?q=Tipo-RAM+Notebook-RAM+PC-RAM+Servidor', RAM],
-        ['172-memorias?q=Tipo-Memorias+SD+y+Micro+Sd', MEMORY_CARD],
+        ['122-almacenamiento?q=Tipo-Memorias+SD+y+Micro+Sd', MEMORY_CARD],
         ['122-almacenamiento?q=Tipo-Pendrive', USB_FLASH_DRIVE],
         ['152-monitores-monitores', MONITOR],
         ['233-monitores-televisores', TELEVISION],
