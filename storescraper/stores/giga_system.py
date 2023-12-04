@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, GAMING_CHAIR, HEADPHONES, KEYBOARD, MONITOR, \
@@ -5,7 +7,8 @@ from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, VIDEO_CARD, KEYBOARD_MOUSE_COMBO
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class GigaSystem(StoreWithUrlExtensions):
@@ -31,9 +34,7 @@ class GigaSystem(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        session.headers['User-Agent'] = 'SoloTodoBot'
 
         product_urls = []
         url_webpage = 'https://gigasystem.cl/Categoria-Producto/{}'.format(
@@ -52,6 +53,7 @@ class GigaSystem(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'SoloTodoBot'
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
@@ -66,6 +68,15 @@ class GigaSystem(StoreWithUrlExtensions):
         else:
             stock = 0
 
+        pricing_tag = soup.find('div', 'summary')
+        price_tag = pricing_tag.find('span', 'woocommerce-Price-amount')
+        normal_price = Decimal(remove_words(price_tag.text))
+        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        picture_urls = [x.find('a')['href'] for x in soup.findAll(
+            'div', 'woocommerce-product-gallery__image')]
+        description = html_to_markdown(str(
+            soup.find('div', 'woocommerce-Tabs-panel--additional_information')))
+
         p = Product(
             name,
             cls.__name__,
@@ -74,10 +85,9 @@ class GigaSystem(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
-            sku=sku,
             picture_urls=picture_urls,
             description=description,
         )
