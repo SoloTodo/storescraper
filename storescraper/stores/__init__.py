@@ -128,6 +128,7 @@ from .litnor_hogar import LitnorHogar
 from .llevatelo import Llevatelo
 from .loi_chile import LoiChile
 from .loi_uruguay import LoiUruguay
+from .lyon_center import LyonCenter
 from .mac_online import MacOnline
 from .manco_store import MancoStore
 from .marcimex import Marcimex
