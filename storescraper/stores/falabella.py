@@ -683,7 +683,7 @@ class Falabella(Store):
                 else:
                     raise Exception('No showcase container found')
 
-                slides = showcase_container['components'][1]['data']['slides']
+                slides = showcase_container['components'][0]['data']['slides']
 
                 for idx, slide in enumerate(slides):
                     main_url = slide.get('mainUrl', None)
@@ -706,6 +706,7 @@ class Falabella(Store):
                         'subsection': subsection,
                         'type': subsection_type
                     })
+                return banners
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 session = session_with_proxy(extra_args)
                 session.headers['User-Agent'] = CF_REQUEST_HEADERS[
