@@ -10,7 +10,7 @@ from storescraper.categories import POWER_SUPPLY, PROCESSOR, MOTHERBOARD, \
     KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, COMPUTER_CASE, CELL, \
     EXTERNAL_STORAGE_DRIVE, UPS, \
     GAMING_CHAIR, WEARABLE, PRINTER, OVEN, REFRIGERATOR, \
-    AIR_CONDITIONER, SOLID_STATE_DRIVE
+    AIR_CONDITIONER, SOLID_STATE_DRIVE, VIDEO_GAME_CONSOLE, STORAGE_DRIVE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -29,7 +29,7 @@ class BestStore(StoreWithUrlExtensions):
         ['230-computadores?q=Tipo-Notebook', NOTEBOOK],
         ['230-computadores?q=Tipo-Tablet', TABLET],
         ['230-computadores?q=Tipo-All+in+One', ALL_IN_ONE],
-        ['172-memorias?q=Tipo-RAM+Notebook-RAM+PC-RAM+Servidor', RAM],
+        ['172-memorias', RAM],
         ['122-almacenamiento?q=Tipo-Memorias+SD+y+Micro+Sd', MEMORY_CARD],
         ['122-almacenamiento?q=Tipo-Pendrive', USB_FLASH_DRIVE],
         ['152-monitores-monitores', MONITOR],
@@ -43,14 +43,15 @@ class BestStore(StoreWithUrlExtensions):
         ['1101-gabinetes-gamer', COMPUTER_CASE],
         ['1102-auriculares-gamer', HEADPHONES],
         ['1120-sillas-gamer', GAMING_CHAIR],
-        ['228-celulares-celulares-desbloqueados', CELL],
+        ['308-movilidad?q=Categorías-Celulares+Desbloqueados', CELL],
         ['122-almacenamiento?q=Tipo-Discos+Duros+Externos',
          EXTERNAL_STORAGE_DRIVE],
-        ['122-almacenamiento?q=Tipo-All+in+One-Desktop-Discos+Duros+'
-         'Servidores-Notebook', SOLID_STATE_DRIVE],
+        ['122-almacenamiento?q=Tipo+de+Disco+Duro-SSD', SOLID_STATE_DRIVE],
+        ['122-almacenamiento?q=Tipo+de+Disco+Duro-HDD-Unidad+Híbrida',
+         STORAGE_DRIVE],
         ['127-proteccion-de-poder-ups-respaldo-de-energia', UPS],
         ['1099-accesorios-gamer', GAMING_CHAIR],
-        ['226-tecnologia-portatil-relojes', WEARABLE],
+        ['308-movilidad?q=Categorías-Relojes-Trackers+de+Actividad', WEARABLE],
         ['143-impresoras-y-escaneres-impresoras-ink-jet', PRINTER],
         ['174-impresoras-y-escaneres-impresoras-laser', PRINTER],
         ['144-impresoras-y-escaneres-impresoras-multifuncionales',
@@ -59,6 +60,7 @@ class BestStore(StoreWithUrlExtensions):
         ['1144-cocina', OVEN],
         ['1145-electrodomesticos', REFRIGERATOR],
         ['254-electrodomesticos-climatizacion', AIR_CONDITIONER],
+        ['302-videojuegos-consolas', VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod

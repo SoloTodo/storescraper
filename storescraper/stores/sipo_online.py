@@ -70,9 +70,6 @@ class SipoOnline(StoreWithUrlExtensions):
             main = soup.find('main', 'site-main')
             if not main:
                 if page == 1:
-                    print(url_webpage)
-                    import ipdb
-                    ipdb.set_trace()
                     logging.warning('Empty category: ' + url_extension)
                 break
             product_containers = soup.findAll('li', 'product')
