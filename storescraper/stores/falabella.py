@@ -706,7 +706,6 @@ class Falabella(Store):
                         'subsection': subsection,
                         'type': subsection_type
                     })
-                return banners
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 session = session_with_proxy(extra_args)
                 session.headers['User-Agent'] = CF_REQUEST_HEADERS[
