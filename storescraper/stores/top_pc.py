@@ -3,78 +3,55 @@ import logging
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
-from storescraper.categories import CPU_COOLER, CASE_FAN
+from storescraper.categories import CPU_COOLER, CASE_FAN, VIDEO_CARD, PROCESSOR, \
+    MONITOR, NOTEBOOK, MOTHERBOARD, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, \
+    POWER_SUPPLY, COMPUTER_CASE, MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, \
+    STEREO_SYSTEM, HEADPHONES
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
 
-class TopPc(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            'Notebook',
-            'VideoCard',
-            'Processor',
-            'Monitor',
-            'Motherboard',
-            'Ram',
-            'StorageDrive',
-            'SolidStateDrive',
-            'PowerSupply',
-            'ComputerCase',
-            CPU_COOLER,
-            'Mouse',
-            'Keyboard',
-            'KeyboardMouseCombo',
-            'StereoSystem',
-            'Headphones',
-            CASE_FAN,
-        ]
+class TopPc(StoreWithUrlExtensions):
+    url_extensions = [
+        ['24', VIDEO_CARD],  # Tarjetas de video
+        ['21', PROCESSOR],  # Procesadores
+        ['78', MONITOR],  # Monitores
+        ['96', NOTEBOOK],  # Notebooks
+        ['22', MOTHERBOARD],  # MB
+        ['23', RAM],  # RAM
+        ['44', STORAGE_DRIVE],  # HDD PC
+        ['45', STORAGE_DRIVE],  # HDD Notebook
+        ['46', SOLID_STATE_DRIVE],  # SSD
+        ['27', POWER_SUPPLY],  # Fuentes de poder
+        ['26', COMPUTER_CASE],  # Gabinetes
+        ['108', CPU_COOLER],  # Coolers CPU
+        ['67', MOUSE],
+        ['66', KEYBOARD],
+        ['65', KEYBOARD_MOUSE_COMBO],
+        ['100', STEREO_SYSTEM],
+        ['99', HEADPHONES],
+        ['109', CASE_FAN],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        category_paths = [
-            ['24', 'VideoCard'],  # Tarjetas de video
-            ['21', 'Processor'],  # Procesadores
-            ['78', 'Monitor'],  # Monitores
-            ['96', 'Notebook'],  # Notebooks
-            ['22', 'Motherboard'],  # MB
-            ['23', 'Ram'],  # RAM
-            ['44', 'StorageDrive'],  # HDD PC
-            ['45', 'StorageDrive'],  # HDD Notebook
-            ['46', 'SolidStateDrive'],  # SSD
-            ['27', 'PowerSupply'],  # Fuentes de poder
-            ['26', 'ComputerCase'],  # Gabinetes
-            ['108', CPU_COOLER],  # Coolers CPU
-            ['67', 'Mouse'],
-            ['66', 'Keyboard'],
-            ['65', 'KeyboardMouseCombo'],
-            ['100', 'StereoSystem'],
-            ['99', 'Headphones'],
-            ['109', CASE_FAN],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
-            category_url = 'http://www.toppc.cl/tienda/{}-'.format(
-                category_path)
+        category_url = 'http://www.toppc.cl/tienda/{}-'.format(
+            url_extension)
 
-            soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
-            containers = soup.findAll('li', 'ajax_block_product')
+        soup = BeautifulSoup(session.get(category_url).text, 'html.parser')
+        containers = soup.findAll('li', 'ajax_block_product')
 
-            if not containers:
-                logging.warning('Empty category: ' + category_url)
-                break
+        if not containers:
+            logging.warning('Empty category: ' + category_url)
 
-            for container in containers:
-                product_url = container.find('a')['href']
-                product_urls.append(product_url)
+        for container in containers:
+            product_url = container.find('a')['href']
+            product_urls.append(product_url)
 
         return product_urls
 
@@ -135,7 +112,7 @@ class TopPc(Store):
             offer_price,
             'CLP',
             sku=sku,
-            part_number=part_number,
+            part_number=part_number or None,
             description=description,
             picture_urls=picture_urls
         )

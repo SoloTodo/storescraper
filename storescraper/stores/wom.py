@@ -166,6 +166,8 @@ class Wom(Store):
         for entry in variations:
             name = entry['name']
             context = json.loads(entry['context']['context'])
+            if not context['graphql_data']:
+                continue
             graphql_data = json.loads(context['graphql_data'])
 
             stock_reference = entry['referenceId']
