@@ -18,7 +18,8 @@ from storescraper import banner_sections as bs
 
 
 class Paris(Store):
-    USER_AGENT = 'solotodobot'
+    USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
     RESULTS_PER_PAGE = 24
 
     category_paths = [
@@ -541,7 +542,7 @@ class Paris(Store):
             elif subsection_type == bs.SUBSECTION_TYPE_HOME:
                 res = session.get('https://www.paris.cl/')
                 soup = BeautifulSoup(res.text, 'html.parser')
-                tags = soup.find('div', 'slider-magazine').findAll('a', 'GTM-promoclick')
+                tags = soup.find('div', {'id': '__next'}).find('section').findAll('a')
 
                 for idx, tag in enumerate(tags):
                     picture_url = tag.find('source')['srcset']
