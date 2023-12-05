@@ -16,7 +16,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
     url_extensions = [
         ['Calefacción', SPACE_HEATER],
         ['Celulares y telefonía', CELL],
-        ['Computación', NOTEBOOK],
+        ['Notebook', NOTEBOOK],
         ['Consolas y videojuegos', VIDEO_GAME_CONSOLE],
         ['Discos y accesorios', RAM],
         ['Electrónica, audio y video', STEREO_SYSTEM],
