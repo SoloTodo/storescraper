@@ -85,9 +85,10 @@ class Campcom(Store):
         sku = str(json_data['sku'])
         offer = json_data['offers'][0]
         if 'price' in offer:
-            price = Decimal(offer['price'])
+            offer_price = Decimal(offer['price'])
         else:
-            price = Decimal(offer['lowPrice'])
+            offer_price = Decimal(offer['lowPrice'])
+        normal_price = (offer_price * Decimal('1.04')).quantize(0)
         stock_span = soup.find('span', 'stock in-stock')
 
         if soup.find('p', 'available-on-backorder') or \
@@ -113,8 +114,8 @@ class Campcom(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             picture_urls=picture_urls
