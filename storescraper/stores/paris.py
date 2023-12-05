@@ -18,8 +18,7 @@ from storescraper import banner_sections as bs
 
 
 class Paris(Store):
-    USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+    USER_AGENT = 'solotodobot'
     RESULTS_PER_PAGE = 24
 
     category_paths = [
@@ -496,7 +495,9 @@ class Paris(Store):
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = cls.USER_AGENT
+        session.headers['User-Agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:
