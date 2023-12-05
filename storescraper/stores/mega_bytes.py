@@ -34,7 +34,7 @@ class MegaBytes(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'curl/7.68.0'
+        session.headers['User-Agent'] = 'SoloTodoBot'
         product_urls = []
         page = 1
         while True:
@@ -63,7 +63,7 @@ class MegaBytes(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = 'curl/7.68.0'
+        session.headers['User-Agent'] = 'SoloTodoBot'
         response = session.get(url)
 
         if response.status_code == 404:
