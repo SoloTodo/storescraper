@@ -82,6 +82,7 @@ from .g_games import GGames
 from .gaming_house import GamingHouse
 from .gaming_x import GamingX
 from .geant import Geant
+from .gestion_y_equipos import GestionYEquipos
 from .giga_system import GigaSystem
 from .gigaclic import Gigaclic
 from .global_box import Globalbox
