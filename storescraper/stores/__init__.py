@@ -244,6 +244,7 @@ from .tienda_movistar import TiendaMovistar
 from .tienda_monge import TiendaMonge
 from .tienda_oficial_lg_chile import TiendaOficialLgChile
 from .tienda_oficial_lg_panama import TiendaOficialLgPanama
+from .tienda_oficial_lg_peru import TiendaOficialLgPeru
 from .tienda_toyotomi import TiendaToyotomi
 from .todo_geek import TodoGeek
 from .travel_tienda import TravelTienda
