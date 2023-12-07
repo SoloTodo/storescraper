@@ -349,8 +349,6 @@ class Paris(Store):
                 offer_price > Decimal('100000000')):
             return []
 
-        stock = -1 if product_data['orderable'] else 0
-
         image_groups = product_data['image_groups']
         if image_groups:
             picture_urls = [x['link'] for x in
@@ -365,6 +363,13 @@ class Paris(Store):
             seller = None
         else:
             seller = raw_seller
+
+        if seller:
+            stock = 0
+        elif product_data['orderable']:
+            stock = -1
+        else:
+            stock = 0
 
         video_urls = []
         for iframe in soup.findAll('iframe'):

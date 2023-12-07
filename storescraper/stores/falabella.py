@@ -511,7 +511,9 @@ class Falabella(Store):
                 seller = seller_entry.get('sellerName',
                                           seller_entry['sellerId']) or None
 
-                if is_international_shipping:
+                if seller:
+                    stock = 0
+                elif is_international_shipping:
                     stock = 0
                 elif seller in cls.seller_blacklist:
                     stock = 0

@@ -347,11 +347,6 @@ class Ripley(Store):
         if category in [CELL, 'Unknown'] and 'MPM' not in sku:
             name += ' ({})'.format(short_description)
 
-        if specs_json['isOutOfStock'] or specs_json['isUnavailable']:
-            stock = 0
-        else:
-            stock = -1
-
         if 'offerPrice' in specs_json['prices']:
             normal_price = Decimal(
                 specs_json['prices']['offerPrice']).quantize(0)
@@ -414,6 +409,13 @@ class Ripley(Store):
 
         if seller == 'Shop Ecsa':
             seller = None
+
+        if seller:
+            stock = 0
+        elif specs_json['isOutOfStock'] or specs_json['isUnavailable']:
+            stock = 0
+        else:
+            stock = -1
 
         p = Product(
             name,
