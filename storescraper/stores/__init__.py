@@ -52,6 +52,7 @@ from .digital_choice import DigitalChoice
 from .dismac import Dismac
 from .diunsa import Diunsa
 from .divino import Divino
+from .dl_phone import DLPhone
 from .dreamtec import Dreamtec
 from .dust2 import Dust2
 from .e_forest import EForest
