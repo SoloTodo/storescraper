@@ -7,79 +7,60 @@ from storescraper.categories import ALL_IN_ONE, HEADPHONES, KEYBOARD, \
     MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK, PRINTER, RAM, SOLID_STATE_DRIVE, \
     STORAGE_DRIVE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class XCom(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            HEADPHONES,
-            SOLID_STATE_DRIVE,
-            RAM,
-            STORAGE_DRIVE,
-            MOTHERBOARD,
-            PRINTER,
-            MONITOR,
-            MOUSE,
-            KEYBOARD,
-            ALL_IN_ONE,
-            NOTEBOOK
-        ]
+class XCom(StoreWithUrlExtensions):
+    url_extensions = [
+        ['productos-nuevos/audio', HEADPHONES],
+        ['productos-nuevos/componentes-partes-y-piezas_de/discos-notebook',
+         SOLID_STATE_DRIVE],
+        ['productos-nuevos/componentes-partes-y-piezas_de/discos-ssd',
+         SOLID_STATE_DRIVE],
+        ['productos-nuevos/componentes-partes-y-piezas_de/'
+         'memoria-notebook', RAM],
+        ['productos-nuevos/componentes-partes-y-piezas_de/memoria-pc',
+         RAM],
+        ['productos-nuevos/discos-duros', STORAGE_DRIVE],
+        ['productos-nuevos/gabinete-pc', MOTHERBOARD],
+        ['productos-nuevos/impresoras', PRINTER],
+        ['productos-nuevos/memorias', RAM],
+        ['productos-nuevos/monitores-y-proyectores/monitores', MONITOR],
+        ['productos-nuevos/mouse', MOUSE],
+        ['productos-nuevos/teclados', KEYBOARD],
+        ['equipos-reacondicionados/reac-componentes-partes/'
+         'disco-duro-externo', STORAGE_DRIVE],
+        ['equipos-reacondicionados/all-in-one-reac', ALL_IN_ONE],
+        ['equipos-reacondicionados/monitores-reac', MONITOR],
+        ['equipos-reacondicionados/notebook-reac', NOTEBOOK],
+        ['desarme/disco-duro-desarme', STORAGE_DRIVE],
+        ['desarme/memoria-ram-desarme', RAM],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['productos-nuevos/audio', HEADPHONES],
-            ['productos-nuevos/componentes-partes-y-piezas_de/discos-notebook',
-                SOLID_STATE_DRIVE],
-            ['productos-nuevos/componentes-partes-y-piezas_de/discos-ssd',
-                SOLID_STATE_DRIVE],
-            ['productos-nuevos/componentes-partes-y-piezas_de/'
-                'memoria-notebook', RAM],
-            ['productos-nuevos/componentes-partes-y-piezas_de/memoria-pc',
-                RAM],
-            ['productos-nuevos/discos-duros', STORAGE_DRIVE],
-            ['productos-nuevos/gabinete-pc', MOTHERBOARD],
-            ['productos-nuevos/impresoras', PRINTER],
-            ['productos-nuevos/memorias', RAM],
-            ['productos-nuevos/monitores-y-proyectores/monitores', MONITOR],
-            ['productos-nuevos/mouse', MOUSE],
-            ['productos-nuevos/teclados', KEYBOARD],
-            ['equipos-reacondicionados/reac-componentes-partes/'
-                'disco-duro-externo', STORAGE_DRIVE],
-            ['equipos-reacondicionados/all-in-one-reac', ALL_IN_ONE],
-            ['equipos-reacondicionados/monitores-reac', MONITOR],
-            ['equipos-reacondicionados/notebook-reac', NOTEBOOK],
-            ['desarme/disco-duro-desarme', STORAGE_DRIVE],
-            ['desarme/memoria-ram-desarme', RAM],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.xcom.cl/categoria-producto/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
-                if not product_containers or '404!' in soup.text:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a', 'woocommerce-Loop'
-                                                      'Product-link')['href']
-                    product_urls.append(product_url)
-                page += 1
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow: ' + url_extension)
+            url_webpage = 'https://www.xcom.cl/categoria-producto/{}/' \
+                          'page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'product')
+            if not product_containers or '404!' in soup.text:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a', 'woocommerce-Loop'
+                                                  'Product-link')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
@@ -120,11 +101,11 @@ class XCom(Store):
         else:
             stock = 0
 
-        price_ins = soup.find('div', 'wpr-product-price').find('ins')
+        price_wrapper = soup.find('div', 'product-summary')
+        price_ins = price_wrapper.find('ins')
         if not price_ins:
             return []
-        price = Decimal(remove_words(price_ins.find(
-            'span', 'woocommerce-Price-amount').text))
+        price = Decimal(remove_words(price_ins.text))
 
         p = Product(
             name,
