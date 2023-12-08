@@ -327,7 +327,6 @@ class Lider(Store):
 
         key = str(entry['sku'])
         sku = entry['itemNumber']
-        stock = -1 if entry['available'] else 0
         normal_price = Decimal(
             entry['price']['BasePriceSales']).quantize(Decimal('1.00'))
         offer_price_container = entry['price']['BasePriceTLMC']
@@ -366,6 +365,13 @@ class Lider(Store):
             condition = 'https://schema.org/NewCondition'
 
         seller = entry.get('winningOffer', {}).get('sellerName', None) or None
+
+        if seller:
+            stock = 0
+        elif entry['available']:
+            stock = -1
+        else:
+            stock = 0
 
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger

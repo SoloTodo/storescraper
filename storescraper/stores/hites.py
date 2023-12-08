@@ -353,18 +353,6 @@ class Hites(Store):
         name = soup.find('h1', 'product-name').text
         sku = soup.find('span', 'product-id').text
 
-        availability_match = re.search(
-            r'"availability":"(.+)"}', response.text)
-        availability_text = availability_match.groups()[0]
-
-        if availability_text == 'http://schema.org/OutOfStock':
-            stock = 0
-        elif availability_text == 'http://schema.org/InStock':
-            stock = -1
-        else:
-            raise Exception('Invalid availability text: {}'.format(
-                availability_text))
-
         prices = soup.find('div', 'prices')
 
         offer_price_container = prices.find('span', 'hites-price')
@@ -415,6 +403,20 @@ class Hites(Store):
 
         if seller == 'Hites':
             seller = None
+
+        availability_match = re.search(
+            r'"availability":"(.+)"}', response.text)
+        availability_text = availability_match.groups()[0]
+
+        if seller:
+            stock = 0
+        elif availability_text == 'http://schema.org/OutOfStock':
+            stock = 0
+        elif availability_text == 'http://schema.org/InStock':
+            stock = -1
+        else:
+            raise Exception('Invalid availability text: {}'.format(
+                availability_text))
 
         review_count_tag = soup.findAll('span', 'top-stars-rating-details')[0]
         review_count = int(review_count_tag.text.replace(
