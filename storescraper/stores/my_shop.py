@@ -98,8 +98,6 @@ class MyShop(StoreWithUrlExtensions):
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
-
         json_data = json.loads(soup.find(
             'script', {'type': 'application/ld+json'}).text)
         for entry in json_data['@graph']:
@@ -145,7 +143,7 @@ class MyShop(StoreWithUrlExtensions):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,

@@ -71,7 +71,7 @@ class GigaSystem(StoreWithUrlExtensions):
         pricing_tag = soup.find('div', 'summary')
         price_tag = pricing_tag.find('span', 'woocommerce-Price-amount')
         normal_price = Decimal(remove_words(price_tag.text))
-        offer_price = (normal_price * Decimal('0.96')).quantize(0)
+        offer_price = (normal_price * Decimal('0.94')).quantize(0)
         picture_urls = [x.find('a')['href'] for x in soup.findAll(
             'div', 'woocommerce-product-gallery__image')]
         description = html_to_markdown(str(
