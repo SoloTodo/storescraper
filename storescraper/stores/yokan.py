@@ -107,11 +107,15 @@ class Yokan(StoreWithUrlExtensions):
                 sku = soup.find('span', 'sku').text.strip()
             else:
                 sku = None
-            stock_tag = soup.find('p', 'in-stock')
-            if stock_tag:
-                stock = int(re.search(r'(\d+)', stock_tag.text).groups()[0])
-            else:
-                stock = 0
+
+            stock = 0
+            stock_selector = soup.find('select', 'slw_item_stock_location')
+            if stock_selector:
+                for option in stock_selector.findAll('option'):
+                    if 'Chile' not in option.text:
+                        continue
+                    stock = int(option['data-quantity'])
+                    break
 
             price_container = soup.find('p', 'price')
             if price_container.find('ins'):
