@@ -88,8 +88,6 @@ class Falabella(Store):
          's Computación > Teclados', 1],
         ['cat3239', [STEREO_SYSTEM], 'Home > Tecnología-Computadores > Accesor'
          'ios Computación > Parlantes y Subwoofer', 1],
-        ['CATG11879', [VIDEO_CARD], 'Home > Tecnología-Computadores > Accesori'
-         'os Computación > Tarjetas de Video', 1],
         ['cat40051', [ALL_IN_ONE], 'Home > Tecnología-Computadores > All in on'
          'e', 1],
         ['cat3087', [EXTERNAL_STORAGE_DRIVE], 'Home > Tecnología-Computadores '
@@ -114,8 +112,6 @@ class Falabella(Store):
          'ios gamer > Audífonos gamer', 1],
         ['CATG19011', [GAMING_CHAIR], 'Home > Tecnología-Computadores > Acceso'
          'rios gamer > Sillas gamer', 1],
-        ['CATG19012', [COMPUTER_CASE], 'Home > Tecnología-Computadores > Acces'
-         'orios gamer > Gabinete gamer', 1],
         ['CATG19008', [KEYBOARD], 'Home > Tecnología-Computadores > Accesorios'
          ' gamer > Tecaldos gamer', 1],
         ['CATG19007', [MOUSE], 'Home > Tecnología-Computadores > Accesorios ga'
