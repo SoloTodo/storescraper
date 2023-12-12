@@ -9,56 +9,55 @@ from storescraper.categories import NOTEBOOK, RAM, CELL, TABLET, WEARABLE, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, VIDEO_CARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, KEYBOARD, MOUSE, KEYBOARD_MOUSE_COMBO, HEADPHONES, \
     STEREO_SYSTEM, MONITOR, TELEVISION, PRINTER, VIDEO_GAME_CONSOLE, \
-    GAMING_CHAIR, MICROPHONE, UPS
+    GAMING_CHAIR, UPS
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words, \
+    html_to_markdown
 
 
 class MyShop(StoreWithUrlExtensions):
     url_extensions = [
-        ['notebooks-de-14', NOTEBOOK],
-        ['notebooks-de-156', NOTEBOOK],
-        ['notebooks-de-16', NOTEBOOK],
-        ['memorias-notebook', RAM],
-        ['celulares', CELL],
-        ['tablet', TABLET],
-        ['relojes', WEARABLE],
-        ['all-in-one', ALL_IN_ONE],
-        ['almacenamiento-externo', USB_FLASH_DRIVE],
-        ['memorias-flash', MEMORY_CARD],
-        ['procesadores', PROCESSOR],
-        ['placas-madres', MOTHERBOARD],
-        ['memorias-ram', RAM],
-        ['discos-ssd-internos', SOLID_STATE_DRIVE],
-        ['discos-hdd-internos', STORAGE_DRIVE],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['gabinetes', COMPUTER_CASE],
-        ['refrigeracion', CPU_COOLER],
-        ['fuentes-de-poder', POWER_SUPPLY],
-        ['teclados', KEYBOARD],
-        ['mouse', MOUSE],
-        ['combo-teclado-mouse', KEYBOARD_MOUSE_COMBO],
-        ['audifonos-in-ear', HEADPHONES],
-        ['audifonos-on-ear', HEADPHONES],
-        ['video-conferencia', HEADPHONES],
-        ['parlantes', STEREO_SYSTEM],
-        ['monitores', MONITOR],
-        ['televisores', TELEVISION],
-        ['impresion-laser', PRINTER],
-        ['impresion-tinta', PRINTER],
-        ['otras-impresoras', PRINTER],
-        ['consolas', VIDEO_GAME_CONSOLE],
-        ['audifonos-gamer', HEADPHONES],
-        ['teclados-gamer', KEYBOARD],
-        ['mouse-gamer', MOUSE],
-        ['sillas-y-mesas', GAMING_CHAIR],
-        ['microfonos', MICROPHONE],
-        ['ups', UPS],
-        ['servidores-nas', STORAGE_DRIVE],
-        ['macbook', NOTEBOOK],
-        ['imac', ALL_IN_ONE],
-        ['ipad', TABLET],
+        ['119', NOTEBOOK],  # apple-macbook
+        ['121', TABLET],  # apple-ipad
+        ['124', HEADPHONES],  # apple-accesorios-apple
+        ['19', NOTEBOOK],  # portabilidad-notebooks-de-15-6-
+        ['66', CELL],  # celulares
+        ['92', RAM],  # portabilidad-memorias-notebook
+        ['106', NOTEBOOK],  # portabilidad-notebooks-de-14-
+        ['21', TABLET],  # portabilidad-tablet
+        ['56', WEARABLE],  # portabilidad-relojes
+        ['107', NOTEBOOK],  # portabilidad-notebooks-de-16-
+        ['20', ALL_IN_ONE],  # computacion-all-in-one
+        ['69', USB_FLASH_DRIVE],  # computacion-almacenamiento-externo
+        ['103', MEMORY_CARD],  # computacion-memorias-flash
+        ['32', MOTHERBOARD],  # partes-y-piezas-placas-madres
+        ['35', RAM],  # partes-y-piezas-memorias-ram
+        ['37', CPU_COOLER],  # partes-y-piezas-refrigeracion
+        ['71', PROCESSOR],  # partes-y-piezas-procesadores
+        ['73', KEYBOARD],  # partes-y-piezas-teclados
+        ['105', MOUSE],  # partes-y-piezas-mouse
+        ['110', KEYBOARD_MOUSE_COMBO],  # partes-y-piezas-combo-teclado-mouse
+        ['33', VIDEO_CARD],  # partes-y-piezas-tarjetas-de-video
+        ['36', COMPUTER_CASE],  # partes-y-piezas-gabinetes
+        ['64', POWER_SUPPLY],  # partes-y-piezas-fuentes-de-poder
+        ['72', STORAGE_DRIVE],  # partes-y-piezas-discos-hdd-internos
+        ['108', SOLID_STATE_DRIVE],  # partes-y-piezas-discos-ssd-internos
+        ['8', HEADPHONES],  # audio-video-audifonos-in-ear
+        ['11', STEREO_SYSTEM],  # audio-video-parlantes
+        ['14', HEADPHONES],  # audio-video-video-conferencia
+        ['17', MONITOR],  # audio-video-monitores
+        ['9', HEADPHONES],  # audio-video-audifonos-on-ear
+        ['18', TELEVISION],  # audio-video-televisores
+        ['27', PRINTER],  # impresion-impresion-laser
+        ['30', PRINTER],  # impresion-otras-impresoras
+        ['29', PRINTER],  # impresion-impresion-tinta
+        ['10', HEADPHONES],  # gamer-audifonos-gamer
+        ['42', GAMING_CHAIR],  # gamer-sillas-y-mesas
+        ['41', VIDEO_GAME_CONSOLE],  # gamer-consolas
+        ['75', KEYBOARD],  # gamer-teclados-gamer
+        ['101', MOUSE],  # gamer-mouse-gamer
+        ['85', UPS],  # empresas-ups
     ]
 
     @classmethod
@@ -69,20 +68,22 @@ class MyShop(StoreWithUrlExtensions):
         while True:
             if page > 20:
                 raise Exception('Page overflow: ' + url_extension)
-            url_webpage = 'https://www.myshop.cl/categorias/{}'\
-                          '/page/{}'.format(url_extension, page)
-            print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html5lib')
-            collection = soup.find('div', 'products')
-            if not collection:
+
+            payload = {
+                'tipo': '3',
+                'page': str(page),
+                'idFamilia': url_extension
+            }
+            res = session.post('https://www.myshop.cl/servicio/producto', json=payload)
+            products_data = res.json()['resultado']['items']
+
+            if not products_data:
                 if page == 1:
                     logging.warning('Empty category: ' + url_extension)
                 break
-            product_containers = collection.findAll('div', 'product')
-            for container in product_containers:
-                product_url = container.find(
-                    'h3', 'product-title').find('a')['href']
+
+            for product_entry in products_data:
+                product_url = 'https://www.myshop.cl' + product_entry['link']
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -92,50 +93,22 @@ class MyShop(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-
-        if response.status_code == 404:
-            return []
-
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        json_data = json.loads(soup.find(
-            'script', {'type': 'application/ld+json'}).text)
-        for entry in json_data['@graph']:
-            if '@type' in entry and entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
-
-        name = product_data['name']
-        sku = product_data['sku']
-        description = product_data['description']
-        offer_price = Decimal(product_data['offers'][0]['price'])
-        normal_price = (offer_price * Decimal('1.05')).quantize(0)
-
-        stock_p = soup.find('p', 'stock in-stock')
-        if 'PREVENTA' in description.upper():
-            stock = 0
-        elif stock_p:
-            if 'más de' in stock_p.text.lower():
-                stock = -1
-            else:
-                stock = int(stock_p.text.split(' ')[0])
+        name = soup.find('h1').text.strip()
+        product_data_tag = soup.find('div', 'product_meta')
+        sku = product_data_tag.findAll('p')[0].find('a').text.strip()
+        part_number = product_data_tag.findAll('p')[3].find('a').text.strip()
+        if soup.find('button', {'id': 'carro_agregar'}):
+            stock = -1
         else:
             stock = 0
+        price_tags = soup.find('div', 'product_d_right').findAll('span', 'current_price')
+        assert len(price_tags) == 2
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[0].text))
 
-        part_number_tag = soup.find('span', 'custom-part_number')
-        if part_number_tag:
-            part_number = part_number_tag.find('span').text.strip()
-        else:
-            part_number = None
-
-        picture_urls = []
-        picture_container = soup.find(
-            'figure', 'woocommerce-product-gallery__wrapper')
-        for i in picture_container.findAll('img'):
-            if validators.url(i['src']):
-                picture_urls.append(i['src'])
+        picture_urls = ['https://www.myshop.cl' + x['data-image'] for x in soup.findAll('a', 'elevatezoom-gallery')]
+        description = html_to_markdown(str(soup.find('div', 'product_d_inner')))
 
         p = Product(
             name,

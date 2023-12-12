@@ -8,108 +8,79 @@ from storescraper.categories import CELL, COMPUTER_CASE, CPU_COOLER, \
     SOLID_STATE_DRIVE, STORAGE_DRIVE, TELEVISION, VIDEO_CARD, \
     VIDEO_GAME_CONSOLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import remove_words, session_with_proxy
 
 
-class DiamondPc(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            COMPUTER_CASE,
-            PROCESSOR,
-            VIDEO_CARD,
-            MOTHERBOARD,
-            RAM,
-            POWER_SUPPLY,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            CPU_COOLER,
-            MOUSE,
-            KEYBOARD,
-            HEADPHONES,
-            GAMING_CHAIR,
-            GAMING_DESK,
-            MICROPHONE,
-            MONITOR,
-            TELEVISION,
-            NOTEBOOK,
-            PRINTER,
-            CELL,
-            VIDEO_GAME_CONSOLE
-        ]
+class DiamondPc(StoreWithUrlExtensions):
+    url_extensions = [
+        ['componentes-de-computacion/gabinetes', COMPUTER_CASE],
+        ['componentes-de-computacion/procesadores', PROCESSOR],
+        ['componentes-de-computacion/tarjetas-graficas', VIDEO_CARD],
+        ['componentes-de-computacion/placas-madre', MOTHERBOARD],
+        ['componentes-de-computacion/memorias-ram', RAM],
+        ['componentes-de-computacion/fuentes-de-poder', POWER_SUPPLY],
+        ['componentes-de-computacion/discos-duro', STORAGE_DRIVE],
+        ['componentes-de-computacion/discos-ssd', SOLID_STATE_DRIVE],
+        ['componentes-de-computacion/refrigeraciones', CPU_COOLER],
+        ['accesorios-de-computacion/zona-gamer/mouse-gamer', MOUSE],
+        ['accesorios-de-computacion/zona-gamer/teclados-gamer', KEYBOARD],
+        ['accesorios-de-computacion/zona-gamer/audifonos-gamer',
+         HEADPHONES],
+        ['accesorios-de-computacion/zona-gamer/sillas-gamer',
+         GAMING_CHAIR],
+        ['accesorios-de-computacion/zona-gamer/escritorios-gamer',
+         GAMING_DESK],
+        ['accesorios-de-computacion/zona-ofimatica/mouse', MOUSE],
+        ['accesorios-de-computacion/zona-ofimatica/teclados', KEYBOARD],
+        ['accesorios-de-computacion/zona-ofimatica/audifonos', HEADPHONES],
+        ['accesorios-de-computacion/zona-ofimatica/microfonos',
+         MICROPHONE],
+        ['monitores-y-televisores/monitores', MONITOR],
+        ['monitores-y-televisores/televisores', TELEVISION],
+        ['computadores-y-notebook/notebooks-y-accesorios/notebooks',
+         NOTEBOOK],
+        ['impresoras-y-suministros/impresoras', PRINTER],
+        ['celulares-y-accesorios/celulares-smartphone', CELL],
+        ['celulares-y-accesorios/audifonos-inalambricos', HEADPHONES],
+        ['consolas', VIDEO_GAME_CONSOLE],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['componentes-de-computacion/gabinetes', COMPUTER_CASE],
-            ['componentes-de-computacion/procesadores', PROCESSOR],
-            ['componentes-de-computacion/tarjetas-graficas', VIDEO_CARD],
-            ['componentes-de-computacion/placas-madre', MOTHERBOARD],
-            ['componentes-de-computacion/memorias-ram', RAM],
-            ['componentes-de-computacion/fuentes-de-poder', POWER_SUPPLY],
-            ['componentes-de-computacion/discos-duro', STORAGE_DRIVE],
-            ['componentes-de-computacion/discos-ssd', SOLID_STATE_DRIVE],
-            ['componentes-de-computacion/refrigeraciones', CPU_COOLER],
-            ['accesorios-de-computacion/zona-gamer/mouse-gamer', MOUSE],
-            ['accesorios-de-computacion/zona-gamer/teclados-gamer', KEYBOARD],
-            ['accesorios-de-computacion/zona-gamer/audifonos-gamer',
-             HEADPHONES],
-            ['accesorios-de-computacion/zona-gamer/sillas-gamer',
-             GAMING_CHAIR],
-            ['accesorios-de-computacion/zona-gamer/escritorios-gamer',
-             GAMING_DESK],
-            ['accesorios-de-computacion/zona-ofimatica/mouse', MOUSE],
-            ['accesorios-de-computacion/zona-ofimatica/teclados', KEYBOARD],
-            ['accesorios-de-computacion/zona-ofimatica/audifonos', HEADPHONES],
-            ['accesorios-de-computacion/zona-ofimatica/microfonos',
-             MICROPHONE],
-            ['monitores-y-televisores/monitores', MONITOR],
-            ['monitores-y-televisores/televisores', TELEVISION],
-            ['computadores-y-notebook/notebooks-y-accesorios/notebooks',
-             NOTEBOOK],
-            ['impresoras-y-suministros/impresoras', PRINTER],
-            ['celulares-y-accesorios/celulares-smartphone', CELL],
-            ['celulares-y-accesorios/audifonos-inalambricos', HEADPHONES],
-            ['consolas', VIDEO_GAME_CONSOLE],
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://diamondpc.cl/categoria/{}/page/' \
-                    '{}/'.format(url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage, timeout=20).text
-                soup = BeautifulSoup(data, 'html5lib')
-                product_container = soup.find('div', 'wd-shop-product')
-                if not product_container:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_container.findAll('div', 'product'):
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://diamondpc.cl/categoria/{}/page/' \
+                '{}/'.format(url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage, timeout=20).text
+            soup = BeautifulSoup(data, 'html5lib')
+            product_container = soup.find('div', 'wd-shop-product')
+            if not product_container:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_container.findAll('div', 'product'):
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
 
-                c = 'product_cat-' + url_extension.split('/')[-1]
-                product_container_2 = soup.findAll('div', c)
-                if len(product_container_2) == 0:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_container_2:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            c = 'product_cat-' + url_extension.split('/')[-1]
+            product_container_2 = soup.findAll('div', c)
+            if len(product_container_2) == 0:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_container_2:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
 
         return product_urls
 
@@ -135,7 +106,7 @@ class DiamondPc(Store):
         name = product_data['name']
 
         if 'sku' in product_data:
-            sku = str(product_data['sku'])
+            sku = str(product_data['sku'])[:45]
         else:
             sku = None
 
