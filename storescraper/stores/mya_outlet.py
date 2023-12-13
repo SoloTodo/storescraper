@@ -14,12 +14,14 @@ class MyaOutlet(StoreWithUrlExtensions):
     url_extensions = [
         ['smartphone', CELL],
         ['parlantes', STEREO_SYSTEM],
+        ['macbook', NOTEBOOK],
         ['notebook', NOTEBOOK],
-        ['computacion/componentes', VIDEO_CARD],
+        ['componentes', VIDEO_CARD],
         ['tablet-ipad', TABLET],
         ['perifericos', MONITOR],
-        ['consolas/playstation', VIDEO_GAME_CONSOLE],
-        ['electrodomesticos/televisores', TELEVISION],
+        ['consolas', VIDEO_GAME_CONSOLE],
+        ['televisores', TELEVISION],
+        ['componentes', VIDEO_CARD],
     ]
 
     @classmethod
