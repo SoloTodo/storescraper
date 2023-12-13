@@ -8,78 +8,55 @@ from storescraper.categories import MOUSE, KEYBOARD, MONITOR, \
     CPU_COOLER, STORAGE_DRIVE, RAM, COMPUTER_CASE, \
     SOLID_STATE_DRIVE, USB_FLASH_DRIVE, CASE_FAN, NOTEBOOK
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class GorillaStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            MOUSE,
-            KEYBOARD,
-            MONITOR,
-            GAMING_CHAIR,
-            VIDEO_CARD,
-            PROCESSOR,
-            MOTHERBOARD,
-            POWER_SUPPLY,
-            CPU_COOLER,
-            STORAGE_DRIVE,
-            RAM,
-            COMPUTER_CASE,
-            SOLID_STATE_DRIVE,
-            USB_FLASH_DRIVE,
-            CASE_FAN,
-            NOTEBOOK
-        ]
+class GorillaStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['procesadores', PROCESSOR],
+        ['placas-madre', MOTHERBOARD],
+        ['memoria-ram', RAM],
+        ['ssd', SOLID_STATE_DRIVE],
+        ['pendrive-flash', USB_FLASH_DRIVE],
+        ['hdd', STORAGE_DRIVE],
+        ['fuentes-de-poder', POWER_SUPPLY],
+        ['tarjetas-graficas', VIDEO_CARD],
+        ['gabinetes', COMPUTER_CASE],
+        ['watercooling', CPU_COOLER],
+        ['disipacion-por-aire', CPU_COOLER],
+        ['ventiladores', CASE_FAN],
+        ['monitores', MONITOR],
+        ['teclado', KEYBOARD],
+        ['mouse', MOUSE],
+        ['sillas-gamer', GAMING_CHAIR],
+        ['notebooks', NOTEBOOK],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['procesadores', PROCESSOR],
-            ['placas-madre', MOTHERBOARD],
-            ['memoria-ram', RAM],
-            ['ssd', SOLID_STATE_DRIVE],
-            ['pendrive-flash', USB_FLASH_DRIVE],
-            ['hdd', STORAGE_DRIVE],
-            ['fuentes-de-poder', POWER_SUPPLY],
-            ['tarjetas-graficas', VIDEO_CARD],
-            ['gabinetes', COMPUTER_CASE],
-            ['watercooling', CPU_COOLER],
-            ['disipacion-por-aire', CPU_COOLER],
-            ['ventiladores', CASE_FAN],
-            ['monitores', MONITOR],
-            ['teclado', KEYBOARD],
-            ['mouse', MOUSE],
-            ['sillas-gamer', GAMING_CHAIR],
-            ['notebooks', NOTEBOOK],
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
 
-                url_webpage = 'https://www.gorillastore.cl/index.php/' \
-                              'product-category/{}/page/{}/'.format(
-                                url_extension, page)
-                print(url_webpage)
-                data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'type-product')
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            url_webpage = 'https://www.gorillastore.cl/index.php/' \
+                          'product-category/{}/page/{}/'.format(
+                            url_extension, page)
+            print(url_webpage)
+            data = session.get(url_webpage).text
+            soup = BeautifulSoup(data, 'html.parser')
+            product_containers = soup.findAll('li', 'type-product')
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod

@@ -44,7 +44,11 @@ class Centrale(StoreWithUrlExtensions):
         ['refrigeracion', CPU_COOLER],
         ['tarjetas-de-video', VIDEO_CARD],
         ['smartphones', CELL],
-        ['micrófono', MICROPHONE]
+        ['micrófono', MICROPHONE],
+        ['accesorios-mac', KEYBOARD],
+        ['imac', ALL_IN_ONE],
+        ['macbooks', NOTEBOOK],
+        ['airpods', HEADPHONES],
     ]
 
     @classmethod
