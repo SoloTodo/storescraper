@@ -86,7 +86,8 @@ class MyaOutlet(StoreWithUrlExtensions):
         if not part_number and category == NOTEBOOK and stock != 0:
             raise Exception('Available notebook without MPN')
 
-        price = Decimal(json_data['offers'][0]['price'])
+        offer_price = Decimal(json_data['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.04')).quantize(0)
         picture_urls = [json_data['image']]
 
         description = json_data['description']
@@ -114,8 +115,8 @@ class MyaOutlet(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=part_number,
             picture_urls=picture_urls,
