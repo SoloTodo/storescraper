@@ -37,7 +37,7 @@ class BackOnline(StoreWithUrlExtensions):
 
             page = 1
             while True:
-                if page >= 5:
+                if page >= 10:
                     raise Exception('Page overflow: ' + url_extension)
 
                 url_webpage = '{}?page={}'.format(collection_url, page)
