@@ -69,6 +69,16 @@ class SmartMobile(StoreWithUrlExtensions):
         else:
             force_unavailable = False
 
+        if 'PEDIDO' in name.upper():
+            force_unavailable = True
+
+        if 'USAD' in name.upper():
+            condition = 'https://schema.org/UsedCondition'
+        elif 'SIN CAJA' in name.upper():
+            condition = 'https://schema.org/OpenBoxCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         if soup.find('form', 'variations_form cart'):
             products = []
             variations = json.loads(soup.find('form', 'variations_form cart')[
@@ -110,7 +120,8 @@ class SmartMobile(StoreWithUrlExtensions):
                     offer_price,
                     'CLP',
                     sku=sku,
-                    picture_urls=picture_urls
+                    picture_urls=picture_urls,
+                    condition=condition
                 )
                 products.append(p)
             return products
@@ -152,7 +163,8 @@ class SmartMobile(StoreWithUrlExtensions):
                 offer_price,
                 'CLP',
                 sku=sku,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
+                condition=condition
 
             )
             return [p]
