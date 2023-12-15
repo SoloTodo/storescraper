@@ -76,7 +76,7 @@ class Dust2(StoreWithUrlExtensions):
         name = product_data['name']
         sku = product_data['sku']
         key = str(product_data['wordpress_id'])
-        stock = product_data['stock_quantity'] or 0
+        stock = max(product_data['stock_quantity'] or 0, 0)
         normal_price = Decimal(product_data['price'])
         offer_price = (normal_price * Decimal('0.93')).quantize(0)
         picture_urls = [tag['src'] for tag in product_data['images']]
