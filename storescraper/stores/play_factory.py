@@ -117,6 +117,10 @@ class PlayFactory(StoreWithUrlExtensions):
             sku_match = re.search(r'"postID":(\d+)', response.text)
             sku = sku_match.groups()[0]
             offer_price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content'])
+
+            if not offer_price:
+                return []
+
             normal_price = (offer_price * Decimal('1.025')).quantize(0)
             stock = 0
             qty_input = soup.find('input', 'qty')

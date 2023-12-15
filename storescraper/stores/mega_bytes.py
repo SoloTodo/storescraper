@@ -101,7 +101,8 @@ class MegaBytes(StoreWithUrlExtensions):
 
         picture_urls = [tag['data-src'] for tag in
                         soup.find('div', 'woocommerce-product-gallery')
-                            .findAll('img')]
+                            .findAll('img')
+                        if 'data-src' in tag.attrs]
         p = Product(
             name,
             cls.__name__,

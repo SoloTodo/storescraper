@@ -62,6 +62,7 @@ class GestionYEquipos(StoreWithUrlExtensions):
         condition_dict = {
             'REACONDICIONADO': 'https://schema.org/RefurbishedCondition',
             'NUEVO': 'https://schema.org/NewCondition',
+            'NUEVO CAJA ABIERTA': 'https://schema.org/OpenBoxCondition',
         }
         condition = condition_dict[condition_text]
 
