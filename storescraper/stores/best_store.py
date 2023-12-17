@@ -108,8 +108,7 @@ class BestStore(StoreWithUrlExtensions):
         key = container.find('meta', {'itemprop': 'sku'})['content']
         name = container.find('h1', {'itemprop': 'name'}).text
 
-        part_number_tag = container.find('div', 'product-reference-supplier').find(
-            'label', text='PN: ')
+        part_number_tag = container.find('label', text='PN: ')
         if part_number_tag:
             part_number = part_number_tag.parent.find(
                 'span').text.strip()
@@ -128,8 +127,7 @@ class BestStore(StoreWithUrlExtensions):
         if 'disabled' in add_to_cart_button.attrs:
             stock = 0
         else:
-            stock_tag = container.find('div', 'product-reference-supplier').find(
-                'label', text='Stock: ')
+            stock_tag = container.find('label', text='Stock: ')
             if stock_tag:
                 stock_text = stock_tag.parent.find('span').text
                 if stock_text.strip() == 'Consultar stock':
