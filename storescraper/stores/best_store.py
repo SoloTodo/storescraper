@@ -107,8 +107,15 @@ class BestStore(StoreWithUrlExtensions):
         container = soup.find('div', 'product-container')
         key = container.find('meta', {'itemprop': 'sku'})['content']
         name = container.find('h1', {'itemprop': 'name'}).text
-        part_number = container.find('div', 'product-reference-supplier').find(
-            'span').text.strip()
+
+        part_number_tag = container.find('div', 'product-reference-supplier').find(
+            'label', text='PN: ')
+        if part_number_tag:
+            part_number = part_number_tag.parent.find(
+                'span').text.strip()
+        else:
+            part_number = None
+
         sku_tag = container.find('div', 'product-reference')
 
         if sku_tag:
@@ -121,14 +128,18 @@ class BestStore(StoreWithUrlExtensions):
         if 'disabled' in add_to_cart_button.attrs:
             stock = 0
         else:
-            stock_tag = container.findAll('div', 'product-reference-supplier')[1]
-            stock_text = stock_tag.find('span').text
-            if stock_text.strip() == 'Consultar stock':
-                stock = 0
-            else:
-                stock = int(stock_text)
-                if stock < 4:
+            stock_tag = container.find('div', 'product-reference-supplier').find(
+                'label', text='Stock: ')
+            if stock_tag:
+                stock_text = stock_tag.parent.find('span').text
+                if stock_text.strip() == 'Consultar stock':
                     stock = 0
+                else:
+                    stock = int(stock_text)
+                    if stock < 4:
+                        stock = 0
+            else:
+                stock = 0
 
         normal_price = Decimal(
             remove_words(soup.find('div', 'current-price').find('span').text))
