@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from decimal import Decimal
 
 import validators
@@ -87,7 +88,8 @@ class SmartDeal(StoreWithUrlExtensions):
         elif soup.find('p', 'stock out-of-stock'):
             stock = 0
         elif soup.find('p', 'stock in-stock'):
-            stock = int(soup.find('p', 'stock in-stock').text.split()[0])
+            stock_text = soup.find('p', 'stock in-stock').text
+            stock = int(re.search(r'(\d+)', stock_text).groups()[0])
         else:
             stock = -1
 

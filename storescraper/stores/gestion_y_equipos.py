@@ -68,21 +68,21 @@ class GestionYEquipos(StoreWithUrlExtensions):
 
         products = []
         variants_tags = soup.findAll('script', {'type': 'application/json'})
-        if len(variants_tags) > 1:
-            variants_json = json.loads(variants_tags[1].text)
+        if len(variants_tags) > 2:
+            variants_json = json.loads(variants_tags[2].text)
             picture_urls = ['https:' + x for x in variants_json['product']['images']]
             for variant in variants_json['product']['variants']:
-                name = variant['name']
                 key = str(variant['id'])
+                variant_url = url + '?variant={}'.format(key)
                 sku = variant['sku']
                 stock = -1 if variant['available'] else 0
                 price = Decimal(variant['price'] / 100)
 
                 p = Product(
-                    name,
+                    sku,
                     cls.__name__,
                     category,
-                    url,
+                    variant_url,
                     url,
                     key,
                     stock,

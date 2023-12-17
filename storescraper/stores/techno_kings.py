@@ -48,8 +48,13 @@ class TechnoKings(StoreWithUrlExtensions):
         sku = str(json_container['sku'])
         description = html_to_markdown(json_container['description'])
         picture_urls = [json_container['image']]
-        stock = int(soup.find('p', 'stock in-stock').text.split()[0])
-        price = Decimal(json_container['offers'][0]['price'])
+        stock_tag = soup.find('p', 'stock in-stock')
+        if stock_tag:
+            stock = int(stock_tag.text.split()[0])
+        else:
+            stock = 0
+        offer_price = Decimal(json_container['offers'][0]['price'])
+        normal_price = (offer_price * Decimal('1.03')).quantize(0)
 
         p = Product(
             name,
@@ -59,8 +64,8 @@ class TechnoKings(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             'CLP',
             sku=sku,
             part_number=sku,

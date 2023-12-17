@@ -109,8 +109,7 @@ class BestStore(StoreWithUrlExtensions):
         name = container.find('h1', {'itemprop': 'name'}).text
         part_number = container.find('div', 'product-reference-supplier').find(
             'span').text.strip()
-        sku_tag = container.find(
-            'div', 'product-reference')
+        sku_tag = container.find('div', 'product-reference')
 
         if sku_tag:
             sku = sku_tag.find('span').text.strip()
@@ -122,7 +121,11 @@ class BestStore(StoreWithUrlExtensions):
         if 'disabled' in add_to_cart_button.attrs:
             stock = 0
         else:
-            stock = -1
+            stock_tag = container.findAll('div', 'product-reference-supplier')[1]
+            stock_text = stock_tag.find('span').text
+            stock = int(stock_text)
+            if stock < 4:
+                stock = 0
 
         normal_price = Decimal(
             remove_words(soup.find('div', 'current-price').find('span').text))

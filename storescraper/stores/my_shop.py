@@ -58,6 +58,8 @@ class MyShop(StoreWithUrlExtensions):
         ['75', KEYBOARD],  # gamer-teclados-gamer
         ['101', MOUSE],  # gamer-mouse-gamer
         ['85', UPS],  # empresas-ups
+        ['40', NOTEBOOK],  # portabilidad-notebooks-gamer
+        ['117', NOTEBOOK],  # computacion-liquidacion
     ]
 
     @classmethod
@@ -110,6 +112,11 @@ class MyShop(StoreWithUrlExtensions):
         picture_urls = ['https://www.myshop.cl' + x['data-image'] for x in soup.findAll('a', 'elevatezoom-gallery')]
         description = html_to_markdown(str(soup.find('div', 'product_d_inner')))
 
+        if 'REACON' in name.upper():
+            condition = 'https://schema.org/RefurbishedCondition'
+        else:
+            condition = 'https://schema.org/NewCondition'
+
         p = Product(
             name,
             cls.__name__,
@@ -124,6 +131,7 @@ class MyShop(StoreWithUrlExtensions):
             sku=sku,
             picture_urls=picture_urls,
             description=description,
-            part_number=part_number
+            part_number=part_number,
+            condition=condition
         )
         return [p]
