@@ -123,9 +123,12 @@ class BestStore(StoreWithUrlExtensions):
         else:
             stock_tag = container.findAll('div', 'product-reference-supplier')[1]
             stock_text = stock_tag.find('span').text
-            stock = int(stock_text)
-            if stock < 4:
+            if stock_text.strip() == 'Consultar stock':
                 stock = 0
+            else:
+                stock = int(stock_text)
+                if stock < 4:
+                    stock = 0
 
         normal_price = Decimal(
             remove_words(soup.find('div', 'current-price').find('span').text))
