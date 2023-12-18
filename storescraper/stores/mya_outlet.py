@@ -83,8 +83,8 @@ class MyaOutlet(StoreWithUrlExtensions):
         else:
             part_number = None
 
-        if not part_number and category == NOTEBOOK and stock != 0:
-            raise Exception('Available notebook without MPN')
+        if not part_number and category == NOTEBOOK:
+            stock = 0
 
         offer_price = Decimal(json_data['offers'][0]['price'])
         normal_price = (offer_price * Decimal('1.04')).quantize(0)
