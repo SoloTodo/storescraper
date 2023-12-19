@@ -54,7 +54,12 @@ class Fama(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'itemprop': 'name'}).text
-        key = soup.find('input', {'name': 'ids[]'})['value']
+        key_tag = soup.find('input', {'name': 'ids[]'})
+
+        if not key_tag:
+            return []
+
+        key = key_tag['value']
         sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
         stock = -1
         price = Decimal(soup.find('span', {'itemprop': 'price'}).text.strip())
