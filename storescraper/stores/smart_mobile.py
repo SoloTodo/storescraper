@@ -72,10 +72,8 @@ class SmartMobile(StoreWithUrlExtensions):
         if 'PEDIDO' in name.upper():
             force_unavailable = True
 
-        if 'USAD' in name.upper():
+        if 'USAD' in name.upper() or 'SIN CAJA' in name.upper():
             condition = 'https://schema.org/UsedCondition'
-        elif 'SIN CAJA' in name.upper():
-            condition = 'https://schema.org/OpenBoxCondition'
         else:
             condition = 'https://schema.org/NewCondition'
 

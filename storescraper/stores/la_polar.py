@@ -363,7 +363,11 @@ class LaPolar(Store):
                 banner_tags = soup.findAll('div', 'rojoPolar')
 
                 for index, banner_tag in enumerate(banner_tags):
-                    picture_url = banner_tag.find('source')['srcset']
+                    picture_tag = banner_tag.find('source')
+                    if picture_tag:
+                        picture_url = picture_tag['srcset']
+                    else:
+                        picture_url = banner_tag.find('img')['src']
                     destination_urls = [banner_tag.find('a')['href']]
 
                     banners.append({
