@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 import urllib
 
 from decimal import Decimal
@@ -126,6 +128,23 @@ class LgV6(Store):
         positions = [(section_path, 1)]
         sku = json_data['ec_sku']
 
+        raw_specs = json_data.get('ec_tech_spec_list', None)
+        if raw_specs:
+            raw_specs_lines = raw_specs.split(';{')
+            fields = ['lv1SpecName', 'lv2SpecName', 'specValueName']
+            specs = []
+            for line in raw_specs_lines:
+                spec_line = []
+                for field in fields:
+                    search_query = r'{}=(.+?),'.format(field)
+                    match = re.search(search_query, line)
+                    spec_line.append(match.groups()[0])
+                specs.append(spec_line)
+
+            description = json.dumps(specs)
+        else:
+            description = None
+
         return [Product(
             name[:250],
             cls.__name__,
@@ -142,8 +161,7 @@ class LgV6(Store):
             part_number=sku,
             positions=positions,
             allow_zero_prices=not cls.skip_products_without_price,
-            # review_count=review_count,
-            # review_avg_score=review_avg_score
+            description=description,
         )]
 
     @classmethod
