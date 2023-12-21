@@ -73,6 +73,8 @@ class Dust2(StoreWithUrlExtensions):
         slug = re.search(r'/producto/(.+)/', url).groups()[0]
         endpoint = 'https://dust2.gg/page-data/producto/{}/page-data.json'.format(slug)
         response = session.get(endpoint)
+        if response.status_code == 404:
+            return []
         json_data = response.json()
         product_data = json_data['result']['pageContext']['product']
         name = product_data['name']
