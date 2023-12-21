@@ -70,9 +70,13 @@ class Dust2(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        products_data = extra_args['products_data']
+        session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'PostmanRuntime/7.29.3'
         slug = re.search(r'/producto/(.+)/', url).groups()[0]
-        product_data = products_data[slug]
+        endpoint = 'https://dust2.gg/page-data/producto/{}/page-data.json'.format(slug)
+        response = session.get(endpoint)
+        json_data = response.json()
+        product_data = json_data['result']['pageContext']['product']
         name = product_data['name']
         sku = product_data['sku']
         key = str(product_data['wordpress_id'])
@@ -105,7 +109,6 @@ class Dust2(StoreWithUrlExtensions):
         initial_page_url = ('https://dust2.gg/page-data/categoria-producto/{}/'
                             'page-data.json').format(cls.url_extensions[0][0])
         page_data_json = session.get(initial_page_url).json()
-        products_data = {}
         categories_data = {}
         for static_query_hash in page_data_json['staticQueryHashes']:
             static_query_url = 'https://dust2.gg/page-data/sq/d/{}.json'.format(
@@ -114,16 +117,9 @@ class Dust2(StoreWithUrlExtensions):
             if 'allWcProductsCategories' in static_query_json:
                 for node in static_query_json['allWcProductsCategories']['edges']:
                     categories_data[node['node']['slug']] = node['node']
-            if ('allWcProducts' not in static_query_json or 'nodes' not in
-                    static_query_json['allWcProducts']):
-                continue
-            for node in static_query_json['allWcProducts']['nodes']:
-                products_data[node['slug']] = node
 
         assert categories_data
-        assert products_data
 
         return {
-            'products_data': products_data,
             'categories_data': categories_data
         }

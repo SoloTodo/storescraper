@@ -80,7 +80,6 @@ class PcFactory(Store):
             ['1301', KEYBOARD],
             ['1302', MOUSE],
             ['5', CELL],
-            ['655', CELL],
             ['936', WEARABLE],
             ['1007', GAMING_CHAIR],
             ['438', VIDEO_GAME_CONSOLE],
