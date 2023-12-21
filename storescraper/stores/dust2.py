@@ -12,8 +12,6 @@ from storescraper.utils import session_with_proxy
 
 
 class Dust2(StoreWithUrlExtensions):
-    prefer_async = False
-
     url_extensions = [
         ['teclados-gamer', KEYBOARD],
         ['mouse-gamer', MOUSE],
