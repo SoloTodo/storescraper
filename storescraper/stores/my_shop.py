@@ -107,7 +107,7 @@ class MyShop(StoreWithUrlExtensions):
         price_tags = soup.find('div', 'product_d_right').findAll('span', 'current_price')
         assert len(price_tags) == 2
         offer_price = Decimal(remove_words(price_tags[0].text))
-        normal_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
 
         picture_urls = ['https://www.myshop.cl' + x['data-image'] for x in soup.findAll('a', 'elevatezoom-gallery')]
         description = html_to_markdown(str(soup.find('div', 'product_d_inner')))
