@@ -41,10 +41,22 @@ class Sukasa(Store):
         print(url)
         product_id = url.split('?id=')[1]
         session = session_with_proxy(extra_args)
-        endpoint = 'https://api.comohogar.com//catalog-api/products/portal/{}'.format(product_id)
+        endpoint = 'https://api.comohogar.com/catalog-api/products/portal/{}'.format(product_id)
+        print(endpoint)
         response = session.get(endpoint)
         product_data = response.json()
+
+        if product_data['configurableProducts']:
+            products = [cls.__extract_product_data(entry, category) for entry in product_data['configurableProducts']]
+        else:
+            products = [cls.__extract_product_data(product_data, category)]
+
+        return products
+
+    @classmethod
+    def __extract_product_data(cls, product_data, category):
         name = product_data['name']
+        url = 'https://www.sukasa.com/productos/{}?id={}'.format(product_data['slug'], product_data['id'])
         sku = product_data['cmInternalCode']
         price = Decimal(str(product_data['cmItmPvpAfIva']))
         stock = product_data['cmStock']
@@ -70,5 +82,4 @@ class Sukasa(Store):
             description=description,
             part_number=part_number
         )
-
-        return [p]
+        return p
