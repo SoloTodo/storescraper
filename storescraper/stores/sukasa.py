@@ -1,7 +1,4 @@
-import json
 from decimal import Decimal
-
-from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -21,114 +18,57 @@ class Sukasa(Store):
         if category != TELEVISION:
             return []
 
-        endpoints = [
-            'busqueda?controller=search&s=LG',
-            '4849-lg',
-            '4692-lg',
-        ]
-
         session = session_with_proxy(extra_args)
+        endpoint = ('https://api.comohogar.com/catalog-api/products-es/all?'
+                    'pageSize=1000&active=true&brandId=60966430-ee8d-11ed-b56d-005056010420')
         product_urls = []
 
-        for endpoint in endpoints:
-            soup = BeautifulSoup(session.get(
-                'https://www.sukasa.com/' + endpoint)
-                .text, 'html.parser')
-            products = soup.findAll('div', 'product-container')
+        response = session.get(endpoint)
+        products_data = response.json()['entities']
 
-            for product in products:
-                product_url = product.find('a')['href']
-                if product_url not in product_urls:
-                    product_urls.append(product_url)
+        if not products_data:
+            raise Exception('Empty store')
+
+        for product in products_data[0]['products']:
+            product_url = 'https://www.sukasa.com/productos/{}?id={}'.format(product['slug'], product['id'])
+            if product_url not in product_urls:
+                product_urls.append(product_url)
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        product_id = url.split('?id=')[1]
         session = session_with_proxy(extra_args)
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        brand = soup.find('h2', 'manufacturer-product').text.strip()
-        stock = -1 if not brand or brand == 'LG' else 0
-        variants_container = soup.find('div', 'attribute-list')
-        sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
-        name = soup.find('h1', 'page-heading').text.strip()[:250]
+        endpoint = 'https://api.comohogar.com//catalog-api/products/portal/{}'.format(product_id)
+        response = session.get(endpoint)
+        product_data = response.json()
+        name = product_data['name']
+        sku = product_data['cmInternalCode']
+        price = Decimal(str(product_data['cmItmPvpAfIva']))
+        stock = product_data['cmStock']
+        for store in product_data['storeList']:
+            stock += store['quantity']
+        picture_urls = [res['resourceUrl'] for res in product_data['resources']]
+        description = html_to_markdown(product_data['longDescription'])
+        part_number = product_data['cmModel']
 
-        if variants_container:
-            product_id = soup.find('input', {'name': 'id_product'})['value']
-            variant_ids = {x['value']: x.text for x in
-                           variants_container.findAll('option')}
-            ajax_session = session_with_proxy(extra_args)
-            ajax_session.headers['content-type'] = \
-                'application/x-www-form-urlencoded'
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            price,
+            price,
+            'USD',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+            part_number=part_number
+        )
 
-            products = []
-
-            for variant_id, variant_label in variant_ids.items():
-                endpoint = 'https://www.sukasa.com/index.php?controller=' \
-                           'product?id_product={}&group%5B246%5D={}'.format(
-                               product_id, variant_id)
-                res = ajax_session.post(endpoint, 'ajax=1&action=refresh')
-
-                if res.status_code == 502:
-                    continue
-
-                variant_data = json.loads(res.text)
-                variant_soup = BeautifulSoup(
-                    variant_data['product_prices'], 'html.parser')
-                variant_url = variant_data['product_url']
-
-                normal_price = Decimal(variant_soup.find(
-                    'span', 'product-unit-price').text.split('$')[-1]
-                    ).quantize(Decimal('.01'))
-                offer_price = Decimal(variant_soup.find(
-                    'input', {'id': 'basepricesks'})['value']
-                    ).quantize(Decimal('.01'))
-
-                key = '{}_{}'.format(sku, variant_id)
-                variant_name = '{} ({})'.format(name, variant_label)
-
-                products.append(Product(
-                    variant_name,
-                    cls.__name__,
-                    category,
-                    variant_url,
-                    variant_url,
-                    key,
-                    stock,
-                    normal_price,
-                    offer_price,
-                    'USD',
-                    sku=sku
-                ))
-
-            return products
-        else:
-            price = Decimal(
-                soup.find('span', {'itemprop': 'price'})
-                    .find('span').text.replace('$', ''))
-
-            picture_urls = [
-                a['data-zoom-image'] for a in soup.findAll('a', 'thumb')]
-
-            description = html_to_markdown(
-                str(soup.find('div', {'id': 'collapseDescription'})))
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                'USD',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description,
-            )
-
-            return [p]
+        return [p]
