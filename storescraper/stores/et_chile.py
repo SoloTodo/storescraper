@@ -6,114 +6,83 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import COMPUTER_CASE, MOTHERBOARD, \
     PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
-    MEMORY_CARD, HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
-    VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, USB_FLASH_DRIVE, POWER_SUPPLY, \
-    MICROPHONE, GAMING_DESK, CASE_FAN
+    HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
+    VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, POWER_SUPPLY, \
+    CASE_FAN, STEREO_SYSTEM, VIDEO_GAME_CONSOLE
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
     html_to_markdown
 
 
-class ETChile(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            POWER_SUPPLY,
-            COMPUTER_CASE,
-            MOTHERBOARD,
-            PROCESSOR,
-            RAM,
-            STORAGE_DRIVE,
-            SOLID_STATE_DRIVE,
-            EXTERNAL_STORAGE_DRIVE,
-            MEMORY_CARD,
-            HEADPHONES,
-            MOUSE,
-            MONITOR,
-            KEYBOARD,
-            CPU_COOLER,
-            VIDEO_CARD,
-            GAMING_CHAIR,
-            NOTEBOOK,
-            USB_FLASH_DRIVE,
-            MICROPHONE,
-            GAMING_DESK,
-            CASE_FAN,
-        ]
+class ETChile(StoreWithUrlExtensions):
+    url_extensions = [
+        # ['componentes-partes-y-piezas/almacenamiento/discos-duros', STORAGE_DRIVE],
+        ['componentes-partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
+        ['componentes-partes-y-piezas/gabinetes', COMPUTER_CASE],
+        ['componentes-partes-y-piezas/memorias', RAM],
+        ['componentes-partes-y-piezas/placas-madres', MOTHERBOARD],
+        ['componentes-partes-y-piezas/procesadores', PROCESSOR],
+        ['componentes-partes-y-piezas/psu-fuentes-de-poder', POWER_SUPPLY],
+        ['componentes-partes-y-piezas/refrigeracion/ventiladores',
+         CASE_FAN],
+        ['componentes-partes-y-piezas/refrigeracion/water-cooling',
+         CPU_COOLER],
+        ['componentes-partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
+        ['perifericos/audio-y-streaming/audifonos', HEADPHONES],
+        ['perifericos/audio-y-streaming/parlantes-y-equipo-de-sonido', STEREO_SYSTEM],
+        ['perifericos/mouse-accesorios/mouse', MOUSE],
+        ['perifericos/teclados/teclados-mecanicos', KEYBOARD],
+        ['productos/almacenamiento-y-drives/discos-externos',
+         EXTERNAL_STORAGE_DRIVE],
+        ['productos/almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
+        ['productos/almacenamiento-y-drives/memorias-flash', STORAGE_DRIVE],
+        ['productos/almacenamiento-y-drives/ssd-externo', EXTERNAL_STORAGE_DRIVE],
+        ['productos/almacenamiento-y-drives/ssd-interno-almacenamiento-y-drives', SOLID_STATE_DRIVE],
+        ['productos/consolas-y-vr', VIDEO_GAME_CONSOLE],
+        ['productos/monitores/monitores-gamer', MONITOR],
+        ['productos/notebooks/notebooks-gamers', NOTEBOOK],
+        ['productos/sillas-y-escritorios/sillas', GAMING_CHAIR],
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            ['productos/partes-y-piezas/psu-fuentes-de-poder', POWER_SUPPLY],
-            ['productos/partes-y-piezas/gabinetes', COMPUTER_CASE],
-            ['productos/partes-y-piezas/placas-madres', MOTHERBOARD],
-            ['productos/partes-y-piezas/procesadores', PROCESSOR],
-            ['productos/partes-y-piezas/memorias', RAM],
-            ['productos/partes-y-piezas/almacenamiento/discos-duros',
-             STORAGE_DRIVE],
-            ['productos/almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
-            ['productos/partes-y-piezas/almacenamiento/ssd',
-             SOLID_STATE_DRIVE],
-            ['productos/almacenamiento-y-drives/discos-externos',
-             EXTERNAL_STORAGE_DRIVE],
-            ['productos/almacenamiento-y-drives/ssd-externo',
-             EXTERNAL_STORAGE_DRIVE],
-            ['productos/almacenamiento-y-drives/'
-             'ssd-interno-almacenamiento-y-drives',
-             SOLID_STATE_DRIVE],
-            ['productos/partes-y-piezas/almacenamiento/ssd/ssd-interno/',
-             SOLID_STATE_DRIVE],
-            ['productos/partes-y-piezas/almacenamiento/ssd/ssd-servers/',
-             SOLID_STATE_DRIVE],
-            ['productos/accesorios-smartphones', MEMORY_CARD],
-            ['productos/almacenamiento-y-drives/memorias-flash', MEMORY_CARD],
-            ['productos/audio-y-streaming/audifonos', HEADPHONES],
-            ['productos/mouse-accesorios/mouse', MOUSE],
-            ['productos/monitores', MONITOR],
-            ['productos/teclados', KEYBOARD],
-            ['productos/partes-y-piezas/refrigeracion/ventiladores',
-             CASE_FAN],
-            ['productos/partes-y-piezas/refrigeracion/water-cooling',
-             CPU_COOLER],
-            ['productos/partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
-            ['productos/sillas', GAMING_CHAIR],
-            ['productos/notebooks/notebooks-gamers', NOTEBOOK],
-            ['productos/accesorios-usb', USB_FLASH_DRIVE],
-            ['perifericos/audio-y-streaming/microfonos', MICROPHONE],
-            ['productos/escritorios', GAMING_DESK]
-        ]
-
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
-        product_urls = []
-        for url_extension, local_category in url_extensions:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://etchile.net/categorias/{}/' \
-                              'page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-small')
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Emtpy category: ' + url_extension)
-                    break
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+        product_urls = []
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://etchile.net/categorias/{}/'.format(url_extension)
+            if page > 1:
+                url_webpage += 'page/{}/'.format(page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-small')
+
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Emtpy category: ' + url_extension)
+                break
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['user-agent'] = \
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
+            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+
         response = session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', 'product-title').text.strip()
