@@ -8,7 +8,7 @@ from storescraper.categories import COMPUTER_CASE, MOTHERBOARD, \
     PROCESSOR, RAM, STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, \
     HEADPHONES, MOUSE, MONITOR, KEYBOARD, CPU_COOLER, \
     VIDEO_CARD, GAMING_CHAIR, NOTEBOOK, POWER_SUPPLY, \
-    CASE_FAN, STEREO_SYSTEM, VIDEO_GAME_CONSOLE
+    CASE_FAN, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MEMORY_CARD
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, \
@@ -17,32 +17,29 @@ from storescraper.utils import session_with_proxy, remove_words, \
 
 class ETChile(StoreWithUrlExtensions):
     url_extensions = [
-        # ['componentes-partes-y-piezas/almacenamiento/discos-duros', STORAGE_DRIVE],
-        ['componentes-partes-y-piezas/almacenamiento/ssd', SOLID_STATE_DRIVE],
-        ['componentes-partes-y-piezas/gabinetes', COMPUTER_CASE],
-        ['componentes-partes-y-piezas/memorias', RAM],
-        ['componentes-partes-y-piezas/placas-madres', MOTHERBOARD],
-        ['componentes-partes-y-piezas/procesadores', PROCESSOR],
-        ['componentes-partes-y-piezas/psu-fuentes-de-poder', POWER_SUPPLY],
-        ['componentes-partes-y-piezas/refrigeracion/ventiladores',
-         CASE_FAN],
-        ['componentes-partes-y-piezas/refrigeracion/water-cooling',
-         CPU_COOLER],
-        ['componentes-partes-y-piezas/tarjetas-de-video', VIDEO_CARD],
-        ['perifericos/audio-y-streaming/audifonos', HEADPHONES],
-        ['perifericos/audio-y-streaming/parlantes-y-equipo-de-sonido', STEREO_SYSTEM],
-        ['perifericos/mouse-accesorios/mouse', MOUSE],
-        ['perifericos/teclados/teclados-mecanicos', KEYBOARD],
-        ['productos/almacenamiento-y-drives/discos-externos',
-         EXTERNAL_STORAGE_DRIVE],
-        ['productos/almacenamiento-y-drives/hdd-interno', STORAGE_DRIVE],
-        ['productos/almacenamiento-y-drives/memorias-flash', STORAGE_DRIVE],
-        ['productos/almacenamiento-y-drives/ssd-externo', EXTERNAL_STORAGE_DRIVE],
-        ['productos/almacenamiento-y-drives/ssd-interno-almacenamiento-y-drives', SOLID_STATE_DRIVE],
-        ['productos/consolas-y-vr', VIDEO_GAME_CONSOLE],
-        ['productos/monitores/monitores-gamer', MONITOR],
-        ['productos/notebooks/notebooks-gamers', NOTEBOOK],
-        ['productos/sillas-y-escritorios/sillas', GAMING_CHAIR],
+        ['discos-duros', STORAGE_DRIVE],
+        ['ssd', SOLID_STATE_DRIVE],
+        ['gabinetes', COMPUTER_CASE],
+        ['memorias', RAM],
+        ['placas-madres', MOTHERBOARD],
+        ['procesadores', PROCESSOR],
+        ['psu-fuentes-de-poder', POWER_SUPPLY],
+        ['ventiladores', CASE_FAN],
+        ['water-cooling', CPU_COOLER],
+        ['tarjetas-de-video', VIDEO_CARD],
+        ['audifonos', HEADPHONES],
+        ['parlantes-y-equipo-de-sonido', STEREO_SYSTEM],
+        ['mouse', MOUSE],
+        ['teclados-mecanicos', KEYBOARD],
+        ['discos-externos', EXTERNAL_STORAGE_DRIVE],
+        ['hdd-interno', STORAGE_DRIVE],
+        ['memorias-flash', MEMORY_CARD],
+        ['ssd-externo', EXTERNAL_STORAGE_DRIVE],
+        ['ssd-interno-almacenamiento-y-drives', SOLID_STATE_DRIVE],
+        ['consolas-y-vr', VIDEO_GAME_CONSOLE],
+        ['monitores-gamer', MONITOR],
+        ['notebooks-gamers', NOTEBOOK],
+        ['sillas', GAMING_CHAIR],
     ]
 
     @classmethod
