@@ -69,6 +69,7 @@ class CtMan(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'SoloTodoBot'
         product_urls = []
         page = 1
         while True:
@@ -94,6 +95,7 @@ class CtMan(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers['User-Agent'] = 'SoloTodoBot'
         response = session.get(url)
         response.encoding = response.apparent_encoding
         soup = BeautifulSoup(response.text, 'html.parser')
