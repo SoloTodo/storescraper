@@ -252,7 +252,7 @@ class Hites(Store):
                 if start >= step * 50:
                     raise Exception('Page overflow: ' + category_url)
 
-                response = session.get(category_url, timeout=60, verify=False)
+                response = session.get(category_url, timeout=60)
 
                 if response.url != category_url:
                     raise Exception('Page mismatch. Expecting {} Got {}'
@@ -308,7 +308,7 @@ class Hites(Store):
                 .format(keyword, page)
             print(search_url)
 
-            response = session.get(search_url, timeout=60, verify=False)
+            response = session.get(search_url, timeout=60)
 
             if response.status_code in [404, 500]:
                 return []
@@ -336,7 +336,7 @@ class Hites(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=60, verify=False)
+        response = session.get(url, timeout=60)
 
         if response.status_code in [404, 410]:
             return []
@@ -418,9 +418,13 @@ class Hites(Store):
             raise Exception('Invalid availability text: {}'.format(
                 availability_text))
 
-        review_count_tag = soup.findAll('span', 'top-stars-rating-details')[0]
-        review_count = int(review_count_tag.text.replace(
-            '(', '').replace(')', ''))
+        review_count_tag = soup.find('span', 'top-stars-rating-details')
+
+        if review_count_tag:
+            review_count = int(review_count_tag.text.replace(
+                '(', '').replace(')', ''))
+        else:
+            review_count = 0
 
         if review_count:
             review_score_tag = soup.find('div', 'yotpo-score-average')
@@ -506,7 +510,7 @@ class Hites(Store):
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                response = session.get(url, verify=False)
+                response = session.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
                 banners_container = soup.find('section')\

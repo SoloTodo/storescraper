@@ -68,7 +68,7 @@ class DazbogStore(StoreWithUrlExtensions):
         sku = str(soup.find('button', 'single_add_to_cart_button')['value'])
         stock = int(soup.find('p', 'stock in-stock').text.split()[0])
         price_container = soup.find('table').findAll('bdi')
-        offer_price = Decimal(remove_words(price_container[1].text))
+        offer_price = Decimal(remove_words(price_container[2].text))
         normal_price = Decimal(remove_words(price_container[0].text))
         image_container = soup.find(
             'div', 'woocommerce-product-gallery__image')

@@ -25,8 +25,8 @@ class Tupi(Store):
         page = 1
 
         while True:
-            url = 'https://www.tupi.com.py/buscar_paginacion.php?query=LG' \
-                  '&page=' + str(page)
+            url = 'https://www.tupi.com.py/buscar_paginacion.php?marca=86&page=' + str(page)
+            print(url)
 
             if page >= 15:
                 raise Exception('Page overflow: ' + url)
