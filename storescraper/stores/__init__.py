@@ -195,6 +195,7 @@ from .power_play import PowerPlay
 from .pro_movil import ProMovil
 from .progaming import Progaming
 from .promart import Promart
+from .pulse_tech import PulseTech
 from .raenco import Raenco
 from .reuse import Reuse
 from .ripley import Ripley
