@@ -159,6 +159,7 @@ from .my_shop import MyShop
 from .mya_outlet import MyaOutlet
 from .nario_hogar import NarioHogar
 from .natcom import Natcom
+from .netxa import Netxa
 from .new_horizons import NewHorizons
 from .noe_computacion import NoeComputacion
 from .nintecno import Nintecno
