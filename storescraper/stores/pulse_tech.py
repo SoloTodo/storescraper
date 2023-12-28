@@ -2,14 +2,14 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import CASE_FAN, CELL, COMPUTER_CASE, \
-    CPU_COOLER, GAMING_CHAIR, HEADPHONES, KEYBOARD, MICROPHONE, MONITOR, \
-    MOTHERBOARD, MOUSE, NOTEBOOK, POWER_SUPPLY, PROCESSOR, RAM, \
-    SOLID_STATE_DRIVE, STORAGE_DRIVE, TABLET, VIDEO_CARD, EXTERNAL_STORAGE_DRIVE, USB_FLASH_DRIVE, WEARABLE, ALL_IN_ONE, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, TELEVISION, PRINTER, VIDEO_GAME_CONSOLE
+from storescraper.categories import (
+    CELL, COMPUTER_CASE, CPU_COOLER, GAMING_CHAIR, HEADPHONES, KEYBOARD, MONITOR, MOTHERBOARD, MOUSE, NOTEBOOK,
+    POWER_SUPPLY, PROCESSOR, RAM, SOLID_STATE_DRIVE, STORAGE_DRIVE, TABLET, VIDEO_CARD, EXTERNAL_STORAGE_DRIVE,
+    USB_FLASH_DRIVE, WEARABLE, ALL_IN_ONE, KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, TELEVISION, PRINTER,
+    VIDEO_GAME_CONSOLE)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import remove_words, session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class PulseTech(StoreWithUrlExtensions):
