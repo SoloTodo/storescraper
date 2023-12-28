@@ -2,7 +2,7 @@ import logging
 
 from bs4 import BeautifulSoup
 from storescraper.categories import VIDEO_GAME_CONSOLE, MOUSE, \
-    VIDEO_CARD, TABLET, PRINTER, HEADPHONES
+    VIDEO_CARD, TABLET, PRINTER, HEADPHONES, NOTEBOOK
 from storescraper.stores.mercado_libre_chile import MercadoLibreChile
 from storescraper.utils import session_with_proxy
 
@@ -17,6 +17,7 @@ class DacDigital(MercadoLibreChile):
             TABLET,
             PRINTER,
             HEADPHONES,
+            NOTEBOOK,
         ]
 
     @classmethod
@@ -27,6 +28,7 @@ class DacDigital(MercadoLibreChile):
             ['computacion/tablets-accesorios', TABLET],
             ['computacion/impresion', PRINTER],
             ['electronica-audio-video', HEADPHONES],
+            ['computacion/notebooks-accesorios', NOTEBOOK],
         ]
 
         session = session_with_proxy(extra_args)
