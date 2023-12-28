@@ -52,19 +52,9 @@ class LapShop(StoreWithUrlExtensions):
             return []
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
-        for entry in json_data['@graph']:
-            if entry['@type'] == 'Product':
-                product_data = entry
-                break
-        else:
-            raise Exception('No JSON product data found')
-
         key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        name = product_data['name']
-        sku = product_data['sku']
+        name = soup.find('h1', 'product_title').text.strip()
+        sku = soup.find('meta', {'property': 'product:retailer_item_id'})['content']
 
         input_qty = soup.find('input', 'qty')
         if input_qty:
