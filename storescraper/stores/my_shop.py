@@ -85,7 +85,7 @@ class MyShop(StoreWithUrlExtensions):
                 break
 
             for product_entry in products_data:
-                product_url = 'https://www.myshop.cl' + product_entry['link']
+                product_url = 'https://www.myshop.cl' + product_entry['url']
                 product_urls.append(product_url)
             page += 1
         return product_urls
