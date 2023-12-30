@@ -129,7 +129,7 @@ class Ripley(Store):
          'Tecno > Telefonía > Smartwatches y Wearables > Huawei', 1],
         ['tecno/audio-y-musica/audifonos', [HEADPHONES],
          'Tecno > Audio y Música > Audífonos', 1],
-        ['tecno/computacion-gamer/sillas-gamer', [GAMING_CHAIR],
+        ['muebles/home-office-y-oficina/sillas-y-escritorios-gamer', [GAMING_CHAIR],
          'Tecno > Computación Gamer > Sillas Gamer', 1]
     ]
 
