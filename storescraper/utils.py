@@ -122,13 +122,16 @@ def session_with_proxy(extra_args):
     session = requests.Session()
     session.request = functools.partial(session.request, timeout=30)
 
-    if extra_args and 'proxy' in extra_args:
-        proxy = extra_args['proxy']
+    if extra_args:
+        if 'proxy' in extra_args:
+            proxy = extra_args['proxy']
 
-        session.proxies = {
-            'http': proxy,
-            'https': proxy,
-        }
+            session.proxies = {
+                'http': proxy,
+                'https': proxy,
+            }
+        if 'user-agent' in extra_args:
+            session.headers['User-Agent'] = extra_args['user-agent']
 
     return session
 
