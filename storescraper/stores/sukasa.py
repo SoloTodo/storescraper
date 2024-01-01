@@ -1,4 +1,7 @@
+import json
 from decimal import Decimal
+
+from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -19,67 +22,113 @@ class Sukasa(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        endpoint = ('https://api.comohogar.com/catalog-api/products-es/all?'
-                    'pageSize=1000&active=true&brandId=60966430-ee8d-11ed-b56d-005056010420')
+        session.headers['Accept'] = 'application/json'
+
         product_urls = []
+        page = 1
+        while True:
+            endpoint = 'https://www.sukasa.com/busqueda?s=LG&page={}'.format(page)
+            print(endpoint)
+            response = session.get(endpoint)
+            products_data = response.json()['products']
 
-        response = session.get(endpoint)
-        products_data = response.json()['entities']
+            if not products_data:
+                break
 
-        if not products_data:
-            raise Exception('Empty store')
-
-        for product in products_data[0]['products']:
-            product_url = 'https://www.sukasa.com/productos/{}?id={}'.format(product['slug'], product['id'])
-            if product_url not in product_urls:
-                product_urls.append(product_url)
+            for product in products_data:
+                product_url = product['link']
+                if product_url not in product_urls:
+                    product_urls.append(product_url)
+            page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        product_id = url.split('?id=')[1]
         session = session_with_proxy(extra_args)
-        endpoint = 'https://api.comohogar.com/catalog-api/products/portal/{}'.format(product_id)
-        print(endpoint)
-        response = session.get(endpoint)
-        product_data = response.json()
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        brand = soup.find('h2', 'manufacturer-product').text.strip()
+        stock = -1 if not brand or brand == 'LG' else 0
+        variants_container = soup.find('div', 'attribute-list')
+        sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
+        name = soup.find('h1', 'page-heading').text.strip()[:250]
 
-        if product_data['configurableProducts']:
-            products = [cls.__extract_product_data(entry, category) for entry in product_data['configurableProducts']]
+        if variants_container:
+            product_id = soup.find('input', {'name': 'id_product'})['value']
+            variant_ids = {x['value']: x.text for x in
+                           variants_container.findAll('option')}
+            ajax_session = session_with_proxy(extra_args)
+            ajax_session.headers['content-type'] = \
+                'application/x-www-form-urlencoded'
+
+            products = []
+
+            for variant_id, variant_label in variant_ids.items():
+                endpoint = 'https://www.sukasa.com/index.php?controller=' \
+                           'product?id_product={}&group%5B246%5D={}'.format(
+                    product_id, variant_id)
+                res = ajax_session.post(endpoint, 'ajax=1&action=refresh')
+
+                if res.status_code == 502:
+                    continue
+
+                variant_data = json.loads(res.text)
+                variant_soup = BeautifulSoup(
+                    variant_data['product_prices'], 'html.parser')
+                variant_url = variant_data['product_url']
+
+                normal_price = Decimal(variant_soup.find(
+                    'span', 'product-unit-price').text.split('$')[-1]
+                                       ).quantize(Decimal('.01'))
+                offer_price = Decimal(variant_soup.find(
+                    'input', {'id': 'basepricesks'})['value']
+                                      ).quantize(Decimal('.01'))
+
+                key = '{}_{}'.format(sku, variant_id)
+                variant_name = '{} ({})'.format(name, variant_label)
+
+                products.append(Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    variant_url,
+                    variant_url,
+                    key,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    'USD',
+                    sku=sku
+                ))
+
+            return products
         else:
-            products = [cls.__extract_product_data(product_data, category)]
+            price = Decimal(
+                soup.find('span', {'itemprop': 'price'})
+                .find('span').text.replace('$', ''))
 
-        return products
+            picture_urls = [
+                a['data-zoom-image'] for a in soup.findAll('a', 'thumb')]
 
-    @classmethod
-    def __extract_product_data(cls, product_data, category):
-        name = product_data['name']
-        url = 'https://www.sukasa.com/productos/{}?id={}'.format(product_data['slug'], product_data['id'])
-        sku = product_data['cmInternalCode']
-        price = Decimal(str(product_data['cmItmPvpAfIva']))
-        stock = product_data['cmStock']
-        for store in product_data['storeList']:
-            stock += store['quantity']
-        picture_urls = [res['resourceUrl'] for res in product_data['resources']]
-        description = html_to_markdown(product_data['longDescription'])
-        part_number = product_data['cmModel']
+            description = html_to_markdown(
+                str(soup.find('div', {'id': 'collapseDescription'})))
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            price,
-            price,
-            'USD',
-            sku=sku,
-            picture_urls=picture_urls,
-            description=description,
-            part_number=part_number
-        )
-        return p
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                'USD',
+                sku=sku,
+                picture_urls=picture_urls,
+                description=description,
+            )
+
+            return [p]
