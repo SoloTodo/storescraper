@@ -109,7 +109,7 @@ class MyShop(StoreWithUrlExtensions):
         offer_price = Decimal(remove_words(price_tags[0].text))
         normal_price = Decimal(remove_words(price_tags[1].text))
 
-        picture_urls = ['https://www.myshop.cl' + x['data-image'] for x in soup.findAll('a', 'elevatezoom-gallery')]
+        picture_urls = [x['data-image'] for x in soup.findAll('a', 'elevatezoom-gallery')]
         description = html_to_markdown(str(soup.find('div', 'product_d_inner')))
 
         if 'REACON' in name.upper():
