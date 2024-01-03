@@ -2,11 +2,9 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import COMPUTER_CASE, CPU_COOLER, KEYBOARD, \
-    MONITOR, MOTHERBOARD, MOUSE, POWER_SUPPLY, SOLID_STATE_DRIVE, VIDEO_CARD, \
-    PROCESSOR, RAM, HEADPHONES
+from storescraper.categories import CPU_COOLER, KEYBOARD, \
+    MONITOR, MOUSE, HEADPHONES
 from storescraper.product import Product
-from storescraper.store import Store
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, remove_words, \
     session_with_proxy
@@ -14,36 +12,38 @@ from storescraper.utils import html_to_markdown, remove_words, \
 
 class Mutant(StoreWithUrlExtensions):
     url_extensions = [
-        ['tarjeta-video', VIDEO_CARD],
-        ['fuente-de-poder', POWER_SUPPLY],
-        ['placa-madre', MOTHERBOARD],
-        ['discos-ssd', SOLID_STATE_DRIVE],
-        ['sistema-refrigeracion', CPU_COOLER],
-        ['gabinetes', COMPUTER_CASE],
-        ['monitor', MONITOR],
         ['mouse', MOUSE],
-        ['cpu', PROCESSOR],
-        ['memoria-ram', RAM],
-        ['teclados-armados', KEYBOARD],
+        ['teclados', KEYBOARD],
         ['audifonos', HEADPHONES],
+        ['componentes', CPU_COOLER],
+        ['monitor', MONITOR],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        url_webpage = 'https://www.mutant.cl/{}/'.format(url_extension)
-        print(url_webpage)
-        data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, 'html.parser')
-        product_containers = soup.findAll('div', 'jet-woo-products__item')
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('Page overflow')
+            url_webpage = 'https://mutant.cl/categoria-producto/{}/page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-        if not product_containers:
-            logging.warning('Empty category: ' + url_extension)
+            if response.status_code == 404:
+                if page == 1:
+                    logging.warning('Empty category: ' + url_extension)
+                break
 
-        for container in product_containers:
-            product_url = container.find('a')['href']
-            product_urls.append(product_url)
+
+            product_containers = soup.findAll('li', 'product')
+
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
 
         return product_urls
 
