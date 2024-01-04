@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+import validators
 from bs4 import BeautifulSoup
 from storescraper.categories import CASE_FAN, COMPUTER_CASE, \
     CPU_COOLER, GAMING_CHAIR, HEADPHONES, KEYBOARD, MONITOR, \
@@ -73,7 +74,8 @@ class GigaSystem(StoreWithUrlExtensions):
         normal_price = Decimal(remove_words(price_tag.text))
         offer_price = (normal_price * Decimal('0.94')).quantize(0)
         picture_urls = [x.find('a')['href'] for x in soup.findAll(
-            'div', 'woocommerce-product-gallery__image')]
+            'div', 'woocommerce-product-gallery__image')
+                        if validators.url(x.find('a')['href'])]
         description = html_to_markdown(str(
             soup.find('div', 'woocommerce-Tabs-panel--additional_information')))
 
