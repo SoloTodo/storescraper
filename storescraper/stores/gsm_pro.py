@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import CELL, HEADPHONES, MOUSE, STEREO_SYSTEM, \
     USB_FLASH_DRIVE, VIDEO_CARD, VIDEO_GAME_CONSOLE, WEARABLE, COMPUTER_CASE, \
-    CPU_COOLER, PROCESSOR
+    CPU_COOLER, PROCESSOR, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -32,6 +32,7 @@ class GsmPro(StoreWithUrlExtensions):
         ['procesadores', PROCESSOR],
         ['tarjetas-graficas-para-pc', VIDEO_CARD],
         ['memorias-usb-y-pendrives', USB_FLASH_DRIVE],
+        ['laptops-gamers', NOTEBOOK],
     ]
 
     @classmethod
