@@ -2,6 +2,7 @@ import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -11,7 +12,7 @@ class Tupi(Store):
     @classmethod
     def categories(cls):
         return [
-            'Television'
+            TELEVISION
         ]
 
     @classmethod
@@ -19,13 +20,13 @@ class Tupi(Store):
         session = session_with_proxy(extra_args)
         product_urls = []
 
-        if category != 'Television':
+        if category != TELEVISION:
             return []
 
         page = 1
 
         while True:
-            url = 'https://www.tupi.com.py/buscar_paginacion.php?marca=86&page=' + str(page)
+            url = 'https://www.tupi.com.py/buscar_paginacion.php?query=LG&page=' + str(page)
             print(url)
 
             if page >= 15:
@@ -42,7 +43,7 @@ class Tupi(Store):
             for product in product_containers:
                 product_link = product.findAll('a')[1]
                 if 'lg' in product_link.text.lower():
-                    product_urls.append(product_link['href'].replace('%', ''))
+                    product_urls.append('https://www.tupi.com.py' + product_link['href'].replace('%', ''))
 
             page += 1
 

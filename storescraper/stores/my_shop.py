@@ -98,8 +98,8 @@ class MyShop(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1').text.strip()
         product_data_tag = soup.find('div', 'product_meta')
-        sku = product_data_tag.findAll('p')[0].find('a').text.strip()
-        part_number = product_data_tag.findAll('p')[3].find('a').text.strip()
+        sku = product_data_tag.findAll('p')[0].text.strip().split(': ')[1]
+        part_number = product_data_tag.findAll('p')[3].text.strip().split(': ')[1]
         if soup.find('button', {'id': 'carro_agregar'}):
             stock = -1
         else:

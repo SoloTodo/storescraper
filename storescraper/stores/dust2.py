@@ -59,9 +59,13 @@ class Dust2(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        categories_data = extra_args['categories_data']
+        session = session_with_proxy(extra_args)
+        endpoint = 'https://crmdust2.com/api/index/woo/categories/{}'.format(url_extension)
+        response = session.get(endpoint)
+        json_response = response.json()
+
         product_urls = []
-        for node in categories_data[url_extension]['products'] or []:
+        for node in json_response['products'] or []:
             product_urls.append('https://dust2.gg/producto/{}/'.format(node['slug']))
         return product_urls
 
@@ -79,7 +83,10 @@ class Dust2(StoreWithUrlExtensions):
         product_data = json_data['result']['pageContext']['product']
         name = product_data['name']
         sku = product_data['sku']
-        key = str(product_data['wordpress_id'])
+        if 'id' in product_data:
+            key = str(product_data['id'])
+        else:
+            key = str(product_data['wordpress_id'])
         stock = max(product_data['stock_quantity'] or 0, 0)
         normal_price = Decimal(product_data['price'])
         offer_price = (normal_price * Decimal('0.93')).quantize(0)
@@ -101,25 +108,3 @@ class Dust2(StoreWithUrlExtensions):
 
         )
         return [p]
-
-    @classmethod
-    def preflight(cls, extra_args=None):
-        session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = 'PostmanRuntime/7.29.3'
-        initial_page_url = ('https://dust2.gg/page-data/categoria-producto/{}/'
-                            'page-data.json').format(cls.url_extensions[0][0])
-        page_data_json = session.get(initial_page_url).json()
-        categories_data = {}
-        for static_query_hash in page_data_json['staticQueryHashes']:
-            static_query_url = 'https://dust2.gg/page-data/sq/d/{}.json'.format(
-                static_query_hash)
-            static_query_json = session.get(static_query_url).json()['data']
-            if 'allWcProductsCategories' in static_query_json:
-                for node in static_query_json['allWcProductsCategories']['edges']:
-                    categories_data[node['node']['slug']] = node['node']
-
-        assert categories_data
-
-        return {
-            'categories_data': categories_data
-        }

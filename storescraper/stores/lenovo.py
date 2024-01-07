@@ -40,7 +40,10 @@ class Lenovo(Store):
         session.headers['User-Agent'] = \
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
             '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-        response = session.get(url, allow_redirects=True)
+        response = session.get(url)
+
+        if response.url != url:
+            return []
 
         soup = BeautifulSoup(response.text, 'html5lib')
 

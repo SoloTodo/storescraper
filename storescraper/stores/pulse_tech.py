@@ -9,7 +9,7 @@ from storescraper.categories import (
     VIDEO_GAME_CONSOLE)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 
 class PulseTech(StoreWithUrlExtensions):
@@ -94,33 +94,33 @@ class PulseTech(StoreWithUrlExtensions):
         product_json = json.loads(product_json_tag.text)['product']
         picture_urls = ['https:' + x for x in product_json['images']]
         description = html_to_markdown(product_json['description'])
-        products = []
-        for product_entry in product_json['variants']:
-            name = product_entry['name']
-            key = str(product_entry['id'])
-            sku = product_entry['sku']
-            normal_price = Decimal(product_entry['price'] / 100)
-            offer_price = (normal_price * Decimal('0.92')).quantize(0)
-            if product_entry['available']:
-                stock = -1
-            else:
-                stock = 0
+        price_tags = soup.findAll('span', 'price')
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
+        assert len(product_json['variants']) == 1
+        product_entry = product_json['variants'][0]
+        name = product_entry['name']
+        key = str(product_entry['id'])
+        sku = product_entry['sku']
+        if product_entry['available']:
+            stock = -1
+        else:
+            stock = 0
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                normal_price,
-                offer_price,
-                'CLP',
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description,
-                part_number=sku
-            )
-            products.append(p)
-        return products
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            normal_price,
+            offer_price,
+            'CLP',
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+            part_number=sku
+        )
+        return [p]

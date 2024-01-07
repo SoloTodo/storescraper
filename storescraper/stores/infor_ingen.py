@@ -72,7 +72,12 @@ class InforIngen(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         json_tag = soup.find('script', {'type': 'application/ld+json'})
         json_data = json.loads(json_tag.text)
