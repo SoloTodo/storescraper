@@ -110,7 +110,6 @@ class BestStore(StoreWithUrlExtensions):
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
-            break
         return product_urls
 
     @classmethod
