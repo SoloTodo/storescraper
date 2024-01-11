@@ -145,7 +145,7 @@ class LgV6(Store):
             for line in raw_specs_lines:
                 spec_line = []
                 for field in fields:
-                    search_query = r"{}=(.+?),".format(field)
+                    search_query = r"{}=([\s\S]+?),".format(field)
                     match = re.search(search_query, line)
                     spec_line.append(match.groups()[0])
                 specs.append(spec_line)
