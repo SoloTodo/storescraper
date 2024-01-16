@@ -9,146 +9,324 @@ from decimal import Decimal
 
 import validators
 
-from storescraper.categories import AIR_CONDITIONER, ALL_IN_ONE, CELL, \
-    DISH_WASHER, EXTERNAL_STORAGE_DRIVE, GAMING_CHAIR, KEYBOARD, MEMORY_CARD, \
-    MONITOR, NOTEBOOK, MOUSE, HEADPHONES, OVEN, PRINTER, PROJECTOR, \
-    REFRIGERATOR, SOLID_STATE_DRIVE, SPACE_HEATER, STEREO_SYSTEM, TABLET, \
-    TELEVISION, USB_FLASH_DRIVE, VACUUM_CLEANER, VIDEO_GAME_CONSOLE, \
-    WASHING_MACHINE, WEARABLE
+from storescraper.categories import (
+    AIR_CONDITIONER,
+    ALL_IN_ONE,
+    CELL,
+    DISH_WASHER,
+    EXTERNAL_STORAGE_DRIVE,
+    GAMING_CHAIR,
+    KEYBOARD,
+    MEMORY_CARD,
+    MONITOR,
+    NOTEBOOK,
+    MOUSE,
+    HEADPHONES,
+    OVEN,
+    PRINTER,
+    PROJECTOR,
+    REFRIGERATOR,
+    SOLID_STATE_DRIVE,
+    SPACE_HEATER,
+    STEREO_SYSTEM,
+    TABLET,
+    TELEVISION,
+    USB_FLASH_DRIVE,
+    VACUUM_CLEANER,
+    VIDEO_GAME_CONSOLE,
+    WASHING_MACHINE,
+    WEARABLE,
+)
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    check_ean13
+from storescraper.utils import html_to_markdown, session_with_proxy, check_ean13
 from storescraper import banner_sections as bs
 
 
 class Lider(Store):
-    DEFAULT_USER_AGENT = \
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-        '(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+    DEFAULT_USER_AGENT = (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
+    )
 
-    tenant = 'catalogo'
+    tenant = "catalogo"
     category_paths = [
         # TECNO
-        ['Tecno/TV', [TELEVISION],
-         'Tecno > TV', 1],
-        ['Tecno/TV/Smart_TV', [TELEVISION],
-         'Tecno > TV > Smart TV', 1],
-        ['Tecno/TV/Home_Theater', [STEREO_SYSTEM],
-         'Tecno > TV > Home Theater', 1],
-        ['Tecno/TV/Proyectores', [PROJECTOR],
-         'Tecno > TV > Proyectores', 1],
-        ['Tecno/Audio', [STEREO_SYSTEM],
-         'Tecno > Audio', 1],
-        ['Tecno/Audio/Equipos_de_Música_y_Karaoke', [STEREO_SYSTEM],
-         'Tecno > Audio > Equipos de Música y Karaoke', 1],
-        ['Tecno/Audio/Soundbars_y_Home_Theater', [STEREO_SYSTEM],
-         'Tecno > Audio > Equipos de Música y Karaoke', 1],
-        ['Tecno/Audio/Audio_Portable', [STEREO_SYSTEM],
-         'Tecno > Audio > Audio Portable', 1],
-        ['Tecno/Audio/Micro_y_Mini_Componentes', [STEREO_SYSTEM],
-         'Tecno > Audio > Micro y Mini Componentes', 1],
-        ['Tecno/Audio/Audífonos', [HEADPHONES],
-         'Tecno > Audio > Audífonos', 1],
-        ['Tecno/Audio/Tornamesas_y_Vinilos', [STEREO_SYSTEM],
-         'Tecno > Audio > Tornamesas y Vinilos', 1],
-        ['Tecno/Audio/Audio_HI-FI', [STEREO_SYSTEM],
-         'Tecno > Audio > Audio HI-FI', 1],
-        ['Tecno/Smart_Home/Proyectores', [PROJECTOR],
-         'Tecno > Smart Home > Proyectores', 1],
-        ['Tecno/Videojuegos/Consolas', [VIDEO_GAME_CONSOLE],
-         'Tecno > Videojuegos > Consolas', 1],
-        ['Tecno/Videojuegos/Nintendo', [VIDEO_GAME_CONSOLE],
-         'Tecno > Videojuegos > Nintendo', 1],
-        ['Tecno/Videojuegos/PlayStation', [VIDEO_GAME_CONSOLE],
-         'Tecno > Videojuegos > PlayStation', 1],
-        ['Tecno/Videojuegos/XBOX', [VIDEO_GAME_CONSOLE],
-         'Tecno > Videojuegos > XBOX', 1],
+        ["Tecno/TV", [TELEVISION], "Tecno > TV", 1],
+        ["Tecno/TV/Smart_TV", [TELEVISION], "Tecno > TV > Smart TV", 1],
+        ["Tecno/TV/Home_Theater", [STEREO_SYSTEM], "Tecno > TV > Home Theater", 1],
+        ["Tecno/TV/Proyectores", [PROJECTOR], "Tecno > TV > Proyectores", 1],
+        ["Tecno/Audio", [STEREO_SYSTEM], "Tecno > Audio", 1],
+        [
+            "Tecno/Audio/Equipos_de_Música_y_Karaoke",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Equipos de Música y Karaoke",
+            1,
+        ],
+        [
+            "Tecno/Audio/Soundbars_y_Home_Theater",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Equipos de Música y Karaoke",
+            1,
+        ],
+        [
+            "Tecno/Audio/Audio_Portable",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Audio Portable",
+            1,
+        ],
+        [
+            "Tecno/Audio/Micro_y_Mini_Componentes",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Micro y Mini Componentes",
+            1,
+        ],
+        ["Tecno/Audio/Audífonos", [HEADPHONES], "Tecno > Audio > Audífonos", 1],
+        [
+            "Tecno/Audio/Tornamesas_y_Vinilos",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Tornamesas y Vinilos",
+            1,
+        ],
+        ["Tecno/Audio/Audio_HI-FI", [STEREO_SYSTEM], "Tecno > Audio > Audio HI-FI", 1],
+        [
+            "Tecno/Smart_Home/Proyectores",
+            [PROJECTOR],
+            "Tecno > Smart Home > Proyectores",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/Consolas",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > Consolas",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/Nintendo",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > Nintendo",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/PlayStation",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > PlayStation",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/XBOX",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > XBOX",
+            1,
+        ],
         # CELULARES
-        ['Celulares/Telefonía', [CELL],
-         'Celulares > Celulares y Teléfonos', 1],
-        ['Celulares/Relojes_Inteligentes', [WEARABLE],
-         'Celulares > Smartwatches y Wearables', 1],
+        ["Celulares/Telefonía", [CELL], "Celulares > Celulares y Teléfonos", 1],
+        [
+            "Celulares/Relojes_Inteligentes",
+            [WEARABLE],
+            "Celulares > Smartwatches y Wearables",
+            1,
+        ],
         # COMPUTACION
-        ['Computación/Computadores/Notebooks', [NOTEBOOK],
-         'Computación > Computadores > Notebooks', 1],
-        ['Computación/Computadores/Tablets', [TABLET],
-         'Computación > Computadores > Tablets', 1],
-        ['Computación/Computadores/Computadores_All_in_One', [ALL_IN_ONE],
-         'Computación > Computadores > Computadores All in One', 1],
-        ['Tecno/Computación/Monitores', [MONITOR],
-         'Computación > Computadores > Monitores y Proyectores', 1.0],
-        ['Computación/Computadores/Accesorios_Computación', [MOUSE],
-         'Computación > Computadores > Accesorios Computación', 1.0],
-        ['Computación/Mundo_Gamer/Computación_Gamer', [NOTEBOOK],
-         'Computación > Mundo Gamer > Computación Gamer', 1.0],
-        ['Computación/Mundo_Gamer/Mouse_y_Teclados', [KEYBOARD],
-         'Computación > Mundo Gamer > Mouse y Teclados', 1.0],
-        ['Computación/Mundo_Gamer/Audífonos', [HEADPHONES],
-         'Computación > Mundo Gamer > Audífonos', 1.0],
-        ['Computación/Mundo_Gamer/Consolas', [VIDEO_GAME_CONSOLE],
-         'Computación > Mundo Gamer > Consolas', 1.0],
-        ['Computación/Mundo_Gamer/Sillas_Gamer', [GAMING_CHAIR],
-         'Computación > Mundo Gamer > Sillas Gamer', 1],
-        ['Computación/Impresión/Impresoras_y_Multifuncionales',
-         [PRINTER],
-         'Computación > Impresión > Impresoras y Multifuncionales', 1.0],
-        ['Computación/Impresión/Impresoras_Láser', [PRINTER],
-         'Computación > Impresión > Impresoras Láser', 1.0],
-        ['Computación/Almacenamiento/Discos_Duros',
-         [EXTERNAL_STORAGE_DRIVE],
-         'Computación > Almacenamiento > Discos Duros', 1.0],
-        ['Computación/Almacenamiento/Discos_Duros_SSD',
-         [SOLID_STATE_DRIVE],
-         'Computación > Almacenamiento > Discos Duros SSD', 1.0],
-        ['Computación/Almacenamiento/Tarjetas_de_Memoria',
-         [MEMORY_CARD],
-         'Computación > Almacenamiento > Tarjetas de Memoria', 1.0],
-        ['Computación/Almacenamiento/Pendrives', [USB_FLASH_DRIVE],
-         'Computación > Almacenamiento > Pendrives', 1.0],
+        [
+            "Computación/Computadores/Notebooks",
+            [NOTEBOOK],
+            "Computación > Computadores > Notebooks",
+            1,
+        ],
+        [
+            "Computación/Computadores/Tablets",
+            [TABLET],
+            "Computación > Computadores > Tablets",
+            1,
+        ],
+        [
+            "Computación/Computadores/Computadores_All_in_One",
+            [ALL_IN_ONE],
+            "Computación > Computadores > Computadores All in One",
+            1,
+        ],
+        [
+            "Tecno/Computación/Monitores",
+            [MONITOR],
+            "Computación > Computadores > Monitores y Proyectores",
+            1.0,
+        ],
+        [
+            "Computación/Computadores/Accesorios_Computación",
+            [MOUSE],
+            "Computación > Computadores > Accesorios Computación",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Computación_Gamer",
+            [NOTEBOOK],
+            "Computación > Mundo Gamer > Computación Gamer",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Mouse_y_Teclados",
+            [KEYBOARD],
+            "Computación > Mundo Gamer > Mouse y Teclados",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Audífonos",
+            [HEADPHONES],
+            "Computación > Mundo Gamer > Audífonos",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Consolas",
+            [VIDEO_GAME_CONSOLE],
+            "Computación > Mundo Gamer > Consolas",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Sillas_Gamer",
+            [GAMING_CHAIR],
+            "Computación > Mundo Gamer > Sillas Gamer",
+            1,
+        ],
+        [
+            "Computación/Impresión/Impresoras_y_Multifuncionales",
+            [PRINTER],
+            "Computación > Impresión > Impresoras y Multifuncionales",
+            1.0,
+        ],
+        [
+            "Computación/Impresión/Impresoras_Láser",
+            [PRINTER],
+            "Computación > Impresión > Impresoras Láser",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Discos_Duros",
+            [EXTERNAL_STORAGE_DRIVE],
+            "Computación > Almacenamiento > Discos Duros",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Discos_Duros_SSD",
+            [SOLID_STATE_DRIVE],
+            "Computación > Almacenamiento > Discos Duros SSD",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Tarjetas_de_Memoria",
+            [MEMORY_CARD],
+            "Computación > Almacenamiento > Tarjetas de Memoria",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Pendrives",
+            [USB_FLASH_DRIVE],
+            "Computación > Almacenamiento > Pendrives",
+            1.0,
+        ],
         # ELECTROHOGAR
-        ['Electrohogar/Refrigeración', [REFRIGERATOR],
-         'Electrohogar > Refrigeración', 1.0],
-        ['Electrohogar/Refrigeración/No_Frost',
-         [REFRIGERATOR],
-         'Electrohogar > Refrigeración > No Frost', 1.0],
-        ['Electrohogar/Refrigeración/Frío_Directo',
-         [REFRIGERATOR],
-         'Electrohogar > Refrigeración > Frio Directo',
-         1.0],
-        ['Electrohogar/Refrigeración/Side_By_Side', [REFRIGERATOR],
-         'Electrohogar > Refrigeración > Side By Side',
-         1.0],
-        ['Electrohogar/Refrigeración/Freezer', [REFRIGERATOR],
-         'Electrohogar > Refrigeración > Freezer', 1.0],
-        ['Electrohogar/Refrigeración/Frigobar', [REFRIGERATOR],
-         'Electrohogar > Refrigeración > Frigobar', 1.0],
-        ['Electrohogar/Lavado_y_Planchado', [WASHING_MACHINE],
-         'Electrohogar > Lavado y Planchado', 1.0],
-        ['Electrohogar/Lavado_y_Planchado/Lavadoras', [WASHING_MACHINE],
-         'Electrohogar > Lavado y Planchado > Lavadoras', 1.0],
-        ['Electrohogar/Lavado_y_Planchado/Lavadoras_Secadoras',
-         [WASHING_MACHINE],
-         'Electrohogar > Lavado y Planchado > Lavadoras Secadoras', 1.0],
-        ['Electrohogar/Lavado_y_Planchado/Secadoras', [WASHING_MACHINE],
-         'Electrohogar > Lavado y Planchado > Secadoras', 1.0],
-        ['Electrohogar/Lavado_y_Planchado/Lavavajillas', [DISH_WASHER],
-         'Electrohogar > Lavado y Planchado > Lavavajillas', 1.0],
-        ['Electrohogar/Aspiradoras_y_Limpieza', [VACUUM_CLEANER],
-         'Electrohogar > Aspiradoras y Limpieza', 1.0],
-        ['Electrohogar/Electrodomésticos_Cocina/Hornos_Eléctricos', [OVEN],
-         'Electrohogar > Electrodomésticos Cocina > Hornos Eléctricos',
-         1.0],
-        ['Electrohogar/Electrodomésticos_Cocina/Microondas', [OVEN],
-         'Electrohogar > Electrodomésticos Cocina > Microondas', 1.0],
-        ['Electrohogar/Cocinas/Hornos_Empotrables', [OVEN],
-         'Electrohogar > Cocinas > Hornos Empotrables', 1.0],
-        ['Electrohogar/Climatización/Calefacción', [SPACE_HEATER],
-         'Electrohogar > Climatización > Calefacción', 1.0],
-        ['Electrohogar/Climatización/Ventilación/Aire_Acondicionado',
-         [AIR_CONDITIONER],
-         'Electrohogar > Climatización > Ventilación > Aire Acondicionado',
-         1.0],
+        [
+            "Electrohogar/Refrigeración",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/No_Frost",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > No Frost",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Frío_Directo",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Frio Directo",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Side_By_Side",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Side By Side",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Freezer",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Freezer",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Frigobar",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Frigobar",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Lavadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavadoras_Secadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Lavadoras Secadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Secadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Secadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavavajillas",
+            [DISH_WASHER],
+            "Electrohogar > Lavado y Planchado > Lavavajillas",
+            1.0,
+        ],
+        [
+            "Electrohogar/Aspirado_y_Limpieza",
+            [VACUUM_CLEANER],
+            "Electrohogar > Aspiradoras y Limpieza",
+            1.0,
+        ],
+        [
+            "Electrohogar/Electrodomésticos_Cocina/Hornos_Eléctricos",
+            [OVEN],
+            "Electrohogar > Electrodomésticos Cocina > Hornos Eléctricos",
+            1.0,
+        ],
+        [
+            "Electrohogar/Electrodomésticos_Cocina/Microondas",
+            [OVEN],
+            "Electrohogar > Electrodomésticos Cocina > Microondas",
+            1.0,
+        ],
+        [
+            "Electrohogar/Cocinas/Hornos_Empotrables",
+            [OVEN],
+            "Electrohogar > Cocinas > Hornos Empotrables",
+            1.0,
+        ],
+        [
+            "Electrohogar/Climatización/Calefacción",
+            [SPACE_HEATER],
+            "Electrohogar > Climatización > Calefacción",
+            1.0,
+        ],
+        [
+            "Electrohogar/Climatización/Ventilación/Aire_Acondicionado",
+            [AIR_CONDITIONER],
+            "Electrohogar > Climatización > Ventilación > Aire Acondicionado",
+            1.0,
+        ],
     ]
 
     @classmethod
@@ -189,10 +367,10 @@ class Lider(Store):
         session = session_with_proxy(extra_args)
 
         session.headers = {
-            'Content-Type': 'application/json',
-            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT),
-            'tenant': cls.tenant,
-            'x-channel': 'BuySmart'
+            "Content-Type": "application/json",
+            "User-Agent": extra_args.get("user_agent", cls.DEFAULT_USER_AGENT),
+            "tenant": cls.tenant,
+            "x-channel": "BuySmart",
         }
 
         product_entries = defaultdict(lambda: [])
@@ -200,11 +378,11 @@ class Lider(Store):
         # It's important that the empty one goes first to ensure that the
         # positioning information is preferable based on the default ordering
         sorters = [
-            '',
-            'price_asc',
-            'price_desc',
+            "",
+            "price_asc",
+            "price_desc",
         ]
-        query_url = 'https://apps.lider.cl/catalogo/bff/category'
+        query_url = "https://apps.lider.cl/catalogo/bff/category"
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
@@ -223,27 +401,25 @@ class Lider(Store):
                     "page": 1,
                     "facets": [],
                     "sortBy": sorter,
-                    "hitsPerPage": 1000
+                    "hitsPerPage": 1000,
                 }
 
-                serialized_params = json.dumps(query_params,
-                                               ensure_ascii=False)
-                response = session.post(query_url,
-                                        serialized_params.encode('utf-8'))
+                serialized_params = json.dumps(query_params, ensure_ascii=False)
+                response = session.post(query_url, serialized_params.encode("utf-8"))
                 data = json.loads(response.text)
 
-                if not data['products']:
-                    logging.warning('Empty category: ' + category_id)
+                if not data["products"]:
+                    logging.warning("Empty category: " + category_id)
 
-                for idx, entry in enumerate(data['products']):
-                    product_url = 'https://www.lider.cl/{}/product/sku/{}/' \
-                        '{}'.format(
-                            cls.tenant, entry['sku'], entry.get('slug', 'a'))
+                for idx, entry in enumerate(data["products"]):
+                    product_url = "https://www.lider.cl/{}/product/sku/{}/" "{}".format(
+                        cls.tenant, entry["sku"], entry.get("slug", "a")
+                    )
                     if product_url not in local_product_entries:
                         local_product_entries[product_url] = {
-                            'category_weight': category_weight,
-                            'section_name': section_name,
-                            'value': idx + 1
+                            "category_weight": category_weight,
+                            "section_name": section_name,
+                            "value": idx + 1,
                         }
 
             for product_url, product_entry in local_product_entries.items():
@@ -255,30 +431,37 @@ class Lider(Store):
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = extra_args.get('user_agent',
-                                                       cls.DEFAULT_USER_AGENT)
-        session.headers['tenant'] = cls.tenant
+        session.headers["User-Agent"] = extra_args.get(
+            "user_agent", cls.DEFAULT_USER_AGENT
+        )
+        session.headers["tenant"] = cls.tenant
         product_urls = []
 
-        query_url = 'https://529cv9h7mw-dsn.algolia.net/1/indexes/*/' \
-                    'queries?x-algolia-application-id=529CV9H7MW&x-' \
-                    'algolia-api-key=c6ab9bc3e19c260e6bad42abe143d5f4'
+        query_url = (
+            "https://529cv9h7mw-dsn.algolia.net/1/indexes/*/"
+            "queries?x-algolia-application-id=529CV9H7MW&x-"
+            "algolia-api-key=c6ab9bc3e19c260e6bad42abe143d5f4"
+        )
 
         query_params = {
-            "requests": [{
-                "indexName": "campaigns_production",
-                "params": "query={}&hitsPerPage=1000"
-                .format(keyword)}]}
+            "requests": [
+                {
+                    "indexName": "campaigns_production",
+                    "params": "query={}&hitsPerPage=1000".format(keyword),
+                }
+            ]
+        }
 
         response = session.post(query_url, json.dumps(query_params))
         data = json.loads(response.text)
 
-        if not data['results'][0]['hits']:
+        if not data["results"][0]["hits"]:
             return []
 
-        for entry in data['results'][0]['hits']:
-            product_url = 'https://www.lider.cl/catalogo/product/sku/{}/{}'\
-                .format(entry['sku'], entry.get('slug', 'a'))
+        for entry in data["results"][0]["hits"]:
+            product_url = "https://www.lider.cl/catalogo/product/sku/{}/{}".format(
+                entry["sku"], entry.get("slug", "a")
+            )
             product_urls.append(product_url)
 
             if len(product_urls) == threshold:
@@ -292,44 +475,45 @@ class Lider(Store):
         extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
         session.headers = {
-            'User-Agent': extra_args.get('user_agent', cls.DEFAULT_USER_AGENT),
-            'tenant': cls.tenant
+            "User-Agent": extra_args.get("user_agent", cls.DEFAULT_USER_AGENT),
+            "tenant": cls.tenant,
         }
-        sku_id = url.split('/')[-2]
+        sku_id = url.split("/")[-2]
 
-        query_url = 'https://apps.lider.cl/catalogo/bff/products/{}' \
-                    .format(sku_id)
+        query_url = "https://apps.lider.cl/catalogo/bff/products/{}".format(sku_id)
 
         response = session.get(query_url)
 
         if response.status_code in [500]:
             parsed_extra_args = extra_args or {}
-            retries = parsed_extra_args.pop('retries', 5)
+            retries = parsed_extra_args.pop("retries", 5)
 
             if retries:
                 time.sleep(5)
-                parsed_extra_args['retries'] = retries - 1
+                parsed_extra_args["retries"] = retries - 1
                 return cls.products_for_url(
-                    url, category=category, extra_args=parsed_extra_args)
+                    url, category=category, extra_args=parsed_extra_args
+                )
             else:
                 return []
 
         entry = json.loads(response.text)
 
-        if not entry.get('success', True):
+        if not entry.get("success", True):
             return []
 
-        name = '{} {}'.format(entry['brand'], entry['displayName'])
-        ean = entry['gtin13']
+        name = "{} {}".format(entry["brand"], entry["displayName"])
+        ean = entry["gtin13"]
 
         if not check_ean13(ean):
             ean = None
 
-        key = str(entry['sku'])
-        sku = entry['itemNumber']
-        normal_price = Decimal(
-            entry['price']['BasePriceSales']).quantize(Decimal('1.00'))
-        offer_price_container = entry['price']['BasePriceTLMC']
+        key = str(entry["sku"])
+        sku = entry["itemNumber"]
+        normal_price = Decimal(entry["price"]["BasePriceSales"]).quantize(
+            Decimal("1.00")
+        )
+        offer_price_container = entry["price"]["BasePriceTLMC"]
 
         if offer_price_container:
             offer_price = Decimal(offer_price_container)
@@ -342,33 +526,34 @@ class Lider(Store):
             offer_price = normal_price
 
         specs = OrderedDict()
-        for spec in entry.get('filters', []):
+        for spec in entry.get("filters", []):
             specs.update(spec)
 
-        part_number = specs.get('Modelo')
+        part_number = specs.get("Modelo")
         if part_number:
             part_number = part_number[:49]
 
         description = None
-        if 'longDescription' in entry:
-            description = entry['longDescription']
+        if "longDescription" in entry:
+            description = entry["longDescription"]
 
         if description:
             description = html_to_markdown(description)
 
-        picture_urls = [img for img in entry['images']['availableImages']
-                        if validators.url(img)]
+        picture_urls = [
+            img for img in entry["images"]["availableImages"] if validators.url(img)
+        ]
 
-        if 'REACONDICIONADO' in name.upper():
-            condition = 'https://schema.org/RefurbishedCondition'
+        if "REACONDICIONADO" in name.upper():
+            condition = "https://schema.org/RefurbishedCondition"
         else:
-            condition = 'https://schema.org/NewCondition'
+            condition = "https://schema.org/NewCondition"
 
-        seller = entry.get('winningOffer', {}).get('sellerName', None) or None
+        seller = entry.get("winningOffer", {}).get("sellerName", None) or None
 
         if seller:
             stock = 0
-        elif entry['available']:
+        elif entry["available"]:
             stock = -1
         else:
             stock = 0
@@ -376,56 +561,59 @@ class Lider(Store):
         # The preflight method verified that the LiveChat widget is being
         # loaded, and the Google Tag Manager logic that Lider uses to trigger
         # the wiodget makes sure that we only need to check for the brand.
-        has_virtual_assistant = entry['brand'] == 'LG'
+        has_virtual_assistant = entry["brand"] == "LG"
 
-        return [Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            normal_price,
-            offer_price,
-            'CLP',
-            sku=sku,
-            ean=ean,
-            part_number=part_number,
-            picture_urls=picture_urls,
-            description=description,
-            has_virtual_assistant=has_virtual_assistant,
-            condition=condition,
-            seller=seller
-        )]
+        return [
+            Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                normal_price,
+                offer_price,
+                "CLP",
+                sku=sku,
+                ean=ean,
+                part_number=part_number,
+                picture_urls=picture_urls,
+                description=description,
+                has_virtual_assistant=has_virtual_assistant,
+                condition=condition,
+                seller=seller,
+            )
+        ]
 
     @classmethod
     def banners(cls, extra_args=None):
         extra_args = extra_args or {}
-        base_url = 'https://apps.lider.cl/catalogo/bff/banners?v=2'
-        destination_url_base = 'https://www.lider.cl/{}'
+        base_url = "https://apps.lider.cl/catalogo/bff/banners?v=2"
+        destination_url_base = "https://www.lider.cl/{}"
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = cls.DEFAULT_USER_AGENT
+        session.headers["User-Agent"] = cls.DEFAULT_USER_AGENT
         banners = []
         response = session.get(base_url)
 
         banners_json = json.loads(response.text)
-        sliders = banners_json['bannersHome']
+        sliders = banners_json["bannersHome"]
 
         for idx, slider in enumerate(sliders):
-            destination_urls = [destination_url_base.format(
-                slider['link'])[:250]]
-            picture_url = slider['backgroundDesktop']
+            destination_urls = [destination_url_base.format(slider["link"])[:250]]
+            picture_url = slider["backgroundDesktop"]
 
-            banners.append({
-                'url': destination_url_base.format(''),
-                'picture_url': picture_url,
-                'destination_urls': destination_urls,
-                'key': picture_url,
-                'position': idx + 1,
-                'section': bs.HOME,
-                'subsection': 'Home',
-                'type': bs.SUBSECTION_TYPE_HOME
-            })
+            banners.append(
+                {
+                    "url": destination_url_base.format(""),
+                    "picture_url": picture_url,
+                    "destination_urls": destination_urls,
+                    "key": picture_url,
+                    "position": idx + 1,
+                    "section": bs.HOME,
+                    "subsection": "Home",
+                    "type": bs.SUBSECTION_TYPE_HOME,
+                }
+            )
 
         return banners
