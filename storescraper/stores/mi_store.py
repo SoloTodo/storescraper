@@ -5,60 +5,48 @@ from decimal import Decimal
 import validators
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, TABLET, HEADPHONES, TELEVISION, \
-    MONITOR, WEARABLE
+from storescraper.categories import (CELL, TABLET, HEADPHONES, TELEVISION,
+                                     MONITOR, WEARABLE, VACUUM_CLEANER)
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
 
 
-class MiStore(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            CELL,
-            TABLET,
-            HEADPHONES,
-            TELEVISION,
-            MONITOR,
-            WEARABLE
-        ]
+class MiStore(StoreWithUrlExtensions):
+    url_extensions = [
+        ['smartphones', CELL],
+        ['ecosystem/computacion/tablets', TABLET],
+        ['ecosystem/audio/audifonos', HEADPHONES],
+        ['ecosystem/video/mi-tv', TELEVISION],
+        ['monitores', MONITOR],
+        ['ecosystem/smartwatch-bands', WEARABLE],
+        ['ecosystem/electrohogar/aspiradoras', VACUUM_CLEANER]
+    ]
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        url_extension = [
-            ['smartphones', CELL],
-            ['ecosystem/computacion/tablets', TABLET],
-            ['ecosystem/audio/audifonos', HEADPHONES],
-            ['ecosystem/video/mi-tv', TELEVISION],
-            ['monitores', MONITOR],
-            ['ecosystem/smartwatch-bands', WEARABLE]
-        ]
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        for url_extension, local_category in url_extension:
-            if local_category != category:
-                continue
-            page = 1
-            while True:
-                if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
-                url_webpage = 'https://mistorechile.cl/categoria-producto/' \
-                              '{}/page/{}/'.format(url_extension, page)
-                print(url_webpage)
-                response = session.get(url_webpage, timeout=30)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll('div', 'product-small')
+        page = 1
+        while True:
+            if page > 10:
+                raise Exception('page overflow: ' + url_extension)
+            url_webpage = 'https://mistorechile.cl/categoria-producto/' \
+                          '{}/page/{}/'.format(url_extension, page)
+            print(url_webpage)
+            response = session.get(url_webpage, timeout=30)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            product_containers = soup.findAll('div', 'product-small')
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning('Emtpy category: ' + url_extension)
-                    break
+            if not product_containers:
+                if page == 1:
+                    logging.warning('Emtpy category: ' + url_extension)
+                break
 
-                for container in product_containers:
-                    product_url = container.find('a')['href']
-                    product_urls.append(product_url)
-                page += 1
+            for container in product_containers:
+                product_url = container.find('a')['href']
+                product_urls.append(product_url)
+            page += 1
         return product_urls
 
     @classmethod
