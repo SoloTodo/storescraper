@@ -225,6 +225,7 @@ from .sp_digital import SpDigital
 from .spider import Spider
 from .sukasa import Sukasa
 from .syd import Syd
+from .system_ti import SystemTi
 from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil

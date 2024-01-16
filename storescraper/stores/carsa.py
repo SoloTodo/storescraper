@@ -25,33 +25,37 @@ class Carsa(Store):
         page = 0
         while True:
             if page > 10:
-                raise Exception('page overflow')
+                raise Exception("page overflow")
 
-            body = json.dumps({
-                "requests": [
-                    {
-                        "indexName": "carsa_production_default_products",
-                        "params": "facetFilters=%5B%5B%22categories.level1"
-                                  "%3AMarcas%20%2F%2F%2F%20LG%22%5D%5D&page="
-                                  "{}".format(page)
-                    }
-                ]
-            })
-            url_webpage = 'https://wlt832ea3j-dsn.algolia.net/1/indexes/*/' \
-                          'queries?x-algolia-application-id=WLT832EA3J&x-' \
-                          'algolia-api-key=YmYwNjY2YTNiYTY1NmE1N2Y5ZDQyMDlmZ' \
-                          'TQ5MjczNTlmNGRjY2JhZGQ1YWViZmFkYmJlZjNmNWNlMmI5MD' \
-                          'czN3RhZ0ZpbHRlcnM9'
+            body = json.dumps(
+                {
+                    "requests": [
+                        {
+                            "indexName": "carsa_production_default_products",
+                            "params": "facetFilters=%5B%5B%22categories.level1"
+                            "%3AMarcas%20%2F%2F%2F%20LG%22%5D%5D&page="
+                            "{}".format(page),
+                        }
+                    ]
+                }
+            )
+            url_webpage = (
+                "https://wlt832ea3j-dsn.algolia.net/1/indexes/*/"
+                "queries?x-algolia-application-id=WLT832EA3J&x-"
+                "algolia-api-key=YmYwNjY2YTNiYTY1NmE1N2Y5ZDQyMDlmZ"
+                "TQ5MjczNTlmNGRjY2JhZGQ1YWViZmFkYmJlZjNmNWNlMmI5MD"
+                "czN3RhZ0ZpbHRlcnM9"
+            )
             print(url_webpage)
             response = session.post(url_webpage, data=body)
-            product_json = json.loads(response.text)['results'][0]['hits']
+            product_json = json.loads(response.text)["results"][0]["hits"]
 
             if not product_json:
                 if page == 1:
-                    logging.warning('empty site')
+                    logging.warning("empty site")
                 break
             for product in product_json:
-                product_url = product['url']
+                product_url = product["url"]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -61,31 +65,34 @@ class Carsa(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        if response.url != url:
+            return []
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        key = soup.find('input', {'name': 'product'})['value']
+        key = soup.find("input", {"name": "product"})["value"]
 
         json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            soup.find("script", {"type": "application/ld+json"}).text
+        )
 
-        name = json_data['name']
-        sku = json_data['sku']
-        description = json_data['description']
-        price = (Decimal(json_data['offers']
-                 ['price']) / Decimal(100)).quantize(0)
+        name = json_data["name"]
+        sku = json_data["sku"]
+        description = json_data["description"]
+        price = (Decimal(json_data["offers"]["price"]) / Decimal(100)).quantize(0)
 
-        stock = int(soup.find('div', 'stock-salable').find('span').text)
+        stock = int(soup.find("div", "stock-salable").find("span").text)
 
         picture_urls = []
         picture_json = json.loads(
-            '{' +
-            re.search(
-                r"\"mage\/gallery\/gallery\": {([\S\s]+)\"fullscreen",
-                response.text
-            ).groups()[0] + '"xd": "xd"}')
+            "{"
+            + re.search(
+                r"\"mage\/gallery\/gallery\": {([\S\s]+)\"fullscreen", response.text
+            ).groups()[0]
+            + '"xd": "xd"}'
+        )
 
-        for p in picture_json['data']:
-            picture_urls.append(p['img'])
+        for p in picture_json["data"]:
+            picture_urls.append(p["img"])
 
         p = Product(
             name,
@@ -97,7 +104,7 @@ class Carsa(Store):
             stock,
             price,
             price,
-            'PEN',
+            "PEN",
             sku=sku,
             picture_urls=picture_urls,
             description=description,
