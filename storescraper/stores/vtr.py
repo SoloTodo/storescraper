@@ -1,4 +1,3 @@
-import json
 from urllib.parse import urlparse
 
 from decimal import Decimal
@@ -6,7 +5,7 @@ from decimal import Decimal
 from storescraper.categories import CELL
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class Vtr(Store):
@@ -72,31 +71,25 @@ class Vtr(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-
-        json_data = json.loads(
-            session.get("https://vtr.com/cms/product/catalog?category=plans").text
+        res = session.get(
+            "https://vtr.com/nuevo/page-data/productos/moviles/planes-moviles/individuales/page-data.json"
         )
+        json_data = res.json()["result"]["data"]["contentfulLandingPage"]["products"][
+            0
+        ]["products"]
+
         cuotas_suffixes = [
-            (" Portabilidad (con cuota de arriendo)", Decimal("1.0")),
-            (" Portabilidad (sin cuota de arriendo)", Decimal("0.7")),
-            ("", Decimal("0.9")),
+            " Portabilidad (con cuota de arriendo)",
+            " Portabilidad (sin cuota de arriendo)",
+            "",
         ]
         products = []
 
         for plan_entry in json_data:
-            base_plan_name = plan_entry["product_name"]
+            base_plan_name = plan_entry["displayName"]
+            price = Decimal(plan_entry["salePrice"])
 
-            base_price = None
-            for price_entry in plan_entry["price"]:
-                if price_entry["plan_type"] == "portability":
-                    base_price = (
-                        Decimal(remove_words(price_entry["price"])) / Decimal("0.7")
-                    ).quantize(0)
-
-            assert base_price
-
-            for suffix, multiplier in cuotas_suffixes:
-                price = (base_price * multiplier).quantize(0)
+            for suffix in cuotas_suffixes:
                 name = base_plan_name + suffix
 
                 p = Product(
