@@ -307,6 +307,18 @@ class Paris(Store):
             1,
         ],
         [
+            "linea-blanca/lavado-secado/todas/?prefn1=lavadoTipodeCarga&prefv1=Frontal",
+            ["WashingMachine"],
+            "Línea Blanca > Lavado y Secado > Todas las Lavadoras Frontales",
+            1,
+        ],
+        [
+            "linea-blanca/lavado-secado/todas/?prefn1=lavadoTipodeCarga&prefv1=Superior",
+            ["WashingMachine"],
+            "Línea Blanca > Lavado y Secado > Todas las Lavadoras Superior",
+            1,
+        ],
+        [
             "linea-blanca/lavado-secado/lavavajillas",
             ["DishWasher"],
             "Línea Blanca > Lavado y Secado > Lavavajillas",
@@ -415,8 +427,16 @@ class Paris(Store):
                 if page > (15000 / cls.RESULTS_PER_PAGE):
                     raise Exception("Page overflow: " + category_path)
 
-                category_url = "https://www.paris.cl/{}/?sz={}&start={}" "".format(
-                    category_path, cls.RESULTS_PER_PAGE, page * cls.RESULTS_PER_PAGE
+                if "?" in category_path:
+                    separator = "&"
+                else:
+                    separator = "/?"
+
+                category_url = "https://www.paris.cl/{}{}sz={}&start={}" "".format(
+                    category_path,
+                    separator,
+                    cls.RESULTS_PER_PAGE,
+                    page * cls.RESULTS_PER_PAGE,
                 )
                 print(category_url)
                 response = session.get(category_url)

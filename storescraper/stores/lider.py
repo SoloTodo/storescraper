@@ -54,6 +54,18 @@ class Lider(Store):
         # TECNO
         ["Tecno/TV", [TELEVISION], "Tecno > TV", 1],
         ["Tecno/TV/Smart_TV", [TELEVISION], "Tecno > TV > Smart TV", 1],
+        [
+            "Tecno/TV/Smart_TV_Hasta_50_Pulgadas",
+            [TELEVISION],
+            "Tecno > TV > Smart TV Hasta 50 Pulgadas",
+            1,
+        ],
+        [
+            "Tecno/TV/Smart_TV_Sobre_50_Pulgadas",
+            [TELEVISION],
+            "Tecno > TV > Smart TV Sobre 50 Pulgadas",
+            1,
+        ],
         ["Tecno/TV/Home_Theater", [STEREO_SYSTEM], "Tecno > TV > Home Theater", 1],
         ["Tecno/TV/Proyectores", [PROJECTOR], "Tecno > TV > Proyectores", 1],
         ["Tecno/Audio", [STEREO_SYSTEM], "Tecno > Audio", 1],
