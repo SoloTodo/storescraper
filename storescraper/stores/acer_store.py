@@ -1,13 +1,11 @@
 import base64
 import json
-import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from storescraper.categories import MONITOR, NOTEBOOK, ALL_IN_ONE, MOUSE
 
 from storescraper.product import Product
-from storescraper.store import Store
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import (
     check_ean13,
@@ -18,9 +16,6 @@ from storescraper.utils import (
 
 
 class AcerStore(StoreWithUrlExtensions):
-    preferred_discover_urls_concurrency = 1
-    preferred_products_for_url_concurrency = 1
-
     url_extensions = [
         ["notebook-gamer", NOTEBOOK],
         ["notebook", NOTEBOOK],
@@ -96,8 +91,7 @@ class AcerStore(StoreWithUrlExtensions):
 
         key = soup.find("meta", {"property": "product:sku"})["content"]
         name = product_specs["productName"]
-        sku = product_specs["productId"]
-        # sku = product_specs["productReference"]
+        sku = product_specs["productReference"]
         description = product_specs.get("description", None)
 
         for section in product_specs["categories"]["json"]:
@@ -146,12 +140,12 @@ class AcerStore(StoreWithUrlExtensions):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
             "CLP",
-            sku=key,
+            sku=sku,
             part_number=part_number,
             ean=ean,
             description=description,
