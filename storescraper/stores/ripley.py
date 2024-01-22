@@ -289,7 +289,7 @@ class Ripley(Store):
             1,
         ],
         [
-            "tecno/smartwatches-y-smartbands/samsung",
+            "marca/samsung/accesorios-y-smartwatch",
             [WEARABLE],
             "Tecno > Telefonía > Smartwatches y Wearables > Samsung",
             1,
@@ -377,6 +377,13 @@ class Ripley(Store):
                 category_url = url_base.format(cls.domain, category_path, param, page)
                 print(category_url)
                 response = session.get(category_url, allow_redirects=True, timeout=60)
+
+                if response.url != category_url:
+                    raise Exception(
+                        'Mismatching URL. Expected "{}", got "{}"'.format(
+                            category_url, response.url
+                        )
+                    )
 
                 if response.status_code != 200 and page == 1:
                     raise Exception("Invalid section: " + category_url)
