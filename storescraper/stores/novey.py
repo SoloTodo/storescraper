@@ -14,9 +14,7 @@ from storescraper.utils import session_with_proxy
 class Novey(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -27,20 +25,18 @@ class Novey(Store):
         if TELEVISION != category:
             return []
 
-        url = 'https://lusearchapi-na.hawksearch.com/sites/novey/' \
-            '?brand=LG&mpp=300'
+        url = "https://lusearchapi-na.hawksearch.com/sites/novey/" "?brand=LG&mpp=300"
         print(url)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        product_containers = soup.findAll(
-            'div', 'hawk-results-wrapper__item')
+        product_containers = soup.findAll("div", "hawk-results-wrapper__item")
 
         if not product_containers:
-            logging.warning('Empty category:' + url)
+            logging.warning("Empty category:" + url)
 
         for container in product_containers:
-            product_url = container.find('a')['href']
+            product_url = container.find("a")["href"]
             product_urls.append(product_url)
         return product_urls
 
@@ -51,29 +47,28 @@ class Novey(Store):
         response = session.get(url)
 
         product_data = re.search(
-            r'CCRZ.detailData.jsonProductData = {([\S\s]+?)};',
-            response.text)
+            r"CCRZ.detailData.jsonProductData = {([\S\s]+?)};", response.text
+        )
 
         if not product_data:
             return []
 
-        product_json = json.loads(
-            '{' + product_data.groups()[0] + '}')['product']
+        product_json = json.loads("{" + product_data.groups()[0] + "}")["product"]
 
-        if product_json['canAddtoCart']:
+        if product_json["canAddtoCart"]:
             stock = -1
         else:
             stock = 0
 
-        prodBean = product_json['prodBean']
+        prodBean = product_json["prodBean"]
 
-        name = prodBean['name']
-        sku = prodBean['sku']
-        key = prodBean['id']
-        price = Decimal(str(prodBean['price']))
-        description = prodBean['filterData']
+        name = prodBean["name"]
+        sku = prodBean["sku"]
+        key = prodBean["id"]
+        price = Decimal(str(prodBean["price"]))
+        description = prodBean.get("filterData", None)
 
-        picture_urls = [i['uri'] for i in prodBean.get('EProductMediasS', [])]
+        picture_urls = [i["uri"] for i in prodBean.get("EProductMediasS", [])]
 
         p = Product(
             name,
@@ -85,9 +80,9 @@ class Novey(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
         return [p]

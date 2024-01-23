@@ -101,10 +101,7 @@ class Oportutek(Store):
         json_data = json.loads(soup.findAll(
             'script', {'type': 'application/ld+json'})[1].text)
 
-        key = json_data.get('productId', None)
-        if not key:
-            key = soup.find(
-                'div', {'id': 'shopify-product-reviews'})['data-id']
+        key = soup.find('input', {'name': 'product-id'})['value']
         name = json_data['name']
         sku = json_data['sku']
         description = json_data['description']

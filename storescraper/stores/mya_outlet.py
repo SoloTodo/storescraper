@@ -3,8 +3,16 @@ import json
 import logging
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, STEREO_SYSTEM, NOTEBOOK, VIDEO_CARD, \
-    MONITOR, TABLET, VIDEO_GAME_CONSOLE, TELEVISION
+from storescraper.categories import (
+    CELL,
+    STEREO_SYSTEM,
+    NOTEBOOK,
+    VIDEO_CARD,
+    MONITOR,
+    TABLET,
+    VIDEO_GAME_CONSOLE,
+    TELEVISION,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -12,16 +20,16 @@ from storescraper.utils import session_with_proxy
 
 class MyaOutlet(StoreWithUrlExtensions):
     url_extensions = [
-        ['smartphone', CELL],
-        ['parlantes', STEREO_SYSTEM],
-        ['macbook', NOTEBOOK],
-        ['notebook', NOTEBOOK],
-        ['componentes', VIDEO_CARD],
-        ['tablet-ipad', TABLET],
-        ['perifericos', MONITOR],
-        ['consolas', VIDEO_GAME_CONSOLE],
-        ['televisores', TELEVISION],
-        ['componentes', VIDEO_CARD],
+        ["smartphone", CELL],
+        ["parlantes", STEREO_SYSTEM],
+        ["macbook", NOTEBOOK],
+        ["notebook", NOTEBOOK],
+        ["componentes", VIDEO_CARD],
+        ["tablet-ipad", TABLET],
+        ["perifericos", MONITOR],
+        ["consolas", VIDEO_GAME_CONSOLE],
+        ["televisores", TELEVISION],
+        ["componentes", VIDEO_CARD],
     ]
 
     @classmethod
@@ -31,24 +39,24 @@ class MyaOutlet(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('Page overflow: ' + url_extension)
-            url_webpage = ('https://myaoutlet.cl/categoria-producto/'
-                           'tecnologia/{}/page/{}/').format(
-                            url_extension, page)
+                raise Exception("Page overflow: " + url_extension)
+            url_webpage = (
+                "https://myaoutlet.cl/categoria-producto/" "tecnologia/{}/page/{}/"
+            ).format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            products_wrapper = soup.find('ul', 'products')
+            soup = BeautifulSoup(response.text, "html.parser")
+            products_wrapper = soup.find("ul", "products")
 
             if not products_wrapper:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
 
-            product_containers = products_wrapper.findAll('li')
+            product_containers = products_wrapper.findAll("li")
 
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
 
@@ -63,21 +71,21 @@ class MyaOutlet(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        json_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[1].text)
+        json_data = json.loads(
+            soup.findAll("script", {"type": "application/ld+json"})[1].text
+        )
 
-        name = json_data['name']
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('?p=')[-1]
+        name = json_data["name"]
+        key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
 
-        if json_data['offers'][0]['availability'] == \
-                'http://schema.org/InStock':
+        if json_data["offers"][0]["availability"] == "http://schema.org/InStock":
             stock = -1
         else:
             stock = 0
 
-        supplied_part_number = json_data['sku']
+        supplied_part_number = json_data["sku"]
         if isinstance(supplied_part_number, str):
             part_number = supplied_part_number
         else:
@@ -86,26 +94,30 @@ class MyaOutlet(StoreWithUrlExtensions):
         if not part_number and category == NOTEBOOK:
             stock = 0
 
-        offer_price = Decimal(json_data['offers'][0]['price'])
-        normal_price = (offer_price * Decimal('1.04')).quantize(0)
-        picture_urls = [json_data['image']]
+        offer_price = Decimal(json_data["offers"][0]["price"])
+        normal_price = (offer_price * Decimal("1.04")).quantize(0)
 
-        description = json_data['description']
-
-        if 'SELLADO' in description:
-            condition = 'https://schema.org/NewCondition'
-        elif 'SIN CAJA' in description:
-            condition = 'https://schema.org/OpenBoxCondition'
-        elif 'VITRINA' in description:
-            condition = 'https://schema.org/OpenBoxCondition'
-        elif 'OPEN BOX' in description:
-            condition = 'https://schema.org/OpenBoxCondition'
-        elif 'SEGUNDA MANO' in description:
-            condition = 'https://schema.org/UsedCondition'
-        elif 'EXHIBICIÓN' in description:
-            condition = 'https://schema.org/UsedCondition'
+        if "image" in json_data:
+            picture_urls = [json_data["image"]]
         else:
-            condition = 'https://schema.org/RefurbishedCondition'
+            picture_urls = None
+
+        description = json_data["description"]
+
+        if "SELLADO" in description:
+            condition = "https://schema.org/NewCondition"
+        elif "SIN CAJA" in description:
+            condition = "https://schema.org/OpenBoxCondition"
+        elif "VITRINA" in description:
+            condition = "https://schema.org/OpenBoxCondition"
+        elif "OPEN BOX" in description:
+            condition = "https://schema.org/OpenBoxCondition"
+        elif "SEGUNDA MANO" in description:
+            condition = "https://schema.org/UsedCondition"
+        elif "EXHIBICIÓN" in description:
+            condition = "https://schema.org/UsedCondition"
+        else:
+            condition = "https://schema.org/RefurbishedCondition"
 
         p = Product(
             name,
@@ -117,11 +129,11 @@ class MyaOutlet(StoreWithUrlExtensions):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=part_number,
             picture_urls=picture_urls,
             description=description,
             part_number=part_number,
-            condition=condition
+            condition=condition,
         )
         return [p]
