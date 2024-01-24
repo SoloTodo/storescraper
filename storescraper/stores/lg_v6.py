@@ -88,6 +88,7 @@ class LgV6(Store):
             "firstResult": 0,
         }
         response = session.post(cls.endpoint_url, json=payload)
+        print(json.dumps(response.json()))
         json_data = response.json()["results"][0]["raw"]
         model_id = json_data["ec_model_id"]
         name = "{} - {}".format(

@@ -1,13 +1,14 @@
 import json
-
-from bs4 import BeautifulSoup
 from decimal import Decimal
+from bs4 import BeautifulSoup
+from requests.exceptions import TooManyRedirects
+
 from urllib.parse import quote
 
 from storescraper.categories import NOTEBOOK, TABLET, ALL_IN_ONE
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class Lenovo(Store):
@@ -55,7 +56,6 @@ class Lenovo(Store):
                 endpoint = "https://openapi.lenovo.com/cl/es/ofp/search/dlp/product/query/get/_tsc?subSeriesCode=&loyalty=false&params={}".format(
                     encoded_payload
                 )
-                print(endpoint)
                 res = session.get(endpoint)
                 products_data = res.json()
                 product_entries = products_data["data"]["data"][0]["products"]
@@ -66,9 +66,9 @@ class Lenovo(Store):
                     break
 
                 for entry in product_entries:
-                    path = entry["url"]
-                    product_url = "https://www.lenovo.com{}{}".format(
-                        cls.region_extension, path
+                    subseries_code = entry["subseriesCode"]
+                    product_url = "https://www.lenovo.com{}/p/{}".format(
+                        cls.region_extension, subseries_code
                     )
                     product_urls.append(product_url)
 
@@ -80,73 +80,55 @@ class Lenovo(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers["User-Agent"] = (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
+        session.headers["Referer"] = "https://www.lenovo.com/"
+        session.headers[
+            "User-Agent"
+        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+        try:
+            res = session.get(url)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            form_data = json.loads(soup.find('input', 'formData')['value'])
+            page_filter_id = form_data["facetId"]
+        except TooManyRedirects:
+            page_filter_id = '55262423-c9c7-4e23-a79a-073ce2679bc8'
+
+        subseries_code = url.split('/')[-1]
+        payload = {
+            "pageFilterId": page_filter_id,
+            "version": "v2",
+            "subseriesCode": subseries_code
+        }
+
+        payload_str = json.dumps(payload)
+        encoded_payload = quote(payload_str)
+        endpoint = "https://openapi.lenovo.com/cl/es/ofp/search/dlp/product/query/get/_tsc?subSeriesCode=&loyalty=false&params={}".format(
+            encoded_payload
         )
-        response = session.get(url)
-
-        if response.url != url:
-            return []
-
-        soup = BeautifulSoup(response.text, "html5lib")
-
-        if soup.find("div", {"id": "product-details-variant-notavailable"}):
-            return []
-
-        gallery_tag = soup.find("div", "gallery-image-slider")
-
-        if gallery_tag:
-            picture_urls = [
-                "https://www.lenovo.com" + tag["src"]
-                for tag in gallery_tag.findAll("img")
-            ]
-        else:
-            picture_urls = [
-                "https://www.lenovo.com"
-                + soup.find("meta", {"name": "thumbnail"})["content"]
-            ]
-
-        model_containers = soup.findAll("li", "tabbedBrowse-productListing-container")
+        res = session.get(endpoint)
+        products_data = res.json()
         products = []
 
-        if soup.find("div", "singleModelView"):
-            # Notebook, Tablet or AIO without variants
-            name = soup.find("h2", "tabbedBrowse-title singleModelTitle").text.strip()
-            if soup.find("div", "partNumber"):
-                sku = soup.find("div", "partNumber").text.replace("Modelo:", "").strip()
-            else:
-                sku = soup.find("meta", {"name": "bundleid"})["content"]
+        product_entries = products_data["data"]["data"]
+        if not product_entries:
+            return []
 
-            price_tag = soup.find("meta", {"name": "productsaleprice"})
+        for entry in product_entries[0]["products"]:
+            name = entry['productName']
+            sku = entry['productCode']
+            stock = -1 if entry['marketingStatus'] == 'Available' else 0
+            price = Decimal(entry['finalPrice'])
+            description = entry.get('featuresBenefits', None)
 
-            if not price_tag:
-                price_tag = soup.find("meta", {"name": "productprice"})
-
-            if not price_tag:
-                price = Decimal(
-                    remove_words(
-                        soup.find(
-                            "dd", "saleprice pricingSummary-details-final-price"
-                        ).text.split(",")[0]
-                    )
-                )
-            else:
-                price = Decimal(remove_words(price_tag["content"].split(",")[0]))
-
-            description = html_to_markdown(
-                str(soup.find("div", "configuratorItem-accordion-content"))
-            )
-
-            stock_msg = soup.find("span", "stock_message").text
-
-            if "agotado" in stock_msg.lower():
-                stock = 0
-            else:
-                stock = -1
+            picture_urls = []
+            for image_entry in entry.get('media', {}).get('gallery', []):
+                image_url = image_entry['imageAddress']
+                if not image_url.startswith('https'):
+                    image_url = 'https:' + image_url
+                picture_urls.append(image_url)
 
             p = Product(
-                "{} ({})".format(name, sku),
+                name,
                 cls.__name__,
                 category,
                 url,
@@ -156,92 +138,6 @@ class Lenovo(Store):
                 price,
                 price,
                 "CLP",
-                sku=sku,
-                part_number=sku,
-                description=description,
-                picture_urls=picture_urls,
-            )
-
-            products.append(p)
-        elif model_containers:
-            # Notebook with variants
-            products = []
-
-            for model_container in model_containers:
-                name = (
-                    model_container.find("h3", "tabbedBrowse-productListing-title")
-                    .contents[0]
-                    .strip()
-                )
-                sku = model_container["data-code"]
-                price_tag = model_container.find(
-                    "dd", "pricingSummary-details-final-price"
-                )
-                if not price_tag:
-                    price_tag = model_container.find("dd", "webPriceValue")
-                if not price_tag:
-                    price_tag = model_container.find(
-                        "span", "bundleDetail_youBundlePrice_value"
-                    )
-                price = Decimal(remove_words(price_tag.text))
-                description = html_to_markdown(
-                    str(
-                        model_container.find(
-                            "div", "tabbedBrowse-productListing-featureList"
-                        )
-                    )
-                )
-
-                p = Product(
-                    "{} ({})".format(name, sku),
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    sku,
-                    -1,
-                    price,
-                    price,
-                    cls.currency,
-                    sku=sku,
-                    part_number=sku,
-                    description=description,
-                    picture_urls=picture_urls,
-                )
-                products.append(p)
-        else:
-            # Case for https://www.lenovo.com/cl/es/laptops/ideapad/
-            # serie-flex/IdeaPad-Flex-5-15ITL-05/p/88IPF501454
-
-            name_tag = soup.find("div", "titleSection")
-            if not name_tag:
-                return []
-
-            # Monitor most likely
-
-            name = name_tag.text.strip()
-            sku = soup.find("meta", {"name": "productid"})["content"]
-
-            sale_price = soup.find("meta", {"name": "productsaleprice"})
-            if sale_price:
-                price = Decimal(remove_words(sale_price["content"]))
-            else:
-                price = Decimal(
-                    remove_words(soup.find("meta", {"name": "productprice"})["content"])
-                )
-            description = html_to_markdown(str(soup.find("ul", "tabs-content-items")))
-
-            p = Product(
-                "{} ({})".format(name, sku),
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                -1,
-                price,
-                price,
-                cls.currency,
                 sku=sku,
                 part_number=sku,
                 description=description,
