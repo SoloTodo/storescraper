@@ -10,7 +10,7 @@ from storescraper.categories import TELEVISION, STEREO_SYSTEM, HEADPHONES, \
     SPACE_HEATER, REFRIGERATOR, WASHING_MACHINE, DISH_WASHER, VACUUM_CLEANER, \
     OVEN, CELL, WEARABLE, CELL_ACCESORY, NOTEBOOK, TABLET, \
     MOUSE, GAMING_CHAIR, ALL_IN_ONE, MONITOR, EXTERNAL_STORAGE_DRIVE, \
-    PRINTER, VIDEO_GAME_CONSOLE
+    PRINTER, VIDEO_GAME_CONSOLE, WATER_HEATER
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import remove_words, html_to_markdown, \
@@ -42,7 +42,8 @@ class AbcDin(Store):
             MONITOR,
             EXTERNAL_STORAGE_DRIVE,
             PRINTER,
-            VIDEO_GAME_CONSOLE
+            VIDEO_GAME_CONSOLE,
+            WATER_HEATER
         ]
 
     @classmethod
@@ -117,6 +118,8 @@ class AbcDin(Store):
              'Línea Blanca / Electrodomésticos / Microondas', 1],
             ['linea-blanca/electrodomesticos/hornos-electricos', [OVEN],
              'Línea Blanca / Electrodomésticos / Hornos Eléctricos', 1],
+            ['linea-blanca/calefont', [WATER_HEATER],
+             'Línea Blanca / Calefont', 1],
             ['telefonia/smartphones', [CELL], 'Telefonía / Smartphones', 1],
             ['telefonia/smartwatch', [WEARABLE], 'Telefonía / Smartwatch', 1],
             ['telefonia/accesorios-telefonia', [CELL_ACCESORY],

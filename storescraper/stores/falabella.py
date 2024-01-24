@@ -348,6 +348,12 @@ class Falabella(Store):
             "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Pellet y Leña",
             1,
         ],
+        [
+            "cat2013",
+            [WATER_HEATER],
+            "Home > Cocina y Baño-Baño > CAlefont y Termos",
+            1,
+        ],
         # ['CATG10194', [GROCERIES], 'Despensa', 1]
     ]
 
