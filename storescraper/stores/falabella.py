@@ -270,6 +270,12 @@ class Falabella(Store):
             1,
         ],
         [
+            "cat4074",
+            [REFRIGERATOR],
+            "Home > Electrohogar-Línea Blanca > Refrigeración > Refrigeradores > No Frost",
+            1,
+        ],
+        [
             "CATG19019",
             [REFRIGERATOR],
             "Home > Electrohogar-Línea Blanca > Refrigeración > Refrigeradores > Top Freezer",
