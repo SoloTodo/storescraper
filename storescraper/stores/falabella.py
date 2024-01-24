@@ -82,7 +82,7 @@ class Falabella(Store):
             [TELEVISION],
             'Home > Tecnología-TV > Smart tv entre 50" - 55"',
             1,
-            {"f.derived.product.Tamano_de_la_pantalla": "50::55"},
+            {"f.variant.custom.Tamaño_de_la_pantalla": "50::55"},
         ],
         [
             "cat7190148",
@@ -99,7 +99,7 @@ class Falabella(Store):
             'Home > Tecnología-TV > Smart tv menores a 50"',
             1,
             {
-                "f.derived.product.Tamano_de_la_pantalla": "1::20::24::32::39::40::42::43::48"
+                "f.variant.custom.Tamaño_de_la_pantalla": "1::20::24::32::39::40::42::43::48"
             },
         ],
         ["cat2070", [PROJECTOR], "Home > Tecnología-TV > Proyectores", 1],
@@ -483,10 +483,10 @@ class Falabella(Store):
 
         sortings = [
             "_score%2Cdesc",
-            "derived.price.search%2Casc",
-            "product.brandName%2Casc",
-            "product.attribute.newIconExpiryDate%2Cdesc",
-            "product.averageOverallRating%2Cdesc",
+            # "derived.price.search%2Casc",
+            # "product.brandName%2Casc",
+            # "product.attribute.newIconExpiryDate%2Cdesc",
+            # "product.averageOverallRating%2Cdesc",
         ]
 
         for idx, sorting in enumerate(sortings):
