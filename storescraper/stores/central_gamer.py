@@ -8,7 +8,7 @@ from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     PROCESSOR, VIDEO_CARD, RAM, SOLID_STATE_DRIVE
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, remove_words, html_to_markdown
 
 
 class CentralGamer(StoreWithUrlExtensions):
@@ -73,9 +73,12 @@ class CentralGamer(StoreWithUrlExtensions):
         else:
             sku = None
 
+        description = html_to_markdown(str(soup.find('div', 'product-description')))
         stock_tag = soup.find('meta', {'property': 'product:availability'})
 
-        if stock_tag['content'] == 'instock':
+        if 'PREVENTA' in description.upper():
+            stock = 0
+        elif stock_tag['content'] == 'instock':
             stock = -1
         else:
             stock = 0
@@ -126,6 +129,7 @@ class CentralGamer(StoreWithUrlExtensions):
             'CLP',
             sku=sku,
             part_number=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
+            description=description
         )
         return [p]
