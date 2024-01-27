@@ -84,7 +84,7 @@ class LgV6(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         picture_urls = [
-            "https://www.lg.com" + x["data-large-d"]
+            "https://www.lg.com" + urllib.parse.quote(x["data-large-d"])
             for x in soup.find_all("a", "c-gallery__item")
             if "data-large-d" in x.attrs
         ]
