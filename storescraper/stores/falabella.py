@@ -986,7 +986,12 @@ class Falabella(Store):
                 else:
                     raise Exception("No showcase container found")
 
-                slides = showcase_container["components"][0]["data"]["slides"]
+                for container in showcase_container["components"]:
+                    if "slides" in container["data"]:
+                        slides = container["data"]["slides"]
+                        break
+                else:
+                    raise Exception("No slides found")
 
                 for idx, slide in enumerate(slides):
                     main_url = slide.get("mainUrl", None)
