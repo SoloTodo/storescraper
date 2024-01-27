@@ -13,6 +13,7 @@ from storescraper.categories import (
     GAMING_DESK,
     TELEVISION,
     VACUUM_CLEANER,
+    WATER_HEATER,
 )
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -390,9 +391,15 @@ class Paris(Store):
             1,
         ],
         [
-            "tecnologia/gamers/escritorios-gamer/",
+            "tecnologia/gamers/escritorios-gamer",
             [GAMING_DESK],
             "Tecno > Gamer > Escritorios Gamer",
+            1,
+        ],
+        [
+            "linea-blanca/estufas/calefones-termos",
+            [WATER_HEATER],
+            "Electro y Línea Blanca > Calefacción > Calefont y Termos",
             1,
         ],
     ]

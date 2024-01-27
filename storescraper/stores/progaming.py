@@ -2,14 +2,29 @@ from decimal import Decimal
 import logging
 from bs4 import BeautifulSoup
 
-from storescraper.categories import SOLID_STATE_DRIVE, NOTEBOOK, \
-    POWER_SUPPLY, COMPUTER_CASE, RAM, MOTHERBOARD, PROCESSOR, CPU_COOLER, \
-    VIDEO_CARD, HEADPHONES, KEYBOARD_MOUSE_COMBO, MOUSE, STEREO_SYSTEM, \
-    KEYBOARD, MONITOR, GAMING_CHAIR, USB_FLASH_DRIVE, WEARABLE
+from storescraper.categories import (
+    SOLID_STATE_DRIVE,
+    NOTEBOOK,
+    POWER_SUPPLY,
+    COMPUTER_CASE,
+    RAM,
+    MOTHERBOARD,
+    PROCESSOR,
+    CPU_COOLER,
+    VIDEO_CARD,
+    HEADPHONES,
+    KEYBOARD_MOUSE_COMBO,
+    MOUSE,
+    STEREO_SYSTEM,
+    KEYBOARD,
+    MONITOR,
+    GAMING_CHAIR,
+    USB_FLASH_DRIVE,
+    WEARABLE,
+)
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, remove_words, \
-    session_with_proxy
+from storescraper.utils import html_to_markdown, remove_words, session_with_proxy
 
 
 class Progaming(Store):
@@ -33,30 +48,30 @@ class Progaming(Store):
             MONITOR,
             GAMING_CHAIR,
             USB_FLASH_DRIVE,
-            WEARABLE
+            WEARABLE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['componentes/almacenamiento-componentes', SOLID_STATE_DRIVE],
-            ['componentes/computadores-y-notebooks', NOTEBOOK],
-            ['componentes/fuentes-poder', POWER_SUPPLY],
-            ['componentes/gabinetes-componentes', COMPUTER_CASE],
-            ['componentes/memorias-ram-componentes', RAM],
-            ['componentes/placas-madres', MOTHERBOARD],
-            ['componentes/procesadores-componentes', PROCESSOR],
-            ['componentes/refrigeracion', CPU_COOLER],
-            ['componentes/tarjetas-video', VIDEO_CARD],
-            ['perifericos/audifonos-perifericos', HEADPHONES],
-            ['perifericos/kits-perifericos', KEYBOARD_MOUSE_COMBO],
-            ['perifericos/mouse-perifericos', MOUSE],
-            ['perifericos/parlantes-perifericos', STEREO_SYSTEM],
-            ['perifericos/teclados', KEYBOARD],
-            ['monitores-2/monitor-gamer', MONITOR],
-            ['sillas-gamers/sillas-sillones', GAMING_CHAIR],
-            ['otros-productos/pendrivers-memorias', USB_FLASH_DRIVE],
-            ['otros-productos/relojes-inteligentes', WEARABLE],
+            ["componentes/almacenamiento-componentes", SOLID_STATE_DRIVE],
+            ["componentes/computadores-y-notebooks", NOTEBOOK],
+            ["componentes/fuentes-poder", POWER_SUPPLY],
+            ["componentes/gabinetes-componentes", COMPUTER_CASE],
+            ["componentes/memorias-ram-componentes", RAM],
+            ["componentes/placas-madres", MOTHERBOARD],
+            ["componentes/procesadores-componentes", PROCESSOR],
+            ["componentes/refrigeracion", CPU_COOLER],
+            ["componentes/tarjetas-video", VIDEO_CARD],
+            ["perifericos/audifonos-perifericos", HEADPHONES],
+            ["perifericos/kits-perifericos", KEYBOARD_MOUSE_COMBO],
+            ["perifericos/mouse-perifericos", MOUSE],
+            ["perifericos/parlantes-perifericos", STEREO_SYSTEM],
+            ["perifericos/teclados", KEYBOARD],
+            ["monitores-2/monitor-gamer", MONITOR],
+            ["sillas-gamers/sillas-sillones", GAMING_CHAIR],
+            ["otros-productos/pendrivers-memorias", USB_FLASH_DRIVE],
+            ["otros-productos/relojes-inteligentes", WEARABLE],
         ]
 
         session = session_with_proxy(extra_args)
@@ -67,18 +82,20 @@ class Progaming(Store):
             page = 1
             while True:
                 if page > 10:
-                    raise Exception('Page overflow: ' + url_extension)
-                url_webpage = 'https://www.progaming.cl/categoria-producto/' \
-                    '{}/page/{}/'.format(url_extension, page)
+                    raise Exception("Page overflow: " + url_extension)
+                url_webpage = (
+                    "https://www.progaming.cl/categoria-producto/"
+                    "{}/page/{}/".format(url_extension, page)
+                )
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+                soup = BeautifulSoup(data, "html.parser")
+                product_containers = soup.findAll("li", "product")
                 if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                        logging.warning("Empty category: " + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find("a")["href"]
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -89,35 +106,33 @@ class Progaming(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        key = soup.find('link', {'rel': 'shortlink'})[
-            'href'].split('=')[-1]
+        key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
 
-        name = soup.find('h3', 'product_title').text.strip()
-        sku = soup.find('span', 'sku').text.strip()
+        name = soup.find("h3", "product_title").text.strip()
+        sku = soup.find("span", "sku").text.strip()
 
-        offer_price = Decimal(remove_words(
-            soup.find('h3', {'id': 'precio2'}).text))
-        normal_p = soup.find('p', 'price')
-        normal_ins = normal_p.find('ins')
+        offer_price = Decimal(remove_words(soup.find("h3", {"id": "precio2"}).text))
+        normal_p = soup.find("p", "price")
+        normal_ins = normal_p.find("ins")
         if normal_ins:
-            normal_price = Decimal(
-                remove_words(normal_ins.text))
+            normal_price = Decimal(remove_words(normal_ins.text))
         else:
-            normal_price = Decimal(
-                remove_words(normal_p.find('bdi').text))
+            normal_price = Decimal(remove_words(normal_p.find("bdi").text))
 
-        stock = int(soup.find('input', 'qty')['value'])
+        stock_tag = soup.find("input", "qty")
+        if stock_tag:
+            stock = int(stock_tag["value"])
+        else:
+            stock = 0
 
-        picture_container = soup.find(
-            'div', 'woocommerce-product-gallery__wrapper')
+        picture_container = soup.find("div", "woocommerce-product-gallery__wrapper")
         picture_urls = []
-        for a in picture_container.findAll('a'):
-            picture_urls.append(a['href'])
+        for a in picture_container.findAll("a"):
+            picture_urls.append(a["href"])
 
-        description = html_to_markdown(
-            soup.find('div', {'id': 'tab-description'}).text)
+        description = html_to_markdown(soup.find("div", {"id": "tab-description"}).text)
 
         p = Product(
             name,
@@ -129,10 +144,10 @@ class Progaming(Store):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
         return [p]

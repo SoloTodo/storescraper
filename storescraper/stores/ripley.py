@@ -34,6 +34,7 @@ from storescraper.categories import (
     WEARABLE,
     HEADPHONES,
     VACUUM_CLEANER,
+    WATER_HEATER,
 )
 from storescraper.store import Store
 from storescraper.product import Product
@@ -310,6 +311,12 @@ class Ripley(Store):
             "muebles/home-office-y-oficina/sillas-y-escritorios-gamer",
             [GAMING_CHAIR],
             "Tecno > Computación Gamer > Sillas Gamer",
+            1,
+        ],
+        [
+            "ferreteria/cocina/calefont-y-termos",
+            [WATER_HEATER],
+            "Ferretería > Cocina > Calefont y Termos",
             1,
         ],
     ]

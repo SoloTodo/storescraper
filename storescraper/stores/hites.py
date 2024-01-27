@@ -31,7 +31,7 @@ from storescraper.categories import (
     USB_FLASH_DRIVE,
     VIDEO_GAME_CONSOLE,
     WASHING_MACHINE,
-    WEARABLE,
+    WEARABLE, WATER_HEATER,
 )
 
 from storescraper.flixmedia import flixmedia_video_urls
@@ -69,6 +69,7 @@ class Hites(Store):
             WEARABLE,
             DISH_WASHER,
             GAMING_CHAIR,
+            WATER_HEATER
         ]
 
     @classmethod
@@ -452,6 +453,13 @@ class Hites(Store):
                 "Inicio > Celulares > Accesorios para celulares > Audífonos",
                 1,
             ],
+            [
+                "electro-hogar/calefaccion/calefont-y-termos",
+                [WATER_HEATER],
+                "Inicio > Electro Hogar > Calefacción > Calefont y Termos",
+                1,
+            ],
+
         ]
 
         product_entries = defaultdict(lambda: [])

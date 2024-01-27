@@ -119,6 +119,7 @@ from .lady_lee import LadyLee
 from .lap_shop import LapShop
 from .lenovo_chile import LenovoChile
 from .lg_cl import LgCl
+from .lg_co import LgCo
 from .lg_cac import LgCac
 from .lg_cac_en import LgCacEn
 from .lg_ec import LgEc

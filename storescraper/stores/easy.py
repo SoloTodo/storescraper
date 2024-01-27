@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, \
-    SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, VIDEO_GAME_CONSOLE
+    SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, VIDEO_GAME_CONSOLE, WATER_HEATER
 
 from storescraper.product import Product
 from storescraper.store import Store
@@ -24,6 +24,7 @@ class Easy(Store):
             AIR_CONDITIONER,
             SPACE_HEATER,
             VIDEO_GAME_CONSOLE,
+            WATER_HEATER
         ]
 
     @classmethod
@@ -118,6 +119,10 @@ class Easy(Store):
              'humidificadores', [AIR_CONDITIONER],
              'Inicio > Electrohogar y Climatización > Ventilación > '
              'Purificadores y humidificadores', 1],
+
+            ['electrohogar-y-climatizacion/calefont-y-termos/calefont', [WATER_HEATER],
+             'Inicio > Electrohogar y Climatización > Calefont y Termos > '
+             'Calefont', 1],
 
             ['electrohogar-y-climatizacion/tecnologia/consolas-y-'
              'videojuegos/consolas', [VIDEO_GAME_CONSOLE],

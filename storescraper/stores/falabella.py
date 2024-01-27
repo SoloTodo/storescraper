@@ -90,7 +90,7 @@ class Falabella(Store):
             'Home > Tecnología-TV > Smart tv sobre 55"',
             1,
             {
-                "f.variant.custom.Tamaño_de_la_pantalla": "58::60::65::68::70::75::77::85::86"
+                "f.derived.product.Tamano_de_la_pantalla": "58::60::65::70::75::77::85::86::98"
             },
         ],
         [
@@ -270,6 +270,12 @@ class Falabella(Store):
             1,
         ],
         [
+            "cat4074",
+            [REFRIGERATOR],
+            "Home > Electrohogar-Línea Blanca > Refrigeración > Refrigeradores > No Frost",
+            1,
+        ],
+        [
             "CATG19019",
             [REFRIGERATOR],
             "Home > Electrohogar-Línea Blanca > Refrigeración > Refrigeradores > Top Freezer",
@@ -340,6 +346,12 @@ class Falabella(Store):
             "cat9910027",
             [SPACE_HEATER],
             "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Pellet y Leña",
+            1,
+        ],
+        [
+            "cat2013",
+            [WATER_HEATER],
+            "Home > Cocina y Baño-Baño > CAlefont y Termos",
             1,
         ],
         # ['CATG10194', [GROCERIES], 'Despensa', 1]
@@ -483,10 +495,10 @@ class Falabella(Store):
 
         sortings = [
             "_score%2Cdesc",
-            "derived.price.search%2Casc",
-            "product.brandName%2Casc",
-            "product.attribute.newIconExpiryDate%2Cdesc",
-            "product.averageOverallRating%2Cdesc",
+            # "derived.price.search%2Casc",
+            # "product.brandName%2Casc",
+            # "product.attribute.newIconExpiryDate%2Cdesc",
+            # "product.averageOverallRating%2Cdesc",
         ]
 
         for idx, sorting in enumerate(sortings):

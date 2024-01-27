@@ -1,8 +1,7 @@
-import json
 import logging
+import re
 from decimal import Decimal
 
-import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (
@@ -17,20 +16,22 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy, magento_picture_urls
 
 
 class XiaomiOnline(StoreWithUrlExtensions):
     url_extensions = [
-        ["smartphones", CELL],
-        ["smart-home/tv-monitores-media/televisores", TELEVISION],
-        ["smart-home/tv-monitores-media/monitores", MONITOR],
-        ["smart-home/mi-pad", TABLET],
-        ["smart-home/electrodomesticos/limpieza", VACUUM_CLEANER],
-        ["smart-home/televisores", TELEVISION],
-        ["estilo-vida/smartwatch-smartband", WEARABLE],
-        ["estilo-vida/audio/audifonos", HEADPHONES],
-        ["estilo-vida/audio/parlantes", STEREO_SYSTEM],
+        ["telefonos", CELL],
+        ["hogar-inteligente/tv-monitores-media/televisores", TELEVISION],
+        ["hogar-inteligente/tv-monitores-media/monitores", MONITOR],
+        ["hogar-inteligente/mi-pad", TABLET],
+        ["estilo-de-vida/wearables", WEARABLE],
+        ["estilo-de-vida/audio/audifonos", HEADPHONES],
+        ["estilo-de-vida/audio/parlantes", STEREO_SYSTEM],
+        [
+            "hogar-inteligente/electrodomesticos/electrodomesticos-de-limpieza",
+            VACUUM_CLEANER,
+        ],
     ]
 
     @classmethod
@@ -45,7 +46,7 @@ class XiaomiOnline(StoreWithUrlExtensions):
             print(url_webpage)
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, "html.parser")
-            product_containers = soup.findAll("li", "product-item")
+            product_containers = soup.findAll("li", "item product product-item")
 
             if not product_containers:
                 if page == 1:
@@ -53,6 +54,7 @@ class XiaomiOnline(StoreWithUrlExtensions):
                 break
 
             for container in product_containers:
+                # print(str(container))
                 product_url = container.find("a")["href"]
                 # The site returns the products of the first page when overflowing
                 if product_url in product_urls:
@@ -67,15 +69,19 @@ class XiaomiOnline(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-        name = soup.find("h1", "product-name").text.strip()
+        name = soup.find("h1", "page-title").text.strip()
         key = soup.find("input", {"name": "product"})["value"]
-        sku = soup.find("div", "sku").find("span", "value").text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
         stock = -1
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"]
         )
-        part_number = soup.find("td", {"data-th": "MPN"}).text.strip()
-        picture_urls = [x["href"] for x in soup.findAll("a", "mt-thumb-switcher")]
+        part_number_tag = soup.find("td", {"data-th": "Mpn"})
+        if part_number_tag:
+            part_number = part_number_tag.text.strip()
+        else:
+            part_number = None
+        picture_urls = magento_picture_urls(soup)
 
         p = Product(
             name,

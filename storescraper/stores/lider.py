@@ -35,7 +35,7 @@ from storescraper.categories import (
     VACUUM_CLEANER,
     VIDEO_GAME_CONSOLE,
     WASHING_MACHINE,
-    WEARABLE,
+    WEARABLE, WATER_HEATER,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -339,6 +339,12 @@ class Lider(Store):
             "Electrohogar > Climatización > Ventilación > Aire Acondicionado",
             1.0,
         ],
+        [
+            "Climatización/Calefacción/Termos y Calefonts",
+            [WATER_HEATER],
+            "Electrohogar > Climatización > Calefacción > Termos y Calefonts",
+            1.0,
+        ],
     ]
 
     @classmethod
@@ -370,6 +376,7 @@ class Lider(Store):
             GAMING_CHAIR,
             SOLID_STATE_DRIVE,
             DISH_WASHER,
+            WATER_HEATER
         ]
 
     @classmethod
