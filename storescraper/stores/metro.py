@@ -101,6 +101,10 @@ class Metro(Store):
         pricing_data = product_data[pricing_key]
 
         price = Decimal(str(pricing_data["Price"])) + Decimal(str(pricing_data["Tax"]))
+
+        if not price:
+            return []
+
         stock = pricing_data["AvailableQuantity"]
 
         picture_list_key = "{}.items.0".format(base_json_key)

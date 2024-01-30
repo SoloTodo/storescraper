@@ -83,7 +83,11 @@ class LgV6(Store):
 
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-        picture_urls = ['https://www.lg.com' + x['data-large-d'] for x in soup.find_all("a", "c-gallery__item")]
+        picture_urls = [
+            "https://www.lg.com" + urllib.parse.quote(x["data-large-d"])
+            for x in soup.find_all("a", "c-gallery__item")
+            if "data-large-d" in x.attrs
+        ]
 
         session.headers["Authorization"] = "Bearer {}".format(extra_args["coveo_token"])
         path = urllib.parse.urlparse(url).path
@@ -155,10 +159,12 @@ class LgV6(Store):
         else:
             description = None
 
-        reviews_endpoint = ('https://api.bazaarvoice.com/data/display/0.2alpha/product/summary?PassKey='
-                            'caLe64uePnBm2AJobXW3AWGdiTwA5fUMHMrBjNTAPTd8c&productid={}'
-                            '&contentType=reviews&rev=0&contentlocale=es*,es_CL'.format(model_id))
-        reviews_json = session.get(reviews_endpoint).json()['reviewSummary']
+        reviews_endpoint = (
+            "https://api.bazaarvoice.com/data/display/0.2alpha/product/summary?PassKey="
+            "caLe64uePnBm2AJobXW3AWGdiTwA5fUMHMrBjNTAPTd8c&productid={}"
+            "&contentType=reviews&rev=0&contentlocale=es*,es_CL".format(model_id)
+        )
+        reviews_json = session.get(reviews_endpoint).json()["reviewSummary"]
         review_count = reviews_json["numReviews"]
         review_avg_score = reviews_json["primaryRating"]["average"]
 
@@ -181,7 +187,7 @@ class LgV6(Store):
                 allow_zero_prices=not cls.skip_products_without_price,
                 description=description,
                 review_count=review_count,
-                review_avg_score=review_avg_score
+                review_avg_score=review_avg_score,
             )
         ]
 
