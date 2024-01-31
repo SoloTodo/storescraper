@@ -841,7 +841,7 @@ class MercadoLibreChile(Store):
                 url += "?pdp_filters={}".format(official_store_or_seller_filter)
 
             price = Decimal(box_winner["price"]).quantize(Decimal(cls.price_accuracy))
-            stock = int(box_winner["available_quantity"])
+            # stock = int(box_winner["available_quantity"])
 
             seller_endpoint = "https://api.mercadolibre.com/users/" "{}".format(
                 box_winner["seller_id"]
@@ -858,7 +858,7 @@ class MercadoLibreChile(Store):
                     url,
                     url,
                     sku,
-                    stock,
+                    -1,
                     price,
                     price,
                     "CLP",
