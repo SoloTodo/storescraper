@@ -123,7 +123,6 @@ class MyShop(StoreWithUrlExtensions):
                 product_url = "https://www.myshop.cl" + product_entry["url"]
                 product_urls.append(product_url)
             page += 1
-            break
         return product_urls
 
     @classmethod
