@@ -1,8 +1,5 @@
 import re
 from decimal import Decimal
-import json
-import logging
-import validators
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (
@@ -55,7 +52,6 @@ class MyShop(StoreWithUrlExtensions):
         ["21", TABLET],  # portabilidad-tablet
         ["56", WEARABLE],  # portabilidad-relojes
         ["20", ALL_IN_ONE],  # computacion-all-in-one
-        ["103", MEMORY_CARD],  # computacion-memorias-flash
         ["32", MOTHERBOARD],  # partes-y-piezas-placas-madres
         ["35", RAM],  # partes-y-piezas-memorias-ram
         ["37", CPU_COOLER],  # partes-y-piezas-refrigeracion
@@ -127,6 +123,7 @@ class MyShop(StoreWithUrlExtensions):
                 product_url = "https://www.myshop.cl" + product_entry["url"]
                 product_urls.append(product_url)
             page += 1
+            break
         return product_urls
 
     @classmethod
