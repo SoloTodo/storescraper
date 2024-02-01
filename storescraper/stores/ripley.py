@@ -86,10 +86,16 @@ class Ripley(Store):
             1,
         ],
         [
-            "tecno/computacion/proyectores-y-monitores",
-            [MONITOR, PROJECTOR],
-            "Tecno > Computación > Proyectores y monitores",
-            0.5,
+            "tecno/computacion/monitores",
+            [MONITOR],
+            "Tecno > Computación > Monitores",
+            1,
+        ],
+        [
+            "tecno/television/proyectores-smart",
+            [PROJECTOR],
+            "Tecno > Televisión > Proyectores smart",
+            1,
         ],
         [
             "tecno/computacion-gamer/componentes-pc",

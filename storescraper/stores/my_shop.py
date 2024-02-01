@@ -71,7 +71,7 @@ class MyShop(StoreWithUrlExtensions):
         ["8", HEADPHONES],  # audio-video-audifonos-in-ear
         ["11", STEREO_SYSTEM],  # audio-video-parlantes
         ["14", HEADPHONES],  # audio-video-video-conferencia
-        ["17", MONITOR],  # audio-video-monitores
+        ["152", MONITOR],  # audio-video-monitores
         ["9", HEADPHONES],  # audio-video-audifonos-on-ear
         ["18", TELEVISION],  # audio-video-televisores
         ["27", PRINTER],  # impresion-impresion-laser

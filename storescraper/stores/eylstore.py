@@ -133,8 +133,12 @@ class Eylstore(StoreWithUrlExtensions):
             stock = 0
 
         pricing_tag = soup.find("div", "elementor-widget-woocommerce-product-price")
-        price_tag = pricing_tag.findAll("span", "woocommerce-Price-amount")[-1]
-        price = Decimal(remove_words(price_tag.text))
+        price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
+
+        if not price_tags:
+            return []
+
+        price = Decimal(remove_words(price_tags[-1].text))
 
         picture_urls = []
         picture_container = soup.find("div", "woocommerce-product-gallery__wrapper")
