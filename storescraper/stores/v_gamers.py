@@ -20,6 +20,7 @@ from storescraper.categories import (
     PROCESSOR,
     RAM,
     GAMING_DESK,
+    CASE_FAN,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -41,7 +42,9 @@ class VGamers(StoreWithUrlExtensions):
         ["hardware/memorias-ram", RAM],
         ["hardware/placas-madres", MOTHERBOARD],
         ["hardware/procesadores", PROCESSOR],
-        ["hardware/refrigeracion", CPU_COOLER],
+        ["hardware/water-cooling", CPU_COOLER],
+        ["hardware/disipador-cpu", CPU_COOLER],
+        ["hardware/ventiladores", CASE_FAN],
         ["hardware/tarjetas-graficas", VIDEO_CARD],
         ["monitores", MONITOR],
     ]
