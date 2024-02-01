@@ -33,6 +33,7 @@ from storescraper.categories import (
     VIDEO_GAME_CONSOLE,
     GAMING_CHAIR,
     UPS,
+    EXTERNAL_STORAGE_DRIVE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -54,7 +55,6 @@ class MyShop(StoreWithUrlExtensions):
         ["21", TABLET],  # portabilidad-tablet
         ["56", WEARABLE],  # portabilidad-relojes
         ["20", ALL_IN_ONE],  # computacion-all-in-one
-        ["69", USB_FLASH_DRIVE],  # computacion-almacenamiento-externo
         ["103", MEMORY_CARD],  # computacion-memorias-flash
         ["32", MOTHERBOARD],  # partes-y-piezas-placas-madres
         ["35", RAM],  # partes-y-piezas-memorias-ram
@@ -71,7 +71,9 @@ class MyShop(StoreWithUrlExtensions):
         ["8", HEADPHONES],  # audio-video-audifonos-in-ear
         ["11", STEREO_SYSTEM],  # audio-video-parlantes
         ["14", HEADPHONES],  # audio-video-video-conferencia
-        ["152", MONITOR],  # audio-video-monitores
+        ["152", MONITOR],  # monitor-monitores
+        ["139", MONITOR],  # monitor-monitores-monitores-gamer
+        ["138", MONITOR],  # monitor-monitores-monitores-gamer
         ["9", HEADPHONES],  # audio-video-audifonos-on-ear
         ["18", TELEVISION],  # audio-video-televisores
         ["27", PRINTER],  # impresion-impresion-laser
@@ -84,6 +86,22 @@ class MyShop(StoreWithUrlExtensions):
         ["101", MOUSE],  # gamer-mouse-gamer
         ["85", UPS],  # empresas-ups
         ["117", NOTEBOOK],  # computacion-liquidacion
+        [
+            "154",
+            EXTERNAL_STORAGE_DRIVE,
+        ],  # computacion-almacenamiento-externo-ssd-externos
+        [
+            "153",
+            EXTERNAL_STORAGE_DRIVE,
+        ],  # computacion-almacenamiento-externo-discos-externos
+        [
+            "155",
+            USB_FLASH_DRIVE,
+        ],  # computacion-almacenamiento-externo-pendrives
+        [
+            "156",
+            MEMORY_CARD,
+        ],  # computacion-almacenamiento-externo-memoria-flash
     ]
 
     @classmethod
