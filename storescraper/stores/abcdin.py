@@ -1,4 +1,3 @@
-import json
 import logging
 from collections import defaultdict
 
@@ -31,12 +30,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import (
-    remove_words,
-    html_to_markdown,
-    session_with_proxy,
-    magento_picture_urls,
-)
+from storescraper.utils import html_to_markdown, session_with_proxy
 from storescraper import banner_sections as bs
 
 
