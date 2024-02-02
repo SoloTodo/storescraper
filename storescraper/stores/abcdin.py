@@ -1,4 +1,3 @@
-import logging
 from collections import defaultdict
 
 from bs4 import BeautifulSoup
@@ -472,221 +471,27 @@ class AbcDin(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = "https://www.abcdin.cl/{}"
-
-        sections_data = [
-            [bs.HOME, "Home", bs.SUBSECTION_TYPE_HOME, ""],
-            [bs.ELECTRO_ABCDIN, "Electro", bs.SUBSECTION_TYPE_CATEGORY_PAGE, "electro"],
-            [
-                bs.ELECTRO_ABCDIN,
-                "Electro / TV y Video",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/tv-y-video",
-            ],
-            [
-                bs.ELECTRO_ABCDIN,
-                "Electro / Audio",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/audio",
-            ],
-            [
-                bs.ELECTRO_ABCDIN,
-                "Electro / Audífonos",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/audifonos",
-            ],
-            [
-                bs.LINEA_BLANCA_ABCDIN,
-                "Línea Blanca",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "linea-blanca",
-            ],
-            [
-                bs.LINEA_BLANCA_ABCDIN,
-                "Línea Blanca / Climatización",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "linea-blanca/climatizacion",
-            ],
-            [
-                bs.LINEA_BLANCA_ABCDIN,
-                "Línea Blanca / Refrigeradores",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "linea-blanca/refrigeradores",
-            ],
-            [
-                bs.LINEA_BLANCA_ABCDIN,
-                "Línea Blanca / Electrodomésticos",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "linea-blanca/electrodomesticos",
-            ],
-            [
-                bs.TELEFONIA_ABCDIN,
-                "Telefonía",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "telefonia",
-            ],
-            [
-                bs.TELEFONIA_ABCDIN,
-                "Telefonía / Smartphones",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "telefonia/smartphones",
-            ],
-            [
-                bs.TELEFONIA_ABCDIN,
-                "Telefonía / Smartwatch",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "telefonia/smartwatch",
-            ],
-            [
-                bs.TELEFONIA_ABCDIN,
-                "Telefonía / Accesorios telefonía",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "telefonia/accesorios-telefonia",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "computacion",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Notebooks",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/notebooks",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Tablets",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/tablets",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Accesorios Computación",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/accesorios-computacion",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Mundo Gamer",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/mundo-gamer",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / All In One",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/all-in-one",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Monitores y Proyectores",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/monitores-y-proyectores",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Monitores y Proyectores",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/monitores-y-proyectores",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Almacenamiento",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/almacenamiento",
-            ],
-            [
-                bs.COMPUTACION_ABCDIN,
-                "Computación / Impresoras y Multifuncionales",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "computacion/impresoras-y-multifuncionales",
-            ],
-            [
-                bs.ENTRETENIMIENTO_ABCDIN,
-                "Entretenimiento",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "entretenimiento",
-            ],
-            [
-                bs.ENTRETENIMIENTO_ABCDIN,
-                "Entretenimiento / Videojuegos",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "entretenimiento/videojuegos",
-            ],
-        ]
-
+        base_url = "https://www.abcdin.cl/"
         session = session_with_proxy(extra_args)
-        session.headers["User-Agent"] = (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
-        )
         banners = []
 
-        for section, subsection, subsection_type, url_suffix in sections_data:
-            url = base_url.format(url_suffix)
-            print(url)
+        soup = BeautifulSoup(session.get(base_url).text, "html.parser")
+        slider_tags = soup.findAll("div", "rojoPolar")
 
-            if subsection_type == bs.SUBSECTION_TYPE_HOME:
-                soup = BeautifulSoup(
-                    session.get("https://www.abcdin.cl/").text, "html.parser"
-                )
-                slider_tags = soup.find("div", "owl-carousel-custom-2").findAll("a")
+        for index, slider_tag in enumerate(slider_tags):
+            destination_urls = [slider_tag.find("a")["href"]]
+            picture_url = slider_tag.find("source")["srcset"]
 
-                for index, slider_tag in enumerate(slider_tags):
-                    destination_urls = ["https://www.abcdin.cl" + slider_tag["href"]]
-                    picture_url = slider_tag.find("img")["data-src-desktop"]
-
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": index + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
-
-            else:
-                response = session.get(url)
-                soup = BeautifulSoup(response.text, "html.parser")
-                slider_container_tag = soup.find("div", "custom-slider")
-
-                if not slider_container_tag:
-                    logging.warning("Section without banners: " + url)
-                    continue
-
-                slider_tags = slider_container_tag.findAll("div", "banner-item")
-
-                for index, slider_tag in enumerate(slider_tags):
-                    if slider_tag.find("a"):
-                        destination_urls = [
-                            "https://www.abcdin.cl" + slider_tag.find("a")["href"]
-                        ]
-                    else:
-                        destination_urls = []
-
-                    image_tag = slider_tag.find("img")
-
-                    if "data-src-desktop" not in image_tag.attrs:
-                        continue
-
-                    picture_url = image_tag["data-src-desktop"]
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": index + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
-
+            banners.append(
+                {
+                    "url": base_url,
+                    "picture_url": picture_url,
+                    "destination_urls": destination_urls,
+                    "key": picture_url,
+                    "position": index + 1,
+                    "section": bs.HOME,
+                    "subsection": bs.HOME,
+                    "type": bs.SUBSECTION_TYPE_HOME,
+                }
+            )
         return banners
