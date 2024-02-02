@@ -55,7 +55,7 @@ class TravelTienda(StoreWithUrlExtensions):
         ("306745319", REFRIGERATOR),
         ("3548829535", REFRIGERATOR),  # Electro > Línea blanca > freezer
         ("831669398", OVEN),
-        ("628735343", AIR_CONDITIONER),
+        ("816489954", AIR_CONDITIONER),
         ("2620100069", WASHING_MACHINE),
         # Tecnología > Computación > Accesorios de Computacion
         ("3421645721", PRINTER),

@@ -91,12 +91,12 @@ class Ripley(Store):
             "Tecno > Computación > Monitores",
             1,
         ],
-        [
-            "tecno/television/proyectores-smart",
-            [PROJECTOR],
-            "Tecno > Televisión > Proyectores smart",
-            1,
-        ],
+        # [
+        #     "tecno/television/proyectores-smart",
+        #     [PROJECTOR],
+        #     "Tecno > Televisión > Proyectores smart",
+        #     1,
+        # ],
         [
             "tecno/computacion-gamer/componentes-pc",
             [RAM],
