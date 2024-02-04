@@ -131,11 +131,10 @@ class Eylstore(StoreWithUrlExtensions):
         else:
             sku = None
 
-        stock_tag = soup.find("p", "in-stock")
-        if stock_tag:
-            stock = int(re.search(r"(\d+)", stock_tag.text).groups()[0])
-        else:
+        if soup.find("p", "out-of-stock"):
             stock = 0
+        else:
+            stock = -1
 
         pricing_tag = soup.find("div", "elementor-widget-woocommerce-product-price")
         price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
