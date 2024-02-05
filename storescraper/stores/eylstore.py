@@ -16,6 +16,8 @@ from storescraper.categories import (
     SOLID_STATE_DRIVE,
     EXTERNAL_STORAGE_DRIVE,
     MOUSE,
+    CPU_COOLER,
+    POWER_SUPPLY,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -47,6 +49,8 @@ class Eylstore(StoreWithUrlExtensions):
         ["audifonos", HEADPHONES],
         ["mouse", MOUSE],
         ["teclados", KEYBOARD],
+        ["refrigeracion", CPU_COOLER],
+        ["fuentes-de-poder", POWER_SUPPLY],
     ]
 
     @classmethod
@@ -92,6 +96,7 @@ class Eylstore(StoreWithUrlExtensions):
 
                 for container in product_containers:
                     product_url = container.find("a")["href"]
+                    print(product_url)
                     product_urls.append(product_url)
                 page += 1
         else:
@@ -126,11 +131,10 @@ class Eylstore(StoreWithUrlExtensions):
         else:
             sku = None
 
-        stock_tag = soup.find("p", "in-stock")
-        if stock_tag:
-            stock = int(re.search(r"(\d+)", stock_tag.text).groups()[0])
-        else:
+        if soup.find("p", "out-of-stock"):
             stock = 0
+        else:
+            stock = -1
 
         pricing_tag = soup.find("div", "elementor-widget-woocommerce-product-price")
         price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")

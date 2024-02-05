@@ -5,7 +5,7 @@ from decimal import Decimal
 
 import validators
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
+from storescraper.utils import fetch_cf_page
 from ..categories import TELEVISION
 from ..product import Product
 from ..store import Store
@@ -33,7 +33,7 @@ class RipleyPeru(Store):
                 page
             )
             print(url)
-            response = cls.__fetch_page(url, extra_args)
+            response = fetch_cf_page(url, extra_args)
             soup = BeautifulSoup(response, "html.parser")
             product_containers = soup.findAll("div", "catalog-product-item")
             if not product_containers:
@@ -51,7 +51,7 @@ class RipleyPeru(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        response = cls.__fetch_page(url, extra_args)
+        response = fetch_cf_page(url, extra_args)
         match = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
         raw_json = match.groups()[0]
         json_data = json.loads(raw_json)
@@ -115,18 +115,3 @@ class RipleyPeru(Store):
         )
 
         return [p]
-
-    @classmethod
-    def __fetch_page(cls, url, extra_args):
-        with sync_playwright() as pw:
-            print("connecting")
-            browser = pw.chromium.connect_over_cdp(extra_args["pw_proxy"])
-            context = browser.new_context()
-            print("connected")
-            page = context.new_page()
-            print("goto")
-            response = page.goto(url, timeout=120000)
-            body = response.body()
-            context.close()
-            browser.close()
-            return body.decode("utf-8")
