@@ -1,20 +1,18 @@
 import re
 from decimal import Decimal
-import json
 import logging
-import validators
 
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class PlayPower(StoreWithUrlExtensions):
     url_extensions = [
-        ['all', MONITOR],
+        ["all", MONITOR],
     ]
 
     @classmethod
@@ -24,21 +22,21 @@ class PlayPower(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://playpower.cl/collections/{}?page={}'.format(
-                url_extension, page)
+                raise Exception("page overflow: " + url_extension)
+            url_webpage = "https://playpower.cl/collections/{}?page={}".format(
+                url_extension, page
+            )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll(
-                'li', 'grid__item')
+            soup = BeautifulSoup(data, "html.parser")
+            product_containers = soup.findAll("li", "grid__item")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_path = container.find('a')['href']
-                product_urls.append('https://playpower.cl' + product_path)
+                product_path = container.find("a")["href"]
+                product_urls.append("https://playpower.cl" + product_path)
             page += 1
         return product_urls
 
@@ -47,23 +45,26 @@ class PlayPower(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/ld+json'})[-1].text)
-        name = product_data['name']
-        description = product_data['description']
-        offer = product_data['offers'][0]
-        key = offer['url'].split('?variant=')[1].strip()
-        price = Decimal(offer['price']).quantize(0)
+        soup = BeautifulSoup(response.text, "html.parser")
+        name_tag = soup.find("h3", {"data-product-type": "title"})
 
-        if offer['availability'] == 'http://schema.org/InStock':
-            stock = -1
-        else:
-            stock = 0
+        if not name_tag:
+            return []
 
-        picture_urls = ['https:' + x['src'] for x in
-                        soup.find('div', 'product-media-modal__content'
-                                  ).findAll('img')]
+        name = name_tag.text.strip()
+        key, stock_text = re.search(
+            r'quantity: \["(\d+):(\d)"]', response.text
+        ).groups()
+        stock = int(stock_text)
+        price = Decimal(
+            remove_words(soup.find("div", {"data-product-type": "price"}).text.strip())
+        )
+        picture_urls = [
+            "https:" + x.find("img")["src"]
+            for x in soup.find("div", "pf-media-slider").findAll(
+                "div", "pf-slide-main-media"
+            )
+        ]
 
         p = Product(
             name,
@@ -75,8 +76,7 @@ class PlayPower(StoreWithUrlExtensions):
             stock,
             price,
             price,
-            'CLP',
+            "CLP",
             picture_urls=picture_urls,
-            description=description,
         )
         return [p]
