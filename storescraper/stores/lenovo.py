@@ -66,7 +66,10 @@ class Lenovo(Store):
                     break
 
                 for entry in product_entries:
-                    subseries_code = entry["subseriesCode"]
+                    subseries_code = entry.get("subseriesCode", None)
+                    if not subseries_code:
+                        # print(entry["summary"])
+                        continue
                     product_url = "https://www.lenovo.com{}/p/{}".format(
                         cls.region_extension, subseries_code
                     )
@@ -87,17 +90,17 @@ class Lenovo(Store):
 
         try:
             res = session.get(url)
-            soup = BeautifulSoup(res.text, 'html.parser')
-            form_data = json.loads(soup.find('input', 'formData')['value'])
+            soup = BeautifulSoup(res.text, "html.parser")
+            form_data = json.loads(soup.find("input", "formData")["value"])
             page_filter_id = form_data["facetId"]
         except TooManyRedirects:
-            page_filter_id = '55262423-c9c7-4e23-a79a-073ce2679bc8'
+            page_filter_id = "55262423-c9c7-4e23-a79a-073ce2679bc8"
 
-        subseries_code = url.split('/')[-1]
+        subseries_code = url.split("/")[-1]
         payload = {
             "pageFilterId": page_filter_id,
             "version": "v2",
-            "subseriesCode": subseries_code
+            "subseriesCode": subseries_code,
         }
 
         payload_str = json.dumps(payload)
@@ -114,17 +117,17 @@ class Lenovo(Store):
             return []
 
         for entry in product_entries[0]["products"]:
-            name = entry['productName']
-            sku = entry['productCode']
-            stock = -1 if entry['marketingStatus'] == 'Available' else 0
-            price = Decimal(entry['finalPrice'])
-            description = entry.get('featuresBenefits', None)
+            name = entry["productName"]
+            sku = entry["productCode"]
+            stock = -1 if entry["marketingStatus"] == "Available" else 0
+            price = Decimal(entry["finalPrice"])
+            description = entry.get("featuresBenefits", None)
 
             picture_urls = []
-            for image_entry in entry.get('media', {}).get('gallery', []):
-                image_url = image_entry['imageAddress']
-                if not image_url.startswith('https'):
-                    image_url = 'https:' + image_url
+            for image_entry in entry.get("media", {}).get("gallery", []):
+                image_url = image_entry["imageAddress"]
+                if not image_url.startswith("https"):
+                    image_url = "https:" + image_url
                 picture_urls.append(image_url)
 
             p = Product(
