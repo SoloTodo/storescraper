@@ -104,7 +104,15 @@ class Dust2(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
         json_data = response.json()
-        product_data = json_data["result"]["pageContext"]["product"]
+        product_id = json_data["result"]["pageContext"]["product"]["id"]
+        endpoint = (
+            "https://backend.dust2.gg/wp-json/wc/v3/products/{}?consumer_secret="
+            "cs_fbb639f8a188712d48121b09573aa46320525b42&consumer_key="
+            "ck_478e84c7ccbd134153433e39b77eb922fddcb72d"
+        ).format(product_id)
+        response = session.get(endpoint)
+        product_data = response.json()
+
         name = product_data["name"]
         sku = product_data["sku"]
         if "id" in product_data:
