@@ -1,13 +1,26 @@
-import json
 import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import COMPUTER_CASE, PROCESSOR, RAM, \
-    MOTHERBOARD, VIDEO_CARD, SOLID_STATE_DRIVE, CPU_COOLER, POWER_SUPPLY, \
-    KEYBOARD, MOUSE, HEADPHONES, GAMING_CHAIR, NOTEBOOK, MONITOR, \
-    KEYBOARD_MOUSE_COMBO, STEREO_SYSTEM, VIDEO_GAME_CONSOLE, MICROPHONE
+from storescraper.categories import (
+    COMPUTER_CASE,
+    PROCESSOR,
+    RAM,
+    MOTHERBOARD,
+    VIDEO_CARD,
+    SOLID_STATE_DRIVE,
+    CPU_COOLER,
+    POWER_SUPPLY,
+    KEYBOARD,
+    MOUSE,
+    HEADPHONES,
+    GAMING_CHAIR,
+    NOTEBOOK,
+    MONITOR,
+    KEYBOARD_MOUSE_COMBO,
+    VIDEO_GAME_CONSOLE,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -15,26 +28,22 @@ from storescraper.utils import session_with_proxy
 
 class InvasionGamer(StoreWithUrlExtensions):
     url_extensions = [
-        ['gabinetes', COMPUTER_CASE],
-        ['procesadores', PROCESSOR],
-        ['procesador-intel', PROCESSOR],
-        ['procesador-amd', PROCESSOR],
-        ['memoria-ram', RAM],
-        ['placas-madre', MOTHERBOARD],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['almacenamiento', SOLID_STATE_DRIVE],
-        ['refrigeracion', CPU_COOLER],
-        ['fuente-de-poder', POWER_SUPPLY],
-        ['teclados', KEYBOARD],
-        ['mouse', MOUSE],
-        ['audifonos', HEADPHONES],
-        ['sillas', GAMING_CHAIR],
-        ['set', KEYBOARD_MOUSE_COMBO],
-        ['sonido', STEREO_SYSTEM],
-        ['portatiles', NOTEBOOK],
-        ['monitores', MONITOR],
-        ['joysticks-pc', VIDEO_GAME_CONSOLE],
-        ['microfono', MICROPHONE]
+        ["gabinetes", COMPUTER_CASE],
+        ["procesadores", PROCESSOR],
+        ["memorias-ram", RAM],
+        ["placas-madre", MOTHERBOARD],
+        ["tarjeta-de-video", VIDEO_CARD],
+        ["ssd-y-almacenamiento", SOLID_STATE_DRIVE],
+        ["refrigeracion", CPU_COOLER],
+        ["fuentes-de-poder", POWER_SUPPLY],
+        ["teclados", KEYBOARD],
+        ["mouse", MOUSE],
+        ["audifonos", HEADPHONES],
+        ["accesorios-y-perifericos/sillas-y-escritorios", GAMING_CHAIR],
+        ["accesorios-y-perifericos/kit-gamers", KEYBOARD_MOUSE_COMBO],
+        ["accesorios-y-perifericos/consolas", VIDEO_GAME_CONSOLE],
+        ["portatiles", NOTEBOOK],
+        ["monitores", MONITOR],
     ]
 
     @classmethod
@@ -44,21 +53,21 @@ class InvasionGamer(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://invasiongamer.com/collections/{}?' \
-                          'page={}'.format(url_extension, page)
+                raise Exception("page overflow: " + url_extension)
+            url_webpage = "https://invasiongamer.com/{}?page={}".format(
+                url_extension, page
+            )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'product-item')
+            soup = BeautifulSoup(response.text, "html.parser")
+            product_containers = soup.findAll("div", "product-block")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://invasiongamer.com' + product_url)
+                product_url = container.find("a")["href"]
+                product_urls.append("https://invasiongamer.com" + product_url)
             page += 1
         return product_urls
 
@@ -67,59 +76,41 @@ class InvasionGamer(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
+        name = soup.find("meta", {"property": "og:title"})["content"]
+        key = soup.find("meta", {"property": "og:id"})["content"]
+        price = Decimal(
+            soup.find("meta", {"property": "product:price:amount"})["content"]
+        )
 
-        picture_container = soup.find('div', 'product-gallery__thumbnail-list')
-        if picture_container:
-            picture_urls = ['https:' + tag['data-src'].replace('_130x', '')
-                            .split('?')[0] for tag in picture_container
-                            .findAll('img')]
+        if "PREVENTA" in name.upper():
+            stock = 0
         else:
-            picture_urls = []
-
-        product_data_tag = soup.find('script', {'type': 'application/ld+json'})
-        product_data = json.loads(product_data_tag.text)
-        base_name = product_data['name']
-
-        if 'PREVENTA' in base_name.upper():
-            force_unavailable = True
-        else:
-            force_unavailable = False
-
-        if 'OPEN' in base_name.upper():
-            condition = 'https://schema.org/OpenBoxCondition'
-        else:
-            condition = 'https://schema.org/NewCondition'
-
-        products = []
-
-        for variant in product_data['offers']:
-            variant_name = '{} ({})'.format(base_name, variant['name'])
-            variant_price = Decimal(variant['price'])
-            variant_url = 'https://invasiongamer.com' + variant['url']
-            variant_sku = variant['url'].split('?variant=')[1]
-
-            if force_unavailable:
-                variant_stock = 0
-            elif variant['availability'] == 'https://schema.org/InStock':
-                variant_stock = -1
+            stock_text = soup.find("meta", {"property": "product:availability"})[
+                "content"
+            ]
+            if stock_text == "instock":
+                stock = -1
             else:
-                variant_stock = 0
+                stock = 0
 
-            p = Product(
-                variant_name,
-                cls.__name__,
-                category,
-                variant_url,
-                url,
-                variant_sku,
-                variant_stock,
-                variant_price,
-                variant_price,
-                'CLP',
-                sku=variant_sku,
-                picture_urls=picture_urls,
-                condition=condition
-            )
-            products.append(p)
-        return products
+        if "OPEN" in name.upper():
+            condition = "https://schema.org/OpenBoxCondition"
+        else:
+            condition = "https://schema.org/NewCondition"
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            price,
+            price,
+            "CLP",
+            sku=key,
+            condition=condition,
+        )
+        return [p]
