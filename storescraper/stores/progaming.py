@@ -114,12 +114,7 @@ class Progaming(Store):
         sku = soup.find("span", "sku").text.strip()
 
         offer_price = Decimal(remove_words(soup.find("h3", {"id": "precio2"}).text))
-        normal_p = soup.find("p", "price")
-        normal_ins = normal_p.find("ins")
-        if normal_ins:
-            normal_price = Decimal(remove_words(normal_ins.text))
-        else:
-            normal_price = Decimal(remove_words(normal_p.find("bdi").text))
+        normal_price = Decimal(remove_words(soup.find("h5", {"id": "precio3"}).text))
 
         stock_tag = soup.find("input", "qty")
         if stock_tag:

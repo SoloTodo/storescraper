@@ -119,7 +119,8 @@ class DiamondPc(StoreWithUrlExtensions):
                 product_data = entry
                 break
         else:
-            raise Exception("No JSON product data found")
+            print("No JSON product data found")
+            return []
 
         name = product_data["name"]
 
