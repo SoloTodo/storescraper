@@ -34,6 +34,7 @@ class Dreamtec(StoreWithUrlExtensions):
         ["smart-tv", TELEVISION],
         ["soundbar", STEREO_SYSTEM],
         ["tablets", TABLET],
+        ["pantalla-interactiva", MONITOR],
     ]
 
     @classmethod
