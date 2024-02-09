@@ -436,6 +436,7 @@ class Ripley(Store):
                         brand in ["LG", "SAMSUNG"]
                         and not product.seller
                         and not fast_mode
+                        and product.sku not in product_dict
                     ):
                         # If the product is LG or Samsung and is sold directly
                         # by Ripley (not marketplace) obtain the full data
