@@ -37,7 +37,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Todoclick(StoreWithUrlExtensions):
@@ -124,26 +124,17 @@ class Todoclick(StoreWithUrlExtensions):
         for r in response.history:
             if r.status_code == 301:
                 return []
+
         soup = BeautifulSoup(response.text, "html5lib")
-        json_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[-1].string
-        )
-
-        if "offers" not in json_data:
-            return []
-
+        json_data = json.loads(soup.find("div", "js-product-details")["data-product"])
         name = json_data["name"]
-        key = soup.find("input", {"name": "_ets_cfu_product_id"})["value"]
-        sku = json_data["sku"]
-        offer_price = Decimal(json_data["offers"]["price"])
+        key = str(json_data["id_product"])
+        offer_price = Decimal(json_data["price_amount"])
         normal_price = (offer_price * Decimal("1.05")).quantize(0)
-        picture_urls = json_data["offers"]["image"]
-        description = json_data["description"]
-
-        if json_data["offers"]["availability"] == "https://schema.org/InStock":
-            stock = -1
-        else:
-            stock = 0
+        stock = json_data["quantity"]
+        sku = json_data["reference"]
+        description = html_to_markdown(json_data["description"])
+        picture_urls = [x["large"]["url"] for x in json_data["images"]]
 
         p = Product(
             name,
