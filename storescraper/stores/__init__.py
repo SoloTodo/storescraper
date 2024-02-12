@@ -7,6 +7,7 @@ from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .alca import Alca
 from .alfaomega import Alfaomega
+from .alkosto import Alkosto
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
 from .almacenes_la_ganga import AlmacenesLaGanga
