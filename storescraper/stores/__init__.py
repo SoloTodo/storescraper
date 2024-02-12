@@ -73,6 +73,7 @@ from .entel import Entel
 from .estilos import Estilos
 from .et_chile import ETChile
 from .eurogen import Eurogen
+from .exito import Exito
 from .eyc import Eyc
 from .eylstore import Eylstore
 from .falabella import Falabella
