@@ -7,6 +7,7 @@ from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .alca import Alca
 from .alfaomega import Alfaomega
+from .alkomprar import Alkomprar
 from .alkosto import Alkosto
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
@@ -110,6 +111,7 @@ from .inverfin import Inverfin
 from .jasaltec import Jasaltec
 from .jetstereo import Jetstereo
 from .k_d_tec import KDTec
+from .ktronix import Ktronix
 from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
 from .la_curacao_online_el_salvador import LaCuracaoOnlineElSalvador
 from .la_curacao_online_guatemala import LaCuracaoOnlineGuatemala

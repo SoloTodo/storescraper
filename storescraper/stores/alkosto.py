@@ -13,6 +13,8 @@ class Alkosto(Store):
         "https://qx5ips1b1q-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key="
         "27485cf29f11a3b2053e9941e49914cf&x-algolia-application-id=QX5IPS1B1Q"
     )
+    index_name = "alkostoIndexAlgoliaPRD"
+    base_url = "https://www.alkosto.com"
 
     @classmethod
     def categories(cls):
@@ -34,7 +36,7 @@ class Alkosto(Store):
             payload = {
                 "requests": [
                     {
-                        "indexName": "alkostoIndexAlgoliaPRD",
+                        "indexName": cls.index_name,
                         "params": "filters=allcategories_string_mv:marcas AND allcategories_string_mv:lg&page={}".format(
                             page
                         ),
@@ -52,7 +54,7 @@ class Alkosto(Store):
                 break
 
             for hit in hits:
-                product_url = "https://www.alkosto.com" + hit["url_es_string"]
+                product_url = cls.base_url + hit["url_es_string"]
                 product_urls.append(product_url)
 
             page += 1
@@ -67,7 +69,7 @@ class Alkosto(Store):
         payload = {
             "requests": [
                 {
-                    "indexName": "alkostoIndexAlgoliaPRD",
+                    "indexName": cls.index_name,
                     "params": "query={}".format(page_id),
                 }
             ]
