@@ -94,7 +94,7 @@ class Alkosto(Store):
             stock,
             price,
             price,
-            "CLP",
+            "COP",
             sku=page_id,
         )
         return [p]
