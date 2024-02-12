@@ -128,6 +128,10 @@ class Todoclick(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].string
         )
+
+        if "offers" not in json_data:
+            return []
+
         name = json_data["name"]
         key = soup.find("input", {"name": "_ets_cfu_product_id"})["value"]
         sku = json_data["sku"]
