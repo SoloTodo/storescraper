@@ -91,7 +91,10 @@ class Lenovo(Store):
         try:
             res = session.get(url)
             soup = BeautifulSoup(res.text, "html.parser")
-            form_data = json.loads(soup.find("input", "formData")["value"])
+            form_tag = soup.find("input", "formData")
+            if not form_tag:
+                return []
+            form_data = json.loads(form_tag["value"])
             page_filter_id = form_data["facetId"]
         except TooManyRedirects:
             page_filter_id = "55262423-c9c7-4e23-a79a-073ce2679bc8"
