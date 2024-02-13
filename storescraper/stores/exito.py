@@ -39,6 +39,7 @@ class Exito(Store):
                 "selectedFacets": [
                     {"key": "brand", "value": "LG"},
                     {"key": "channel", "value": '{"salesChannel":"1","regionId":""}'},
+                    {"key": "vendido-por", "value": "exito"},
                 ],
             }
 
