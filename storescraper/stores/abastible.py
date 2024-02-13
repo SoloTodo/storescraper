@@ -1,19 +1,20 @@
+import re
 from decimal import Decimal
 from bs4 import BeautifulSoup
 from storescraper.categories import AIR_CONDITIONER
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import remove_words, session_with_proxy
+from storescraper.utils import session_with_proxy
 
 
 class Abastible(StoreWithUrlExtensions):
     url_extensions = [
-        ['ac-lg-dual-inverter', AIR_CONDITIONER],
+        ["ac-lg-dual-inverter", AIR_CONDITIONER],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
-        url = 'https://servicioshogar.abastible.cl/{}.html'.format(url_extension)
+        url = "https://servicioshogar.abastible.cl/{}.html".format(url_extension)
         return [url]
 
     @classmethod
@@ -21,10 +22,10 @@ class Abastible(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        key = soup.find('input', {'name': 'product'})['value']
-        price = Decimal(soup.find('meta', {'property': 'product:price:amount'})['content'])
-        name = soup.find('div', 'page-title-desktop').text.strip()
+        soup = BeautifulSoup(response.text, "html.parser")
+        key = soup.find("input", {"name": "product"})["value"]
+        price = Decimal(re.search(r'"regular_price":(\d+)', response.text).groups()[0])
+        name = soup.find("div", "page-title-desktop").text.strip()
         stock = -1
 
         p = Product(
@@ -37,6 +38,6 @@ class Abastible(StoreWithUrlExtensions):
             stock,
             price,
             price,
-            'CLP',
+            "CLP",
         )
         return [p]
