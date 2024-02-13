@@ -77,6 +77,7 @@ from .exito import Exito
 from .eyc import Eyc
 from .eylstore import Eylstore
 from .falabella import Falabella
+from .falabella_colombia import FalabellaColombia
 from .falabella_fast import FalabellaFast
 from .falabella_peru import FalabellaPeru
 from .fama import Fama
@@ -111,6 +112,7 @@ from .invasion_gamer import InvasionGamer
 from .inverfin import Inverfin
 from .jasaltec import Jasaltec
 from .jetstereo import Jetstereo
+from .jumbo_colombia import JumboColombia
 from .k_d_tec import KDTec
 from .ktronix import Ktronix
 from .la_curacao_online_nicaragua import LaCuracaoOnlineNicaragua
