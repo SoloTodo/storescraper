@@ -31,7 +31,8 @@ from storescraper.categories import (
     USB_FLASH_DRIVE,
     VIDEO_GAME_CONSOLE,
     WASHING_MACHINE,
-    WEARABLE, WATER_HEATER,
+    WEARABLE,
+    WATER_HEATER,
 )
 
 from storescraper.flixmedia import flixmedia_video_urls
@@ -69,7 +70,7 @@ class Hites(Store):
             WEARABLE,
             DISH_WASHER,
             GAMING_CHAIR,
-            WATER_HEATER
+            WATER_HEATER,
         ]
 
     @classmethod
@@ -459,7 +460,6 @@ class Hites(Store):
                 "Inicio > Electro Hogar > Calefacción > Calefont y Termos",
                 1,
             ],
-
         ]
 
         product_entries = defaultdict(lambda: [])
@@ -486,6 +486,9 @@ class Hites(Store):
                     raise Exception("Page overflow: " + category_url)
 
                 response = session.get(category_url, timeout=60)
+                import ipdb
+
+                ipdb.set_trace()
 
                 if response.url != category_url:
                     raise Exception(

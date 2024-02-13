@@ -29,22 +29,21 @@ class Inverfin(Store):
         page = 1
 
         while True:
-            url = "https://inverfin.com.py/search?type=product&q=LG*&page=" + str(page)
+            url = "https://inverfin.com.py/search?type=product&q=LG&page=" + str(page)
+            print(url)
 
             if page >= 15:
                 raise Exception("Page overflow " + url)
 
             soup = BeautifulSoup(session.get(url).text, "html.parser")
-            product_containers = soup.find("ul", "product-grid").findAll(
-                "li", "grid__item"
-            )
+            product_containers = soup.find("ul", "product-grid")
 
             if not product_containers:
                 if page == 1:
                     raise Exception("Empty category: " + url)
                 break
 
-            for product in product_containers:
+            for product in product_containers.findAll("li", "grid__item"):
                 product_link = product.find("a")
 
                 if "LG" not in product_link.text.upper():
