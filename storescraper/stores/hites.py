@@ -486,10 +486,6 @@ class Hites(Store):
                     raise Exception("Page overflow: " + category_url)
 
                 response = session.get(category_url, timeout=60)
-                import ipdb
-
-                ipdb.set_trace()
-
                 if response.url != category_url:
                     raise Exception(
                         "Page mismatch. Expecting {} Got {}"
