@@ -441,6 +441,17 @@ class AbcDin(Store):
         price = Decimal(soup.find("span", "price-value")["data-value"]).quantize(
             Decimal(0)
         )
+
+        normal_price_tag = soup.find("p", "internet").find("span", "price-value")
+        normal_price = Decimal(normal_price_tag["data-value"]).quantize(0)
+
+        offer_price_tag = soup.find("p", "js-tlp-price")
+        if offer_price_tag:
+            offer_price_text = offer_price_tag.find("span", "price-value")
+            offer_price = Decimal(offer_price_text["data-value"]).quantize(0)
+        else:
+            offer_price = normal_price
+
         stock = -1
         sku = soup.find("span", "cod").text.split(":")[1].strip()
         description = html_to_markdown(str(soup.find("div", "description-and-detail")))
@@ -456,8 +467,8 @@ class AbcDin(Store):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             "CLP",
             sku=sku,
             description=description,
