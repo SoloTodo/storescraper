@@ -100,6 +100,7 @@ from .gsm_pro import GsmPro
 from .g_w_store import GWStore
 from .hiraoka import Hiraoka
 from .hites import Hites
+from .homecenter_colombia import HomecenterColombia
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
 from .ibeam import Ibeam
@@ -260,6 +261,7 @@ from .tienda_oficial_lg_colombia import TiendaOficialLgColombia
 from .tienda_oficial_lg_panama import TiendaOficialLgPanama
 from .tienda_oficial_lg_peru import TiendaOficialLgPeru
 from .tienda_toyotomi import TiendaToyotomi
+from .tiendas_metro import TiendasMetro
 from .todo_geek import TodoGeek
 from .travel_tienda import TravelTienda
 from .trulu_store import TruluStore

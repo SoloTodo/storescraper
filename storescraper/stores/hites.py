@@ -325,7 +325,7 @@ class Hites(Store):
                 1,
             ],
             [
-                "tecnologia/video-juego/consolas",
+                "tecnologia/videojuegos/consolas",
                 [VIDEO_GAME_CONSOLE],
                 "Inicio > Tecnología > Video Juego > Consolas",
                 1,
