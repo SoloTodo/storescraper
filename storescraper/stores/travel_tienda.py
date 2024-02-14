@@ -24,6 +24,7 @@ from storescraper.categories import (
     VIDEO_GAME_CONSOLE,
     WASHING_MACHINE,
     VACUUM_CLEANER,
+    SPACE_HEATER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -63,6 +64,7 @@ class TravelTienda(StoreWithUrlExtensions):
         ("375810843", MONITOR),
         ("1864912196", VACUUM_CLEANER),  # Aspirado y limpieza
         ("2311426557", VACUUM_CLEANER),  # Aspiradora Robot
+        ("2456851182", SPACE_HEATER),  # Calefaccion
     ]
 
     @classmethod
