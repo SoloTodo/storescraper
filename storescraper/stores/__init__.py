@@ -3,6 +3,7 @@ from .abastible import Abastible
 from .abcdin import AbcDin
 from .acer_store import AcerStore
 from .adventure_store import AdventureStore
+from .agaval import Agaval
 from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .alca import Alca
