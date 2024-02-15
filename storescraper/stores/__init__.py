@@ -267,6 +267,7 @@ from .tiendas_metro import TiendasMetro
 from .todo_geek import TodoGeek
 from .travel_tienda import TravelTienda
 from .trulu_store import TruluStore
+from .tokyo_tech import TokyoTech
 from .todoclick import Todoclick
 from .top_pc import TopPc
 from .tottus import Tottus
