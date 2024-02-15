@@ -18,7 +18,7 @@ class LgV6(Store):
     price_approximation = "0.01"
     skip_products_without_price = False
     endpoint_url = (
-        "https://lgcorporationproduction0fxcu0qx.org.coveo.com/" "rest/search/v2"
+        "https://lgcorporationproduction0fxcu0qx.org.coveo.com/rest/search/v2"
     )
 
     @classmethod

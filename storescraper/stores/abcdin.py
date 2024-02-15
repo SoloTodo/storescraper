@@ -438,10 +438,6 @@ class AbcDin(Store):
         soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("h1", {"itemprop": "name"}).text.strip()
         key = soup.find("span", {"itemprop": "sku"})["data-sku"]
-        price = Decimal(soup.find("span", "price-value")["data-value"]).quantize(
-            Decimal(0)
-        )
-
         normal_price_tag = soup.find("p", "internet").find("span", "price-value")
         normal_price = Decimal(normal_price_tag["data-value"]).quantize(0)
 
