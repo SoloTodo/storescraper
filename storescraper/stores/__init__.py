@@ -146,6 +146,7 @@ from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_drive_store import MegaDriveStore
 from .mercado_libre_chile import MercadoLibreChile
+from .mercado_libre_colombia_lg import MercadoLibreColombiaLg
 from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_peru_lg import MercadoLibrePeruLg
 from .mercado_libre_samsung import MercadoLibreSamsung
@@ -177,6 +178,7 @@ from .notebooks_ya import NotebooksYa
 from .novey import Novey
 from .nuevatec import Nuevatec
 from .olier import Olier
+from .olimpica import Olimpica
 from .oltouch import Oltouch
 from .omnisport import Omnisport
 from .opc_store import OpcStore
