@@ -101,6 +101,7 @@ from .gsm_pro import GsmPro
 from .g_w_store import GWStore
 from .hiraoka import Hiraoka
 from .hites import Hites
+from .hogar_y_moda import HogarYModa
 from .homecenter_colombia import HomecenterColombia
 from .hp_online import HpOnline
 from .huawei_shop import HuaweiShop
@@ -138,6 +139,7 @@ from .lifemax import Lifemax
 from .litnor_hogar import LitnorHogar
 from .llevatelo import Llevatelo
 from .loi_chile import LoiChile
+from .luma import Luma
 from .loi_uruguay import LoiUruguay
 from .lyon_center import LyonCenter
 from .mac_online import MacOnline
