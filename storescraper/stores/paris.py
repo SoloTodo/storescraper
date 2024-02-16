@@ -417,10 +417,16 @@ class Paris(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = cls.category_paths
+        fast_mode = extra_args and extra_args.get("fast_mode", False)
 
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = cls.USER_AGENT
         product_entries = defaultdict(lambda: [])
+
+        if fast_mode:
+            seller_filter = "prefn1=isMarketplace&prefv1=Paris&"
+        else:
+            seller_filter = ""
 
         for e in category_paths:
             category_path, local_categories, section_name, category_weight = e
@@ -439,9 +445,10 @@ class Paris(Store):
                 else:
                     separator = "/?"
 
-                category_url = "https://www.paris.cl/{}{}sz={}&start={}" "".format(
+                category_url = "https://www.paris.cl/{}{}{}sz={}&start={}" "".format(
                     category_path,
                     separator,
+                    seller_filter,
                     cls.RESULTS_PER_PAGE,
                     page * cls.RESULTS_PER_PAGE,
                 )
@@ -491,6 +498,10 @@ class Paris(Store):
 
                 page += 1
 
+        if fast_mode:
+            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
+            for url in product_entries.keys():
+                product_entries[url] = []
         return product_entries
 
     @classmethod

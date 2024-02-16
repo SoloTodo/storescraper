@@ -35,7 +35,8 @@ from storescraper.categories import (
     VACUUM_CLEANER,
     VIDEO_GAME_CONSOLE,
     WASHING_MACHINE,
-    WEARABLE, WATER_HEATER,
+    WEARABLE,
+    WATER_HEATER,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -376,7 +377,7 @@ class Lider(Store):
             GAMING_CHAIR,
             SOLID_STATE_DRIVE,
             DISH_WASHER,
-            WATER_HEATER
+            WATER_HEATER,
         ]
 
     @classmethod
@@ -384,6 +385,7 @@ class Lider(Store):
         category_paths = cls.category_paths
         extra_args = extra_args or {}
         session = session_with_proxy(extra_args)
+        fast_mode = extra_args.get("fast_mode", False)
 
         session.headers = {
             "Content-Type": "application/json",
@@ -394,14 +396,22 @@ class Lider(Store):
 
         product_entries = defaultdict(lambda: [])
 
-        # It's important that the empty one goes first to ensure that the
-        # positioning information is preferable based on the default ordering
-        sorters = [
-            "",
-            "price_asc",
-            "price_desc",
-        ]
+        if fast_mode:
+            sorters = [""]
+        else:
+            # It's important that the empty one goes first to ensure that the
+            # positioning information is preferable based on the default ordering
+            sorters = [
+                "",
+                "price_asc",
+                "price_desc",
+            ]
         query_url = "https://apps.lider.cl/catalogo/bff/category"
+
+        if fast_mode:
+            facets = ["sold-by:Lider.cl"]
+        else:
+            facets = []
 
         for e in category_paths:
             category_id, local_categories, section_name, category_weight = e
@@ -414,35 +424,50 @@ class Lider(Store):
             local_product_entries = {}
 
             for sorter in sorters:
-                print(sorter)
-                query_params = {
-                    "categories": category_id,
-                    "page": 1,
-                    "facets": [],
-                    "sortBy": sorter,
-                    "hitsPerPage": 1000,
-                }
+                page = 1
 
-                serialized_params = json.dumps(query_params, ensure_ascii=False)
-                response = session.post(query_url, serialized_params.encode("utf-8"))
-                data = json.loads(response.text)
+                while True:
+                    query_params = {
+                        "categories": category_id,
+                        "page": page,
+                        "facets": facets,
+                        "sortBy": sorter,
+                        "hitsPerPage": 100,
+                    }
 
-                if not data["products"]:
-                    logging.warning("Empty category: " + category_id)
-
-                for idx, entry in enumerate(data["products"]):
-                    product_url = "https://www.lider.cl/{}/product/sku/{}/" "{}".format(
-                        cls.tenant, entry["sku"], entry.get("slug", "a")
+                    serialized_params = json.dumps(query_params, ensure_ascii=False)
+                    response = session.post(
+                        query_url, serialized_params.encode("utf-8"), timeout=60
                     )
-                    if product_url not in local_product_entries:
-                        local_product_entries[product_url] = {
-                            "category_weight": category_weight,
-                            "section_name": section_name,
-                            "value": idx + 1,
-                        }
+                    data = json.loads(response.text)
+
+                    if not data["products"]:
+                        if page == 1:
+                            logging.warning("Empty category: " + category_id)
+                        break
+
+                    for idx, entry in enumerate(data["products"]):
+                        product_url = (
+                            "https://www.lider.cl/{}/product/sku/{}/"
+                            "{}".format(
+                                cls.tenant, entry["sku"], entry.get("slug", "a")
+                            )
+                        )
+                        if product_url not in local_product_entries:
+                            local_product_entries[product_url] = {
+                                "category_weight": category_weight,
+                                "section_name": section_name,
+                                "value": idx + 1,
+                            }
+                    page += 1
 
             for product_url, product_entry in local_product_entries.items():
                 product_entries[product_url].append(product_entry)
+
+        if fast_mode:
+            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
+            for url in product_entries.keys():
+                product_entries[url] = []
 
         return product_entries
 

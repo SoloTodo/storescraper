@@ -364,8 +364,13 @@ class Ripley(Store):
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
-        fast_mode = extra_args.get("fast_mode", False)
+        fast_mode = extra_args and extra_args.get("fast_mode", False)
         print("fast_mode", fast_mode)
+
+        if fast_mode:
+            seller_filter = "facet=Vendido%20por%3ARipley&"
+        else:
+            seller_filter = ""
 
         product_dict = {}
 
@@ -386,8 +391,10 @@ class Ripley(Store):
                     param = "&"
                 else:
                     param = "?"
-                url_base = "{}/{}{}page={}"
-                category_url = url_base.format(cls.domain, category_path, param, page)
+                url_base = "{}/{}{}{}page={}"
+                category_url = url_base.format(
+                    cls.domain, category_path, param, seller_filter, page
+                )
                 print(category_url)
                 response = session.get(category_url, allow_redirects=True, timeout=60)
 
@@ -476,6 +483,10 @@ class Ripley(Store):
                 page += 1
 
         products_list = [p for p in product_dict.values()]
+        if fast_mode:
+            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
+            for p in products_list:
+                p.positions = None
 
         return products_list
 
