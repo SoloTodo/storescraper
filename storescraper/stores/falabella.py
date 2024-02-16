@@ -32,7 +32,10 @@ class Falabella(Store):
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 20
     store_and_subdomain = None
-    seller = [("FALABELLA", "RETAIL"), (None, "GRUPO")]
+    seller = [
+        {"id": "FALABELLA", "section_prefix": "RETAIL", "include_in_fast_mode": True},
+        {"id": None, "section_prefix": "GRUPO", "include_in_fast_mode": False},
+    ]
     seller_blacklist = ["SODIMAC", "TOTTUS"]
 
     zones = (
@@ -49,7 +52,7 @@ class Falabella(Store):
         [
             "cat720161",
             [CELL],
-            "Home > Tecnología-Telefonía > Celulares y Teléf" "onos > Smartphones",
+            "Home > Tecnología-Telefonía > Celulares y Teléfonos > Smartphones",
             1,
         ],
         [
@@ -72,7 +75,7 @@ class Falabella(Store):
         [
             "cat429001",
             [WEARABLE],
-            "Home > Tecnología-Wearables > SmartWatch In" "fantil",
+            "Home > Tecnología-Wearables > SmartWatch Infantil",
             1,
         ],
         ["cat1012", [TELEVISION], "Home > Tecnología-TV y Video", 0],
@@ -107,32 +110,32 @@ class Falabella(Store):
         [
             "cat3091",
             [STEREO_SYSTEM],
-            "Home > Tecnología-Audio > Equipos de Mús" "ica y Karaokes",
+            "Home > Tecnología-Audio > Equipos de Música y Karaokes",
             1,
         ],
         ["cat3203", [STEREO_SYSTEM], "Home > Tecnología-Audio > Hi-Fi", 1],
         [
             "cat3171",
             [STEREO_SYSTEM],
-            "Home > Tecnología-Audio > Parlantes Blue" "tooth",
+            "Home > Tecnología-Audio > Parlantes Bluetooth",
             1,
         ],
         [
             "cat2045",
             [STEREO_SYSTEM],
-            "Home > Tecnología-Audio > Soundbar y Hom" "e Theater",
+            "Home > Tecnología-Audio > Soundbar y Home Theater",
             1,
         ],
         [
             "cat3155",
             [MOUSE],
-            "Home > Tecnología-Computadores > Accesorios Comp" "utación > Mouse",
+            "Home > Tecnología-Computadores > Accesorios Computación > Mouse",
             1,
         ],
         [
             "cat2370002",
             [KEYBOARD],
-            "Home > Tecnología-Computadores > Accesorio" "s Computación > Teclados",
+            "Home > Tecnología-Computadores > Accesorios Computación > Teclados",
             1,
         ],
         [
@@ -142,17 +145,17 @@ class Falabella(Store):
             "ios Computación > Parlantes y Subwoofer",
             1,
         ],
-        ["cat40051", [ALL_IN_ONE], "Home > Tecnología-Computadores > All in on" "e", 1],
+        ["cat40051", [ALL_IN_ONE], "Home > Tecnología-Computadores > All in one", 1],
         [
             "cat3087",
             [EXTERNAL_STORAGE_DRIVE],
-            "Home > Tecnología-Computadores " "> Almacenamiento > Discos duros",
+            "Home > Tecnología-Computadores > Almacenamiento > Discos duros",
             1,
         ],
         [
             "cat3177",
             [USB_FLASH_DRIVE],
-            "Home > Tecnología-Computación > Almace" "namiento > Pendrives",
+            "Home > Tecnología-Computación > Almacenamiento > Pendrives",
             1,
         ],
         [
@@ -165,7 +168,7 @@ class Falabella(Store):
         [
             "cat1820004",
             [PRINTER],
-            "Home > Tecnología-Computadores > Impresoras" " y Tintas > Impresoras",
+            "Home > Tecnología-Computadores > Impresoras y Tintas > Impresoras",
             1,
         ],
         [
@@ -188,73 +191,73 @@ class Falabella(Store):
         [
             "cat4930009",
             [HEADPHONES],
-            "Home > Tecnología-Computadores > Accesor" "ios gamer > Audífonos gamer",
+            "Home > Tecnología-Computadores > Accesorios gamer > Audífonos gamer",
             1,
         ],
         [
             "CATG19011",
             [GAMING_CHAIR],
-            "Home > Tecnología-Computadores > Acceso" "rios gamer > Sillas gamer",
+            "Home > Tecnología-Computadores > Accesorios gamer > Sillas gamer",
             1,
         ],
         [
             "CATG19008",
             [KEYBOARD],
-            "Home > Tecnología-Computadores > Accesorios" " gamer > Tecaldos gamer",
+            "Home > Tecnología-Computadores > Accesorios gamer > Tecaldos gamer",
             1,
         ],
         [
             "CATG19007",
             [MOUSE],
-            "Home > Tecnología-Computadores > Accesorios ga" "mer > Mouse gamer",
+            "Home > Tecnología-Computadores > Accesorios gamer > Mouse gamer",
             1,
         ],
         [
             "cat202303",
             [VIDEO_GAME_CONSOLE],
-            "Home > Tecnología-Videojuegos > C" "onsolas",
+            "Home > Tecnología-Videojuegos > Consolas",
             1,
         ],
         [
             "cat3114",
             [OVEN],
-            "Home > Electrohogar-Electrodomésticos Cocina > Ho" "rnos Eléctricos",
+            "Home > Electrohogar-Electrodomésticos Cocina > Hornos Eléctricos",
             1,
         ],
         [
             "cat3151",
             [OVEN],
-            "Home > Electrohogar-Electrodomésticos Cocina > Mi" "croondas",
+            "Home > Electrohogar-Electrodomésticos Cocina > Microondas",
             1,
         ],
         [
             "cat3136",
             [WASHING_MACHINE],
-            "Home > Electrohogar-Línea blanca > Lav" "ado",
+            "Home > Electrohogar-Línea blanca > Lavado",
             1,
         ],
         [
             "cat4060",
             [WASHING_MACHINE],
-            "Home > Electrohogar-Línea blanca > Lav" "ado > Lavadoras",
+            "Home > Electrohogar-Línea blanca > Lavado > Lavadoras",
             1,
         ],
         [
             "cat1700002",
             [WASHING_MACHINE],
-            "Home > Electrohogar-Línea blanca > " "Lavado > Lavadoras-Secadoras",
+            "Home > Electrohogar-Línea blanca > Lavado > Lavadoras-Secadoras",
             1,
         ],
         [
             "cat4088",
             [WASHING_MACHINE],
-            "Home > Electrohogar-Línea blanca > Lav" "ado > Secadoras",
+            "Home > Electrohogar-Línea blanca > Lavado > Secadoras",
             1,
         ],
         [
             "cat4061",
             [DISH_WASHER],
-            "Home > Electrohogar-Línea blanca > Lavado " "> Lavavajillas",
+            "Home > Electrohogar-Línea blanca > Lavado > Lavavajillas",
             1,
         ],
         [
@@ -290,62 +293,62 @@ class Falabella(Store):
         [
             "cat4054",
             [OVEN],
-            "Home > Electrohogar-Línea blanca > Cocina > Horno" "s Empotrables",
+            "Home > Electrohogar-Línea blanca > Cocina > Hornos Empotrables",
             1,
         ],
         [
             "cat2019",
             [AIR_CONDITIONER],
-            "Home > Electrohogar-Climatización > Ai" "re acondicionado",
+            "Home > Electrohogar-Climatización > Aire acondicionado",
             1,
         ],
         [
             "cat4850013",
             [NOTEBOOK],
-            "Home > Especiales-Otras categorias > PC ga" "mer",
+            "Home > Especiales-Otras categorias > PC gamer",
             1,
         ],
         [
             "cat3025",
             [VACUUM_CLEANER],
-            "Home > Electrohogar-Aspirado y Limpieza" " > Aspiradoras",
+            "Home > Electrohogar-Aspirado y Limpieza > Aspiradoras",
             1,
         ],
         [
             "cat70028",
             [CAMERA],
-            "Home > Tecnología-Fotografía > Cámaras Compact" "as",
+            "Home > Tecnología-Fotografía > Cámaras Compactas",
             1,
         ],
         [
             "cat70029",
             [CAMERA],
-            "Home > Tecnología-Fotografía > Cámaras Semipro" "fesionales",
+            "Home > Tecnología-Fotografía > Cámaras Semiprofesionales",
             1,
         ],
         ["cat1130010", [STEREO_SYSTEM], "Home > Tecnología-Audio > Tornamesas", 1],
         [
             "cat9900007",
             [SPACE_HEATER],
-            "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Parafina Láser",
+            "Home > Electrohogar-Calefacción > Calefacción > Estufas Parafina Láser",
             1,
         ],
         [
             "cat9910024",
             [SPACE_HEATER],
-            "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Gas",
+            "Home > Electrohogar-Calefacción > Calefacción > Estufas Gas",
             1,
         ],
         [
             "cat9910006",
             [SPACE_HEATER],
-            "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Eléctricas",
+            "Home > Electrohogar-Calefacción > Calefacción > Estufas Eléctricas",
             1,
         ],
         [
             "cat9910027",
             [SPACE_HEATER],
-            "Home > Electrohogar-Calefacción > Cale" "facción > Estufas Pellet y Leña",
+            "Home > Electrohogar-Calefacción > Calefacción > Estufas Pellet y Leña",
             1,
         ],
         [
@@ -371,6 +374,7 @@ class Falabella(Store):
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = cls.category_paths
         session = session_with_proxy(extra_args)
+        fast_mode = extra_args and extra_args.get("fast_mode", False)
         session.headers["User-Agent"] = CF_REQUEST_HEADERS["User-Agent"]
         product_entries = defaultdict(lambda: [])
 
@@ -385,13 +389,17 @@ class Falabella(Store):
             if category not in local_categories:
                 continue
 
-            for seller_id, section_prefix in cls.seller:
+            for seller_data in cls.seller:
+                if fast_mode and not seller_data["include_in_fast_mode"]:
+                    continue
                 category_product_urls = cls._get_product_urls(
-                    session, category_id, extra_params, seller_id
+                    session, category_id, extra_params, seller_data["id"]
                 )
 
-                if section_prefix:
-                    full_section_name = "{} > {}".format(section_prefix, section_name)
+                if seller_data["section_prefix"]:
+                    full_section_name = "{} > {}".format(
+                        seller_data["section_prefix"], section_name
+                    )
                 else:
                     full_section_name = section_name
 
@@ -404,6 +412,10 @@ class Falabella(Store):
                         }
                     )
 
+        if fast_mode:
+            # Since the fast mode skips sections, remove the partial section data retrieved
+            for url in product_entries.keys():
+                product_entries[url] = []
         return product_entries
 
     @classmethod
@@ -411,7 +423,7 @@ class Falabella(Store):
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = CF_REQUEST_HEADERS["User-Agent"]
 
-        base_url = "https://www.falabella.com/falabella-cl/search?" "Ntt={}&page={}"
+        base_url = "https://www.falabella.com/falabella-cl/search?Ntt={}&page={}"
 
         discovered_urls = []
         page = 1
@@ -698,7 +710,7 @@ class Falabella(Store):
                 seller = (
                     seller_entry.get("sellerName", seller_entry["sellerId"]) or None
                 )
-                valid_sellers = [x[0] for x in cls.seller]
+                valid_sellers = [x["id"] for x in cls.seller]
 
                 if seller not in valid_sellers:
                     stock = 0
