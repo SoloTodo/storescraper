@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from urllib.parse import urlparse, parse_qs, urlencode
@@ -456,7 +457,9 @@ class AbcDin(Store):
         sku = soup.find("span", "cod").text.split(":")[1].strip()
         description = html_to_markdown(str(soup.find("div", "description-and-detail")))
         picture_urls = [
-            x.find("img")["src"] for x in soup.findAll("div", "primary-image")
+            x.find("img")["src"]
+            for x in soup.findAll("div", "primary-image")
+            if validators.url(x.find("img")["src"])
         ]
 
         product = Product(

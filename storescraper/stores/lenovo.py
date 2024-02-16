@@ -1,5 +1,7 @@
 import json
 from decimal import Decimal
+
+import validators
 from bs4 import BeautifulSoup
 from requests.exceptions import TooManyRedirects
 
@@ -131,6 +133,8 @@ class Lenovo(Store):
                 image_url = image_entry["imageAddress"]
                 if not image_url.startswith("https"):
                     image_url = "https:" + image_url
+                if not validators.url(image_url):
+                    continue
                 picture_urls.append(image_url)
 
             p = Product(

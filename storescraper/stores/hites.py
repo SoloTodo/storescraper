@@ -482,7 +482,7 @@ class Hites(Store):
                 )
                 print(category_url)
 
-                if start >= step * 50:
+                if start >= step * 70:
                     raise Exception("Page overflow: " + category_url)
 
                 response = session.get(category_url, timeout=60)
