@@ -181,7 +181,9 @@ class SamsungChile(Store):
             for subsection_query, subsection_name in subsections:
                 subsection_query = "{}&{}".format(main_query, subsection_query)
                 subsection_data = cls.__discover_entries_for_query(
-                    subsection_query, subsection_name, extra_args
+                    subsection_query,
+                    "{} > {}".format(section_name, subsection_name),
+                    extra_args,
                 )
                 for product_url, entries in subsection_data.items():
                     product_entries[product_url].extend(entries)
