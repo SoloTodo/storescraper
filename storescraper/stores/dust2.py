@@ -55,12 +55,10 @@ class Dust2(StoreWithUrlExtensions):
         ["discos-m-2", SOLID_STATE_DRIVE],
         ["ssd-y-discos-duros", STORAGE_DRIVE],
         ["discos-y-ssd-externos", EXTERNAL_STORAGE_DRIVE],
-        ["audifonos-ps5", HEADPHONES],
         ["audifonos-xbox", HEADPHONES],
         ["impresoras", PRINTER],
         ["respaldo-energia", UPS],
         ["smartband", WEARABLE],
-        ["tarjetas-de-memoria-electronica", MEMORY_CARD],
         ["pendrives", USB_FLASH_DRIVE],
         ["accesorios-tablets", TABLET],
         ["notebooks", NOTEBOOK],
@@ -71,9 +69,7 @@ class Dust2(StoreWithUrlExtensions):
         ["audifonos-audio", HEADPHONES],
         ["parlantes-audio", STEREO_SYSTEM],
         ["combo-teclado-y-mouse", KEYBOARD_MOUSE_COMBO],
-        ["monitores-oficina", MONITOR],
         ["24-a-27-pulgadas-oficina", MONITOR],
-        ["27-a-32-pulgadas-oficina", MONITOR],
         ["29-o-superior-oficina", MONITOR],
         ["aio", ALL_IN_ONE],
         ["tarjetas-de-memoria", MEMORY_CARD],
@@ -82,14 +78,20 @@ class Dust2(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
-        endpoint = "https://crmdust2.com/api/index/woo/categories/{}".format(
-            url_extension
+        session.headers["User-Agent"] = "PostmanRuntime/7.29.3"
+        endpoint = (
+            "https://dust2.gg/page-data/categoria-producto/{}/page-data.json".format(
+                url_extension
+            )
         )
+        print(endpoint)
         response = session.get(endpoint)
         json_response = response.json()
 
         product_urls = []
-        for node in json_response["products"] or []:
+        for node in (
+            json_response["result"]["pageContext"]["category"]["products"] or []
+        ):
             product_urls.append("https://dust2.gg/producto/{}/".format(node["slug"]))
         return product_urls
 
