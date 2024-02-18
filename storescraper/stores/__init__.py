@@ -63,6 +63,7 @@ from .e_vision import EVision
 from .easy import Easy
 from .efe import Efe
 from .electroban import Electroban
+from .electrobello import Electrobello
 from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
 from .credi_vargas import CrediVargas
@@ -101,6 +102,7 @@ from .gsm_pro import GsmPro
 from .g_w_store import GWStore
 from .hiraoka import Hiraoka
 from .hites import Hites
+from .hogar_innovar import HogarInnovar
 from .hogar_y_moda import HogarYModa
 from .homecenter_colombia import HomecenterColombia
 from .hp_online import HpOnline
