@@ -461,9 +461,12 @@ class Paris(Store):
                     )
 
                 soup = BeautifulSoup(response.text, "html.parser")
-                containers = soup.find("ul", {"id": "search-result-items"}).findAll(
-                    "li", recursive=False
-                )
+                containers = soup.find("ul", {"id": "search-result-items"})
+
+                if not containers:
+                    break
+
+                containers = containers.findAll("li", recursive=False)
 
                 if not containers:
                     if page == 0:

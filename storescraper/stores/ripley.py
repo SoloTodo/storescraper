@@ -406,7 +406,11 @@ class Ripley(Store):
                     )
 
                 if response.status_code != 200 and page == 1:
-                    raise Exception("Invalid section: " + category_url)
+                    if fast_mode:
+                        # Some sections do not have SKUs sold directly by Ripley
+                        break
+                    else:
+                        raise Exception("Invalid section: " + category_url)
 
                 soup = BeautifulSoup(response.text, "html.parser")
 
