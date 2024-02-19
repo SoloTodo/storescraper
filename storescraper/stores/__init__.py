@@ -13,6 +13,7 @@ from .alkosto import Alkosto
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
 from .almacenes_la_ganga import AlmacenesLaGanga
+from .almacenes_oportunidades import AlmacenesOportunidades
 from .apple_store import AppleStore
 from .artefacta import Artefacta
 from .asus_store import AsusStore
@@ -83,6 +84,7 @@ from .falabella_colombia import FalabellaColombia
 from .falabella_fast import FalabellaFast
 from .falabella_peru import FalabellaPeru
 from .fama import Fama
+from .fantasia_electronica import FantasiaElectronica
 from .fiesta_lan import FiestaLan
 from .frecuento import Frecuento
 from .g_games import GGames
