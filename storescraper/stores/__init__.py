@@ -152,11 +152,13 @@ from .marcimex import Marcimex
 from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_drive_store import MegaDriveStore
+from .mercacentro import Mercacentro
 from .mercado_libre_chile import MercadoLibreChile
 from .mercado_libre_colombia_lg import MercadoLibreColombiaLg
 from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_peru_lg import MercadoLibrePeruLg
 from .mercado_libre_samsung import MercadoLibreSamsung
+from .mercados_colsubsidio import MercadosColsubsidio
 from .metro import Metro
 from .mi_store import MiStore
 from .mining_store import MiningStore
