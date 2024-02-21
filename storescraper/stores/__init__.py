@@ -65,6 +65,8 @@ from .easy import Easy
 from .efe import Efe
 from .electroban import Electroban
 from .electrobello import Electrobello
+from .electrojaponesa import Electrojaponesa
+from .electromillonaria import Electromillonaria
 from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
 from .credi_vargas import CrediVargas
