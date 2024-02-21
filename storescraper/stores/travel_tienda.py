@@ -25,6 +25,7 @@ from storescraper.categories import (
     WASHING_MACHINE,
     VACUUM_CLEANER,
     SPACE_HEATER,
+    DISH_WASHER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -52,20 +53,19 @@ class TravelTienda(StoreWithUrlExtensions):
         ("1379171641", STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Subwoofer y
         ("4064311224", STEREO_SYSTEM),  # Tech > Audio
         ("1479054651", STEREO_SYSTEM),  # Tech > Audio HiFi
-        # Electro > Línea blanca > regrigerador
-        ("306745319", REFRIGERATOR),
-        ("3548829535", REFRIGERATOR),  # Electro > Línea blanca > freezer
+        ("306745319", REFRIGERATOR),  # Electro > Línea blanca > refrigerador
+        ("1573751604", REFRIGERATOR),  # Electro > Línea blanca > freezer
+        ("3548829535", REFRIGERATOR),  # Electro > Línea blanca > Frigobares y cavas
         ("1073939402", OVEN),
         ("779019428", OVEN),
         ("816489954", AIR_CONDITIONER),
         ("2620100069", WASHING_MACHINE),
-        # Tecnología > Computación > Accesorios de Computacion
-        ("3421645721", PRINTER),
-        # Tecnología > Computación > Monitores
-        ("375810843", MONITOR),
+        ("3421645721", PRINTER),  # Tecnología > Computación > Accesorios de Computacion
+        ("375810843", MONITOR),  # Tecnología > Computación > Monitores
         ("1864912196", VACUUM_CLEANER),  # Aspirado y limpieza
         ("2311426557", VACUUM_CLEANER),  # Aspiradora Robot
         ("2456851182", SPACE_HEATER),  # Calefaccion
+        ("2384828485", DISH_WASHER),  # Lavavajillas
     ]
 
     @classmethod
