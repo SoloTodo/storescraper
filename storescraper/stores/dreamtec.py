@@ -70,6 +70,8 @@ class Dreamtec(StoreWithUrlExtensions):
         slug = re.search(r"https://www.dreamtec.cl/(.+)$", url).groups()[0]
         endpoint = "https://dreamtec.cl:3000/slug/" + slug
         response = session.get(endpoint)
+        if response.status_code == 404:
+            return []
         product_data = response.json()["results"][0]
         name = product_data["nombre"]
         description = html_to_markdown(product_data["descripcion"])

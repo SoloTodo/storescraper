@@ -454,7 +454,11 @@ class AbcDin(Store):
             offer_price = normal_price
 
         stock = -1
-        sku = soup.find("span", "cod").text.split(":")[1].strip()
+        sku_tag = soup.find("span", "cod")
+        if sku_tag:
+            sku = soup.find("span", "cod").text.split(":")[1].strip()
+        else:
+            sku = key
         description = html_to_markdown(str(soup.find("div", "description-and-detail")))
         picture_urls = [
             x.find("img")["src"]

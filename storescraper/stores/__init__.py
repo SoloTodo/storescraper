@@ -13,6 +13,7 @@ from .alkosto import Alkosto
 from .alltec import AllTec
 from .almacenes_japon import AlmacenesJapon
 from .almacenes_la_ganga import AlmacenesLaGanga
+from .almacenes_oportunidades import AlmacenesOportunidades
 from .apple_store import AppleStore
 from .artefacta import Artefacta
 from .asus_store import AsusStore
@@ -83,6 +84,7 @@ from .falabella_colombia import FalabellaColombia
 from .falabella_fast import FalabellaFast
 from .falabella_peru import FalabellaPeru
 from .fama import Fama
+from .fantasia_electronica import FantasiaElectronica
 from .fiesta_lan import FiestaLan
 from .frecuento import Frecuento
 from .g_games import GGames
@@ -150,11 +152,13 @@ from .marcimex import Marcimex
 from .max import Max
 from .mega_bytes import MegaBytes
 from .mega_drive_store import MegaDriveStore
+from .mercacentro import Mercacentro
 from .mercado_libre_chile import MercadoLibreChile
 from .mercado_libre_colombia_lg import MercadoLibreColombiaLg
 from .mercado_libre_lg import MercadoLibreLg
 from .mercado_libre_peru_lg import MercadoLibrePeruLg
 from .mercado_libre_samsung import MercadoLibreSamsung
+from .mercados_colsubsidio import MercadosColsubsidio
 from .metro import Metro
 from .mi_store import MiStore
 from .mining_store import MiningStore
