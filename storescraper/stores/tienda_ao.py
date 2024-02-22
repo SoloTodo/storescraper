@@ -63,7 +63,7 @@ class TiendaAo(Store):
         sku = product_data["sku"]
         name = product_data["name"]
 
-        if product_data["offers"][0]["availability"] == "http://schema.org\/InStock":
+        if product_data["offers"][0]["availability"] == "http://schema.org/InStock":
             stock = -1
         else:
             stock = 0
