@@ -65,6 +65,7 @@ from .easy import Easy
 from .efe import Efe
 from .electroban import Electroban
 from .electrobello import Electrobello
+from .electrocol import Electrocol
 from .electrojaponesa import Electrojaponesa
 from .electromillonaria import Electromillonaria
 from .electronica_budini import ElectronicaBudini
@@ -263,6 +264,7 @@ from .tec_tec import TecTec
 from .techno_kings import TechnoKings
 from .thundertech import Thundertech
 from .tienda_amiga import TiendaAmiga
+from .tienda_ao import TiendaAo
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_fensa import TiendaFensa
