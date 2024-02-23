@@ -7,6 +7,7 @@ from .agaval import Agaval
 from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .alca import Alca
+from .alca_colombia import AlcaColombia
 from .alfaomega import Alfaomega
 from .alkomprar import Alkomprar
 from .alkosto import Alkosto
@@ -40,6 +41,7 @@ from .cintegral import Cintegral
 from .claro import Claro
 from .computron import Computron
 from .coolbox import Coolbox
+from .coomultrasan import Coomultrasan
 from .cosmo_clima import CosmoClima
 from .crazy_games_en_chile import CrazyGamesenChile
 from .creditos_economicos import CreditosEconomicos
