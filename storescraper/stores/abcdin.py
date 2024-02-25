@@ -3,7 +3,6 @@ from collections import defaultdict
 import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from urllib.parse import urlparse, parse_qs, urlencode
 
 from storescraper.categories import (
     TELEVISION,
@@ -35,6 +34,9 @@ from storescraper import banner_sections as bs
 
 
 class AbcDin(Store):
+    base_url = "https://www.abcdin.cl"
+    site_name = "Abcdin"
+
     ajax_resources = [
         ["celulares", [CELL], "Tecnología / Celulares", 0.5],
         ["smartphones", [CELL], "Tecnología / Celulares / Smartphones", 1],
@@ -102,7 +104,7 @@ class AbcDin(Store):
         [
             "ver-todo-computadores",
             [NOTEBOOK, TABLET, PRINTER],
-            "Tecnología / Computadores",
+            "Tecnología / Computadores / Todo Computadores",
             0.5,
         ],
         [
@@ -351,9 +353,9 @@ class AbcDin(Store):
                 continue
 
             url = (
-                "https://www.abcdin.cl/on/demandware.store/Sites-Abcdin-Site/es_CL/Search-UpdateGrid?cgid={}&"
+                "{}/on/demandware.store/Sites-{}-Site/es_CL/Search-UpdateGrid?cgid={}&"
                 "srule=best-matches&sz=1000"
-            ).format(category_id)
+            ).format(cls.base_url, cls.site_name, category_id)
             print(url)
 
             res = session.get(url)
@@ -365,7 +367,7 @@ class AbcDin(Store):
 
             for idx, product_cell in enumerate(product_cells):
                 product_path = product_cell.find("a", "image-link")["href"]
-                product_url = "https://www.abcdin.cl" + product_path
+                product_url = cls.base_url + product_path
                 discovered_entries[product_url].append(
                     {
                         "category_weight": category_weight,
@@ -379,51 +381,27 @@ class AbcDin(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers["User-Agent"] = (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
-        )
         product_urls = []
 
-        keyword = keyword.replace(" ", "+")
-
         url = (
-            "https://www.abcdin.cl/tienda/ProductListingView?"
-            "ajaxStoreImageDir=%2Fwcsstore%2FABCDIN%2F&searchType=10"
-            "&resultCatEntryType=2&searchTerm={}&resultsPerPage=24"
-            "&sType=SimpleSearch&disableProductCompare=false"
-            "&catalogId=10001&langId=-1000&enableSKUListView=false"
-            "&ddkey=ProductListingView_6_-2011_1410&storeId=10001"
-            "&pageSize=1000".format(keyword)
+            "{}/on/demandware.store/"
+            "Sites-{}-Site/es_CL/Search-UpdateGrid?"
+            "q={}&srule=product-outstanding"
+            "&start=0&sz=1000".format(cls.base_url, cls.site_name, keyword)
         )
 
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
-        products_grid = soup.find("ul", "grid_mode")
+        response = session.get(url).text
+        soup = BeautifulSoup(response, "html.parser")
 
-        if not products_grid:
+        products = soup.findAll("div", "lp-product-tile")
+
+        if not products:
             return []
 
-        product_cells = products_grid.findAll("li")
-
-        for product_cell in product_cells:
-            product_listed_url = product_cell.find("a")["href"]
-            if "ProductDisplay" in product_listed_url:
-                parsed_product = urlparse(product_listed_url)
-                parameters = parse_qs(parsed_product.query)
-
-                parameters = {
-                    k: v for k, v in parameters.items() if k in ["productId", "storeId"]
-                }
-
-                newqs = urlencode(parameters, doseq=True)
-
-                product_url = (
-                    "https://www.abcdin.cl/tienda/es/abcdin/" "ProductDisplay?" + newqs
-                )
-            else:
-                slug_with_sku = product_listed_url.split("/")[-1]
-                product_url = "https://www.abcdin.cl/tienda/es/abcdin/" + slug_with_sku
-
+        for container in products:
+            product_url = "{}{}".format(
+                cls.base_url, container.find("a", "image-link")["href"]
+            )
             product_urls.append(product_url)
 
             if len(product_urls) == threshold:
@@ -489,11 +467,10 @@ class AbcDin(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = "https://www.abcdin.cl/"
         session = session_with_proxy(extra_args)
         banners = []
 
-        soup = BeautifulSoup(session.get(base_url).text, "html.parser")
+        soup = BeautifulSoup(session.get(cls.base_url).text, "html.parser")
         slider_tags = soup.findAll("div", "rojoPolar")
 
         for index, slider_tag in enumerate(slider_tags):
@@ -502,7 +479,7 @@ class AbcDin(Store):
 
             banners.append(
                 {
-                    "url": base_url,
+                    "url": cls.base_url,
                     "picture_url": picture_url,
                     "destination_urls": destination_urls,
                     "key": picture_url,

@@ -7,6 +7,7 @@ from .agaval import Agaval
 from .adis_store import AdisStore
 from .agencias_way_online import AgenciasWayOnline
 from .alca import Alca
+from .alca_colombia import AlcaColombia
 from .alfaomega import Alfaomega
 from .alkomprar import Alkomprar
 from .alkosto import Alkosto
@@ -40,6 +41,7 @@ from .cintegral import Cintegral
 from .claro import Claro
 from .computron import Computron
 from .coolbox import Coolbox
+from .coomultrasan import Coomultrasan
 from .cosmo_clima import CosmoClima
 from .crazy_games_en_chile import CrazyGamesenChile
 from .creditos_economicos import CreditosEconomicos
@@ -65,6 +67,9 @@ from .easy import Easy
 from .efe import Efe
 from .electroban import Electroban
 from .electrobello import Electrobello
+from .electrocol import Electrocol
+from .electrojaponesa import Electrojaponesa
+from .electromillonaria import Electromillonaria
 from .electronica_budini import ElectronicaBudini
 from .electronica_panamericana import ElectronicaPanamericana
 from .credi_vargas import CrediVargas
@@ -261,6 +266,7 @@ from .tec_tec import TecTec
 from .techno_kings import TechnoKings
 from .thundertech import Thundertech
 from .tienda_amiga import TiendaAmiga
+from .tienda_ao import TiendaAo
 from .tienda_claro import TiendaClaro
 from .tienda_entel import TiendaEntel
 from .tienda_fensa import TiendaFensa

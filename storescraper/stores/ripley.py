@@ -17,8 +17,6 @@ from storescraper.categories import (
     EXTERNAL_STORAGE_DRIVE,
     ALL_IN_ONE,
     MONITOR,
-    PROJECTOR,
-    RAM,
     TELEVISION,
     REFRIGERATOR,
     STOVE,
@@ -98,12 +96,6 @@ class Ripley(Store):
         #     1,
         # ],
         [
-            "tecno/computacion-gamer/componentes-pc",
-            [RAM],
-            "Tecno > Computación Gamer > Componentes",
-            1,
-        ],
-        [
             "tecno/computacion-gamer/monitores",
             [MONITOR],
             "Tecno > Computación Gamer > Monitores",
@@ -121,12 +113,6 @@ class Ripley(Store):
             "tecno/television/premium-tv-y-8k",
             [TELEVISION],
             "Tecno > Televisión > Premium y 8K",
-            1,
-        ],
-        [
-            "tecno/television/hd-y-full-hd",
-            [TELEVISION],
-            "Tecno > Televisión > HD y Full HD",
             1,
         ],
         ["electro/refrigeracion", [REFRIGERATOR], "Electro > Refrigeración", 1],
@@ -846,12 +832,6 @@ class Ripley(Store):
                 "Premium y 8K",
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "tecno/television/premium-tv-y-8k",
-            ],
-            [
-                bs.TELEVISIONS,
-                "HD y Full HD",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "tecno/television/hd-y-full-hd",
             ],
             [
                 bs.AUDIO,

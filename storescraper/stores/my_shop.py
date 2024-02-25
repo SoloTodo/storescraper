@@ -72,6 +72,7 @@ class MyShop(StoreWithUrlExtensions):
         ["138", MONITOR],  # monitor-monitores-monitores-gamer
         ["9", HEADPHONES],  # audio-video-audifonos-on-ear
         ["18", TELEVISION],  # audio-video-televisores
+        ["140", TELEVISION],  # monitor-smart-tv
         ["27", PRINTER],  # impresion-impresion-laser
         ["30", PRINTER],  # impresion-otras-impresoras
         ["29", PRINTER],  # impresion-impresion-tinta

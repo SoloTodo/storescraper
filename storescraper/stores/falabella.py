@@ -37,6 +37,192 @@ class Falabella(Store):
         {"id": None, "section_prefix": "GRUPO", "include_in_fast_mode": False},
     ]
     seller_blacklist = ["SODIMAC", "TOTTUS"]
+    banners_base_url = "https://www.falabella.com/falabella-cl/{}"
+    banners_sections_data = [
+        [bs.HOME, "Home", bs.SUBSECTION_TYPE_HOME, ""],
+        # # CATEGORY PAGES # #
+        [
+            bs.REFRIGERATION,
+            "Electrohogar-Refrigeradores",
+            bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            "category/cat3205/Refrigeradores?isLanding=true",
+        ],
+        [
+            bs.AUDIO,
+            "Audio",
+            bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            "category/cat2005/Audio?isLanding=true",
+        ],
+        [
+            bs.CELLS,
+            "Telefonía-Celulares y Teléfonos",
+            bs.SUBSECTION_TYPE_CATEGORY_PAGE,
+            "category/cat2018/Celulares-y-Telefonos?isLanding=true",
+        ],
+        # # MOSAICS ##
+        [
+            bs.LINEA_BLANCA_FALABELLA,
+            "Electro y Tecnología-Línea Blanca",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat7090035/Linea-Blanca?isPLP=1",
+        ],
+        [
+            bs.REFRIGERATION,
+            "Refrigeradores-No Frost",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat4074/No-Frost",
+        ],
+        [
+            bs.REFRIGERATION,
+            "Refrigeradores-Side by Side",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat4091/Side-by-Side",
+        ],
+        [
+            bs.WASHING_MACHINES,
+            "Lavadoras",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3136/Lavadoras",
+        ],
+        [
+            bs.WASHING_MACHINES,
+            "Lavadoras-Lavadoras",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat4060/Lavadoras",
+        ],
+        [
+            bs.WASHING_MACHINES,
+            "Lavadoras-Lavadoras-Secadoras",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat1700002/Lavadoras-Secadoras",
+        ],
+        [
+            bs.WASHING_MACHINES,
+            "Lavadoras-Secadoras",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat4088/Secadoras",
+        ],
+        [
+            bs.WASHING_MACHINES,
+            " Lavadoras-Lavadoras Doble Carga",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat11400002/Lavadoras-Doble-Carga",
+        ],
+        [
+            bs.TELEVISIONS,
+            "Tecnología-TV",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat1012/TV?isPLP=1",
+        ],
+        [
+            bs.TELEVISIONS,
+            "Televisores LED",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat7190148/Televisores-LED",
+        ],
+        [
+            bs.TELEVISIONS,
+            "LEDs menores a 50 pulgadas",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat11161614/LEDs-menores-a-50-pulgadas",
+        ],
+        [
+            bs.TELEVISIONS,
+            "LEDs entre 50 - 55 pulgadas",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat11161675/LEDs-entre-50---55-pulgadas",
+        ],
+        [
+            bs.TELEVISIONS,
+            "LEDs sobre 55 pulgadas",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat11161679/LEDs-sobre-55-pulgadas",
+        ],
+        [
+            bs.TELEVISIONS,
+            "TV-LED",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat2850014/LED",
+        ],
+        [
+            bs.TELEVISIONS,
+            "TV-Smart TV",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3040054/Smart-TV",
+        ],
+        [
+            bs.TELEVISIONS,
+            "TV-4K UHD",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3990038/4K-UHD",
+        ],
+        [
+            bs.TELEVISIONS,
+            "TV-Televisores OLED",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat2850016/Televisores-OLED",
+        ],
+        [
+            bs.TELEVISIONS,
+            "TV-Pulgadas Altas",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            'category/cat12910024/Televisores-LED-Desde-65"',
+        ],
+        [
+            bs.AUDIO,
+            "Audio-Soundbar y Home Theater",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat2045/Home-Theater",
+        ],
+        [
+            bs.AUDIO,
+            "Home Theater",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3050040/Home-Theater",
+        ],
+        [
+            bs.AUDIO,
+            "Soundbar",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat1700004/Soundbar",
+        ],
+        [
+            bs.AUDIO,
+            "Minicomponente",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat70018/Minicomponente",
+        ],
+        [
+            bs.AUDIO,
+            "Audio-Equipos de Música y Karaokes",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3091/?mkid=CA_P2_MIO1_024794",
+        ],
+        [
+            bs.AUDIO,
+            "Audio-Hi-Fi",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat3203/Hi-Fi",
+        ],
+        [
+            bs.AUDIO,
+            "Audio",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat2005/Audio?isPLP=1",
+        ],
+        [
+            bs.CELLS,
+            "Smartphones",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat720161/Smartphones",
+        ],
+        [
+            bs.CELLS,
+            "Electro y Tecnología-Teléfonos",
+            bs.SUBSECTION_TYPE_MOSAIC,
+            "category/cat2018/Telefonos?isPLP=1",
+        ],
+    ]
 
     zones = (
         "PCL2281,ZL_CERRILLOS,PCL1135,3045,PCL1486,FALABELLA_FBY_SDD,"
@@ -784,203 +970,15 @@ class Falabella(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = "https://www.falabella.com/falabella-cl/{}"
-
-        sections_data = [
-            [bs.HOME, "Home", bs.SUBSECTION_TYPE_HOME, ""],
-            # # CATEGORY PAGES # #
-            [
-                bs.REFRIGERATION,
-                "Electrohogar-Refrigeradores",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "category/cat3205/Refrigeradores?isLanding=true",
-            ],
-            # [bs.WASHING_MACHINES, 'Electrohogar-Lavado',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat3136/Lavado?isLanding=true'],
-            # [bs.TELEVISIONS, 'TV', bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-            #  'category/cat1012/TV?isLanding=true'],
-            [
-                bs.AUDIO,
-                "Audio",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "category/cat2005/Audio?isLanding=true",
-            ],
-            [
-                bs.CELLS,
-                "Telefonía-Celulares y Teléfonos",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "category/cat2018/Celulares-y-Telefonos?isLanding=true",
-            ],
-            # # MOSAICS ##
-            [
-                bs.LINEA_BLANCA_FALABELLA,
-                "Electro y Tecnología-Línea Blanca",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat7090035/Linea-Blanca?isPLP=1",
-            ],
-            [
-                bs.REFRIGERATION,
-                "Refrigeradores-No Frost",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat4074/No-Frost",
-            ],
-            [
-                bs.REFRIGERATION,
-                "Refrigeradores-Side by Side",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat4091/Side-by-Side",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3136/Lavadoras",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavadoras-Lavadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat4060/Lavadoras",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavadoras-Lavadoras-Secadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat1700002/Lavadoras-Secadoras",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavadoras-Secadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat4088/Secadoras",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                " Lavadoras-Lavadoras Doble Carga",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat11400002/Lavadoras-Doble-Carga",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Tecnología-TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat1012/TV?isPLP=1",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Televisores LED",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat7190148/Televisores-LED",
-            ],
-            [
-                bs.TELEVISIONS,
-                "LEDs menores a 50 pulgadas",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat11161614/LEDs-menores-a-50-pulgadas",
-            ],
-            [
-                bs.TELEVISIONS,
-                "LEDs entre 50 - 55 pulgadas",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat11161675/LEDs-entre-50---55-pulgadas",
-            ],
-            [
-                bs.TELEVISIONS,
-                "LEDs sobre 55 pulgadas",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat11161679/LEDs-sobre-55-pulgadas",
-            ],
-            [
-                bs.TELEVISIONS,
-                "TV-LED",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat2850014/LED",
-            ],
-            [
-                bs.TELEVISIONS,
-                "TV-Smart TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3040054/Smart-TV",
-            ],
-            [
-                bs.TELEVISIONS,
-                "TV-4K UHD",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3990038/4K-UHD",
-            ],
-            [
-                bs.TELEVISIONS,
-                "TV-Televisores OLED",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat2850016/Televisores-OLED",
-            ],
-            [
-                bs.TELEVISIONS,
-                "TV-Pulgadas Altas",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                'category/cat12910024/Televisores-LED-Desde-65"',
-            ],
-            [
-                bs.AUDIO,
-                "Audio-Soundbar y Home Theater",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat2045/Home-Theater",
-            ],
-            [
-                bs.AUDIO,
-                "Home Theater",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3050040/Home-Theater",
-            ],
-            [
-                bs.AUDIO,
-                "Soundbar",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat1700004/Soundbar",
-            ],
-            [
-                bs.AUDIO,
-                "Minicomponente",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat70018/Minicomponente",
-            ],
-            [
-                bs.AUDIO,
-                "Audio-Equipos de Música y Karaokes",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3091/?mkid=CA_P2_MIO1_024794",
-            ],
-            [
-                bs.AUDIO,
-                "Audio-Hi-Fi",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat3203/Hi-Fi",
-            ],
-            [
-                bs.AUDIO,
-                "Audio",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat2005/Audio?isPLP=1",
-            ],
-            [
-                bs.CELLS,
-                "Smartphones",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat720161/Smartphones",
-            ],
-            [
-                bs.CELLS,
-                "Electro y Tecnología-Teléfonos",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "category/cat2018/Telefonos?isPLP=1",
-            ],
-        ]
-
         banners = []
 
-        for section, subsection, subsection_type, url_suffix in sections_data:
-            url = base_url.format(url_suffix)
+        for (
+            section,
+            subsection,
+            subsection_type,
+            url_suffix,
+        ) in cls.banners_sections_data:
+            url = cls.banners_base_url.format(url_suffix)
             print(url)
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
