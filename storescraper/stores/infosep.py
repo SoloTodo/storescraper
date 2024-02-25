@@ -95,7 +95,7 @@ class Infosep(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 20:
                 raise Exception("page overflow: " + url_extension)
             if page == 1:
                 url_webpage = "https://infosep.cl/categoria-producto/{}/" "".format(
