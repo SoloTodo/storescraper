@@ -39,6 +39,7 @@ from .central_gamer import CentralGamer
 from .chelnovix import Chelnovix
 from .cintegral import Cintegral
 from .claro import Claro
+from .comandato import Comandato
 from .computron import Computron
 from .coolbox import Coolbox
 from .coomultrasan import Coomultrasan
