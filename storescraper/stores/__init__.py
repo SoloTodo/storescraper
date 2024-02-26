@@ -250,9 +250,11 @@ from .spider import Spider
 from .sukasa import Sukasa
 from .syd import Syd
 from .system_ti import SystemTi
+from .tauret import Tauret
 from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
+from .tecnoplaza import Tecnoplaza
 from .tekmachine import Tekmachine
 from .tecno_boss import TecnoBoss
 from .tecno_mas import TecnoMas
