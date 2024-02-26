@@ -86,7 +86,7 @@ class BestStore(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 50:
+            if page > 80:
                 raise Exception("page overflow: " + url_extension)
             if "?" in url_extension:
                 separator = "&"
