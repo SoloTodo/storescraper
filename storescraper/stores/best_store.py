@@ -141,7 +141,9 @@ class BestStore(StoreWithUrlExtensions):
 
         add_to_cart_button = soup.find("button", "btn btn-primary add-to-cart")
 
-        if "disabled" in add_to_cart_button.attrs:
+        if part_number is None:
+            stock = 0
+        elif "disabled" in add_to_cart_button.attrs:
             stock = 0
         else:
             stock_tag = container.find("label", text="Stock: ")

@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
 
 
 class GamersColombia(Store):
@@ -58,7 +58,6 @@ class GamersColombia(Store):
         price = Decimal(price_tag.find("h3").text.replace("$", "").replace(",", ""))
         stock = -1
         name = soup.find("h2").text.strip()
-        description = html_to_markdown(str(soup.find("div", {"id": "description"})))
         picture_urls = [x["href"] for x in soup.find("div", "fotorama").findAll("a")]
 
         p = Product(
@@ -73,7 +72,6 @@ class GamersColombia(Store):
             price,
             "COP",
             sku=key,
-            description=description,
             picture_urls=picture_urls,
         )
         return [p]
