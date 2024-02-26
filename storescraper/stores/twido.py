@@ -5,7 +5,7 @@ from storescraper.utils import session_with_proxy
 from .mercado_libre_chile import MercadoLibreChile
 
 
-class Tecnoplaza(MercadoLibreChile):
+class Twido(MercadoLibreChile):
     @classmethod
     def categories(cls):
         return [MONITOR]
@@ -21,7 +21,7 @@ class Tecnoplaza(MercadoLibreChile):
             if page > 10:
                 raise Exception("Page overflow")
             index = str(50 * (page - 1) + 1)
-            url_webpage = "https://www.tecnoplaza.com.co/listado/_BRAND_215_Desde_{}_NoIndex_True".format(
+            url_webpage = "https://www.twido.com.co/listado/_BRAND_215_Desde_{}_NoIndex_True".format(
                 index
             )
             print(url_webpage)

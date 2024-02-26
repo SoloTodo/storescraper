@@ -107,6 +107,7 @@ from .good_game import GoodGame
 from .gorilla_store import GorillaStore
 from .gsm_pro import GsmPro
 from .g_w_store import GWStore
+from .gamers_colombia import GamersColombia
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hogar_innovar import HogarInnovar
@@ -291,6 +292,7 @@ from .tottus import Tottus
 from .tottus_peru import TottusPeru
 from .ttchile import TtChile
 from .tupi import Tupi
+from .twido import Twido
 from .ultra_pc import UltraPc
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
