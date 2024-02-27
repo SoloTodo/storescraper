@@ -39,6 +39,7 @@ from .central_gamer import CentralGamer
 from .chelnovix import Chelnovix
 from .cintegral import Cintegral
 from .claro import Claro
+from .comandato import Comandato
 from .computron import Computron
 from .coolbox import Coolbox
 from .coomultrasan import Coomultrasan
@@ -107,6 +108,7 @@ from .good_game import GoodGame
 from .gorilla_store import GorillaStore
 from .gsm_pro import GsmPro
 from .g_w_store import GWStore
+from .gamers_colombia import GamersColombia
 from .hiraoka import Hiraoka
 from .hites import Hites
 from .hogar_innovar import HogarInnovar
@@ -250,9 +252,11 @@ from .spider import Spider
 from .sukasa import Sukasa
 from .syd import Syd
 from .system_ti import SystemTi
+from .tauret import Tauret
 from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
 from .tecnofacil import Tecnofacil
+from .tecnoplaza import Tecnoplaza
 from .tekmachine import Tekmachine
 from .tecno_boss import TecnoBoss
 from .tecno_mas import TecnoMas
@@ -289,6 +293,7 @@ from .tottus import Tottus
 from .tottus_peru import TottusPeru
 from .ttchile import TtChile
 from .tupi import Tupi
+from .twido import Twido
 from .ultra_pc import UltraPc
 from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
