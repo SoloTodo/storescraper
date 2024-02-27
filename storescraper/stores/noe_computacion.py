@@ -14,6 +14,10 @@ from storescraper.categories import (
     SOLID_STATE_DRIVE,
     TABLET,
     TELEVISION,
+    STEREO_SYSTEM,
+    MOUSE,
+    VIDEO_CARD,
+    KEYBOARD,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -24,13 +28,18 @@ class NoeComputacion(StoreWithUrlExtensions):
     url_extensions = [
         ["199", ALL_IN_ONE],
         ["147", SOLID_STATE_DRIVE],
+        ["233", STEREO_SYSTEM],
+        ["235", NOTEBOOK],
         ["212", CELL],
         ["188", PRINTER],
         ["223", RAM],
         ["184", MONITOR],
         ["61", NOTEBOOK],
+        ["228", MOUSE],
         ["215", GAMING_CHAIR],
         ["95", TABLET],
+        ["231", VIDEO_CARD],
+        ["227", KEYBOARD],
         ["178", TELEVISION],
     ]
 
