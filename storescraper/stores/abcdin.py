@@ -421,7 +421,14 @@ class AbcDin(Store):
         soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("h1", {"itemprop": "name"}).text.strip()
         key = soup.find("span", {"itemprop": "sku"})["data-sku"]
-        normal_price_tag = soup.find("p", "internet").find("span", "price-value")
+
+        internet_price_tag = soup.find("p", "internet")
+        if internet_price_tag:
+            normal_price_tag = internet_price_tag.find("span", "price-value")
+        else:
+            normal_price_tag = soup.find("p", "js-internet-price").find(
+                "span", "price-value"
+            )
         normal_price = Decimal(normal_price_tag["data-value"]).quantize(0)
 
         offer_price_tag = soup.find("p", "js-tlp-price")
