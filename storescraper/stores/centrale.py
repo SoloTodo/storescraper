@@ -171,6 +171,6 @@ class Centrale(StoreWithUrlExtensions):
             "CLP",
             sku=sku,
             picture_urls=picture_urls,
-            part_number=part_number,
+            part_number=part_number[:50],
         )
         return [p]
