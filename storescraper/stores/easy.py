@@ -33,6 +33,7 @@ class Easy(Store):
             SPACE_HEATER,
             VIDEO_GAME_CONSOLE,
             WATER_HEATER,
+            STOVE,
         ]
 
     @classmethod
