@@ -14,6 +14,7 @@ from storescraper.categories import (
     TELEVISION,
     VACUUM_CLEANER,
     WATER_HEATER,
+    STOVE,
 )
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
