@@ -149,6 +149,7 @@ class Ripley(Store):
         # ['electro/refrigeracion/door-in-door', [REFRIGERATOR],
         #  'Electro > Refrigeración > Door in Door', 1],
         ["electro/cocina/cocinas", [STOVE], "Electro > Cocina > Cocinas", 1],
+        ["electro/cocina/encimeras", [STOVE], "Electro > Cocina > Encimeras", 1],
         [
             "electro/electrodomesticos/hornos-y-microondas",
             [OVEN],
