@@ -14,9 +14,7 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 class MiTiendaDamasco(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -29,22 +27,22 @@ class MiTiendaDamasco(Store):
         page = 1
         while True:
             if page > 20:
-                raise Exception('page overflow')
+                raise Exception("page overflow")
 
-            url_webpage = 'https://www.mitiendadamasco.com/buscar/q-lg/' \
-                          'qc-products/page-{}?collections=LG'.format(page)
+            url_webpage = "https://www.mitiendadamasco.com/search?page={}&q=LG&type=products".format(
+                page
+            )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', {
-                'data-hook': 'grid-layout-item'})
+            soup = BeautifulSoup(response.text, "html.parser")
+            product_containers = soup.findAll("li", {"data-hook": "grid-layout-item"})
             if not product_containers:
                 if page == 1:
-                    logging.warning('empty category')
+                    logging.warning("empty category")
                 break
 
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -54,20 +52,19 @@ class MiTiendaDamasco(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        json_product = json.loads(
-            soup.find('script', {'id': 'wix-warmup-data'}).text)
-        json_product = list(json_product['appsWarmupData'].values())[-1]
-        json_product = list(json_product.values())[0]['catalog']['product']
-        name = html.unescape(json_product['name'])
-        sku = json_product['sku']
-        if json_product['isInStock']:
+        soup = BeautifulSoup(response.text, "html.parser")
+        json_product = json.loads(soup.find("script", {"id": "wix-warmup-data"}).text)
+        json_product = list(json_product["appsWarmupData"].values())[-1]
+        json_product = list(json_product.values())[0]["catalog"]["product"]
+        name = html.unescape(json_product["name"])
+        sku = json_product["sku"]
+        if json_product["isInStock"]:
             stock = -1
         else:
             stock = 0
-        price = Decimal(json_product['discountedPrice'])
-        picture_urls = [x['fullUrl'] for x in json_product['media']]
-        description = html_to_markdown(json_product['description'])
+        price = Decimal(json_product["discountedPrice"])
+        picture_urls = [x["fullUrl"] for x in json_product["media"]]
+        description = html_to_markdown(json_product["description"])
 
         p = Product(
             name,
@@ -79,9 +76,9 @@ class MiTiendaDamasco(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
         return [p]
