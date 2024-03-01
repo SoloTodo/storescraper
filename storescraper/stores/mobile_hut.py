@@ -76,7 +76,10 @@ class MobileHut(StoreWithUrlExtensions):
 
         name = soup.find("h1", "product_title").text
         key = soup.find("span", "sku").text.strip()
-        stock = -1
+        if soup.find("button", "single_add_to_cart_button"):
+            stock = -1
+        else:
+            stock = 0
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"].replace(
                 ",", ""
