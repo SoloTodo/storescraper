@@ -1,3 +1,4 @@
+import json
 import re
 from decimal import Decimal
 import logging
@@ -46,37 +47,68 @@ class PlayPower(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-        name_tag = soup.find("h3", {"data-product-type": "title"})
 
-        if not name_tag:
-            return []
+        variants_tag = soup.find("variant-radios")
+        products = []
+        if variants_tag:
+            base_name = soup.find("h1").text.strip()
+            variants_data = json.loads(variants_tag.find("script").text)
+            for variant in variants_data:
+                name = "{} ({})".format(base_name, variant["title"])
+                key = str(variant["id"])
+                stock = -1 if variant["available"] else 0
+                price = Decimal(variant["price"] // 100)
+                picture_urls = ["https:" + variant["featured_image"]["src"]]
 
-        name = name_tag.text.strip()
-        key, stock_text = re.search(
-            r'quantity: \["(\d+):(\d)"]', response.text
-        ).groups()
-        stock = int(stock_text)
-        price = Decimal(
-            remove_words(soup.find("div", {"data-product-type": "price"}).text.strip())
-        )
-        picture_urls = [
-            "https:" + x.find("img")["src"]
-            for x in soup.find("div", "pf-media-slider").findAll(
-                "div", "pf-slide-main-media"
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+        else:
+            name_tag = soup.find("h3", {"data-product-type": "title"})
+
+            if not name_tag:
+                return []
+
+            name = name_tag.text.strip()
+            key, stock_text = re.search(
+                r'quantity: \["(\d+):(\d)"]', response.text
+            ).groups()
+            stock = int(stock_text)
+            price = Decimal(
+                remove_words(
+                    soup.find("div", {"data-product-type": "price"}).text.strip()
+                )
             )
-        ]
+            picture_urls = [
+                "https:" + x.find("img")["src"]
+                for x in soup.find("div", "pf-media-slider").findAll(
+                    "div", "pf-slide-main-media"
+                )
+            ]
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            "CLP",
-            picture_urls=picture_urls,
-        )
-        return [p]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                "CLP",
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+        return products
