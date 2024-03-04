@@ -107,7 +107,10 @@ class Olimpica(Store):
             )
             if pricing_key not in product_data:
                 return []
-            price = Decimal(remove_words(product_data[pricing_key]["name"]))
+            price_text = product_data[pricing_key]["name"]
+            if price_text == "Marca":
+                return []
+            price = Decimal(remove_words(price_text))
 
         stock = pricing_data["AvailableQuantity"]
         picture_list_key = "{}.items.0".format(base_json_key)
