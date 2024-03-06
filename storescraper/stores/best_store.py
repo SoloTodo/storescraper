@@ -198,6 +198,11 @@ class BestStore(StoreWithUrlExtensions):
         else:
             raise Exception("Invalid condition: " + condition_text)
 
+        if importado:
+            description = "IMPORTADO"
+        else:
+            description = ""
+
         p = Product(
             name,
             cls.__name__,
@@ -213,5 +218,6 @@ class BestStore(StoreWithUrlExtensions):
             part_number=part_number,
             picture_urls=picture_url,
             condition=condition,
+            description=description,
         )
         return [p]
