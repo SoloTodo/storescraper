@@ -66,7 +66,7 @@ class TravelTienda(StoreWithUrlExtensions):
         ("2311426557", VACUUM_CLEANER),  # Aspiradora Robot
         ("2456851182", SPACE_HEATER),  # Calefaccion
         ("2384828485", DISH_WASHER),  # Lavavajillas
-        ("1443877551", OVEN),  # Empotrados
+        ("4040983110", OVEN),  # Empotrados
     ]
 
     @classmethod

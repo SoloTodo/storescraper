@@ -121,7 +121,7 @@ class NotebooksYa(StoreWithUrlExtensions):
         page = 1
         done = False
         while not done:
-            if page > 10:
+            if page > 20:
                 raise Exception("page overflow: " + url_extension)
 
             url_components = url_extension.split("?")
