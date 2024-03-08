@@ -38,7 +38,7 @@ class MyaOutlet(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 20:
                 raise Exception("Page overflow: " + url_extension)
             url_webpage = (
                 "https://myaoutlet.cl/categoria-producto/" "tecnologia/{}/page/{}/"
