@@ -158,6 +158,8 @@ class SmartMobile(StoreWithUrlExtensions):
                 stock_container = product_container.find("p", "stock").text.split()
                 if stock_container[0] == "Agotado":
                     stock = 0
+                elif stock_container[0] == "Sin":  # Sin existencias
+                    stock = 0
                 else:
                     stock = int(stock_container[0])
 
