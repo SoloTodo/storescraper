@@ -6,24 +6,30 @@ import validators
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import NOTEBOOK, MONITOR, STORAGE_DRIVE, \
-    SOLID_STATE_DRIVE, RAM, VIDEO_CARD, UPS
+from storescraper.categories import (
+    NOTEBOOK,
+    MONITOR,
+    STORAGE_DRIVE,
+    SOLID_STATE_DRIVE,
+    RAM,
+    VIDEO_CARD,
+    UPS,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    remove_words
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 
 class GestionYEquipos(StoreWithUrlExtensions):
     url_extensions = [
-        ['computadoras-portatiles', NOTEBOOK],
-        ['monitores', MONITOR],
-        ['disco-duro-hdd', STORAGE_DRIVE],
-        ['disco-solido', SOLID_STATE_DRIVE],
-        ['pc-de-escritorio-dimm', RAM],
-        ['portatiles-sodimm', RAM],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['unidad-de-respaldo-de-energia', UPS],
+        ["computadoras-portatiles", NOTEBOOK],
+        ["monitores", MONITOR],
+        ["disco-duro-hdd", STORAGE_DRIVE],
+        ["disco-solido", SOLID_STATE_DRIVE],
+        ["pc-de-escritorio-dimm", RAM],
+        ["portatiles-sodimm", RAM],
+        ["tarjetas-de-video", VIDEO_CARD],
+        ["unidad-de-respaldo-de-energia", UPS],
     ]
 
     @classmethod
@@ -33,19 +39,20 @@ class GestionYEquipos(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = 'https://gestionyequipos.cl/collections/{}?page={}'.format(url_extension, page)
+                raise Exception("page overflow: " + url_extension)
+            url_webpage = "https://gestionyequipos.cl/collections/{}?page={}".format(
+                url_extension, page
+            )
             print(url_webpage)
             res = session.get(url_webpage)
-            soup = BeautifulSoup(res.text, 'html.parser')
-            product_containers = soup.findAll(
-                'li', 'js-pagination-result')
+            soup = BeautifulSoup(res.text, "html.parser")
+            product_containers = soup.findAll("li", "js-pagination-result")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_url = 'https://gestionyequipos.cl' + container.find('a')['href']
+                product_url = "https://gestionyequipos.cl" + container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -55,28 +62,28 @@ class GestionYEquipos(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        description = html_to_markdown(str(soup.find('div', 'product-details__block')))
-        condition_text = soup.find('span', 'product-label').text.strip().upper()
+        soup = BeautifulSoup(response.text, "html.parser")
+        description = html_to_markdown(str(soup.find("div", "product-details__block")))
+        condition_text = soup.find("span", "product-label").text.strip().upper()
 
         condition_dict = {
-            'REACONDICIONADO': 'https://schema.org/RefurbishedCondition',
-            'NUEVO': 'https://schema.org/NewCondition',
-            'NUEVO CAJA ABIERTA': 'https://schema.org/OpenBoxCondition',
+            "REACONDICIONADO": "https://schema.org/RefurbishedCondition",
+            "NUEVO": "https://schema.org/NewCondition",
+            "NUEVO CAJA ABIERTA": "https://schema.org/OpenBoxCondition",
         }
         condition = condition_dict[condition_text]
 
         products = []
-        variants_tags = soup.findAll('script', {'type': 'application/json'})
-        if len(variants_tags) > 2:
-            variants_json = json.loads(variants_tags[2].text)
-            picture_urls = ['https:' + x for x in variants_json['product']['images']]
-            for variant in variants_json['product']['variants']:
-                key = str(variant['id'])
-                variant_url = url + '?variant={}'.format(key)
-                sku = variant['sku']
-                stock = -1 if variant['available'] else 0
-                price = Decimal(variant['price'] / 100)
+        variants_tags = soup.findAll("script", {"type": "application/json"})
+        if len(variants_tags) > 3:
+            variants_json = json.loads(variants_tags[3].text)
+            picture_urls = ["https:" + x for x in variants_json["product"]["images"]]
+            for variant in variants_json["product"]["variants"]:
+                key = str(variant["id"])
+                variant_url = url + "?variant={}".format(key)
+                sku = variant["sku"]
+                stock = -1 if variant["available"] else 0
+                price = Decimal(variant["price"] / 100)
 
                 p = Product(
                     sku,
@@ -88,21 +95,25 @@ class GestionYEquipos(StoreWithUrlExtensions):
                     stock,
                     price,
                     price,
-                    'CLP',
+                    "CLP",
                     sku=sku,
                     part_number=sku,
                     picture_urls=picture_urls,
                     description=description,
-                    condition=condition
+                    condition=condition,
                 )
                 products.append(p)
         else:
-            container = soup.find('div', 'product-info')
-            name = container.find('h1', 'product-title').text.strip()
-            price = Decimal(remove_words(container.find('strong', 'price__current').text))
-            sku = container.find('span', 'product-sku__value').text.strip()
-            key = soup.find('input', {'name': 'id'})['value']
-            picture_urls = ['https:' + x['href'] for x in soup.findAll('a', 'media--cover')]
+            container = soup.find("div", "product-info")
+            name = container.find("h1", "product-title").text.strip()
+            price = Decimal(
+                remove_words(container.find("strong", "price__current").text)
+            )
+            sku = container.find("span", "product-sku__value").text.strip()
+            key = soup.find("input", {"name": "id"})["value"]
+            picture_urls = [
+                "https:" + x["href"] for x in soup.findAll("a", "media--cover")
+            ]
 
             p = Product(
                 name,
@@ -114,12 +125,12 @@ class GestionYEquipos(StoreWithUrlExtensions):
                 -1,
                 price,
                 price,
-                'CLP',
+                "CLP",
                 sku=sku,
                 part_number=sku,
                 picture_urls=picture_urls,
                 description=description,
-                condition=condition
+                condition=condition,
             )
             products.append(p)
 
