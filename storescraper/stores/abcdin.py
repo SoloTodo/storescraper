@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 
 import validators
@@ -363,7 +364,7 @@ class AbcDin(Store):
             product_cells = soup.findAll("div", "product-tile__item")
 
             if not product_cells:
-                raise Exception("Empty category: " + category_id)
+                logging.warning("Empty category: " + category_id)
 
             for idx, product_cell in enumerate(product_cells):
                 product_path = product_cell.find("a", "image-link")["href"]

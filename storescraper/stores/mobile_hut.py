@@ -1,15 +1,12 @@
 import json
 import logging
 import re
-import urllib
-
 from decimal import Decimal
+
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
-from storescraper.store import Store
-from .mercado_libre_chile import MercadoLibreChile
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 from storescraper.categories import (
     CELL,
     HEADPHONES,
@@ -72,35 +69,39 @@ class MobileHut(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, "html.parser")
 
         variants_tag = soup.find("select", "product-form__variants").findAll("option")
-        assert len(variants_tag) == 1
+        variants_match = re.search(r'"productVariants":(.+)},},function', response.text)
+        variants_data = json.loads(variants_match.groups()[0])
 
-        name = soup.find("h1", "product_title").text
-        key = soup.find("span", "sku").text.strip()
-        if soup.find("button", "single_add_to_cart_button"):
-            stock = -1
-        else:
-            stock = 0
-        price = Decimal(
-            soup.find("meta", {"property": "product:price:amount"})["content"].replace(
-                ",", ""
+        assert len(variants_tag) == len(variants_data)
+        products = []
+
+        for variant_tag, variant_entry in zip(variants_tag, variants_data):
+            print(variant_entry)
+            name = "{} ({})".format(
+                variant_entry["product"]["title"], variant_entry["title"]
             )
-        )
-        picture_urls = [
-            "https:" + urllib.parse.quote(tag["data-src"])
-            for tag in soup.findAll("div", "sp-pr-gallery__img")
-        ]
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            "CLP",
-            sku=key,
-            picture_urls=picture_urls,
-        )
-        return [p]
+            key = variant_entry["id"]
+            if "nt_sold_out" in variant_tag.attrs.get("class", ""):
+                stock = 0
+            else:
+                stock = -1
+            price = Decimal(variant_entry["price"]["amount"])
+            picture_urls = ["https:" + variant_entry["image"]["src"]]
+            sku = variant_entry["sku"]
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                price,
+                price,
+                "CLP",
+                sku=key,
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+        return products
