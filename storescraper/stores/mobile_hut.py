@@ -95,12 +95,12 @@ class MobileHut(StoreWithUrlExtensions):
                 category,
                 url,
                 url,
-                sku,
+                key,
                 stock,
                 price,
                 price,
                 "CLP",
-                sku=key,
+                sku=sku,
                 picture_urls=picture_urls,
             )
             products.append(p)
