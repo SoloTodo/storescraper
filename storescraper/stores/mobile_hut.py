@@ -56,7 +56,8 @@ class MobileHut(StoreWithUrlExtensions):
                     logging.warning("Empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_url = "https://www.mobilehut.cl" + container.find("a")["href"]
+                product_slug = container.find("a")["href"].split("/")[-1]
+                product_url = "https://www.mobilehut.cl/products/" + product_slug
                 product_urls.append(product_url)
             page += 1
         return product_urls
