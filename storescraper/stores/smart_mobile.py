@@ -52,7 +52,9 @@ class SmartMobile(StoreWithUrlExtensions):
                 break
 
             for container in product_containers.findAll("li", "product"):
-                product_url = container.find("a")["href"]
+                product_url = container.find("a", "woocommerce-loop-product__link")[
+                    "href"
+                ]
                 product_urls.append(product_url)
             page += 1
         return product_urls

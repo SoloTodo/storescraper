@@ -35,9 +35,10 @@ class TiendasMetro(Store):
                 raise Exception("Page overflow")
 
             variables = {
+                "hideUnavailableItems": True,
                 "from": offset,
                 "to": offset + 12,
-                "selectedFacets": [{"key": "ft", "value": "lg"}],
+                "selectedFacets": [{"key": "brand", "value": "lg"}],
                 "fullText": "lg",
             }
 

@@ -1,6 +1,7 @@
 import base64
 import json
 import re
+import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -36,10 +37,12 @@ class JumboColombia(Store):
                 raise Exception("Page overflow")
 
             variables = {
+                "hideUnavailableItems": True,
                 "from": offset,
                 "to": offset + 12,
-                "selectedFacets": [{"key": "ft", "value": "lg"}],
-                "fullText": "lg",
+                "selectedFacets": [
+                    {"key": "brand", "value": "lg"},
+                ],
             }
 
             payload = {
@@ -54,7 +57,7 @@ class JumboColombia(Store):
 
             endpoint = (
                 "https://www.tiendasjumbo.co/_v/segment/graphql/v1"
-                "?extensions={}".format(json.dumps(payload))
+                "?extensions={}".format(urllib.parse.quote(json.dumps(payload)))
             )
             response = session.get(endpoint).json()
 
