@@ -54,7 +54,7 @@ class Electromillonaria(Store):
             soup.findAll("script", {"type": "application/ld+json"})[1].text
         )["@graph"][1]
         name = product_data["name"]
-        sku = product_data["sku"]
+        sku = str(product_data["sku"])
         price = Decimal(product_data["offers"][0]["price"])
         description = product_data["description"]
 
