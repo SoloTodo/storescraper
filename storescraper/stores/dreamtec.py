@@ -35,6 +35,7 @@ class Dreamtec(StoreWithUrlExtensions):
         ["soundbar", STEREO_SYSTEM],
         ["tablets", TABLET],
         ["pantalla-interactiva", MONITOR],
+        ["plotter", PRINTER],
     ]
 
     @classmethod
