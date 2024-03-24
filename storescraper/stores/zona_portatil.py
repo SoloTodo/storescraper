@@ -132,11 +132,13 @@ class ZonaPortatil(StoreWithUrlExtensions):
         normal_price = Decimal(
             remove_words(price_containers.find("span", "woocommerce-Price-amount").text)
         )
-        offer_price = Decimal(
-            remove_words(
-                price_containers.find("p", "price-transferencia").find("bdi").text
-            )
-        )
+
+        offer_price_tag = price_containers.find("p", "price-transferencia")
+
+        if not offer_price_tag:
+            raise Exception(response.text)
+
+        offer_price = Decimal(remove_words(offer_price_tag.find("bdi").text))
         sku = re.search(r"Part Number: (.+?)<", response.text).groups()[0]
         picture_urls = [
             x["href"]

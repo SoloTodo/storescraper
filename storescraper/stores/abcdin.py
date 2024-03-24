@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 
 import validators
@@ -363,7 +364,7 @@ class AbcDin(Store):
             product_cells = soup.findAll("div", "product-tile__item")
 
             if not product_cells:
-                raise Exception("Empty category: " + category_id)
+                logging.warning("Empty category: " + category_id)
 
             for idx, product_cell in enumerate(product_cells):
                 product_path = product_cell.find("a", "image-link")["href"]
@@ -421,10 +422,18 @@ class AbcDin(Store):
         soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("h1", {"itemprop": "name"}).text.strip()
         key = soup.find("span", {"itemprop": "sku"})["data-sku"]
-        normal_price_tag = soup.find("p", "internet").find("span", "price-value")
+        prices_tag = soup.find("div", "prices")
+
+        internet_price_tag = prices_tag.find("p", "internet")
+        if internet_price_tag:
+            normal_price_tag = internet_price_tag.find("span", "price-value")
+        else:
+            normal_price_tag = prices_tag.find("p", "js-internet-price").find(
+                "span", "price-value"
+            )
         normal_price = Decimal(normal_price_tag["data-value"]).quantize(0)
 
-        offer_price_tag = soup.find("p", "js-tlp-price")
+        offer_price_tag = prices_tag.find("p", "js-tlp-price")
         if offer_price_tag:
             offer_price_text = offer_price_tag.find("span", "price-value")
             offer_price = Decimal(offer_price_text["data-value"]).quantize(0)

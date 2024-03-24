@@ -4,13 +4,21 @@ from collections import defaultdict
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
-from storescraper.categories import AIR_CONDITIONER, OVEN, REFRIGERATOR, \
-    SPACE_HEATER, VACUUM_CLEANER, WASHING_MACHINE, VIDEO_GAME_CONSOLE, WATER_HEATER
+from storescraper.categories import (
+    AIR_CONDITIONER,
+    OVEN,
+    REFRIGERATOR,
+    SPACE_HEATER,
+    VACUUM_CLEANER,
+    WASHING_MACHINE,
+    VIDEO_GAME_CONSOLE,
+    WATER_HEATER,
+    STOVE,
+)
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    vtex_preflight
+from storescraper.utils import session_with_proxy, html_to_markdown, vtex_preflight
 
 
 class Easy(Store):
@@ -24,110 +32,184 @@ class Easy(Store):
             AIR_CONDITIONER,
             SPACE_HEATER,
             VIDEO_GAME_CONSOLE,
-            WATER_HEATER
+            WATER_HEATER,
+            STOVE,
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = [
             # Electrohogar y climatización
-
             # Calefacción
-            ['electrohogar-y-climatizacion/calefaccion/estufas-electricas',
-             [SPACE_HEATER],
-             'Inicio > Electrohogar > Calefacción > Estufas Eléctricas', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-pellet',
-             [SPACE_HEATER],
-             'Inicio > Electrohogar > Calefacción > Estufas a Pellet', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-gas',
-             [SPACE_HEATER],
-             'Inicio > Electrohogar > Calefacción > Estufas a Gas', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-parafina',
-             [SPACE_HEATER],
-             'Inicio > Electrohogar > Calefacción > Estufas a Parafina', 1],
-            ['electrohogar-y-climatizacion/calefaccion/estufas-a-lena',
-             [SPACE_HEATER],
-             'Inicio > Electrohogar > Calefacción > Estufas a leña', 1],
-
+            [
+                "electrohogar-y-climatizacion/calefaccion/estufas-electricas",
+                [SPACE_HEATER],
+                "Inicio > Electrohogar > Calefacción > Estufas Eléctricas",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/calefaccion/estufas-a-pellet",
+                [SPACE_HEATER],
+                "Inicio > Electrohogar > Calefacción > Estufas a Pellet",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/calefaccion/estufas-a-gas",
+                [SPACE_HEATER],
+                "Inicio > Electrohogar > Calefacción > Estufas a Gas",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/calefaccion/estufas-a-parafina",
+                [SPACE_HEATER],
+                "Inicio > Electrohogar > Calefacción > Estufas a Parafina",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/calefaccion/estufas-a-lena",
+                [SPACE_HEATER],
+                "Inicio > Electrohogar > Calefacción > Estufas a leña",
+                1,
+            ],
             # Refrigeración
-            ['electrohogar-y-climatizacion/refrigeracion/refrigeradores',
-             [REFRIGERATOR],
-             'Inicio > Electrohogar y Climatización > Refrigeración > '
-             'Refrigeradores', 1],
-            ['electrohogar-y-climatizacion/refrigeracion/freezer',
-             [REFRIGERATOR],
-             'Inicio > Electrohogar y Climatización > Refrigeración > '
-             'Freezer', 1],
-            ['electrohogar-y-climatizacion/refrigeracion/frigobar',
-             [REFRIGERATOR],
-             'Inicio > Electrohogar y Climatización > Refrigeración > '
-             'Frigobar', 1],
-
+            [
+                "electrohogar-y-climatizacion/refrigeracion/refrigeradores",
+                [REFRIGERATOR],
+                "Inicio > Electrohogar y Climatización > Refrigeración > "
+                "Refrigeradores",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/refrigeracion/freezer",
+                [REFRIGERATOR],
+                "Inicio > Electrohogar y Climatización > Refrigeración > " "Freezer",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/refrigeracion/frigobar",
+                [REFRIGERATOR],
+                "Inicio > Electrohogar y Climatización > Refrigeración > " "Frigobar",
+                1,
+            ],
             # Cocina
-            ['electrohogar-y-climatizacion/cocina/hornos-empotrables',
-             [OVEN],
-             'Inicio > Electrohogar y Climatización > Cocina > '
-             'Hornos Empotrables', 1],
-            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
-             [OVEN],
-             'Inicio > Electrohogar y Climatización > Cocina > Microondas', 1],
-
+            [
+                "electrohogar-y-climatizacion/cocina/hornos-empotrables",
+                [OVEN],
+                "Inicio > Electrohogar y Climatización > Cocina > "
+                "Hornos Empotrables",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/electrodomesticos/microondas",
+                [OVEN],
+                "Inicio > Electrohogar y Climatización > Cocina > Microondas",
+                1,
+            ],
             # Lavado y planchado
-            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras',
-             [WASHING_MACHINE],
-             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
-             'Lavadoras', 1],
-            ['electrohogar-y-climatizacion/lavado-y-planchado/secadoras',
-             [WASHING_MACHINE],
-             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
-             'Secadoras', 1],
-            ['electrohogar-y-climatizacion/lavado-y-planchado/lavadoras-'
-             'secadoras', [WASHING_MACHINE],
-             'Inicio > Electrohogar y Climatización > Lavado y planchado > '
-             'Lava - seca', 1],
-
+            [
+                "electrohogar-y-climatizacion/lavado-y-planchado/lavadoras",
+                [WASHING_MACHINE],
+                "Inicio > Electrohogar y Climatización > Lavado y planchado > "
+                "Lavadoras",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/lavado-y-planchado/secadoras",
+                [WASHING_MACHINE],
+                "Inicio > Electrohogar y Climatización > Lavado y planchado > "
+                "Secadoras",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/lavado-y-planchado/lavadoras-"
+                "secadoras",
+                [WASHING_MACHINE],
+                "Inicio > Electrohogar y Climatización > Lavado y planchado > "
+                "Lava - seca",
+                1,
+            ],
             # Aspirado y limpieza
-            ['electrohogar-y-climatizacion/aspirado-y-limpieza/aspiradoras',
-             [VACUUM_CLEANER],
-             'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
-             'Aspiradoras', 1],
-            ['electrohogar-y-climatizacion/aspirado-y-limpieza/robots-de-'
-             'limpieza', [VACUUM_CLEANER],
-             'Inicio > Electrohogar y Climatización > Aspirado y limpieza > '
-             'Robots de limpieza', 1],
-
+            [
+                "electrohogar-y-climatizacion/aspirado-y-limpieza/aspiradoras",
+                [VACUUM_CLEANER],
+                "Inicio > Electrohogar y Climatización > Aspirado y limpieza > "
+                "Aspiradoras",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/aspirado-y-limpieza/robots-de-"
+                "limpieza",
+                [VACUUM_CLEANER],
+                "Inicio > Electrohogar y Climatización > Aspirado y limpieza > "
+                "Robots de limpieza",
+                1,
+            ],
             # Electrodomésticos
-            ['electrohogar-y-climatizacion/electrodomesticos/hornos-'
-             'electricos', [OVEN],
-             'Inicio > Electrohogar y Climatización > Electrodomésticos > '
-             'Hornos eléctricos', 1],
-            ['electrohogar-y-climatizacion/electrodomesticos/microondas',
-             [OVEN],
-             'Inicio > Electrohogar y Climatización > Electrodomésticos > '
-             'Microondas', 1],
-
+            [
+                "electrohogar-y-climatizacion/electrodomesticos/hornos-" "electricos",
+                [OVEN],
+                "Inicio > Electrohogar y Climatización > Electrodomésticos > "
+                "Hornos eléctricos",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/electrodomesticos/microondas",
+                [OVEN],
+                "Inicio > Electrohogar y Climatización > Electrodomésticos > "
+                "Microondas",
+                1,
+            ],
             # Ventilación
-            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
-             'portatil', [AIR_CONDITIONER],
-             'Inicio > Electrohogar y Climatización > Ventilación > '
-             'Aire acondicionado portátil', 1],
-            ['electrohogar-y-climatizacion/ventilacion/aire-acondicionado-'
-             'split', [AIR_CONDITIONER],
-             'Inicio > Electrohogar y Climatización > Ventilación > '
-             'Aire Acondicionado split', 1],
-            ['electrohogar-y-climatizacion/ventilacion/purificadores-y-'
-             'humidificadores', [AIR_CONDITIONER],
-             'Inicio > Electrohogar y Climatización > Ventilación > '
-             'Purificadores y humidificadores', 1],
-
-            ['electrohogar-y-climatizacion/calefont-y-termos/calefont', [WATER_HEATER],
-             'Inicio > Electrohogar y Climatización > Calefont y Termos > '
-             'Calefont', 1],
-
-            ['electrohogar-y-climatizacion/tecnologia/consolas-y-'
-             'videojuegos/consolas', [VIDEO_GAME_CONSOLE],
-             'Electrohogar y Climatización > Tecnología > '
-             'Consolas y Videojuegos > Consolas', 1]
+            [
+                "electrohogar-y-climatizacion/ventilacion/aire-acondicionado-"
+                "portatil",
+                [AIR_CONDITIONER],
+                "Inicio > Electrohogar y Climatización > Ventilación > "
+                "Aire acondicionado portátil",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/ventilacion/aire-acondicionado-" "split",
+                [AIR_CONDITIONER],
+                "Inicio > Electrohogar y Climatización > Ventilación > "
+                "Aire Acondicionado split",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/ventilacion/purificadores-y-"
+                "humidificadores",
+                [AIR_CONDITIONER],
+                "Inicio > Electrohogar y Climatización > Ventilación > "
+                "Purificadores y humidificadores",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/calefont-y-termos/calefont",
+                [WATER_HEATER],
+                "Inicio > Electrohogar y Climatización > Calefont y Termos > "
+                "Calefont",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/tecnologia/consolas-y-"
+                "videojuegos/consolas",
+                [VIDEO_GAME_CONSOLE],
+                "Electrohogar y Climatización > Tecnología > "
+                "Consolas y Videojuegos > Consolas",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/cocina/cocinas-a-gas",
+                [STOVE],
+                "Electrohogar y Climatización > Cocina > Cocina a gas",
+                1,
+            ],
+            [
+                "electrohogar-y-climatizacion/cocina/encimeras",
+                [STOVE],
+                "Electrohogar y Climatización > Cocina > Encimeras",
+                1,
+            ],
         ]
 
         product_entries = defaultdict(lambda: [])
@@ -142,46 +224,50 @@ class Easy(Store):
             page = 0
             while True:
                 if page > 20:
-                    raise Exception('page overflow: ' + category_path)
+                    raise Exception("page overflow: " + category_path)
 
-                facets = [{'key': 'c', 'value': x}
-                          for x in category_path.split('/')]
+                facets = [{"key": "c", "value": x} for x in category_path.split("/")]
 
                 variables = {
-                    'from': page * 40,
-                    'to': (page + 1) * 40 - 1,
-                    'selectedFacets': facets
+                    "from": page * 40,
+                    "to": (page + 1) * 40 - 1,
+                    "selectedFacets": facets,
                 }
 
                 payload = {
-                    'persistedQuery': {
-                        'version': 1,
-                        'sha256Hash': extra_args['sha256Hash'],
-                        'sender': 'vtex.store-resources@0.x',
-                        'provider': 'vtex.search-graphql@0.x'
+                    "persistedQuery": {
+                        "version": 1,
+                        "sha256Hash": extra_args["sha256Hash"],
+                        "sender": "vtex.store-resources@0.x",
+                        "provider": "vtex.search-graphql@0.x",
                     },
-                    'variables': base64.b64encode(json.dumps(
-                        variables).encode('utf-8')).decode('utf-8')
+                    "variables": base64.b64encode(
+                        json.dumps(variables).encode("utf-8")
+                    ).decode("utf-8"),
                 }
 
-                endpoint = 'https://www.easy.cl/_v/segment/graphql/v1?' \
-                           'extensions={}'.format(json.dumps(payload))
+                endpoint = (
+                    "https://www.easy.cl/_v/segment/graphql/v1?"
+                    "extensions={}".format(json.dumps(payload))
+                )
                 response = session.get(endpoint)
 
-                products_data = response.json()['data']['productSearch'][
-                    'products']
+                products_data = response.json()["data"]["productSearch"]["products"]
 
                 if not products_data:
                     break
 
                 for idx, product_data in enumerate(products_data):
-                    product_url = 'https://www.easy.cl/{}/p'.format(
-                        product_data['linkText'])
-                    product_entries[product_url].append({
-                        'category_weight': category_weight,
-                        'section_name': section_name,
-                        'value': idx + 1
-                    })
+                    product_url = "https://www.easy.cl/{}/p".format(
+                        product_data["linkText"]
+                    )
+                    product_entries[product_url].append(
+                        {
+                            "category_weight": category_weight,
+                            "section_name": section_name,
+                            "value": idx + 1,
+                        }
+                    )
 
                 page += 1
 
@@ -190,64 +276,86 @@ class Easy(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
+        session.headers["Content-Type"] = "application/json"
         product_urls = []
 
-        base_prod_url = 'https://www.easy.cl/tienda/producto/{}'
-        prods_url = 'https://www.easy.cl/api//prodeasy/_search'
+        base_prod_url = "https://www.easy.cl/tienda/producto/{}"
+        prods_url = "https://www.easy.cl/api//prodeasy/_search"
 
         prods_data = {
-            'query': {
-                'function_score': {
-                    'query': {
-                        'bool': {
-                            'must': [{
-                                'bool': {
-                                    'should': [{
-                                        'function_score': {
-                                            'query': {
-                                                'multi_match': {
-                                                    'query': keyword,
-                                                    'fields': [
-                                                        'name^1000',
-                                                        'brand',
-                                                        'cat_3.stop',
-                                                        'partNumber'],
-                                                    'type':'best_fields',
-                                                    'operator':'and'}},
-                                            'field_value_factor': {
-                                                'field': 'boost',
-                                                'factor': 6}}}, {
-                                        'multi_match': {
-                                            'query': keyword,
-                                            'fields': [
-                                                'name^8',
-                                                'cat_3.stop'],
-                                            'type': 'best_fields',
-                                            'operator': 'or'}}, {
-                                        'span_first': {
-                                            'match': {
-                                                'span_term': {
-                                                    'name.dym': keyword}},
-                                            'end': 1,
-                                            'boost': 2000}}],
-                                    'minimum_should_match': '1'}}]}},
-                    'boost_mode': 'sum',
-                    'score_mode': 'max'}},
-            'size': 450,
-            'from': 0}
+            "query": {
+                "function_score": {
+                    "query": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "bool": {
+                                        "should": [
+                                            {
+                                                "function_score": {
+                                                    "query": {
+                                                        "multi_match": {
+                                                            "query": keyword,
+                                                            "fields": [
+                                                                "name^1000",
+                                                                "brand",
+                                                                "cat_3.stop",
+                                                                "partNumber",
+                                                            ],
+                                                            "type": "best_fields",
+                                                            "operator": "and",
+                                                        }
+                                                    },
+                                                    "field_value_factor": {
+                                                        "field": "boost",
+                                                        "factor": 6,
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                "multi_match": {
+                                                    "query": keyword,
+                                                    "fields": ["name^8", "cat_3.stop"],
+                                                    "type": "best_fields",
+                                                    "operator": "or",
+                                                }
+                                            },
+                                            {
+                                                "span_first": {
+                                                    "match": {
+                                                        "span_term": {
+                                                            "name.dym": keyword
+                                                        }
+                                                    },
+                                                    "end": 1,
+                                                    "boost": 2000,
+                                                }
+                                            },
+                                        ],
+                                        "minimum_should_match": "1",
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "boost_mode": "sum",
+                    "score_mode": "max",
+                }
+            },
+            "size": 450,
+            "from": 0,
+        }
 
-        prods_response = session.post(
-            prods_url, data=json.dumps(prods_data))
+        prods_response = session.post(prods_url, data=json.dumps(prods_data))
 
         prods_json = json.loads(prods_response.text)
-        prods_hits = prods_json['hits']['hits']
+        prods_hits = prods_json["hits"]["hits"]
 
         if not prods_hits:
             return []
 
         for prods_hit in prods_hits:
-            product_url = base_prod_url.format(prods_hit['_source']['url'])
+            product_url = base_prod_url.format(prods_hit["_source"]["url"])
             product_urls.append(product_url)
 
             if len(product_urls) == threshold:
@@ -260,10 +368,14 @@ class Easy(Store):
         print(url)
         session = session_with_proxy(extra_args)
         res = session.get(url)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        product_data = json.loads(str(soup.find(
-            'template', {'data-varname': '__STATE__'}).find(
-            'script').contents[0]))
+        soup = BeautifulSoup(res.text, "html.parser")
+        product_data = json.loads(
+            str(
+                soup.find("template", {"data-varname": "__STATE__"})
+                .find("script")
+                .contents[0]
+            )
+        )
 
         base_json_keys = list(product_data.keys())
 
@@ -273,37 +385,34 @@ class Easy(Store):
         base_json_key = base_json_keys[0]
         product_specs = product_data[base_json_key]
 
-        key = product_specs['productId']
-        name = product_specs['productName']
-        sku = product_specs['productReference']
-        description = html_to_markdown(product_specs.get('description', None))
+        key = product_specs["productId"]
+        name = product_specs["productName"]
+        sku = product_specs["productReference"]
+        description = html_to_markdown(product_specs.get("description", None))
 
-        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
-            base_json_key)
+        pricing_key = "${}.items.0.sellers.0.commertialOffer".format(base_json_key)
         pricing_data = product_data[pricing_key]
 
-        normal_price = Decimal(pricing_data['Price'])
+        normal_price = Decimal(pricing_data["Price"])
 
-        offer_price_key = '{}.teasers.0.effects.parameters.0'.format(
-            pricing_key)
+        offer_price_key = "{}.teasers.0.effects.parameters.0".format(pricing_key)
         offer_price_json_value = product_data.get(offer_price_key, None)
         if offer_price_json_value:
-            offer_price = Decimal(offer_price_json_value['value']) \
-                / Decimal(100)
+            offer_price = Decimal(offer_price_json_value["value"]) / Decimal(100)
             if offer_price > normal_price:
                 offer_price = normal_price
         else:
             offer_price = normal_price
 
-        stock = pricing_data['AvailableQuantity']
-        picture_list_key = '{}.items.0'.format(base_json_key)
+        stock = pricing_data["AvailableQuantity"]
+        picture_list_key = "{}.items.0".format(base_json_key)
         picture_list_node = product_data[picture_list_key]
-        picture_ids = [x['id'] for x in picture_list_node['images']]
+        picture_ids = [x["id"] for x in picture_list_node["images"]]
 
         picture_urls = []
         for picture_id in picture_ids:
             picture_node = product_data[picture_id]
-            picture_urls.append(picture_node['imageUrl'].split('?')[0])
+            picture_urls.append(picture_node["imageUrl"].split("?")[0])
 
         p = Product(
             name,
@@ -315,7 +424,7 @@ class Easy(Store):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=sku,
             picture_urls=picture_urls,
             description=description,
@@ -326,5 +435,6 @@ class Easy(Store):
     @classmethod
     def preflight(cls, extra_args=None):
         return vtex_preflight(
-            extra_args, 'https://www.easy.cl/electrohogar-y-climatizacion/'
-                        'refrigeracion')
+            extra_args,
+            "https://www.easy.cl/electrohogar-y-climatizacion/" "refrigeracion",
+        )

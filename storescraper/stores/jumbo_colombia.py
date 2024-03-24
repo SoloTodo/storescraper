@@ -1,5 +1,7 @@
 import base64
 import json
+import re
+import urllib
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -35,10 +37,12 @@ class JumboColombia(Store):
                 raise Exception("Page overflow")
 
             variables = {
+                "hideUnavailableItems": True,
                 "from": offset,
                 "to": offset + 12,
-                "selectedFacets": [{"key": "ft", "value": "lg"}],
-                "fullText": "lg",
+                "selectedFacets": [
+                    {"key": "brand", "value": "lg"},
+                ],
             }
 
             payload = {
@@ -53,7 +57,7 @@ class JumboColombia(Store):
 
             endpoint = (
                 "https://www.tiendasjumbo.co/_v/segment/graphql/v1"
-                "?extensions={}".format(json.dumps(payload))
+                "?extensions={}".format(urllib.parse.quote(json.dumps(payload)))
             )
             response = session.get(endpoint).json()
 
@@ -78,6 +82,8 @@ class JumboColombia(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html5lib")
+        runtime_match = re.search("__RUNTIME__ = (.+)", response.text)
+        runtime_json = json.loads(runtime_match.groups()[0])
 
         product_data_tag = soup.find("template", {"data-varname": "__STATE__"})
         product_data = json.loads(str(product_data_tag.find("script").contents[0]))
@@ -88,7 +94,7 @@ class JumboColombia(Store):
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
 
-        key = soup.find("meta", {"property": "product:sku"})["content"]
+        key = runtime_json["route"]["params"]["id"]
         name = product_specs["productName"]
         sku = product_specs["productReference"]
         description = product_specs.get("description", None)

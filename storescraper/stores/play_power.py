@@ -1,13 +1,15 @@
+import json
 import re
 from decimal import Decimal
 import logging
 
+import pyjson5
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class PlayPower(StoreWithUrlExtensions):
@@ -46,37 +48,70 @@ class PlayPower(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
+        products = []
         name_tag = soup.find("h3", {"data-product-type": "title"})
 
-        if not name_tag:
-            return []
+        if name_tag:
+            name_tag = soup.find("h3", {"data-product-type": "title"})
+            page_id = name_tag["data-product-id"]
 
-        name = name_tag.text.strip()
-        key, stock_text = re.search(
-            r'quantity: \["(\d+):(\d)"]', response.text
-        ).groups()
-        stock = int(stock_text)
-        price = Decimal(
-            remove_words(soup.find("div", {"data-product-type": "price"}).text.strip())
-        )
-        picture_urls = [
-            "https:" + x.find("img")["src"]
-            for x in soup.find("div", "pf-media-slider").findAll(
-                "div", "pf-slide-main-media"
+            search_string = (
+                r'window.__pageflyProducts\["'
+                + re.escape(page_id)
+                + r'"] = ([\s\S]+?);'
             )
-        ]
+            match = re.search(search_string, response.text)
+            product_data = pyjson5.decode(match.groups()[0])
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            "CLP",
-            picture_urls=picture_urls,
-        )
-        return [p]
+            base_name = product_data["title"]
+            picture_urls = ["https:" + x["src"] for x in product_data["media"]]
+            for variant in product_data["variants"]:
+                name = "{} ({})".format(base_name, variant["title"])
+                key = str(variant["id"])
+                stock = -1 if variant["available"] else 0
+                price = Decimal(variant["price"] // 100)
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+        else:
+            variants_tag = soup.find("variant-radios")
+
+            if not variants_tag:
+                return []
+
+            base_name = soup.find("h1").text.strip()
+            variants_data = json.loads(variants_tag.find("script").text)
+            for variant in variants_data:
+                name = "{} ({})".format(base_name, variant["title"])
+                key = str(variant["id"])
+                stock = -1 if variant["available"] else 0
+                price = Decimal(variant["price"] // 100)
+                picture_urls = ["https:" + variant["featured_image"]["src"]]
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+        return products

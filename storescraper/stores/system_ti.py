@@ -80,7 +80,12 @@ class SystemTi(StoreWithUrlExtensions):
             sku = sku_tag.text.strip()
         else:
             sku = None
-        picture_urls = [soup.find("div", "main-product-image").find("img")["src"]]
+
+        picture_urls_tag = soup.find("div", "main-product-image")
+        if picture_urls_tag:
+            picture_urls = [picture_urls_tag.find("img")["src"]]
+        else:
+            picture_urls = None
         description = html_to_markdown(str(soup.find("div", "description")))
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"]

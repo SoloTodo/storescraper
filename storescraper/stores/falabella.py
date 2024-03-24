@@ -540,10 +540,21 @@ class Falabella(Store):
         [
             "cat2013",
             [WATER_HEATER],
-            "Home > Cocina y Baño-Baño > CAlefont y Termos",
+            "Home > Cocina y Baño-Baño > Calefont y Termos",
             1,
         ],
-        # ['CATG10194', [GROCERIES], 'Despensa', 1]
+        [
+            "cat70012",
+            [STOVE],
+            "Home > Electrohogar - Línea blanca > Cocina > Cocina a gas",
+            1,
+        ],
+        [
+            "cat4045",
+            [STOVE],
+            "Home > Electrohogar - Línea blanca > Cocina > Encimeras",
+            1,
+        ],
     ]
 
     @classmethod

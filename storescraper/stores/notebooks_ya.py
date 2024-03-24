@@ -121,7 +121,7 @@ class NotebooksYa(StoreWithUrlExtensions):
         page = 1
         done = False
         while not done:
-            if page > 10:
+            if page > 20:
                 raise Exception("page overflow: " + url_extension)
 
             url_components = url_extension.split("?")
@@ -146,7 +146,15 @@ class NotebooksYa(StoreWithUrlExtensions):
                 break
 
             soup = BeautifulSoup(response.text, "html.parser")
-            product_containers = soup.findAll("li", "product")
+
+            template_tag = soup.find("script", {"type": "text/template"})
+            if template_tag:
+                template_soup = BeautifulSoup(
+                    json.loads(template_tag.text), "html.parser"
+                )
+                product_containers = template_soup.findAll("li", "product")
+            else:
+                product_containers = soup.findAll("li", "product")
 
             if not product_containers:
                 if page == 1:

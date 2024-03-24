@@ -4,7 +4,13 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import CELL, COMPUTER_CASE, PROCESSOR, VIDEO_CARD
+from storescraper.categories import (
+    CELL,
+    COMPUTER_CASE,
+    PROCESSOR,
+    VIDEO_CARD,
+    VIDEO_GAME_CONSOLE,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
@@ -16,6 +22,7 @@ class SmartMobile(StoreWithUrlExtensions):
         ["componentes-pc/procesador", PROCESSOR],
         ["componentes-pc/tarjeta-grafica", VIDEO_CARD],
         ["componentes-pc/gabinete", COMPUTER_CASE],
+        ["consolas", VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
@@ -45,7 +52,9 @@ class SmartMobile(StoreWithUrlExtensions):
                 break
 
             for container in product_containers.findAll("li", "product"):
-                product_url = container.find("a")["href"]
+                product_url = container.find("a", "woocommerce-loop-product__link")[
+                    "href"
+                ]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -150,6 +159,8 @@ class SmartMobile(StoreWithUrlExtensions):
             else:
                 stock_container = product_container.find("p", "stock").text.split()
                 if stock_container[0] == "Agotado":
+                    stock = 0
+                elif stock_container[0] == "Sin":  # Sin existencias
                     stock = 0
                 else:
                     stock = int(stock_container[0])

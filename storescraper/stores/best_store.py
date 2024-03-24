@@ -141,7 +141,17 @@ class BestStore(StoreWithUrlExtensions):
 
         add_to_cart_button = soup.find("button", "btn btn-primary add-to-cart")
 
+        labels = soup.find("div", "content-cyber-monday").findAll("label")
+        for label in labels:
+            if "IMPORTADO" in label.text.upper():
+                importado = True
+                break
+        else:
+            importado = False
+
         if part_number is None:
+            stock = 0
+        elif importado:
             stock = 0
         elif "disabled" in add_to_cart_button.attrs:
             stock = 0
@@ -188,6 +198,11 @@ class BestStore(StoreWithUrlExtensions):
         else:
             raise Exception("Invalid condition: " + condition_text)
 
+        if importado:
+            description = "IMPORTADO"
+        else:
+            description = ""
+
         p = Product(
             name,
             cls.__name__,
@@ -203,5 +218,6 @@ class BestStore(StoreWithUrlExtensions):
             part_number=part_number,
             picture_urls=picture_url,
             condition=condition,
+            description=description,
         )
         return [p]

@@ -144,7 +144,10 @@ class AsusStore(StoreWithUrlExtensions):
                 .text.replace("\u200b", "")
                 .strip()
             )
-            model_name = soup.find("div", "simple-sku").text.split(" - ")[-1].strip()
+            model_name_tag = soup.find("div", "simple-sku")
+            if not model_name_tag:
+                return []
+            model_name = model_name_tag.text.split(" - ")[-1].strip()
             name = "{} ({})".format(base_name, model_name)
             key = soup.find("div", "price-box")["data-product-id"]
             sku = soup.find("div", "simple-part").text.split(" - ")[-1]

@@ -14,6 +14,7 @@ from storescraper.categories import (
     TELEVISION,
     VACUUM_CLEANER,
     WATER_HEATER,
+    STOVE,
 )
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -400,6 +401,18 @@ class Paris(Store):
             "linea-blanca/estufas/calefones-termos",
             [WATER_HEATER],
             "Electro y Línea Blanca > Calefacción > Calefont y Termos",
+            1,
+        ],
+        [
+            "linea-blanca/cocina/cocinas",
+            [STOVE],
+            "Electro y Línea Blanca > Cocina > Cocinas",
+            1,
+        ],
+        [
+            "linea-blanca/cocina/encimeras",
+            [STOVE],
+            "Electro y Línea Blanca > Cocina > Encimeras",
             1,
         ],
     ]

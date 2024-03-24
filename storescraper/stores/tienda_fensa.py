@@ -2,7 +2,13 @@ from decimal import Decimal
 import json
 import logging
 import re
-from storescraper.categories import OVEN, REFRIGERATOR, WASHING_MACHINE
+from storescraper.categories import (
+    OVEN,
+    REFRIGERATOR,
+    WASHING_MACHINE,
+    STOVE,
+    DISH_WASHER,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import html_to_markdown, session_with_proxy
@@ -17,6 +23,9 @@ class TiendaFensa(StoreWithUrlExtensions):
         ["linea-blanca/hornos", OVEN],
         ["linea-blanca/freezer", REFRIGERATOR],
         ["linea-blanca/microondas", OVEN],
+        ["linea-blanca/cocinas", STOVE],
+        ["linea-blanca/encimeras", STOVE],
+        ["linea-blanca/lavavajillas", DISH_WASHER],
     ]
 
     @classmethod
