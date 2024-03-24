@@ -115,6 +115,9 @@ class Dust2(StoreWithUrlExtensions):
         response = session.get(endpoint)
         product_data = response.json()
 
+        if "name" not in product_data:
+            return []
+
         name = product_data["name"]
         sku = product_data["sku"]
         if "id" in product_data:
