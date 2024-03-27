@@ -67,7 +67,7 @@ class AlcaColombia(Store):
         )
         key = canonical_url_tag["href"].split("/")[-1]
         name = product_data["name"]
-        sku = product_data["sku"]
+        sku = product_data.get("sku", None)
         price = Decimal(product_data["offers"]["price"])
         description = product_data["description"]
         if product_data["offers"]["availability"] == "https://schema.org/InStock":
