@@ -27,7 +27,7 @@ class AlcaColombia(Store):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 20:
                 raise Exception("Page overflow")
             url = "https://alcaltda.com/page/{}/?s=LG&post_type=product".format(page)
             print(url)

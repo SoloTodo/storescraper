@@ -71,7 +71,7 @@ class MyShop(StoreWithUrlExtensions):
         ["139", MONITOR],  # monitor-monitores-monitores-gamer
         ["138", MONITOR],  # monitor-monitores-monitores-gamer
         ["9", HEADPHONES],  # audio-video-audifonos-on-ear
-        ["18", TELEVISION],  # audio-video-televisores
+        # ["18", TELEVISION],  # audio-video-televisores
         ["140", TELEVISION],  # monitor-smart-tv
         ["27", PRINTER],  # impresion-impresion-laser
         ["30", PRINTER],  # impresion-otras-impresoras
@@ -124,6 +124,7 @@ class MyShop(StoreWithUrlExtensions):
                 product_url = "https://www.myshop.cl" + product_entry["url"]
                 product_urls.append(product_url)
             page += 1
+            break
         return product_urls
 
     @classmethod
