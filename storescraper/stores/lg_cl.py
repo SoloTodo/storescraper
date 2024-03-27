@@ -8,6 +8,7 @@ from storescraper.categories import (
     PROJECTOR,
     DISH_WASHER,
     AIR_CONDITIONER,
+    OVEN,
 )
 
 
@@ -41,4 +42,6 @@ class LgCl(LgV6):
             ("CT52000106", MONITOR),
             # Aires acondicionados
             ("CT52002586", AIR_CONDITIONER),
+            # Microondas
+            ("CT52020321", OVEN),
         ]
