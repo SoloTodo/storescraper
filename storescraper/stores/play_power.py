@@ -98,7 +98,10 @@ class PlayPower(StoreWithUrlExtensions):
                 key = str(variant["id"])
                 stock = -1 if variant["available"] else 0
                 price = Decimal(variant["price"] // 100)
-                picture_urls = ["https:" + variant["featured_image"]["src"]]
+                if variant["featured_image"]:
+                    picture_urls = ["https:" + variant["featured_image"]["src"]]
+                else:
+                    picture_urls = None
 
                 p = Product(
                     name,
