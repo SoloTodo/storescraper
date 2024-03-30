@@ -62,8 +62,16 @@ class MyShop(StoreWithUrlExtensions):
         ["33", VIDEO_CARD],  # partes-y-piezas-tarjetas-de-video
         ["36", COMPUTER_CASE],  # partes-y-piezas-gabinetes
         ["64", POWER_SUPPLY],  # partes-y-piezas-fuentes-de-poder
-        ["72", STORAGE_DRIVE],  # partes-y-piezas-discos-hdd-internos
-        ["108", SOLID_STATE_DRIVE],  # partes-y-piezas-discos-ssd-internos
+        ["72", STORAGE_DRIVE],  # almacenamiento-discos-hdd-internos
+        ["108", SOLID_STATE_DRIVE],  # almacenamiento-discos-ssd-internos
+        [
+            "135",
+            SOLID_STATE_DRIVE,
+        ],  # almacenamiento-discos-ssd-internos-discos-ssd-sata-2-5-
+        [
+            "136",
+            SOLID_STATE_DRIVE,
+        ],  # almacenamiento-discos-ssd-internos-discos-ssd-m-2
         ["8", HEADPHONES],  # audio-video-audifonos-in-ear
         ["11", STEREO_SYSTEM],  # audio-video-parlantes
         ["14", HEADPHONES],  # audio-video-video-conferencia
@@ -71,7 +79,6 @@ class MyShop(StoreWithUrlExtensions):
         ["139", MONITOR],  # monitor-monitores-monitores-gamer
         ["138", MONITOR],  # monitor-monitores-monitores-gamer
         ["9", HEADPHONES],  # audio-video-audifonos-on-ear
-        ["18", TELEVISION],  # audio-video-televisores
         ["140", TELEVISION],  # monitor-smart-tv
         ["27", PRINTER],  # impresion-impresion-laser
         ["30", PRINTER],  # impresion-otras-impresoras
@@ -83,6 +90,10 @@ class MyShop(StoreWithUrlExtensions):
         ["101", MOUSE],  # gamer-mouse-gamer
         ["85", UPS],  # empresas-ups
         ["117", NOTEBOOK],  # computacion-liquidacion
+        [
+            "69",
+            EXTERNAL_STORAGE_DRIVE,
+        ],  # almacenamiento-almacenamiento-externo
         [
             "154",
             EXTERNAL_STORAGE_DRIVE,

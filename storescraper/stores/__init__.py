@@ -41,6 +41,7 @@ from .central_gamer import CentralGamer
 from .chelnovix import Chelnovix
 from .cintegral import Cintegral
 from .claro import Claro
+from .claro_ecuador import ClaroEcuador
 from .comandato import Comandato
 from .computron import Computron
 from .coolbox import Coolbox

@@ -1078,6 +1078,26 @@ class MercadoLibreChile(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
+        # In case the refresh token expires follow these instructions
+        # 1. Execute
+        # curl -v https://auth.mercadolibre.cl/authorization?response_type=code&
+        # client_id=$CLIENT_ID&redirect_uri=https://www.solotodo.com
+        # Replacing CLIENT_ID with the app_id
+        # 2. Follow the given link in a browser
+        # 3. Copy the code at the end of the redirect url https://www.solotodo.cl/?code=[CODE]
+        # 4. Execute the command
+        # curl -X POST \
+        # -H 'accept: application/json' \
+        # -H 'content-type: application/x-www-form-urlencoded' \
+        # 'https://api.mercadolibre.com/oauth/token' \
+        # -d 'grant_type=authorization_code' \
+        # -d 'client_id=$APP_ID' \
+        # -d 'client_secret=$APP_SECRET' \
+        # -d 'code=$CODE' \
+        # -d 'redirect_uri=https://www.solotodo.com'
+        # Replacing the APP_ID, APP_SECRET and CODE accordingly
+        # 5. Copy the refresh token returned in the previous step
+
         session = session_with_proxy(extra_args)
         url = "https://api.mercadolibre.com/oauth/token"
         session.headers["accept"] = "application/json"
