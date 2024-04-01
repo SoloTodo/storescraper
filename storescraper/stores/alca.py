@@ -69,7 +69,7 @@ class Alca(Store):
         name = product_data["name"]
         sku = product_data["sku"][:50]
         description = product_data["description"]
-        price = Decimal(product_data["offers"][0]["price"])
+        price = Decimal(product_data["offers"][0]["priceSpecification"]["price"])
 
         stock_button = soup.find("button", {"name": "add-to-cart"})
         if stock_button:
