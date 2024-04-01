@@ -118,6 +118,8 @@ class SamuraiStore(StoreWithUrlExtensions):
             + html_to_markdown(
                 str(soup.find("div", "woocommerce-Tabs-panel--description"))
             )
+            + " "
+            + html_to_markdown((str(soup.find("div", "product-short-description"))))
         )
 
         if not available_for_purchase:
