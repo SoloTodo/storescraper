@@ -53,7 +53,12 @@ class Alca(Store):
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
+        key_tag = soup.find("link", {"rel": "shortlink"})
+
+        if not key_tag:
+            return []
+
+        key = key_tag["href"].split("=")[-1]
 
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text
