@@ -642,6 +642,8 @@ class MercadoLibreChile(Store):
             WASHING_MACHINE,
             TELEVISION,
             VACUUM_CLEANER,
+            ALL_IN_ONE,
+            PRINTER,
         ]
         # return [i for i in set(cls.categories_name.values()) if i]
 
