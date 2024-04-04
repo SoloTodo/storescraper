@@ -75,6 +75,9 @@ class Exito(Store):
         sku = product_json["sku"]
         price = Decimal(product_json["offers"]["lowPrice"])
 
+        if not price:
+            return []
+
         offer = product_json["offers"]["offers"][0]
         if offer["availability"] == "https://schema.org/InStock":
             stock = -1
