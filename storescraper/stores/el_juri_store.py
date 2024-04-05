@@ -13,9 +13,7 @@ from storescraper.utils import session_with_proxy
 class ElJuriStore(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -23,28 +21,28 @@ class ElJuriStore(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
+        )
         product_urls = []
         page = 1
         while True:
             if page > 10:
-                raise Exception('page overflow')
+                raise Exception("page overflow")
 
-            url_webpage = 'https://eljuri.store/brand/19-lg?page={}'.format(
-                page)
+            url_webpage = "https://eljuri.store/brand/19-lg?page={}".format(page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('article', 'product-miniature')
+            soup = BeautifulSoup(response.text, "html.parser")
+            product_containers = soup.findAll("article", "product-miniature")
 
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category')
+                    logging.warning("Empty category")
                 break
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -53,30 +51,31 @@ class ElJuriStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
+        )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        json_tags = soup.findAll('script', {'type': 'application/ld+json'})
+        json_tags = soup.findAll("script", {"type": "application/ld+json"})
 
         for tag in json_tags:
             entry = json.loads(tag.text)
-            if entry['@type'] == 'Product':
+            if entry["@type"] == "Product":
                 product_data = entry
                 break
         else:
-            raise Exception('No JSON product data found')
+            return []
 
-        name = product_data['name']
-        sku = str(product_data['mpn'])
-        description = product_data['description']
-        price = Decimal(product_data['offers']['price'])
+        name = product_data["name"]
+        sku = str(product_data["mpn"])
+        description = product_data["description"]
+        price = Decimal(product_data["offers"]["price"])
 
-        stock_tag_container = soup.find('div', 'product-quantities')
-        stock = int(stock_tag_container.find('span')['data-stock'])
-        picture_urls = [product_data['image']]
+        stock_tag_container = soup.find("div", "product-quantities")
+        stock = int(stock_tag_container.find("span")["data-stock"])
+        picture_urls = [product_data["image"]]
 
         p = Product(
             name,
@@ -88,10 +87,9 @@ class ElJuriStore(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             picture_urls=picture_urls,
-            description=description
-
+            description=description,
         )
         return [p]

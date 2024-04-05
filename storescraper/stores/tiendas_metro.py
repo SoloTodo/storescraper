@@ -53,7 +53,7 @@ class TiendasMetro(Store):
             }
 
             endpoint = (
-                "https://www.tiendasmetro.co//_v/segment/graphql/v1"
+                "https://www.tiendasmetro.co/_v/segment/graphql/v1"
                 "?extensions={}".format(json.dumps(payload))
             )
             response = session.get(endpoint).json()
