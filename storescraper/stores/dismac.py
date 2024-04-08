@@ -20,35 +20,38 @@ class Dismac(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        session.headers['x-algolia-api-key'] = \
-            'ZDFkYTRkNWE1YzY3ODkzMjlhZjA3MzhhZTg4MTI2MzZlYzNiZT' \
-            'BkYjRkMDA2OGU4MDAwMGEyNDFiNzliNmZmOXRhZ0ZpbHRlcnM9'
-        session.headers['x-algolia-application-id'] = 'BJPB6CPN3G'
+        session.headers["x-algolia-api-key"] = (
+            "ZDFkYTRkNWE1YzY3ODkzMjlhZjA3MzhhZTg4MTI2MzZlYzNiZT"
+            "BkYjRkMDA2OGU4MDAwMGEyNDFiNzliNmZmOXRhZ0ZpbHRlcnM9"
+        )
+        session.headers["x-algolia-application-id"] = "BJPB6CPN3G"
         product_urls = []
 
         page = 0
         while True:
+            print(page)
             if page > 10:
-                raise Exception('page overflow')
+                raise Exception("page overflow")
 
-            body = json.dumps({
-                "requests": [
-                    {
-                        "indexName": "dis_prod_scz_products",
-                        "params": "query=LG&page={}".format(page)
-                    }
-                ]
-            })
-            url_webpage = 'https://bjpb6cpn3g-dsn.algolia.net/1/indexes/' \
-                          '*/queries'
+            body = json.dumps(
+                {
+                    "requests": [
+                        {
+                            "indexName": "dis_prod_scz_products",
+                            "params": "query=LG&page={}".format(page),
+                        }
+                    ]
+                }
+            )
+            url_webpage = "https://bjpb6cpn3g-dsn.algolia.net/1/indexes/" "*/queries"
             response = session.post(url_webpage, data=body)
-            product_json = response.json()['results'][0]['hits']
+            product_json = response.json()["results"][0]["hits"]
             if not product_json:
                 if page == 1:
-                    logging.warning('empty site')
+                    logging.warning("empty site")
                 break
             for product in product_json:
-                product_url = product['url']
+                product_url = product["url"]
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -62,25 +65,26 @@ class Dismac(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        key = soup.find('input', {'name': 'product'})['value']
+        key = soup.find("input", {"name": "product"})["value"]
 
         json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            soup.find("script", {"type": "application/ld+json"}).text
+        )
 
-        name = json_data['name']
-        sku = json_data['sku']
-        description = json_data.get('description', None)
-        if 'price' in json_data['offers']:
-            price = Decimal(json_data['offers']['price'])
+        name = json_data["name"]
+        sku = json_data["sku"]
+        description = json_data.get("description", None)
+        if "price" in json_data["offers"]:
+            price = Decimal(json_data["offers"]["price"])
         else:
-            price = Decimal(json_data['offers']['offers'][0]['price'])
+            price = Decimal(json_data["offers"]["offers"][0]["price"])
 
         if not price:
             return []
 
-        if soup.find('button', {'id': 'buy-now'}):
+        if soup.find("button", {"id": "product-addtocart-button"}):
             stock = -1
         else:
             stock = 0
@@ -97,7 +101,7 @@ class Dismac(Store):
             stock,
             price,
             price,
-            'BOB',
+            "BOB",
             sku=sku,
             picture_urls=picture_urls,
             description=description,
