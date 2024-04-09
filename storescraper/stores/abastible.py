@@ -1,4 +1,5 @@
 import re
+import time
 from decimal import Decimal
 from bs4 import BeautifulSoup
 from storescraper.categories import AIR_CONDITIONER
@@ -14,6 +15,7 @@ class Abastible(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
+        time.sleep(5)
         url = "https://servicioshogar.abastible.cl/{}.html".format(url_extension)
         return [url]
 
