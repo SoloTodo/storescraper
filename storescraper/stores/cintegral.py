@@ -41,10 +41,11 @@ class Cintegral(StoreWithUrlExtensions):
         ["109", NOTEBOOK],
         ["110", ALL_IN_ONE],
         ["176", TABLET],
-        ["157", PRINTER],
-        ["156", PRINTER],
-        ["129", PRINTER],
-        ["152", PRINTER],
+        ["128", PRINTER],  # Impresoras Tinta
+        ["156", PRINTER],  # Impresoras
+        ["129", PRINTER],  # Impresoras Láser
+        ["157", PRINTER],  # Multifuncionales
+        ["152", PRINTER],  # Plotter
         ["181", STORAGE_DRIVE],
         ["182", EXTERNAL_STORAGE_DRIVE],
         ["183", SOLID_STATE_DRIVE],
