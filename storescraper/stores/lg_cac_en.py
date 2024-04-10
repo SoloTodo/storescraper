@@ -16,6 +16,9 @@ class LgCacEn(LgV5):
             # Equipos de sonido
             ("CT40011663", "StereoSystem", True),
             ("CT40011663", "StereoSystem", False),
+            # Equipos de sonido
+            ("CT40018549", "StereoSystem", True),
+            ("CT40018549", "StereoSystem", False),
             # Audífonos inalámbricos
             ("CT40011665", "Headphones", True),
             ("CT40011665", "Headphones", False),

@@ -171,12 +171,24 @@ class InfographicsSolutions(StoreWithUrlExtensions):
         stock_container = soup.find("div", "vc_custom_1644417722193").find("p", "stock")
         short_description = product_data.get("description", "")
 
+        description = html_to_markdown(str(soup.find("div", {"id": "tab-description"})))
+        if description == "None\n":
+            description = html_to_markdown(
+                str(soup.find("div", "woocommerce-product-details__short-description"))
+            )
+
         if "VENTA" in name.upper() and "PRE" in name.upper():
             # Preventa
             stock = 0
+            description = "PREVENTA " + description
         elif "LLEGADA" in short_description.upper():
             # Preventa
             stock = 0
+            description = "PREVENTA " + description
+        elif soup.find("div", "mensaje-clase-envio"):
+            # Pedido internacional
+            stock = 0
+            description = "INTERNACIONAL " + description
         elif stock_container:
             stock_text = stock_container.text.split(" ")[0]
             if stock_text == "Agotado":
@@ -199,12 +211,6 @@ class InfographicsSolutions(StoreWithUrlExtensions):
             for p in picture_containers
             if validators.url(p.find("a")["href"])
         ]
-
-        description = html_to_markdown(str(soup.find("div", {"id": "tab-description"})))
-        if description == "None\n":
-            description = html_to_markdown(
-                str(soup.find("div", "woocommerce-product-details__short-description"))
-            )
 
         if len(sku) > 50:
             sku = None
