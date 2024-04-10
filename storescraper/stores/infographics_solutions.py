@@ -177,6 +177,8 @@ class InfographicsSolutions(StoreWithUrlExtensions):
                 str(soup.find("div", "woocommerce-product-details__short-description"))
             )
 
+        detalle_envio_tag = soup.find("div", "mensaje-clase-envio")
+
         if "VENTA" in name.upper() and "PRE" in name.upper():
             # Preventa
             stock = 0
@@ -185,7 +187,7 @@ class InfographicsSolutions(StoreWithUrlExtensions):
             # Preventa
             stock = 0
             description = "PREVENTA " + description
-        elif soup.find("div", "mensaje-clase-envio"):
+        elif detalle_envio_tag and "DÍAS" in detalle_envio_tag.text.upper():
             # Pedido internacional
             stock = 0
             description = "INTERNACIONAL " + description
