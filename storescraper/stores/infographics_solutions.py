@@ -187,7 +187,7 @@ class InfographicsSolutions(StoreWithUrlExtensions):
             # Preventa
             stock = 0
             description = "PREVENTA " + description
-        elif detalle_envio_tag and "DÍAS" in detalle_envio_tag.text.upper():
+        elif detalle_envio_tag and "15" in detalle_envio_tag.text.upper():
             # Pedido internacional
             stock = 0
             description = "INTERNACIONAL " + description
