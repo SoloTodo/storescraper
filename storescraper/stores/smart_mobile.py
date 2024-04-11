@@ -162,6 +162,8 @@ class SmartMobile(StoreWithUrlExtensions):
                     stock = 0
                 elif stock_container[0] == "Sin":  # Sin existencias
                     stock = 0
+                elif stock_container[0] == "Hay":  # Hay existencias
+                    stock = -1
                 else:
                     stock = int(stock_container[0])
 

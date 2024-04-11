@@ -90,7 +90,7 @@ class BackOnline(StoreWithUrlExtensions):
         if len(variations_tags) == 1:
             name = json_data["name"].strip()
             sku = json_data["sku"]
-            picture_urls = json_data["image"]
+            picture_urls = json_data.get("image", None)
 
             offer = json_data["offers"][0]
             key = re.search(r"variant=(\d+)$", offer["url"]).groups()[0]
