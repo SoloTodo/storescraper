@@ -9,21 +9,21 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class Tekmachine(StoreWithUrlExtensions):
     url_extensions = [
-        ['procesadores', PROCESSOR],
-        ['placas-madres', MOTHERBOARD],
-        ['memorias', RAM],
-        ['discos-solidos', SOLID_STATE_DRIVE],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['fuentes-de-poder', POWER_SUPPLY],
-        ['gabinetes', COMPUTER_CASE],
-        ['audifonos', HEADPHONES],
-        ['mouse', MOUSE],
-        ['teclado', KEYBOARD],
-        ['case-fan', CASE_FAN],
-        ['cpu-cooling', CPU_COOLER],
-        ['monitores', MONITOR],
-        ['sistema-de-sonido', STEREO_SYSTEM],
-        ['sillas-gamers', GAMING_CHAIR],
+        ["procesadores", PROCESSOR],
+        ["placas-madres", MOTHERBOARD],
+        ["memorias", RAM],
+        ["discos-solidos", SOLID_STATE_DRIVE],
+        ["tarjetas-de-video", VIDEO_CARD],
+        ["fuentes-de-poder", POWER_SUPPLY],
+        ["gabinetes", COMPUTER_CASE],
+        ["audifonos", HEADPHONES],
+        ["mouse", MOUSE],
+        ["teclado", KEYBOARD],
+        ["case-fan", CASE_FAN],
+        ["cpu-cooling", CPU_COOLER],
+        ["monitores", MONITOR],
+        ["sistema-de-sonido", STEREO_SYSTEM],
+        ["sillas-gamers", GAMING_CHAIR],
     ]
 
     @classmethod
@@ -33,22 +33,23 @@ class Tekmachine(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 15:
-                raise Exception('page overflow: ' + url_extension)
-            url_webpage = ('https://tekmachine.cl/product-category/{}/page/{}/'
-                           '?_pjax=.main-page-wrapper').format(
-                url_extension, page)
+                raise Exception("page overflow: " + url_extension)
+            url_webpage = (
+                "https://tekmachine.cl/product-category/{}/page/{}/"
+                "?_pjax=.main-page-wrapper"
+            ).format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('div', 'product-grid-item')
+            soup = BeautifulSoup(response.text, "html.parser")
+            product_containers = soup.findAll("div", "product-grid-item")
 
             if not product_containers:
                 if page == 1:
-                    logging.warning('empty category: ' + url_extension)
+                    logging.warning("empty category: " + url_extension)
                 break
 
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
 
@@ -59,41 +60,59 @@ class Tekmachine(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', 'product_title').text.strip()
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
-        sku_tag = soup.find('span', 'sku')
+        soup = BeautifulSoup(response.text, "html.parser")
+        name = soup.find("h1", "product_title").text.strip()
+        key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
+        sku_tag = soup.find("span", "sku")
 
         if sku_tag:
-            sku = soup.find('span', 'sku').text.strip()[:45]
+            sku = soup.find("span", "sku").text.strip()[:45]
         else:
             sku = None
 
-        if soup.find('p', 'out-of-stock') or \
-                soup.find('p', 'available-on-backorder'):
+        if soup.find("p", "out-of-stock") or soup.find("p", "available-on-backorder"):
             stock = 0
         else:
             stock = -1
 
-        prices_container = soup.find('p', 'price')
-        if prices_container.find('span', 'regular-price').find('ins'):
+        prices_container = soup.find("p", "price")
+        if prices_container.find("span", "regular-price").find("ins"):
             normal_price = Decimal(
-                remove_words(prices_container.find('span', 'regular-price').find('ins').text))
+                remove_words(
+                    prices_container.find("span", "regular-price").find("ins").text
+                )
+            )
         else:
-            normal_price = Decimal(remove_words(
-                remove_words(prices_container.find('span', 'regular-price').find('bdi').text)))
+            normal_price = Decimal(
+                remove_words(
+                    remove_words(
+                        prices_container.find("span", "regular-price").find("bdi").text
+                    )
+                )
+            )
 
-        if prices_container.find('span', 'sale-price').find('ins'):
+        if not normal_price:
+            return []
+
+        if prices_container.find("span", "sale-price").find("ins"):
             offer_price = Decimal(
-                remove_words(prices_container.find('span', 'sale-price').find('ins').text))
+                remove_words(
+                    prices_container.find("span", "sale-price").find("ins").text
+                )
+            )
         else:
-            offer_price = Decimal(remove_words(
-                remove_words(prices_container.find('span', 'sale-price').find('bdi').text)))
+            offer_price = Decimal(
+                remove_words(
+                    remove_words(
+                        prices_container.find("span", "sale-price").find("bdi").text
+                    )
+                )
+            )
 
-        picture_urls = [tag['src'] for tag in soup.find('div',
-                                                        'woocommerce-product'
-                                                        '-gallery').findAll(
-            'img')]
+        picture_urls = [
+            tag["src"]
+            for tag in soup.find("div", "woocommerce-product" "-gallery").findAll("img")
+        ]
         p = Product(
             name,
             cls.__name__,
@@ -104,7 +123,7 @@ class Tekmachine(StoreWithUrlExtensions):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
