@@ -8,6 +8,7 @@ import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
@@ -157,7 +158,7 @@ class LgV5(Store):
         if not picture_urls:
             picture_urls = None
 
-        if cls.skip_first_tv_picture and picture_urls:
+        if cls.skip_first_tv_picture and picture_urls and category == TELEVISION:
             picture_urls = picture_urls[1:]
 
         url = cls.base_url + model_data["modelUrlPath"]
