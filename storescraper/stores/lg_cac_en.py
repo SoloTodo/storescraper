@@ -3,6 +3,7 @@ from .lg_v5 import LgV5
 
 class LgCacEn(LgV5):
     region_code = "cac_en"
+    skip_first_tv_picture = True
 
     @classmethod
     def _category_paths(cls):
