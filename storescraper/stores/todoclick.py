@@ -132,7 +132,7 @@ class Todoclick(StoreWithUrlExtensions):
         offer_price = Decimal(json_data["price_amount"])
         normal_price = (offer_price * Decimal("1.05")).quantize(0)
         stock = json_data["quantity"]
-        sku = json_data["reference"]
+        sku = json_data["reference"] or None
         description = html_to_markdown(json_data["description"])
         picture_urls = [x["large"]["url"] for x in json_data["images"]]
 
