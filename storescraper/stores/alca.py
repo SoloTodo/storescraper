@@ -4,6 +4,8 @@ import logging
 
 import validators
 from bs4 import BeautifulSoup
+from requests import ReadTimeout
+
 from storescraper.categories import PRINTER
 from storescraper.product import Product
 from storescraper.store import Store
@@ -49,7 +51,11 @@ class Alca(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+
+        try:
+            response = session.get(url)
+        except ReadTimeout:
+            return []
 
         soup = BeautifulSoup(response.text, "html.parser")
 
