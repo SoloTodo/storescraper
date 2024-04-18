@@ -877,7 +877,7 @@ class Paris(Store):
                         {
                             "url": url,
                             "picture_url": picture_url,
-                            "destination_urls": [tag["href"]],
+                            "destination_urls": [tag["href"][:500]],
                             "key": picture_url,
                             "position": idx + 1,
                             "section": section,
