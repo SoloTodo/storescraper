@@ -43,7 +43,7 @@ class MobileHut(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 20:
+            if page > 30:
                 raise Exception("Page overflow: " + url_extension)
             url_webpage = "https://www.mobilehut.cl/collections/{}?page={}".format(
                 url_extension, page
