@@ -157,7 +157,6 @@ class TtChile(Store):
 
         normal_price = Decimal(json_data["price_amount"])
         offer_price = (normal_price * Decimal("0.95")).quantize(0)
-        stock = json_data["quantity"]
         if json_data["availability"] == "unavailable":
             stock = 0
         else:
