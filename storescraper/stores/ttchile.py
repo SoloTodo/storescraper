@@ -163,12 +163,12 @@ class TtChile(Store):
         else:
             availability_tag = soup.find("span", {"id": "product-availability"})
             availability_text = availability_tag.contents[2].strip().upper()
-            if availability_text == "STOCK PRÓXIMO":
+            if availability_text in ["STOCK PRÓXIMO", "STOCK PROXIMO"]:
                 stock = 0
-            elif (
-                availability_text == "PRODUCTO EN STOCK"
-                or availability_text == "ÚLTIMAS UNIDADES EN STOCK"
-            ):
+            elif availability_text in [
+                "PRODUCTO EN STOCK",
+                "ÚLTIMAS UNIDADES EN STOCK",
+            ]:
                 stock = -1
             else:
                 raise Exception("Invalid stock availability: " + availability_text)
