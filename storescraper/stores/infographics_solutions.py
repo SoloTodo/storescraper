@@ -112,7 +112,12 @@ class InfographicsSolutions(StoreWithUrlExtensions):
 
         page_source = session.get(url).text
         soup = BeautifulSoup(page_source, "html.parser")
-        key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[1].strip()
+        key_tag = soup.find("link", {"rel": "shortlink"})
+
+        if not key_tag:
+            raise Exception(page_source)
+
+        key = key_tag["href"].split("?p=")[1].strip()
 
         soup_jsons = soup.findAll("script", {"type": "application/ld+json"})
 
