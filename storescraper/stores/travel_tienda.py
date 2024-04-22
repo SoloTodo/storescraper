@@ -53,20 +53,18 @@ class TravelTienda(StoreWithUrlExtensions):
         ("1379171641", STEREO_SYSTEM),  # Tech > Audio Hi-Fi > Subwoofer y
         ("4064311224", STEREO_SYSTEM),  # Tech > Audio
         ("1479054651", STEREO_SYSTEM),  # Tech > Audio HiFi
-        ("306745319", REFRIGERATOR),  # Electro > Línea blanca > refrigerador
-        ("1573751604", REFRIGERATOR),  # Electro > Línea blanca > freezer
-        ("3548829535", REFRIGERATOR),  # Electro > Línea blanca > Frigobares y cavas
+        ("2074305120", REFRIGERATOR),  # Home > Electrohogar > Refrigeración
         ("1073939402", OVEN),
         ("779019428", OVEN),
         ("816489954", AIR_CONDITIONER),
-        ("2620100069", WASHING_MACHINE),
+        ("4005764418", WASHING_MACHINE),
         ("3421645721", PRINTER),  # Tecnología > Computación > Accesorios de Computacion
         ("375810843", MONITOR),  # Tecnología > Computación > Monitores
         ("1864912196", VACUUM_CLEANER),  # Aspirado y limpieza
-        ("2311426557", VACUUM_CLEANER),  # Aspiradora Robot
+        ("791016966", VACUUM_CLEANER),  # Aspiradora Robot
         ("2456851182", SPACE_HEATER),  # Calefaccion
-        ("2384828485", DISH_WASHER),  # Lavavajillas
-        ("4040983110", OVEN),  # Empotrados
+        ("266797937", DISH_WASHER),  # Lavavajillas
+        ("1318662286", OVEN),  # Empotrados
     ]
 
     @classmethod

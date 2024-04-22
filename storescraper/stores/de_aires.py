@@ -63,7 +63,7 @@ class DeAires(StoreWithUrlExtensions):
         else:
             stock = 0
 
-        price = Decimal(product_data["offers"][0]["priceSpecification"]["price"])
+        price = Decimal(product_data["offers"][0]["lowPrice"])
 
         picture_urls = [
             x.find("img")["src"] for x in soup.findAll("picture", "wp-post-image")
