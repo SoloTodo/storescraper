@@ -128,6 +128,8 @@ class PcCom(StoreWithUrlExtensions):
         else:
             raise Exception("No product data found")
 
+        print(json.dumps(product_data))
+
         name = product_data["name"]
         sku = str(product_data["sku"])
         key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[1]
@@ -146,7 +148,11 @@ class PcCom(StoreWithUrlExtensions):
             else:
                 stock = 0
 
-        offer_price = Decimal(remove_words(product_data["offers"]["price"]))
+        offers_node = product_data["offers"]
+        if isinstance(offers_node, list):
+            offers_node = offers_node[0]
+
+        offer_price = Decimal(remove_words(offers_node["price"]))
         normal_price = (offer_price * Decimal("1.06")).quantize(0)
         picture_containers = soup.findAll("div", "woocommerce-product-gallery__image")
 
