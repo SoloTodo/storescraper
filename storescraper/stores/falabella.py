@@ -1017,7 +1017,7 @@ class Falabella(Store):
                 for idx, slide in enumerate(slides):
                     main_url = slide.get("mainUrl", None)
                     if main_url:
-                        destination_urls = [main_url]
+                        destination_urls = [main_url[:500]]
                     elif slide["type"] == "background_image_only":
                         destination_urls = []
                     else:
