@@ -31,6 +31,7 @@ from storescraper.categories import (
     KEYBOARD,
     CPU_COOLER,
     MICROPHONE,
+    STORAGE_DRIVE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -70,6 +71,8 @@ class Centrale(StoreWithUrlExtensions):
         ["imac", ALL_IN_ONE],
         ["macbooks", NOTEBOOK],
         ["airpods", HEADPHONES],
+        ["almacenamiento-servidores", STORAGE_DRIVE],
+        ["memorias-ram-servidores", RAM],
     ]
 
     @classmethod
