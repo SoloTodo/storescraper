@@ -1,64 +1,70 @@
-from .lg_v5 import LgV5
+from .lg_v6 import LgV6
+from ..categories import (
+    TELEVISION,
+    MONITOR,
+    STEREO_SYSTEM,
+    PROJECTOR,
+    REFRIGERATOR,
+    STOVE,
+    OVEN,
+    CELL_ACCESORY,
+    DISH_WASHER,
+    WASHING_MACHINE,
+    VACUUM_CLEANER,
+    AIR_CONDITIONER,
+)
 
 
-class LgCacEn(LgV5):
-    region_code = "cac_en"
-    skip_first_tv_picture = True
+class LgCacEn(LgV6):
+    region_code = "PA"
 
     @classmethod
     def _category_paths(cls):
         return [
-            # Todos los Televisores
-            ("CT20273031", "Television", True),
-            ("CT20273031", "Television", False),
+            # Todos los TVs y Barras de Sonido
+            ("CT52006973", TELEVISION),
+            # Todas las Lifestyle Screens
+            ("CT52006974", MONITOR),
+            # Todos los Equipos de Sonido
+            ("CT52006975", STEREO_SYSTEM),
             # Proyectores
-            ("CT20273021", "Projector", True),
-            ("CT20273021", "Projector", False),
-            # Equipos de sonido
-            ("CT40011663", "StereoSystem", True),
-            ("CT40011663", "StereoSystem", False),
-            # Equipos de sonido
-            ("CT40018549", "StereoSystem", True),
-            ("CT40018549", "StereoSystem", False),
-            # Audífonos inalámbricos
-            ("CT40011665", "Headphones", True),
-            ("CT40011665", "Headphones", False),
-            # Teléfonos Celulares
-            ("CT20273028", "Cell", True),
-            ("CT20273028", "Cell", False),
-            # Refrigeradora
-            ("CT20273018", "Refrigerator", True),
-            ("CT20273018", "Refrigerator", False),
-            # Estufa
-            ("CT30015280", "Stove", True),
-            ("CT30015280", "Stove", False),
-            # Microondas
-            ("CT20273007", "Oven", True),
-            ("CT20273007", "Oven", False),
-            # Campanas (consideradas como accesorios)
-            ("CT32021843", "CellAccesory", True),
+            ("CT52006976", PROJECTOR),
+            # Todas las Refrigeradoras
+            ("CT52006978", REFRIGERATOR),
+            # Estufa (Cocinas)
+            ("CT52007012", STOVE),
+            # Microonas
+            ("CT52007013", OVEN),
+            # Campanas
+            ("CT52007014", CELL_ACCESORY),
             # Lavaplatos
-            ("CT30015421", "DishWasher", True),
-            # Lavadoras y secadoras
-            ("CT20273012", "WashingMachine", True),
-            ("CT20273012", "WashingMachine", False),
-            # Styler
-            ("CT32015122", "WashingMachine", True),
+            ("CT52006980", DISH_WASHER),
+            # Todas las lavadoras y secadoras
+            ("CT52006981", WASHING_MACHINE),
             # Aspiradoras
-            ("CT20273011", "VacuumCleaner", True),
-            ("CT20273011", "VacuumCleaner", False),
-            # Aire acondicionado residencial
-            ("CT30014260", "AirConditioner", True),
-            ("CT30014260", "AirConditioner", False),
-            # Air care solutions
-            ("CT40005171", "AirConditioner", True),
-            ("CT40005171", "AirConditioner", False),
-            # Monitores
-            ("CT20273024", "Monitor", True),
-            ("CT20273024", "Monitor", False),
-            # Laptops
-            ("CT40006155", "Notebook", True),
-            # LG Studio
-            ("CT32021982", "Stove", True),
-            ("CT32021982", "Stove", False),
+            ("CT52006982", VACUUM_CLEANER),
+            # Todas las Soluciones de Cuidado del Aire
+            ("CT52006983", AIR_CONDITIONER),
+            # Aire Acondicionado Split Inverter
+            ("CT52007022", AIR_CONDITIONER),
+            # Aire Acondicionado Portátil
+            ("CT52007023", AIR_CONDITIONER),
+            # Todos los Monitores
+            ("CT52006985", MONITOR),
+            # Todos los Medical Display
+            ("CT52007043", CELL_ACCESORY),
+            # Information Display
+            ("CT52007045", CELL_ACCESORY),
+            # Accesorios para TV
+            ("CT52007855", CELL_ACCESORY),
+            # Accesorios para Audio y Video
+            ("CT52007856", CELL_ACCESORY),
+            # Accesorios para Refrigeradora
+            ("CT52007857", CELL_ACCESORY),
+            # Accesorios para Lavadora y Secadora
+            ("CT52007858", CELL_ACCESORY),
+            # Accesorios para Cocina
+            ("CT52007859", CELL_ACCESORY),
+            # Accesorios para Aire Acondicionado
+            ("CT52007860", CELL_ACCESORY),
         ]

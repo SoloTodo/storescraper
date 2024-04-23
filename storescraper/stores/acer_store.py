@@ -114,7 +114,10 @@ class AcerStore(StoreWithUrlExtensions):
             pricing_key = "{}.specificationGroups.2.specifications.0".format(
                 base_json_key
             )
-            price = Decimal(remove_words(product_data[pricing_key]["name"]))
+            price_text = product_data[pricing_key]["name"].strip()
+            if price_text == "Precio sin stock":
+                return []
+            price = Decimal(remove_words(price_text))
 
         stock = pricing_data["AvailableQuantity"]
         picture_list_key = "{}.items.0".format(base_json_key)
