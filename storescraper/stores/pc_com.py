@@ -116,9 +116,18 @@ class PcCom(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, "html.parser")
 
-        product_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[-1].text
+        product_data_candidates = soup.findAll(
+            "script", {"type": "application/ld+json"}
         )
+
+        for candidate in product_data_candidates:
+            candidate_json = json.loads(candidate.text)
+            if candidate_json.get("@type", None) == "Product":
+                product_data = candidate_json
+                break
+        else:
+            raise Exception("No product data found")
+
         name = product_data["name"]
         sku = str(product_data["sku"])
         key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[1]
@@ -137,7 +146,7 @@ class PcCom(StoreWithUrlExtensions):
             else:
                 stock = 0
 
-        offer_price = Decimal(remove_words(product_data["offers"][0]["price"]))
+        offer_price = Decimal(remove_words(product_data["offers"]["price"]))
         normal_price = (offer_price * Decimal("1.06")).quantize(0)
         picture_containers = soup.findAll("div", "woocommerce-product-gallery__image")
 
