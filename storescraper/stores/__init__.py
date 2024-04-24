@@ -144,7 +144,7 @@ from .lenovo_chile import LenovoChile
 from .lg_cl import LgCl
 from .lg_co import LgCo
 from .lg_cac import LgCac
-from .lg_cac_en import LgCacEn
+from .lg_pa import LgPa
 from .lg_ec import LgEc
 from .lg_pe import LgPe
 from .lg_uruguay_store import LgUruguayStore

@@ -15,7 +15,7 @@ from ..categories import (
 )
 
 
-class LgCacEn(LgV6):
+class LgPa(LgV6):
     region_code = "PA"
 
     @classmethod

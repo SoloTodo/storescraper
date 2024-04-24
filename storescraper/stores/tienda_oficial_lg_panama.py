@@ -1,5 +1,5 @@
-from .lg_cac_en import LgCacEn
+from .lg_pa import LgPa
 
 
-class TiendaOficialLgPanama(LgCacEn):
+class TiendaOficialLgPanama(LgPa):
     skip_products_without_price = True
