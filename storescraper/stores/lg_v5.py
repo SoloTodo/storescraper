@@ -20,7 +20,6 @@ class LgV5(Store):
     currency = "USD"
     price_approximation = "0.01"
     skip_products_without_price = False
-    skip_first_tv_picture = False
 
     @classmethod
     def categories(cls):
@@ -157,9 +156,6 @@ class LgV5(Store):
         picture_urls = [x for x in picture_urls if validators.url(x)]
         if not picture_urls:
             picture_urls = None
-
-        if cls.skip_first_tv_picture and picture_urls and category == TELEVISION:
-            picture_urls = picture_urls[1:]
 
         url = cls.base_url + model_data["modelUrlPath"]
 
