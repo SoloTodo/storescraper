@@ -5,13 +5,38 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import ALL_IN_ONE, GAMING_DESK, HEADPHONES, \
-    MOUSE, KEYBOARD, KEYBOARD_MOUSE_COMBO, CPU_COOLER, PRINTER, \
-    STORAGE_DRIVE, SOLID_STATE_DRIVE, EXTERNAL_STORAGE_DRIVE, RAM, \
-    MOTHERBOARD, TELEVISION, UPS, VIDEO_CARD, COMPUTER_CASE, \
-    NOTEBOOK, MONITOR, STEREO_SYSTEM, GAMING_CHAIR, TABLET, \
-    VIDEO_GAME_CONSOLE, PROCESSOR, MEMORY_CARD, USB_FLASH_DRIVE, CELL, \
-    POWER_SUPPLY, MICROPHONE, WEARABLE
+from storescraper.categories import (
+    ALL_IN_ONE,
+    GAMING_DESK,
+    HEADPHONES,
+    MOUSE,
+    KEYBOARD,
+    KEYBOARD_MOUSE_COMBO,
+    CPU_COOLER,
+    PRINTER,
+    STORAGE_DRIVE,
+    SOLID_STATE_DRIVE,
+    EXTERNAL_STORAGE_DRIVE,
+    RAM,
+    MOTHERBOARD,
+    TELEVISION,
+    UPS,
+    VIDEO_CARD,
+    COMPUTER_CASE,
+    NOTEBOOK,
+    MONITOR,
+    STEREO_SYSTEM,
+    GAMING_CHAIR,
+    TABLET,
+    VIDEO_GAME_CONSOLE,
+    PROCESSOR,
+    MEMORY_CARD,
+    USB_FLASH_DRIVE,
+    CELL,
+    POWER_SUPPLY,
+    MICROPHONE,
+    WEARABLE,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words
@@ -19,91 +44,90 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class PcLinkStore(StoreWithUrlExtensions):
     url_extensions = [
-        ['audifonos-y-manos-libres-2', HEADPHONES],
-        ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
-        ['microfonos-3', MICROPHONE],
-        ['mouse', MOUSE],
-        ['parlantes-subwoofer-altavoz-inteligente', STEREO_SYSTEM],
-        ['teclados-2', KEYBOARD],
-        ['unidad-de-estado-solido-ssd', SOLID_STATE_DRIVE],
-        ['discos-duros-externos-portatiles', EXTERNAL_STORAGE_DRIVE],
-        ['discos-duros-internos', STORAGE_DRIVE],
-        ['smart-band', WEARABLE],
-        ['smartphone', CELL],
-        ['smartwatch', WEARABLE],
-        ['fuentes-de-poder', POWER_SUPPLY],
-        ['gabinetes', COMPUTER_CASE],
-        ['modulos-ram-propietarios', RAM],
-        ['tarjetas-madre-placas-madre', MOTHERBOARD],
-        ['procesador', PROCESSOR],
-        ['tarjetas-de-video', VIDEO_CARD],
-        ['ventiladores-y-sistemas-de-enfriamiento', CPU_COOLER],
-        ['all-in-one', ALL_IN_ONE],
-        ['apple-2', NOTEBOOK],
-        ['notebook', NOTEBOOK],
-        ['tableta', TABLET],
-        ['consolas', VIDEO_GAME_CONSOLE],
-        ['escaner', PRINTER],
-        ['impresoras-ink-jet', PRINTER],
-        ['impresoras-laser', PRINTER],
-        ['impresoras-multifuncionales', PRINTER],
-        ['pendrive-unidades-flash-usb', USB_FLASH_DRIVE],
-        ['tarjetas-de-memoria-flash', MEMORY_CARD],
-        ['monitores-2', MONITOR],
-        ['televisores', TELEVISION],
-        ['escritorios', GAMING_DESK],
-        ['sillas-de-escritorio', GAMING_CHAIR],
-        ['kit-teclado-y-mouse-2', KEYBOARD_MOUSE_COMBO],
-        ['ups-respaldo-de-energia', UPS],
+        ["audifonos-y-manos-libres-2", HEADPHONES],
+        ["kit-teclado-y-mouse-2", KEYBOARD_MOUSE_COMBO],
+        ["microfonos-3", MICROPHONE],
+        ["mouse", MOUSE],
+        ["parlantes-subwoofer", STEREO_SYSTEM],
+        ["teclados-2", KEYBOARD],
+        ["unidad-de-estado-solido-ssd", SOLID_STATE_DRIVE],
+        ["discos-duros-externos-portatiles", EXTERNAL_STORAGE_DRIVE],
+        ["discos-duros-internos", STORAGE_DRIVE],
+        ["smart-band", WEARABLE],
+        ["smartphone", CELL],
+        ["smartwatch", WEARABLE],
+        ["fuentes-de-poder", POWER_SUPPLY],
+        ["gabinetes", COMPUTER_CASE],
+        ["modulos-ram-propietarios", RAM],
+        ["tarjetas-madre-placas-madre", MOTHERBOARD],
+        ["procesador", PROCESSOR],
+        ["tarjetas-de-video", VIDEO_CARD],
+        ["ventiladores-y-sistemas-de-enfriamiento", CPU_COOLER],
+        ["all-in-one", ALL_IN_ONE],
+        ["apple-2", NOTEBOOK],
+        ["notebook", NOTEBOOK],
+        ["tableta", TABLET],
+        ["consolas", VIDEO_GAME_CONSOLE],
+        ["escaner", PRINTER],
+        ["impresoras-ink-jet", PRINTER],
+        ["impresoras-laser", PRINTER],
+        ["impresoras-multifuncionales", PRINTER],
+        ["pendrive-unidades-flash-usb", USB_FLASH_DRIVE],
+        ["tarjetas-de-memoria-flash", MEMORY_CARD],
+        ["monitores-2", MONITOR],
+        ["televisores", TELEVISION],
+        ["escritorios", GAMING_DESK],
+        ["sillas-de-escritorio", GAMING_CHAIR],
+        ["kit-teclado-y-mouse-2", KEYBOARD_MOUSE_COMBO],
+        ["ups-respaldo-de-energia", UPS],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = \
-            'application/x-www-form-urlencoded'
-        session.headers['x-requested-with'] = 'XMLHttpRequest'
+        session.headers["Content-Type"] = "application/x-www-form-urlencoded"
+        session.headers["x-requested-with"] = "XMLHttpRequest"
         product_urls = []
-        url_webpage = 'https://www.pclinkstore.cl/categorias/{}' \
-            ''.format(url_extension)
+        url_webpage = "https://www.pclinkstore.cl/categorias/{}" "".format(
+            url_extension
+        )
         print(url_webpage)
         data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, 'html5lib')
+        soup = BeautifulSoup(data, "html5lib")
 
-        token = soup.find('meta', {'name': 'csrf-token'})['content']
+        token = soup.find("meta", {"name": "csrf-token"})["content"]
         id_category = re.search('"id_category":(\\d+)', data).groups()[0]
 
-        query_url = 'https://www.pclinkstore.cl/productos'
+        query_url = "https://www.pclinkstore.cl/productos"
 
         page = 1
         done = False
         while not done:
             if page > 50:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
             query_params = {
                 "_token": token,
                 "id_category": id_category,
                 "register": 48,
-                "page": page
+                "page": page,
             }
 
             product_data = session.post(query_url, query_params).text
-            product_json = json.loads(product_data)['data']
-            product_soup = BeautifulSoup(product_json, 'html5lib')
+            product_json = json.loads(product_data)["data"]
+            product_soup = BeautifulSoup(product_json, "html5lib")
 
-            product_containers = product_soup.findAll(
-                'div', 'sv-producto-mod')
+            product_containers = product_soup.findAll("div", "sv-producto-mod")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
 
             for container in product_containers:
-                if 'Avisame' in container.text:
+                if "Avisame" in container.text:
                     done = True
                     break
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
 
             page += 1
@@ -115,55 +139,56 @@ class PcLinkStore(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html5lib')
+        soup = BeautifulSoup(response.text, "html5lib")
 
-        add_button = soup.find('button', 'add-product-cart')
+        add_button = soup.find("button", "add-product-cart")
 
-        if not add_button or 'id' not in add_button.attrs:
+        if not add_button or "id" not in add_button.attrs:
             return []
 
-        key = add_button['id']
-        name = soup.find('div', 'product-name').text.strip()
+        key = add_button["id"]
+        name = soup.find("div", "product-name").text.strip()
 
-        product_infos = soup.findAll('div', 'product-info')
-        price_infos = product_infos[0].findAll('div', 'product-price-normal')
+        product_infos = soup.findAll("div", "product-info")
+        price_infos = product_infos[0].findAll("div", "product-price-normal")
         if len(price_infos) == 0:
-            price_infos = product_infos[0].findAll(
-                'div', 'product-price-discount')
+            price_infos = product_infos[0].findAll("div", "product-price-discount")
         if len(price_infos) == 1:
             normal_price = offer_price = Decimal(
-                remove_words(price_infos[0].find('span').text))
+                remove_words(price_infos[0].find("span").text)
+            )
         else:
-            offer_price = Decimal(remove_words(
-                price_infos[0].find('span').text))
-            normal_price = Decimal(remove_words(
-                price_infos[1].find('span').text))
+            offer_price = Decimal(remove_words(price_infos[0].find("span").text))
+            normal_price = Decimal(remove_words(price_infos[1].find("span").text))
             if offer_price > normal_price:
                 offer_price = normal_price
 
-        sku_tag = product_infos[1].find('strong', text='Número de Parte:')
+        sku_tag = product_infos[1].find("strong", text="Número de Parte:")
         sku = sku_tag.next.next.strip()
-        stock_tags = product_infos[1].findAll('div', 'justify-content-between')
+        stock_tags = product_infos[1].findAll("div", "justify-content-between")
         stock = 0
         for stock_tag in stock_tags:
-            stock_text = stock_tag.find('strong').text.strip()
-            if stock_text == 'No disponible':
+            stock_text = stock_tag.find("strong").text.strip()
+            if stock_text == "No disponible":
                 continue
-            stock += int(stock_text.replace('Unidades',
-                         '').replace('Unidad', '').replace('.', ''))
+            stock += int(
+                stock_text.replace("Unidades", "")
+                .replace("Unidad", "")
+                .replace(".", "")
+            )
 
-        condition_tag = product_infos[1].find('strong', text='Condición:')
+        condition_tag = product_infos[1].find("strong", text="Condición:")
         condition_text = condition_tag.next.next.strip()
 
-        if 'NUEVO' in condition_text:
-            condition = 'https://schema.org/NewCondition'
+        if "NUEVO" in condition_text:
+            condition = "https://schema.org/NewCondition"
         else:
-            condition = 'https://schema.org/RefurbishedCondition'
+            condition = "https://schema.org/RefurbishedCondition"
 
         picture_urls = []
-        picture_container = soup.find('ul', 'slides')
-        for a in picture_container.findAll('a'):
-            picture_urls.append(a['href'])
+        picture_container = soup.find("ul", "slides")
+        for a in picture_container.findAll("a"):
+            picture_urls.append(a["href"])
 
         p = Product(
             name,
@@ -175,10 +200,10 @@ class PcLinkStore(StoreWithUrlExtensions):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=key,
             part_number=sku,
             condition=condition,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
         return [p]

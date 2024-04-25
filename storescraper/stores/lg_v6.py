@@ -89,9 +89,9 @@ class LgV6(Store):
             if "data-large-d" in x.attrs
         ]
         if not picture_urls:
-            picture_urls = [
-                "https://www.lg.com" + soup.find("link", {"as": "image"})["href"]
-            ]
+            standalone_picture_tag = soup.find("link", {"as": "image"})
+            if standalone_picture_tag:
+                picture_urls = ["https://www.lg.com" + standalone_picture_tag["href"]]
 
         session.headers["Authorization"] = "Bearer {}".format(extra_args["coveo_token"])
         path = urllib.parse.urlparse(url).path

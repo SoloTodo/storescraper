@@ -7,16 +7,13 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import (session_with_proxy, vtex_preflight,
-                                html_to_markdown)
+from storescraper.utils import session_with_proxy, vtex_preflight, html_to_markdown
 
 
 class MisBeneficios(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -29,35 +26,39 @@ class MisBeneficios(Store):
         offset = 0
         while True:
             if offset >= 150:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
             variables = {
                 "from": offset,
                 "to": offset + 15,
-                "selectedFacets": [{"key": "b", "value": 'lg'}]
+                "selectedFacets": [{"key": "b", "value": "lg"}],
             }
 
             payload = {
                 "persistedQuery": {
                     "version": 1,
-                    "sha256Hash": extra_args['sha256Hash']
+                    "sha256Hash": extra_args["sha256Hash"],
                 },
-                "variables": base64.b64encode(json.dumps(
-                    variables).encode('utf-8')).decode('utf-8')
+                "variables": base64.b64encode(
+                    json.dumps(variables).encode("utf-8")
+                ).decode("utf-8"),
             }
 
-            endpoint = 'https://www.misbeneficios.com.uy/_v/segment/graphql/v1' \
-                       '?extensions={}'.format(json.dumps(payload))
+            endpoint = (
+                "https://www.misbeneficios.com.uy/_v/segment/graphql/v1"
+                "?extensions={}".format(json.dumps(payload))
+            )
             response = session.get(endpoint).json()
 
-            product_entries = response['data']['productSearch']['products']
+            product_entries = response["data"]["productSearch"]["products"]
 
             if not product_entries:
                 break
 
             for product_entry in product_entries:
-                product_url = 'https://www.misbeneficios.com.uy/{}/p'.format(
-                    product_entry['linkText'])
+                product_url = "https://www.misbeneficios.com.uy/{}/p".format(
+                    product_entry["linkText"]
+                )
                 product_urls.append(product_url)
 
             offset += 15
@@ -69,11 +70,10 @@ class MisBeneficios(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html5lib')
+        soup = BeautifulSoup(response.text, "html5lib")
 
-        product_data_tag = soup.find('template', {'data-varname': '__STATE__'})
-        product_data = json.loads(str(
-            product_data_tag.find('script').contents[0]))
+        product_data_tag = soup.find("template", {"data-varname": "__STATE__"})
+        product_data = json.loads(str(product_data_tag.find("script").contents[0]))
 
         if not product_data:
             return []
@@ -81,27 +81,27 @@ class MisBeneficios(Store):
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
 
-        key = product_specs['productId']
-        name = product_specs['productName']
-        sku = product_specs['productReference']
-        description = html_to_markdown(product_specs['description'])
-        pricing_key = '${}.items.0.sellers.0.commertialOffer'.format(
-            base_json_key)
+        key = product_specs["productId"]
+        name = product_specs["productName"]
+        sku = product_specs["productReference"]
+        description = html_to_markdown(product_specs["description"])
+        pricing_key = "${}.items.0.sellers.0.commertialOffer".format(base_json_key)
         pricing_data = product_data[pricing_key]
 
-        uyu_price = Decimal(str(pricing_data['Price']))
-        price = (uyu_price / Decimal(extra_args['exchange_rate'])).quantize(
-            Decimal('0.01'))
+        uyu_price = Decimal(str(pricing_data["Price"]))
+        price = (uyu_price / Decimal(extra_args["exchange_rate"])).quantize(
+            Decimal("0.01")
+        )
 
-        stock = pricing_data['AvailableQuantity']
-        picture_list_key = '{}.items.0'.format(base_json_key)
+        stock = pricing_data["AvailableQuantity"]
+        picture_list_key = "{}.items.0".format(base_json_key)
         picture_list_node = product_data[picture_list_key]
-        picture_ids = [x['id'] for x in picture_list_node['images']]
+        picture_ids = [x["id"] for x in picture_list_node["images"]]
 
         picture_urls = []
         for picture_id in picture_ids:
             picture_node = product_data[picture_id]
-            picture_urls.append(picture_node['imageUrl'].split('?')[0])
+            picture_urls.append(picture_node["imageUrl"].split("?")[0])
 
         p = Product(
             name,
@@ -113,10 +113,10 @@ class MisBeneficios(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
 
         return [p]
@@ -124,30 +124,33 @@ class MisBeneficios(Store):
     @classmethod
     def preflight(cls, extra_args=None):
         d = {}
-        d.update(vtex_preflight(
-            extra_args, 'https://www.misbeneficios.com.uy/'
-                        'electronica-audio-y-video/televisores'))
+        d.update(
+            vtex_preflight(
+                extra_args,
+                "https://www.misbeneficios.com.uy/"
+                "electronica-audio-y-video/televisores",
+            )
+        )
 
         # Exchange rate
-        variables = {
-            "acronym": "usd_quotation",
-            "fields": ["quotation"]
-        }
+        variables = {"acronym": "usd_quotation", "fields": ["quotation"]}
 
         payload = {
             "extensions": {
                 "persistedQuery": {
                     "version": 1,
-                    "sha256Hash": "6b7c325b1bd9ba175ec4e306adf0a7a4"
-                                  "fa8ed8a3d8a2b477691bc05d8ddfdb69"},
-                "variables": base64.b64encode(json.dumps(
-                    variables).encode('utf-8')).decode('utf-8')
+                    "sha256Hash": "d03267feecca88f4de52f8629e197585"
+                    "e7c0daf3e97546a7b1a4fb8b33a0aa65",
+                },
+                "variables": base64.b64encode(
+                    json.dumps(variables).encode("utf-8")
+                ).decode("utf-8"),
             }
         }
 
-        endpoint = 'https://www.misbeneficios.com.uy/_v/private/graphql/v1'
+        endpoint = "https://www.misbeneficios.com.uy/_v/private/graphql/v1"
         session = session_with_proxy(extra_args)
-        session.headers['Content-Type'] = 'application/json'
+        session.headers["Content-Type"] = "application/json"
         response = session.post(endpoint, json=payload).json()
-        d['exchange_rate'] = response['data']['searchDocument'][0]['quotation']
+        d["exchange_rate"] = response["data"]["searchDocument"][0]["quotation"]
         return d
