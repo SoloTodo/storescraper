@@ -1,5 +1,5 @@
 beautifulsoup4==4.12.2
-black==23.12.1
+black==24.3.0
 celery==5.3.1
 chardet==5.2.0
 curl_cffi==0.6.3
