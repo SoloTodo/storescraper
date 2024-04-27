@@ -271,7 +271,7 @@ class Falabella(Store):
             [TELEVISION],
             'Home > Tecnología-TV > Smart tv entre 50" - 55"',
             1,
-            {"f.variant.custom.Tamaño_de_la_pantalla": "50::55"},
+            {"f.variant.custom.Tama%C3%B1o_de_la_pantalla": "50::55"},
         ],
         [
             "cat7190148",
@@ -288,7 +288,7 @@ class Falabella(Store):
             'Home > Tecnología-TV > Smart tv menores a 50"',
             1,
             {
-                "f.variant.custom.Tamaño_de_la_pantalla": "1::20::24::32::39::40::42::43::48"
+                "f.variant.custom.Tama%C3%B1o_de_la_pantalla": "1::20::24::32::39::40::42::43::48"
             },
         ],
         ["cat2070", [PROJECTOR], "Home > Tecnología-TV > Proyectores", 1],
