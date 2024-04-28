@@ -617,9 +617,6 @@ class Falabella(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = requests.Session(impersonate="chrome120")
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0"
 
         base_url = "https://www.falabella.com/falabella-cl/search?Ntt={}&page={}"
 
@@ -629,7 +626,7 @@ class Falabella(Store):
             if page > 150:
                 raise Exception("Page overflow " + keyword)
 
-            search_url = base_url.format(keyword, page)
+            search_url = base_url.format(urllib.parse.quote(keyword), page)
             res = session.get(search_url, timeout=30)
 
             if res.status_code == 500:
@@ -659,9 +656,6 @@ class Falabella(Store):
         print(url)
         extra_args = extra_args or {}
         session = requests.Session(impersonate="chrome120")
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0"
 
         for i in range(3):
             try:
@@ -680,12 +674,11 @@ class Falabella(Store):
             content = response.text.replace("&#10;", "")
 
             if "NEXT_DATA" in content:
-                print("OLD")
                 return cls._products_for_url(
                     url, content, session, category=category, extra_args=extra_args
                 )
             else:
-                raise Exception("Invalid product type")
+                return []
 
     @classmethod
     def _get_product_urls(cls, session, category_id, extra_params, seller_id):
@@ -997,9 +990,6 @@ class Falabella(Store):
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 session = requests.Session(impersonate="chrome120")
-                session.headers[
-                    "User-Agent"
-                ] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0"
                 soup = BeautifulSoup(session.get(url, timeout=30).text, "html.parser")
                 next_data = json.loads(
                     soup.find("script", {"id": "__NEXT_DATA__"}).text
@@ -1043,9 +1033,6 @@ class Falabella(Store):
                     )
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 session = requests.Session(impersonate="chrome120")
-                session.headers[
-                    "User-Agent"
-                ] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0"
                 soup = BeautifulSoup(session.get(url, timeout=30).text, "html.parser")
                 next_data = json.loads(
                     soup.find("script", {"id": "__NEXT_DATA__"}).text
@@ -1087,9 +1074,6 @@ class Falabella(Store):
                     )
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = requests.Session(impersonate="chrome120")
-                session.headers[
-                    "User-Agent"
-                ] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0"
                 soup = BeautifulSoup(session.get(url).text, "html.parser")
                 banner = soup.find("div", "fb-huincha-main-wrap")
 
