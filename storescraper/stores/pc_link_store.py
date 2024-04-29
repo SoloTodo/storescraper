@@ -34,8 +34,8 @@ from storescraper.categories import (
     USB_FLASH_DRIVE,
     CELL,
     POWER_SUPPLY,
-    MICROPHONE,
     WEARABLE,
+    MICROPHONE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -45,17 +45,17 @@ from storescraper.utils import session_with_proxy, remove_words
 class PcLinkStore(StoreWithUrlExtensions):
     url_extensions = [
         ["audifonos-y-manos-libres-2", HEADPHONES],
+        ["disco-duro-externo", EXTERNAL_STORAGE_DRIVE],
         ["kit-teclado-y-mouse-2", KEYBOARD_MOUSE_COMBO],
-        ["microfonos-3", MICROPHONE],
+        ["microfono", MICROPHONE],
         ["mouse", MOUSE],
         ["parlantes-subwoofer", STEREO_SYSTEM],
-        ["teclados-2", KEYBOARD],
-        ["unidad-de-estado-solido-ssd", SOLID_STATE_DRIVE],
-        ["discos-duros-externos-portatiles", EXTERNAL_STORAGE_DRIVE],
-        ["discos-duros-internos", STORAGE_DRIVE],
+        ["teclado", KEYBOARD],
         ["smart-band", WEARABLE],
         ["smartphone", CELL],
         ["smartwatch", WEARABLE],
+        ["unidad-de-estado-solido-ssd", SOLID_STATE_DRIVE],
+        ["disco-duro-interno", STORAGE_DRIVE],
         ["fuentes-de-poder", POWER_SUPPLY],
         ["gabinetes", COMPUTER_CASE],
         ["modulos-ram-propietarios", RAM],
@@ -68,18 +68,17 @@ class PcLinkStore(StoreWithUrlExtensions):
         ["notebook", NOTEBOOK],
         ["tableta", TABLET],
         ["consolas", VIDEO_GAME_CONSOLE],
-        ["escaner", PRINTER],
         ["impresoras-ink-jet", PRINTER],
         ["impresoras-laser", PRINTER],
         ["impresoras-multifuncionales", PRINTER],
+        ["plotter", PRINTER],
         ["pendrive-unidades-flash-usb", USB_FLASH_DRIVE],
         ["tarjetas-de-memoria-flash", MEMORY_CARD],
         ["monitores-2", MONITOR],
         ["televisores", TELEVISION],
+        ["ups-respaldo-de-energia", UPS],
         ["escritorios", GAMING_DESK],
         ["sillas-de-escritorio", GAMING_CHAIR],
-        ["kit-teclado-y-mouse-2", KEYBOARD_MOUSE_COMBO],
-        ["ups-respaldo-de-energia", UPS],
     ]
 
     @classmethod

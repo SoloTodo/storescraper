@@ -26,14 +26,10 @@ class HogarYModa(Store):
             if page >= 15:
                 raise Exception("Page overflow")
 
-            url = (
-                "https://www.hogarymoda.com.co/page/{}/?s=LG&post_type=product".format(
-                    page
-                )
-            )
+            url = "https://hogarymoda.com.co/shop/page/{}/?s=LG".format(page)
 
             soup = BeautifulSoup(session.get(url).text, "html.parser")
-            products_container = soup.findAll("li", "product-col")
+            products_container = soup.findAll("li", "product")
 
             if not products_container:
                 if page == 1:
@@ -41,6 +37,9 @@ class HogarYModa(Store):
                 break
 
             for product in products_container:
+                product_name = product.find("h2").text.upper()
+                if "LG" not in product_name:
+                    continue
                 product_url = product.find("a")["href"]
                 product_urls.append(product_url)
 
@@ -59,6 +58,7 @@ class HogarYModa(Store):
         product_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text
         )
+        product_data = product_data["@graph"][1]
         name = product_data["name"]
         sku = product_data["sku"]
 
@@ -68,11 +68,7 @@ class HogarYModa(Store):
         else:
             stock = 0
 
-        price_tag = soup.findAll("p", "price")
-        assert len(price_tag) == 2
-        price_tag = price_tag[1]
-        price_text = price_tag.findAll("span", "woocommerce-Price-amount")[-1].text
-        price = Decimal(price_text.replace("$", "").replace(",", ""))
+        price = Decimal(product_data["offers"][0]["price"])
         description = product_data["description"]
         picture_urls = [x["data-src"] for x in soup.findAll("img", "owl-lazy")]
 
