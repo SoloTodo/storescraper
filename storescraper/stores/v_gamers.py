@@ -57,17 +57,18 @@ class VGamers(StoreWithUrlExtensions):
         while True:
             if page > 10:
                 raise Exception("page overflow: " + url_extension)
-            url_webpage = "https://vgamers.cl/categoria-producto/" "{}/page/{}/".format(
+            url_webpage = "https://vgamers.cl/categoria-producto/{}/page/{}/".format(
                 url_extension, page
             )
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, "html.parser")
-            product_containers = soup.findAll("div", "product")
-            if not product_containers:
+            products_tags = soup.findAll("div", "products")
+            if not products_tags:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
+            product_containers = products_tags[-1].findAll("div", "product")
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
