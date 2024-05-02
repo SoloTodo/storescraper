@@ -11,6 +11,11 @@ from storescraper.categories import (
     TABLET,
     HEADPHONES,
     WEARABLE,
+    KEYBOARD,
+    MONITOR,
+    TELEVISION,
+    REFRIGERATOR,
+    VIDEO_GAME_CONSOLE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -20,12 +25,16 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 class Reuse(StoreWithUrlExtensions):
     url_extensions = [
         ["celulares", CELL],
-        ["computadores/tipo-de-producto_notebook", NOTEBOOK],
-        ["computadores/tipo-de-producto_chromebook", NOTEBOOK],
-        ["computadores/tipo-de-producto_imac", ALL_IN_ONE],
-        ["tablets-ipad", TABLET],
-        ["accesorios-1/audifonos", HEADPHONES],
-        ["accesorios-1/watch", WEARABLE],
+        ["computadores", NOTEBOOK],
+        ["smartwatch", WEARABLE],
+        ["tablets", TABLET],
+        ["audio-reacondicionado", HEADPHONES],
+        ["mouses-y-teclados", KEYBOARD],
+        ["monitores-impresoras-y-proyectores", MONITOR],
+        ["smart-tv", TELEVISION],
+        ["electrodomesticos", REFRIGERATOR],
+        ["linea-blanca", REFRIGERATOR],
+        ["consolas-y-juegos", VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
@@ -34,7 +43,7 @@ class Reuse(StoreWithUrlExtensions):
         page = 1
         product_urls = []
         while True:
-            if page > 10:
+            if page > 20:
                 raise Exception("page overflow: " + url_extension)
             url_webpage = "https://www.reuse.cl/collections/" "{}?page={}".format(
                 url_extension, page
