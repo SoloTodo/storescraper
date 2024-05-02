@@ -127,7 +127,11 @@ class Progaming(Store):
         for a in picture_container.findAll("a"):
             picture_urls.append(a["href"])
 
-        description = html_to_markdown(soup.find("div", {"id": "tab-description"}).text)
+        description_tag = soup.find("div", {"id": "tab-description"})
+        if description_tag:
+            description = html_to_markdown(description_tag.text)
+        else:
+            description = None
 
         p = Product(
             name,
