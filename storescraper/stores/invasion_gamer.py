@@ -83,6 +83,9 @@ class InvasionGamer(StoreWithUrlExtensions):
             soup.find("meta", {"property": "product:price:amount"})["content"]
         )
 
+        if not price:
+            return []
+
         if "PREVENTA" in name.upper():
             stock = 0
         else:

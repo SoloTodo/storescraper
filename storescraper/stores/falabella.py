@@ -13,6 +13,7 @@ import validators
 from bs4 import BeautifulSoup
 from html import unescape
 
+from curl_cffi.requests import RequestsError
 from dateutil.parser import parse
 from requests import TooManyRedirects
 from curl_cffi import requests
@@ -660,7 +661,7 @@ class Falabella(Store):
         for i in range(3):
             try:
                 response = session.get(url, timeout=30)
-            except TooManyRedirects:
+            except RequestsError:
                 return []
             except UnicodeDecodeError:
                 return []
