@@ -3,7 +3,7 @@ import logging
 import re
 
 from collections import defaultdict
-
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 from decimal import Decimal
 from storescraper.categories import (
@@ -38,7 +38,6 @@ from storescraper.categories import (
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
 from storescraper import banner_sections as bs
 
 
@@ -229,7 +228,7 @@ class Hites(Store):
                 0,
             ],
             [
-                "electro-hogar/climatizacion/aire-acondicionado",
+                "electro-hogar/climatizacion/f/aire-acondicionado",
                 [AIR_CONDITIONER],
                 "Inicio > Electro Hogar > Climatizacioń >  " "Aire Acondicionado",
                 1,
@@ -463,7 +462,7 @@ class Hites(Store):
         ]
 
         product_entries = defaultdict(lambda: [])
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
 
         for e in category_paths:
             category_path, local_categories, section_name, category_weight = e
@@ -531,7 +530,7 @@ class Hites(Store):
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
         product_urls = []
 
         page = 1
@@ -569,7 +568,7 @@ class Hites(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
         response = session.get(url, timeout=60)
 
         if response.status_code in [404, 410]:
@@ -794,7 +793,7 @@ class Hites(Store):
             #  'tecnologia/audio/soundbar-y-home-theater']
         ]
 
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
         banners = []
 
         for section, subsection, subsection_type, url_suffix in sections_data:

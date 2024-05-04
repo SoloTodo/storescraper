@@ -15,7 +15,6 @@ from html import unescape
 
 from curl_cffi.requests import RequestsError
 from dateutil.parser import parse
-from requests import TooManyRedirects
 from curl_cffi import requests
 
 from storescraper.categories import *
