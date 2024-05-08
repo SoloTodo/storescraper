@@ -118,9 +118,11 @@ class Natcom(StoreWithUrlExtensions):
             part_number = None
 
         if price_container.find("ins"):
-            price = Decimal(remove_words(price_container.find("ins").text))
+            offer_price = Decimal(remove_words(price_container.find("ins").text))
         else:
-            price = Decimal(remove_words(price_container.text))
+            offer_price = Decimal(remove_words(price_container.text))
+
+        normal_price = (offer_price * Decimal("1.05")).quantize(0)
 
         picture_urls = [
             tag["src"]
@@ -135,8 +137,8 @@ class Natcom(StoreWithUrlExtensions):
             url,
             sku,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             "CLP",
             sku=sku,
             picture_urls=picture_urls,
