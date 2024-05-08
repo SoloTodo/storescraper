@@ -119,6 +119,7 @@ class AsusStore(StoreWithUrlExtensions):
                 description = html_to_markdown(
                     variations_data["dynamic"]["short_description"][key]["value"]
                 )
+                stock = -1 if variations_data["isSalable"][key] else 0
 
                 p = Product(
                     name,
@@ -127,7 +128,7 @@ class AsusStore(StoreWithUrlExtensions):
                     url,
                     url,
                     sku,
-                    -1,
+                    stock,
                     price,
                     price,
                     "CLP",
