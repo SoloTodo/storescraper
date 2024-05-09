@@ -28,6 +28,7 @@ from storescraper.categories import (
     MEMORY_CARD,
     MOUSE,
     STEREO_SYSTEM,
+    VIDEO_GAME_CONSOLE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -57,20 +58,8 @@ class NotebooksYa(StoreWithUrlExtensions):
         ["computadores-ya/?filter_producto-computadores=imac", ALL_IN_ONE],
         ["monitores-ya", MONITOR],
         [
-            "almacenamiento-ya/?filter_producto-almacenamiento=" "disco-duro-externo",
-            EXTERNAL_STORAGE_DRIVE,
-        ],
-        [
-            "almacenamiento-ya/?filter_producto-almacenamiento=" "disco-duro-interno",
-            STORAGE_DRIVE,
-        ],
-        [
-            "almacenamiento-ya/?filter_producto-almacenamiento=" "disco-ssd-interno",
+            "almacenamiento-ya",
             SOLID_STATE_DRIVE,
-        ],
-        [
-            "almacenamiento-ya/?filter_producto-almacenamiento=" "tarjeta-de-memoria",
-            MEMORY_CARD,
         ],
         ["audifonos-ya", HEADPHONES],
         ["teclados-mouse-ya", MOUSE],
@@ -111,6 +100,7 @@ class NotebooksYa(StoreWithUrlExtensions):
         ],
         ["audio-y-video-ya/?filter_producto-audio-y-video=sound-bar", STEREO_SYSTEM],
         ["ups-ya/?filter_producto-ups=ups", UPS],
+        ["consolas-y-controles", VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
