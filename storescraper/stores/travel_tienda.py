@@ -41,7 +41,7 @@ class TravelTienda(StoreWithUrlExtensions):
         ("2934181475", TABLET),  # Tech > Comp. > Tablets
         ("3415774358", NOTEBOOK),  # Tech > Comp. > Notebook
         ("3213133197", PRINTER),  # Tech > Computación > Domótica & Acc.
-        ("714969430", GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
+        ("2156181483", GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
         ("1226813193", HEADPHONES),  # Tech > Gamer > Audífonos Gamer
         ("2547146328", MOUSE),  # Tech > Gamer > Periféricos
         ("2881216585", VIDEO_GAME_CONSOLE),  # Tech > Gamer > Consolas y Ac

@@ -302,7 +302,7 @@ from .ultimate_gamer_store import UltimateGamerStore
 from .v_gamers import VGamers
 from .valrod import Valrod
 from .venelectronics import Venelectronics
-from .ventas_albion import VentasAlbion
+from .albion_haus import AlbionHaus
 from .video_vision import VideoVision
 from .v_store import VStore
 from .vtr import Vtr
