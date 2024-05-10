@@ -119,6 +119,8 @@ class SmartMobile(StoreWithUrlExtensions):
                     if stock_text == "Hay existencias":
                         # A pedido
                         stock = 0
+                    elif stock_text == "Sin existencias":
+                        stock = 0
                     else:
                         stock = int(stock_text.split()[0])
                 picture_urls = [variation["image"]["url"]]
