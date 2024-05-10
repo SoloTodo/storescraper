@@ -222,8 +222,22 @@ class HuaweiShop(Store):
 
                 if sku not in price_per_sbom:
                     continue
-
                 price = price_per_sbom[sku]
+
+                discount_url = "https://itrinity-sg.c.huawei.com/convert/querySbomDepositActivity?sbomCode={}&siteCode=CL".format(
+                    sku
+                )
+                discount_data = session.get(discount_url).json()
+                discount_entries = discount_data["data"]["depositActivityInfo"]
+                if discount_entries:
+                    discount_entries = discount_entries["depositSkuList"][0]
+                    discount = Decimal(
+                        discount_entries["amountPrice"]
+                        - discount_entries["depositPrice"]
+                    )
+                    final_price = price - discount
+                else:
+                    final_price = price
 
                 p = Product(
                     name,
@@ -233,8 +247,8 @@ class HuaweiShop(Store):
                     url,
                     sku,
                     base_stock,
-                    price,
-                    price,
+                    final_price,
+                    final_price,
                     "CLP",
                     sku=sku,
                     picture_urls=picture_urls,
