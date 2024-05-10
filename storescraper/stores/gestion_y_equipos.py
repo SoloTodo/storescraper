@@ -1,8 +1,6 @@
-import re
 from decimal import Decimal
 import json
 import logging
-import validators
 
 from bs4 import BeautifulSoup
 
@@ -14,6 +12,7 @@ from storescraper.categories import (
     RAM,
     VIDEO_CARD,
     UPS,
+    ALL_IN_ONE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -30,6 +29,7 @@ class GestionYEquipos(StoreWithUrlExtensions):
         ["portatiles-sodimm", RAM],
         ["tarjetas-de-video", VIDEO_CARD],
         ["unidad-de-respaldo-de-energia", UPS],
+        ["pc-de-escritorio", ALL_IN_ONE],
     ]
 
     @classmethod
