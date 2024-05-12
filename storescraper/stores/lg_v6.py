@@ -35,44 +35,51 @@ class LgV6(Store):
         session = session_with_proxy(extra_args)
         session.headers["Authorization"] = "Bearer {}".format(extra_args["coveo_token"])
         discovered_urls = []
+        page_size = 50
 
         for category_id, local_category in category_paths:
             if local_category != category:
                 continue
-            print(category_id)
+            page = 0
+            while True:
+                payload = {
+                    "aq": '@ec_sub_category_id=="{0}" OR @ec_category_id=="{0}"'.format(
+                        category_id
+                    ),
+                    "searchHub": "{}-B2C-Listing".format(cls.region_code),
+                    "numberOfResults": page_size,
+                    "firstResult": page * page_size,
+                }
 
-            payload = {
-                "aq": '@ec_sub_category_id=="{0}" OR @ec_category_id=="{0}"'.format(
-                    category_id
-                ),
-                "searchHub": "{}-B2C-Listing".format(cls.region_code),
-                "numberOfResults": 1000,
-                "firstResult": 0,
-            }
+                response = session.post(cls.endpoint_url, json=payload)
+                json_response = response.json()
+                product_entries = json_response["results"]
 
-            response = session.post(cls.endpoint_url, json=payload)
-            json_response = response.json()
-            product_entries = json_response["results"]
+                if not product_entries:
+                    if page == 0:
+                        logging.warning("Empty category: {}".format(category_id))
+                    break
 
-            if not product_entries:
-                logging.warning("Empty category: {}".format(category_id))
+                for product_entry in product_entries:
+                    for subproduct_entry in product_entry["childResults"] + [
+                        product_entry
+                    ]:
+                        if cls.skip_products_without_price:
+                            is_active = (
+                                "ACTIVE"
+                                in subproduct_entry["raw"]["ec_model_status_code"]
+                            )
+                            price = Decimal(
+                                subproduct_entry["raw"].get("ec_price", 0)
+                            ) or Decimal(subproduct_entry["raw"].get("ec_msrp", 0))
+                            if not price or not is_active:
+                                continue
 
-            for product_entry in product_entries:
-                for subproduct_entry in product_entry["childResults"] + [product_entry]:
-                    if cls.skip_products_without_price:
-                        is_active = (
-                            "ACTIVE" in subproduct_entry["raw"]["ec_model_status_code"]
+                        product_url = (
+                            cls.base_url + subproduct_entry["raw"]["ec_model_url_path"]
                         )
-                        price = Decimal(
-                            subproduct_entry["raw"].get("ec_price", 0)
-                        ) or Decimal(subproduct_entry["raw"].get("ec_msrp", 0))
-                        if not price or not is_active:
-                            continue
-
-                    product_url = (
-                        cls.base_url + subproduct_entry["raw"]["ec_model_url_path"]
-                    )
-                    discovered_urls.append(product_url)
+                        discovered_urls.append(product_url)
+                page += 1
 
         return discovered_urls
 
