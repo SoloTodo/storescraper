@@ -104,13 +104,18 @@ class GestionYEquipos(StoreWithUrlExtensions):
                 )
                 products.append(p)
         else:
-            container = soup.find("div", "product-info")
-            name = container.find("h1", "product-title").text.strip()
-            price = Decimal(
-                remove_words(container.find("strong", "price__current").text)
-            )
-            sku = container.find("span", "product-sku__value").text.strip()
             key = soup.find("input", {"name": "id"})["value"]
+            json_container = soup.findAll("script", {"type": "application/ld+json"})[-1]
+            json_data = json.loads(json_container.text)
+            name = json_data["name"].strip()
+            price = Decimal(json_data["offers"][0]["price"])
+            stock = (
+                -1
+                if json_data["offers"][0]["availability"] == "http://schema.org/InStock"
+                else 0
+            )
+            container = soup.find("div", "product-info")
+            sku = container.find("span", "product-sku__value").text.strip()
             picture_urls = [
                 "https:" + x["href"] for x in soup.findAll("a", "media--cover")
             ]
@@ -122,7 +127,7 @@ class GestionYEquipos(StoreWithUrlExtensions):
                 url,
                 url,
                 key,
-                -1,
+                stock,
                 price,
                 price,
                 "CLP",
