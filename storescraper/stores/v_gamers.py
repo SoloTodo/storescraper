@@ -6,21 +6,19 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import (
     HEADPHONES,
-    KEYBOARD_MOUSE_COMBO,
     KEYBOARD,
-    MONITOR,
     POWER_SUPPLY,
     COMPUTER_CASE,
     MOUSE,
-    GAMING_CHAIR,
     CPU_COOLER,
     VIDEO_CARD,
-    STORAGE_DRIVE,
     MOTHERBOARD,
     PROCESSOR,
     RAM,
-    GAMING_DESK,
     CASE_FAN,
+    USB_FLASH_DRIVE,
+    STEREO_SYSTEM,
+    PRINTER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -29,24 +27,28 @@ from storescraper.utils import session_with_proxy
 
 class VGamers(StoreWithUrlExtensions):
     url_extensions = [
-        ["audifonos", HEADPHONES],
-        ["teclados", KEYBOARD],
-        ["zona-gamer/mouse", MOUSE],
-        ["escritorio", GAMING_DESK],
-        ["sillas", GAMING_CHAIR],
-        ["sillones", GAMING_CHAIR],
-        ["zona-gamer/kit-gamer", KEYBOARD_MOUSE_COMBO],
-        ["hardware/almacenamiento", STORAGE_DRIVE],
-        ["hardware/fuentes-de-poder", POWER_SUPPLY],
+        ["audifonos-gamer", HEADPHONES],
+        ["teclados-gamers", KEYBOARD],
+        ["mouse-gamer", MOUSE],
+        ["disipador-cpu", CPU_COOLER],
+        ["water-cooling", CPU_COOLER],
+        ["ventiladores", CASE_FAN],
+        ["procesadores", PROCESSOR],
+        ["placas-madres", MOTHERBOARD],
+        ["memorias-ram", RAM],
+        ["almacenamiento", USB_FLASH_DRIVE],
+        ["tarjetas-graficas", VIDEO_CARD],
         ["gabinetes", COMPUTER_CASE],
-        ["hardware/memorias-ram", RAM],
-        ["hardware/placas-madres", MOTHERBOARD],
-        ["hardware/procesadores", PROCESSOR],
-        ["hardware/water-cooling", CPU_COOLER],
-        ["hardware/disipador-cpu", CPU_COOLER],
-        ["hardware/ventiladores", CASE_FAN],
-        ["hardware/tarjetas-graficas", VIDEO_CARD],
-        ["monitores", MONITOR],
+        ["fuentes-de-poder", POWER_SUPPLY],
+        ["audifonos-tradicionales", HEADPHONES],
+        ["audifonos-bluetooth", HEADPHONES],
+        ["radio-reloj", STEREO_SYSTEM],
+        ["barras-de-sonido", STEREO_SYSTEM],
+        ["parlantes", STEREO_SYSTEM],
+        ["portables", STEREO_SYSTEM],
+        ["mouse-tradicional", MOUSE],
+        ["teclado-tradicional", KEYBOARD],
+        ["impresoras-y-suministros", PRINTER],
     ]
 
     @classmethod
@@ -63,12 +65,12 @@ class VGamers(StoreWithUrlExtensions):
             print(url_webpage)
             data = session.get(url_webpage).text
             soup = BeautifulSoup(data, "html.parser")
-            products_tags = soup.findAll("div", "products")
+            products_tags = soup.findAll("ul", "products")
             if not products_tags:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
-            product_containers = products_tags[-1].findAll("div", "product")
+            product_containers = products_tags[-1].findAll("li", "product")
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
@@ -77,6 +79,7 @@ class VGamers(StoreWithUrlExtensions):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
@@ -93,7 +96,7 @@ class VGamers(StoreWithUrlExtensions):
 
         name = product_data["name"]
         sku = product_data["sku"]
-        description = product_data["description"]
+        description = product_data.get("description", None)
         offer_price = Decimal(product_data["offers"]["price"])
         normal_price = (offer_price * Decimal(1.05)).quantize(Decimal(0))
 
@@ -108,11 +111,7 @@ class VGamers(StoreWithUrlExtensions):
             else:
                 stock = -1
 
-        picture_urls = []
-        picture_container = soup.find("figure", "woocommerce-product-gallery__wrapper")
-        for p in picture_container.findAll("a"):
-            if p["href"] not in picture_urls:
-                picture_urls.append(p["href"])
+        picture_urls = [soup.find("meta", {"property": "og:image"})["content"]]
 
         p = Product(
             name,
