@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from curl_cffi import requests
 
 
 class Mercacentro(Store):
@@ -18,7 +18,7 @@ class Mercacentro(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         if category != TELEVISION:
             return []
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
@@ -37,7 +37,7 @@ class Mercacentro(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = requests.Session(impersonate="chrome120")
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"

@@ -44,7 +44,7 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class PcLinkStore(StoreWithUrlExtensions):
     url_extensions = [
-        ["audifono-y-manos-libres", HEADPHONES],
+        ["audifonos", HEADPHONES],
         ["disco-duro-externo", EXTERNAL_STORAGE_DRIVE],
         ["kit-teclado-y-mouse-2", KEYBOARD_MOUSE_COMBO],
         ["microfono", MICROPHONE],
