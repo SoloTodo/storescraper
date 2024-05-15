@@ -22,6 +22,7 @@ from .artefacta import Artefacta
 from .asus_store import AsusStore
 from .aufbau import Aufbau
 from .back_online import BackOnline
+from .batek import Batek
 from .bbcc import BookComputer
 from .best_store import BestStore
 from .bip import Bip
@@ -198,7 +199,6 @@ from .novey import Novey
 from .nuevatec import Nuevatec
 from .olier import Olier
 from .olimpica import Olimpica
-from .oltouch import Oltouch
 from .omnisport import Omnisport
 from .opc_store import OpcStore
 from .oportutek import Oportutek
