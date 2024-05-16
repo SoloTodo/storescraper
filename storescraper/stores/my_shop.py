@@ -148,8 +148,10 @@ class MyShop(StoreWithUrlExtensions):
         sku = product_data_tag.findAll("p")[0].text.strip().split(": ")[1]
         part_number = product_data_tag.findAll("p")[3].text.strip().split(": ")[1]
 
-        stock_container = soup.find("div", "product_desc").find("li")
-        stock = int(re.search(r"(\d+)", stock_container.text).groups()[0])
+        stock_containers = soup.find("div", "product_desc").findAll("li")
+        stock = 0
+        for stock_container in stock_containers:
+            stock += int(re.search(r"(\d+)", stock_container.text).groups()[0])
 
         price_tags = soup.find("div", "product_d_right").findAll(
             "span", "current_price"
