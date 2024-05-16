@@ -87,7 +87,7 @@ class BackOnline(StoreWithUrlExtensions):
         variations_tags = soup.findAll("script", {"type": "application/json"})
         products = []
 
-        if len(variations_tags) == 1:
+        if len(variations_tags) == 2:
             name = json_data["name"].strip()
             sku = json_data["sku"]
             picture_urls = json_data.get("image", None)
@@ -115,7 +115,7 @@ class BackOnline(StoreWithUrlExtensions):
             )
             products.append(p)
         else:
-            variations = json.loads(variations_tags[2].text)
+            variations = json.loads(variations_tags[3].text)
             for variation in variations:
                 name = variation["name"]
                 key = str(variation["id"])
