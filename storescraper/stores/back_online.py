@@ -115,7 +115,7 @@ class BackOnline(StoreWithUrlExtensions):
             )
             products.append(p)
         else:
-            variations = json.loads(variations_tags[1].text)
+            variations = json.loads(variations_tags[2].text)
             for variation in variations:
                 name = variation["name"]
                 key = str(variation["id"])

@@ -75,8 +75,8 @@ class GestionYEquipos(StoreWithUrlExtensions):
 
         products = []
         variants_tags = soup.findAll("script", {"type": "application/json"})
-        if len(variants_tags) > 3:
-            variants_json = json.loads(variants_tags[3].text)
+        if len(variants_tags) > 4:
+            variants_json = json.loads(variants_tags[4].text)
             picture_urls = ["https:" + x for x in variants_json["product"]["images"]]
             for variant in variants_json["product"]["variants"]:
                 key = str(variant["id"])
