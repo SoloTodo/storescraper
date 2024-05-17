@@ -103,29 +103,14 @@ class Dust2(StoreWithUrlExtensions):
         response = session.get(endpoint)
         if response.status_code == 404:
             return []
-        json_data = response.json()
-        product_id = json_data["result"]["pageContext"]["product"]["id"]
-        endpoint = (
-            "https://backend.dust2.gg/wp-json/wc/v3/products/{}?consumer_secret="
-            "cs_fbb639f8a188712d48121b09573aa46320525b42&consumer_key="
-            "ck_478e84c7ccbd134153433e39b77eb922fddcb72d"
-        ).format(product_id)
-        response = session.get(endpoint)
-        product_data = response.json()
-
-        if "name" not in product_data:
-            return []
-
-        name = product_data["name"]
-        sku = product_data["sku"]
-        if "id" in product_data:
-            key = str(product_data["id"])
-        else:
-            key = str(product_data["wordpress_id"])
-        stock = max(product_data["stock_quantity"] or 0, 0)
-        normal_price = (Decimal(product_data["price"])).quantize(0)
+        json_data = response.json()["result"]["pageContext"]["product"]
+        name = json_data["name"]
+        key = str(json_data["id"])
+        stock = json_data["stock_quantity"]
+        normal_price = Decimal(json_data["price"])
         offer_price = (normal_price * Decimal("0.93")).quantize(0)
-        picture_urls = [tag["src"] for tag in product_data["images"]]
+        sku = json_data["sku"]
+        picture_urls = [x["src"] for x in json_data["images"]]
 
         p = Product(
             name,
