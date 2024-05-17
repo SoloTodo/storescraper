@@ -106,7 +106,7 @@ class Dust2(StoreWithUrlExtensions):
         json_data = response.json()["result"]["pageContext"]["product"]
         name = json_data["name"]
         key = str(json_data["id"])
-        stock = json_data["stock_quantity"]
+        stock = json_data["stock_quantity"] or 0
         normal_price = Decimal(json_data["price"]).quantize(0)
         offer_price = (normal_price * Decimal("0.93")).quantize(0)
         sku = json_data["sku"]
