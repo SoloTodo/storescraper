@@ -107,7 +107,7 @@ class Dust2(StoreWithUrlExtensions):
         name = json_data["name"]
         key = str(json_data["id"])
         stock = json_data["stock_quantity"]
-        normal_price = Decimal(json_data["price"])
+        normal_price = Decimal(json_data["price"]).quantize(0)
         offer_price = (normal_price * Decimal("0.93")).quantize(0)
         sku = json_data["sku"]
         picture_urls = [x["src"] for x in json_data["images"]]
