@@ -32,6 +32,7 @@ class Falabella(Store):
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 20
     store_and_subdomain = None
+    pid = "15c37b0b-a392-41a9-8b3b-978376c700d5"
     seller = [
         {"id": "FALABELLA", "section_prefix": "RETAIL", "include_in_fast_mode": True},
         {"id": None, "section_prefix": "GRUPO", "include_in_fast_mode": False},
@@ -225,13 +226,14 @@ class Falabella(Store):
     ]
 
     zones = (
-        "PCL2281,ZL_CERRILLOS,PCL1135,3045,PCL1486,FALABELLA_FBY_SDD,"
-        "PCL2269,LOSC,PCL540,2020,PCL1186,FEDEX_RM_URB,PCL2520,PCL1336,"
-        "CHILEXPRESS_8,PCL1839,BX_R13_BASE,PCL226,SCD9039_FLEX,PCL105,"
-        "HUB_SALIDA_DIRECTA_RM,PCL2120,PCL1923,PCL2441,1234,PCL1223,"
-        "FBY_BT_CTT,PCL2661,130617,PCL25,PCL2442,BLUE_RM_URBANO,PCL115,"
-        "RM,PCL94,PCL2511,PCL108,13,PCL861,CHILE_INTERNATIONAL,PCL1364,"
-        "PCL109,PCL184"
+        "FALABELLA_FBY_BT_SDD,PCL2829,REVERSE_RM_REDPROPIA,PCL2998,PCL3128,PCL2808,1234,PCL1223,PCL2802,PCL2826,"
+        "PCL3019,PCL2281,PCL3009,HUB_SALIDA_DIRECTA_RM,PCL2120,PCL3043,PCL3025,BLUE_RM_URBANO,PCL115,3045,PCL1486,"
+        "PCL2980,PCL1736,PCL1923,PCL2981,PCL2792,PCL3006,BX_R13_BASE,PCL226,PCL2847,PCL2901,PCL2827,PCL2979,PCL1389,"
+        "PCL2843,ZL_CERRILLOS,PCL1135,PCL2977,SCD9039_FLEX,PCL105,PCL3099,FBY_RM_M,PCL2380,PCL2442,2020,PCL1186,"
+        "PCL2864,FALABELLA_FBY_SDD,PCL2269,PCL2846,13,PCL861,PCL3015,FEDEX_RM_URB,PCL2520,LOSC,PCL540,CHILEXPRESS_8,"
+        "PCL1839,FBY_BT_SALIDA_DIRECTA,PCL2288,PCL2978,PCL2862,PCL2803,PCL2890,PCL2838,RM,PCL108,PCL94,"
+        "CHILE_INTERNATIONAL,PCL1364,PCL2801,PCL3011,PCL3017,13_MAIPU,PCL2830,PCL3026,PCL2845,PCL2982,PCL109,PCL3136,"
+        "130617,PCL25,PCL2441,PCL184,PCL3012,PCL1336,STARKEN_R13,PCL3041,PCL2825,PCL2511,PCL3042"
     )
 
     category_paths = [
@@ -687,7 +689,7 @@ class Falabella(Store):
         # results
         base_url = (
             "https://www.falabella.com/s/browse/v1/listing/cl?"
-            "&categoryId={}&categoryName=foo&sortBy={}&page={}"
+            "&pid={}&categoryId={}&categoryName=foo&sortBy={}&page={}"
         )
 
         for key, value in extra_params.items():
@@ -713,7 +715,7 @@ class Falabella(Store):
                 if page > 210:
                     raise Exception("Page overflow: " + category_id)
 
-                pag_url = base_url.format(category_id, sorting, page)
+                pag_url = base_url.format(cls.pid, category_id, sorting, page)
 
                 if cls.store_and_subdomain:
                     pag_url += "&subdomain={}&store={}".format(
