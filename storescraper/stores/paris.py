@@ -627,6 +627,8 @@ class Paris(Store):
 
         video_urls = []
         for iframe in soup.findAll("iframe"):
+            if "src" not in iframe.attrs:
+                continue
             match = re.match("https://www.youtube.com/embed/(.+)", iframe["src"])
             if match:
                 video_urls.append(

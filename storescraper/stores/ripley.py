@@ -265,33 +265,9 @@ class Ripley(Store):
             1,
         ],
         [
-            "tecno/smartwatches-y-smartbands/garmin",
+            "tecno/smartwatches-y-smartbands",
             [WEARABLE],
             "Tecno > Telefonía > Smartwatches y Wearables > Garmin",
-            1,
-        ],
-        [
-            "tecno/smartwatches-y-smartbands/polar",
-            [WEARABLE],
-            "Tecno > Telefonía > Smartwatches y Wearables > Polar",
-            1,
-        ],
-        [
-            "tecno/smartwatches-y-smartbands/apple",
-            [WEARABLE],
-            "Tecno > Telefonía > Smartwatches y Wearables > Apple Watch",
-            1,
-        ],
-        [
-            "marca/samsung/accesorios-y-smartwatch",
-            [WEARABLE],
-            "Tecno > Telefonía > Smartwatches y Wearables > Samsung",
-            1,
-        ],
-        [
-            "tecno/smartwatches-y-smartbands/huawei",
-            [WEARABLE],
-            "Tecno > Telefonía > Smartwatches y Wearables > Huawei",
             1,
         ],
         [

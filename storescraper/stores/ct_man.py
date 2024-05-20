@@ -129,7 +129,7 @@ class CtMan(StoreWithUrlExtensions):
         price_tag = soup.find("big", "product-price").find("span", "bootic-price")
         price = Decimal(remove_words(price_tag.text))
 
-        add_to_cart_tag = soup.find("button", text="Agregar al carro")
+        add_to_cart_tag = soup.find("input", value="Agregar al carro")
 
         if add_to_cart_tag:
             stock = -1
