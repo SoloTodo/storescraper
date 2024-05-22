@@ -29,7 +29,7 @@ class FalabellaColombia(Store):
                 raise Exception("Page overflow")
 
             endpoint = (
-                "https://www.falabella.com.co/s/browse/v1/search/co?f.product.brandName=lg&page={}&"
+                "https://www.falabella.com.co/s/browse/v1/search/co?f.product.brandName=lg&Ntt=lg&page={}&"
                 "pid=bbea9a06-99b1-44de-bc6e-d314bca4fad3&f.derived.variant.sellerId=FALABELLA".format(
                     page
                 )

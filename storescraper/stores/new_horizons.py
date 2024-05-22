@@ -7,18 +7,24 @@ from decimal import Decimal
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy
-from storescraper.categories import KEYBOARD, HEADPHONES, \
-    STEREO_SYSTEM, EXTERNAL_STORAGE_DRIVE, TABLET, WEARABLE
+from storescraper.categories import (
+    KEYBOARD,
+    HEADPHONES,
+    STEREO_SYSTEM,
+    EXTERNAL_STORAGE_DRIVE,
+    TABLET,
+    WEARABLE,
+)
 
 
 class NewHorizons(StoreWithUrlExtensions):
     url_extensions = [
-        ['audifonos', HEADPHONES],
-        ['parlantes', STEREO_SYSTEM],
-        ['computacion', EXTERNAL_STORAGE_DRIVE],
-        ['teclado-y-mouse', KEYBOARD],
-        ['tablets-y-telefonos', TABLET],
-        ['wearables', WEARABLE],
+        ["audifonos", HEADPHONES],
+        ["parlantes", STEREO_SYSTEM],
+        ["computacion", EXTERNAL_STORAGE_DRIVE],
+        ["teclado-y-mouse", KEYBOARD],
+        ["tablets-y-telefonos", TABLET],
+        ["wearables", WEARABLE],
     ]
 
     @classmethod
@@ -28,19 +34,20 @@ class NewHorizons(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 10:
-                raise Exception('Page overflow: ' + url_extension)
-            url_webpage = 'https://nht.cl/collections/{}?page' \
-                          '={}'.format(url_extension, page)
+                raise Exception("Page overflow: " + url_extension)
+            url_webpage = "https://nht.cl/collections/{}?page" "={}".format(
+                url_extension, page
+            )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('product-card')
+            soup = BeautifulSoup(data, "html.parser")
+            product_containers = soup.findAll("product-card")
             if not product_containers or len(product_containers) == 0:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_url = container.find('a', 'bold')['href']
-                product_urls.append('https://nht.cl' + product_url)
+                product_url = container.find("a", "bold")["href"]
+                product_urls.append("https://nht.cl" + product_url)
             page += 1
         return product_urls
 
@@ -49,42 +56,43 @@ class NewHorizons(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
         json_data = json.loads(
-            soup.findAll('script', {'type': 'application/ld+json'}
-                         )[0].text)
-        assert len(json_data['offers']) == 1
-
-        offer = json_data['offers'][0]
-        key = str(json_data['productID'])
-        name = json_data['name']
-        sku = json_data['sku']
-        description = json_data['description']
-        price = Decimal(offer['price'])
-
-        if offer['availability'] == 'https://schema.org/InStock':
-            stock = -1
-        else:
-            stock = 0
-
-        picture_urls = []
-        for i in soup.findAll('div', 'product-gallery__media'):
-            picture_urls.append('https:' + i.find('img')['src'])
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            'CLP',
-            sku=sku,
-            part_number=sku,
-            picture_urls=picture_urls,
-            description=description
+            soup.findAll("script", {"type": "application/ld+json"})[0].text
         )
-        return [p]
+        products = []
+        for variant in json_data["hasVariant"]:
+            offer = variant["offers"]
+            key = str(variant["inProductGroupWithID"])
+            name = variant["name"]
+            sku = offer["sku"]
+            description = json_data["description"]
+            price = Decimal(offer["price"])
+
+            if offer["availability"] == "https://schema.org/InStock":
+                stock = -1
+            else:
+                stock = 0
+
+            picture_urls = []
+            for i in soup.findAll("div", "product-gallery__media"):
+                picture_urls.append("https:" + i.find("img")["src"])
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                "CLP",
+                sku=sku,
+                part_number=sku,
+                picture_urls=picture_urls,
+                description=description,
+            )
+            products.append(p)
+        return products
