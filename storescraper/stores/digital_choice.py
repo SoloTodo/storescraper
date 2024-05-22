@@ -10,22 +10,22 @@ from storescraper.utils import session_with_proxy
 
 class DigitalChoice(StoreWithUrlExtensions):
     url_extensions = [
-        ['discos-externos-portatiles', EXTERNAL_STORAGE_DRIVE],
-        ['pendrives', USB_FLASH_DRIVE],
-        ['tarjetas-micro-sd-y-lector-de-tarjetas', MEMORY_CARD],
-        ['ssd-y-hdd', SOLID_STATE_DRIVE],
-        ['audifonos', HEADPHONES],
-        ['parlantes', STEREO_SYSTEM],
-        ['microfonos', MICROPHONE],
-        ['impresoras', PRINTER],
-        ['monitores', MONITOR],
-        ['mouse-y-mousepads', MOUSE],
-        ['procesadores', PROCESSOR],
-        ['teclados', KEYBOARD],
-        ['sillas-gamer', GAMING_CHAIR],
-        ['tablas-digitalizadoras-y-tablets', TABLET],
-        ['ups-y-baterias-externas', UPS],
-        ['segunda-seleccion', MONITOR],
+        ["discos-externos-portatiles", EXTERNAL_STORAGE_DRIVE],
+        ["pendrives", USB_FLASH_DRIVE],
+        ["tarjetas-micro-sd-y-lector-de-tarjetas", MEMORY_CARD],
+        ["ssd-y-hdd", SOLID_STATE_DRIVE],
+        ["audifonos", HEADPHONES],
+        ["parlantes", STEREO_SYSTEM],
+        ["microfonos", MICROPHONE],
+        ["impresoras", PRINTER],
+        ["monitores-y-proyectores", MONITOR],
+        ["mouse-y-mousepads", MOUSE],
+        ["memorias-ram-y-procesadores", RAM],
+        ["teclados", KEYBOARD],
+        ["sillas-y-accesorios-gamer", GAMING_CHAIR],
+        ["tablas-digitalizadoras-y-tablets", TABLET],
+        ["ups-baterias-y-cargadores", UPS],
+        ["open-box", MONITOR],
     ]
 
     @classmethod
@@ -35,26 +35,29 @@ class DigitalChoice(StoreWithUrlExtensions):
         page = 1
         while True:
             if page > 20:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url_webpage = 'https://www.digitalchoice.cl/collection/{}?' \
-                          'page={}'.format(url_extension, page)
+            url_webpage = (
+                "https://www.digitalchoice.cl/collection/{}?"
+                "page={}".format(url_extension, page)
+            )
             print(url_webpage)
             response = session.get(url_webpage)
+            if response.url != url_webpage:
+                raise Exception(url_webpage)
 
             data = response.text
-            soup = BeautifulSoup(data, 'html5lib')
-            product_containers = soup.findAll('section', 'grid__item')
+            soup = BeautifulSoup(data, "html5lib")
+            product_containers = soup.findAll("section", "grid__item")
 
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_extension)
+                    logging.warning("Empty category: " + url_extension)
                 break
 
             for container in product_containers:
-                product_url = container.find('a')['href']
-                product_urls.append(
-                    'https://digitalchoice.cl' + product_url)
+                product_url = container.find("a")["href"]
+                product_urls.append("https://digitalchoice.cl" + product_url)
             page += 1
         return product_urls
 
@@ -63,50 +66,50 @@ class DigitalChoice(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
         products = []
         scripts = soup.findAll(
-            'script', {
-                'type': 'application/ld+json',
-                'data-schema': 'Product'})
+            "script", {"type": "application/ld+json", "data-schema": "Product"}
+        )
         for product_script in scripts:
             json_data = json.loads(product_script.text)
 
-            key = json_data['@id']
-            name = json_data['name']
-            description = json_data['description']
-            sku = json_data['sku']
-            picture_urls = json_data['image']
-            price = Decimal(json_data['offers']['price'])
+            key = json_data["@id"]
+            name = json_data["name"]
+            description = json_data["description"]
+            sku = json_data["sku"]
+            picture_urls = json_data["image"]
+            price = Decimal(json_data["offers"]["price"])
 
-            if json_data['offers']['availability'] == \
-                    "https://schema.org/InStock":
+            if json_data["offers"]["availability"] == "https://schema.org/InStock":
                 stock = -1
             else:
                 stock = 0
 
-            if 'open box' in name.lower() or 'caja abierta' in name.lower():
+            if "open box" in name.lower() or "caja abierta" in name.lower():
                 condition = "https://schema.org/OpenBoxCondition"
             else:
                 condition = "https://schema.org/NewCondition"
 
-            products.append(Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                'CLP',
-                sku=sku,
-                part_number=sku,
-                picture_urls=picture_urls,
-                description=description,
-                condition=condition
-            ))
+            products.append(
+                Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description,
+                    condition=condition,
+                )
+            )
 
         return products

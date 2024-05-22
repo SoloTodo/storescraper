@@ -17,6 +17,7 @@ class TechMark(StoreWithUrlExtensions):
         ["consolas", VIDEO_GAME_CONSOLE],
         ["tablet-ipad", TABLET],
         ["macbook-imac", NOTEBOOK],
+        ["productos-gigabyte", MONITOR],
     ]
 
     @classmethod
