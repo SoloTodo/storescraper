@@ -69,7 +69,7 @@ class NewHorizons(StoreWithUrlExtensions):
             description = json_data["description"]
             price = Decimal(offer["price"])
 
-            if offer["availability"] == "https://schema.org/InStock":
+            if offer["availability"] == "http://schema.org/InStock":
                 stock = -1
             else:
                 stock = 0
