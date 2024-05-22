@@ -1,6 +1,8 @@
 import json
 from decimal import Decimal
 import logging
+
+import validators
 from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.categories import *
@@ -79,7 +81,7 @@ class DigitalChoice(StoreWithUrlExtensions):
             name = json_data["name"]
             description = json_data["description"]
             sku = json_data["sku"]
-            picture_urls = json_data["image"]
+            picture_urls = [x for x in json_data["image"] if validators.url(x)]
             price = Decimal(json_data["offers"]["price"])
 
             if json_data["offers"]["availability"] == "https://schema.org/InStock":
