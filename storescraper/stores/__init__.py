@@ -308,6 +308,7 @@ from .video_vision import VideoVision
 from .v_store import VStore
 from .vtr import Vtr
 from .v2 import V2
+from .vyt_computacion import VyTComputacion
 from .web_redes import WebRedes
 from .wei import Wei
 from .weplay import Weplay
