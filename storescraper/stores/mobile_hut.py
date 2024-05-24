@@ -70,7 +70,8 @@ class MobileHut(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, "html.parser")
 
         variants_tag = soup.find("select", "product-form__variants").findAll("option")
-        variants_match = re.search(r'"productVariants":(.+)},},function', response.text)
+        variants_match = re.search(r'"productVariants":(.+),"shop"', response.text)
+        print(variants_match.groups()[0])
         variants_data = json.loads(variants_match.groups()[0])
 
         assert len(variants_tag) == len(variants_data)
