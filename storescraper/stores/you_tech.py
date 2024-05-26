@@ -42,7 +42,7 @@ class YouTech(StoreWithUrlExtensions):
         ["67906_67934", NOTEBOOK],
         ["67906_67979", NOTEBOOK],
         ["67906_67935", ALL_IN_ONE],
-        ["67824_67897", HEADPHONES],
+        ["67987", HEADPHONES],
         ["67824_67850", KEYBOARD_MOUSE_COMBO],
         ["68001", MONITOR],
         ["67824_67846", MOUSE],
