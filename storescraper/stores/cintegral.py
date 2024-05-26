@@ -100,7 +100,7 @@ class Cintegral(StoreWithUrlExtensions):
             ).format(url_extension, page)
             print(endpoint)
 
-            res = session.get(endpoint)
+            res = session.get(endpoint, verify=False)
             soup = BeautifulSoup(res.text, "html.parser")
             product_tags = soup.findAll("div", "jet-listing-grid__items")[1].findAll(
                 "div", "jet-listing-grid__item"
@@ -125,7 +125,7 @@ class Cintegral(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         try:
-            res = session.get(url)
+            res = session.get(url, verify=False)
         except TooManyRedirects:
             return []
         soup = BeautifulSoup(res.text, "html.parser")
