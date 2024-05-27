@@ -255,6 +255,7 @@ from .spider import Spider
 from .sukasa import Sukasa
 from .syd import Syd
 from .system_ti import SystemTi
+from .t_y_t_gamer import TyTGamer
 from .tauret import Tauret
 from .tecnoaxis import Tecnoaxis
 from .tecnocam import Tecnocam
@@ -295,7 +296,6 @@ from .todoclick import Todoclick
 from .top_pc import TopPc
 from .tottus import Tottus
 from .tottus_peru import TottusPeru
-from .ttchile import TtChile
 from .tupi import Tupi
 from .twido import Twido
 from .ultra_pc import UltraPc
