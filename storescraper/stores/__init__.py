@@ -124,6 +124,7 @@ from .ibeam import Ibeam
 from .importaciones_rubi import ImportacionesRubi
 from .infographics_solutions import InfographicsSolutions
 from .infosep import Infosep
+from .interactive_store import InteractiveStore
 from .infor_ingen import InforIngen
 from .interstock import Interstock
 from .invasion_gamer import InvasionGamer

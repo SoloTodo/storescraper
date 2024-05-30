@@ -95,7 +95,8 @@ class SystemTi(StoreWithUrlExtensions):
             part_number = part_number_match.groups()[0]
         else:
             part_number = None
-        if soup.find("input", "adc"):
+        stock_tag = soup.find("div", "product-available")
+        if "visible" in stock_tag.attrs["class"]:
             stock = -1
         else:
             stock = 0
