@@ -1,8 +1,9 @@
 import json
+import logging
 
 import time
 
-import xml.etree.ElementTree as ET
+from collections import defaultdict
 from collections import OrderedDict
 from decimal import Decimal
 
@@ -13,7 +14,9 @@ from storescraper.categories import (
     ALL_IN_ONE,
     CELL,
     DISH_WASHER,
+    EXTERNAL_STORAGE_DRIVE,
     GAMING_CHAIR,
+    KEYBOARD,
     MEMORY_CARD,
     MONITOR,
     NOTEBOOK,
@@ -21,6 +24,7 @@ from storescraper.categories import (
     HEADPHONES,
     OVEN,
     PRINTER,
+    PROJECTOR,
     REFRIGERATOR,
     SOLID_STATE_DRIVE,
     SPACE_HEATER,
@@ -33,8 +37,6 @@ from storescraper.categories import (
     WASHING_MACHINE,
     WEARABLE,
     WATER_HEATER,
-    STORAGE_DRIVE,
-    STOVE,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -48,259 +50,427 @@ class Lider(Store):
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/124.0.0.0 Safari/537.3"
     )
+
+    tenant = "catalogo"
     category_paths = [
-        ("Celulares > Audífonos y Accesorios > Audífonos", HEADPHONES),
-        ("Celulares > Mundo Apple > AirPods", HEADPHONES),
-        ("Celulares > Mundo Apple > Apple Watch", WEARABLE),
-        ("Celulares > Mundo Apple > iPad", TABLET),
-        ("Celulares > Mundo Apple > iPhone", CELL),
-        ("Celulares > Mundo Apple > Mac", NOTEBOOK),
-        ("Celulares > Relojes Inteligentes > Smartband", WEARABLE),
-        ("Celulares > Relojes inteligentes > Smartwatch", WEARABLE),
-        ("Celulares > Relojes inteligentes > Smartwatch Infantiles", WEARABLE),
-        ("Celulares > Telefonía > Celulares Básicos", CELL),
-        ("Celulares > Telefonía > Celulares reacondicionados", CELL),
-        ("Celulares > Telefonía > Smartphone", CELL),
-        ("Climatización > Calefacción > Calefactores", SPACE_HEATER),
-        ("Climatización > Calefacción > Estufas a Gas", SPACE_HEATER),
-        ("Climatización > Calefacción > Estufas a Leña y Pellet", SPACE_HEATER),
-        ("Climatización > Calefacción > Estufas Eléctrica", SPACE_HEATER),
-        ("Climatización > Calefacción > Termos y Calefonts", WATER_HEATER),
-        ("Climatización > Ventilación > Aire Acondicionado", AIR_CONDITIONER),
-        ("Computación > Accesorios Computación > Audífonos y Micrófonos", HEADPHONES),
-        ("Computación > Accesorios Computación > Monitores y Proyectores", MONITOR),
-        ("Computación > Accesorios Computación > Mouse y Teclados", MOUSE),
-        ("Computación > Almacenamiento > Discos Duros", STORAGE_DRIVE),
-        ("Computación > Almacenamiento > Discos Duros SSD", SOLID_STATE_DRIVE),
-        ("Computación > Almacenamiento > Pendrives", USB_FLASH_DRIVE),
-        ("Computación > Almacenamiento > Tarjetas de Memoria", MEMORY_CARD),
-        ("Computación > Computadores > Computadores All in One", ALL_IN_ONE),
-        ("Computación > Computadores > Notebooks", NOTEBOOK),
-        ("Computación > Computadores > Tablets", TABLET),
-        ("Computación > Impresión > Impresoras Láser", PRINTER),
-        ("Computación > Impresión > Impresoras y Multifuncionales", PRINTER),
-        ("Computación > Mundo Gamer > Audífonos", HEADPHONES),
-        ("Computación > Mundo Gamer > Computación Gamer", NOTEBOOK),
-        ("Computación > Mundo Gamer > Consolas", VIDEO_GAME_CONSOLE),
-        ("Computación > Mundo Gamer > Mouse y Teclados", MOUSE),
-        ("Computación > Mundo Gamer > Sillas Gamer", GAMING_CHAIR),
-        (
-            "Electrohogar > Aspirado y Limpieza > Aspiradoras de Arrastre y Ciclonica",
-            VACUUM_CLEANER,
-        ),
-        (
-            "Electrohogar > Aspirado y Limpieza > Aspiradoras Robot",
-            VACUUM_CLEANER,
-        ),
-        (
-            "Electrohogar > Aspirado y Limpieza > Aspiradoras Tambor",
-            VACUUM_CLEANER,
-        ),
-        (
-            "Electrohogar > Aspirado y Limpieza > Aspiradoras Verticales y Portatiles",
-            VACUUM_CLEANER,
-        ),
-        (
-            "Electrohogar > Climatización > Calefacción",
-            SPACE_HEATER,
-        ),
-        (
-            "Electrohogar > Climatización > Termos y Calefonts",
-            WATER_HEATER,
-        ),
-        (
-            "Electrohogar > Cocinas > Cocina a Gas",
-            STOVE,
-        ),
-        (
-            "Electrohogar > Cocinas > Encimeras",
-            STOVE,
-        ),
-        (
-            "Electrohogar > Cocinas > Hornos Empotrables",
-            OVEN,
-        ),
-        (
-            "Electrohogar > Electrodomésticos Cocina > Hornos Eléctricos",
-            OVEN,
-        ),
-        (
-            "Electrohogar > Electrodomésticos Cocina > Microondas",
-            OVEN,
-        ),
-        (
-            "Electrohogar > Lavado y Planchado > Lavadoras",
-            WASHING_MACHINE,
-        ),
-        (
-            "Electrohogar > Lavado Y Planchado > Lavadoras Secadoras",
-            WASHING_MACHINE,
-        ),
-        (
-            "Electrohogar > Lavado y Planchado > Lavavajillas",
-            DISH_WASHER,
-        ),
-        (
-            "Electrohogar > Lavado y Planchado > Secadoras",
-            WASHING_MACHINE,
-        ),
-        (
-            "Electrohogar > Refrigeración > Cavas",
-            REFRIGERATOR,
-        ),
-        (
-            "Electrohogar > Refrigeración > Freezer",
-            REFRIGERATOR,
-        ),
-        (
-            "Electrohogar > Refrigeración > Frigobar",
-            REFRIGERATOR,
-        ),
-        (
-            "Electrohogar > Refrigeración > Frío Directo",
-            REFRIGERATOR,
-        ),
-        (
-            "Electrohogar > Refrigeración > No Frost",
-            REFRIGERATOR,
-        ),
-        (
-            "Electrohogar > Refrigeración > Side by Side",
-            REFRIGERATOR,
-        ),
-        (
-            "Tecno > Audio > Audífonos",
-            HEADPHONES,
-        ),
-        (
-            "Tecno > Audio > Audio Portable",
-            STEREO_SYSTEM,
-        ),
-        (
-            "Tecno > Audio > Equipos de Música y Karaoke",
-            STEREO_SYSTEM,
-        ),
-        (
-            "Tecno > Audio > Micro y Mini Componentes",
-            STEREO_SYSTEM,
-        ),
-        (
-            "Tecno > Audio > Soundbars y Home Theater",
-            STEREO_SYSTEM,
-        ),
-        (
-            "Tecno > Mundo Gamer > Audífonos",
-            HEADPHONES,
-        ),
-        (
-            "Tecno > Mundo Gamer > Consolas",
-            VIDEO_GAME_CONSOLE,
-        ),
-        (
-            "Tecno > Mundo Gamer > Mouse y Teclados",
-            MOUSE,
-        ),
-        (
-            "Tecno > TV > Home Theater",
-            STEREO_SYSTEM,
-        ),
-        (
-            "Tecno > TV > Smart Tv",
-            TELEVISION,
-        ),
-        (
-            "Tecno > TV > Smart TV",
-            TELEVISION,
-        ),
-        (
+        # TECNO
+        ["Tecno/TV", [TELEVISION], "Tecno > TV", 1],
+        ["Tecno/TV/Smart_TV", [TELEVISION], "Tecno > TV > Smart TV", 1],
+        [
+            "Tecno/TV/Smart_TV_Hasta_50_Pulgadas",
+            [TELEVISION],
             "Tecno > TV > Smart TV Hasta 50 Pulgadas",
-            TELEVISION,
-        ),
-        (
+            1,
+        ],
+        [
+            "Tecno/TV/Smart_TV_Sobre_50_Pulgadas",
+            [TELEVISION],
             "Tecno > TV > Smart TV Sobre 50 Pulgadas",
-            TELEVISION,
-        ),
-        (
+            1,
+        ],
+        ["Tecno/TV/Home_Theater", [STEREO_SYSTEM], "Tecno > TV > Home Theater", 1],
+        ["Tecno/TV/Proyectores", [PROJECTOR], "Tecno > TV > Proyectores", 1],
+        ["Tecno/Audio", [STEREO_SYSTEM], "Tecno > Audio", 1],
+        [
+            "Tecno/Audio/Equipos_de_Música_y_Karaoke",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Equipos de Música y Karaoke",
+            1,
+        ],
+        [
+            "Tecno/Audio/Soundbars_y_Home_Theater",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Equipos de Música y Karaoke",
+            1,
+        ],
+        [
+            "Tecno/Audio/Audio_Portable",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Audio Portable",
+            1,
+        ],
+        [
+            "Tecno/Audio/Micro_y_Mini_Componentes",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Micro y Mini Componentes",
+            1,
+        ],
+        ["Tecno/Audio/Audífonos", [HEADPHONES], "Tecno > Audio > Audífonos", 1],
+        [
+            "Tecno/Audio/Tornamesas_y_Vinilos",
+            [STEREO_SYSTEM],
+            "Tecno > Audio > Tornamesas y Vinilos",
+            1,
+        ],
+        ["Tecno/Audio/Audio_HI-FI", [STEREO_SYSTEM], "Tecno > Audio > Audio HI-FI", 1],
+        [
+            "Tecno/Smart_Home/Proyectores",
+            [PROJECTOR],
+            "Tecno > Smart Home > Proyectores",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/Consolas",
+            [VIDEO_GAME_CONSOLE],
             "Tecno > Videojuegos > Consolas",
-            VIDEO_GAME_CONSOLE,
-        ),
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/Nintendo",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > Nintendo",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/PlayStation",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > PlayStation",
+            1,
+        ],
+        [
+            "Tecno/Videojuegos/XBOX",
+            [VIDEO_GAME_CONSOLE],
+            "Tecno > Videojuegos > XBOX",
+            1,
+        ],
+        # CELULARES
+        ["Celulares/Telefonía", [CELL], "Celulares > Celulares y Teléfonos", 1],
+        [
+            "Celulares/Relojes_Inteligentes",
+            [WEARABLE],
+            "Celulares > Smartwatches y Wearables",
+            1,
+        ],
+        # COMPUTACION
+        [
+            "Computación/Computadores/Notebooks",
+            [NOTEBOOK],
+            "Computación > Computadores > Notebooks",
+            1,
+        ],
+        [
+            "Computación/Computadores/Tablets",
+            [TABLET],
+            "Computación > Computadores > Tablets",
+            1,
+        ],
+        [
+            "Computación/Computadores/Computadores_All_in_One",
+            [ALL_IN_ONE],
+            "Computación > Computadores > Computadores All in One",
+            1,
+        ],
+        [
+            "Tecno/Computación/Monitores",
+            [MONITOR],
+            "Computación > Computadores > Monitores y Proyectores",
+            1.0,
+        ],
+        [
+            "Computación/Computadores/Accesorios_Computación",
+            [MOUSE],
+            "Computación > Computadores > Accesorios Computación",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Computación_Gamer",
+            [NOTEBOOK],
+            "Computación > Mundo Gamer > Computación Gamer",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Mouse_y_Teclados",
+            [KEYBOARD],
+            "Computación > Mundo Gamer > Mouse y Teclados",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Audífonos",
+            [HEADPHONES],
+            "Computación > Mundo Gamer > Audífonos",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Consolas",
+            [VIDEO_GAME_CONSOLE],
+            "Computación > Mundo Gamer > Consolas",
+            1.0,
+        ],
+        [
+            "Computación/Mundo_Gamer/Sillas_Gamer",
+            [GAMING_CHAIR],
+            "Computación > Mundo Gamer > Sillas Gamer",
+            1,
+        ],
+        [
+            "Computación/Impresión/Impresoras_y_Multifuncionales",
+            [PRINTER],
+            "Computación > Impresión > Impresoras y Multifuncionales",
+            1.0,
+        ],
+        [
+            "Computación/Impresión/Impresoras_Láser",
+            [PRINTER],
+            "Computación > Impresión > Impresoras Láser",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Discos_Duros",
+            [EXTERNAL_STORAGE_DRIVE],
+            "Computación > Almacenamiento > Discos Duros",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Discos_Duros_SSD",
+            [SOLID_STATE_DRIVE],
+            "Computación > Almacenamiento > Discos Duros SSD",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Tarjetas_de_Memoria",
+            [MEMORY_CARD],
+            "Computación > Almacenamiento > Tarjetas de Memoria",
+            1.0,
+        ],
+        [
+            "Computación/Almacenamiento/Pendrives",
+            [USB_FLASH_DRIVE],
+            "Computación > Almacenamiento > Pendrives",
+            1.0,
+        ],
+        # ELECTROHOGAR
+        [
+            "Electrohogar/Refrigeración",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/No_Frost",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > No Frost",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Frío_Directo",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Frio Directo",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Side_By_Side",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Side By Side",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Freezer",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Freezer",
+            1.0,
+        ],
+        [
+            "Electrohogar/Refrigeración/Frigobar",
+            [REFRIGERATOR],
+            "Electrohogar > Refrigeración > Frigobar",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Lavadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavadoras_Secadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Lavadoras Secadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Secadoras",
+            [WASHING_MACHINE],
+            "Electrohogar > Lavado y Planchado > Secadoras",
+            1.0,
+        ],
+        [
+            "Electrohogar/Lavado_y_Planchado/Lavavajillas",
+            [DISH_WASHER],
+            "Electrohogar > Lavado y Planchado > Lavavajillas",
+            1.0,
+        ],
+        [
+            "Electrohogar/Aspirado_y_Limpieza",
+            [VACUUM_CLEANER],
+            "Electrohogar > Aspiradoras y Limpieza",
+            1.0,
+        ],
+        [
+            "Electrohogar/Electrodomésticos_Cocina/Hornos_Eléctricos",
+            [OVEN],
+            "Electrohogar > Electrodomésticos Cocina > Hornos Eléctricos",
+            1.0,
+        ],
+        [
+            "Electrohogar/Electrodomésticos_Cocina/Microondas",
+            [OVEN],
+            "Electrohogar > Electrodomésticos Cocina > Microondas",
+            1.0,
+        ],
+        [
+            "Electrohogar/Cocinas/Hornos_Empotrables",
+            [OVEN],
+            "Electrohogar > Cocinas > Hornos Empotrables",
+            1.0,
+        ],
+        [
+            "Electrohogar/Climatización/Calefacción",
+            [SPACE_HEATER],
+            "Electrohogar > Climatización > Calefacción",
+            1.0,
+        ],
+        [
+            "Electrohogar/Climatización/Ventilación/Aire_Acondicionado",
+            [AIR_CONDITIONER],
+            "Electrohogar > Climatización > Ventilación > Aire Acondicionado",
+            1.0,
+        ],
+        [
+            "Climatización/Calefacción/Termos y Calefonts",
+            [WATER_HEATER],
+            "Electrohogar > Climatización > Calefacción > Termos y Calefonts",
+            1.0,
+        ],
     ]
 
     @classmethod
-    def products(
-        cls,
-        categories=None,
-        extra_args=None,
-        discover_urls_concurrency=None,
-        products_for_url_concurrency=None,
-        use_async=None,
-    ):
-        sanitized_parameters = cls.sanitize_parameters(
-            categories=categories,
-            discover_urls_concurrency=discover_urls_concurrency,
-            products_for_url_concurrency=products_for_url_concurrency,
-            use_async=use_async,
-        )
-
-        categories = sanitized_parameters["categories"]
-        local_category_paths = {}
-        for category_path, category in cls.category_paths:
-            if category in categories:
-                local_category_paths[category_path] = category
-        print(local_category_paths)
-
-        feed_url = "https://files.channable.com/fObMWIb605WbIhKBmwptpA==.xml"
-        session = session_with_proxy(extra_args)
-        res = session.get(feed_url)
-        root = ET.fromstring(res.text)
-        products = []
-        for node in root:
-            if node.find("custom_label_0").text == "MKP":
-                # Ignore marketplace
-                continue
-            node_section = node.find("product_type").text
-            if node_section not in local_category_paths:
-                continue
-            name = node.find("title").text
-            category = local_category_paths[node_section]
-            url = node.find("link").text
-            key = node.find("id").text
-            stock = -1
-            normal_price = Decimal(node.find("sale_price").text)
-            offer_price_text = node.find("price_lider").text
-            if offer_price_text:
-                offer_price = Decimal(offer_price_text)
-            else:
-                offer_price = normal_price
-            picture_urls = [node.find("image_link").text]
-            description = node.find("description").text
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                normal_price,
-                offer_price,
-                "CLP",
-                sku=key,
-                picture_urls=picture_urls,
-                description=description,
-            )
-            products.append(p)
-
-        return {"products": products, "discovery_urls_without_products": []}
+    def categories(cls):
+        return [
+            NOTEBOOK,
+            MONITOR,
+            TELEVISION,
+            TABLET,
+            REFRIGERATOR,
+            PRINTER,
+            OVEN,
+            VACUUM_CLEANER,
+            WASHING_MACHINE,
+            CELL,
+            STEREO_SYSTEM,
+            EXTERNAL_STORAGE_DRIVE,
+            USB_FLASH_DRIVE,
+            MEMORY_CARD,
+            VIDEO_GAME_CONSOLE,
+            ALL_IN_ONE,
+            PROJECTOR,
+            SPACE_HEATER,
+            AIR_CONDITIONER,
+            MOUSE,
+            KEYBOARD,
+            HEADPHONES,
+            WEARABLE,
+            GAMING_CHAIR,
+            SOLID_STATE_DRIVE,
+            DISH_WASHER,
+            WATER_HEATER,
+        ]
 
     @classmethod
-    def categories(cls):
-        cats = []
-        for section_name, cat in cls.category_paths:
-            if cat not in cats:
-                cats.append(cat)
-        return cats
+    def discover_entries_for_category(cls, category, extra_args=None):
+        category_paths = cls.category_paths
+        extra_args = extra_args or {}
+        session = session_with_proxy(extra_args)
+        fast_mode = extra_args.get("fast_mode", False)
+
+        session.headers = {
+            "Content-Type": "application/json",
+            "User-Agent": extra_args.get("user_agent", cls.DEFAULT_USER_AGENT),
+            "tenant": cls.tenant,
+            "x-channel": "BuySmart",
+        }
+
+        product_entries = defaultdict(lambda: [])
+
+        if fast_mode:
+            sorters = [""]
+        else:
+            # It's important that the empty one goes first to ensure that the
+            # positioning information is preferable based on the default ordering
+            sorters = [
+                "",
+                "price_asc",
+                "price_desc",
+            ]
+        query_url = "https://apps.lider.cl/catalogo/bff/category"
+
+        if fast_mode:
+            facets = ["sold-by:Lider.cl"]
+        else:
+            facets = []
+
+        for e in category_paths:
+            category_id, local_categories, section_name, category_weight = e
+
+            if category not in local_categories:
+                continue
+
+            print(category_id)
+
+            local_product_entries = {}
+
+            for sorter in sorters:
+                page = 1
+
+                while True:
+                    query_params = {
+                        "categories": category_id,
+                        "page": page,
+                        "facets": facets,
+                        "sortBy": sorter,
+                        "hitsPerPage": 100,
+                    }
+
+                    serialized_params = json.dumps(query_params, ensure_ascii=False)
+                    response = session.post(
+                        query_url, serialized_params.encode("utf-8"), timeout=60
+                    )
+                    data = json.loads(response.text)
+
+                    if not data["products"]:
+                        if page == 1:
+                            logging.warning("Empty category: " + category_id)
+                        break
+
+                    for idx, entry in enumerate(data["products"]):
+                        product_url = (
+                            "https://www.lider.cl/{}/product/sku/{}/"
+                            "{}".format(
+                                cls.tenant, entry["sku"], entry.get("slug", "a")
+                            )
+                        )
+                        if product_url not in local_product_entries:
+                            local_product_entries[product_url] = {
+                                "category_weight": category_weight,
+                                "section_name": section_name,
+                                "value": idx + 1,
+                            }
+                    page += 1
+
+            for product_url, product_entry in local_product_entries.items():
+                product_entries[product_url].append(product_entry)
+
+        if fast_mode:
+            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
+            for url in product_entries.keys():
+                product_entries[url] = []
+
+        return product_entries
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
