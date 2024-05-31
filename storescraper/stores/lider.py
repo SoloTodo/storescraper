@@ -329,24 +329,24 @@ class Lider(Store):
             "Electrohogar > Cocinas > Hornos Empotrables",
             1.0,
         ],
-        [
-            "Electrohogar/Climatización/Calefacción",
-            [SPACE_HEATER],
-            "Electrohogar > Climatización > Calefacción",
-            1.0,
-        ],
+        # [
+        #     "Climatización/Calefacción",
+        #     [SPACE_HEATER],
+        #     "Electrohogar > Climatización > Calefacción",
+        #     1.0,
+        # ],
         [
             "Electrohogar/Climatización/Ventilación/Aire_Acondicionado",
             [AIR_CONDITIONER],
             "Electrohogar > Climatización > Ventilación > Aire Acondicionado",
             1.0,
         ],
-        [
-            "Climatización/Calefacción/Termos y Calefonts",
-            [WATER_HEATER],
-            "Electrohogar > Climatización > Calefacción > Termos y Calefonts",
-            1.0,
-        ],
+        # [
+        #     "Climatización/Calefacción/Termos y Calefonts",
+        #     [WATER_HEATER],
+        #     "Electrohogar > Climatización > Calefacción > Termos y Calefonts",
+        #     1.0,
+        # ],
     ]
 
     @classmethod
