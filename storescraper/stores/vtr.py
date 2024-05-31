@@ -24,9 +24,17 @@ class Vtr(Store):
             product_urls.extend([cls.prepago_url, cls.planes_url])
         elif category == "Cell":
             session = session_with_proxy(extra_args)
+            session.headers["user-agent"] = (
+                "Mozilla/5.0 (X11; Linux x86_64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/124.0.0.0 Safari/537.36"
+            )
             res = session.get(
                 "https://vtr.com/nuevo/page-data/productos/equipos/portabilidad/page-data.json"
             )
+            # import ipdb
+            #
+            # ipdb.set_trace()
             product_entries = res.json()["result"]["data"]["contentfulLandingPage"][
                 "products"
             ][0]["products"]
@@ -71,6 +79,11 @@ class Vtr(Store):
     @classmethod
     def _plans(cls, url, extra_args):
         session = session_with_proxy(extra_args)
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        )
         res = session.get(
             "https://vtr.com/nuevo/page-data/productos/moviles/planes-moviles/individuales/page-data.json"
         )
@@ -113,6 +126,11 @@ class Vtr(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        )
 
         parsed_url = urlparse(url)
         product_data = session.get(
