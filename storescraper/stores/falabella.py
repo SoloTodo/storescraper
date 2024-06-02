@@ -887,7 +887,7 @@ class Falabella(Store):
             if not normal_price:
                 normal_price = offer_price
 
-            if normal_price == Decimal("9999999") or offer_price == Decimal("9999999"):
+            if normal_price > Decimal("50000000") or offer_price > Decimal("50000000"):
                 continue
 
             seller_entry = None

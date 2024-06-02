@@ -425,9 +425,11 @@ class Lider(Store):
             local_product_entries = {}
 
             for sorter in sorters:
+                print(sorter)
                 page = 1
 
                 while True:
+                    print(page)
                     query_params = {
                         "categories": category_id,
                         "page": page,
@@ -441,6 +443,13 @@ class Lider(Store):
                         query_url, serialized_params.encode("utf-8"), timeout=60
                     )
                     data = json.loads(response.text)
+
+                    if "blockScript" in data:
+                        raise Exception("Blocked: " + str(data))
+
+                    if "products" not in data:
+                        logging.error("Invalid category: " + category_id)
+                        break
 
                     if not data["products"]:
                         if page == 1:

@@ -60,9 +60,11 @@ class TravelTienda(StoreWithUrlExtensions):
         ("4005764418", WASHING_MACHINE),
         ("3421645721", PRINTER),  # Tecnología > Computación > Accesorios de Computacion
         ("375810843", MONITOR),  # Tecnología > Computación > Monitores
-        ("2209437683", VACUUM_CLEANER),  # Aspirado y limpieza
+        # ("2209437683", VACUUM_CLEANER),  # Aspirado y limpieza
+        ("1189841113", VACUUM_CLEANER),  # Aspirado y limpieza
         ("2456851182", SPACE_HEATER),  # Calefaccion
-        ("1445819056", DISH_WASHER),  # Lavavajillas
+        # ("1445819056", DISH_WASHER),  # Lavavajillas
+        ("2348142863", DISH_WASHER),  # Lavavajillas
         # ("1318662286", OVEN),  # Empotrados
         ("1864719901", OVEN),  # Empotrados
     ]

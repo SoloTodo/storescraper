@@ -12,22 +12,44 @@ from .currency import Currency
 
 class Product:
     VALID_CONDITIONS = [
-        'https://schema.org/DamagedCondition',
-        'https://schema.org/NewCondition',
-        'https://schema.org/RefurbishedCondition',
-        'https://schema.org/UsedCondition',
+        "https://schema.org/DamagedCondition",
+        "https://schema.org/NewCondition",
+        "https://schema.org/RefurbishedCondition",
+        "https://schema.org/UsedCondition",
         # This is not part of the schema standard
-        'https://schema.org/OpenBoxCondition'
+        "https://schema.org/OpenBoxCondition",
     ]
 
-    def __init__(self, name, store, category, url, discovery_url, key,
-                 stock, normal_price, offer_price, currency, part_number=None,
-                 sku=None, ean=None, description=None, cell_plan_name=None,
-                 cell_monthly_payment=None, picture_urls=None, timestamp=None,
-                 condition='https://schema.org/NewCondition', positions=None,
-                 video_urls=None, review_count=None, review_avg_score=None,
-                 flixmedia_id=None, has_virtual_assistant=None, seller=None,
-                 allow_zero_prices=False):
+    def __init__(
+        self,
+        name,
+        store,
+        category,
+        url,
+        discovery_url,
+        key,
+        stock,
+        normal_price,
+        offer_price,
+        currency,
+        part_number=None,
+        sku=None,
+        ean=None,
+        description=None,
+        cell_plan_name=None,
+        cell_monthly_payment=None,
+        picture_urls=None,
+        timestamp=None,
+        condition="https://schema.org/NewCondition",
+        positions=None,
+        video_urls=None,
+        review_count=None,
+        review_avg_score=None,
+        flixmedia_id=None,
+        has_virtual_assistant=None,
+        seller=None,
+        allow_zero_prices=False,
+    ):
         assert isinstance(key, str)
         assert isinstance(stock, int)
         assert len(name) <= 256
@@ -38,8 +60,8 @@ class Product:
 
         for price in [normal_price, offer_price]:
             price_metadata = price.as_tuple()
-            assert price_metadata.exponent >= -2
-            assert (len(price_metadata.digits) + price_metadata.exponent) <= 10
+            assert price_metadata.exponent >= -2, price
+            assert (len(price_metadata.digits) + price_metadata.exponent) <= 10, price
 
         if cell_plan_name:
             assert len(cell_plan_name) <= 60
@@ -56,12 +78,12 @@ class Product:
             assert check_ean13(ean), ean
 
         if part_number and len(part_number) > 50:
-            raise Exception('Invalid part number: {}'.format(part_number))
+            raise Exception("Invalid part number: {}".format(part_number))
 
-        assert part_number != ''
+        assert part_number != ""
 
         if sku and len(sku) > 50:
-            raise Exception('Invalid SKU: {}'.format(sku))
+            raise Exception("Invalid SKU: {}".format(sku))
 
         if review_count:
             assert isinstance(review_count, int)
@@ -79,7 +101,7 @@ class Product:
             assert len(seller) <= 256
 
         if (not normal_price or not offer_price) and not allow_zero_prices:
-            raise Exception('Price cannot be zero')
+            raise Exception("Price cannot be zero")
 
         assert condition in Product.VALID_CONDITIONS
 
@@ -117,111 +139,124 @@ class Product:
 
     def __str__(self):
         lines = list()
-        lines.append('{} - {} ({})'.format(self.store, self.name,
-                                           self.category))
+        lines.append("{} - {} ({})".format(self.store, self.name, self.category))
         lines.append(self.url)
-        lines.append('Discovery URL: {}'.format(self.discovery_url))
-        lines.append('SKU: {}'.format(
-            self.optional_field_as_string('sku')))
-        lines.append('EAN: {}'.format(
-            self.optional_field_as_string('ean')))
-        lines.append('Part number: {}'.format(
-            self.optional_field_as_string('part_number')))
-        lines.append('Picture URLs: {}'.format(
-            self.optional_field_as_string('picture_urls')))
-        lines.append('Video URLs: {}'.format(
-            self.optional_field_as_string('video_urls')))
-        lines.append(u'Key: {}'.format(self.key))
-        lines.append(u'Stock: {}'.format(self.stock_as_string()))
-        lines.append(u'Currency: {}'.format(self.currency))
-        lines.append(u'Normal price: {}'.format(Currency.format(
-            self.normal_price, self.currency)))
-        lines.append(u'Offer price: {}'.format(Currency.format(
-            self.offer_price, self.currency)))
-        lines.append('Condition: {}'.format(self.condition))
-        lines.append('Review count: {}'.format(self.optional_field_as_string(
-            'review_count')))
-        lines.append('Review avg score: {}'.format(
-            self.optional_field_as_string('review_avg_score')))
-        lines.append('Flixmedia ID: {}'.format(self.optional_field_as_string(
-            'flixmedia_id')))
-        lines.append('Virtual assistant: {}'.format(
-            self.optional_field_as_string('has_virtual_assistant')))
-        lines.append('Seller: {}'.format(
-            self.optional_field_as_string('seller')))
-        lines.append('Positions: {}'.format(self.positions))
-        lines.append('Cell plan name: {}'.format(
-            self.optional_field_as_string('cell_plan_name')))
+        lines.append("Discovery URL: {}".format(self.discovery_url))
+        lines.append("SKU: {}".format(self.optional_field_as_string("sku")))
+        lines.append("EAN: {}".format(self.optional_field_as_string("ean")))
+        lines.append(
+            "Part number: {}".format(self.optional_field_as_string("part_number"))
+        )
+        lines.append(
+            "Picture URLs: {}".format(self.optional_field_as_string("picture_urls"))
+        )
+        lines.append(
+            "Video URLs: {}".format(self.optional_field_as_string("video_urls"))
+        )
+        lines.append("Key: {}".format(self.key))
+        lines.append("Stock: {}".format(self.stock_as_string()))
+        lines.append("Currency: {}".format(self.currency))
+        lines.append(
+            "Normal price: {}".format(Currency.format(self.normal_price, self.currency))
+        )
+        lines.append(
+            "Offer price: {}".format(Currency.format(self.offer_price, self.currency))
+        )
+        lines.append("Condition: {}".format(self.condition))
+        lines.append(
+            "Review count: {}".format(self.optional_field_as_string("review_count"))
+        )
+        lines.append(
+            "Review avg score: {}".format(
+                self.optional_field_as_string("review_avg_score")
+            )
+        )
+        lines.append(
+            "Flixmedia ID: {}".format(self.optional_field_as_string("flixmedia_id"))
+        )
+        lines.append(
+            "Virtual assistant: {}".format(
+                self.optional_field_as_string("has_virtual_assistant")
+            )
+        )
+        lines.append("Seller: {}".format(self.optional_field_as_string("seller")))
+        lines.append("Positions: {}".format(self.positions))
+        lines.append(
+            "Cell plan name: {}".format(self.optional_field_as_string("cell_plan_name"))
+        )
 
         cell_monthly_payment = self.cell_monthly_payment
 
         if cell_monthly_payment is None:
-            cell_monthly_payment_string = 'N/A'
+            cell_monthly_payment_string = "N/A"
         else:
             cell_monthly_payment_string = Currency.format(
-                cell_monthly_payment, self.currency)
+                cell_monthly_payment, self.currency
+            )
 
-        lines.append('Cell monthly payment: {}'.format(
-            cell_monthly_payment_string))
-        lines.append('Timestamp: {}'.format(self.timestamp.isoformat()))
+        lines.append("Cell monthly payment: {}".format(cell_monthly_payment_string))
+        lines.append("Timestamp: {}".format(self.timestamp.isoformat()))
 
-        lines.append('Description: {}'.format(
-            self.optional_field_as_string('description')[:30]))
+        lines.append(
+            "Description: {}".format(self.optional_field_as_string("description")[:30])
+        )
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def __repr__(self):
-        return '{} - {}'.format(self.store, self.name)
+        return "{} - {}".format(self.store, self.name)
 
     def serialize(self):
-        serialized_cell_monthly_payment = str(self.cell_monthly_payment) \
-            if self.cell_monthly_payment is not None else None
+        serialized_cell_monthly_payment = (
+            str(self.cell_monthly_payment)
+            if self.cell_monthly_payment is not None
+            else None
+        )
 
         return {
-            'name': self.name,
-            'store': self.store,
-            'category': self.category,
-            'url': self.url,
-            'discovery_url': self.discovery_url,
-            'key': self.key,
-            'stock': self.stock,
-            'normal_price': str(self.normal_price),
-            'offer_price': str(self.offer_price),
-            'currency': self.currency,
-            'part_number': self.part_number,
-            'sku': self.sku,
-            'ean': self.ean,
-            'description': self.description,
-            'cell_plan_name': self.cell_plan_name,
-            'cell_monthly_payment': serialized_cell_monthly_payment,
-            'picture_urls': self.picture_urls,
-            'video_urls': self.video_urls,
-            'timestamp': self.timestamp.isoformat(),
-            'condition': self.condition,
-            'positions': self.positions,
-            'review_count': self.review_count,
-            'review_avg_score': self.review_avg_score,
-            'flixmedia_id': self.flixmedia_id,
-            'has_virtual_assistant': self.has_virtual_assistant,
-            'seller': self.seller,
-            'allow_zero_prices': self.allow_zero_prices
+            "name": self.name,
+            "store": self.store,
+            "category": self.category,
+            "url": self.url,
+            "discovery_url": self.discovery_url,
+            "key": self.key,
+            "stock": self.stock,
+            "normal_price": str(self.normal_price),
+            "offer_price": str(self.offer_price),
+            "currency": self.currency,
+            "part_number": self.part_number,
+            "sku": self.sku,
+            "ean": self.ean,
+            "description": self.description,
+            "cell_plan_name": self.cell_plan_name,
+            "cell_monthly_payment": serialized_cell_monthly_payment,
+            "picture_urls": self.picture_urls,
+            "video_urls": self.video_urls,
+            "timestamp": self.timestamp.isoformat(),
+            "condition": self.condition,
+            "positions": self.positions,
+            "review_count": self.review_count,
+            "review_avg_score": self.review_avg_score,
+            "flixmedia_id": self.flixmedia_id,
+            "has_virtual_assistant": self.has_virtual_assistant,
+            "seller": self.seller,
+            "allow_zero_prices": self.allow_zero_prices,
         }
 
     @classmethod
     def deserialize(cls, serialized_data):
-        serialized_data['normal_price'] = \
-            Decimal(serialized_data['normal_price'])
-        serialized_data['offer_price'] = \
-            Decimal(serialized_data['offer_price'])
+        serialized_data["normal_price"] = Decimal(serialized_data["normal_price"])
+        serialized_data["offer_price"] = Decimal(serialized_data["offer_price"])
 
-        cell_monthly_payment = serialized_data['cell_monthly_payment']
+        cell_monthly_payment = serialized_data["cell_monthly_payment"]
         if cell_monthly_payment:
             cell_monthly_payment = Decimal(cell_monthly_payment)
 
-        serialized_data['cell_monthly_payment'] = cell_monthly_payment
+        serialized_data["cell_monthly_payment"] = cell_monthly_payment
 
-        serialized_data['timestamp'] = \
-            dateutil.parser.parse(serialized_data['timestamp'])
+        serialized_data["timestamp"] = dateutil.parser.parse(
+            serialized_data["timestamp"]
+        )
         return cls(**serialized_data)
 
     def is_available(self):
@@ -233,9 +268,9 @@ class Product:
 
     def stock_as_string(self):
         if self.stock == -1:
-            return 'Available but unknown'
+            return "Available but unknown"
         elif self.stock == 0:
-            return 'Unavailable'
+            return "Unavailable"
         else:
             return str(self.stock)
 
@@ -244,7 +279,7 @@ class Product:
         if field_value is not None:
             return field_value
         else:
-            return 'N/A'
+            return "N/A"
 
     def picture_urls_as_json(self):
         if self.picture_urls is None:
