@@ -154,7 +154,7 @@ class SmartMobile(StoreWithUrlExtensions):
             )
             normal_price = Decimal(round(price_info * 1.04))
             offer_price = Decimal(price_info)
-            sku = product_container.find("a", "add-to-compare-link")["data-product_id"]
+            sku = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
 
             if force_unavailable:
                 stock = 0
