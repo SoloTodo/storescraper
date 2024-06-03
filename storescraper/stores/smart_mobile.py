@@ -10,6 +10,7 @@ from storescraper.categories import (
     PROCESSOR,
     VIDEO_CARD,
     VIDEO_GAME_CONSOLE,
+    POWER_SUPPLY,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -19,9 +20,10 @@ from storescraper.utils import session_with_proxy
 class SmartMobile(StoreWithUrlExtensions):
     url_extensions = [
         ["smartphones", CELL],
-        ["componentes-pc/procesador", PROCESSOR],
-        ["componentes-pc/tarjeta-grafica", VIDEO_CARD],
-        ["componentes-pc/gabinete", COMPUTER_CASE],
+        ["procesador", PROCESSOR],
+        ["tarjeta-grafica", VIDEO_CARD],
+        ["gabinete", COMPUTER_CASE],
+        ["fuente-de-poder", POWER_SUPPLY],
         ["consolas", VIDEO_GAME_CONSOLE],
     ]
 
