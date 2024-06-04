@@ -87,11 +87,7 @@ class HpOnline(Store):
 
         name = soup.find("span", {"itemprop": "name"}).text.strip()
         sku = soup.find("div", {"itemprop": "sku"}).text.strip()
-
-        if soup.find("div", "stock available"):
-            stock = -1
-        else:
-            stock = 0
+        stock = -1
 
         price_container = soup.find("span", {"data-price-type": "finalPrice"})
 
