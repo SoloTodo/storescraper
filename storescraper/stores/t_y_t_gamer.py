@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 from storescraper.categories import (
     STORAGE_DRIVE,
@@ -95,6 +95,7 @@ class TyTGamer(StoreWithUrlExtensions):
         print(url)
         product_id = re.search(r"/(\d+)-", url).groups()[0]
         session = session_with_proxy(extra_args)
+        soup = BeautifulSoup(session.get(url).text, "html.parser")
         session.headers[
             "Content-Type"
         ] = "application/x-www-form-urlencoded; charset=UTF-8"
@@ -108,8 +109,12 @@ class TyTGamer(StoreWithUrlExtensions):
         name = json_data["name"]
         key = str(json_data["id"])
         stock = json_data["embedded_attributes"]["out_of_stock"]
-        normal_price = Decimal(json_data["price_amount"])
-        offer_price = (normal_price * Decimal("0.95")).quantize(0)
+
+        price_tags = soup.findAll("span", "current-price-display")
+        assert len(price_tags) == 2
+        normal_price = Decimal(remove_words(price_tags[0].text))
+        offer_price = Decimal(remove_words(price_tags[1].text))
+
         description = html_to_markdown(json_data["description"])
         picture_urls = [x["large"]["url"] for x in json_data["images"]]
 
