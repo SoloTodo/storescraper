@@ -104,12 +104,12 @@ class GWStore(StoreWithUrlExtensions):
         picture_urls = [
             x["data-image-large-src"] for x in soup.findAll("img", "js-thumb")
         ]
-        stock_div = soup.find("div", "product-quantities")
+        stock_div = soup.find("span", {"id": "product-availability"})
 
-        if stock_div:
-            stock = int(stock_div.find("span")["data-stock"])
-        else:
+        if stock_div.find("i", "product-unavailable"):
             stock = 0
+        else:
+            stock = -1
 
         description = html_to_markdown(soup.find("div", "product-description").text)
 
