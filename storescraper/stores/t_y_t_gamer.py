@@ -108,12 +108,18 @@ class TyTGamer(StoreWithUrlExtensions):
 
         name = json_data["name"]
         key = str(json_data["id"])
-        stock = json_data["embedded_attributes"]["out_of_stock"]
+        if json_data["seo_availability"] == "https://schema.org/InStock":
+            stock = -1
+        else:
+            stock = 0
 
         price_tags = soup.findAll("span", "current-price-display")
         assert len(price_tags) == 2
-        normal_price = Decimal(remove_words(price_tags[0].text))
-        offer_price = Decimal(remove_words(price_tags[1].text))
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
+
+        if offer_price > normal_price:
+            return []
 
         description = html_to_markdown(json_data["description"])
         picture_urls = [x["large"]["url"] for x in json_data["images"]]
