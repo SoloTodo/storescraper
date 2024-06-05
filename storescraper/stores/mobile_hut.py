@@ -88,7 +88,10 @@ class MobileHut(StoreWithUrlExtensions):
             else:
                 stock = -1
             price = Decimal(variant_entry["price"]["amount"])
-            picture_urls = ["https:" + variant_entry["image"]["src"]]
+            if variant_entry["image"]:
+                picture_urls = ["https:" + variant_entry["image"]["src"]]
+            else:
+                picture_urls = []
             sku = variant_entry["sku"]
 
             p = Product(

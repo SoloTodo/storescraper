@@ -25,12 +25,12 @@ class Novey(Store):
         if TELEVISION != category:
             return []
 
-        url = "https://lusearchapi-na.hawksearch.com/sites/novey/" "?brand=LG&mpp=300"
+        url = "https://lusearchapi-na.hawksearch.com/sites/novey/?searchText=LG&mpp=300"
         print(url)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        product_containers = soup.findAll("div", "hawk-results-wrapper__item")
+        product_containers = soup.findAll("div", "hawk-item-list__item")
 
         if not product_containers:
             logging.warning("Empty category:" + url)
