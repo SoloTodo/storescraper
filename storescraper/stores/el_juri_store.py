@@ -73,8 +73,11 @@ class ElJuriStore(Store):
         description = product_data["description"]
         price = Decimal(product_data["offers"]["price"])
 
-        stock_tag_container = soup.find("div", "product-quantities")
-        stock = int(stock_tag_container.find("span")["data-stock"])
+        stock_tag = soup.find("div", "product-quantities").find("span")
+        if "data-stock" in stock_tag.attrs:
+            stock = int(stock_tag["data-stock"])
+        else:
+            stock = 0
         picture_urls = [product_data["image"]]
 
         p = Product(
