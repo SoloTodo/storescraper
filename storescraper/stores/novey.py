@@ -30,7 +30,7 @@ class Novey(Store):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        product_containers = soup.findAll("div", "hawk-item-list__item")
+        product_containers = soup.findAll("div", "cc_product_item")
 
         if not product_containers:
             logging.warning("Empty category:" + url)
