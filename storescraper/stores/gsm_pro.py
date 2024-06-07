@@ -118,8 +118,11 @@ class GsmPro(StoreWithUrlExtensions):
 
             variant_url = "{}?variant={}".format(url, key)
 
-            if "SIN CAJA" in name:
-                condition = "https://schema.org/OpenBoxCondition"
+            if "SIN CAJA" in name.upper():
+                name += (
+                    ' - Para procesadores "sin caja" por favor dejarlos como Nuevos y asociarlos a la '
+                    'variante "Tray" del procesador'
+                )
 
             p = Product(
                 name,
