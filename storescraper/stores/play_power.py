@@ -1,9 +1,7 @@
 import json
-import re
 from decimal import Decimal
 import logging
 
-import pyjson5
 from bs4 import BeautifulSoup
 
 from storescraper.categories import MONITOR
@@ -49,48 +47,9 @@ class PlayPower(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         products = []
-        name_tag = soup.find("h3", {"data-product-type": "title"})
+        variants_tag = soup.find("variant-radios")
 
-        if name_tag:
-            name_tag = soup.find("h3", {"data-product-type": "title"})
-            page_id = name_tag["data-product-id"]
-
-            search_string = (
-                r'window.__pageflyProducts\["'
-                + re.escape(page_id)
-                + r'"] = ([\s\S]+?);'
-            )
-            match = re.search(search_string, response.text)
-            product_data = pyjson5.decode(match.groups()[0])
-
-            base_name = product_data["title"]
-            picture_urls = ["https:" + x["src"] for x in product_data["media"]]
-            for variant in product_data["variants"]:
-                name = "{} ({})".format(base_name, variant["title"])
-                key = str(variant["id"])
-                stock = -1 if variant["available"] else 0
-                price = Decimal(variant["price"] // 100)
-
-                p = Product(
-                    name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    key,
-                    stock,
-                    price,
-                    price,
-                    "CLP",
-                    picture_urls=picture_urls,
-                )
-                products.append(p)
-        else:
-            variants_tag = soup.find("variant-radios")
-
-            if not variants_tag:
-                return []
-
+        if variants_tag:
             base_name = soup.find("h1").text.strip()
             variants_data = json.loads(variants_tag.find("script").text)
             for variant in variants_data:
@@ -117,4 +76,33 @@ class PlayPower(StoreWithUrlExtensions):
                     picture_urls=picture_urls,
                 )
                 products.append(p)
+        else:
+            key = soup.find("input", {"name": "product-id"})["value"]
+            product_data = json.loads(
+                soup.findAll("script", {"type": "application/ld+json"})[-1].text
+            )
+            name = product_data["name"]
+            offer = product_data["offers"][0]
+            if offer["availability"] == "http://schema.org/InStock":
+                stock = -1
+            else:
+                stock = 0
+            price = Decimal(offer["price"])
+            picture_urls = product_data["image"]
+
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                price,
+                price,
+                "CLP",
+                picture_urls=picture_urls,
+            )
+            products.append(p)
+
         return products
