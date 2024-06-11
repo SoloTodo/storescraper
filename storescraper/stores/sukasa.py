@@ -12,9 +12,7 @@ from storescraper.categories import TELEVISION
 class Sukasa(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -22,21 +20,21 @@ class Sukasa(Store):
             return []
 
         session = session_with_proxy(extra_args)
-        session.headers['Accept'] = 'application/json'
+        session.headers["Accept"] = "application/json"
 
         product_urls = []
         page = 1
         while True:
-            endpoint = 'https://www.sukasa.com/busqueda?s=LG&page={}'.format(page)
+            endpoint = "https://www.sukasa.com/busqueda?s=LG&page={}".format(page)
             print(endpoint)
             response = session.get(endpoint)
-            products_data = response.json()['products']
+            products_data = response.json()["products"]
 
             if not products_data:
                 break
 
             for product in products_data:
-                product_url = product['link']
+                product_url = product["link"]
                 if product_url not in product_urls:
                     product_urls.append(product_url)
             page += 1
@@ -48,72 +46,82 @@ class Sukasa(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        brand = soup.find('h2', 'manufacturer-product').text.strip()
-        stock = -1 if not brand or brand == 'LG' else 0
-        variants_container = soup.find('div', 'attribute-list')
-        sku = soup.find('h2', 'reference-product').text.split(':')[1].strip()
-        name = soup.find('h1', 'page-heading').text.strip()[:250]
+        soup = BeautifulSoup(response.text, "html.parser")
+        brand = soup.find("h2", "manufacturer-product").text.strip()
+        stock = -1 if not brand or brand == "LG" else 0
+        variants_container = soup.find("div", "attribute-list")
+        sku = soup.find("h2", "reference-product").text.split(":")[1].strip()
+        name = soup.find("h1", "page-heading").text.strip()[:250]
 
         if variants_container:
-            product_id = soup.find('input', {'name': 'id_product'})['value']
-            variant_ids = {x['value']: x.text for x in
-                           variants_container.findAll('option')}
+            product_id = soup.find("input", {"name": "id_product"})["value"]
+            variant_ids = {
+                x["value"]: x.text for x in variants_container.findAll("option")
+            }
             ajax_session = session_with_proxy(extra_args)
-            ajax_session.headers['content-type'] = \
-                'application/x-www-form-urlencoded'
+            ajax_session.headers["content-type"] = "application/x-www-form-urlencoded"
 
             products = []
 
             for variant_id, variant_label in variant_ids.items():
-                endpoint = 'https://www.sukasa.com/index.php?controller=' \
-                           'product?id_product={}&group%5B246%5D={}'.format(
-                    product_id, variant_id)
-                res = ajax_session.post(endpoint, 'ajax=1&action=refresh')
+                endpoint = (
+                    "https://www.sukasa.com/index.php?controller="
+                    "product?id_product={}&group%5B246%5D={}".format(
+                        product_id, variant_id
+                    )
+                )
+                res = ajax_session.post(endpoint, "ajax=1&action=refresh")
 
                 if res.status_code == 502:
                     continue
 
                 variant_data = json.loads(res.text)
                 variant_soup = BeautifulSoup(
-                    variant_data['product_prices'], 'html.parser')
-                variant_url = variant_data['product_url']
+                    variant_data["product_prices"], "html.parser"
+                )
+                variant_url = variant_data["product_url"]
 
-                normal_price = Decimal(variant_soup.find(
-                    'span', 'product-unit-price').text.split('$')[-1]
-                                       ).quantize(Decimal('.01'))
-                offer_price = Decimal(variant_soup.find(
-                    'input', {'id': 'basepricesks'})['value']
-                                      ).quantize(Decimal('.01'))
+                normal_price = Decimal(
+                    variant_soup.find("span", "product-unit-price").text.split("$")[-1]
+                ).quantize(Decimal(".01"))
+                offer_price = Decimal(
+                    variant_soup.find("span", {"itemprop": "price"})["content"]
+                    # .replace(".", "")
+                    # .replace(",", ".")
+                ).quantize(Decimal(".01"))
 
-                key = '{}_{}'.format(sku, variant_id)
-                variant_name = '{} ({})'.format(name, variant_label)
+                key = "{}_{}".format(sku, variant_id)
+                variant_name = "{} ({})".format(name, variant_label)
 
-                products.append(Product(
-                    variant_name,
-                    cls.__name__,
-                    category,
-                    variant_url,
-                    variant_url,
-                    key,
-                    stock,
-                    normal_price,
-                    offer_price,
-                    'USD',
-                    sku=sku
-                ))
+                products.append(
+                    Product(
+                        variant_name,
+                        cls.__name__,
+                        category,
+                        variant_url,
+                        variant_url,
+                        key,
+                        stock,
+                        normal_price,
+                        offer_price,
+                        "USD",
+                        sku=sku,
+                    )
+                )
 
             return products
         else:
             price = Decimal(
-                soup.find('span', {'itemprop': 'price'})
-                .find('span').text.replace('$', ''))
+                soup.find("span", {"itemprop": "price"})
+                .find("span")
+                .text.replace("$", "")
+            )
 
-            picture_urls = [
-                a['data-zoom-image'] for a in soup.findAll('a', 'thumb')]
+            picture_urls = [a["data-zoom-image"] for a in soup.findAll("a", "thumb")]
 
             description = html_to_markdown(
-                str(soup.find('div', {'id': 'collapseDescription'})))
+                str(soup.find("div", {"id": "collapseDescription"}))
+            )
 
             p = Product(
                 name,
@@ -125,7 +133,7 @@ class Sukasa(Store):
                 stock,
                 price,
                 price,
-                'USD',
+                "USD",
                 sku=sku,
                 picture_urls=picture_urls,
                 description=description,
