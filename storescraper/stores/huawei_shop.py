@@ -229,7 +229,11 @@ class HuaweiShop(Store):
                 )
                 discount_data = session.get(discount_url).json()
                 discount_entries = discount_data["data"]["depositActivityInfo"]
-                if discount_entries:
+
+                if (
+                    discount_entries
+                    and discount_entries["currentTime"] < discount_entries["endTime"]
+                ):
                     discount_entries = discount_entries["depositSkuList"][0]
                     discount = Decimal(
                         discount_entries["amountPrice"]
