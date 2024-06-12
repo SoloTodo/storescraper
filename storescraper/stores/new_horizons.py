@@ -60,39 +60,37 @@ class NewHorizons(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[0].text
         )
-        products = []
-        for variant in json_data["hasVariant"]:
-            offer = variant["offers"]
-            key = str(variant["inProductGroupWithID"])
-            name = variant["name"]
-            sku = offer["sku"]
-            description = json_data["description"]
-            price = Decimal(offer["price"])
 
-            if offer["availability"] == "http://schema.org/InStock":
-                stock = -1
-            else:
-                stock = 0
+        key = str(json_data["productID"])
+        name = json_data["name"]
+        sku = json_data["sku"]
+        description = json_data["description"]
+        offer = json_data["offers"][0]
+        price = Decimal(offer["price"])
 
-            picture_urls = []
-            for i in soup.findAll("div", "product-gallery__media"):
-                picture_urls.append("https:" + i.find("img")["src"])
+        if offer["availability"] == "http://schema.org/InStock":
+            stock = -1
+        else:
+            stock = 0
 
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                price,
-                price,
-                "CLP",
-                sku=sku,
-                part_number=sku,
-                picture_urls=picture_urls,
-                description=description,
-            )
-            products.append(p)
-        return products
+        picture_urls = []
+        for i in soup.findAll("div", "product-gallery__media"):
+            picture_urls.append("https:" + i.find("img")["src"])
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            price,
+            price,
+            "CLP",
+            sku=sku,
+            part_number=sku,
+            picture_urls=picture_urls,
+            description=description,
+        )
+        return [p]

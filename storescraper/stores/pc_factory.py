@@ -222,7 +222,9 @@ class PcFactory(Store):
         if extra_args and "cookies" in extra_args:
             session.cookies = requests.utils.cookiejar_from_dict(extra_args["cookies"])
 
-        session.get(url)
+        res = session.get(url)
+        if res.url != url:
+            return []
         res = session.get("https://www.pcfactory.cl/public/scripts/dynamic/initData.js")
         match = re.search(r"window.pcFactory.dataGlobal.serverData\s+= (.+);", res.text)
         product_data = json.loads(match.groups()[0])["producto"]
