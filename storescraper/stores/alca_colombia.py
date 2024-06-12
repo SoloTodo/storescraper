@@ -27,13 +27,13 @@ class AlcaColombia(Store):
         product_urls = []
         page = 1
         while True:
-            if page > 20:
+            if page > 50:
                 raise Exception("Page overflow")
-            url = "https://alcaltda.com/page/{}/?s=LG&post_type=product".format(page)
+            url = "https://alcaltda.com/tienda/page/{}/".format(page)
             print(url)
             res = session.get(url)
             soup = BeautifulSoup(res.text, "html.parser")
-            product_containers = soup.findAll("li", "ast-article-post")
+            product_containers = soup.findAll("li", "product")
             if not product_containers:
                 break
 
