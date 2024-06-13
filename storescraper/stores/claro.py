@@ -293,6 +293,11 @@ class Claro(Store):
                 init_pay = Decimal(data["attrAbonoInit"])
                 num_cuotas = Decimal(data["catentry_field2"])
                 cell_monthly_payment = ((price - init_pay) / num_cuotas).quantize(0)
+                if cell_monthly_payment > Decimal("1000000"):
+                    # Prevents error on this page:
+                    # https://tienda.clarochile.cl/catalogo/equiposclaro/samsung-s23-128gb-5g-crema-70011692pob
+                    # For "Portando un plan" with Plan Max L Libre
+                    continue
 
                 for plan_entry in data["planAssociate"]:
                     cell_plan_name = plan_entry["name"] + " Portabilidad Cuotas"
