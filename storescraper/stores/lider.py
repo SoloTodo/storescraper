@@ -655,7 +655,9 @@ class Lider(Store):
 
         for idx, slider in enumerate(sliders):
             destination_urls = [destination_url_base.format(slider["link"])[:250]]
-            picture_url = "https://apps.lider.cl/landing/" + slider["backgroundDesktop"]
+            picture_url = slider["backgroundDesktop"]
+            if not picture_url.startswith("http"):
+                picture_url = "https://apps.lider.cl/landing/" + picture_url
 
             banners.append(
                 {
