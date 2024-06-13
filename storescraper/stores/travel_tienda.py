@@ -56,13 +56,13 @@ class TravelTienda(StoreWithUrlExtensions):
         ("2074305120", REFRIGERATOR),  # Home > Electrohogar > Refrigeración
         ("1073939402", OVEN),
         ("779019428", OVEN),
-        ("816489954", AIR_CONDITIONER),
+        ("110098225", AIR_CONDITIONER),
         ("4005764418", WASHING_MACHINE),
         ("3421645721", PRINTER),  # Tecnología > Computación > Accesorios de Computacion
         ("375810843", MONITOR),  # Tecnología > Computación > Monitores
         ("2209437683", VACUUM_CLEANER),  # Aspirado y limpieza
         # ("1189841113", VACUUM_CLEANER),  # Aspirado y limpieza
-        ("2456851182", SPACE_HEATER),  # Calefaccion
+        ("312008500", SPACE_HEATER),  # Calefaccion
         # ("1445819056", DISH_WASHER),  # Lavavajillas
         ("2348142863", DISH_WASHER),  # Lavavajillas
         # ("1318662286", OVEN),  # Empotrados
