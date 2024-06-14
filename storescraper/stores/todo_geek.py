@@ -122,7 +122,13 @@ class TodoGeek(StoreWithUrlExtensions):
                     "REACONDICIONADO" in tag.text.upper()
                     or "REACONDICIONADO" in tag["href"].upper()
                 ):
-                    condition = "https://schema.org/OpenBoxCondition"
+                    condition = "https://schema.org/RefurbishedCondition"
+                    break
+                if (
+                    "SEMINUEVO" in tag.text.upper()
+                    or "SEMINUEVO" in tag["href"].upper()
+                ):
+                    condition = "https://schema.org/RefurbishedCondition"
                     break
             else:
                 condition = "https://schema.org/NewCondition"
