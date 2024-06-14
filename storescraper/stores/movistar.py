@@ -198,7 +198,10 @@ class Movistar(Store):
         sku = soup.find("div", {"itemprop": "sku"}).text.strip()
         breadcrumbs = soup.find("ul", "items").findAll("li")
         for breadcrumb in breadcrumbs:
-            if "OUTLET" in breadcrumb.text.upper():
+            if (
+                "OUTLET" in breadcrumb.text.upper()
+                or "REACONDICIONADO" in breadcrumb.text.upper()
+            ):
                 condition = "https://schema.org/RefurbishedCondition"
                 break
         else:
