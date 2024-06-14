@@ -1,5 +1,7 @@
 import logging
 import re
+
+import validators
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -197,7 +199,8 @@ class Wei(StoreWithUrlExtensions):
         picture_urls = []
         for picture_container in soup.findAll("div", "slider-item"):
             picture_url = picture_container.find("img")["src"].replace(" ", "%20")
-            picture_urls.append(picture_url)
+            if validators.url(picture_url):
+                picture_urls.append(picture_url)
 
         p = Product(
             name,
