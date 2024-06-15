@@ -51,6 +51,9 @@ class FalabellaColombia(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         from .falabella import Falabella
 
+        extra_args = extra_args or {}
+        extra_args["use_cf"] = False
+
         products = Falabella.products_for_url(
             url, category=category, extra_args=extra_args
         )

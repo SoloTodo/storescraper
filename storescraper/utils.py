@@ -8,7 +8,6 @@ import re
 
 import math
 
-import requests
 from playwright.sync_api import sync_playwright
 
 CLP_BLACKLIST = [
@@ -133,8 +132,29 @@ def check_ean13(ean):
 
 
 def session_with_proxy(extra_args):
+    import requests
+
     session = requests.Session()
     session.request = functools.partial(session.request, timeout=30)
+
+    if extra_args:
+        if "proxy" in extra_args:
+            proxy = extra_args["proxy"]
+
+            session.proxies = {
+                "http": proxy,
+                "https": proxy,
+            }
+        if "user-agent" in extra_args:
+            session.headers["User-Agent"] = extra_args["user-agent"]
+
+    return session
+
+
+def cf_session_with_proxy(extra_args):
+    from curl_cffi import requests
+
+    session = requests.Session(impersonate="chrome120")
 
     if extra_args:
         if "proxy" in extra_args:

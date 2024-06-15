@@ -24,6 +24,7 @@ from storescraper.utils import (
     remove_words,
     html_to_markdown,
     session_with_proxy,
+    cf_session_with_proxy,
 )
 from storescraper import banner_sections as bs
 
@@ -572,7 +573,7 @@ class Falabella(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         category_paths = cls.category_paths
-        session = requests.Session(impersonate="chrome120")
+        session = cf_session_with_proxy(extra_args)
         fast_mode = extra_args and extra_args.get("fast_mode", False)
         product_entries = defaultdict(lambda: [])
 
@@ -657,7 +658,16 @@ class Falabella(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         extra_args = extra_args or {}
-        session = requests.Session(impersonate="chrome120")
+        use_cf = extra_args.get("use_cf", True)
+        if use_cf:
+            session = cf_session_with_proxy(extra_args)
+        else:
+            session = session_with_proxy(extra_args)
+            session.headers["User-Agent"] = (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/125.0.0.0 Safari/537.36"
+            )
 
         for i in range(3):
             try:
