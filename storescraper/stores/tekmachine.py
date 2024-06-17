@@ -94,20 +94,19 @@ class Tekmachine(StoreWithUrlExtensions):
         if not normal_price:
             return []
 
-        if prices_container.find("span", "sale-price").find("ins"):
-            offer_price = Decimal(
-                remove_words(
-                    prices_container.find("span", "sale-price").find("ins").text
+        sale_price_container = prices_container.find("span", "sale-price")
+
+        if sale_price_container:
+            if sale_price_container.find("ins"):
+                offer_price = Decimal(
+                    remove_words(sale_price_container.find("ins").text)
                 )
-            )
+            else:
+                offer_price = Decimal(
+                    remove_words(remove_words(sale_price_container.find("bdi").text))
+                )
         else:
-            offer_price = Decimal(
-                remove_words(
-                    remove_words(
-                        prices_container.find("span", "sale-price").find("bdi").text
-                    )
-                )
-            )
+            offer_price = normal_price
 
         picture_urls = [
             tag["src"]
