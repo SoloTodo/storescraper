@@ -95,11 +95,19 @@ class SystemTi(StoreWithUrlExtensions):
             part_number = part_number_match.groups()[0]
         else:
             part_number = None
-        stock_tag = soup.find("div", "product-available")
-        if "visible" in stock_tag.attrs["class"]:
-            stock = -1
+
+        stock_tag_names = ["product-out-stock", "product-unavailable"]
+        for stock_tag_name in stock_tag_names:
+            stock_tag = soup.find("div", stock_tag_name)
+            if "visible" in stock_tag.attrs["class"]:
+                stock = 0
+                break
         else:
-            stock = 0
+            stock = -1
+
+        if not price and not stock:
+            return []
+
         p = Product(
             name,
             cls.__name__,
