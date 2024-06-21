@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup
 from ..categories import TELEVISION
 from ..product import Product
 from ..store import Store
-from curl_cffi import requests
+
+from ..utils import cf_session_with_proxy
 
 
 class RipleyPeru(Store):
@@ -23,7 +24,7 @@ class RipleyPeru(Store):
             return []
 
         product_urls = []
-        session = requests.Session(impersonate="chrome120")
+        session = cf_session_with_proxy(extra_args)
 
         page = 1
         while True:
@@ -52,7 +53,7 @@ class RipleyPeru(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = requests.Session(impersonate="chrome120")
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
         match = re.search(r"window.__PRELOADED_STATE__ = (.+);", response.text)
         raw_json = match.groups()[0]
