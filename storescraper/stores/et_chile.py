@@ -25,6 +25,7 @@ from storescraper.categories import (
     STEREO_SYSTEM,
     VIDEO_GAME_CONSOLE,
     MEMORY_CARD,
+    KEYBOARD_MOUSE_COMBO,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -33,6 +34,7 @@ from storescraper.utils import session_with_proxy, remove_words, html_to_markdow
 
 class ETChile(StoreWithUrlExtensions):
     url_extensions = [
+        # Componentes
         ["discos-duros", STORAGE_DRIVE],
         ["ssd", SOLID_STATE_DRIVE],
         ["gabinetes", COMPUTER_CASE],
@@ -43,19 +45,23 @@ class ETChile(StoreWithUrlExtensions):
         ["ventiladores", CASE_FAN],
         ["water-cooling", CPU_COOLER],
         ["tarjetas-de-video", VIDEO_CARD],
+        # Perifericos
         ["audifonos", HEADPHONES],
         ["parlantes-y-equipo-de-sonido", STEREO_SYSTEM],
         ["mouse", MOUSE],
-        ["teclados-mecanicos", KEYBOARD],
+        ["teclados", KEYBOARD],
+        # Productos
         ["discos-externos", EXTERNAL_STORAGE_DRIVE],
         ["hdd-interno", STORAGE_DRIVE],
         ["memorias-flash", MEMORY_CARD],
         ["ssd-externo", EXTERNAL_STORAGE_DRIVE],
         ["ssd-interno-almacenamiento-y-drives", SOLID_STATE_DRIVE],
-        ["consolas-y-vr", VIDEO_GAME_CONSOLE],
-        ["monitores-gamer", MONITOR],
-        ["notebooks-gamers", NOTEBOOK],
+        ["monitores", MONITOR],
+        ["notebooks", NOTEBOOK],
+        ["packs-y-combos", KEYBOARD_MOUSE_COMBO],
+        # Empty sections as of 2024-06-21
         ["sillas", GAMING_CHAIR],
+        ["consolas-y-vr", VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
