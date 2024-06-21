@@ -5,10 +5,10 @@ from decimal import Decimal
 
 import validators
 from bs4 import BeautifulSoup
-from storescraper.utils import fetch_cf_page
 from ..categories import TELEVISION
 from ..product import Product
 from ..store import Store
+from curl_cffi import requests
 
 
 class RipleyPeru(Store):
@@ -23,6 +23,7 @@ class RipleyPeru(Store):
             return []
 
         product_urls = []
+        session = requests.Session(impersonate="chrome120")
 
         page = 1
         while True:
@@ -33,8 +34,8 @@ class RipleyPeru(Store):
                 page
             )
             print(url)
-            response = fetch_cf_page(url, extra_args)
-            soup = BeautifulSoup(response, "html.parser")
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, "html.parser")
             product_containers = soup.findAll("div", "catalog-product-item")
             if not product_containers:
                 break
@@ -51,8 +52,9 @@ class RipleyPeru(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        response = fetch_cf_page(url, extra_args)
-        match = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
+        session = requests.Session(impersonate="chrome120")
+        response = session.get(url)
+        match = re.search(r"window.__PRELOADED_STATE__ = (.+);", response.text)
         raw_json = match.groups()[0]
         json_data = json.loads(raw_json)
         product_entry = json_data["product"]["product"]

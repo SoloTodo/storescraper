@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, fetch_cf_page
+from storescraper.utils import html_to_markdown
+from curl_cffi import requests
 
 
 class DePrati(Store):
@@ -21,21 +22,23 @@ class DePrati(Store):
             return []
 
         product_urls = []
+        session = requests.Session(impersonate="chrome120")
 
         page = 0
         while True:
             if page >= 10:
                 raise Exception("Page overflow")
 
-            url_webpage = "https://www.deprati.com.ec/search?q=LG&page={}".format(page)
-            page_source = fetch_cf_page(url_webpage, extra_args)
-            soup = BeautifulSoup(page_source, "html.parser")
-            product_containers = json.loads(
-                soup.find("div", {"id": "vueApp"})["searchpagedata"]
-            )["results"]
+            url_webpage = (
+                "https://www.deprati.com.ec/search/results?q=LG&page={}".format(page)
+            )
+            response = session.get(url_webpage)
+            json_data = response.json()
+
+            product_containers = json_data["results"]
 
             if not product_containers:
-                if page == 1:
+                if page == 0:
                     logging.warning("Empty category")
                 break
 
@@ -49,8 +52,9 @@ class DePrati(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        page_source = fetch_cf_page(url, extra_args)
-        soup = BeautifulSoup(page_source, "html.parser")
+        session = requests.Session(impersonate="chrome120")
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
         product_json = json.loads(
             soup.find("input", {"name": "producthidden"})["value"]
         )
