@@ -671,13 +671,13 @@ class Falabella(Store):
 
         for i in range(3):
             try:
-                response = session.get(url, timeout=30)
+                response = session.get(url, timeout=30, allow_redirects=False)
             except RequestsError:
                 return []
             except UnicodeDecodeError:
                 return []
 
-            if response.status_code in [404, 500]:
+            if response.status_code in [404, 500, 301]:
                 return []
 
             if "notFound" in response.url:
