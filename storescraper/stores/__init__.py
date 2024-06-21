@@ -83,6 +83,7 @@ from .el_juri_store import ElJuriStore
 from .elite_center import EliteCenter
 from .enel import Enel
 from .entel import Entel
+from .entre_pc_y_web import EntrePcYWeb
 from .estilos import Estilos
 from .et_chile import ETChile
 from .eurogen import Eurogen
@@ -307,6 +308,7 @@ from .valrod import Valrod
 from .venelectronics import Venelectronics
 from .albion_haus import AlbionHaus
 from .video_vision import VideoVision
+from .virec import Virec
 from .v_store import VStore
 from .vtr import Vtr
 from .v2 import V2
