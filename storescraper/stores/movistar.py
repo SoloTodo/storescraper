@@ -198,7 +198,11 @@ class Movistar(Store):
         sku = soup.find("div", {"itemprop": "sku"}).text.strip()
         breadcrumbs = soup.find("ul", "items").findAll("li")
         for breadcrumb in breadcrumbs:
-            breadcrumb_path = breadcrumb.find("a")["href"]
+            breadcrumb_link = breadcrumb.find("a")
+            if breadcrumb_link:
+                breadcrumb_path = breadcrumb_link["href"]
+            else:
+                breadcrumb_path = ""
             breadcrumb_kw = "{} {}".format(breadcrumb.text, breadcrumb_path)
             if (
                 "OUTLET" in breadcrumb_kw.upper()

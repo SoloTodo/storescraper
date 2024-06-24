@@ -54,6 +54,10 @@ class VGamers(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
+        )
         product_urls = []
         page = 1
         while True:
@@ -63,14 +67,14 @@ class VGamers(StoreWithUrlExtensions):
                 url_extension, page
             )
             print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
-            products_tags = soup.findAll("ul", "products")
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.text, "html.parser")
+            products_tags = soup.findAll("div", "products")
             if not products_tags:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
-            product_containers = products_tags[-1].findAll("li", "product")
+            product_containers = products_tags[-1].findAll("section", "product")
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)

@@ -8,7 +8,7 @@ from storescraper.categories import (
     NOTEBOOK,
     ALL_IN_ONE,
     VIDEO_CARD,
-    MOUSE,
+    # MOUSE,
     VIDEO_GAME_CONSOLE,
 )
 from storescraper.product import Product
@@ -24,7 +24,7 @@ class AsusStore(StoreWithUrlExtensions):
         ("laptops", NOTEBOOK),
         ("displays-desktops", ALL_IN_ONE),
         ("motherboards-components", VIDEO_CARD),
-        ("accessories", MOUSE),
+        # ("accessories", MOUSE),
         ("mobile-handhelds", VIDEO_GAME_CONSOLE),
     ]
 
