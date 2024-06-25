@@ -48,6 +48,9 @@ class Sukasa(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers[
+            "User-Agent"
+        ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         brand = soup.find("h2", "manufacturer-product").text.strip()
@@ -62,7 +65,13 @@ class Sukasa(Store):
                 x["value"]: x.text for x in variants_container.findAll("option")
             }
             ajax_session = session_with_proxy(extra_args)
+            ajax_session.headers[
+                "Accept"
+            ] = "application/json, text/javascript, */*; q=0.01"
             ajax_session.headers["content-type"] = "application/x-www-form-urlencoded"
+            ajax_session.headers[
+                "User-Agent"
+            ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
 
             products = []
 
