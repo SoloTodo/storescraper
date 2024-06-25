@@ -788,7 +788,7 @@ class Falabella(Store):
         if not next_container:
             return []
 
-        page_props = json.loads(next_container.text)["props"]
+        page_props = json.loads(next_container.text)["props"]["pageProps"]
 
         if "productData" not in page_props:
             return []
