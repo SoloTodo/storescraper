@@ -788,10 +788,12 @@ class Falabella(Store):
         if not next_container:
             return []
 
-        product_data = json.loads(next_container.text)["props"]["pageProps"][
-            "productData"
-        ]
+        page_props = json.loads(next_container.text)["props"]
 
+        if "productData" not in page_props:
+            return []
+
+        product_data = page_props["productData"]
         specification_tag = soup.find("div", "productInfoContainer")
         long_description = product_data["longDescription"]
 

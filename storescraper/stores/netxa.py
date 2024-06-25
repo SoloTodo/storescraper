@@ -124,7 +124,7 @@ class Netxa(StoreWithUrlExtensions):
         else:
             raise Exception("No JSON product data found")
 
-        name = product_data["name"]
+        name = product_data["name"][:250]
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         price = Decimal(product_data["offers"][0]["price"])
         if product_data["offers"][0]["availability"] == "http://schema.org/InStock":
