@@ -14,6 +14,7 @@ from storescraper.categories import (
     STOVE,
     KEYBOARD,
     GAMING_CHAIR,
+    CELL,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -32,6 +33,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
         ["sillas-gamer", GAMING_CHAIR],
         ["teclados-gamer", KEYBOARD],
         ["climatizacion-y-energia", SPACE_HEATER],
+        ["telefonos", CELL],
     ]
 
     @classmethod
@@ -94,6 +96,11 @@ class BodegaOportunidades(StoreWithUrlExtensions):
             else:
                 stock = 0
 
+            if "[PRODUCTO NUEVO]" in name.upper():
+                condition = "https://schema.org/NewCondition"
+            else:
+                condition = "https://schema.org/OpenBoxCondition"
+
             product = Product(
                 name,
                 cls.__name__,
@@ -108,7 +115,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
                 sku=sku,
                 picture_urls=picture_urls,
                 description=description,
-                condition="https://schema.org/OpenBoxCondition",
+                condition=condition,
             )
             products.append(product)
 
