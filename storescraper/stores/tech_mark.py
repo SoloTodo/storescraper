@@ -62,7 +62,8 @@ class TechMark(StoreWithUrlExtensions):
         sku = sku_tag.text.strip()
         key = soup.find("meta", {"property": "og:id"})["content"]
         name = soup.find("h1", "page-header").text.strip()
-        stock = -1 if soup.find("input", "adc") else 0
+        availability_tag = soup.find("meta", {"property": "product:availability"})
+        stock = -1 if availability_tag["content"] == "instock" else 0
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"]
         )
