@@ -26,12 +26,12 @@ class TodoGeek(StoreWithUrlExtensions):
         ["tarjetas-graficas", VIDEO_CARD],
         ["monitores", MONITOR],
         ["parlantes-inteligentes", STEREO_SYSTEM],
-        ["laptops-computer", NOTEBOOK],
         ["sillas-gamer", GAMING_CHAIR],
         ["watches", WEARABLE],
         ["consolas", VIDEO_GAME_CONSOLE],
         ["celulares", CELL],
         ["Teclados", KEYBOARD],
+        ["notebooks", NOTEBOOK],
     ]
 
     @classmethod
