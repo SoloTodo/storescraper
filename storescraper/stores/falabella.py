@@ -16,6 +16,7 @@ from html import unescape
 from curl_cffi.requests import RequestsError
 from dateutil.parser import parse
 from curl_cffi import requests
+from requests import TooManyRedirects
 
 from storescraper.categories import *
 from storescraper.product import Product
@@ -675,6 +676,8 @@ class Falabella(Store):
             except RequestsError:
                 return []
             except UnicodeDecodeError:
+                return []
+            except TooManyRedirects:
                 return []
 
             if response.status_code in [404, 500]:
