@@ -89,16 +89,12 @@ class PcFactory(Store):
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         session = session_with_proxy(extra_args)
-
-        if extra_args and "cookies" in extra_args:
-            session.cookies = requests.utils.cookiejar_from_dict(extra_args["cookies"])
-
         product_entries = defaultdict(lambda: [])
 
         # Productos normales
         url_extensions = [
-            ["735", NOTEBOOK],
             ["999", ALL_IN_ONE],
+            ["735", NOTEBOOK],
             ["411", STORAGE_DRIVE],
             ["266", RAM],
             ["994", TABLET],
@@ -143,35 +139,30 @@ class PcFactory(Store):
         for url_extension, local_category in url_extensions:
             if local_category != category:
                 continue
-            page = 1
+            page = 0
             idx = 1
             while True:
                 if page > 10:
                     raise Exception("page overflow: " + url_extension)
                 url_webpage = (
-                    "https://www.pcfactory.cl/a?categoria={}&"
-                    "pagina={}".format(url_extension, page)
+                    "https://integracion.pcfactory.cl/catalogo/productos/query"
+                    "?size=100&categorias={}&page={}".format(url_extension, page)
                 )
                 print(url_webpage)
                 response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, "html.parser")
-                product_containers = soup.findAll("div", "product")
+                json_data = response.json()
+                products_data = json_data["content"]["items"]
 
-                if not product_containers:
-                    if page == 1:
+                if not products_data:
+                    if page == 0:
                         raise Exception("Empty category: " + url_extension)
                     break
 
-                section_tag = soup.find("div", {"data-menu-categoria": url_extension})
-                section = "{} > {}".format(
-                    html.unescape(section_tag["data-menu-path"]),
-                    section_tag["data-menu"],
-                )
-
-                for container in product_containers:
+                for product_entry in products_data:
                     product_url = (
-                        "https://www.pcfactory.cl" + container.find("a")["href"]
+                        "https://www.pcfactory.cl/producto/" + product_entry["slug"]
                     )
+                    section = product_entry["categoria"]["nombre"]
                     product_entries[product_url].append(
                         {"category_weight": 1, "section_name": section, "value": idx}
                     )
@@ -180,13 +171,13 @@ class PcFactory(Store):
 
         # Segunda seleccción
         url_extensions = [
-            ["liq-celulares", CELL],
-            ["liq-tablets", TABLET],
-            ["liq-notebook", NOTEBOOK],
-            ["liq-aio", ALL_IN_ONE],
-            ["liq-tv", TELEVISION],
-            ["liq-smart", WEARABLE],
-            ["liq-impresoras", PRINTER],
+            # ["liq-celulares", CELL],
+            # ["liq-tablets", TABLET],
+            # ["liq-notebook", NOTEBOOK],
+            # ["liq-aio", ALL_IN_ONE],
+            # ["liq-tv", TELEVISION],
+            # ["liq-smart", WEARABLE],
+            # ["liq-impresoras", PRINTER],
         ]
 
         for url_extension, local_category in url_extensions:
@@ -218,50 +209,52 @@ class PcFactory(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-
-        if extra_args and "cookies" in extra_args:
-            session.cookies = requests.utils.cookiejar_from_dict(extra_args["cookies"])
-
-        res = session.get(url)
-        if res.url != url:
-            return []
-        res = session.get("https://www.pcfactory.cl/public/scripts/dynamic/initData.js")
-        match = re.search(r"window.pcFactory.dataGlobal.serverData\s+= (.+);", res.text)
-        product_data = json.loads(match.groups()[0])["producto"]
-
-        if not product_data:
-            return []
-
-        sku = product_data["id_producto"]
-        part_number = product_data["partno"]
+        product_id_match = re.search(r"/producto/(\d+)", url)
+        product_id = product_id_match.groups()[0]
+        # Specs
+        res = session.get(
+            "https://integracion.pcfactory.cl/catalogo/productos/" + product_id
+        )
+        product_data = res.json()
+        sku = str(product_data["id"])
+        part_number = product_data["partNumber"]
 
         if part_number:
             part_number = part_number.strip()
 
         name = product_data["nombre"]
-        stock = int(product_data["stock_web"]) + int(product_data["stock_tienda"])
 
-        # precio_cash for efectivo
-        # precio_fpago for tarjeta bancoestado
+        # Precio
+        res = session.get(
+            "https://integracion.pcfactory.cl/catalogo/productos/{}/precio".format(
+                product_id
+            )
+        )
+        price_data = res.json()
 
-        if product_data["precio_fpago"] is None:
-            return []
+        normal_price = Decimal(price_data["precio"]["normal"])
+        offer_price = Decimal(price_data["precio"]["efectivo"])
 
-        precio_fpago = Decimal(remove_words(product_data["precio_fpago"]))
-        precio_cash = Decimal(remove_words(product_data["precio_cash"]))
-        normal_price = Decimal(remove_words(product_data["precio_normal"]))
+        # Stock
+        res = session.get(
+            "https://integracion.pcfactory.cl/catalogo/productos/{}/stock".format(
+                product_id
+            )
+        )
+        stock_data = res.json()
+        stock = 0
+        for zona in stock_data["disponibilidad"]:
+            for sucursal in zona["sucursales"]:
+                stock += int(sucursal["aproximado"].replace("+", ""))
 
-        if precio_fpago:
-            offer_price = precio_fpago
-        else:
-            offer_price = precio_cash
-
-        picture_urls = [x.split("?")[0] for x in product_data["imagen_1000"]]
-
-        if "LIQ" in name:
-            condition = "https://schema.org/RefurbishedCondition"
-        else:
-            condition = "https://schema.org/NewCondition"
+        # Pictures
+        res = session.get(
+            "https://integracion.pcfactory.cl/catalogo/productos/{}/imagenes".format(
+                product_id
+            )
+        )
+        pictures_data = res.json()
+        picture_urls = [x["sizes"]["0"] for x in pictures_data["imagenes"]]
 
         p = Product(
             name,
@@ -277,22 +270,5 @@ class PcFactory(Store):
             sku=sku,
             part_number=part_number,
             picture_urls=picture_urls,
-            condition=condition,
         )
         return [p]
-
-    @classmethod
-    def preflight(cls, extra_args=None):
-        if extra_args and extra_args.get("queueit"):
-            session = session_with_proxy(extra_args)
-            res = session.get("https://www.pcfactory.cl/", allow_redirects=False)
-            assert res.status_code == 302
-            url = res.headers["Location"]
-            fixed_url = url.replace("http%3A", "https%3A")
-            res = session.get(fixed_url)
-            assert res.status_code == 200
-
-            cookies = requests.utils.dict_from_cookiejar(res.cookies)
-            return {"cookies": cookies}
-        else:
-            return {}
