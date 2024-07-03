@@ -28,16 +28,20 @@ class Sukasa(Store):
         product_urls = []
         page = 1
         while True:
-            endpoint = "https://www.sukasa.com/busqueda?s=LG&page={}".format(page)
+            endpoint = "https://api.comohogar.com//catalog-api/products-es/all-by-category-tree?page={}&pageSize=10&active=true&brandId=60966430-ee8d-11ed-b56d-005056010420".format(
+                page
+            )
             print(endpoint)
             response = session.get(endpoint)
-            products_data = response.json()["products"]
+            products_data = response.json()["entities"]
 
             if not products_data:
                 break
 
-            for product in products_data:
-                product_url = product["link"]
+            for product in products_data[0]["products"]:
+                product_url = "https://www.sukasa.com/productos/{}?id={}".format(
+                    product["slug"], product["id"]
+                )
                 if product_url not in product_urls:
                     product_urls.append(product_url)
             page += 1
@@ -51,104 +55,42 @@ class Sukasa(Store):
         session.headers[
             "User-Agent"
         ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
-        brand = soup.find("h2", "manufacturer-product").text.strip()
-        stock = -1 if not brand or brand == "LG" else 0
-        variants_container = soup.find("div", "attribute-list")
-        sku = soup.find("h2", "reference-product").text.split(":")[1].strip()
-        name = soup.find("h1", "page-heading").text.strip()[:250]
 
-        if variants_container:
-            product_id = soup.find("input", {"name": "id_product"})["value"]
-            variant_ids = {
-                x["value"]: x.text for x in variants_container.findAll("option")
-            }
-            ajax_session = session_with_proxy(extra_args)
-            ajax_session.headers[
-                "Accept"
-            ] = "application/json, text/javascript, */*; q=0.01"
-            ajax_session.headers["content-type"] = "application/x-www-form-urlencoded"
-            ajax_session.headers[
-                "User-Agent"
-            ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
+        product_id = url.split("?id=")[1]
+        endpoint = (
+            "https://api.comohogar.com//catalog-api/products/portal/" + product_id
+        )
+        response = session.get(endpoint)
+        product_data = response.json()
+        name = product_data["name"]
+        sku = product_data["cmInternalCode"]
 
-            products = []
+        stock = product_data["cmStock"]
+        for store in product_data["storeList"]:
+            stock += store["quantity"]
+        offer_price = Decimal(str(product_data["cmItmPvpAfIva"])).quantize(
+            Decimal("0.01")
+        )
+        normal_price = Decimal(str(product_data["cmItmPvpNafIva"])).quantize(
+            Decimal("0.01")
+        )
+        picture_urls = [x["resourceUrl"] for x in product_data["resources"]]
+        description = html_to_markdown(product_data["longDescription"])
 
-            for variant_id, variant_label in variant_ids.items():
-                endpoint = (
-                    "https://www.sukasa.com/index.php?controller="
-                    "product?id_product={}&group%5B246%5D={}".format(
-                        product_id, variant_id
-                    )
-                )
-                res = ajax_session.post(endpoint, "ajax=1&action=refresh")
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            sku,
+            stock,
+            normal_price,
+            offer_price,
+            "USD",
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+        )
 
-                if res.status_code == 502:
-                    continue
-
-                variant_data = json.loads(res.text)
-                variant_soup = BeautifulSoup(
-                    variant_data["product_prices"], "html.parser"
-                )
-                variant_url = variant_data["product_url"]
-
-                normal_price = Decimal(
-                    variant_soup.find("span", "product-unit-price").text.split("$")[-1]
-                ).quantize(Decimal(".01"))
-                offer_price = Decimal(
-                    variant_soup.find("span", {"itemprop": "price"})["content"]
-                    # .replace(".", "")
-                    # .replace(",", ".")
-                ).quantize(Decimal(".01"))
-
-                key = "{}_{}".format(sku, variant_id)
-                variant_name = "{} ({})".format(name, variant_label)
-
-                products.append(
-                    Product(
-                        variant_name,
-                        cls.__name__,
-                        category,
-                        variant_url,
-                        variant_url,
-                        key,
-                        stock,
-                        normal_price,
-                        offer_price,
-                        "USD",
-                        sku=sku,
-                    )
-                )
-
-            return products
-        else:
-            price = Decimal(
-                soup.find("span", {"itemprop": "price"})
-                .find("span")
-                .text.replace("$", "")
-            )
-
-            picture_urls = [a["data-zoom-image"] for a in soup.findAll("a", "thumb")]
-
-            description = html_to_markdown(
-                str(soup.find("div", {"id": "collapseDescription"}))
-            )
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                sku,
-                stock,
-                price,
-                price,
-                "USD",
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description,
-            )
-
-            return [p]
+        return [p]
