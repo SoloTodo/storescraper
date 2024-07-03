@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from storescraper.categories import MOTHERBOARD, COMPUTER_CASE, CPU_COOLER, \
     POWER_SUPPLY, MONITOR, HEADPHONES, MOUSE, KEYBOARD, GAMING_CHAIR, \
-    PROCESSOR, VIDEO_CARD, RAM, SOLID_STATE_DRIVE
+    PROCESSOR, VIDEO_CARD, RAM, SOLID_STATE_DRIVE, NOTEBOOK
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, remove_words, html_to_markdown
@@ -28,6 +28,7 @@ class CentralGamer(StoreWithUrlExtensions):
         ['gabinetes-gamer', COMPUTER_CASE],
         ['todo-para-pc-gamer/refrigeracion', CPU_COOLER],
         ['fuentes-de-poder', POWER_SUPPLY],
+        ['notebooks-gamers', NOTEBOOK],
     ]
 
     @classmethod
