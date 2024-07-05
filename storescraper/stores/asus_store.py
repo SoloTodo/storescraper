@@ -8,14 +8,13 @@ from storescraper.categories import (
     NOTEBOOK,
     ALL_IN_ONE,
     VIDEO_CARD,
-    # MOUSE,
     VIDEO_GAME_CONSOLE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import (
-    session_with_proxy,
     html_to_markdown,
+    cf_session_with_proxy,
 )
 
 
@@ -30,7 +29,7 @@ class AsusStore(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         session.headers["user-agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
@@ -86,7 +85,7 @@ class AsusStore(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         try:
             response = session.get(url, timeout=30)
         except Exception as e:

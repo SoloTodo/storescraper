@@ -11,6 +11,7 @@ from storescraper.categories import (
     MOUSE,
     HEADPHONES,
     RAM,
+    ALL_IN_ONE,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -19,19 +20,20 @@ from storescraper.utils import session_with_proxy
 
 class Syd(StoreWithUrlExtensions):
     url_extensions = [
-        ["macbook-pro-16-m1-de-apple", NOTEBOOK],
-        ["macbook-pro-16-m2-de-apple", NOTEBOOK],
-        ["macbook-air-m1", NOTEBOOK],
-        ["macbook-pro-14-m2-pro", NOTEBOOK],
+        ["imac", ALL_IN_ONE],
+        ["macbook-air", NOTEBOOK],
         ["studio-display", MONITOR],
+        ["macbook-pro-16-m1-de-apple", NOTEBOOK],
+        ["macbook-pro-14-m2-pro", NOTEBOOK],
+        ["macbook-pro-16-m2-de-apple", NOTEBOOK],
         ["macbook-pro-13-m2-nuevo", NOTEBOOK],
         ["usb-c", EXTERNAL_STORAGE_DRIVE],
         ["thunderbolt-3", EXTERNAL_STORAGE_DRIVE],
         ["ssd", EXTERNAL_STORAGE_DRIVE],
         ["raid", EXTERNAL_STORAGE_DRIVE],
-        ["mouse-y-teclados", MOUSE],
         ["audio", HEADPHONES],
         ["memorias", RAM],
+        ["mouse-y-teclados", MOUSE],
     ]
 
     @classmethod

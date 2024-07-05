@@ -99,9 +99,16 @@ class ClaroEcuador(StoreWithUrlExtensions):
         )
         response = cls.curl_post_request(endpoint)
         prices_json = json.loads(response)
-        price_entry = prices_json["content"]["preciosNormales"][0]
-        price = Decimal(price_entry["cuotas"] * price_entry["cuotaPrConImp"])
-        price = price.quantize(Decimal("0.01"))
+        best_price = Decimal(0)
+        for price_entry in prices_json["content"]["preciosNormales"]:
+            calculated_price = Decimal(
+                price_entry["cuotas"] * price_entry["cuotaPrConImp"]
+            )
+            if not calculated_price:
+                continue
+            if not best_price or calculated_price < best_price:
+                best_price = calculated_price
+        best_price = best_price.quantize(Decimal("0.01"))
 
         p = Product(
             name,
@@ -111,8 +118,8 @@ class ClaroEcuador(StoreWithUrlExtensions):
             url,
             key,
             -1,
-            price,
-            price,
+            best_price,
+            best_price,
             "USD",
             sku=key,
             picture_urls=picture_urls,
