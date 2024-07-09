@@ -181,7 +181,10 @@ class NotebooksYa(StoreWithUrlExtensions):
             return []
 
         if "max" in qty_input.attrs:
-            stock = int(qty_input["max"])
+            if qty_input["max"]:
+                stock = int(qty_input["max"])
+            else:
+                stock = -1
         else:
             stock = 1
         price_tags = soup.findAll("span", "woocommerce-Price-amount")

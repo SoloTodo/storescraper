@@ -56,7 +56,9 @@ class Clie(StoreWithUrlExtensions):
                     logging.warning("empty category: " + url_extension)
                 break
             for container in product_containers:
-                product_url = container.find("a")["href"]
+                product_url = container.find("a", "woocommerce-LoopProduct-link")[
+                    "href"
+                ]
                 product_urls.append(product_url)
             page += 1
         return product_urls

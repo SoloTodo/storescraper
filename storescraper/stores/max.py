@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    magento_picture_urls
+from storescraper.utils import (
+    session_with_proxy,
+    html_to_markdown,
+    magento_picture_urls,
+)
 from storescraper.categories import TELEVISION
 
 
@@ -15,7 +18,6 @@ class Max(Store):
     def categories(cls):
         return [
             TELEVISION,
-
         ]
 
     @classmethod
@@ -27,21 +29,22 @@ class Max(Store):
         page = 1
         while True:
             if page >= 30:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url_webpage = 'https://www.max.com.gt/marcas/productos-lg?' \
-                          'marca=7&product_list_limit=30&p={}'.format(page)
+            url_webpage = (
+                "https://www.max.com.gt/marcas/productos-lg?"
+                "marca=7&product_list_limit=30&p={}".format(page)
+            )
             print(url_webpage)
             data = session.get(url_webpage, timeout=30).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll('li',
-                                              'item product product-item')
+            soup = BeautifulSoup(data, "html.parser")
+            product_containers = soup.findAll("li", "item product product-item")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category')
+                    logging.warning("Empty category")
                 break
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 if product_url in product_urls:
                     return product_urls
                 product_urls.append(product_url)
@@ -58,21 +61,22 @@ class Max(Store):
             return []
 
         data = response.text
-        soup = BeautifulSoup(data, 'html.parser')
-        name = soup.find('h1', 'page-title').text.strip()
-        key = soup.find('input', {'id': 'getproductid'})['value']
-        sku = soup.find('div', {'itemprop': 'sku'}).text
+        soup = BeautifulSoup(data, "html.parser")
+        key = soup.find("input", {"name": "product"})["value"]
+        name = soup.find("h1", "page-title").text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text
 
-        if soup.find('div', 'stock available'):
+        if soup.find("div", "stock available"):
             stock = -1
         else:
             stock = 0
 
-        price_container = soup.find('span', {'data-price-type': 'finalPrice'})
-        price = Decimal(price_container.text.replace('Q', '').replace(',', ''))
+        price_container = soup.find("span", {"data-price-type": "finalPrice"})
+        price = Decimal(price_container.text.replace("Q", "").replace(",", ""))
         picture_urls = magento_picture_urls(soup)
         description = html_to_markdown(
-            str(soup.find('table', {'id': 'product-attribute-specs-table'})))
+            str(soup.find("table", {"id": "product-attribute-specs-table"}))
+        )
 
         p = Product(
             name,
@@ -84,10 +88,10 @@ class Max(Store):
             stock,
             price,
             price,
-            'GTQ',
+            "GTQ",
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
 
         return [p]

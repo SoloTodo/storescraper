@@ -31,7 +31,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Netxa(StoreWithUrlExtensions):
@@ -126,7 +126,6 @@ class Netxa(StoreWithUrlExtensions):
 
         name = product_data["name"][:250]
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
-        price = Decimal(product_data["offers"][0]["price"])
         if product_data["offers"][0]["availability"] == "http://schema.org/InStock":
             stock = -1
         else:
@@ -138,6 +137,12 @@ class Netxa(StoreWithUrlExtensions):
             picture_urls = None
         description = product_data["description"]
 
+        pricing_tag = soup.find("div", "custom-prices")
+        price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
+        assert len(price_tags) == 2
+        offer_price = Decimal(remove_words(price_tags[0].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
+
         p = Product(
             name,
             cls.__name__,
@@ -146,8 +151,8 @@ class Netxa(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             "CLP",
             sku=sku,
             picture_urls=picture_urls,
