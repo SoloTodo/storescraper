@@ -138,10 +138,14 @@ class Netxa(StoreWithUrlExtensions):
         description = product_data["description"]
 
         pricing_tag = soup.find("div", "custom-prices")
-        price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
-        assert len(price_tags) == 2
-        offer_price = Decimal(remove_words(price_tags[0].text))
-        normal_price = Decimal(remove_words(price_tags[1].text))
+
+        if pricing_tag:
+            price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
+            assert len(price_tags) == 2
+            offer_price = Decimal(remove_words(price_tags[0].text))
+            normal_price = Decimal(remove_words(price_tags[1].text))
+        else:
+            normal_price = offer_price = Decimal(product_data["offers"][0]["price"])
 
         p = Product(
             name,
