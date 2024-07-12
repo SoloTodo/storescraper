@@ -114,7 +114,11 @@ class ZonaPortatil(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("p", "product_title").text.strip()
-        key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
+        alternate_url = soup.find(
+            "link", {"rel": "alternate", "type": "application/json"}
+        )["href"]
+        key_match = re.search("/product/(\d+)", alternate_url)
+        key = key_match.groups()[0]
 
         qty_input = soup.find("input", "input-text qty text")
         if qty_input:
