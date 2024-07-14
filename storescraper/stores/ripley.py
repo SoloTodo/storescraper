@@ -37,7 +37,11 @@ from storescraper.categories import (
 from storescraper.store import Store
 from storescraper.product import Product
 from storescraper.flixmedia import flixmedia_video_urls
-from storescraper.utils import html_to_markdown, session_with_proxy
+from storescraper.utils import (
+    html_to_markdown,
+    session_with_proxy,
+    cf_session_with_proxy,
+)
 from storescraper import banner_sections as bs
 
 
@@ -322,7 +326,7 @@ class Ripley(Store):
                 return []
             return [product]
 
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
 
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
@@ -459,7 +463,7 @@ class Ripley(Store):
 
     @classmethod
     def _append_metadata(cls, product, extra_args, retries=5):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
@@ -650,7 +654,7 @@ class Ripley(Store):
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         session.headers["Content-Type"] = "application/json"
 
         filters = []
@@ -866,7 +870,7 @@ class Ripley(Store):
                     url, section, subsection, subsection_type, extra_args
                 )
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                session = session_with_proxy(extra_args)
+                session = cf_session_with_proxy(extra_args)
 
                 if extra_args and "user-agent" in extra_args:
                     session.headers["user-agent"] = extra_args["user-agent"]
@@ -915,7 +919,7 @@ class Ripley(Store):
 
     @classmethod
     def get_owl_banners(cls, url, section, subsection, subsection_type, extra_args):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
 
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
