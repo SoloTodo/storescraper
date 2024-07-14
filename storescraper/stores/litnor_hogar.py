@@ -58,7 +58,11 @@ class LitnorHogar(Store):
             headers={"content-type": "application/x-www-form-urlencoded"},
             verify=False,
         )
-        stock = int(list(json.loads(response.content).values())[0])
+        stock_value = list(json.loads(response.content).values())[0]
+        if stock_value:
+            stock = int(stock_value)
+        else:
+            stock = 0
         price_container = soup.find("span", "uc-price").text.strip().split()
         price = Decimal(price_container[1].replace(".", ""))
         currency = "USD" if price_container[0] == "U$S" else "UYU"

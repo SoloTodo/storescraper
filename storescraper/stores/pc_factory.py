@@ -117,7 +117,7 @@ class PcFactory(Store):
             ["421", STORAGE_DRIVE],
             ["932", STORAGE_DRIVE],
             ["262", PRINTER],
-            ["790", TELEVISION],
+            ["789", TELEVISION],
             ["797", STEREO_SYSTEM],
             ["889", STEREO_SYSTEM],
             ["891", STEREO_SYSTEM],
