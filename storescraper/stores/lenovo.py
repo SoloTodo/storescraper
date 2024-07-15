@@ -30,7 +30,7 @@ class Lenovo(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
             ("7ca29953-e3fd-48a9-8c04-b790cfef3842", NOTEBOOK),
-            ("5efac680-d533-4fba-ad6d-28311eca5544", TABLET),
+            # ("5efac680-d533-4fba-ad6d-28311eca5544", TABLET),
             ("738528ce-a63a-4853-9d21-ddda6bb57b14", ALL_IN_ONE),
         ]
         product_urls = []
