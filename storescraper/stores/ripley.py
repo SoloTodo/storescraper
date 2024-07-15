@@ -507,13 +507,16 @@ class Ripley(Store):
             "&_noconfig=true".format(product.sku)
         )
         print(reviews_endpoint)
-        res = session.get(reviews_endpoint)
-        reviews_data = res.json()["results"][0]
-        if "rollup" in reviews_data:
-            product.review_count = reviews_data["rollup"]["rating_count"]
-            product.review_avg_score = reviews_data["rollup"]["average_rating"]
-        else:
-            product.review_count = 0
+        reviews_session = session_with_proxy(extra_args)
+        res = reviews_session.get(reviews_endpoint)
+        reviews_json = res.json()
+        if "results" in reviews_json:
+            reviews_data = reviews_json["results"][0]
+            if "rollup" in reviews_data:
+                product.review_count = reviews_data["rollup"]["rating_count"]
+                product.review_avg_score = reviews_data["rollup"]["average_rating"]
+            else:
+                product.review_count = 0
 
         return
 
@@ -621,7 +624,7 @@ class Ripley(Store):
 
     @classmethod
     def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
