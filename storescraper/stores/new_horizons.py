@@ -58,14 +58,16 @@ class NewHorizons(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         json_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[0].text
+            soup.find("script", {"type": "application/ld+json"}).text
         )
 
-        key = str(json_data["productID"])
+        assert len(json_data["hasVariant"]) == 1
+
+        key = str(json_data["productGroupID"])
         name = json_data["name"]
-        sku = json_data["sku"]
+        sku = json_data["hasVariant"][0]["sku"]
         description = json_data["description"]
-        offer = json_data["offers"][0]
+        offer = json_data["hasVariant"][0]["offers"]
         price = Decimal(offer["price"])
 
         if offer["availability"] == "http://schema.org/InStock":
