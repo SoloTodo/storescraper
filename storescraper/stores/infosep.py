@@ -89,10 +89,18 @@ class Infosep(StoreWithUrlExtensions):
         ["portatiles/reloj-inteligente", WEARABLE],
         ["portatiles/tablet", TABLET],
     ]
+    session = None
+
+    @classmethod
+    def get_session(cls, extra_args=None):
+        if cls.session is None:
+            cls.session = session_with_proxy(extra_args)
+
+        return cls.session
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = cls.get_session(extra_args)
         product_urls = []
         page = 1
         while True:
@@ -108,8 +116,8 @@ class Infosep(StoreWithUrlExtensions):
                     "page/{}/".format(url_extension, page)
                 )
             print(url_webpage)
-            data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            response = session.get(url_webpage)
+            soup = BeautifulSoup(response.content, "lxml")
             product_containers = soup.find("div", "products")
             if not product_containers:
                 if page == 1:
@@ -124,13 +132,13 @@ class Infosep(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cls.get_session(extra_args)
         response = session.get(url)
 
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.content, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text
