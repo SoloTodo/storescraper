@@ -75,6 +75,7 @@ class Infosep(StoreWithUrlExtensions):
         ["partes-y-piezas/kit-teclado-y-mouse", KEYBOARD_MOUSE_COMBO],
         ["partes-y-piezas/memorias-pc-notebook", RAM],
         ["partes-y-piezas/mouse-2", MOUSE],
+        ["partes-y-piezas/partes-de-computador/tarjeta-madre", MOTHERBOARD],
         ["partes-y-piezas/placas-madres", MOTHERBOARD],
         ["partes-y-piezas/procesador-intel", PROCESSOR],
         ["partes-y-piezas/procesadores-amd", PROCESSOR],
