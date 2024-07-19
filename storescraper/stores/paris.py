@@ -269,7 +269,7 @@ class Paris(Store):
             1,
         ],
         [
-            "linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side2",
+            "linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side",
             ["Refrigerator"],
             "Línea Blanca > Refrigeración > Side by Side",
             1,
