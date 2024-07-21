@@ -63,7 +63,7 @@ class Eylstore(StoreWithUrlExtensions):
         url = "https://eylstore.cl/categoria-producto/{}".format(url_extension)
         res = session.get(url)
         print(url)
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
 
         product_urls = []
         widget_tags = soup.findAll(
@@ -88,7 +88,7 @@ class Eylstore(StoreWithUrlExtensions):
                     "https://eylstore.cl/wp-admin/admin-ajax.php", payload
                 )
 
-                soup = BeautifulSoup(res.json()["data"]["html"], "html.parser")
+                soup = BeautifulSoup(res.json()["data"]["html"], "lxml")
                 product_containers = soup.findAll("li", "product-type-simple")
 
                 if not product_containers:
@@ -121,7 +121,7 @@ class Eylstore(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         sku_tag = soup.find("span", "sku")

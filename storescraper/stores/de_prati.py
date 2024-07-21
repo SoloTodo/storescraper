@@ -54,7 +54,7 @@ class DePrati(Store):
         print(url)
         session = requests.Session(impersonate="chrome120")
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_json = json.loads(
             soup.find("input", {"name": "producthidden"})["value"]
         )

@@ -34,7 +34,7 @@ class MiTiendaDamasco(Store):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", {"data-hook": "grid-layout-item"})
             if not product_containers:
                 if page == 1:
@@ -52,7 +52,7 @@ class MiTiendaDamasco(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         json_product = json.loads(soup.find("script", {"id": "wix-warmup-data"}).text)
         json_product = list(json_product["appsWarmupData"].values())[-1]
         json_product = list(json_product.values())[0]["catalog"]["product"]

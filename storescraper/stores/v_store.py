@@ -50,7 +50,7 @@ class VStore(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-item")
             if not product_containers:
                 if page == 1:
@@ -71,7 +71,7 @@ class VStore(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         foo = soup.findAll("script", {"type": "application/json"})
         json_container = json.loads(foo[-1].text.strip())["product"]
         name = json_container["title"]

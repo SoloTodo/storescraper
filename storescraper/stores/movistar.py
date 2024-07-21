@@ -64,7 +64,7 @@ class Movistar(Store):
                     session = session_with_proxy(extra_args)
                     session.headers["user-agent"] = "python-requests/2.21.0"
                     soup = BeautifulSoup(
-                        session.get(catalogo_url).json()["productlist"], "html.parser"
+                        session.get(catalogo_url).json()["productlist"], "lxml"
                     )
                     containers = soup.findAll("li", "product")
 
@@ -81,7 +81,7 @@ class Movistar(Store):
 
                         if len(container.findAll("div", "color-label")) > 1:
                             product_soup = BeautifulSoup(
-                                session.get(product_url).text, "html.parser"
+                                session.get(product_url).text, "lxml"
                             )
 
                             color_list = product_soup.findAll(
@@ -189,7 +189,7 @@ class Movistar(Store):
             # raise Exception('Invalid status code: ' + str(page.status_code))
             return []
 
-        soup = BeautifulSoup(page.text, "html.parser")
+        soup = BeautifulSoup(page.text, "lxml")
         if soup.find("meta", {"name": "title"}):
             name = soup.find("meta", {"name": "title"})["content"]
         else:

@@ -28,7 +28,7 @@ class HogarYModa(Store):
 
             url = "https://hogarymoda.com.co/shop/page/{}/?s=LG".format(page)
 
-            soup = BeautifulSoup(session.get(url).text, "html.parser")
+            soup = BeautifulSoup(session.get(url).text, "lxml")
             products_container = soup.findAll("li", "product")
 
             if not products_container:
@@ -52,7 +52,7 @@ class HogarYModa(Store):
         print(url)
         session = session_with_proxy(extra_args)
         data = session.get(url).text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
 
         product_data = json.loads(

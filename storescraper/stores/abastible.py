@@ -24,7 +24,7 @@ class Abastible(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("input", {"name": "product"})["value"]
         price = Decimal(re.search(r'"regular_price":(\d+)', response.text).groups()[0])
         name = soup.find("div", "page-title-desktop").text.strip()

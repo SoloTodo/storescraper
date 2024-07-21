@@ -78,7 +78,7 @@ class Metro(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.find("template", {"data-varname": "__STATE__"}).find("script").string

@@ -17,7 +17,7 @@ class LyonCenter(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         url = "https://lyoncenter.cl/product-brand/{}/".format(url_extension)
         res = session.get(url)
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
         containers = soup.findAll("section", "product")
         product_urls = []
         for container in containers:
@@ -35,7 +35,7 @@ class LyonCenter(StoreWithUrlExtensions):
         )
         response = session.get(url)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
 
         variations_form = soup.find("form", "variations_form")

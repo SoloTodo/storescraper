@@ -104,7 +104,7 @@ class TravelTienda(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         script_tag = soup.find("script", {"data-name": "occ-structured-data"})
 
         if not script_tag:

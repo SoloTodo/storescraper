@@ -90,7 +90,7 @@ class InfographicsSolutions(StoreWithUrlExtensions):
                     logging.warning("Invalid category: " + url)
                 break
 
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             products = soup.findAll("div", "product-grid-item")
 
             for product in products:
@@ -111,7 +111,7 @@ class InfographicsSolutions(StoreWithUrlExtensions):
         session.headers["Cookie"] = "_lscache_vary=a"
 
         page_source = session.get(url).text
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(page_source, "lxml")
         key_tag = soup.find("link", {"rel": "shortlink"})
 
         if not key_tag:

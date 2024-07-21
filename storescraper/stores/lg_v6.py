@@ -89,7 +89,7 @@ class LgV6(Store):
         session = session_with_proxy(extra_args)
 
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         picture_urls = [
             "https://www.lg.com" + urllib.parse.quote(x["data-large-d"])
             for x in soup.find_all("a", "c-gallery__item")

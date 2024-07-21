@@ -61,7 +61,7 @@ class NoeComputacion(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             if response.status_code == 404:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
@@ -82,7 +82,7 @@ class NoeComputacion(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
 

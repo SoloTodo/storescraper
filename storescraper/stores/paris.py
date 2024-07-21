@@ -473,7 +473,7 @@ class Paris(Store):
                         "Mismatching URL: {} - {}".format(response.url, category_url)
                     )
 
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
                 containers = soup.find("ul", {"id": "search-result-items"})
 
                 if not containers:
@@ -536,7 +536,7 @@ class Paris(Store):
                 keyword, cls.RESULTS_PER_PAGE, page * cls.RESULTS_PER_PAGE
             )
 
-            soup = BeautifulSoup(session.get(search_url).text, "html.parser")
+            soup = BeautifulSoup(session.get(search_url).text, "lxml")
             containers = soup.findAll("li", "flex-item-products")
 
             if not containers:
@@ -566,7 +566,7 @@ class Paris(Store):
         if response.status_code in [410, 404]:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_match = re.search(
             r"window.productJSON = ([\s\S]+)window.device", response.text
@@ -829,7 +829,7 @@ class Paris(Store):
             url = base_url.format(url_suffix)
             response = session.get(url)
             print(url)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 image = soup.find("section", "ocultar_banner_mobile")
@@ -869,7 +869,7 @@ class Paris(Store):
                 )
             elif subsection_type == bs.SUBSECTION_TYPE_HOME:
                 res = session.get("https://www.paris.cl/")
-                soup = BeautifulSoup(res.text, "html.parser")
+                soup = BeautifulSoup(res.text, "lxml")
                 tags = soup.find("div", {"id": "__next"}).find("section").findAll("a")
 
                 for idx, tag in enumerate(tags):

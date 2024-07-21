@@ -50,7 +50,7 @@ class DazbogStore(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.find("div", "products")
             if not product_containers:
                 if page == 1:
@@ -67,7 +67,7 @@ class DazbogStore(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product-title").text.strip()
         part_number = None
         part_number_tag = soup.find("span", "sku")

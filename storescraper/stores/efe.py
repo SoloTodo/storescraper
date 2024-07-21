@@ -5,16 +5,17 @@ from storescraper.categories import TELEVISION
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    magento_picture_urls
+from storescraper.utils import (
+    session_with_proxy,
+    html_to_markdown,
+    magento_picture_urls,
+)
 
 
 class Efe(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -31,16 +32,17 @@ class Efe(Store):
 
         while not done:
             if page >= 20:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url_webpage = 'https://www.efe.com.pe/tecnologia/marcas/' \
-                          'lg.html?p={}'.format(page)
+            url_webpage = (
+                "https://www.efe.com.pe/tecnologia/marcas/" "lg.html?p={}".format(page)
+            )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+            soup = BeautifulSoup(response.text, "lxml")
+            product_containers = soup.findAll("li", "product")
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 if product_url in product_urls:
                     done = True
                     break
@@ -55,15 +57,16 @@ class Efe(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        key = soup.find('input', {'name': 'product'})['value']
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-        description = html_to_markdown(str(soup.find('div', 'description')))
+        soup = BeautifulSoup(response.text, "lxml")
+        key = soup.find("input", {"name": "product"})["value"]
+        name = soup.find("span", {"itemprop": "name"}).text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
+        description = html_to_markdown(str(soup.find("div", "description")))
         price = Decimal(
-            soup.find('meta', {'property': 'product:price:amount'})['content'])
+            soup.find("meta", {"property": "product:price:amount"})["content"]
+        )
 
-        if soup.find('button', 'tocart'):
+        if soup.find("button", "tocart"):
             stock = -1
         else:
             stock = 0
@@ -80,11 +83,11 @@ class Efe(Store):
             stock,
             price,
             price,
-            'PEN',
+            "PEN",
             sku=sku,
             picture_urls=picture_urls,
             part_number=sku,
-            description=description
+            description=description,
         )
 
         return [p]

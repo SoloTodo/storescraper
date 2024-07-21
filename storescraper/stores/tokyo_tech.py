@@ -36,7 +36,7 @@ class TokyoTech(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "grid-product__image-wrapper")
 
             if not product_containers:
@@ -54,7 +54,7 @@ class TokyoTech(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_json = json.loads(soup.find("script", "mainProductJson").text)
         description = html_to_markdown(str(product_json["description"]))
         picture_urls = ["https:" + x["src"] for x in product_json["media"]]

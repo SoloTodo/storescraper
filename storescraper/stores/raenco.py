@@ -60,30 +60,31 @@ class Raenco(Store):
 
             while not done:
                 if page >= 15:
-                    raise Exception('Page overflow')
+                    raise Exception("Page overflow")
 
-                url = 'https://www.raenco.com/departamentos/{}?' \
-                      'marca=221'.format(category_path)
+                url = "https://www.raenco.com/departamentos/{}?" "marca=221".format(
+                    category_path
+                )
 
                 if page != 1:
-                    url += '&p={}'.format(page)
+                    url += "&p={}".format(page)
 
                 print(url)
 
                 res = session.get(url, timeout=60)
 
                 if res.status_code != 200:
-                    raise Exception('Invalid category: ' + url)
+                    raise Exception("Invalid category: " + url)
 
-                soup = BeautifulSoup(res.text, 'html.parser')
-                product_containers = soup.findAll('li', 'product')
+                soup = BeautifulSoup(res.text, "lxml")
+                product_containers = soup.findAll("li", "product")
 
                 if not product_containers and page == 1:
-                    logging.warning('Empty section {}'.format(category_path))
+                    logging.warning("Empty section {}".format(category_path))
                     break
 
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find("a")["href"]
                     if product_url in local_urls:
                         done = True
                         break
@@ -105,22 +106,22 @@ class Raenco(Store):
 
         data = response.text
 
-        if 'fatal error' in data.lower():
+        if "fatal error" in data.lower():
             return []
 
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, "lxml")
 
-        name = soup.find('h1', 'page-title').text.strip()
-        stock_and_sku = soup.find('div', 'product-info-stock-sku')
-        sku = stock_and_sku.find('div', {'itemprop': 'sku'}).text.strip()
-        stock_div = stock_and_sku.find('div', 'stock')
-        stock = int(stock_div.text.replace(
-            stock_div.find('span').text, '').strip())
+        name = soup.find("h1", "page-title").text.strip()
+        stock_and_sku = soup.find("div", "product-info-stock-sku")
+        sku = stock_and_sku.find("div", {"itemprop": "sku"}).text.strip()
+        stock_div = stock_and_sku.find("div", "stock")
+        stock = int(stock_div.text.replace(stock_div.find("span").text, "").strip())
 
-        price = Decimal(soup.find(
-            'meta', {'property': 'product:price:amount'})['content'])
+        price = Decimal(
+            soup.find("meta", {"property": "product:price:amount"})["content"]
+        )
 
-        image = soup.find('img', 'gallery-placeholder__image')['src']
+        image = soup.find("img", "gallery-placeholder__image")["src"]
 
         p = Product(
             name,
@@ -132,9 +133,9 @@ class Raenco(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
-            picture_urls=[image]
+            picture_urls=[image],
         )
 
         return [p]

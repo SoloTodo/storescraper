@@ -43,7 +43,7 @@ class ImportacionesRubi(Store):
             #
             # ipdb.set_trace()
             # json_response = response.json()
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "product")
 
             if not product_containers:
@@ -69,7 +69,7 @@ class ImportacionesRubi(Store):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("input", {"name": "item"})["value"]
 

@@ -74,7 +74,7 @@ class Gigaclic(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "product")
             if not product_containers:
                 if page == 1:
@@ -94,7 +94,7 @@ class Gigaclic(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h2", "product_title").text.strip()
         sku = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
 

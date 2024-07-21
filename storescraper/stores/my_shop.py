@@ -142,7 +142,7 @@ class MyShop(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1").text.strip()
         product_data_tag = soup.find("div", "product_meta")
         sku = product_data_tag.findAll("p")[0].text.strip().split(": ")[1]

@@ -32,7 +32,7 @@ class Tupi(Store):
             if page >= 15:
                 raise Exception("Page overflow: " + url)
 
-            soup = BeautifulSoup(session.get(url).text, "html.parser")
+            soup = BeautifulSoup(session.get(url).text, "lxml")
             product_containers = soup.findAll("div", "product")
 
             if not product_containers:
@@ -51,7 +51,7 @@ class Tupi(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         name = soup.find("h1", "product_title").text.strip()
         sku_container = soup.find("meta", {"property": "product:retailer_item_id"})

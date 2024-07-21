@@ -101,7 +101,7 @@ class Todoclick(StoreWithUrlExtensions):
             print(page_url)
             response = session.get(page_url)
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products_container = soup.find("div", {"id": "box-product-grid"})
 
             if not products_container:

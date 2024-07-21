@@ -52,7 +52,7 @@ class SystemTi(StoreWithUrlExtensions):
                 url_extension, page
             )
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-block")
             if not product_containers:
                 if page == 1:
@@ -72,7 +72,7 @@ class SystemTi(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("meta", {"property": "og:id"})["content"]
         name = soup.find("h1", "page-header").text.strip()
         sku_tag = soup.find("span", "sku_elem")

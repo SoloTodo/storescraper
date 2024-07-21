@@ -101,7 +101,7 @@ class Cintegral(StoreWithUrlExtensions):
             print(endpoint)
 
             res = session.get(endpoint, verify=False)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_tags = soup.findAll("div", "jet-listing-grid__items")[1].findAll(
                 "div", "jet-listing-grid__item"
             )
@@ -128,7 +128,7 @@ class Cintegral(StoreWithUrlExtensions):
             res = session.get(url, verify=False)
         except TooManyRedirects:
             return []
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
 
         name = soup.find("h1", "product_title").text.strip()
         new_key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]

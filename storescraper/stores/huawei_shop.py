@@ -47,7 +47,7 @@ class HuaweiShop(Store):
         )
 
         data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
         product_containers = soup.findAll("div", {"card-wcm-mode": "DISABLED"})
 
         for container in product_containers:
@@ -75,7 +75,7 @@ class HuaweiShop(Store):
         url_webpage = "https://consumer.huawei.com/cl/offer/{}/".format(url_extension)
 
         data = session.get(url_webpage).text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
 
         candidate_tags = soup.findAll("item", {"data-key": "card-instance"})
         for tag in candidate_tags:
@@ -112,7 +112,7 @@ class HuaweiShop(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_id_tag = soup.find("span", {"id": "productId"})
         product_id = None

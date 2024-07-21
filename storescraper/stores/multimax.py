@@ -61,7 +61,7 @@ class Multimax(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_name").text.strip()
         sku = soup.find("div", "clearfix")["data-product-id"]
         if soup.find("h2", text="Agotado"):

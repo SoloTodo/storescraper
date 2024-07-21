@@ -48,7 +48,7 @@ class SamuraiStore(StoreWithUrlExtensions):
             ).format(page, url_extension)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-small")
             if not product_containers or soup.find("section", "error-404"):
                 if page == 1:
@@ -69,7 +69,7 @@ class SamuraiStore(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name_tag = soup.find("h1", "product-title")
 
         if not name_tag:

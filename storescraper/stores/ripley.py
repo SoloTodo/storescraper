@@ -379,7 +379,7 @@ class Ripley(Store):
                     else:
                         raise Exception("Invalid section: " + category_url)
 
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
 
                 page_data = re.search(
                     r"window.__PRELOADED_STATE__ = (.+);", response.text
@@ -470,7 +470,7 @@ class Ripley(Store):
         print(product.url)
         page_source = session.get(product.url, timeout=30).text
 
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(page_source, "lxml")
 
         if soup.find("div", "error-page"):
             return
@@ -631,7 +631,7 @@ class Ripley(Store):
         print(url)
         page_source = session.get(url, timeout=30).text
 
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(page_source, "lxml")
 
         if soup.find("div", "error-page"):
             return []
@@ -879,7 +879,7 @@ class Ripley(Store):
                     session.headers["user-agent"] = extra_args["user-agent"]
 
                 response = session.get(url)
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
 
                 if soup.find("svg", {"title": "nofound"}):
                     logging.warning("Deactivated category: " + url)
@@ -928,7 +928,7 @@ class Ripley(Store):
             session.headers["user-agent"] = extra_args["user-agent"]
 
         response = session.get(url + "?v=2")
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         carousel_tag = soup.find("div", "home-carousel")
         banners = []
 

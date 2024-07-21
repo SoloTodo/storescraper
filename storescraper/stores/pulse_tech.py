@@ -97,7 +97,7 @@ class PulseTech(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "productgrid--item")
 
             if not product_containers:
@@ -115,7 +115,7 @@ class PulseTech(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_json_tag = soup.find("script", {"data-section-type": "static-product"})
         product_json = json.loads(product_json_tag.text)["product"]
         picture_urls = ["https:" + x for x in product_json["images"]]

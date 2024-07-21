@@ -65,7 +65,7 @@ class Electroban(Store):
             "Chrome/80.0.3987.149 "
             "Safari/537.36"
         )
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
         name = soup.find("div", "product-details").find("h1", "product-title").text
         sku = soup.find("span", "product-cod").text.split(":")[1].strip()
         stock = -1

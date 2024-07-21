@@ -12,12 +12,13 @@ class TiendaEntel(Store):
     @classmethod
     def categories(cls):
         return [
-            'Cell',
+            "Cell",
         ]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
         from .entel import Entel
+
         return Entel.discover_entries_for_category(category, extra_args)
 
     @classmethod
@@ -31,73 +32,71 @@ class TiendaEntel(Store):
 
         products = []
 
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
-        product_detail_container = soup.find('div', {'id': 'productDetail'})
+        soup = BeautifulSoup(session.get(url).text, "lxml")
+        product_detail_container = soup.find("div", {"id": "productDetail"})
 
         if not product_detail_container:
             # For the case of https://miportal.entel.cl/personas/producto/
             # prod1410051 that displays a blank page
             return []
-        raw_json = product_detail_container.find('script').string
+        raw_json = product_detail_container.find("script").string
 
         if not raw_json:
             if retries:
-                return cls._products_for_url(url, extra_args,
-                                             retries=retries-1)
+                return cls._products_for_url(url, extra_args, retries=retries - 1)
             else:
-                raise Exception('JSON error')
+                raise Exception("JSON error")
 
         try:
             json_data = json.loads(raw_json)
         except json.decoder.JSONDecodeError:
             return []
 
-        base_name = json_data['renderVOBean']['productName']
+        base_name = json_data["renderVOBean"]["productName"]
 
-        for sku in json_data['renderSkusBean']['skus']:
-            price_container = sku['skuPrice']
+        for sku in json_data["renderSkusBean"]["skus"]:
+            price_container = sku["skuPrice"]
             if not price_container:
                 continue
 
             price = Decimal(price_container).quantize(0)
-            sku_id = sku['skuId']
+            sku_id = sku["skuId"]
 
             pictures_container = []
             stock = 0
 
-            for view in json_data['skuViews']:
-                if view['skuId'] == sku_id:
-                    if view['visibilityButtonPdp'] != 0:
-                        stock = view['stockDelivery'] + view['stockPickup']
-                    pictures_container = view['images']
+            for view in json_data["skuViews"]:
+                if view["skuId"] == sku_id:
+                    if view["visibilityButtonPdp"] != 0:
+                        stock = view["stockDelivery"] + view["stockPickup"]
+                    pictures_container = view["images"]
                     break
 
             picture_urls = []
 
             for container in pictures_container:
-                picture_url = 'https://miportal.entel.cl' + \
-                              container['heroImage']
-                picture_urls.append(picture_url.replace(' ', '%20'))
+                picture_url = "https://miportal.entel.cl" + container["heroImage"]
+                picture_urls.append(picture_url.replace(" ", "%20"))
 
-            if 'semi' in sku['skuName'].lower() or 'semi' in base_name.lower():
-                condition = 'https://schema.org/RefurbishedCondition'
+            if "semi" in sku["skuName"].lower() or "semi" in base_name.lower():
+                condition = "https://schema.org/RefurbishedCondition"
             else:
-                condition = 'https://schema.org/NewCondition'
+                condition = "https://schema.org/NewCondition"
 
             product = Product(
-                sku['skuName'],
+                sku["skuName"],
                 cls.__name__,
-                'Cell',
+                "Cell",
                 url,
                 url,
                 sku_id,
                 stock,
                 price,
                 price,
-                'CLP',
+                "CLP",
                 sku=sku_id,
                 picture_urls=picture_urls,
-                condition=condition
+                condition=condition,
             )
             products.append(product)
 

@@ -4,16 +4,17 @@ from decimal import Decimal
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    magento_picture_urls
+from storescraper.utils import (
+    session_with_proxy,
+    html_to_markdown,
+    magento_picture_urls,
+)
 
 
 class GolloTienda(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -27,24 +28,26 @@ class GolloTienda(Store):
 
         while True:
             if page > 10:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = 'https://www.gollo.com/catalogsearch/result/index/' \
-                  '?q=LG&p={}'.format(page)
+            url = (
+                "https://www.gollo.com/catalogsearch/result/index/"
+                "?q=LG&p={}".format(page)
+            )
 
             print(url)
 
             response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            container = soup.find('div', 'products')
+            soup = BeautifulSoup(response.text, "lxml")
+            container = soup.find("div", "products")
 
             if not container:
                 if page == 1:
-                    raise Exception('Empty store')
+                    raise Exception("Empty store")
                 break
 
-            for item in container.findAll('li', 'item'):
-                product_url = item.find('a')['href']
+            for item in container.findAll("li", "item"):
+                product_url = item.find("a")["href"]
                 product_urls.append(product_url)
 
             page += 1
@@ -61,30 +64,31 @@ class GolloTienda(Store):
             return []
 
         data = response.text
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, "lxml")
 
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        name = soup.find("span", {"itemprop": "name"}).text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
 
-        if soup.find('div', 'stock available')\
-                .find('span').text == "Disponible":
+        if soup.find("div", "stock available").find("span").text == "Disponible":
             stock = -1
         else:
             stock = 0
 
-        price = Decimal(soup.find('span', {'data-price-type': 'finalPrice'})[
-                            'data-price-amount'])
+        price = Decimal(
+            soup.find("span", {"data-price-type": "finalPrice"})["data-price-amount"]
+        )
 
         description = html_to_markdown(
-            str(soup.find('div', 'additional-attributes-wrapper')))
+            str(soup.find("div", "additional-attributes-wrapper"))
+        )
 
-        description += '\n\n{}'.format(html_to_markdown(
-            str(soup.find('div', 'product attribute description'))
-        ))
+        description += "\n\n{}".format(
+            html_to_markdown(str(soup.find("div", "product attribute description")))
+        )
 
-        description += '\n\n{}'.format(html_to_markdown(
-            str(soup.find('div', 'dimensions-wrapper'))
-        ))
+        description += "\n\n{}".format(
+            html_to_markdown(str(soup.find("div", "dimensions-wrapper")))
+        )
 
         picture_urls = magento_picture_urls(soup)
 
@@ -98,10 +102,10 @@ class GolloTienda(Store):
             stock,
             price,
             price,
-            'CRC',
+            "CRC",
             sku=sku,
             description=description,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
 
         return [p]

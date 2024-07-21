@@ -27,17 +27,18 @@ class Sicot(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [
-            ['computadores/notebook-y-tablets', NOTEBOOK],
-            ['computadores/desktop-aio', ALL_IN_ONE],
-            ['computadores/accesorios-notebooks', MOUSE],
-            ['monitores', MONITOR],
-            ['tienda-online/gamer', MONITOR],
+            ["computadores/notebook-y-tablets", NOTEBOOK],
+            ["computadores/desktop-aio", ALL_IN_ONE],
+            ["computadores/accesorios-notebooks", MOUSE],
+            ["monitores", MONITOR],
+            ["tienda-online/gamer", MONITOR],
         ]
 
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+        )
 
         product_urls = []
         for url_extension, local_category in url_extensions:
@@ -46,21 +47,21 @@ class Sicot(Store):
             page = 1
             while True:
                 if page > 10:
-                    raise Exception('page overflow: ' + url_extension)
+                    raise Exception("page overflow: " + url_extension)
 
-                url_webpage = 'https://www.sicot.cl/tienda-online/{}' \
-                              '?p={}'.format(url_extension, page)
+                url_webpage = "https://www.sicot.cl/tienda-online/{}" "?p={}".format(
+                    url_extension, page
+                )
                 print(url_webpage)
                 response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                product_containers = soup.findAll(
-                    'div', 'jet-woo-products__item')
+                soup = BeautifulSoup(response.text, "lxml")
+                product_containers = soup.findAll("div", "jet-woo-products__item")
                 if not product_containers:
                     if page == 1:
-                        logging.warning('Empty category: ' + url_extension)
+                        logging.warning("Empty category: " + url_extension)
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find("a")["href"]
                     product_urls.append(product_url)
                 page += 1
         return product_urls
@@ -69,37 +70,39 @@ class Sicot(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers['user-agent'] = \
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' \
-            '(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+        )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "lxml")
 
-        key = soup.find('link', {'rel': 'shortlink'})['href'].split('p=')[1]
+        key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
 
         json_data = json.loads(
-            soup.findAll('script', {'type': 'application/ld+json'})[1].text)
+            soup.findAll("script", {"type": "application/ld+json"})[1].text
+        )
 
-        name = json_data['name']
-        sku = str(json_data['sku'])
-        description = json_data['description']
-        price = Decimal(json_data['offers'][0]['price'])
+        name = json_data["name"]
+        sku = str(json_data["sku"])
+        description = json_data["description"]
+        price = Decimal(json_data["offers"][0]["price"])
 
-        if soup.find('button', {'name': 'add-to-cart'}) and not \
-                soup.find('p', 'stock available-on-backorder'):
-            stock_p = soup.find('p', 'stock in-stock')
+        if soup.find("button", {"name": "add-to-cart"}) and not soup.find(
+            "p", "stock available-on-backorder"
+        ):
+            stock_p = soup.find("p", "stock in-stock")
             if stock_p:
-                stock = int(stock_p.text.split('disponible')[0].strip())
+                stock = int(stock_p.text.split("disponible")[0].strip())
             else:
                 stock = -1
         else:
             stock = 0
 
         picture_urls = []
-        picture_container = soup.find(
-            'div', 'woocommerce-product-gallery__wrapper')
-        for a in picture_container.findAll('a'):
-            picture_urls.append(a['href'])
+        picture_container = soup.find("div", "woocommerce-product-gallery__wrapper")
+        for a in picture_container.findAll("a"):
+            picture_urls.append(a["href"])
 
         p = Product(
             name,
@@ -111,10 +114,10 @@ class Sicot(Store):
             stock,
             price,
             price,
-            'CLP',
+            "CLP",
             sku=sku,
             part_number=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
         return [p]

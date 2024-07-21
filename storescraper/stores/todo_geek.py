@@ -46,7 +46,7 @@ class TodoGeek(StoreWithUrlExtensions):
                 url_extension, page
             )
             res = session.get(url_webpage)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("product-card")
             if not product_containers:
                 if page == 1:
@@ -65,7 +65,7 @@ class TodoGeek(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         match = re.search(r'"delivery__app_setting": (.+),', response.text)
         json_data = json.loads(match.groups()[0])

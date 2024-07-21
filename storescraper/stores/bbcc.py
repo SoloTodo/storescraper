@@ -110,7 +110,7 @@ class BookComputer(Store):
                 )
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, "html.parser")
+                soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("div", "product-block")
                 if not product_containers:
                     if page == 1:
@@ -131,7 +131,7 @@ class BookComputer(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         description = html_to_markdown(str(soup.find("div", "description")))
 
         if soup.find("select", "form-control"):

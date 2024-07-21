@@ -48,7 +48,7 @@ class SmartDeal(StoreWithUrlExtensions):
             print(page_url)
             response = session.get(page_url)
             data = response.text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "product")
 
             if not product_containers:
@@ -69,7 +69,7 @@ class SmartDeal(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text

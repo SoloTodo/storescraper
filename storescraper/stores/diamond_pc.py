@@ -106,7 +106,7 @@ class DiamondPc(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
 

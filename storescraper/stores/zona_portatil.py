@@ -94,7 +94,7 @@ class ZonaPortatil(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("article", "product")
 
             if not product_containers:
@@ -112,7 +112,7 @@ class ZonaPortatil(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("p", "product_title").text.strip()
         alternate_url = soup.find(
             "link", {"rel": "alternate", "type": "application/json"}

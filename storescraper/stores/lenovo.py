@@ -81,7 +81,7 @@ class Lenovo(StoreWithUrlExtensions):
 
         try:
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             form_tag = soup.find("input", "formData")
             if not form_tag:
                 return []

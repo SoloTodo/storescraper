@@ -53,7 +53,7 @@ class Syd(StoreWithUrlExtensions):
         if response.url != category_url:
             raise Exception("Invalid category: " + category_url)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         titles = soup.findAll("div", "bs-product")
 
         if not titles:
@@ -75,7 +75,7 @@ class Syd(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
         )
 
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
         json_data = pyjson5.decode(
             soup.findAll("script", {"type": "application/ld+json"})[2].text
         )

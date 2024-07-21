@@ -40,7 +40,7 @@ class Tekmachine(StoreWithUrlExtensions):
             ).format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-grid-item")
 
             if not product_containers:
@@ -60,7 +60,7 @@ class Tekmachine(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
         sku_tag = soup.find("span", "sku")

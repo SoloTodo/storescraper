@@ -34,7 +34,7 @@ class TiendaClaro(Store):
                     "&beginIndex={}".format(offset)
                 )
                 print(category_url)
-                soup = BeautifulSoup(session.get(category_url).text, "html.parser")
+                soup = BeautifulSoup(session.get(category_url).text, "lxml")
 
                 containers = soup.findAll("div", "product_info")
 
@@ -75,7 +75,7 @@ class TiendaClaro(Store):
         if response.status_code == 400:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         page_id = soup.find("meta", {"name": "pageId"})["content"]
 
         json_container = soup.find("div", {"id": "entitledItem_{}".format(page_id)})

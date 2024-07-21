@@ -88,7 +88,7 @@ class Centrale(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-small box")
             if not product_containers:
                 if page == 1:
@@ -105,7 +105,7 @@ class Centrale(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text

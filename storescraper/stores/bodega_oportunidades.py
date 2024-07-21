@@ -54,7 +54,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-item")
             if not product_containers:
                 if page == 1:
@@ -75,7 +75,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.findAll("script", {"type": "application/json"})[-1].text

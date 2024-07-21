@@ -40,7 +40,7 @@ class UltraPc(StoreWithUrlExtensions):
         )
         print(url_webpage)
         response = session.get(url_webpage)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         products_container = soup.find("ul", "products")
 
         if not products_container:
@@ -60,7 +60,7 @@ class UltraPc(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         base_name = soup.find("h1", "product_title").text
 
         bundle_tag = soup.find("span", "accesorios_sumario")

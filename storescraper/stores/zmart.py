@@ -66,7 +66,7 @@ class Zmart(Store):
                         "curPage={}".format(base_url, category_path, page)
                     )
 
-                    soup = BeautifulSoup(session.get(category_url).text, "html.parser")
+                    soup = BeautifulSoup(session.get(category_url).text, "lxml")
 
                     link_containers = soup.findAll("div", "ProdBox146")
 
@@ -84,7 +84,7 @@ class Zmart(Store):
             else:
                 category_url = base_url + "/" + category_path
 
-                soup = BeautifulSoup(session.get(category_url).text, "html.parser")
+                soup = BeautifulSoup(session.get(category_url).text, "lxml")
 
                 link_containers = soup.findAll("div", "BoxProductoS2")
                 link_containers += soup.findAll("div", "ProdBox240Media")
@@ -109,7 +109,7 @@ class Zmart(Store):
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
-        soup = BeautifulSoup(session.get(url, verify=False).text, "html.parser")
+        soup = BeautifulSoup(session.get(url, verify=False).text, "lxml")
 
         if soup.find("div", {"id": "mensajes_sistema"}):
             return []

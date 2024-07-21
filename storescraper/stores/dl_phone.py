@@ -42,7 +42,7 @@ class DLPhone(StoreWithUrlExtensions):
         url_webpage = "https://www.dlphone.cl/{}/".format(url_extension)
         print(url_webpage)
         response = session.get(url_webpage)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_containers = soup.findAll("li", "product")
 
         if not product_containers:
@@ -57,7 +57,7 @@ class DLPhone(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         products = []
         gtm_data = json.loads(
             soup.find("input", {"name": "gtm4wp_product_data"})["value"]
@@ -78,15 +78,15 @@ class DLPhone(StoreWithUrlExtensions):
                 if variation["availability_html"] == "":
                     stock = -1
                 elif (
-                    BeautifulSoup(
-                        variation["availability_html"], "html.parser"
-                    ).text.split()[0]
+                    BeautifulSoup(variation["availability_html"], "lxml").text.split()[
+                        0
+                    ]
                     == "Agotado"
                 ):
                     stock = 0
                 else:
                     stock_text = BeautifulSoup(
-                        variation["availability_html"], "html.parser"
+                        variation["availability_html"], "lxml"
                     ).text.strip()
                     if stock_text == "Hay existencias":
                         # A pedido

@@ -186,7 +186,7 @@ class PcFactory(Store):
             url_webpage = "https://www.pcfactory.cl/{}".format(url_extension)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product")
 
             if not product_containers:

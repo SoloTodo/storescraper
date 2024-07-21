@@ -98,7 +98,7 @@ class TecTec(Store):
 
                 print(url_webpage)
                 response = session.get(url_webpage, timeout=60)
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
                 product_containers = soup.findAll("div", "product-wrapper")
 
                 if not product_containers:
@@ -121,7 +121,7 @@ class TecTec(Store):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url, timeout=60)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
         sku = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
 

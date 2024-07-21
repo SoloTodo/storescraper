@@ -49,7 +49,7 @@ class MobileHut(StoreWithUrlExtensions):
                 url_extension, page
             )
             res = session.get(url_webpage)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("div", "pr_grid_item")
             if not product_containers:
                 if page == 1:
@@ -67,7 +67,7 @@ class MobileHut(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         variants_tag = soup.find("select", "product-form__variants").findAll("option")
         variants_match = re.search(r'"productVariants":(.+)},},', response.text)

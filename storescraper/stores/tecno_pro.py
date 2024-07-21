@@ -92,7 +92,7 @@ class TecnoPro(StoreWithUrlExtensions):
             if response.url != url_webpage:
                 break
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-grid-item")
 
             if not product_containers:
@@ -115,7 +115,7 @@ class TecnoPro(StoreWithUrlExtensions):
         )
         response = session.get(url)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
 
         products = []

@@ -29,7 +29,7 @@ class Electromillonaria(Store):
             res = session.get(url)
             if res.status_code == 404:
                 break
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
 
             for product in soup.find("div", "main-products").findAll(
                 "section", "product"
@@ -45,7 +45,7 @@ class Electromillonaria(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         qty_input = soup.find("input", "input-text qty text")
         stock = int(qty_input["max"])

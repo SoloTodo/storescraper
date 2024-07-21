@@ -27,25 +27,27 @@ class AlmacenesLaGanga(Store):
 
         while True:
             if page > 10:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = 'https://www.almaceneslaganga.com/pedidos-en-linea/' \
-                  'efectivo/LG?page={}'.format(page)
+            url = (
+                "https://www.almaceneslaganga.com/pedidos-en-linea/"
+                "efectivo/LG?page={}".format(page)
+            )
             print(url)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('div', 'esquema_producto')
+            soup = BeautifulSoup(session.get(url).text, "lxml")
+            products = soup.findAll("div", "esquema_producto")
 
             if not products:
                 if page == 1:
-                    raise Exception('Empty store')
+                    raise Exception("Empty store")
                 break
 
             for product in products:
-                product_slug = product.find(
-                    'button', 'btn-detalles')['producto']
-                product_url = 'https://www.almaceneslaganga.com/' \
-                              'pedidos-en-linea/efectivo/{}'\
-                    .format(product_slug)
+                product_slug = product.find("button", "btn-detalles")["producto"]
+                product_url = (
+                    "https://www.almaceneslaganga.com/"
+                    "pedidos-en-linea/efectivo/{}".format(product_slug)
+                )
                 product_urls.append(product_url)
 
             page += 1
@@ -59,29 +61,34 @@ class AlmacenesLaGanga(Store):
         response = session.get(url)
         page_source = response.text
 
-        soup = BeautifulSoup(page_source, 'html.parser')
+        soup = BeautifulSoup(page_source, "lxml")
 
-        name = soup.find('div', {'id': 'nombre_producto_detalles_tecnicos'})\
-            .text.strip()
-        sku = re.search(
-            r'global_id_producto="([\S\s]+?)";', page_source).groups()[0]
-        part_number = re.search(
-            r'\[modelo] => ([\S\s]*?)\n', page_source).groups()[0].strip()
+        name = soup.find(
+            "div", {"id": "nombre_producto_detalles_tecnicos"}
+        ).text.strip()
+        sku = re.search(r'global_id_producto="([\S\s]+?)";', page_source).groups()[0]
+        part_number = (
+            re.search(r"\[modelo] => ([\S\s]*?)\n", page_source).groups()[0].strip()
+        )
         if not part_number:
             part_number = None
         stock = -1
 
         price = Decimal(
-            soup.find('label', {'id': 'precio_detalles_tecnicos'})
-                .text.replace('$', '').replace(',', ''))
+            soup.find("label", {"id": "precio_detalles_tecnicos"})
+            .text.replace("$", "")
+            .replace(",", "")
+        )
 
-        picture_url_base = 'https://www.almaceneslaganga.com/pedidos-en-linea'
+        picture_url_base = "https://www.almaceneslaganga.com/pedidos-en-linea"
         picture_urls = [
-            a['src'].replace('..', picture_url_base)
-            for a in soup.findAll('img', 'galeria_detalles_tecnicos')]
+            a["src"].replace("..", picture_url_base)
+            for a in soup.findAll("img", "galeria_detalles_tecnicos")
+        ]
 
         description = html_to_markdown(
-            str(soup.find('label', {'id': 'descripcion_detalles_tecnicos'})))
+            str(soup.find("label", {"id": "descripcion_detalles_tecnicos"}))
+        )
 
         p = Product(
             name,
@@ -93,7 +100,7 @@ class AlmacenesLaGanga(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             part_number=part_number,
             picture_urls=picture_urls,

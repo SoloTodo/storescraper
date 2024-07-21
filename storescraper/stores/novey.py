@@ -28,7 +28,7 @@ class Novey(Store):
         url = "https://lusearchapi-na.hawksearch.com/sites/novey/?searchText=LG&mpp=300"
         print(url)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_containers = soup.findAll("div", "cc_product_item")
 

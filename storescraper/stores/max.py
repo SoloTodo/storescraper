@@ -37,7 +37,7 @@ class Max(Store):
             )
             print(url_webpage)
             data = session.get(url_webpage, timeout=30).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "item product product-item")
             if not product_containers:
                 if page == 1:
@@ -61,7 +61,7 @@ class Max(Store):
             return []
 
         data = response.text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
         key = soup.find("input", {"name": "product"})["value"]
         name = soup.find("h1", "page-title").text.strip()
         sku = soup.find("div", {"itemprop": "sku"}).text

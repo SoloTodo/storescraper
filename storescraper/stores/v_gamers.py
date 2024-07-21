@@ -68,7 +68,7 @@ class VGamers(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products_tags = soup.findAll("div", "products")
             if not products_tags:
                 if page == 1:
@@ -86,7 +86,7 @@ class VGamers(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text

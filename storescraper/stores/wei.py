@@ -115,7 +115,7 @@ class Wei(StoreWithUrlExtensions):
             )
             print(page_url)
             res = session.get(page_url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
 
             product_cells = soup.findAll("div", "box-producto")
 
@@ -156,7 +156,7 @@ class Wei(StoreWithUrlExtensions):
             return []
 
         sku = sku.groups()[0]
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(page_source, "lxml")
 
         name = soup.find("meta", {"name": "description"})["content"]
 

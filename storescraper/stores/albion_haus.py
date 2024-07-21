@@ -37,7 +37,7 @@ class AlbionHaus(Store):
                 print(url_webpage)
 
                 data = session.get(url_webpage)
-                soup = BeautifulSoup(data.text, "html.parser")
+                soup = BeautifulSoup(data.text, "lxml")
                 product_containers = soup.findAll("div", "wd-product")
                 if not product_containers:
                     if page == 1:
@@ -58,7 +58,7 @@ class AlbionHaus(Store):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text

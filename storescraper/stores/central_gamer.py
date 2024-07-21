@@ -56,7 +56,7 @@ class CentralGamer(StoreWithUrlExtensions):
                 url_extension, page
             )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-block__wrapper")
             if not product_containers:
                 if page == 1:
@@ -73,7 +73,7 @@ class CentralGamer(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product-heading__title").text
         form = soup.find("form", "product-form")
         if form:

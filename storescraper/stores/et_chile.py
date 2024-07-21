@@ -82,7 +82,7 @@ class ETChile(StoreWithUrlExtensions):
                 url_webpage += "page/{}/".format(page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-small")
 
             if not product_containers:
@@ -107,7 +107,7 @@ class ETChile(StoreWithUrlExtensions):
         response = session.get(url)
         if response.status_code == 404:
             return []
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product-title").text.strip()
         if soup.find("form", "variations_form"):
             product_variations = json.loads(

@@ -41,7 +41,7 @@ class Tecnofacil(Store):
 
                 print(url)
                 response = session.get(url)
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
                 product_containers = soup.find("div", "products-grid")
 
                 if not product_containers:
@@ -63,7 +63,7 @@ class Tecnofacil(Store):
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = "curl/7.68.0"
         data = session.get(url).text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
         sku_container = soup.find("div", {"itemprop": "sku"})
 
         if not sku_container:

@@ -45,7 +45,7 @@ class AgilStore(StoreWithUrlExtensions):
         )
         print(url_webpage)
         response = session.get(url_webpage, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_containers = soup.findAll("div", "product")
 
         if not product_containers:
@@ -61,7 +61,7 @@ class AgilStore(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h2", "product-name").text.strip()
         key = soup.find("input", {"name": "id_producto"})["value"]
         stock = -1

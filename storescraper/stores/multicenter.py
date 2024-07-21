@@ -11,7 +11,7 @@ from storescraper.utils import session_with_proxy, vtex_preflight
 
 
 class Multicenter(Store):
-    base_url = 'https://www.multicenter.com.bo'
+    base_url = "https://www.multicenter.com.bo"
 
     @classmethod
     def categories(cls):
@@ -32,36 +32,39 @@ class Multicenter(Store):
         offset = 0
         while True:
             if offset >= 120:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
             variables = {
-                'from': offset,
-                'to': offset + 40,
-                'fullText': 'lg',
+                "from": offset,
+                "to": offset + 40,
+                "fullText": "lg",
             }
 
             payload = {
-                'persistedQuery': {
-                    'version': 1,
-                    'sha256Hash': extra_args['sha256Hash']
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": extra_args["sha256Hash"],
                 },
-                'variables': base64.b64encode(json.dumps(
-                    variables).encode('utf-8')).decode('utf-8')
+                "variables": base64.b64encode(
+                    json.dumps(variables).encode("utf-8")
+                ).decode("utf-8"),
             }
 
-            endpoint = 'https://www.multicenter.com.bo/_v/segment/graphql/' \
-                       'v1?extensions={}'.format(urllib.parse.quote(
-                        json.dumps(payload)))
+            endpoint = (
+                "https://www.multicenter.com.bo/_v/segment/graphql/"
+                "v1?extensions={}".format(urllib.parse.quote(json.dumps(payload)))
+            )
             response = session.get(endpoint).json()
 
-            product_entries = response['data']['productSearch']['products']
+            product_entries = response["data"]["productSearch"]["products"]
 
             if not product_entries:
                 break
 
             for product_entry in product_entries:
-                product_url = 'https://www.multicenter.com.bo/{}/p'.format(
-                    product_entry['linkText'])
+                product_url = "https://www.multicenter.com.bo/{}/p".format(
+                    product_entry["linkText"]
+                )
                 product_urls.append(product_url)
 
             offset += 40
@@ -72,25 +75,26 @@ class Multicenter(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
-            soup.find('script', {'type': 'application/ld+json'}).text)
+            soup.find("script", {"type": "application/ld+json"}).text
+        )
 
-        key = json_data['mpn']
-        name = json_data['name']
-        sku = json_data['sku']
-        price = Decimal(str(json_data['offers']['offers'][0]['price']))
+        key = json_data["mpn"]
+        name = json_data["name"]
+        sku = json_data["sku"]
+        price = Decimal(str(json_data["offers"]["offers"][0]["price"]))
 
-        if soup.find('div', 'vtex-add-to-cart-button-0-x-buttonDataContainer'):
+        if soup.find("div", "vtex-add-to-cart-button-0-x-buttonDataContainer"):
             stock = -1
         else:
             stock = 0
 
-        picture_container = soup.findAll('div', 'swiper-container')[-1]
+        picture_container = soup.findAll("div", "swiper-container")[-1]
         picture_urls = []
-        for i in picture_container.findAll('img'):
-            picture_urls.append(i['src'])
+        for i in picture_container.findAll("img"):
+            picture_urls.append(i["src"])
 
         p = Product(
             name,
@@ -102,7 +106,7 @@ class Multicenter(Store):
             stock,
             price,
             price,
-            'BOB',
+            "BOB",
             sku=sku,
             picture_urls=picture_urls,
         )
@@ -110,5 +114,4 @@ class Multicenter(Store):
 
     @classmethod
     def preflight(cls, extra_args=None):
-        return vtex_preflight(
-            extra_args, 'https://www.multicenter.com.bo/electrohogar')
+        return vtex_preflight(extra_args, "https://www.multicenter.com.bo/electrohogar")

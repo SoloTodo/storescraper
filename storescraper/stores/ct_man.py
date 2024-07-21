@@ -95,7 +95,7 @@ class CtMan(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-item")
             if not product_containers:
                 if page == 1:
@@ -114,7 +114,7 @@ class CtMan(StoreWithUrlExtensions):
         session.headers["User-Agent"] = "SoloTodoBot"
         response = session.get(url)
         response.encoding = response.apparent_encoding
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key_tag = soup.find("div", "title-description").find(
             "input", {"name": "cart_item[variant_id]"}
         )

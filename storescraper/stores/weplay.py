@@ -53,7 +53,7 @@ class Weplay(StoreWithUrlExtensions):
             print(url)
 
             response = session.get(url).text
-            soup = BeautifulSoup(response, "html.parser")
+            soup = BeautifulSoup(response, "lxml")
             products = soup.findAll("a", "product-item-link")
 
             if not products:
@@ -78,7 +78,7 @@ class Weplay(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name_tag = soup.find("span", {"itemprop": "name"})
 
         if not name_tag:

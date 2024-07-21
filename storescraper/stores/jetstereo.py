@@ -53,7 +53,7 @@ class Jetstereo(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_json = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
             "props"

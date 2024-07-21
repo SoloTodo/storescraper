@@ -28,7 +28,7 @@ class PlayPower(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "grid__item")
             if not product_containers:
                 if page == 1:
@@ -45,7 +45,7 @@ class PlayPower(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         products = []
         variants_tag = soup.find("variant-radios")
 

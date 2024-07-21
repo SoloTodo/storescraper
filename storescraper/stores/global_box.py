@@ -98,7 +98,7 @@ class Globalbox(StoreWithUrlExtensions):
             if response.url != url_webpage:
                 raise Exception("URL mismatch: {} {}".format(url_webpage, response.url))
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "item isotope-item")
             if not product_containers:
                 if page == 1:
@@ -127,7 +127,7 @@ class Globalbox(StoreWithUrlExtensions):
         )
         session.cookies["humans_21909"] = "1"
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", {"itemprop": "name"}).text
         key = soup.find("input", {"name": "product"})["value"]
         sku = soup.find("th", text="SKU").parent.find("td").text.strip()

@@ -79,7 +79,7 @@ class AdisStore(StoreWithUrlExtensions):
             url_webpage = "https://adis-store.cl/{}?page={}".format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.find("div", {"id": "js-product-list"}).findAll(
                 "article", "product-miniature"
             )
@@ -101,7 +101,7 @@ class AdisStore(StoreWithUrlExtensions):
         response = session.get(url)
         if response.status_code == 500:
             return []
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_tag = soup.find("div", "js-product-details")
         json_data = json.loads(json_tag["data-product"])

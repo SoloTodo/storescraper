@@ -99,7 +99,7 @@ class PcExpress(StoreWithUrlExtensions):
 
             category_page_url = category_url + str(page)
             print(category_page_url)
-            soup = BeautifulSoup(session.get(category_page_url).text, "html.parser")
+            soup = BeautifulSoup(session.get(category_page_url).text, "lxml")
             td_products = soup.findAll("div", "product-list__image")
 
             if len(td_products) == 0:
@@ -136,7 +136,7 @@ class PcExpress(StoreWithUrlExtensions):
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, "
             "like Gecko) Chrome/66.0.3359.117 Safari/537.36"
         )
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         if "¡No se encuentra el producto!" in soup.find("title").text:
             return []

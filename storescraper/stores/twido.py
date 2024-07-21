@@ -26,7 +26,7 @@ class Twido(MercadoLibreChile):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "ui-search-layout__item")
             if not product_containers:
                 break

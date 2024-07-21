@@ -94,7 +94,7 @@ class AsusStore(StoreWithUrlExtensions):
         if response.status_code == 401:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         for script_tag in soup.findAll("script", {"type": "text/x-magento-init"}):
             if "jsonConfig" in script_tag.text:

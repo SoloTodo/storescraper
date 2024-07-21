@@ -40,7 +40,7 @@ class Interstock(StoreWithUrlExtensions):
                     logging.warning("Empty category: " + url_extension)
                 break
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products_tags = soup.findAll("ul", "products")
 
             if not products_tags:
@@ -67,7 +67,7 @@ class Interstock(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         name = soup.find("h1", "product_title").text.strip()
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]

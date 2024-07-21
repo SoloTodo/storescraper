@@ -31,7 +31,7 @@ class LitnorHogar(Store):
                     "&page={}".format(url_extension, page)
                 )
                 data = session.get(url_webpage, verify=False).text
-                soup = BeautifulSoup(data, "html.parser")
+                soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("div", "views-row")
                 if not product_containers:
                     if page == 0:
@@ -47,7 +47,7 @@ class LitnorHogar(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "title").text.strip()
         key = soup.find("div", "node")["id"].split("-")[-1]
         sku = soup.find("meta", {"property": "product:retailer_item_id"})["content"]

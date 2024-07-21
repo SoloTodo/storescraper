@@ -27,21 +27,23 @@ class TiendaAmiga(Store):
         page = 1
         while True:
             if page > 20:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url_webpage = 'https://www.tiendaamiga.com.bo/catalogsearch/resu' \
-                'lt/index/?manufacturer=6509&p={}&q=lg+lg'.format(page)
+            url_webpage = (
+                "https://www.tiendaamiga.com.bo/catalogsearch/resu"
+                "lt/index/?manufacturer=6509&p={}&q=lg+lg".format(page)
+            )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            soup = BeautifulSoup(data, "lxml")
 
-            product_containers = soup.findAll('li', 'product')
+            product_containers = soup.findAll("li", "product")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category')
+                    logging.warning("Empty category")
                 break
             for container in product_containers:
-                product_urls.append(container.find('a')['href'])
+                product_urls.append(container.find("a")["href"])
             page += 1
         return product_urls
 
@@ -50,39 +52,39 @@ class TiendaAmiga(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "lxml")
 
-        key = soup.find('input', {'name': 'product'})['value']
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        key = soup.find("input", {"name": "product"})["value"]
+        name = soup.find("span", {"itemprop": "name"}).text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
         price = Decimal(
-            soup.find('span',
-                      {'id': f'product-price-{key}'})['data-price-amount'])
+            soup.find("span", {"id": f"product-price-{key}"})["data-price-amount"]
+        )
 
-        if soup.find('div', 'stock available') or \
-                soup.find('p', 'stock available'):
+        if soup.find("div", "stock available") or soup.find("p", "stock available"):
             stock = -1
         else:
             stock = 0
 
-        table = soup.find('div', 'table-wrapper')
+        table = soup.find("div", "table-wrapper")
         description = None
         part_number = None
         if table:
             description = html_to_markdown(table.text)
-            if table.find('td', {'data-th': 'Modelo'}):
-                part_number = table.find('td', {'data-th': 'Modelo'}).text
+            if table.find("td", {"data-th": "Modelo"}):
+                part_number = table.find("td", {"data-th": "Modelo"}).text
 
         picture_urls = []
         picture_json = json.loads(
-            '{' +
-            re.search(
-                r"\"mage\/gallery\/gallery\": {([\S\s]+)\"fullscreen",
-                response.text
-            ).groups()[0] + '"xd": "xd"}')
+            "{"
+            + re.search(
+                r"\"mage\/gallery\/gallery\": {([\S\s]+)\"fullscreen", response.text
+            ).groups()[0]
+            + '"xd": "xd"}'
+        )
 
-        for p in picture_json['data']:
-            picture_urls.append(p['img'])
+        for p in picture_json["data"]:
+            picture_urls.append(p["img"])
 
         p = Product(
             name,
@@ -94,7 +96,7 @@ class TiendaAmiga(Store):
             stock,
             price,
             price,
-            'BOB',
+            "BOB",
             sku=sku,
             picture_urls=picture_urls,
             description=description,

@@ -30,7 +30,7 @@ class GamersColombia(Store):
             )
             print(url)
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("div", "product-card")
             if not product_containers:
                 break
@@ -53,7 +53,7 @@ class GamersColombia(Store):
             return []
 
         key = key_match.groups()[0]
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         price_tag = soup.find("div", "cardPriceProduct")
         price = Decimal(price_tag.find("h3").text.replace("$", "").replace(",", ""))
         stock = -1

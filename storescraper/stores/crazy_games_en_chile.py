@@ -85,7 +85,7 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
             if res.status_code == 404:
                 raise Exception("Invalid category: " + url_extension)
 
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("li", "grid__item")
             if not product_containers:
                 if page == 1:
@@ -110,7 +110,7 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("input", {"name": "id"})["value"]
 

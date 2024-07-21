@@ -636,7 +636,7 @@ class Falabella(Store):
             if res.status_code == 500:
                 break
 
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
 
             script = soup.find("script", {"id": "__NEXT_DATA__"})
             json_data = json.loads(script.text)
@@ -785,7 +785,7 @@ class Falabella(Store):
 
     @classmethod
     def _products_for_url(cls, url, content, session, category=None, extra_args=None):
-        soup = BeautifulSoup(content, "html.parser")
+        soup = BeautifulSoup(content, "lxml")
         next_container = soup.find("script", {"id": "__NEXT_DATA__"})
 
         if not next_container:
@@ -801,7 +801,7 @@ class Falabella(Store):
         long_description = product_data["longDescription"]
 
         if long_description:
-            description_soup = BeautifulSoup(unescape(long_description), "html.parser")
+            description_soup = BeautifulSoup(unescape(long_description), "lxml")
         else:
             description_soup = None
 
@@ -1007,7 +1007,7 @@ class Falabella(Store):
 
             if subsection_type == bs.SUBSECTION_TYPE_HOME:
                 session = requests.Session(impersonate="chrome120")
-                soup = BeautifulSoup(session.get(url, timeout=30).text, "html.parser")
+                soup = BeautifulSoup(session.get(url, timeout=30).text, "lxml")
                 next_data = json.loads(
                     soup.find("script", {"id": "__NEXT_DATA__"}).text
                 )
@@ -1050,7 +1050,7 @@ class Falabella(Store):
                     )
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 session = requests.Session(impersonate="chrome120")
-                soup = BeautifulSoup(session.get(url, timeout=30).text, "html.parser")
+                soup = BeautifulSoup(session.get(url, timeout=30).text, "lxml")
                 next_data = json.loads(
                     soup.find("script", {"id": "__NEXT_DATA__"}).text
                 )
@@ -1091,7 +1091,7 @@ class Falabella(Store):
                     )
             elif subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 session = requests.Session(impersonate="chrome120")
-                soup = BeautifulSoup(session.get(url).text, "html.parser")
+                soup = BeautifulSoup(session.get(url).text, "lxml")
                 banner = soup.find("div", "fb-huincha-main-wrap")
 
                 if not banner:

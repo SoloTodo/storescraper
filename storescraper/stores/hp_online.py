@@ -49,7 +49,7 @@ class HpOnline(Store):
                     "https://www.hp.com/cl-es/shop"
                     "/{}.html?product_list_limit=36&p={}".format(category_path, page)
                 )
-                soup = BeautifulSoup(session.get(category_url).text, "html.parser")
+                soup = BeautifulSoup(session.get(category_url).text, "lxml")
                 product_cells = soup.findAll("div", "product-item-info")
                 toolbars = soup.findAll("span", "toolbar-number")
                 if int(toolbars[0].text) == 1 and page != 1:
@@ -80,7 +80,7 @@ class HpOnline(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         if soup.find("ol", "products"):
             return []

@@ -39,7 +39,7 @@ class NewHorizons(StoreWithUrlExtensions):
                 url_extension, page
             )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("product-card")
             if not product_containers or len(product_containers) == 0:
                 if page == 1:
@@ -56,7 +56,7 @@ class NewHorizons(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         json_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text
         )

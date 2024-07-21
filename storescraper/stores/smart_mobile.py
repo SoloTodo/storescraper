@@ -70,7 +70,7 @@ class SmartMobile(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_container = soup.find("div", "single-product-wrapper")
         name = product_container.find("h1", "product_title").text
@@ -112,15 +112,15 @@ class SmartMobile(StoreWithUrlExtensions):
                 elif variation["availability_html"] == "":
                     stock = -1
                 elif (
-                    BeautifulSoup(
-                        variation["availability_html"], "html.parser"
-                    ).text.split()[0]
+                    BeautifulSoup(variation["availability_html"], "lxml").text.split()[
+                        0
+                    ]
                     == "Agotado"
                 ):
                     stock = 0
                 else:
                     stock_text = BeautifulSoup(
-                        variation["availability_html"], "html.parser"
+                        variation["availability_html"], "lxml"
                     ).text.strip()
                     if stock_text == "Hay existencias":
                         # A pedido

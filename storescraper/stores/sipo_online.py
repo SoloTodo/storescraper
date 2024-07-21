@@ -89,7 +89,7 @@ class SipoOnline(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             main = soup.find("main", "site-main")
             if not main:
                 if page == 1:
@@ -108,7 +108,7 @@ class SipoOnline(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         session.headers["Cookie"] = "_lscache_vary=a"
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text
@@ -143,7 +143,7 @@ class SipoOnline(StoreWithUrlExtensions):
                     stock = 0
                 elif product["availability_html"] != "":
                     availability_text = BeautifulSoup(
-                        product["availability_html"], "html.parser"
+                        product["availability_html"], "lxml"
                     ).text
                     if "Hay existencias" in availability_text:
                         stock = -1

@@ -24,7 +24,7 @@ class Tauret(Store):
         url = "https://tauretcomputadores.com/search_product?product_search=LG"
         print(url)
         res = session.get(url)
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
         product_container = soup.find("search-products")
         products_data = json.loads(product_container["productos"])
 
@@ -43,7 +43,7 @@ class Tauret(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_tag = soup.find("button-add-cart")
         product_data = json.loads(product_tag[":product"])

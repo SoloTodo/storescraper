@@ -55,7 +55,7 @@ class EntrePcYWeb(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = [
                 tag
                 for tag in soup.findAll("div", "item-product")
@@ -77,7 +77,7 @@ class EntrePcYWeb(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "h1").text.strip()
         desc_tag = soup.find("div", "product-information")
         key = desc_tag.find("input", {"name": "id_product"})["value"]

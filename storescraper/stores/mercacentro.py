@@ -25,7 +25,7 @@ class Mercacentro(Store):
         )
         product_urls = []
         res = session.get("https://www.mercacentro.com/search/?k=LG&p=1&c=0&sp=12")
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
         product_containers = soup.findAll("div", "dpr_container")
 
         for product in product_containers:
@@ -43,7 +43,7 @@ class Mercacentro(Store):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text

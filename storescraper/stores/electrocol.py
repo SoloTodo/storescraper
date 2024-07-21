@@ -30,7 +30,7 @@ class Electrocol(Store):
             ).format(page)
             print(url)
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("div", "ajax_block_product")
             if not product_containers:
                 break
@@ -54,7 +54,7 @@ class Electrocol(Store):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.find("div", {"id": "product-details"})["data-product"]

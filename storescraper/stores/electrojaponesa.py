@@ -31,7 +31,7 @@ class Electrojaponesa(Store):
             ).format(page)
             print(url)
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
 
             product_containers = soup.findAll("figure", "vitrina")
             if not product_containers:

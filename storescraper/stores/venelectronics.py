@@ -10,9 +10,7 @@ from storescraper.categories import TELEVISION
 class Venelectronics(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -26,23 +24,23 @@ class Venelectronics(Store):
 
         while True:
             if page > 30:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = 'https://venelectronics.com/search?page={}&q=LG'.format(page)
+            url = "https://venelectronics.com/search?page={}&q=LG".format(page)
             print(url)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.find('main', 'main-content').findAll(
-                'a', 'product-card')
+            soup = BeautifulSoup(session.get(url).text, "lxml")
+            products = soup.find("main", "main-content").findAll("a", "product-card")
 
             if not products:
                 if page == 1:
-                    raise Exception('Empty url {}'.format(url))
+                    raise Exception("Empty url {}".format(url))
                 else:
                     break
 
             for product in products:
-                product_url = 'https://venelectronics.com' + \
-                              product['href'].split('?')[0]
+                product_url = (
+                    "https://venelectronics.com" + product["href"].split("?")[0]
+                )
                 product_urls.append(product_url)
 
             page += 1
@@ -54,21 +52,20 @@ class Venelectronics(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        json_tag = soup.find('script', {'id': 'ProductJson-product-template'})
+        soup = BeautifulSoup(response.text, "lxml")
+        json_tag = soup.find("script", {"id": "ProductJson-product-template"})
         json_data = json.loads(json_tag.text)
 
-        picture_urls = ['https:' + x.split('?')[0]
-                        for x in json_data['images']]
-        description = html_to_markdown(json_data['description'])
+        picture_urls = ["https:" + x.split("?")[0] for x in json_data["images"]]
+        description = html_to_markdown(json_data["description"])
 
         products = []
-        for variant in json_data['variants']:
-            name = variant['name']
-            sku = variant['sku'] or None
-            key = str(variant['id'])
-            stock = -1 if variant['available'] else 0
-            price = Decimal(variant['price']) / Decimal(100)
+        for variant in json_data["variants"]:
+            name = variant["name"]
+            sku = variant["sku"] or None
+            key = str(variant["id"])
+            stock = -1 if variant["available"] else 0
+            price = Decimal(variant["price"]) / Decimal(100)
 
             p = Product(
                 name,
@@ -80,7 +77,7 @@ class Venelectronics(Store):
                 stock,
                 price,
                 price,
-                'USD',
+                "USD",
                 sku=sku,
                 part_number=sku,
                 picture_urls=picture_urls,

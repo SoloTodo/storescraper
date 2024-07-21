@@ -29,7 +29,7 @@ class AlmacenesOportunidades(Store):
 
             url = "https://www.oportunidades.com.co/lg?PageNumber={}".format(page)
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             products_container = soup.find("div", "n1colunas")
 
             if not products_container:

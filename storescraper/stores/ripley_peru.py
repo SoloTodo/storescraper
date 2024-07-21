@@ -36,7 +36,7 @@ class RipleyPeru(Store):
             )
             print(url)
             response = session.get(url)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "catalog-product-item")
             if not product_containers:
                 break

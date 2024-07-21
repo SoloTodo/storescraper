@@ -494,7 +494,7 @@ class Hites(Store):
                 if response.status_code in [404, 500]:
                     break
 
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
 
                 products = soup.findAll("div", "product-tile")
 
@@ -547,7 +547,7 @@ class Hites(Store):
             if response.status_code in [404, 500]:
                 return []
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             json_data = json.loads(soup.find("script", {"id": "hy-data"}).text)
             product_data = json_data["result"]["products"]
 
@@ -575,7 +575,7 @@ class Hites(Store):
             return []
 
         page_source = response.text
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(page_source, "lxml")
 
         if soup.find("section", "error-page"):
             return []
@@ -802,7 +802,7 @@ class Hites(Store):
 
             if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
                 response = session.get(url)
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
 
                 banners_container = soup.find("section").findAll(
                     "div", "espot", recursive=False

@@ -45,7 +45,7 @@ class MyaOutlet(StoreWithUrlExtensions):
             ).format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products_wrapper = soup.find("ul", "products")
 
             if not products_wrapper:
@@ -71,7 +71,7 @@ class MyaOutlet(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text

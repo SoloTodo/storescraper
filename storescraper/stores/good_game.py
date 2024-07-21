@@ -47,7 +47,7 @@ class GoodGame(StoreWithUrlExtensions):
             url_webpage = "https://good-game.cl/{}?page={}".format(url_extension, page)
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-container")
 
             if not product_containers:
@@ -73,7 +73,7 @@ class GoodGame(StoreWithUrlExtensions):
         response = session.get(url)
         if response.status_code == 500:
             return []
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", {"itemprop": "name"}).text
         sku = soup.find("input", {"name": "id_product"})["value"]
 

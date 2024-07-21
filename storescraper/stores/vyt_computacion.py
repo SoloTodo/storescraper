@@ -46,7 +46,7 @@ class VyTComputacion(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "product")
             if not product_containers:
                 if page == 1:
@@ -64,7 +64,7 @@ class VyTComputacion(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h4", "product_title").text.strip()
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
         stock = -1 if soup.find("button", "single_add_to_cart_button") else 0

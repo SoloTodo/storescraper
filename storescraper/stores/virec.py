@@ -30,7 +30,7 @@ class Virec(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "product-type-simple")
             if not product_containers:
                 if page == 1:
@@ -48,7 +48,7 @@ class Virec(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         json_tag = soup.find("script", {"type": "application/ld+json"})
         json_data = json.loads(json_tag.text)

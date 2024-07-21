@@ -84,7 +84,7 @@ class LgV5(Store):
         if response.url != url or response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         model_id = soup.find("input", {"id": "modelId"})["value"]
         model_data = cls._retrieve_api_model(model_id)
         sibling_groups = model_data["siblings"]
@@ -248,7 +248,7 @@ class LgV5(Store):
         # Safe to remove once the script finishes running
         session = requests.Session()
         response = session.get(url, timeout=20)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         feature_list_tag = soup.find("ul", "feature-list")
         features = []
         for feature in feature_list_tag.findAll("li"):

@@ -35,7 +35,7 @@ class Inverfin(Store):
             if page >= 15:
                 raise Exception("Page overflow " + url)
 
-            soup = BeautifulSoup(session.get(url).text, "html.parser")
+            soup = BeautifulSoup(session.get(url).text, "lxml")
             product_containers = soup.find("ul", "product-grid")
 
             if not product_containers:
@@ -62,7 +62,7 @@ class Inverfin(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         product_tag = soup.find("script", {"data-product-json": True})
         product_json = json.loads(product_tag.text)

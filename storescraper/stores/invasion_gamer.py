@@ -59,7 +59,7 @@ class InvasionGamer(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-block")
             if not product_containers:
                 if page == 1:
@@ -76,7 +76,7 @@ class InvasionGamer(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("meta", {"property": "og:title"})["content"]
         key = soup.find("meta", {"property": "og:id"})["content"]
         price = Decimal(

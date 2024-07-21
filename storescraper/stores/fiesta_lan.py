@@ -70,7 +70,7 @@ class FiestaLan(StoreWithUrlExtensions):
                 "{}/page/{}".format(url_extension, page)
             )
             data = session.get(url_webpage, verify=False).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "product")
             if not product_containers:
                 if page == 1:
@@ -86,7 +86,7 @@ class FiestaLan(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         stock_tag = soup.find("p", "stock")
 
         if not stock_tag:

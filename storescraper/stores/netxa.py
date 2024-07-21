@@ -92,7 +92,7 @@ class Netxa(StoreWithUrlExtensions):
                     logging.warning("empty category: " + url_extension)
                 break
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.find("ul", "products")
 
             if not product_containers:
@@ -112,7 +112,7 @@ class Netxa(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text

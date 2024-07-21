@@ -31,7 +31,7 @@ class DeAires(StoreWithUrlExtensions):
             print(url)
             response = session.get(url)
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products = soup.findAll("li", "product")
 
             if not products:
@@ -51,7 +51,7 @@ class DeAires(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         del session.headers["Accept-Encoding"]
         res = session.get(url)
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
 
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
         product_data = json.loads(

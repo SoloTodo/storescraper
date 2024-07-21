@@ -13,7 +13,7 @@ class PortalDelAire(StoreWithUrlExtensions):
     # ONLY CONSIDERS LG PRODUCTS
 
     url_extensions = [
-        ['lg', AIR_CONDITIONER],
+        ["lg", AIR_CONDITIONER],
     ]
 
     @classmethod
@@ -24,24 +24,26 @@ class PortalDelAire(StoreWithUrlExtensions):
 
         while True:
             if page > 10:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = 'https://portaldelaire.cl/collections/{}?page={}'\
-                .format(url_extension, page)
+            url = "https://portaldelaire.cl/collections/{}?page={}".format(
+                url_extension, page
+            )
             print(url)
             response = session.get(url)
 
-            soup = BeautifulSoup(response.text, 'html.parser')
-            products_container = soup.find('div', 'product-list')
-            products = products_container.findAll('div', 'product-item')
+            soup = BeautifulSoup(response.text, "lxml")
+            products_container = soup.find("div", "product-list")
+            products = products_container.findAll("div", "product-item")
 
             if not products:
                 break
 
             for product in products:
-                product_url = ('https://portaldelaire.cl' +
-                               product.find('a',
-                                            'product-item__title')['href'])
+                product_url = (
+                    "https://portaldelaire.cl"
+                    + product.find("a", "product-item__title")["href"]
+                )
                 product_urls.append(product_url)
 
             page += 1
@@ -52,22 +54,22 @@ class PortalDelAire(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, 'html.parser')
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
-        product_data = json.loads(soup.findAll(
-            'script', {'type': 'application/json'})[-1].text)
-        description = html_to_markdown(product_data['product']['description'])
-        picture_urls = ['https:' + x for x in
-                        product_data['product']['images']]
+        product_data = json.loads(
+            soup.findAll("script", {"type": "application/json"})[-1].text
+        )
+        description = html_to_markdown(product_data["product"]["description"])
+        picture_urls = ["https:" + x for x in product_data["product"]["images"]]
 
         products = []
 
-        for variant in product_data['product']['variants']:
-            name = variant['name']
-            key = str(variant['id'])
-            sku = variant['sku'] or None
-            stock = product_data['inventories'][key]['inventory_quantity']
-            price = Decimal(variant['price'] / 100)
+        for variant in product_data["product"]["variants"]:
+            name = variant["name"]
+            key = str(variant["id"])
+            sku = variant["sku"] or None
+            stock = product_data["inventories"][key]["inventory_quantity"]
+            price = Decimal(variant["price"] / 100)
 
             p = Product(
                 name,
@@ -79,11 +81,11 @@ class PortalDelAire(StoreWithUrlExtensions):
                 stock,
                 price,
                 price,
-                'CLP',
+                "CLP",
                 sku=sku,
                 part_number=sku,
                 description=description,
-                picture_urls=picture_urls
+                picture_urls=picture_urls,
             )
             products.append(p)
 

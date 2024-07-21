@@ -71,7 +71,7 @@ class Natcom(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage, timeout=60)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("article", "w-grid-item") + soup.findAll(
                 "li", "product"
             )
@@ -98,7 +98,7 @@ class Natcom(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text
         sku = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
         stock_tag = soup.find("p", "stock in-stock")

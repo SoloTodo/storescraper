@@ -81,7 +81,7 @@ class GGames(StoreWithUrlExtensions):
             response = session.get(url_webpage)
 
             data = response.text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("li", "grid__item")
             if not product_containers:
                 if page == 1:

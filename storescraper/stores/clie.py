@@ -48,7 +48,7 @@ class Clie(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "type-product")
 
             if not product_containers:
@@ -68,7 +68,7 @@ class Clie(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=60)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text

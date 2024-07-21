@@ -82,7 +82,7 @@ class CesaPro(Store):
                 )
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, "html.parser")
+                soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("li", "product")
 
                 if not product_containers:
@@ -101,7 +101,7 @@ class CesaPro(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
 

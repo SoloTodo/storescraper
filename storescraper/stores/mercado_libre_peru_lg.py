@@ -7,7 +7,7 @@ from ..utils import session_with_proxy
 
 class MercadoLibrePeruLg(MercadoLibreChile):
     official_store_id = 445
-    price_accuracy = '0.01'
+    price_accuracy = "0.01"
 
     @classmethod
     def categories(cls):
@@ -24,24 +24,28 @@ class MercadoLibrePeruLg(MercadoLibreChile):
         page = 1
         while True:
             if page > 10:
-                raise Exception('Page overflow')
-            index = str(50*(page - 1) + 1)
-            url_webpage = 'https://listado.mercadolibre.com.pe/' \
-                '_Desde_{}_Tienda_lg_NoIndex_True'.format(index)
+                raise Exception("Page overflow")
+            index = str(50 * (page - 1) + 1)
+            url_webpage = (
+                "https://listado.mercadolibre.com.pe/"
+                "_Desde_{}_Tienda_lg_NoIndex_True".format(index)
+            )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
-            product_containers = soup.findAll(
-                'li', 'ui-search-layout__item')
+            soup = BeautifulSoup(data, "lxml")
+            product_containers = soup.findAll("li", "ui-search-layout__item")
             if not product_containers:
                 if page == 1:
-                    logging.warning('Empty category')
+                    logging.warning("Empty category")
                 break
             for container in product_containers:
-                product_url = container.find(
-                    'a',
-                    'ui-search-link')['href'].split('#')[0].split('?')[0]
-                product_url += '?pdp_filters=official_store:{}'.format(
-                    cls.official_store_id)
+                product_url = (
+                    container.find("a", "ui-search-link")["href"]
+                    .split("#")[0]
+                    .split("?")[0]
+                )
+                product_url += "?pdp_filters=official_store:{}".format(
+                    cls.official_store_id
+                )
                 product_urls.append(product_url)
             page += 1
         return product_urls
@@ -53,14 +57,15 @@ class MercadoLibrePeruLg(MercadoLibreChile):
         # only displays entries without a seller (not from marketplaces)
         # and we want to consider MercadoLibrePeruLG for that.
         products = super().products_for_url(
-            url, category=category, extra_args=extra_args)
+            url, category=category, extra_args=extra_args
+        )
 
         filtered_products = []
 
         for product in products:
             assert product.seller
             product.seller = None
-            product.currency = 'PEN'
+            product.currency = "PEN"
             filtered_products.append(product)
 
         return filtered_products

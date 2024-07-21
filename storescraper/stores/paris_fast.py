@@ -6,8 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.stores import Paris
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import \
-    remove_words, session_with_proxy, CF_REQUEST_HEADERS
+from storescraper.utils import remove_words, session_with_proxy, CF_REQUEST_HEADERS
 
 
 class ParisFast(Store):
@@ -26,14 +25,13 @@ class ParisFast(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         from .paris import Paris
 
-        if extra_args and extra_args.get('source', None) == 'keyword_search':
-            return Paris.products_for_url(
-                url, category, extra_args)
+        if extra_args and extra_args.get("source", None) == "keyword_search":
+            return Paris.products_for_url(url, category, extra_args)
 
         category_paths = Paris.category_paths
 
         session = session_with_proxy(extra_args)
-        session.headers['User-Agent'] = Paris.USER_AGENT
+        session.headers["User-Agent"] = Paris.USER_AGENT
         products_dict = {}
 
         for e in category_paths:
@@ -49,33 +47,34 @@ class ParisFast(Store):
 
             while True:
                 if page > 150:
-                    raise Exception('Page overflow:' + category_path)
+                    raise Exception("Page overflow:" + category_path)
 
-                category_url = 'https://www.paris.cl/{}/?start={}&sz={}'\
-                    .format(category_path, page * Paris.RESULTS_PER_PAGE,
-                            Paris.RESULTS_PER_PAGE)
+                category_url = "https://www.paris.cl/{}/?start={}&sz={}".format(
+                    category_path, page * Paris.RESULTS_PER_PAGE, Paris.RESULTS_PER_PAGE
+                )
                 print(category_url)
                 response = session.get(category_url)
 
-                if response.url.split('?')[0] != category_url.split('?')[0]:
-                    raise Exception('Mismatching URL: {} - {}'.format(
-                        response.url, category_url))
+                if response.url.split("?")[0] != category_url.split("?")[0]:
+                    raise Exception(
+                        "Mismatching URL: {} - {}".format(response.url, category_url)
+                    )
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                containers = soup \
-                    .find('ul', {'id': 'search-result-items'}) \
-                    .findAll('li', recursive=False)
+                soup = BeautifulSoup(response.text, "lxml")
+                containers = soup.find("ul", {"id": "search-result-items"}).findAll(
+                    "li", recursive=False
+                )
 
                 if not containers:
                     if page == 0:
-                        raise Exception('Empty category: ' + category_path)
+                        raise Exception("Empty category: " + category_path)
                     break
 
                 for idx, container in enumerate(containers):
-                    product_a = container.find('a')
+                    product_a = container.find("a")
                     if not product_a:
                         continue
-                    product_url = product_a['href'].split('?')[0]
+                    product_url = product_a["href"].split("?")[0]
                     if product_url == "null":
                         continue
 
@@ -91,8 +90,8 @@ class ParisFast(Store):
                         product_to_update = product
 
                     product_to_update.positions.append(
-                        (section_name,
-                         Paris.RESULTS_PER_PAGE * page + idx + 1))
+                        (section_name, Paris.RESULTS_PER_PAGE * page + idx + 1)
+                    )
 
                 page += 1
 
@@ -104,38 +103,38 @@ class ParisFast(Store):
 
     @classmethod
     def _get_product(cls, container, category):
-        product_url = container.find('a')['href'].split('?')[0]
-        if 'https' not in product_url:
-            product_url = 'https://www.paris.cl' + product_url
+        product_url = container.find("a")["href"].split("?")[0]
+        if "https" not in product_url:
+            product_url = "https://www.paris.cl" + product_url
 
-        product_tile = container.find('div', 'product-tile')
+        product_tile = container.find("div", "product-tile")
 
-        if 'data-product' not in product_tile.attrs:
+        if "data-product" not in product_tile.attrs:
             return None
 
-        data = json.loads(product_tile['data-product'])
-        name = data['name']
-        sku = data['variant']
+        data = json.loads(product_tile["data-product"])
+        name = data["name"]
+        sku = data["variant"]
 
-        seller_info = data.get('dimension3', None)
-        if seller_info == 'MARKETPLACE':
-            seller = 'MARKETPLACE'
+        seller_info = data.get("dimension3", None)
+        if seller_info == "MARKETPLACE":
+            seller = "MARKETPLACE"
         else:
             seller = None
 
-        normal_price = Decimal(data['price'])
-        if data['dimension20']:
-            offer_price = Decimal(data['dimension20'])
+        normal_price = Decimal(data["price"])
+        if data["dimension20"]:
+            offer_price = Decimal(data["dimension20"])
         else:
             offer_price = normal_price
 
         if not normal_price or not offer_price:
             return None
 
-        if 'REACONDICIONADO' in name.upper():
-            condition = 'https://schema.org/RefurbishedCondition'
+        if "REACONDICIONADO" in name.upper():
+            condition = "https://schema.org/RefurbishedCondition"
         else:
-            condition = 'https://schema.org/NewCondition'
+            condition = "https://schema.org/NewCondition"
 
         stock = -1
 
@@ -149,10 +148,10 @@ class ParisFast(Store):
             stock,
             normal_price,
             offer_price,
-            'CLP',
+            "CLP",
             sku=sku,
             seller=seller,
-            condition=condition
+            condition=condition,
         )
 
         return p
@@ -160,10 +159,13 @@ class ParisFast(Store):
     @classmethod
     def banners(cls, extra_args=None):
         from .paris import Paris
+
         return Paris.banners(extra_args=extra_args)
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         from .paris import Paris
+
         return Paris.discover_urls_for_keyword(
-            keyword=keyword, threshold=threshold, extra_args=extra_args)
+            keyword=keyword, threshold=threshold, extra_args=extra_args
+        )

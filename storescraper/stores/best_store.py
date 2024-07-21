@@ -98,7 +98,7 @@ class BestStore(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.find("div", {"id": "js-product-list"}).findAll(
                 "article", "product-miniature"
             )
@@ -121,7 +121,7 @@ class BestStore(StoreWithUrlExtensions):
         if response.status_code == 404 or response.url != url:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         container = soup.find("div", "product-container")
         key = container.find("meta", {"itemprop": "sku"})["content"]
         name = container.find("h1", {"itemprop": "name"}).text

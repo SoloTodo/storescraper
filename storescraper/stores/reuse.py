@@ -50,7 +50,7 @@ class Reuse(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "productgrid--item")
             if not product_containers:
                 if page == 1:
@@ -67,7 +67,7 @@ class Reuse(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         product_json = json.loads(
             soup.find(
                 "script", {"data-section-id": "template--17204236714201__main"}

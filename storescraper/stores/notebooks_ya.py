@@ -135,13 +135,11 @@ class NotebooksYa(StoreWithUrlExtensions):
                     logging.warning("Empty category: " + url_extension)
                 break
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
 
             template_tag = soup.find("script", {"type": "text/template"})
             if template_tag:
-                template_soup = BeautifulSoup(
-                    json.loads(template_tag.text), "html.parser"
-                )
+                template_soup = BeautifulSoup(json.loads(template_tag.text), "lxml")
                 product_containers = template_soup.findAll("li", "product")
             else:
                 product_containers = soup.findAll("li", "product")
@@ -164,13 +162,13 @@ class NotebooksYa(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        raw_soup = BeautifulSoup(response.text, "html.parser")
+        raw_soup = BeautifulSoup(response.text, "lxml")
         content_tag = raw_soup.find("script", {"type": "text/template"})
 
         if not content_tag:
             return []
 
-        soup = BeautifulSoup(json.loads(content_tag.text), "html.parser")
+        soup = BeautifulSoup(json.loads(content_tag.text), "lxml")
 
         name = soup.find("h2").text.strip()
         key = soup.find("a", "single_add_to_wishlist")["data-product-id"]

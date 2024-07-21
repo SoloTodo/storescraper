@@ -360,7 +360,7 @@ class AbcDin(Store):
             print(url)
 
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_cells = soup.findAll("div", "product-tile__item")
 
             if not product_cells:
@@ -392,7 +392,7 @@ class AbcDin(Store):
         )
 
         response = session.get(url).text
-        soup = BeautifulSoup(response, "html.parser")
+        soup = BeautifulSoup(response, "lxml")
 
         products = soup.findAll("div", "lp-product-tile")
 
@@ -419,7 +419,7 @@ class AbcDin(Store):
         if response.status_code == 410:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", {"itemprop": "name"}).text.strip()
         key = soup.find("span", {"itemprop": "sku"})["data-sku"]
         prices_tag = soup.find("div", "prices")
@@ -479,7 +479,7 @@ class AbcDin(Store):
         session = session_with_proxy(extra_args)
         banners = []
 
-        soup = BeautifulSoup(session.get(cls.base_url).text, "html.parser")
+        soup = BeautifulSoup(session.get(cls.base_url).text, "lxml")
         slider_tags = soup.findAll("div", "rojoPolar")
 
         for index, slider_tag in enumerate(slider_tags):

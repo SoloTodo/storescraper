@@ -95,7 +95,7 @@ class TyTGamer(StoreWithUrlExtensions):
         print(url)
         product_id = re.search(r"/(\d+)-", url).groups()[0]
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
         session.headers[
             "Content-Type"
         ] = "application/x-www-form-urlencoded; charset=UTF-8"

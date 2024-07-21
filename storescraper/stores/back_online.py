@@ -50,7 +50,7 @@ class BackOnline(StoreWithUrlExtensions):
                 url_webpage = "{}?page={}".format(collection_url, page)
                 print(url_webpage)
                 response = session.get(url_webpage)
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(response.text, "lxml")
                 link_containers = soup.findAll("li", "grid__item")
 
                 if not link_containers:
@@ -72,7 +72,7 @@ class BackOnline(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         json_tag = soup.findAll("script", {"type": "application/ld+json"})
         json_data = json.loads(json_tag[1].text)
@@ -156,7 +156,7 @@ class BackOnline(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
 
         response = session.get("https://backonline.cl/collections")
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         collection_cells = soup.findAll("li", "collection-list__item")
         collection_urls = []

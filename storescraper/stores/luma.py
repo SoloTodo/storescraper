@@ -29,7 +29,7 @@ class Luma(Store):
 
             url = "https://luma.com.co/collections/lg?page={}".format(page)
 
-            soup = BeautifulSoup(session.get(url).text, "html.parser")
+            soup = BeautifulSoup(session.get(url).text, "lxml")
             products_container = soup.findAll("div", "engoc-product-item")
 
             if not products_container:

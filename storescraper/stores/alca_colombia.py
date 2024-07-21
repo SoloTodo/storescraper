@@ -32,7 +32,7 @@ class AlcaColombia(Store):
             url = "https://alcaltda.com/tienda/page/{}/".format(page)
             print(url)
             res = session.get(url)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("li", "product")
             if not product_containers:
                 break
@@ -56,7 +56,7 @@ class AlcaColombia(Store):
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         product_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text

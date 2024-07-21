@@ -54,7 +54,7 @@ class DacDigital(MercadoLibreChile):
                     "{}/_Desde_{}_NoIndex_True".format(url_extension, index)
                 )
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, "html.parser")
+                soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("li", "ui-search-layout__item")
                 if not product_containers:
                     if page == 1:

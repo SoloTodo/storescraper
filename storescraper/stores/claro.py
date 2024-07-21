@@ -135,7 +135,7 @@ class Claro(Store):
             "https://digital.clarochile.cl/wcm-inyect/" "landing-postpago/content.html"
         )
 
-        soup = BeautifulSoup(session.get(data_url).text, "html.parser")
+        soup = BeautifulSoup(session.get(data_url).text, "lxml")
 
         products = []
 

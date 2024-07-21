@@ -34,7 +34,7 @@ class CosmoClima(StoreWithUrlExtensions):
             print(url)
             response = session.get(url)
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products = soup.findAll("div", "product-block")
 
             if not products:
@@ -52,7 +52,7 @@ class CosmoClima(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         buy_form_tag = soup.find("form", "product-form")
 

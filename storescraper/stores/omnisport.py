@@ -6,9 +6,18 @@ from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store import Store
 from storescraper.utils import session_with_proxy
-from storescraper.categories import TELEVISION, STEREO_SYSTEM, CELL, \
-    REFRIGERATOR, OVEN, AIR_CONDITIONER, WASHING_MACHINE, \
-    OPTICAL_DISK_PLAYER, STOVE, VACUUM_CLEANER
+from storescraper.categories import (
+    TELEVISION,
+    STEREO_SYSTEM,
+    CELL,
+    REFRIGERATOR,
+    OVEN,
+    AIR_CONDITIONER,
+    WASHING_MACHINE,
+    OPTICAL_DISK_PLAYER,
+    STOVE,
+    VACUUM_CLEANER,
+)
 
 
 class Omnisport(Store):
@@ -24,16 +33,14 @@ class Omnisport(Store):
             WASHING_MACHINE,
             OPTICAL_DISK_PLAYER,
             STOVE,
-            VACUUM_CLEANER
+            VACUUM_CLEANER,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # KEEPS ONLY LG PRODUCTS
 
-        category_filters = [
-            TELEVISION
-        ]
+        category_filters = [TELEVISION]
         session = session_with_proxy(extra_args)
         product_urls = []
 
@@ -45,10 +52,9 @@ class Omnisport(Store):
 
             while True:
                 if page >= 20:
-                    raise Exception('Page overflow')
+                    raise Exception("Page overflow")
 
-                url = 'https://www.omnisport.com/marcas/lg?page={}' \
-                      ''.format(page)
+                url = "https://www.omnisport.com/marcas/lg?page={}" "".format(page)
                 print(url)
 
                 res = session.get(url, verify=False)
@@ -56,16 +62,16 @@ class Omnisport(Store):
                 if res.url != url:
                     break
 
-                soup = BeautifulSoup(res.text, 'html.parser')
-                containers = soup.findAll('div', 'lg:w-1/3')
+                soup = BeautifulSoup(res.text, "lxml")
+                containers = soup.findAll("div", "lg:w-1/3")
 
                 if not containers:
                     break
 
                 for container in containers:
-                    if 'lg' in container.find('p', 'text-black').text.lower():
-                        link = container.find('a', 'link-basic')
-                        product_urls.append(link['href'])
+                    if "lg" in container.find("p", "text-black").text.lower():
+                        link = container.find("a", "link-basic")
+                        product_urls.append(link["href"])
 
                 page += 1
 
@@ -77,18 +83,17 @@ class Omnisport(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        sku = soup.find('p', 'text-gray-700').contents[1].split('|')[0].strip()
-        name = soup.find('h1').text.strip()
-        price = Decimal(soup.find('p', 'text-2xl').text.replace('$', ''))
+        soup = BeautifulSoup(response.text, "lxml")
+        sku = soup.find("p", "text-gray-700").contents[1].split("|")[0].strip()
+        name = soup.find("h1").text.strip()
+        price = Decimal(soup.find("p", "text-2xl").text.replace("$", ""))
 
-        pictures_tag = soup.find('product-images-gallery')
+        pictures_tag = soup.find("product-images-gallery")
 
         if pictures_tag:
-            picture_urls = [x['full_url'] for x in
-                            json.loads(pictures_tag[':images'])]
+            picture_urls = [x["full_url"] for x in json.loads(pictures_tag[":images"])]
         else:
-            picture_urls = [soup.find('div', 'md:w-2/5').find('img')['src']]
+            picture_urls = [soup.find("div", "md:w-2/5").find("img")["src"]]
 
         p = Product(
             name,
@@ -100,9 +105,9 @@ class Omnisport(Store):
             -1,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
 
         return [p]
@@ -110,7 +115,7 @@ class Omnisport(Store):
     @staticmethod
     def fix_price(price):
         fixed_price = price
-        if price.count('.') > 1:
-            split_price = price.split('.')
-            fixed_price = split_price[0] + '.' + split_price[1]
-        return Decimal(fixed_price.replace('$', '').replace(',', ''))
+        if price.count(".") > 1:
+            split_price = price.split(".")
+            fixed_price = split_price[0] + "." + split_price[1]
+        return Decimal(fixed_price.replace("$", "").replace(",", ""))

@@ -34,7 +34,7 @@ class ElectronicaPanamericana(Store):
         )
         print(url)
         response = session.get(url, verify=False, timeout=30)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         for container in soup.findAll("li", "product"):
             product_url = container.find("a")["href"]

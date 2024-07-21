@@ -80,7 +80,7 @@ class ClaroEcuador(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         response = cls.curl_get_request(url)
-        soup = BeautifulSoup(response, "html.parser")
+        soup = BeautifulSoup(response, "lxml")
         color_selectors = soup.findAll("input", {"name": "color"})
         key = color_selectors[0]["value"]
         assert len(color_selectors) == 1

@@ -4,21 +4,22 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, \
-    magento_picture_urls
+from storescraper.utils import (
+    session_with_proxy,
+    html_to_markdown,
+    magento_picture_urls,
+)
 from storescraper.categories import TELEVISION
 
 
 class LaCuracaoOnline(Store):
-    country = ''
-    currency = ''
-    currency_iso = ''
+    country = ""
+    currency = ""
+    currency_iso = ""
 
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -34,24 +35,25 @@ class LaCuracaoOnline(Store):
 
         while True:
             if page >= 15:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = ('https://www.lacuracaonline.com/{}/catalogsearch/'
-                   'result/index/?marca=42974&p={}&q=lg'.format(
-                    cls.country, page))
+            url = (
+                "https://www.lacuracaonline.com/{}/catalogsearch/"
+                "result/index/?marca=42974&p={}&q=lg".format(cls.country, page)
+            )
             print(url)
 
             response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            product_containers = soup.findAll('li', 'product')
+            soup = BeautifulSoup(response.text, "lxml")
+            product_containers = soup.findAll("li", "product")
 
             if not product_containers:
                 if page == 1:
-                    raise Exception('Empty section: {}'.format(url))
+                    raise Exception("Empty section: {}".format(url))
                 break
 
             for container in product_containers:
-                product_url = container.find('a')['href']
+                product_url = container.find("a")["href"]
                 product_urls.append(product_url)
 
             page += 1
@@ -73,24 +75,24 @@ class LaCuracaoOnline(Store):
                 break
         else:
             # Called if no "break" was executed
-            raise Exception('Could not bypass Incapsulata')
+            raise Exception("Could not bypass Incapsulata")
 
         if response.url != url:
             return []
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-        price = Decimal(soup.find(
-            'meta', {'property': 'product:price:amount'})['content'].strip())
+        soup = BeautifulSoup(response.text, "lxml")
+        name = soup.find("span", {"itemprop": "name"}).text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
+        price = Decimal(
+            soup.find("meta", {"property": "product:price:amount"})["content"].strip()
+        )
         stock = -1
 
         picture_urls = magento_picture_urls(soup)
 
-        description = '{}\n\n{}'.format(
-            html_to_markdown(
-                str(soup.find('div', 'additional-attributes-wrapper'))),
-            html_to_markdown(str(soup.find('div', 'description')))
+        description = "{}\n\n{}".format(
+            html_to_markdown(str(soup.find("div", "additional-attributes-wrapper"))),
+            html_to_markdown(str(soup.find("div", "description"))),
         )
 
         p = Product(
@@ -106,7 +108,7 @@ class LaCuracaoOnline(Store):
             cls.currency_iso,
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
 
         return [p]

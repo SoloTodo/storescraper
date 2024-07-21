@@ -45,7 +45,7 @@ class GestionYEquipos(StoreWithUrlExtensions):
             )
             print(url_webpage)
             res = session.get(url_webpage)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("li", "js-pagination-result")
             if not product_containers:
                 if page == 1:
@@ -62,7 +62,7 @@ class GestionYEquipos(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         description = html_to_markdown(str(soup.find("div", "product-details__block")))
         condition_text = soup.find("span", "product-label").text.strip().upper()
 

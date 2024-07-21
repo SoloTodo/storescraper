@@ -62,7 +62,7 @@ class GamingHouse(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage, timeout=30)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-grid-item")
 
             if not product_containers:
@@ -80,7 +80,7 @@ class GamingHouse(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=30)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product_title").text.strip()
         sku = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
         if soup.find("p", "stock in-stock"):

@@ -58,7 +58,7 @@ class GsmPro(StoreWithUrlExtensions):
                 url_extension, page
             )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             collection = soup.find("div", "product-list--collection")
             product_containers = collection.findAll("div", "product-item")
             if not product_containers:
@@ -90,7 +90,7 @@ class GsmPro(StoreWithUrlExtensions):
             real_url = "https://www.gsmpro.cl/" + path
             response = session.get(real_url)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         publication_data = json.loads(
             soup.find(
                 "script", {"type": "application/json", "data-product-json": True}

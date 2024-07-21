@@ -38,7 +38,7 @@ class Ibeam(StoreWithUrlExtensions):
                 url_extension, page
             )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_container = soup.find("ul", "productgrid--items")
             if not product_container:
                 if page == 1:
@@ -55,7 +55,7 @@ class Ibeam(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         json_data = json.loads(
             soup.find("script", {"data-section-type": "static-product"}).text

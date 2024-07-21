@@ -94,7 +94,7 @@ class PcCom(StoreWithUrlExtensions):
             if page == 1 and response.status_code == 404:
                 raise Exception("Invalid category: " + url)
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             products = soup.findAll("li", "product")
 
             if not products:
@@ -114,7 +114,7 @@ class PcCom(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
 
         product_data_candidates = soup.findAll(
             "script", {"type": "application/ld+json"}

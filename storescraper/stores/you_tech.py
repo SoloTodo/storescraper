@@ -88,7 +88,7 @@ class YouTech(StoreWithUrlExtensions):
             )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-layout")
             if not product_containers:
                 if page == 1:
@@ -105,7 +105,7 @@ class YouTech(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product-name").text.strip()
         key = soup.find("input", {"name": "product_id"})["value"]
         sku = soup.find("td", text="Código del producto:").next.next.text.strip()

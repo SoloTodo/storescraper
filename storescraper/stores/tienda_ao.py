@@ -27,7 +27,7 @@ class TiendaAo(Store):
             url = "https://tiendaao.com/?paged={}&product_cat=lg".format(page)
             print(url)
             res = session.get(url, verify=False)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
 
             product_containers = soup.findAll("li", "product-item")
             if not product_containers:
@@ -45,7 +45,7 @@ class TiendaAo(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text

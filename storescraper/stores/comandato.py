@@ -27,7 +27,7 @@ class Comandato(Store):
             return []
 
         url = "https://www.comandato.com/lg?PS=200"
-        soup = BeautifulSoup(session.get(url).text, "html.parser")
+        soup = BeautifulSoup(session.get(url).text, "lxml")
         products = soup.findAll("div", "producto")
 
         if not products:
@@ -49,7 +49,7 @@ class Comandato(Store):
             return []
 
         data = response.text
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(data, "lxml")
 
         name_container = soup.find("div", "productDescriptionShort")
 

@@ -13,15 +13,11 @@ from storescraper.utils import session_with_proxy
 class NarioHogar(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            TELEVISION
-        ]
+        url_extensions = [TELEVISION]
         session = session_with_proxy(extra_args)
         product_urls = []
         for local_category in url_extensions:
@@ -30,21 +26,23 @@ class NarioHogar(Store):
 
             page = 0
             while True:
-                url_webpage = 'https://www.nariohogar.com.uy/productos/' \
-                    'paginado?marcas=lg8&p={}'.format(page)
+                url_webpage = (
+                    "https://www.nariohogar.com.uy/productos/"
+                    "paginado?marcas=lg8&p={}".format(page)
+                )
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, 'html.parser')
+                soup = BeautifulSoup(data, "lxml")
 
-                if 'No se encontraron resultados' in soup.text:
+                if "No se encontraron resultados" in soup.text:
                     if page == 0:
-                        logging.warning('Empty category: ' + local_category)
+                        logging.warning("Empty category: " + local_category)
                     break
 
-                product_containers = soup.findAll('div', 'product-card-5')
+                product_containers = soup.findAll("div", "product-card-5")
                 if not product_containers:
                     break
                 for container in product_containers:
-                    product_url = container.find('a')['href']
+                    product_url = container.find("a")["href"]
                     product_urls.append(product_url)
 
                 page += 1
@@ -56,14 +54,15 @@ class NarioHogar(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('meta', {'property': 'og:title'})['content']
-        sku = url.split('/')[-1][:45]
+        soup = BeautifulSoup(response.text, "lxml")
+        name = soup.find("meta", {"property": "og:title"})["content"]
+        sku = url.split("/")[-1][:45]
         stock = -1
-        price = Decimal(
-            soup.find('div', 'product-price').find('span').text.split()[-1])
-        picture_urls = [urllib.parse.quote(tag['src'], safe='/:') for tag in
-                        soup.find('div', 'swiper_gallery').findAll('img')]
+        price = Decimal(soup.find("div", "product-price").find("span").text.split()[-1])
+        picture_urls = [
+            urllib.parse.quote(tag["src"], safe="/:")
+            for tag in soup.find("div", "swiper_gallery").findAll("img")
+        ]
         p = Product(
             name,
             cls.__name__,
@@ -74,8 +73,8 @@ class NarioHogar(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
         return [p]

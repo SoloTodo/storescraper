@@ -58,7 +58,7 @@ class Sandos(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
             if soup.find("body", "error404"):
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
@@ -79,7 +79,7 @@ class Sandos(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
 
         json_data = json.loads(

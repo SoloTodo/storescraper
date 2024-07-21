@@ -13,15 +13,11 @@ from storescraper.utils import session_with_proxy
 class GonzalezGimenez(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        url_extensions = [
-            TELEVISION
-        ]
+        url_extensions = [TELEVISION]
         session = session_with_proxy(extra_args)
         product_urls = []
         for local_category in url_extensions:
@@ -32,20 +28,22 @@ class GonzalezGimenez(Store):
 
         while True:
             if page >= 15:
-                raise Exception('Page overflow: ')
-            url_webpage = 'https://www.gonzalezgimenez.com.py/get-productos?' \
-                          'page={}&marca=8'.format(page)
+                raise Exception("Page overflow: ")
+            url_webpage = (
+                "https://www.gonzalezgimenez.com.py/get-productos?"
+                "page={}&marca=8".format(page)
+            )
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, 'html.parser')
+            soup = BeautifulSoup(data, "lxml")
             product_containers = json.loads(soup.text)
 
-            if not product_containers['paginacion']['data']:
+            if not product_containers["paginacion"]["data"]:
                 if page == 1:
-                    logging.warning('Empty category: ' + url_webpage)
+                    logging.warning("Empty category: " + url_webpage)
                 break
 
-            for product in product_containers['paginacion']['data']:
-                product_url = product['url_ver']
+            for product in product_containers["paginacion"]["data"]:
+                product_url = product["url_ver"]
                 product_urls.append(product_url)
             page += 1
 
@@ -56,19 +54,18 @@ class GonzalezGimenez(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "lxml")
 
-        if 'Página Principal' in soup.find('title').text:
+        if "Página Principal" in soup.find("title").text:
             return []
 
-        name = soup.find('meta', {'name': 'title'})['content']
-        sku = soup.find('meta', {'property': 'product:retailer_item_id'})[
-            'content']
+        name = soup.find("meta", {"name": "title"})["content"]
+        sku = soup.find("meta", {"property": "product:retailer_item_id"})["content"]
         stock = -1
-        price = Decimal(soup.find('meta', {'property':
-                                           'product:price:amount'})['content'])
-        picture_urls = [tag['href'] for tag in
-                        soup.findAll('a', 'galeria-modal')]
+        price = Decimal(
+            soup.find("meta", {"property": "product:price:amount"})["content"]
+        )
+        picture_urls = [tag["href"] for tag in soup.findAll("a", "galeria-modal")]
 
         p = Product(
             name,
@@ -80,8 +77,8 @@ class GonzalezGimenez(Store):
             stock,
             price,
             price,
-            'PYG',
+            "PYG",
             sku=sku,
-            picture_urls=picture_urls
+            picture_urls=picture_urls,
         )
         return [p]

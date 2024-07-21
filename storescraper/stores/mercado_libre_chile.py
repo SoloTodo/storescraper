@@ -747,7 +747,7 @@ class MercadoLibreChile(Store):
         while tries < 3:
             try:
                 page_source = session.get(url).text
-                soup = BeautifulSoup(page_source, "html.parser")
+                soup = BeautifulSoup(page_source, "lxml")
 
                 new_mode_data = re.search(
                     r"window.__PRELOADED_STATE__ =([\S\s]+?);\n", page_source
@@ -1039,7 +1039,7 @@ class MercadoLibreChile(Store):
         )
 
         res = session.get(url)
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(res.text, "lxml")
         price = Decimal(soup.find("meta", {"itemprop": "price"})["content"])
 
         if not min_price or price < min_price:

@@ -6,8 +6,11 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import html_to_markdown, session_with_proxy, \
-    magento_picture_urls
+from storescraper.utils import (
+    html_to_markdown,
+    session_with_proxy,
+    magento_picture_urls,
+)
 
 
 class Artefacta(Store):
@@ -30,22 +33,23 @@ class Artefacta(Store):
 
         while not done:
             if page > 10:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = ('https://www.artefacta.com/c?marca=42974&p={}&'
-                   'product_list_limit=36').format(page)
+            url = (
+                "https://www.artefacta.com/c?marca=42974&p={}&" "product_list_limit=36"
+            ).format(page)
             print(url)
-            soup = BeautifulSoup(session.get(url).text, 'html.parser')
-            products = soup.findAll('li', 'item product product-item')
+            soup = BeautifulSoup(session.get(url).text, "lxml")
+            products = soup.findAll("li", "item product product-item")
 
             if not products:
                 if page == 1:
-                    raise Exception('Empty path: ' + url)
+                    raise Exception("Empty path: " + url)
                 break
 
             for product in products:
                 try:
-                    product_url = product.find('a')['href']
+                    product_url = product.find("a")["href"]
                 except KeyError:
                     # Skip the template tag
                     continue
@@ -61,19 +65,21 @@ class Artefacta(Store):
         session = session_with_proxy(extra_args)
         response = session.get(url)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "lxml")
 
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
+        name = soup.find("span", {"itemprop": "name"}).text.strip()
+        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
         stock = -1
 
         price = Decimal(
-            soup.find('span', {'data-price-type': 'finalPrice'})
-                .find('span', 'price').text.replace('$', '').replace(',', ''))
+            soup.find("span", {"data-price-type": "finalPrice"})
+            .find("span", "price")
+            .text.replace("$", "")
+            .replace(",", "")
+        )
         picture_urls = magento_picture_urls(soup)
 
-        description = html_to_markdown(
-            str(soup.find('div', 'description')))
+        description = html_to_markdown(str(soup.find("div", "description")))
 
         p = Product(
             name,
@@ -85,7 +91,7 @@ class Artefacta(Store):
             stock,
             price,
             price,
-            'USD',
+            "USD",
             sku=sku,
             picture_urls=picture_urls,
             description=description,

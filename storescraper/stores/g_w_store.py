@@ -68,7 +68,7 @@ class GWStore(StoreWithUrlExtensions):
             url_webpage = "https://gwstore.cl/{}?" "page={}".format(url_extension, page)
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("article", "product-miniature")
             if not product_containers:
                 if page == 1:
@@ -89,7 +89,7 @@ class GWStore(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key_input = soup.find("input", {"id": "product_page_product_id"})
         if not key_input:

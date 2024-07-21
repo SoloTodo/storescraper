@@ -35,7 +35,7 @@ class Alca(Store):
                 )
                 print(url_webpage)
                 data = session.get(url_webpage).text
-                soup = BeautifulSoup(data, "html.parser")
+                soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("div", "product")
                 if not product_containers:
                     if page == 1:
@@ -57,7 +57,7 @@ class Alca(Store):
         except ReadTimeout:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key_tag = soup.find("link", {"rel": "shortlink"})
 

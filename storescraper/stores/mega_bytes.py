@@ -65,7 +65,7 @@ class MegaBytes(StoreWithUrlExtensions):
                     # raise Exception(url_webpage)
                     logging.warning("Empty category: " + url_extension)
                 break
-            soup = BeautifulSoup(data.text, "html.parser")
+            soup = BeautifulSoup(data.text, "lxml")
             product_containers = soup.findAll("div", "product-wrapper")
 
             for container in product_containers:
@@ -84,7 +84,7 @@ class MegaBytes(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
 
         json_tag = soup.find("script", {"type": "application/ld+json"})

@@ -65,7 +65,7 @@ class Dismac(Store):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
 
         key = soup.find("input", {"name": "product"})["value"]
 

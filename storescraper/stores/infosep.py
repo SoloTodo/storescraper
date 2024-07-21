@@ -109,7 +109,7 @@ class Infosep(StoreWithUrlExtensions):
                 )
             print(url_webpage)
             data = session.get(url_webpage).text
-            soup = BeautifulSoup(data, "html.parser")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.find("div", "products")
             if not product_containers:
                 if page == 1:
@@ -130,7 +130,7 @@ class Infosep(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text

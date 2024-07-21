@@ -31,7 +31,7 @@ class LapShop(StoreWithUrlExtensions):
             ).format(page, url_extension)
             print(url_webpage)
             res = session.get(url_webpage)
-            soup = BeautifulSoup(res.text, "html.parser")
+            soup = BeautifulSoup(res.text, "lxml")
             product_containers = soup.findAll("li", "product")
 
             if not product_containers:
@@ -53,7 +53,7 @@ class LapShop(StoreWithUrlExtensions):
         if response.status_code == 404:
             return []
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
         name = soup.find("h1", "product_title").text.strip()
         sku = soup.find("meta", {"property": "product:retailer_item_id"})["content"]

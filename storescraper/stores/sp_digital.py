@@ -218,7 +218,7 @@ class SpDigital(StoreWithUrlExtensions):
 
             if description_json["blocks"][0]["data"]["text"]:
                 description_tag = BeautifulSoup(
-                    description_json["blocks"][0]["data"]["text"], "html.parser"
+                    description_json["blocks"][0]["data"]["text"], "lxml"
                 )
                 description = html_to_markdown(description_tag.text)
             else:
