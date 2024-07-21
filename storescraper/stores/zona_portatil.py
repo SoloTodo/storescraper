@@ -112,7 +112,8 @@ class ZonaPortatil(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "lxml")
+        # lxml parser fails for this scraper
+        soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("p", "product_title").text.strip()
         alternate_url = soup.find(
             "link", {"rel": "alternate", "type": "application/json"}

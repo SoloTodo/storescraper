@@ -63,7 +63,8 @@ class MiStore(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url, timeout=30)
-        soup = BeautifulSoup(response.text, "lxml")
+        # lxml parser fails for this scraper
+        soup = BeautifulSoup(response.text, "html.parser")
         name = soup.find("h1", "product_title").text.strip()
         if soup.find("form", "variations_form"):
             variations_container = json.loads(

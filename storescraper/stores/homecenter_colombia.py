@@ -63,8 +63,8 @@ class HomecenterColombia(Store):
         print(url)
         session = session_with_proxy(extra_args)
         res = session.get(url)
-
-        soup = BeautifulSoup(res.text, "lxml")
+        # lxml parser fails for this scraper
+        soup = BeautifulSoup(res.text, "html.parser")
         next_tag = soup.find("script", {"id": "__NEXT_DATA__"})
         json_data = json.loads(next_tag.text)
         product_data = json_data["props"]["pageProps"]["productProps"]["result"]
