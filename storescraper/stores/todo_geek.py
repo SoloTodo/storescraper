@@ -80,6 +80,21 @@ class TodoGeek(StoreWithUrlExtensions):
         category_tags = soup.find("span", text="Categoria: ").parent.findAll("a")
         assert category_tags
 
+        state_tag = soup.find("p", "product-state")
+
+        if state_tag:
+            state_tag_text = state_tag.text.upper()
+            if "NUEVO" in state_tag_text:
+                condition = "https://schema.org/NewCondition"
+            elif "USADO" in state_tag_text:
+                condition = "https://schema.org/UsedCondition"
+            elif "REACONDICIONADO" in state_tag_text:
+                condition = "https://schema.org/RefurbishedCondition"
+            else:
+                raise Exception("Invalid condition: " + state_tag_text)
+        else:
+            condition = "https://schema.org/RefurbishedCondition"
+
         if max_day > 2:
             a_pedido = True
         else:
@@ -113,25 +128,6 @@ class TodoGeek(StoreWithUrlExtensions):
                 stock = -1
             else:
                 stock = 0
-
-            for tag in category_tags:
-                if "OPEN BOX" in tag.text.upper() or "OPEN BOX" in tag["href"].upper():
-                    condition = "https://schema.org/OpenBoxCondition"
-                    break
-                if (
-                    "REACONDICIONADO" in tag.text.upper()
-                    or "REACONDICIONADO" in tag["href"].upper()
-                ):
-                    condition = "https://schema.org/RefurbishedCondition"
-                    break
-                if (
-                    "SEMINUEVO" in tag.text.upper()
-                    or "SEMINUEVO" in tag["href"].upper()
-                ):
-                    condition = "https://schema.org/RefurbishedCondition"
-                    break
-            else:
-                condition = "https://schema.org/NewCondition"
 
             p = Product(
                 name,
