@@ -1119,3 +1119,57 @@ class MercadoLibreChile(Store):
         response = session.post(url, data=payload)
         access_token = response.json()["access_token"]
         return {"access_token": access_token}
+
+    @classmethod
+    def get_catalog_competitors_for_seller(cls, seller_id, access_token):
+        offset = 50
+        page = 0
+        session = session_with_proxy(None)
+        session.headers["Authorization"] = "Bearer {}".format(access_token)
+        while True:
+            items_page_url = "https://api.mercadolibre.com/sites/MLC/search?seller_id={}&offset={}".format(
+                seller_id, page * offset
+            )
+            response = session.get(items_page_url).json()
+            if not response["results"]:
+                break
+            for item in response["results"]:
+                catalog_product_id = item["catalog_product_id"]
+                if not catalog_product_id:
+                    continue
+                catalog_url = "https://api.mercadolibre.com/products/{}".format(
+                    catalog_product_id
+                )
+                catalog_response = session.get(catalog_url).json()
+                catalog_items_url = (
+                    "https://api.mercadolibre.com/products/{}/items".format(
+                        catalog_product_id
+                    )
+                )
+                catalog_items_response = session.get(catalog_items_url).json()
+
+                seller_price = None
+                if "results" not in catalog_items_response:
+                    # No winners found (?)
+                    continue
+                for catalog_item in catalog_items_response["results"]:
+                    if catalog_item["seller_id"] == seller_id:
+                        seller_price = catalog_item["price"]
+
+                winning_item = catalog_items_response["results"][0]
+
+                if not seller_price:
+                    continue
+
+                print(
+                    catalog_product_id,
+                    catalog_response["name"],
+                    catalog_response["permalink"],
+                    item["id"],
+                    seller_price,
+                    catalog_response["buy_box_winner"]["seller_id"] == seller_id,
+                    winning_item["price"],
+                    sep="¬",
+                )
+
+            page += 1
