@@ -39,7 +39,7 @@ class Clie(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 16:
                 raise Exception("page overflow: " + url_extension)
             url_webpage = (
                 "https://www.clie.cl/index.php/categoria-producto/{}/page/{}/".format(
