@@ -17,38 +17,40 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 class DLPhone(StoreWithUrlExtensions):
     url_extensions = [
-        ["audifonos", HEADPHONES],
-        ["celulares-2", CELL],
-        ["celulares", CELL],
+        ["audifonos-beats", HEADPHONES],
+        ["audifonos-huawei", HEADPHONES],
+        ["celulares-apple", CELL],
         ["celulares-samsung", CELL],
         ["celulares-huawei", CELL],
         ["celulares-motorola", CELL],
-        ["oppo", CELL],
-        ["ipad", TABLET],
-        ["ipad-y-tablet-2-apple", TABLET],
-        ["tablet-samsung", TABLET],
-        ["tablet-huawei", TABLET],
-        ["notebooks", NOTEBOOK],
-        ["computacion-huawei", NOTEBOOK],
-        ["smartwhatch", WEARABLE],
-        ["televisores", TELEVISION],
-        ["hisense", TELEVISION],
+        ["celulares-oppo", CELL],
+        ["celulares-vivo", CELL],
+        ["celulares-xiaomi", CELL],
+        ["ipads", TABLET],
+        ["tablets-huawei", TABLET],
+        ["notebooks-huawei", NOTEBOOK],
+        ["notebooks-acer", NOTEBOOK],
+        ["notebooks-dell", NOTEBOOK],
+        ["notebooks-acer", NOTEBOOK],
+        ["notebooks-apple", NOTEBOOK],
+        ["smartwatch-huawei", WEARABLE],
+        ["televisores-hisense", TELEVISION],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        url_webpage = "https://www.dlphone.cl/{}/".format(url_extension)
+        url_webpage = "https://www.dlphone.cl/collections/{}/".format(url_extension)
         print(url_webpage)
         response = session.get(url_webpage)
         soup = BeautifulSoup(response.text, "lxml")
-        product_containers = soup.findAll("li", "product")
+        product_containers = soup.findAll("li", "collection-product-card")
 
         if not product_containers:
             logging.warning("empty category: " + url_extension)
         for container in product_containers:
-            product_url = container.find("a")["href"]
+            product_url = f"https://dlphone.cl{container.find('a')['href']}"
             product_urls.append(product_url)
         return product_urls
 
@@ -59,74 +61,23 @@ class DLPhone(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         products = []
-        gtm_data = json.loads(
-            soup.find("input", {"name": "gtm4wp_product_data"})["value"]
+        products_data = json.loads(
+            soup.findAll("script", {"type": "application/ld+json"})[1].text
         )
-        name = gtm_data["item_name"]
 
-        if soup.find("form", "variations_form cart"):
-            variations = json.loads(
-                soup.find("form", "variations_form cart")["data-product_variations"]
+        for offer in products_data["offers"]:
+            name = products_data["name"]
+            key = offer["url"].split("?variant=")[1]
+            sku = offer["sku"]
+            price = Decimal(offer["price"])
+            stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
+            gallery = soup.find("div", "product__main").find("div", "swiper-wrapper")
+            picture_urls = (
+                [f"https:{img['src']}" for img in gallery.findAll("img")]
+                if gallery
+                else []
             )
-            for variation in variations:
-                variation_attribute = list(variation["attributes"].values())
-                variation_name = name + " (" + " - ".join(variation_attribute) + ")"
-                sku = str(variation["variation_id"])
-                offer_price = Decimal(variation["display_price"])
-                normal_price = Decimal(round(variation["display_price"] * 1.04))
-
-                if variation["availability_html"] == "":
-                    stock = -1
-                elif (
-                    BeautifulSoup(variation["availability_html"], "lxml").text.split()[
-                        0
-                    ]
-                    == "Agotado"
-                ):
-                    stock = 0
-                else:
-                    stock_text = BeautifulSoup(
-                        variation["availability_html"], "lxml"
-                    ).text.strip()
-                    if stock_text == "Hay existencias":
-                        # A pedido
-                        stock = 0
-                    elif stock_text == "Sin existencias":
-                        stock = 0
-                    else:
-                        stock = int(stock_text.split()[0])
-                if variation["image"]["url"]:
-                    picture_urls = [variation["image"]["url"]]
-                else:
-                    picture_urls = None
-                p = Product(
-                    variation_name,
-                    cls.__name__,
-                    category,
-                    url,
-                    url,
-                    sku,
-                    stock,
-                    normal_price,
-                    offer_price,
-                    "CLP",
-                    sku=sku,
-                    picture_urls=picture_urls,
-                    condition="https://schema.org/RefurbishedCondition",
-                )
-                products.append(p)
-        else:
-            key = str(gtm_data["internal_id"])
-            sku = str(gtm_data["item_id"])
-            price = Decimal(gtm_data["price"])
-            stock = gtm_data["stocklevel"]
-            picture_urls = [
-                x.find("a")["href"]
-                for x in soup.findAll("div", "woocommerce-product-gallery__image")
-            ]
-            description = html_to_markdown(
-                str(soup.find("div", "woocommerce-product-details__short-description"))
-            )
+            description = html_to_markdown(products_data["description"])
 
             p = Product(
                 name,
@@ -145,4 +96,5 @@ class DLPhone(StoreWithUrlExtensions):
                 condition="https://schema.org/RefurbishedCondition",
             )
             products.append(p)
+
         return products
