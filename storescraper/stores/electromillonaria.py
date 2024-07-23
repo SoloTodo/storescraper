@@ -48,7 +48,7 @@ class Electromillonaria(Store):
         soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         qty_input = soup.find("input", "input-text qty text")
-        stock = int(qty_input["max"])
+        stock = int(qty_input["max"]) if qty_input else 0
 
         product_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text
