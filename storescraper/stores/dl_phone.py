@@ -1,7 +1,6 @@
 import json
 from decimal import Decimal
 import logging
-import re
 from bs4 import BeautifulSoup
 from storescraper.categories import (
     CELL,
@@ -18,31 +17,31 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 
 class DLPhone(StoreWithUrlExtensions):
     url_extensions = [
-        ["collections/audifonos-beats", HEADPHONES],
-        ["collections/audifonos-huawei", HEADPHONES],
-        ["collections/celulares-apple", CELL],
-        ["collections/celulares-samsung", CELL],
-        ["collections/celulares-huawei", CELL],
-        ["collections/celulares-motorola", CELL],
-        ["collections/celulares-oppo", CELL],
-        ["collections/celulares-vivo", CELL],
-        ["collections/celulares-xiaomi", CELL],
-        ["collections/ipads", TABLET],
-        ["collections/tablets-huawei", TABLET],
-        ["collections/notebooks-huawei", NOTEBOOK],
-        ["collections/notebooks-acer", NOTEBOOK],
-        ["collections/notebooks-dell", NOTEBOOK],
-        ["collections/notebooks-acer", NOTEBOOK],
-        ["collections/notebooks-apple", NOTEBOOK],
-        ["collections/smartwatch-huawei", WEARABLE],
-        ["collections/televisores-hisense", TELEVISION],
+        ["audifonos-beats", HEADPHONES],
+        ["audifonos-huawei", HEADPHONES],
+        ["celulares-apple", CELL],
+        ["celulares-samsung", CELL],
+        ["celulares-huawei", CELL],
+        ["celulares-motorola", CELL],
+        ["celulares-oppo", CELL],
+        ["celulares-vivo", CELL],
+        ["celulares-xiaomi", CELL],
+        ["ipads", TABLET],
+        ["tablets-huawei", TABLET],
+        ["notebooks-huawei", NOTEBOOK],
+        ["notebooks-acer", NOTEBOOK],
+        ["notebooks-dell", NOTEBOOK],
+        ["notebooks-acer", NOTEBOOK],
+        ["notebooks-apple", NOTEBOOK],
+        ["smartwatch-huawei", WEARABLE],
+        ["televisores-hisense", TELEVISION],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
         product_urls = []
-        url_webpage = "https://www.dlphone.cl/{}/".format(url_extension)
+        url_webpage = "https://www.dlphone.cl/collections/{}/".format(url_extension)
         print(url_webpage)
         response = session.get(url_webpage)
         soup = BeautifulSoup(response.text, "lxml")
@@ -70,9 +69,7 @@ class DLPhone(StoreWithUrlExtensions):
             name = products_data["name"]
             key = offer["url"].split("?variant=")[1]
             sku = offer["sku"]
-            regular_price = soup.find("s", "price-item price-item--regular").text
-            price = Decimal("".join(re.findall(r"\d+", regular_price)))
-            offer_price = Decimal(int(offer["price"]))
+            price = Decimal(offer["price"])
             stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
             gallery = soup.find("div", "product__main").find("div", "swiper-wrapper")
             picture_urls = (
@@ -91,7 +88,7 @@ class DLPhone(StoreWithUrlExtensions):
                 key,
                 stock,
                 price,
-                offer_price,
+                price,
                 "CLP",
                 sku=sku,
                 picture_urls=picture_urls,
