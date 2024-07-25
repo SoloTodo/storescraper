@@ -269,6 +269,7 @@ from .tekmachine import Tekmachine
 from .tecno_boss import TecnoBoss
 from .tecno_mas import TecnoMas
 from .tecno_mega_store import TecnoMegaStore
+from .tecno_pc_shop import TecnoPCShop
 from .tecno_saga import TecnoSaga
 from .tecno_site import TecnoSite
 from .tic_online_store import TicOnlineStore
