@@ -16,7 +16,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import html_to_markdown, remove_words, session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class SmartStore(StoreWithUrlExtensions):
@@ -40,12 +40,12 @@ class SmartStore(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         product_urls = []
         page = 1
-        
+
         while True:
             url_webpage = f"https://www.smartstore.cl/{url_extension}?page={page}"
             print(url_webpage)
 
-            response = session.get(url_webpage, verify=False)
+            response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, "lxml")
             data = soup.findAll("script")[8].text
             links = re.findall(r'"link":"(\\u002F[^"]+)"', data)
@@ -55,12 +55,12 @@ class SmartStore(StoreWithUrlExtensions):
                     logging.warning("empty category: " + url_extension)
                 break
 
-            links = [link.encode('utf-8').decode('unicode_escape') for link in links]
+            links = [link.encode("utf-8").decode("unicode_escape") for link in links]
 
             for link in links:
                 product_url = f"https://www.smartstore.cl{link}"
                 product_urls.append(product_url)
-            
+
             page += 1
 
         return product_urls
@@ -75,16 +75,19 @@ class SmartStore(StoreWithUrlExtensions):
 
         if json_data is None:
             return []
-        
+
         json_data = json.loads(json_data.text)
         products = []
-        
+
         for offer in json_data["offers"]["offers"]:
             name = json_data["name"]
             sku = offer["sku"]
             stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
             price = Decimal(offer["price"])
-            picture_urls = [img["src"] for img in soup.find("div", {"swiper-wrapper"}).findAll("img")]
+            picture_urls = [
+                img["src"]
+                for img in soup.find("div", {"swiper-wrapper"}).findAll("img")
+            ]
             description = html_to_markdown(html.unescape(json_data["description"]))
 
             product = Product(
