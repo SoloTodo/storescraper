@@ -1126,6 +1126,7 @@ class MercadoLibreChile(Store):
         page = 0
         session = session_with_proxy(None)
         session.headers["Authorization"] = "Bearer {}".format(access_token)
+        result = []
         while True:
             items_page_url = "https://api.mercadolibre.com/sites/MLC/search?seller_id={}&offset={}".format(
                 seller_id, page * offset
@@ -1148,28 +1149,13 @@ class MercadoLibreChile(Store):
                 )
                 catalog_items_response = session.get(catalog_items_url).json()
 
-                seller_price = None
-                if "results" not in catalog_items_response:
-                    # No winners found (?)
-                    continue
-                for catalog_item in catalog_items_response["results"]:
-                    if catalog_item["seller_id"] == seller_id:
-                        seller_price = catalog_item["price"]
-
-                winning_item = catalog_items_response["results"][0]
-
-                if not seller_price:
-                    continue
-
-                print(
-                    catalog_product_id,
-                    catalog_response["name"],
-                    catalog_response["permalink"],
-                    item["id"],
-                    seller_price,
-                    catalog_response["buy_box_winner"]["seller_id"] == seller_id,
-                    winning_item["price"],
-                    sep="¬",
+                result.append(
+                    {
+                        "item": item,
+                        "catalog": catalog_response,
+                        "catalog_items": catalog_items_response,
+                    }
                 )
 
             page += 1
+        return result

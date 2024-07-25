@@ -139,7 +139,7 @@ class MisBeneficios(Store):
             "extensions": {
                 "persistedQuery": {
                     "version": 1,
-                    "sha256Hash": "bd106246d3789d99ede7ac3fee9c4a1e5576f3ae0dec8b0c05a41a6e082c76fb",
+                    "sha256Hash": "9c99c65417b4324a74eb55fc8d6792f18950e0119e3e210088765cf06b97c017",
                 },
                 "variables": base64.b64encode(
                     json.dumps(variables).encode("utf-8")
