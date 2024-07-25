@@ -250,6 +250,7 @@ from .siman_nicaragua import SimanNicaragua
 from .sipo_online import SipoOnline
 from .smart_deal import SmartDeal
 from .smart_mobile import SmartMobile
+from .smart_store import SmartStore
 from .sodimac import Sodimac
 from .sodimac_peru import SodimacPeru
 from .sodimac_uruguay import SodimacUruguay
