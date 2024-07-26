@@ -137,7 +137,7 @@ class Netxa(StoreWithUrlExtensions):
             picture_urls = None
         description = product_data["description"]
 
-        pricing_tag = soup.find("div", "custom-prices")
+        pricing_tag = soup.find("ul", "custom-prices")
 
         if pricing_tag:
             price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
