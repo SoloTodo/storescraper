@@ -39,7 +39,7 @@ class MercadoLibrePeruLg(MercadoLibreChile):
                 break
             for container in product_containers:
                 product_url = (
-                    container.find("a", "ui-search-link")["href"]
+                    container.find("a", "poly-component__title")["href"]
                     .split("#")[0]
                     .split("?")[0]
                 )
