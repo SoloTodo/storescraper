@@ -49,7 +49,7 @@ class Netxa(StoreWithUrlExtensions):
         ["ventiladores-y-sistemas-de-enfriamiento", CPU_COOLER],
         ["2-en-1", NOTEBOOK],
         ["portatiles", NOTEBOOK],
-        ["tableta", TABLET],
+        ["tablet", TABLET],
         ["todo-en-uno", ALL_IN_ONE],
         ["impresoras-ink-jet", PRINTER],
         ["impresoras-laser", PRINTER],
@@ -66,11 +66,6 @@ class Netxa(StoreWithUrlExtensions):
         ["parlantes-bocinas-cornetas", STEREO_SYSTEM],
         ["ratones", MOUSE],
         ["teclados-y-teclados-de-numeros", KEYBOARD],
-        ["audio-gamer", HEADPHONES],
-        ["monitor-gamer", MONITOR],
-        ["mouse-teclado-gamer", MOUSE],
-        ["notebook-gamer", NOTEBOOK],
-        ["tarjeta-video-gamer", VIDEO_CARD],
     ]
 
     @classmethod
