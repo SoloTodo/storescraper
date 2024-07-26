@@ -703,121 +703,6 @@ class Paris(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
-        base_url = "https://www.paris.cl/{}"
-
-        sections_data = [
-            [bs.HOME, "Home", bs.SUBSECTION_TYPE_HOME, ""],
-            # [bs.LINEA_BLANCA_PARIS, 'Línea Blanca Paris',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'linea-blanca/'],
-            # [bs.ELECTRO_PARIS, 'Electro Paris',
-            #  bs.SUBSECTION_TYPE_CATEGORY_PAGE, 'electro/'],
-            [
-                bs.TECNO_PARIS,
-                "Tecno Paris",
-                bs.SUBSECTION_TYPE_CATEGORY_PAGE,
-                "tecnologia/",
-            ],
-            [
-                bs.REFRIGERATION,
-                "Refrigeración",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/refrigeracion/",
-            ],
-            [
-                bs.REFRIGERATION,
-                "No Frost",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/refrigeracion/no-frost/",
-            ],
-            [
-                bs.REFRIGERATION,
-                "Side by Side",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/refrigeracion/refrigeradores/"
-                "refrigerador-side-by-side/",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavado y Secado",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/lavado-secado/",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Todas las Lavadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/lavado-secado/todas/",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Lavadora-Secadoras",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/lavado-secado/lavadoras-secadoras/",
-            ],
-            [
-                bs.WASHING_MACHINES,
-                "Secadoras y Centrifugas",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "linea-blanca/lavado-secado/secadoras-centrifugas/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Televisión",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/television/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Todas las TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/television/todas/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Smart TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/television/smart-tv/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Televisores LED",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/television/televisores-led/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Oled y Qled",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "television/televisores-oled-qled/",
-            ],
-            [
-                bs.TELEVISIONS,
-                "Monitor TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/television/monitores-tv/",
-            ],
-            [bs.AUDIO, "Audio", bs.SUBSECTION_TYPE_MOSAIC, "electro/audio/"],
-            [
-                bs.AUDIO,
-                "Parlantes Bluetooth y Portables",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/audio/parlantes-bluetooth-portables/",
-            ],
-            [
-                bs.AUDIO,
-                " Micro y Minicomponentes",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/audio/micro-minicomponentes/",
-            ],
-            [bs.CELLS, "Celulares", bs.SUBSECTION_TYPE_MOSAIC, "tecnologia/celulares/"],
-            [
-                bs.CELLS,
-                "Smartphones",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "tecnologia/celulares/smartphones/",
-            ],
-        ]
-
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -825,111 +710,25 @@ class Paris(Store):
         )
         banners = []
 
-        for section, subsection, subsection_type, url_suffix in sections_data:
-            url = base_url.format(url_suffix)
-            response = session.get(url)
-            print(url)
-            soup = BeautifulSoup(response.text, "lxml")
+        res = session.get("https://www.paris.cl/")
+        soup = BeautifulSoup(res.text, "lxml")
+        tags = soup.find("div", "slider-magazine").findAll("a", "GTM-promoclick")
 
-            if subsection_type == bs.SUBSECTION_TYPE_MOSAIC:
-                image = soup.find("section", "ocultar_banner_mobile")
+        for idx, tag in enumerate(tags):
+            picture_url = tag["data-creative"]
 
-                if not image:
-                    image = soup.find("section", "ocultar_banner_plp_mobile")
-
-                if not image:
-                    continue
-
-                if image.find("a"):
-                    destination_urls = [image.find("a")["href"]]
-                else:
-                    destination_urls = []
-
-                picture = image.find("picture")
-
-                if not picture:
-                    continue
-
-                if picture.find("source"):
-                    picture_url = picture.find("source")["srcset"]
-                else:
-                    picture_url = picture.find("img")["src"]
-
-                banners.append(
-                    {
-                        "url": url,
-                        "picture_url": picture_url,
-                        "destination_urls": destination_urls,
-                        "key": picture_url,
-                        "position": 1,
-                        "section": section,
-                        "subsection": subsection,
-                        "type": subsection_type,
-                    }
-                )
-            elif subsection_type == bs.SUBSECTION_TYPE_HOME:
-                res = session.get("https://www.paris.cl/")
-                soup = BeautifulSoup(res.text, "lxml")
-                tags = soup.find("div", {"id": "__next"}).find("section").findAll("a")
-
-                for idx, tag in enumerate(tags):
-                    picture_url = tag.find("source")["srcset"]
-
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": [tag["href"][:500]],
-                            "key": picture_url,
-                            "position": idx + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
-            elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
-                image_container = soup.find("div", "home-slider")
-
-                if not image_container:
-                    image_container = soup.find("div", "hero-slider")
-                if not image_container:
-                    image_container = soup.find("div", "slick-slider")
-                if not image_container:
-                    image_container = soup.find("div", "slider-magazine")
-                if not image_container:
-                    image_container = soup.find("section", "horizontal-scrollable")
-
-                images = image_container.findAll("a")
-                images = [i for i in images if i.find("picture")]
-
-                assert len(images) > 0
-
-                for index, image in enumerate(images):
-                    picture_url = image.find("picture").find("source")["srcset"]
-                    destination_url = image.get("href")
-                    if destination_url:
-                        destination_urls = [destination_url]
-
-                        if len(destination_url) > 255:
-                            continue
-                    else:
-                        destination_urls = []
-
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": index + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
-            else:
-                raise Exception("Invalid subsection type " "{}".format(subsection_type))
-
+            banners.append(
+                {
+                    "url": "https://www.paris.cl/",
+                    "picture_url": picture_url,
+                    "destination_urls": [tag["href"][:500]],
+                    "key": picture_url,
+                    "position": idx + 1,
+                    "section": "Home",
+                    "subsection": bs.SUBSECTION_TYPE_HOME,
+                    "type": bs.HOME,
+                }
+            )
         return banners
 
     @classmethod
