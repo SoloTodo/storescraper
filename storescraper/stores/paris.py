@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+import urllib
 from collections import defaultdict
 from decimal import Decimal
 
@@ -10,11 +11,30 @@ from dateutil.parser import parse
 
 from storescraper.categories import (
     GAMING_CHAIR,
-    GAMING_DESK,
     TELEVISION,
     VACUUM_CLEANER,
     WATER_HEATER,
     STOVE,
+    STEREO_SYSTEM,
+    HEADPHONES,
+    CELL,
+    WEARABLE,
+    TABLET,
+    NOTEBOOK,
+    VIDEO_GAME_CONSOLE,
+    PRINTER,
+    MONITOR,
+    SOLID_STATE_DRIVE,
+    PROJECTOR,
+    MOUSE,
+    KEYBOARD,
+    COMPUTER_CASE,
+    REFRIGERATOR,
+    WASHING_MACHINE,
+    DISH_WASHER,
+    OVEN,
+    SPACE_HEATER,
+    AIR_CONDITIONER,
 )
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
@@ -28,402 +48,142 @@ class Paris(Store):
     RESULTS_PER_PAGE = 24
 
     category_paths = [
-        ["electro/television", ["Television"], "Electro > Televisión", 1],
+        ["tecnologia/computadores/tablets/", TABLET, 1],
+        ["electro/audio/audifonos/", HEADPHONES, 1],
+        ["electro/audio/parlantes-bluetooth-portables/", STEREO_SYSTEM, 1],
+        ["electro/television/", TELEVISION, 1],
+        ["electro/television/smart-tv/", TELEVISION, 1],
+        ["electro/television/televisores-led/", TELEVISION, 1],
+        ["television/televisores-oled-qled/", TELEVISION, 1],
+        ["electro/television/soundbar-home-theater/", STEREO_SYSTEM, 1],
+        ["electro/audio/", STEREO_SYSTEM, 0],
+        ["electro/audio/micro-minicomponentes/", STEREO_SYSTEM, 1],
+        ["electro/audio/audifonos-inalambricos/", HEADPHONES, 1],
+        ["electro/audio-hifi/", STEREO_SYSTEM, 1],
+        ["electro/audio-hifi/audifonos/", HEADPHONES, 1],
+        ["electro/audio-hifi/home-theater/", STEREO_SYSTEM, 1],
+        ["electro/audio-hifi/audio/", STEREO_SYSTEM, 1],
+        ["electro/audio-hifi/parlantes/", STEREO_SYSTEM, 1],
+        ["electro/elige-tu-pulgada/", TELEVISION, 1],
+        ["electro/elige-tu-pulgada/30-a-39-pulgadas/", TELEVISION, 1],
+        ["electro/elige-tu-pulgada/40-a-49-pulgadas/", TELEVISION, 1],
+        ["electro/elige-tu-pulgada/50-a-59-pulgadas/", TELEVISION, 1],
+        ["electro/elige-tu-pulgada/60-o-mas-pulgadas/", TELEVISION, 1],
+        ["electro/elige-tu-pulgada/70-o-mas-pulgadas/", TELEVISION, 1],
+        ["tecnologia/celulares/", CELL, 1],
+        ["tecnologia/celulares/smartphone/", CELL, 1],
+        ["tecnologia/celulares/iphone/", CELL, 1],
+        ["tecnologia/celulares/samsung/", CELL, 1],
+        ["tecnologia/celulares/xiaomi/", CELL, 1],
+        ["tecnologia/celulares/motorola/", CELL, 1],
+        ["tecnologia/celulares/honor/", CELL, 1],
+        ["tecnologia/celulares/vivo/", CELL, 1],
+        ["tecnologia/celulares/basicos/", CELL, 1],
+        ["tecnologia/celulares/oppo/", CELL, 1],
+        ["tecnologia/computadores/", NOTEBOOK, 0],
+        ["tecnologia/computadores/notebooks/", NOTEBOOK, 1],
+        ["tecnologia/computadores/ipad-tablet/", TABLET, 1],
+        ["tecnologia/computadores/tablets-ninos/", TABLET, 1],
+        ["tecnologia/computadores/apple/", NOTEBOOK, 1],
+        ["tecnologia/wearables/", WEARABLE, 1],
+        ["tecnologia/wearables/smartwatches/", WEARABLE, 1],
+        ["tecnologia/wearables/smartwatches-ninos/", WEARABLE, 1],
+        ["tecnologia/wearables/smartband/", WEARABLE, 1],
+        ["tecnologia/consolas-videojuegos/", VIDEO_GAME_CONSOLE, 0],
+        ["tecnologia/consolas-videojuegos/playstation2/", VIDEO_GAME_CONSOLE, 1],
+        ["tecnologia/consolas-videojuegos/nintendo/", VIDEO_GAME_CONSOLE, 1],
+        ["tecnologia/consolas-videojuegos/xbox/", VIDEO_GAME_CONSOLE, 1],
+        ["tecnologia/consolas-videojuegos/consolas-nintendo/", VIDEO_GAME_CONSOLE, 1],
         [
-            "electro/television/smart-tv",
-            ["Television"],
-            "Electro > Televisión > Smart TV",
+            "tecnologia/consolas-videojuegos/consolas-playstation/",
+            VIDEO_GAME_CONSOLE,
             1,
         ],
+        ["tecnologia/consolas-videojuegos/consolas-xbox/", VIDEO_GAME_CONSOLE, 1],
+        ["tecnologia/impresoras/", PRINTER, 1],
+        ["tecnologia/impresoras/laser/", PRINTER, 1],
+        ["tecnologia/impresoras/tinta/", PRINTER, 1],
+        ["tecnologia/impresoras/termicas-portatiles/", PRINTER, 1],
+        ["tecnologia/impresoras/impresoras-3d/", PRINTER, 1],
+        ["tecnologia/impresoras/impresion-industrial/", PRINTER, 1],
+        ["tecnologia/impresoras/rotuladores/", PRINTER, 1],
+        ["tecnologia/accesorios-computacion/monitor-gamer/", MONITOR, 1],
+        ["tecnologia/accesorios-computacion/disco-duro/", SOLID_STATE_DRIVE, 1],
+        ["tecnologia/accesorios-computacion/proyectores/", PROJECTOR, 1],
+        ["tecnologia/accesorios-computacion/mouse-teclados/", MOUSE, 1],
+        ["tecnologia/accesorios-computacion/audifonos-microfonos/", HEADPHONES, 1],
+        ["tecnologia/computadores/pc-gamer/", NOTEBOOK, 1],
+        ["tecnologia/gamer/teclados/", KEYBOARD, 1],
+        ["tecnologia/gamer/headset/", HEADPHONES, 1],
+        ["tecnologia/gamer/sillas-escritorios-gamer/", GAMING_CHAIR, 1],
+        ["tecnologia/gamer/gabinetes/", COMPUTER_CASE, 1],
+        ["linea-blanca/refrigeracion/", REFRIGERATOR, 1],
+        ["linea-blanca/refrigeracion/freezer/", REFRIGERATOR, 1],
         [
-            "electro/television/televisores-led",
-            ["Television"],
-            "Electro > Televisión > Televisores LED",
+            "linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side/",
+            REFRIGERATOR,
             1,
         ],
-        [
-            "television/televisores-oled-qled",
-            ["Television"],
-            "Electro > Televisión > Oled y Qled",
-            1,
-        ],
-        [
-            "electro/television/soundbar-home-theater",
-            ["StereoSystem"],
-            "Electro > Televisión > Soundbar y Home Theater",
-            1,
-        ],
-        ["electro/elige-tu-pulgada", [TELEVISION], "Electro > Elige tu pulgada", 1],
-        # Also contains other audio products
-        ["electro/audio", ["StereoSystem", "Headphones"], "Electro > Audio", 0],
-        [
-            "electro/audio/parlantes-bluetooth-portables",
-            ["StereoSystem"],
-            "Electro > Audio > Parlantes Bluetooth y Portables",
-            1,
-        ],
-        [
-            "electro/audio/micro-minicomponentes",
-            ["StereoSystem"],
-            "Electro > Audio > Micro y Minicomponentes",
-            1,
-        ],
-        ["electro/audio/audifonos", ["Headphones"], "Electro > Audio > Audífonos", 1],
-        [
-            "electro/audio/audifonos-inalambricos",
-            ["Headphones"],
-            "Electro > Audio > Audífonos Inalámbricos",
-            1,
-        ],
-        # Also contains other audio products
-        ["electro/audio-hifi", ["Headphones", "StereoSystem"], "Electro > HiFi", 0],
-        [
-            "electro/audio-hifi/audifonos",
-            ["Headphones"],
-            "Electro > HiFi > Audifonos HiFi",
-            1,
-        ],
-        # ['electro/audio-hifi/home-theater', ['StereoSystem'],
-        #  'Electro > HiFi > Home Cinema', 1],
-        [
-            "electro/audio-hifi/audio",
-            ["StereoSystem"],
-            "Electro > HiFi > Audio HiFi",
-            1,
-        ],
-        [
-            "electro/audio-hifi/parlantes",
-            ["StereoSystem"],
-            "Electro > HiFi > Parlantes HIFI",
-            1,
-        ],
-        ["electro/audio-hifi", ["StereoSystem"], "Electro > HiFi > Combos HIFI", 1],
-        [
-            "tecnologia/computadores",
-            ["Notebook", "Tablet", "AllInOne"],
-            "Tecno > Computadores",
-            0.5,
-        ],
-        [
-            "tecnologia/computadores/notebooks",
-            ["Notebook"],
-            "Tecno > Computadores > Notebooks",
-            1,
-        ],
-        [
-            "tecnologia/computadores/pc-gamer",
-            ["Notebook"],
-            "Tecno > Computadores > PC Gamers",
-            1,
-        ],
-        [
-            "tecnologia/computadores/desktop-all-in-one",
-            ["AllInOne"],
-            "Tecno > Computadores > Desktop y All InOne",
-            1,
-        ],
-        [
-            "tecnologia/computadores/ipad-tablet",
-            ["Tablet"],
-            "Tecno > Computadores > iPad y Tablet",
-            1,
-        ],
-        # Also includes accesories
-        # ['tecnologia/celulares', ['Cell', 'Wearables'],
-        #  'Tecno > Celulares', 0],
-        [
-            "tecnologia/celulares/smartphones",
-            ["Cell"],
-            "Tecno > Celulares > Smartphones",
-            1,
-        ],
-        ["tecnologia/celulares/basicos", ["Cell"], "Tecno > Celulares > Básicos", 1],
-        [
-            "tecnologia/wearables/smartwatches",
-            ["Wearable"],
-            "Tecno > Wearables > Smartwatches",
-            1,
-        ],
-        [
-            "tecnologia/wearables/smartband",
-            ["Wearable"],
-            "Tecno > Wearables > Smartband",
-            1,
-        ],
-        [
-            "tecnologia/gamers",
-            ["Notebook", "VideoGameConsole", "Keyboard", "Headphones"],
-            "Tecno > Gamers",
-            0.5,
-        ],
-        [
-            "tecnologia/gamer/teclados",
-            ["Keyboard"],
-            "Tecno > Gamers > Teclados y Mouse",
-            1,
-        ],
-        ["tecnologia/gamer/headset", ["Headphones"], "Tecno > Gamers > Headset", 1],
-        # Also includes videogames
-        [
-            "tecnologia/consolas-videojuegos",
-            ["VideoGameConsole"],
-            "Tecno > Consolas VideoJuegos",
-            0,
-        ],
-        [
-            "tecnologia/consolas-videojuegos/playstation1",
-            ["VideoGameConsole"],
-            "Tecno > Consolas VideoJuegos > Consolas PlayStation",
-            1,
-        ],
-        [
-            "tecnologia/consolas-videojuegos/nintendo",
-            ["VideoGameConsole"],
-            "Tecno > Consolas VideoJuegos > Consolas Nintendo",
-            1,
-        ],
-        [
-            "tecnologia/impresoras/laser",
-            ["Printer"],
-            "Tecno > Impresoras > Impresión Láser",
-            1,
-        ],
-        [
-            "tecnologia/impresoras/tinta",
-            ["Printer"],
-            "Tecno > Impresoras > Impresión de Tinta",
-            1,
-        ],
-        # Also includes other accesories
-        [
-            "tecnologia/accesorios-fotografia",
-            ["MemoryCard"],
-            "Tecno > Accesorios Fotografía",
-            0,
-        ],
-        [
-            "tecnologia/accesorios-fotografia/tarjetas-memoria",
-            ["MemoryCard"],
-            "Tecno > Accesorios Fotografía > Tarjetas de Memoria",
-            1,
-        ],
-        # Also includes other accesories
-        [
-            "tecnologia/accesorios-computacion/monitor-gamer",
-            ["Monitor"],
-            "Tecno > Accesorios Computación > Monitores Gamer",
-            1,
-        ],
-        [
-            "tecnologia/accesorios-computacion/disco-duro",
-            ["ExternalStorageDrive"],
-            "Tecno > Accesorios Computación > Discos Duros",
-            1,
-        ],
-        [
-            "tecnologia/accesorios-computacion/proyectores",
-            ["Projector"],
-            "Tecno > Accesorios Computación > Proyectores",
-            1,
-        ],
-        [
-            "tecnologia/accesorios-computacion/mouse-teclados",
-            ["Mouse"],
-            "Tecno > Accesorios Computación > Mouse y Teclados",
-            1,
-        ],
-        [
-            "tecnologia/accesorios-computacion/pendrives",
-            ["UsbFlashDrive"],
-            "Tecno > Accesorios Computación > Pendrives",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion/refrigeradores",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > Refrigeradores",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion/refrigeradores/no-frost",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > No Frost",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion/refrigeradores/" "refrigerador-top-mount",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > Top Mount",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion/refrigeradores/" "refrigerador-bottom-freezer",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > Bottom Freezer",
-            1,
-        ],
-        [
-            "linea-blanca/refrigeracion/refrigeradores/refrigerador-side-by-side",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > Side by Side",
-            1,
-        ],
-        # ['linea-blanca/refrigeracion/frio-directo', ['Refrigerator'],
-        #  'Línea Blanca > Refrigeración > Frío Directo', 1],
-        # ['linea-blanca/refrigeracion/freezer', ['Refrigerator'],
-        #  'Línea Blanca > Refrigeración > Freezer', 1],
-        [
-            "linea-blanca/refrigeracion/frigobar-cavas",
-            ["Refrigerator"],
-            "Línea Blanca > Refrigeración > Frigobares y Cavas",
-            1,
-        ],
-        [
-            "linea-blanca/lavado-secado",
-            ["WashingMachine", "DishWasher"],
-            "Línea Blanca > Lavado y Secado",
-            0.5,
-        ],
-        [
-            "linea-blanca/lavado-secado/todas",
-            ["WashingMachine"],
-            "Línea Blanca > Lavado y Secado > Todas las Lavadoras",
-            1,
-        ],
-        [
-            "linea-blanca/lavado-secado/lavadoras-secadoras",
-            ["WashingMachine"],
-            "Línea Blanca > Lavado y Secado > Lavadora-Secadoras",
-            1,
-        ],
-        [
-            "linea-blanca/lavado-secado/secadoras-centrifugas",
-            ["WashingMachine"],
-            "Línea Blanca > Lavado y Secado > Secadoras y Centrifugas",
-            1,
-        ],
+        ["linea-blanca/refrigeracion/refrigeradores/", REFRIGERATOR, 1],
+        ["linea-blanca/refrigeracion/refrigeradores/no-frost/", REFRIGERATOR, 1],
+        ["linea-blanca/refrigeracion/frigobar-cavas/", REFRIGERATOR, 1],
+        ["linea-blanca/equipamiento-industrial/refrigeracion/", REFRIGERATOR, 1],
+        ["linea-blanca/lavado-secado/", WASHING_MACHINE, 1],
         [
             "linea-blanca/lavado-secado/todas/?prefn1=lavadoTipodeCarga&prefv1=Frontal",
-            ["WashingMachine"],
-            "Línea Blanca > Lavado y Secado > Todas las Lavadoras Frontales",
+            WASHING_MACHINE,
             1,
         ],
         [
             "linea-blanca/lavado-secado/todas/?prefn1=lavadoTipodeCarga&prefv1=Superior",
-            ["WashingMachine"],
-            "Línea Blanca > Lavado y Secado > Todas las Lavadoras Superior",
+            WASHING_MACHINE,
+            1,
+        ],
+        ["linea-blanca/lavado-secado/todas/", WASHING_MACHINE, 1],
+        ["linea-blanca/lavado-secado/lavadoras-secadoras/", WASHING_MACHINE, 1],
+        ["linea-blanca/lavado-secado/secadoras-centrifugas/", WASHING_MACHINE, 1],
+        ["linea-blanca/lavado-secado/lavavajillas/", DISH_WASHER, 1],
+        ["linea-blanca/cocina/", STOVE, 0],
+        ["linea-blanca/cocina/cocinas/", STOVE, 1],
+        ["linea-blanca/cocina/encimeras/", STOVE, 1],
+        ["linea-blanca/cocina/hornos-empotrables/", OVEN, 1],
+        ["linea-blanca/cocina/kit-empotrables/", STOVE, 1],
+        ["linea-blanca/electrodomesticos/microondas/", OVEN, 1],
+        ["linea-blanca/electrodomesticos/hornos-electricos/", OVEN, 1],
+        ["linea-blanca/estufas/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/electricas/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/parafina/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/gas/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/lena-pellets/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/calefaccion-exterior/", SPACE_HEATER, 1],
+        ["linea-blanca/estufas/calefones-termos/", WATER_HEATER, 1],
+        ["linea-blanca/electrodomesticos/aspiradoras-enceradoras/", VACUUM_CLEANER, 1],
+        ["linea-blanca/aspirado-limpieza/aspiradoras-arrastre/", VACUUM_CLEANER, 1],
+        ["linea-blanca/aspirado-limpieza/aspiradoras-robot/", VACUUM_CLEANER, 1],
+        ["linea-blanca/aspirado-limpieza/aspiradoras-verticales/", VACUUM_CLEANER, 1],
+        ["linea-blanca/climatizacion/", AIR_CONDITIONER, 1],
+        [
+            "linea-blanca/climatizacion/aires-acondicionado/aires-acondicionados-portatiles/",
+            AIR_CONDITIONER,
             1,
         ],
         [
-            "linea-blanca/lavado-secado/lavavajillas",
-            ["DishWasher"],
-            "Línea Blanca > Lavado y Secado > Lavavajillas",
+            "linea-blanca/climatizacion/aires-acondicionado/aires-acondicionados-split/",
+            AIR_CONDITIONER,
             1,
         ],
-        # Also includes campanas
-        ["linea-blanca/cocina", ["Oven"], "Línea Blanca > Cocinas", 0],
-        [
-            "linea-blanca/cocina/encimeras",
-            ["Oven"],
-            "Línea Blanca > Cocinas > Encimeras",
-            1,
-        ],
-        [
-            "linea-blanca/cocina/hornos-empotrables",
-            ["Oven"],
-            "Línea Blanca > Cocinas > Hornos y Microondas empotrables",
-            1,
-        ],
-        # Also includes other electrodomésticos
-        [
-            "linea-blanca/electrodomesticos",
-            ["Oven"],
-            "Línea Blanca > Electrodomésticos",
-            0,
-        ],
-        [
-            "linea-blanca/electrodomesticos/microondas",
-            ["Oven"],
-            "Línea Blanca > Electrodomésticos > Microondas",
-            1,
-        ],
-        # Also includes ventiladores
-        [
-            "linea-blanca/climatizacion",
-            ["SpaceHeater", "AirConditioner"],
-            "Línea Blanca > Climatización",
-            0,
-        ],
-        [
-            "linea-blanca/climatizacion/aires-acondicionado",
-            ["AirConditioner"],
-            "Línea Blanca > Climatización > Aire Acondicionado",
-            1,
-        ],
-        ["linea-blanca/estufas", ["SpaceHeater"], "Línea Blanca > Estufas", 1],
-        [
-            "linea-blanca/estufas/electricas",
-            ["SpaceHeater"],
-            "Línea Blanca > Estufas > Estufas Eléctricas",
-            1,
-        ],
-        [
-            "linea-blanca/electrodomesticos/aspiradoras-enceradoras",
-            [VACUUM_CLEANER],
-            "Línea Blanca > Electrodomésticos > Aspiradoras y Enceradoras",
-            1,
-        ],
-        [
-            "electro/television/accesorios-televisores",
-            ["CellAccesory"],
-            "Electro > Televisión > Accesorios para TV",
-            1,
-        ],
-        [
-            "muebles/oficina/sillas/sillas-gamer",
-            [GAMING_CHAIR],
-            "Muebles > Oficina > Sillas de Escritorio",
-            1,
-        ],
-        [
-            "tecnologia/gamers/escritorios-gamer",
-            [GAMING_DESK],
-            "Tecno > Gamer > Escritorios Gamer",
-            1,
-        ],
-        [
-            "linea-blanca/estufas/calefones-termos",
-            [WATER_HEATER],
-            "Electro y Línea Blanca > Calefacción > Calefont y Termos",
-            1,
-        ],
-        [
-            "linea-blanca/cocina/cocinas",
-            [STOVE],
-            "Electro y Línea Blanca > Cocina > Cocinas",
-            1,
-        ],
-        [
-            "linea-blanca/cocina/encimeras",
-            [STOVE],
-            "Electro y Línea Blanca > Cocina > Encimeras",
-            1,
-        ],
+        ["linea-blanca/climatizacion/aires-acondicionado/", AIR_CONDITIONER, 1],
+        ["linea-blanca/climatizacion/ventilacion/", AIR_CONDITIONER, 1],
+        ["linea-blanca/climatizacion/tratamiento-aire/", AIR_CONDITIONER, 1],
     ]
 
     @classmethod
     def categories(cls):
         cats = []
         for entry in cls.category_paths:
-            for cat in entry[1]:
-                if cat not in cats:
-                    cats.append(cat)
+            cat = entry[1]
+            if cat not in cats:
+                cats.append(cat)
 
         return cats
 
@@ -434,79 +194,91 @@ class Paris(Store):
 
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = cls.USER_AGENT
+        session.headers["apiKey"] = "cl-ccom-parisapp-plp"
+        session.headers["platform"] = "web"
+
         product_entries = defaultdict(lambda: [])
 
-        if fast_mode:
-            seller_filter = "prefn1=isMarketplace&prefv1=Paris&"
-        else:
-            seller_filter = ""
-
         for e in category_paths:
-            category_path, local_categories, section_name, category_weight = e
+            (category_path, local_category, weight) = e
 
-            if category not in local_categories:
+            if local_category != category:
                 continue
+
+            base_url = "https://www.paris.cl/" + category_path
+            logging.info("Obtaining base section data from " + base_url)
+            response = session.get(base_url)
+            soup = BeautifulSoup(response.text, "lxml")
+            category_id = re.search(
+                r'dw\.ac\.applyContext\(\{category: "(.+)"', response.text
+            ).groups()[0]
+            breadcrumbs_tag = soup.find("div", "PLPbreadcrumbs")
+            breadcrumbs = []
+            for link_tag in breadcrumbs_tag.find_all("a", "breadcrumb-element"):
+                breadcrumbs.append(link_tag.text.strip())
+            breadcrumbs.append(
+                breadcrumbs_tag.find("span", "breadcrumb-result-text").text.strip()
+            )
+            added_filters_breadcrumbs_tag = soup.find("div", "clear-refinement")
+            if added_filters_breadcrumbs_tag:
+                for added_filters_breadcrumb in added_filters_breadcrumbs_tag.findAll(
+                    "span"
+                ):
+                    filter_breadcrumb = added_filters_breadcrumb.text.strip()
+                    if filter_breadcrumb:
+                        breadcrumbs.append(filter_breadcrumb)
+            section_name = " > ".join(breadcrumbs)
+
+            parsed_url = urllib.parse.urlparse(base_url)
+            url_params = urllib.parse.parse_qs(parsed_url.query)
+
+            filters = ["cgid=" + category_id]
+
+            filter_idx = 1
+            while True:
+                label_name = "prefn" + str(filter_idx)
+                if label_name in url_params:
+                    filter_name = url_params[label_name][0]
+                    filter_value = url_params["prefv" + str(filter_idx)][0]
+                    filters.append("{}={}".format(filter_name, filter_value))
+                else:
+                    break
+                filter_idx += 1
+
+            if fast_mode:
+                filters.append("isMarketplace=Paris")
 
             page = 0
 
             while True:
                 if page > (15000 / cls.RESULTS_PER_PAGE):
-                    raise Exception("Page overflow: " + category_path)
+                    raise Exception("Page overflow: " + category_id)
 
-                if "?" in category_path:
-                    separator = "&"
-                else:
-                    separator = "/?"
+                filter_strings = []
+                for idx, filter_str in enumerate(filters):
+                    filter_strings.append("refine_{}={}".format(idx + 1, filter_str))
+                filters_query = "&".join(filter_strings)
 
-                category_url = "https://www.paris.cl/{}{}{}sz={}&start={}" "".format(
-                    category_path,
-                    separator,
-                    seller_filter,
-                    cls.RESULTS_PER_PAGE,
-                    page * cls.RESULTS_PER_PAGE,
+                endpoint = "https://cl-ccom-parisapp-plp.ecomm.cencosud.cl/v2/getServicePLP/0/{}/24?{}".format(
+                    page * cls.RESULTS_PER_PAGE, filters_query
                 )
-                print(category_url)
-                response = session.get(category_url)
+                logging.info(endpoint)
+                response = session.get(endpoint)
 
-                if response.url != category_url:
-                    raise Exception(
-                        "Mismatching URL: {} - {}".format(response.url, category_url)
+                json_response = response.json()
+                containers_data = json_response["payload"]["data"]
+
+                if "hits" not in containers_data:
+                    break
+
+                for idx, container in enumerate(containers_data["hits"]):
+                    product_url = "https://www.paris.cl/product-{}.html".format(
+                        container["product_id"]
                     )
-
-                soup = BeautifulSoup(response.text, "lxml")
-                containers = soup.find("ul", {"id": "search-result-items"})
-
-                if not containers:
-                    break
-
-                containers = containers.findAll("li", recursive=False)
-
-                if not containers:
-                    if page == 0:
-                        logging.warning("Empty category: " + category_url)
-                    break
-
-                for idx, container in enumerate(containers):
-                    product_link = container.find("a")
-                    if not product_link:
-                        continue
-                    product_url = product_link["href"].split("?")[0]
-
-                    if product_url.startswith("/"):
-                        product_url = "https://www.paris.cl" + product_url
-
-                    if product_url == "null":
-                        continue
-
-                    if product_url == "javascript:void(0);":
-                        continue
-
-                    if "https" not in product_url:
-                        product_url = "https://www.paris.cl" + product_url
 
                     product_entries[product_url].append(
                         {
-                            "category_weight": category_weight,
+                            "category_weight": weight,
                             "section_name": section_name,
                             "value": cls.RESULTS_PER_PAGE * page + idx + 1,
                         }
@@ -571,6 +343,8 @@ class Paris(Store):
         product_match = re.search(
             r"window.productJSON = ([\s\S]+)window.device", response.text
         )
+        if not product_match:
+            return []
         product_data = json.loads(product_match.groups()[0])
 
         brand = product_data.get("brand", "Unknown")
@@ -680,7 +454,7 @@ class Paris(Store):
             name[:200],
             cls.__name__,
             category,
-            url,
+            response.url,
             url,
             sku,
             stock,
