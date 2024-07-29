@@ -94,7 +94,10 @@ class MyaOutlet(StoreWithUrlExtensions):
         if not part_number and category == NOTEBOOK:
             stock = 0
 
-        offer_price = Decimal(json_data["offers"][0]["price"])
+        offer = json_data["offers"][0]
+        offer_price = (
+            Decimal(offer["price"]) if "price" in offer else Decimal(offer["lowPrice"])
+        )
         normal_price = (offer_price * Decimal("1.04")).quantize(0)
 
         if "image" in json_data:
