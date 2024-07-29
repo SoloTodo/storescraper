@@ -79,64 +79,109 @@ class MyaOutlet(StoreWithUrlExtensions):
 
         name = json_data["name"]
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
+        picture_urls = []
+        figures = soup.find("div", "woocommerce-product-gallery__wrapper")
+        picture_urls = [img["src"] for img in figures.findAll("img")]
+        variants_form = soup.find("form", "variations_form cart")
 
-        if json_data["offers"][0]["availability"] == "http://schema.org/InStock":
-            stock = -1
+        if variants_form:
+            products = []
+            variants_json = json.loads(variants_form["data-product_variations"])
+
+            for variant in variants_json:
+                variant_id = str(variant["variation_id"])
+                variant_condition = variant["attributes"]["attribute_estado"]
+                condition = None
+
+                if "sellado" in variant_condition.lower():
+                    condition = "https://schema.org/NewCondition"
+                elif "open box" in variant_condition.lower():
+                    condition = "https://schema.org/OpenBoxCondition"
+
+                variant_name = f"{name} - {variant_condition}"
+                offer_price = Decimal(variant["display_price"])
+                normal_price = (offer_price * Decimal("1.04")).quantize(0)
+                sku = variant["sku"]
+                stock = -1 if variant["is_in_stock"] == True else 0
+
+                p = Product(
+                    variant_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    variant_id,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    "CLP",
+                    condition=condition,
+                    sku=sku,
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+
+            return products
         else:
-            stock = 0
+            if json_data["offers"][0]["availability"] == "http://schema.org/InStock":
+                stock = -1
+            else:
+                stock = 0
 
-        supplied_part_number = json_data["sku"]
-        if isinstance(supplied_part_number, str):
-            part_number = supplied_part_number
-        else:
-            part_number = None
+            supplied_part_number = json_data["sku"]
+            if isinstance(supplied_part_number, str):
+                part_number = supplied_part_number
+            else:
+                part_number = None
 
-        if not part_number and category == NOTEBOOK:
-            stock = 0
+            if not part_number and category == NOTEBOOK:
+                stock = 0
 
-        offer = json_data["offers"][0]
-        offer_price = (
-            Decimal(offer["price"]) if "price" in offer else Decimal(offer["lowPrice"])
-        )
-        normal_price = (offer_price * Decimal("1.04")).quantize(0)
+            offer = json_data["offers"][0]
+            offer_price = (
+                Decimal(offer["price"])
+                if "price" in offer
+                else Decimal(offer["lowPrice"])
+            )
+            normal_price = (offer_price * Decimal("1.04")).quantize(0)
 
-        if "image" in json_data:
-            picture_urls = [json_data["image"]]
-        else:
-            picture_urls = None
+            if "image" in json_data:
+                picture_urls = [json_data["image"]]
+            else:
+                picture_urls = None
 
-        description = json_data["description"]
+            description = json_data["description"]
 
-        if "SELLADO" in description:
-            condition = "https://schema.org/NewCondition"
-        elif "SIN CAJA" in description:
-            condition = "https://schema.org/OpenBoxCondition"
-        elif "VITRINA" in description:
-            condition = "https://schema.org/OpenBoxCondition"
-        elif "OPEN BOX" in description:
-            condition = "https://schema.org/OpenBoxCondition"
-        elif "SEGUNDA MANO" in description:
-            condition = "https://schema.org/UsedCondition"
-        elif "EXHIBICIÓN" in description:
-            condition = "https://schema.org/UsedCondition"
-        else:
-            condition = "https://schema.org/RefurbishedCondition"
+            if "SELLADO" in description:
+                condition = "https://schema.org/NewCondition"
+            elif "SIN CAJA" in description:
+                condition = "https://schema.org/OpenBoxCondition"
+            elif "VITRINA" in description:
+                condition = "https://schema.org/OpenBoxCondition"
+            elif "OPEN BOX" in description:
+                condition = "https://schema.org/OpenBoxCondition"
+            elif "SEGUNDA MANO" in description:
+                condition = "https://schema.org/UsedCondition"
+            elif "EXHIBICIÓN" in description:
+                condition = "https://schema.org/UsedCondition"
+            else:
+                condition = "https://schema.org/RefurbishedCondition"
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            normal_price,
-            offer_price,
-            "CLP",
-            sku=part_number,
-            picture_urls=picture_urls,
-            description=description,
-            part_number=part_number,
-            condition=condition,
-        )
-        return [p]
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                key,
+                stock,
+                normal_price,
+                offer_price,
+                "CLP",
+                sku=part_number,
+                picture_urls=picture_urls,
+                description=description,
+                part_number=part_number,
+                condition=condition,
+            )
+            return [p]
