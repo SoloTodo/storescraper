@@ -79,6 +79,7 @@ class MyaOutlet(StoreWithUrlExtensions):
 
         name = json_data["name"]
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
+        description = json_data["description"]
         picture_urls = []
         figures = soup.find("div", "woocommerce-product-gallery__wrapper")
         picture_urls = [img["src"] for img in figures.findAll("img")]
@@ -93,16 +94,20 @@ class MyaOutlet(StoreWithUrlExtensions):
                 variant_condition = variant["attributes"]["attribute_estado"]
                 condition = None
 
-                if "sellado" in variant_condition.lower():
+                if "Sellado" in variant_condition:
                     condition = "https://schema.org/NewCondition"
-                elif "open box" in variant_condition.lower():
+                elif "Open Box" in variant_condition:
                     condition = "https://schema.org/OpenBoxCondition"
 
                 variant_name = f"{name} - {variant_condition}"
                 offer_price = Decimal(variant["display_price"])
                 normal_price = (offer_price * Decimal("1.04")).quantize(0)
                 sku = variant["sku"]
-                stock = -1 if variant["is_in_stock"] == True else 0
+
+                if not sku and category == NOTEBOOK:
+                    stock = 0
+                else:
+                    stock = -1 if variant["is_in_stock"] == True else 0
 
                 p = Product(
                     variant_name,
@@ -116,7 +121,9 @@ class MyaOutlet(StoreWithUrlExtensions):
                     offer_price,
                     "CLP",
                     condition=condition,
+                    description=description,
                     sku=sku,
+                    part_number=sku,
                     picture_urls=picture_urls,
                 )
                 products.append(p)
@@ -149,8 +156,6 @@ class MyaOutlet(StoreWithUrlExtensions):
                 picture_urls = [json_data["image"]]
             else:
                 picture_urls = None
-
-            description = json_data["description"]
 
             if "SELLADO" in description:
                 condition = "https://schema.org/NewCondition"
