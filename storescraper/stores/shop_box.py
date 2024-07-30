@@ -86,6 +86,9 @@ class ShopBox(StoreWithUrlExtensions):
         page = 1
 
         while True:
+            if page > 20:
+                raise Exception("Page overflow: " + url_extension)
+
             url = f"https://www.shopbox.cl/product-category/{url_extension}/page/{page}"
             print(url)
             response = session.get(url)
