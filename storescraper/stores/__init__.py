@@ -244,6 +244,7 @@ from .sc_global import ScGlobal
 from .serco_import import SercoImport
 from .sevenwin import Sevenwin
 from .seven_gamer import SevenGamer
+from .shop_box import ShopBox
 from .sicot import Sicot
 from .siman_el_salvador import SimanElSalvador
 from .siman_nicaragua import SimanNicaragua
