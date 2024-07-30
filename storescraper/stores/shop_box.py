@@ -95,60 +95,60 @@ class ShopBox(StoreWithUrlExtensions):
         products_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text
         )
-        products = []
         key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
+        offers = products_data["offers"]
 
-        for offer in products_data["offers"]:
-            original_name = products_data["name"]
-            name = original_name[:256]
-            sku = str(products_data["sku"])
-            prices = [
-                int(price.text.replace(".", "").replace("$", ""))
-                for price in soup.find("table", {"id": "tabla-precios"}).findAll(
-                    "span", "woocommerce-Price-amount amount"
-                )
-            ]
-            prices = sorted(prices)[:2]
-            offer_price = Decimal(prices[0])
-            normal_price = Decimal(prices[1])
+        assert len(offers) == 1
 
-            if normal_price > Decimal("100000000") or offer_price > Decimal(
-                "100000000"
-            ):
-                return []
-
-            stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
-            picture_urls = [
-                tag.find("a")["href"]
-                for tag in soup.findAll("div", "woocommerce-product-gallery__image")
-            ]
-            description = html_to_markdown(products_data["description"])
-
-            if "reacondicionado" in original_name.lower():
-                condition = "https://schema.org/Refurbished"
-            elif "segunda mano" in original_name.lower():
-                condition = "https://schema.org/UsedCondition"
-            elif "caja abierta" in original_name.lower():
-                condition = "https://schema.org/OpenBoxCondition"
-            else:
-                condition = "https://schema.org/NewCondition"
-
-            p = Product(
-                name,
-                cls.__name__,
-                category,
-                url,
-                url,
-                key,
-                stock,
-                normal_price,
-                offer_price,
-                "CLP",
-                sku=sku,
-                picture_urls=picture_urls,
-                description=description,
-                condition=condition,
+        offer = offers[0]
+        original_name = products_data["name"]
+        name = original_name[:256]
+        sku = str(products_data["sku"])
+        prices = [
+            int(price.text.replace(".", "").replace("$", ""))
+            for price in soup.find("table", {"id": "tabla-precios"}).findAll(
+                "span", "woocommerce-Price-amount amount"
             )
-            products.append(p)
+        ]
+        prices = sorted(prices)[:2]
+        offer_price = Decimal(prices[0])
+        normal_price = Decimal(prices[1])
 
-        return products
+        if normal_price > Decimal("100000000") or offer_price > Decimal("100000000"):
+            return []
+
+        stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
+        picture_urls = [
+            tag.find("a")["href"]
+            for tag in soup.findAll("div", "woocommerce-product-gallery__image")
+        ]
+        description = html_to_markdown(products_data["description"])
+
+        if "reacondicionado" in original_name.lower():
+            condition = "https://schema.org/Refurbished"
+        elif "segunda mano" in original_name.lower():
+            condition = "https://schema.org/UsedCondition"
+        elif "caja abierta" in original_name.lower():
+            condition = "https://schema.org/OpenBoxCondition"
+        else:
+            condition = "https://schema.org/NewCondition"
+
+        p = Product(
+            name,
+            cls.__name__,
+            category,
+            url,
+            url,
+            key,
+            stock,
+            normal_price,
+            offer_price,
+            "CLP",
+            sku=sku,
+            picture_urls=picture_urls,
+            description=description,
+            condition=condition,
+            part_number=sku,
+        )
+
+        return [p]
