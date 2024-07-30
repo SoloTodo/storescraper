@@ -486,16 +486,20 @@ class Paris(Store):
 
         res = session.get("https://www.paris.cl/")
         soup = BeautifulSoup(res.text, "lxml")
-        tags = soup.find("div", "slider-magazine").findAll("a", "GTM-promoclick")
+        page_json = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)
 
-        for idx, tag in enumerate(tags):
-            picture_url = tag["data-creative"]
+        for idx, banner_entry in enumerate(
+            page_json["props"]["pageProps"]["dehydratedState"]["queries"][0]["state"][
+                "data"
+            ]["data"]["data"]["content"][0]["items"]
+        ):
+            picture_url = banner_entry["image"]
 
             banners.append(
                 {
                     "url": "https://www.paris.cl/",
                     "picture_url": picture_url,
-                    "destination_urls": [tag["href"][:500]],
+                    "destination_urls": [banner_entry["link"][:500]],
                     "key": picture_url,
                     "position": idx + 1,
                     "section": "Home",
