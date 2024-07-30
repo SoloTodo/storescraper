@@ -75,7 +75,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         products = []
         products_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[2].text
