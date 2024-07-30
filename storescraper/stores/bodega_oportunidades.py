@@ -75,33 +75,28 @@ class BodegaOportunidades(StoreWithUrlExtensions):
             "(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
         )
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "lxml")
-
-        json_data = json.loads(
-            soup.findAll("script", {"type": "application/json"})[-1].text
-        )["product"]
-
-        description = html_to_markdown(json_data["description"])
-        picture_urls = ["https:" + i for i in json_data["images"]]
-
+        soup = BeautifulSoup(response.text, "html.parser")
         products = []
-        for variant in json_data["variants"]:
-            key = str(variant["id"])
-            sku = variant["sku"]
-            name = variant["name"]
-            price = (Decimal(variant["price"]) / Decimal(100)).quantize(0)
+        products_data = json.loads(
+            soup.findAll("script", {"type": "application/ld+json"})[2].text
+        )
 
-            if variant["available"]:
-                stock = -1
-            else:
-                stock = 0
+        for offer in products_data["offers"]:
+            name = products_data["name"]
+            key = offer["url"].split("?variant=")[1]
+            sku = offer["sku"]
+            price = Decimal(offer["price"])
+            stock = -1 if offer["availability"] == "https://schema.org/InStock" else 0
+            picture_urls = [
+                f"https:{img['src']}"
+                for img in soup.find(
+                    "div", "product-gallery__carousel-wrapper"
+                ).findAll("img")
+            ]
+            description = html_to_markdown(products_data["description"])
+            condition = offer["itemCondition"]
 
-            if "[PRODUCTO NUEVO]" in name.upper():
-                condition = "https://schema.org/NewCondition"
-            else:
-                condition = "https://schema.org/OpenBoxCondition"
-
-            product = Product(
+            p = Product(
                 name,
                 cls.__name__,
                 category,
@@ -117,6 +112,6 @@ class BodegaOportunidades(StoreWithUrlExtensions):
                 description=description,
                 condition=condition,
             )
-            products.append(product)
+            products.append(p)
 
         return products
