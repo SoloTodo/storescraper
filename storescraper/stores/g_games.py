@@ -71,7 +71,7 @@ class GGames(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 30:
+            if page > 40:
                 raise Exception("page overflow: " + url_extension)
 
             url_webpage = "https://ggames.cl/collections/{}?page={}".format(
@@ -82,7 +82,7 @@ class GGames(StoreWithUrlExtensions):
 
             data = response.text
             soup = BeautifulSoup(data, "lxml")
-            product_containers = soup.findAll("li", "grid__item")
+            product_containers = soup.findAll("li", "list-view-item")
             if not product_containers:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
