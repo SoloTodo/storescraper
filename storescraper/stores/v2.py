@@ -99,13 +99,17 @@ class V2(Store):
         else:
             stock = json_container["quantity"]
 
-        if (
-            soup.find("meta", {"property": "product:price:condition"})["content"]
-            == "new"
-        ):
-            condition = "https://schema.org/NewCondition"
+        description_table = soup.find("dl", "data-sheet")
+        for tag in description_table.findAll("dt", "name"):
+            if tag.text.upper().strip() == "CONDICIÓN":
+                tag_value = tag.next.next.next.text.strip().upper()
+                if "NUEVO" in tag_value:
+                    condition = "https://schema.org/NewCondition"
+                else:
+                    condition = "https://schema.org/RefurbishedCondition"
+                break
         else:
-            condition = "https://schema.org/RefurbishedCondition"
+            raise Exception("No codition found")
 
         offer_price = Decimal(json_container["price_amount"])
         normal_price = (offer_price * Decimal("1.03")).quantize(0)
