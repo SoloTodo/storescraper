@@ -67,7 +67,7 @@ class TecnoBoss(StoreWithUrlExtensions):
         name = soup.find("meta", {"property": "og:title"})["content"]
         description = soup.find("meta", {"property": "og:description"})["content"]
 
-        price = Decimal(remove_words(soup.find("span", "form-price").text))
+        price = Decimal(remove_words(soup.find("span", "product-form-price").text))
 
         if not price:
             return []
