@@ -1,28 +1,30 @@
+import logging
+import logstash
+import time
 import traceback
+import uuid
 from collections import defaultdict, OrderedDict
 
 from celery import chain, group, shared_task
 from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
-import uuid
+from elasticsearch import Elasticsearch
 
 from .product import Product
 from .utils import get_store_class_by_name, chunks
 
 logger = get_task_logger(__name__)
 
-import logging
-import logstash
-
-import redis
-
-# Conectar a Redis (puede necesitar ajustar la IP y el puerto según tu configuración)
-client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
-
+ES = Elasticsearch(
+    "https://localhost:9200",
+    ca_certs="http_ca.crt",
+    http_auth=("elastic", "Mo+2hdOYBpIJi4NYG*KL"),
+)
+logging.getLogger("elastic_transport").setLevel(logging.WARNING)
 
 logstash_logger = logging.getLogger("python-logstash-logger")
 logstash_logger.setLevel(logging.INFO)
-logstash_logger.addHandler(logstash.LogstashHandler("localhost", 5959))
+logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
 
 
 class StoreScrapError(Exception):
@@ -137,6 +139,10 @@ class Store:
         discover_urls_concurrency = sanitized_parameters["discover_urls_concurrency"]
         extra_args = cls._extra_args_with_preflight(extra_args)
         process_id = str(uuid.uuid4())
+
+        print(f"Process ID: {process_id}")
+        print(f"Discovering URLs for: {cls.__name__}")
+
         extra_args["process_id"] = process_id
         category_chunks = chunks(categories, discover_urls_concurrency)
         task_groups = []
@@ -148,15 +154,52 @@ class Store:
                 ).set(queue="storescraper")
                 for category in category_chunk
             ]
-
             task_groups.append(group(*chunk_tasks))
 
         chain(
             *task_groups,
-            cls.log_process_summary.si(process_id).set(queue="storescraper"),
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper"),
         )()
 
+        cls.fetch_es_logs(process_id)
+
     @classmethod
+    def fetch_es_logs(cls, process_id):
+        timestamp = None
+        count = 0
+
+        while True:
+            query = {
+                "size": 100,
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"match": {"@fields.process_id": process_id}},
+                            {"range": {"@timestamp": {"gt": timestamp}}},
+                        ]
+                    }
+                },
+                "sort": [{"@timestamp": {"order": "asc"}}],
+            }
+
+            response = ES.search(index="logs-test", body=query)
+
+            for hit in response["hits"]["hits"]:
+                if "url" in hit["_source"]["@fields"]:
+                    count += 1
+                    print("*", end="", flush=True)
+
+                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
+                    print()
+                    print(
+                        f"{cls.__name__} process {process_id} finished with {count} URLs"
+                    )
+                    return
+
+                timestamp = hit["_source"]["@timestamp"]
+
+            time.sleep(5)
+
     @classmethod
     def discover_entries_for_categories(
         cls,
@@ -361,16 +404,12 @@ class Store:
     ##########################################################################
 
     @staticmethod
-    @shared_task(
-        autoretry_for=(StoreScrapError,),
-        max_retries=5,
-        default_retry_delay=5,
-    )
-    def log_process_summary(process_id):
-        redis_urls = client.lrange(process_id, 0, -1)
+    @shared_task
+    def finish_process(store, process_id):
+        time.sleep(1)
         logstash_logger.info(
-            f"Redis URLs: {process_id}",
-            extra={"urls": redis_urls},
+            f"{store}: process finished",
+            extra={"process_id": process_id},
         )
 
     @staticmethod
@@ -384,6 +423,10 @@ class Store:
         logger.info("Discovering URLs")
         logger.info("Store: " + store.__name__)
         logger.info("Category: " + category)
+
+        process_id = extra_args.get("process_id", None)
+        logger.info(f"Process ID: {process_id}")
+
         try:
             discovered_entries = store.discover_entries_for_category(
                 category, extra_args
@@ -395,16 +438,16 @@ class Store:
             logger.error(error_message)
             raise StoreScrapError(error_message)
 
-        process_id = extra_args.get("process_id", None)
-
         for url in discovered_entries.keys():
-            if process_id:
-                client.rpush(process_id, url)
-
             logger.info(url)
             logstash_logger.info(
                 f"{store.__name__}: Discovered URL",
-                extra={"process_id": process_id or None, "url": url},
+                extra={
+                    "process_id": process_id or None,
+                    "store": store.__name__,
+                    "category": category,
+                    "url": url,
+                },
             )
 
         return discovered_entries
