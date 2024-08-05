@@ -21,9 +21,9 @@ class Sukasa(Store):
 
         session = session_with_proxy(extra_args)
         session.headers["Accept"] = "application/json, text/javascript, */*; q=0.01"
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
+        )
 
         product_urls = []
         page = 1
@@ -52,9 +52,9 @@ class Sukasa(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3"
+        )
 
         product_id = url.split("?id=")[1]
         endpoint = (
@@ -64,10 +64,11 @@ class Sukasa(Store):
         product_data = response.json()
         name = product_data["name"]
         sku = product_data["cmInternalCode"]
+        stock = product_data["cmStock"] or 0
 
-        stock = product_data["cmStock"]
         for store in product_data["storeList"]:
             stock += store["quantity"]
+
         offer_price = Decimal(str(product_data["cmItmPvpAfIva"])).quantize(
             Decimal("0.01")
         )
