@@ -100,6 +100,7 @@ class Dust2(StoreWithUrlExtensions):
         session.headers["User-Agent"] = "PostmanRuntime/7.29.3"
         slug = re.search(r"/producto/(.+)/", url).groups()[0]
         endpoint = "https://dust2.gg/page-data/producto/{}/page-data.json".format(slug)
+        print(endpoint)
         response = session.get(endpoint)
         if response.status_code == 404:
             return []
@@ -110,8 +111,8 @@ class Dust2(StoreWithUrlExtensions):
             stock = 0
         else:
             stock = json_data["stock_quantity"] or 0
-        normal_price = Decimal(json_data["price"]).quantize(0)
-        offer_price = (normal_price * Decimal("0.93")).quantize(0)
+        offer_price = Decimal(json_data["price"]).quantize(0)
+        normal_price = (offer_price / Decimal("0.93")).quantize(0)
         sku = json_data["sku"]
         picture_urls = [x["src"] for x in json_data["images"]]
 
