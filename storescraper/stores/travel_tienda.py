@@ -41,7 +41,7 @@ class TravelTienda(StoreWithUrlExtensions):
         ("2934181475", TABLET),  # Tech > Comp. > Tablets
         ("3415774358", NOTEBOOK),  # Tech > Comp. > Notebook
         ("3213133197", PRINTER),  # Tech > Computación > Domótica & Acc.
-        ("2156181483", GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
+        ("714969430", GAMING_CHAIR),  # Tech > Gamer > Sillas y Escritorios
         ("1226813193", HEADPHONES),  # Tech > Gamer > Audífonos Gamer
         ("2547146328", MOUSE),  # Tech > Gamer > Periféricos
         ("2881216585", VIDEO_GAME_CONSOLE),  # Tech > Gamer > Consolas y Ac
@@ -146,6 +146,7 @@ class TravelTienda(StoreWithUrlExtensions):
                 continue
 
             normal_price = Decimal(prices_dict["salePrice"] or prices_dict["listPrice"])
+            offer_price = normal_price
 
             # This is very sus, the offer price appears in the publication
             # entry, not in the sku entry
@@ -153,8 +154,14 @@ class TravelTienda(StoreWithUrlExtensions):
                 offer_price = Decimal(
                     publication_entry["listPrices"]["tiendaBancoDeChile"]
                 )
-            else:
-                offer_price = normal_price
+
+            if "salePrices" in publication_entry:
+                if publication_entry["salePrices"]["tienda"]:
+                    normal_price = Decimal(publication_entry["salePrices"]["tienda"])
+                if publication_entry["salePrices"]["tiendaBancoDeChile"]:
+                    offer_price = Decimal(
+                        publication_entry["salePrices"]["tiendaBancoDeChile"]
+                    )
 
             if len(skus_data) > 1:
                 # All the SKUs share the same part number according to the

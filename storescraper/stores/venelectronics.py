@@ -61,11 +61,15 @@ class Venelectronics(Store):
 
         products = []
         for variant in json_data["variants"]:
+            price = Decimal(variant["price"]) / Decimal(100)
+
+            if price == 0:
+                continue
+
             name = variant["name"]
             sku = variant["sku"] or None
             key = str(variant["id"])
             stock = -1 if variant["available"] else 0
-            price = Decimal(variant["price"]) / Decimal(100)
 
             p = Product(
                 name,

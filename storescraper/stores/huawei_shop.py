@@ -79,8 +79,8 @@ class HuaweiShop(Store):
 
         candidate_tags = soup.findAll("item", {"data-key": "card-instance"})
         for tag in candidate_tags:
-            tag_value = json.loads(tag["data-value"])
             try:
+                tag_value = json.loads(tag["data-value"])
                 product_list = tag_value["props"]["configuration"]["custom"][
                     "cardParameter"
                 ]["allEnds"]["moduleData"]["productList"]
