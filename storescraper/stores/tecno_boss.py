@@ -67,7 +67,7 @@ class TecnoBoss(StoreWithUrlExtensions):
         name = soup.find("meta", {"property": "og:title"})["content"]
         description = soup.find("meta", {"property": "og:description"})["content"]
 
-        price = Decimal(remove_words(soup.find("span", "form-price").text))
+        price = Decimal(remove_words(soup.find("span", "product-form-price").text))
 
         if not price:
             return []
@@ -78,9 +78,9 @@ class TecnoBoss(StoreWithUrlExtensions):
         else:
             sku = None
 
-        stock_span = soup.find("span", "product-form-stock")
-        if stock_span:
-            stock = int(stock_span.text)
+        stock_div = soup.find("div", "product-page_stock")
+        if stock_div:
+            stock = int(stock_div.find("span").text)
         else:
             stock = 0
 

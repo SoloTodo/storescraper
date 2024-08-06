@@ -90,8 +90,9 @@ class SmartMobile(StoreWithUrlExtensions):
             "USAD" in name.upper()
             or "SIN CAJA" in name.upper()
             or "REACON" in name.upper()
+            or "SEMINUEVO" in name.upper()
         ):
-            condition = "https://schema.org/UsedCondition"
+            condition = "https://schema.org/RefurbishedCondition"
         else:
             condition = "https://schema.org/NewCondition"
 

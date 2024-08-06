@@ -131,6 +131,39 @@ class DiamondPc(StoreWithUrlExtensions):
 
         description = product_data["description"]
 
+        if soup.find("form", "variations_form"):
+            products = []
+            variations = json.loads(
+                soup.find("form", "variations_form")["data-product_variations"]
+            )
+
+            for product in variations:
+                variation_name = f"{name} - {''.join(product['attributes'].values())}"
+                key = str(product["variation_id"])
+                sku = product.get("sku", None)
+                stock = 0 if product["max_qty"] == "" else product["max_qty"]
+                offer_price = Decimal(product["display_price"])
+                normal_price = (offer_price * Decimal("1.08")).quantize(0)
+                picture_urls = [product["image"]["url"]]
+                p = Product(
+                    variation_name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    normal_price,
+                    offer_price,
+                    "CLP",
+                    description=description,
+                    sku=sku,
+                    picture_urls=picture_urls,
+                )
+                products.append(p)
+
+            return products
+
         offer_price = Decimal(product_data["offers"][0]["price"]).quantize(0)
         second_price = soup.find("div", "wds-second price wds-below")
         if second_price:

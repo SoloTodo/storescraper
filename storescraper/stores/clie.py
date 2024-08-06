@@ -70,6 +70,9 @@ class Clie(StoreWithUrlExtensions):
         response = session.get(url, timeout=60)
         soup = BeautifulSoup(response.text, "lxml")
 
+        if soup.find("section", "error-404 not-found"):
+            return []
+
         product_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text
         )["@graph"][1]

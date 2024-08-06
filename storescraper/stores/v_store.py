@@ -73,7 +73,12 @@ class VStore(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         foo = soup.findAll("script", {"type": "application/json"})
-        json_container = json.loads(foo[-1].text.strip())["product"]
+        json_container = json.loads(foo[-1].text.strip())
+
+        if "product" not in json_container:
+            return []
+
+        json_container = json_container["product"]
         name = json_container["title"]
         key = str(json_container["id"])
         json_product = json_container["variants"][0]
