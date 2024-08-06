@@ -10,8 +10,11 @@ from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
 from elasticsearch import Elasticsearch
 
+from datetime import datetime, timezone
+
 from .product import Product
 from .utils import get_store_class_by_name, chunks
+import redis
 
 logger = get_task_logger(__name__)
 
@@ -25,6 +28,12 @@ logging.getLogger("elastic_transport").setLevel(logging.WARNING)
 logstash_logger = logging.getLogger("python-logstash-logger")
 logstash_logger.setLevel(logging.INFO)
 logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
+
+redis_client = redis.StrictRedis(
+    host="localhost",
+    port=6379,
+    db=0,
+)
 
 
 class StoreScrapError(Exception):
@@ -129,7 +138,11 @@ class Store:
 
     @classmethod
     def discover_entries_for_categories_non_blocker(
-        cls, categories=None, extra_args=None, discover_urls_concurrency=None
+        cls,
+        categories=None,
+        extra_args=None,
+        discover_urls_concurrency=None,
+        scrape_products=True,
     ):
         sanitized_parameters = cls.sanitize_parameters(
             categories=categories, discover_urls_concurrency=discover_urls_concurrency
@@ -145,32 +158,69 @@ class Store:
 
         extra_args["process_id"] = process_id
         category_chunks = chunks(categories, discover_urls_concurrency)
-        task_groups = []
+        task_group = []
 
         for category_chunk in category_chunks:
-            chunk_tasks = [
-                cls.discover_entries_for_category_task.si(
+            chunk_tasks = []
+
+            for category in category_chunk:
+                task = cls.discover_entries_for_category_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
-                for category in category_chunk
-            ]
-            task_groups.append(group(*chunk_tasks))
 
-        chain(
-            *task_groups,
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper"),
-        )()
+                if scrape_products:
+                    task = chain(
+                        task,
+                        cls.products_for_urls_task_non_blocker.s(
+                            store_class_name=cls.__name__,
+                            category=category,
+                            extra_args=extra_args,
+                        ).set(queue="storescraper"),
+                    )
 
-        cls.fetch_es_logs(process_id)
+                chunk_tasks.append(task)
+
+            task_group.append(group(*chunk_tasks))
+
+        task_group.append(
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
+        )
+
+        # for i in range(len(task_group) - 1):
+        #    task_group[i].link(task_group[i + 1])
+
+        # task_group[0].apply_async()
+
+        chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
+
+        cls.fetch_es_url_logs(process_id)
+
+    @shared_task()
+    def nothing():
+        pass
+
+    def fetch_redis_data(cls, process_id):
+        while True:
+            url_count = redis_client.llen(f"{process_id}_urls")
+            print(f"Discovered URLs: {url_count}")
+
+            if redis_client.exists(f"{process_id}_urls_finished"):
+                print(f"Process {process_id} finished: {url_count} URLs discovered")
+                return
+
+            time.sleep(5)
 
     @classmethod
-    def fetch_es_logs(cls, process_id):
+    def fetch_es_url_logs(cls, process_id, include_category_counts=False):
+        products_count = 0
+        urls_count = 0
+        categories = {}
+        current_time = datetime.now(timezone.utc)
         timestamp = None
-        count = 0
 
         while True:
             query = {
-                "size": 100,
+                "size": 1000,
                 "query": {
                     "bool": {
                         "must": [
@@ -185,20 +235,35 @@ class Store:
             response = ES.search(index="logs-test", body=query)
 
             for hit in response["hits"]["hits"]:
-                if "url" in hit["_source"]["@fields"]:
-                    count += 1
-                    print("*", end="", flush=True)
+                if "product" in hit["_source"]["@fields"]:
+                    products_count += 1
+                elif "url" in hit["_source"]["@fields"]:
+                    urls_count += 1
+
+                    if include_category_counts:
+                        category = hit["_source"]["@fields"]["category"]
+                        categories[category] = categories.get(category, 0) + 1
 
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    print()
                     print(
-                        f"{cls.__name__} process {process_id} finished with {count} URLs"
+                        f"\n\n{cls.__name__} process {process_id} finished with {urls_count} URLs"
                     )
+
+                    if include_category_counts:
+                        print("-" * 80)
+
+                        for category in categories:
+                            print(f"{category}: {categories[category]}")
+
+                        print("\n")
+
                     return
 
                 timestamp = hit["_source"]["@timestamp"]
 
-            time.sleep(5)
+            print(f"Discovered URLs: {urls_count} | Scraped products: {products_count}")
+
+            time.sleep(10)
 
     @classmethod
     def discover_entries_for_categories(
@@ -223,7 +288,7 @@ class Store:
         entry_positions = defaultdict(lambda: list())
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
         extra_args = cls._extra_args_with_preflight(extra_args)
-
+        count = 0
         if use_async:
             category_chunks = chunks(categories, discover_urls_concurrency)
 
@@ -269,21 +334,11 @@ class Store:
                 for url, positions in cls.discover_entries_for_category(
                     category, extra_args
                 ).items():
-                    logger.info("Discovered URL: {} ({})".format(url, category))
-
-                    if positions:
-                        for pos in positions:
-                            entry_positions[url].append(
-                                (pos["section_name"], pos["value"])
-                            )
-                            url_category_weights[url][category] += pos[
-                                "category_weight"
-                            ]
-                    else:
-                        # Legacy for implementations without position data
-                        url_category_weights[url][category] = 1
-                        entry_positions[url] = []
-
+                    count += 1
+                    url_category_weights[url][category] = 1
+                    entry_positions[url] = []
+        print(len(entry_positions), count)
+        exit()
         discovered_entries = {}
         for url, positions in entry_positions.items():
             category, max_weight = max(
@@ -298,12 +353,12 @@ class Store:
             # map generic sections positioning without considering their
             # products if they don't appear in a specifically mapped
             # relevant section
-            if max_weight:
-                discovered_entries[url] = {
-                    "positions": positions,
-                    "category": category,
-                    "category_weight": max_weight,
-                }
+
+            discovered_entries[url] = {
+                "positions": positions,
+                "category": category,
+                "category_weight": 1,
+            }
 
         return discovered_entries
 
@@ -404,20 +459,17 @@ class Store:
     ##########################################################################
 
     @staticmethod
-    @shared_task
+    @shared_task()
     def finish_process(store, process_id):
-        time.sleep(1)
+        time.sleep(10)
+        redis_client.rpush(f"{process_id}_urls_finished", "finished")
         logstash_logger.info(
             f"{store}: process finished",
             extra={"process_id": process_id},
         )
 
     @staticmethod
-    @shared_task(
-        autoretry_for=(StoreScrapError,),
-        max_retries=5,
-        default_retry_delay=5,
-    )
+    @shared_task()
     def discover_entries_for_category_task(store_class_name, category, extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info("Discovering URLs")
@@ -456,10 +508,12 @@ class Store:
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5, default_retry_delay=5)
     def products_for_url_task(store_class_name, url, category=None, extra_args=None):
         store = get_store_class_by_name(store_class_name)
+        """
         logger.info("Obtaining products for URL")
         logger.info("Store: " + store.__name__)
         logger.info("Category: {}".format(category))
         logger.info("URL: " + url)
+        """
 
         try:
             raw_products = store.products_for_url(url, category, extra_args)
@@ -472,8 +526,8 @@ class Store:
 
         serialized_products = [p.serialize() for p in raw_products]
 
-        for idx, product in enumerate(serialized_products):
-            logger.info("{} - {}".format(idx, product))
+        # for idx, product in enumerate(serialized_products):
+        #    logger.info("{} - {}".format(idx, product))
 
         return serialized_products
 
@@ -502,6 +556,51 @@ class Store:
         }
 
         return serialized_result
+
+    @staticmethod
+    @shared_task(autoretry_for=(StoreScrapError,), max_retries=5, default_retry_delay=5)
+    def products_for_urls_task_non_blocker(
+        discovered_entries,
+        store_class_name,
+        category,
+        products_for_url_concurrency=10,
+        extra_args=None,
+    ):
+        store = get_store_class_by_name(store_class_name)
+        # extra_args = cls._extra_args_with_preflight(extra_args)
+        discovery_entries_chunks = chunks(list(discovered_entries.items()), 6)
+
+        for discovery_entries_chunk in discovery_entries_chunks:
+            chunk_tasks = []
+
+            for entry_url, _ in discovery_entries_chunk:
+                task = chain(
+                    store.products_for_url_task.si(
+                        store_class_name, entry_url, category, extra_args
+                    ).set(queue="storescraper"),
+                    store.log_product.s(
+                        store_class_name=store_class_name,
+                        category=category,
+                        extra_args=extra_args,
+                    ).set(queue="storescraper"),
+                )
+
+                chunk_tasks.append(task)
+
+            tasks_group = group(chunk_tasks)
+            tasks_group.apply_async()
+
+    @shared_task()
+    def log_product(product, store_class_name, category, extra_args):
+        logstash_logger.info(
+            f"{store_class_name}: Discovered product",
+            extra={
+                "process_id": extra_args["process_id"],
+                "store": store_class_name,
+                "category": category,
+                "product": product,
+            },
+        )
 
     ##########################################################################
     # Implementation dependant methods
