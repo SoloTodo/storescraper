@@ -136,8 +136,9 @@ class TecnoMas(StoreWithUrlExtensions):
         sku = soup.find("p", {"id": "sku-" + key}).text.replace("SKU: ", "").strip()
 
         stock_text = soup.find("p", {"id": "stock-" + key}).text.strip()
+        print(stock_text)
 
-        if "Sin stock" in stock_text:
+        if "Sin stock" in stock_text or "Agotado" in stock_text:
             stock = 0
         else:
             stock = -1
