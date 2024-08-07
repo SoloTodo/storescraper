@@ -1,5 +1,3 @@
-import json
-
 from bs4 import BeautifulSoup
 from decimal import Decimal
 import re
