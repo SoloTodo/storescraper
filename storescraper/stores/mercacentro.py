@@ -8,6 +8,8 @@ from storescraper.product import Product
 from storescraper.store import Store
 from curl_cffi import requests
 
+from storescraper.utils import cf_session_with_proxy
+
 
 class Mercacentro(Store):
     @classmethod
@@ -18,7 +20,7 @@ class Mercacentro(Store):
     def discover_urls_for_category(cls, category, extra_args=None):
         if category != TELEVISION:
             return []
-        session = requests.Session(impersonate="chrome120")
+        session = cf_session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
@@ -37,7 +39,7 @@ class Mercacentro(Store):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = requests.Session(impersonate="chrome120")
+        session = cf_session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
