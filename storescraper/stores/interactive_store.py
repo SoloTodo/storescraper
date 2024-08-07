@@ -63,6 +63,10 @@ class InteractiveStore(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text
         )
+
+        if "@graph" not in json_data:
+            return []
+
         product_data = json_data["@graph"][1]
         name = product_data["name"]
         sku = product_data["sku"]
