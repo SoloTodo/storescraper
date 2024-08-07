@@ -1,10 +1,11 @@
 import logging
-from decimal import Decimal
+import json
 
+from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.product import Product
-from storescraper.store import Store
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import (
     session_with_proxy,
     html_to_markdown,
@@ -13,69 +14,101 @@ from storescraper.utils import (
 from storescraper.categories import TELEVISION
 
 
-class Max(Store):
-    @classmethod
-    def categories(cls):
-        return [
-            TELEVISION,
-        ]
+class Max(StoreWithUrlExtensions):
+    url_extensions = [
+        ["1964", TELEVISION],
+    ]
+    headers = {"x-api-key": "ROGi1LWB3saRqFw4Xdqc4Z9jGWVxYLl9ZEZjbJu9"}
+    v1_api_base_url = "https://apigt.tienda.max.com.gt/v1"
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
         product_urls = []
-        if category != TELEVISION:
-            return []
         page = 1
+
         while True:
-            if page >= 30:
+            if page >= 5:
                 raise Exception("Page overflow")
 
-            url_webpage = (
-                "https://www.max.com.gt/marcas/productos-lg?"
-                "marca=7&product_list_limit=30&p={}".format(page)
-            )
-            print(url_webpage)
-            data = session.get(url_webpage, timeout=30).text
-            soup = BeautifulSoup(data, "lxml")
-            product_containers = soup.findAll("li", "item product product-item")
-            if not product_containers:
+            api_endpoint = f"https://apigt.tienda.max.com.gt/v2/products?categories={url_extension}&page={page}&pageSize=200&sessionId=1&clientId=e0a1625b-3c2b-4552-bce9-07d32ca12d59"
+            print(api_endpoint)
+            data = session.get(
+                api_endpoint,
+                headers=cls.headers,
+            ).text
+            json_data = json.loads(data)
+
+            if json_data["products"] == []:
                 if page == 1:
-                    logging.warning("Empty category")
+                    raise Exception("Empty category")
+
                 break
-            for container in product_containers:
-                product_url = container.find("a")["href"]
-                if product_url in product_urls:
-                    return product_urls
-                product_urls.append(product_url)
+
+            product_urls.extend(
+                [
+                    f"https://tienda.max.com.gt/{product['meta']['url_key']}"
+                    for product in json_data["products"]
+                ]
+            )
             page += 1
+
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url, timeout=60)
+        response = session.get(url)
+        soup = BeautifulSoup(response.text, "lxml")
+        product = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
+            "props"
+        ]["pageProps"]["product"]
 
-        if response.status_code != 200:
-            return []
+        name = product["title"]
+        picture_urls = [img["url"] for img in product["gallery"]]
+        sku = product["sku"]
 
-        data = response.text
-        soup = BeautifulSoup(data, "lxml")
-        key = soup.find("input", {"name": "product"})["value"]
-        name = soup.find("h1", "page-title").text.strip()
-        sku = soup.find("div", {"itemprop": "sku"}).text
+        prices = json.loads(
+            session.get(
+                f"{cls.v1_api_base_url}/prices/{sku}",
+                headers=cls.headers,
+            ).text
+        )
+        normal_price = Decimal(prices["regularPrice"]["value"])
+        sales_price = prices["salesPrice"]
+        normal_price = Decimal(sales_price["value"]) if sales_price else normal_price
 
-        if soup.find("div", "stock available"):
-            stock = -1
-        else:
-            stock = 0
+        summary = json.loads(
+            session.get(
+                f"{cls.v1_api_base_url}/products/{sku}/contentSyndication",
+                headers=cls.headers,
+            ).text
+        )
+        description = ""
 
-        price_container = soup.find("span", {"data-price-type": "finalPrice"})
-        price = Decimal(price_container.text.replace("Q", "").replace(",", ""))
-        picture_urls = magento_picture_urls(soup)
-        description = html_to_markdown(
-            str(soup.find("table", {"id": "product-attribute-specs-table"}))
+        if summary["dimensions"]:
+            description += "Dimensiones:\n"
+
+            for dimension in summary["dimensions"]:
+                description += f"- {dimension['label']}: {dimension['value']}\n"
+
+        description += "\nEspecificaciones:\n"
+
+        for spec in summary["specs"]:
+            description += f"- {spec['label']}: {spec['value']}\n"
+
+        stock_info = json.loads(
+            session.get(
+                f"{cls.v1_api_base_url}/products/{sku}/stock",
+                headers=cls.headers,
+            ).text
+        )
+
+        stock = (
+            0
+            if stock_info["status"] == "OUT_OF_STOCK"
+            else stock_info["salableQuantity"]
         )
 
         p = Product(
@@ -84,12 +117,13 @@ class Max(Store):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
-            price,
-            price,
+            normal_price,
+            normal_price,
             "GTQ",
             sku=sku,
+            part_number=sku,
             picture_urls=picture_urls,
             description=description,
         )
