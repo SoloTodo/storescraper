@@ -1,4 +1,3 @@
-import logging
 import json
 
 from decimal import Decimal
@@ -6,15 +5,12 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import (
-    session_with_proxy,
-    html_to_markdown,
-    magento_picture_urls,
-)
+from storescraper.utils import session_with_proxy
 from storescraper.categories import TELEVISION
 
 
 class Max(StoreWithUrlExtensions):
+    # Only made to get LG products
     url_extensions = [
         ["1964", TELEVISION],
     ]
@@ -33,16 +29,15 @@ class Max(StoreWithUrlExtensions):
 
             api_endpoint = f"https://apigt.tienda.max.com.gt/v2/products?categories={url_extension}&page={page}&pageSize=200&sessionId=1&clientId=e0a1625b-3c2b-4552-bce9-07d32ca12d59"
             print(api_endpoint)
-            data = session.get(
+            response = session.get(
                 api_endpoint,
                 headers=cls.headers,
-            ).text
-            json_data = json.loads(data)
+            )
+            json_data = response.json()
 
             if json_data["products"] == []:
                 if page == 1:
                     raise Exception("Empty category")
-
                 break
 
             product_urls.extend(
