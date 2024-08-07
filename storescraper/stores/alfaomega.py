@@ -91,10 +91,6 @@ class Alfaomega(StoreWithUrlExtensions):
         name = soup.find("h4", "product_title").text
         sku_container = soup.find("span", "sku")
         sku = sku_container.text.strip() if sku_container else None
-
-        if not sku:
-            return []
-
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         description = html_to_markdown(str(soup.find("div", "description")))
         stock_container = soup.find("span", "stock in-stock")
@@ -119,12 +115,12 @@ class Alfaomega(StoreWithUrlExtensions):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             normal_price,
             offer_price,
             "CLP",
-            sku=key,
+            sku=sku,
             description=description,
             picture_urls=picture_urls,
         )
