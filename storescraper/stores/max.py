@@ -93,7 +93,9 @@ class Max(StoreWithUrlExtensions):
             for dimension in summary["dimensions"]:
                 description += f"- {dimension['label']}: {dimension['value']}\n"
 
-        description += "\nEspecificaciones:\n"
+            description += "\n"
+
+        description += "Especificaciones:\n"
 
         for spec in summary["specs"]:
             description += f"- {spec['label']}: {spec['value']}\n"
