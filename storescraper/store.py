@@ -142,7 +142,7 @@ class Store:
         categories=None,
         extra_args=None,
         discover_urls_concurrency=None,
-        scrape_products=True,
+        scrape_products=False,
     ):
         sanitized_parameters = cls.sanitize_parameters(
             categories=categories, discover_urls_concurrency=discover_urls_concurrency
@@ -193,7 +193,7 @@ class Store:
 
         chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
 
-        cls.fetch_es_url_logs(process_id)
+        cls.fetch_es_url_logs(process_id, count_by_category=True)
 
     @shared_task()
     def nothing():
@@ -211,26 +211,31 @@ class Store:
             time.sleep(5)
 
     @classmethod
-    def fetch_es_url_logs(cls, process_id, include_category_counts=False):
+    def fetch_es_url_logs(cls, process_id, count_by_category=False):
         products_count = 0
         urls_count = 0
+        previous_products_count = -1
+        previous_urls_count = -1
         categories = {}
-        current_time = datetime.now(timezone.utc)
-        timestamp = None
+        timestamp = datetime.now(timezone.utc).isoformat()
+        query = {
+            "size": 1000,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"@fields.process_id.keyword": None}},
+                        {"range": {"@timestamp": {"gt": None}}},
+                    ]
+                }
+            },
+            "sort": [{"@timestamp": {"order": "asc"}}],
+        }
 
         while True:
-            query = {
-                "size": 1000,
-                "query": {
-                    "bool": {
-                        "must": [
-                            {"match": {"@fields.process_id": process_id}},
-                            {"range": {"@timestamp": {"gt": timestamp}}},
-                        ]
-                    }
-                },
-                "sort": [{"@timestamp": {"order": "asc"}}],
-            }
+            query["query"]["bool"]["must"][0]["term"][
+                "@fields.process_id.keyword"
+            ] = process_id
+            query["query"]["bool"]["must"][1]["range"]["@timestamp"]["gt"] = timestamp
 
             response = ES.search(index="logs-test", body=query)
 
@@ -240,7 +245,7 @@ class Store:
                 elif "url" in hit["_source"]["@fields"]:
                     urls_count += 1
 
-                    if include_category_counts:
+                    if count_by_category:
                         category = hit["_source"]["@fields"]["category"]
                         categories[category] = categories.get(category, 0) + 1
 
@@ -249,7 +254,7 @@ class Store:
                         f"\n\n{cls.__name__} process {process_id} finished with {urls_count} URLs"
                     )
 
-                    if include_category_counts:
+                    if count_by_category:
                         print("-" * 80)
 
                         for category in categories:
@@ -261,9 +266,17 @@ class Store:
 
                 timestamp = hit["_source"]["@timestamp"]
 
-            print(f"Discovered URLs: {urls_count} | Scraped products: {products_count}")
+            if (
+                urls_count != previous_urls_count
+                or products_count != previous_products_count
+            ):
+                print(
+                    f"Discovered URLs: {urls_count} | Scraped products: {products_count}"
+                )
+                previous_urls_count = urls_count
+                previous_products_count = products_count
 
-            time.sleep(10)
+            time.sleep(3)
 
     @classmethod
     def discover_entries_for_categories(

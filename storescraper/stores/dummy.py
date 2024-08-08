@@ -41,12 +41,12 @@ class Dummy(StoreWithUrlExtensions):
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         print(url_extension)
         time.sleep(1)
+
         data = json.loads(
             requests.get(f"http://localhost:9871/{url_extension}.json").text
         )
-
         product_urls = []
-        print(len(set(data["urls"])))
+
         if len(set(data["urls"])) != len(data["urls"]):
             exit()
 
@@ -58,7 +58,6 @@ class Dummy(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        time.sleep(1)
 
         data = json.loads(
             requests.get(f"http://localhost:9871/dummy-{category.lower()}.json").text
