@@ -1,54 +1,50 @@
-from bs4 import BeautifulSoup
-from decimal import Decimal
 import json
 import re
+from decimal import Decimal
+
+from bs4 import BeautifulSoup
+from storescraper.categories import (
+    COMPUTER_CASE,
+    CPU_COOLER,
+    GAMING_CHAIR,
+    HEADPHONES,
+    KEYBOARD,
+    MICROPHONE,
+    MOTHERBOARD,
+    MOUSE,
+    POWER_SUPPLY,
+    PROCESSOR,
+    RAM,
+    STEREO_SYSTEM,
+    SOLID_STATE_DRIVE,
+    VIDEO_GAME_CONSOLE,
+)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
-from storescraper.categories import (
-    PROCESSOR,
-    MOTHERBOARD,
-    VIDEO_CARD,
-    POWER_SUPPLY,
-    SOLID_STATE_DRIVE,
-    COMPUTER_CASE,
-    RAM,
-    CPU_COOLER,
-    NOTEBOOK,
-    USB_FLASH_DRIVE,
-    PRINTER,
-    MONITOR,
-    KEYBOARD,
-    MOUSE,
-    VIDEO_GAME_CONSOLE,
-    MICROPHONE,
-    HEADPHONES,
-    STEREO_SYSTEM,
-    GAMING_CHAIR,
-)
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class PowerPlay(StoreWithUrlExtensions):
     url_extensions = [
-        ["video-juegos/consolas-nsw", VIDEO_GAME_CONSOLE],
-        ["video-juegos/consolas-xbox-series-s-x", VIDEO_GAME_CONSOLE],
-        ["video-juegos/consolas-ps3-ps4", VIDEO_GAME_CONSOLE],
-        ["video-juegos/consolas-ps5", VIDEO_GAME_CONSOLE],
-        ["hardware/procesadores", PROCESSOR],
-        ["hardware/placas-madres", MOTHERBOARD],
-        ["hardware/ram-ddr4-ddr5", RAM],
+        ["audifonos-gamer", HEADPHONES],
+        ["audifonos-parlantes/audifonos-tws", HEADPHONES],
+        ["audifonos-parlantes/parlantes-bluetooth", STEREO_SYSTEM],
+        ["audifonos-parlantes/parlantes-pc", STEREO_SYSTEM],
         ["hardware/almacenamiento-pc", SOLID_STATE_DRIVE],
-        ["hardware/gabinetes", COMPUTER_CASE],
-        ["hardware/fuentes-de-poder", POWER_SUPPLY],
         ["hardware/enfriamiento", CPU_COOLER],
+        ["hardware/fuentes-de-poder", POWER_SUPPLY],
+        ["hardware/gabinetes", COMPUTER_CASE],
+        ["hardware/placas-madres", MOTHERBOARD],
+        ["hardware/procesadores", PROCESSOR],
+        ["hardware/ram-ddr4-ddr5", RAM],
         ["perifericos/microfonos", MICROPHONE],
         ["perifericos/mouse", MOUSE],
         ["perifericos/teclados", KEYBOARD],
-        ["audifonos-gamer", HEADPHONES],
-        ["audifonos-parlantes/audifonos-tws", HEADPHONES],
-        ["audifonos-parlantes/parlantes-pc", STEREO_SYSTEM],
-        ["audifonos-parlantes/parlantes-bluetooth", STEREO_SYSTEM],
         ["product-category/escritorios-sillas", GAMING_CHAIR],
+        ["video-juegos/consolas-nsw", VIDEO_GAME_CONSOLE],
+        ["video-juegos/consolas-ps3-ps4", VIDEO_GAME_CONSOLE],
+        ["video-juegos/consolas-ps5", VIDEO_GAME_CONSOLE],
+        ["video-juegos/consolas-xbox-series-s-x", VIDEO_GAME_CONSOLE],
     ]
 
     @classmethod
