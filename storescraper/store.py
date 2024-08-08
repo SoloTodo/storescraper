@@ -45,6 +45,7 @@ class Store:
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 10
     prefer_async = True
+    scrape_products = True
 
     ##########################################################################
     # API methods
@@ -142,12 +143,15 @@ class Store:
         categories=None,
         extra_args=None,
         discover_urls_concurrency=None,
-        scrape_products=False,
+        scrape_products=None,
     ):
         sanitized_parameters = cls.sanitize_parameters(
-            categories=categories, discover_urls_concurrency=discover_urls_concurrency
+            categories=categories,
+            discover_urls_concurrency=discover_urls_concurrency,
+            scrape_products=scrape_products,
         )
 
+        scrape_products = sanitized_parameters["scrape_products"]
         categories = sanitized_parameters["categories"]
         discover_urls_concurrency = sanitized_parameters["discover_urls_concurrency"]
         extra_args = cls._extra_args_with_preflight(extra_args)
@@ -186,38 +190,29 @@ class Store:
             cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
         )
 
-        # for i in range(len(task_group) - 1):
-        #    task_group[i].link(task_group[i + 1])
+        for i in range(len(task_group) - 1):
+            task_group[i].link(task_group[i + 1])
 
-        # task_group[0].apply_async()
+        task_group[0].apply_async()
 
-        chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
+        # chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
 
-        cls.fetch_es_url_logs(process_id, count_by_category=True)
+        cls.fetch_es_url_logs(process_id, scrape_products=scrape_products)
 
     @shared_task()
     def nothing():
         pass
 
-    def fetch_redis_data(cls, process_id):
-        while True:
-            url_count = redis_client.llen(f"{process_id}_urls")
-            print(f"Discovered URLs: {url_count}")
-
-            if redis_client.exists(f"{process_id}_urls_finished"):
-                print(f"Process {process_id} finished: {url_count} URLs discovered")
-                return
-
-            time.sleep(5)
-
     @classmethod
-    def fetch_es_url_logs(cls, process_id, count_by_category=False):
-        products_count = 0
-        urls_count = 0
-        previous_products_count = -1
-        previous_urls_count = -1
+    def fetch_es_url_logs(
+        cls, process_id, scrape_products=False, count_by_category=False
+    ):
+        with_errors = availables = unavailables = products_count = urls_count = 0
+        previous_products_count = previous_urls_count = -1
         categories = {}
         timestamp = datetime.now(timezone.utc).isoformat()
+        finished_flag = False
+
         query = {
             "size": 1000,
             "query": {
@@ -240,41 +235,69 @@ class Store:
             response = ES.search(index="logs-test", body=query)
 
             for hit in response["hits"]["hits"]:
-                if "product" in hit["_source"]["@fields"]:
+                source_fields = hit["_source"]["@fields"]
+
+                if scrape_products and "product" in source_fields:
                     products_count += 1
-                elif "url" in hit["_source"]["@fields"]:
+
+                    if not source_fields["product"]:
+                        with_errors += 1
+                    else:
+                        for product in source_fields["product"]:
+                            if product["stock"] == 0:
+                                unavailables += 1
+                            else:
+                                availables += 1
+
+                elif "url" in source_fields:
                     urls_count += 1
 
                     if count_by_category:
-                        category = hit["_source"]["@fields"]["category"]
+                        category = source_fields["category"]
                         categories[category] = categories.get(category, 0) + 1
 
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    print(
-                        f"\n\n{cls.__name__} process {process_id} finished with {urls_count} URLs"
-                    )
-
-                    if count_by_category:
-                        print("-" * 80)
-
-                        for category in categories:
-                            print(f"{category}: {categories[category]}")
-
-                        print("\n")
-
-                    return
+                    finished_flag = True
 
                 timestamp = hit["_source"]["@timestamp"]
 
             if (
-                urls_count != previous_urls_count
-                or products_count != previous_products_count
+                finished_flag
+                and previous_urls_count == urls_count
+                and (not scrape_products or previous_products_count == products_count)
             ):
                 print(
-                    f"Discovered URLs: {urls_count} | Scraped products: {products_count}"
+                    f"\n{cls.__name__} process {process_id} finished with {urls_count} URLs"
                 )
-                previous_urls_count = urls_count
-                previous_products_count = products_count
+
+                if count_by_category:
+                    print("-" * 80)
+                    for category, count in categories.items():
+                        print(f"{category}: {count}")
+                    print("\n")
+
+                if scrape_products:
+                    print(f"\nAvailable: {availables}")
+                    print(f"Unavailable: {unavailables}")
+                    print(f"With error: {with_errors}")
+                    print(f"Total: {products_count}")
+
+                return
+
+            if urls_count != previous_urls_count or (
+                scrape_products and products_count != previous_products_count
+            ):
+                print(
+                    f"Discovered URLs: {urls_count}"
+                    + (
+                        f" | Scraped products: {products_count}"
+                        if scrape_products
+                        else ""
+                    )
+                )
+
+            previous_urls_count = urls_count
+            previous_products_count = products_count
 
             time.sleep(3)
 
@@ -474,7 +497,6 @@ class Store:
     @shared_task()
     def finish_process(store, process_id):
         time.sleep(10)
-        redis_client.rpush(f"{process_id}_urls_finished", "finished")
         logstash_logger.info(
             f"{store}: process finished",
             extra={"process_id": process_id},
@@ -520,12 +542,10 @@ class Store:
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5, default_retry_delay=5)
     def products_for_url_task(store_class_name, url, category=None, extra_args=None):
         store = get_store_class_by_name(store_class_name)
-        """
         logger.info("Obtaining products for URL")
         logger.info("Store: " + store.__name__)
         logger.info("Category: {}".format(category))
         logger.info("URL: " + url)
-        """
 
         try:
             raw_products = store.products_for_url(url, category, extra_args)
@@ -678,6 +698,7 @@ class Store:
         discover_urls_concurrency=None,
         products_for_url_concurrency=None,
         use_async=None,
+        scrape_products=None,
     ):
         if categories is None:
             categories = cls.categories()
@@ -695,11 +716,15 @@ class Store:
         if use_async is None:
             use_async = cls.prefer_async
 
+        if scrape_products is None:
+            scrape_products = cls.scrape_products
+
         return {
             "categories": categories,
             "discover_urls_concurrency": discover_urls_concurrency,
             "products_for_url_concurrency": products_for_url_concurrency,
             "use_async": use_async,
+            "scrape_products": scrape_products,
         }
 
     ######################################################################

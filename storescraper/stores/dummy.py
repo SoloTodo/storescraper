@@ -59,6 +59,9 @@ class Dummy(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
 
+        if category == MOUSE:
+            return []
+
         data = json.loads(
             requests.get(f"http://localhost:9871/dummy-{category.lower()}.json").text
         )
@@ -73,7 +76,7 @@ class Dummy(StoreWithUrlExtensions):
                         url,
                         url,
                         "123",
-                        -1,
+                        0 if category == MOTHERBOARD else -1,
                         Decimal("100000"),
                         Decimal("90000"),
                         "CLP",

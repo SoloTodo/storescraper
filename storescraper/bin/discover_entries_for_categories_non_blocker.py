@@ -20,6 +20,14 @@ def main():
         "--categories", type=str, nargs="*", help="Specific categories to be parsed"
     )
     parser.add_argument(
+        "--scrape_products",
+        type=bool,
+        nargs="?",
+        default=False,
+        const=True,
+        help="Include product scraping",
+    )
+    parser.add_argument(
         "--extra_args",
         type=json.loads,
         nargs="?",
@@ -32,7 +40,9 @@ def main():
     store = get_store_class_by_name(args.store)
 
     store.discover_entries_for_categories_non_blocker(
-        categories=args.categories, extra_args=args.extra_args
+        categories=args.categories,
+        scrape_products=args.scrape_products,
+        extra_args=args.extra_args,
     )
 
 
