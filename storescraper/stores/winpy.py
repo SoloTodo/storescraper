@@ -15,128 +15,110 @@ from storescraper.categories import (
     KEYBOARD,
     KEYBOARD_MOUSE_COMBO,
     MOUSE,
+    NOTEBOOK,
+    MONITOR,
+    TABLET,
+    VIDEO_CARD,
+    RAM,
+    CELL,
+    STORAGE_DRIVE,
+    SOLID_STATE_DRIVE,
+    PROCESSOR,
+    MOTHERBOARD,
+    COMPUTER_CASE,
+    POWER_SUPPLY,
+    PRINTER,
+    EXTERNAL_STORAGE_DRIVE,
+    STEREO_SYSTEM,
+    UPS,
 )
 from storescraper.flixmedia import flixmedia_video_urls
 from storescraper.product import Product
-from storescraper.store import Store
-from storescraper.utils import remove_words, html_to_markdown, session_with_proxy
+from storescraper.store_with_url_extensions import StoreWithUrlExtensions
+from storescraper.utils import (
+    remove_words,
+    html_to_markdown,
+    cf_session_with_proxy,
+)
 
 
-class Winpy(Store):
+class Winpy(StoreWithUrlExtensions):
+    url_extensions = [
+        ["portatiles/notebooks/", NOTEBOOK],
+        ["portatiles/mobile-workstation/", NOTEBOOK],
+        ["zona-notebook-gamers/", NOTEBOOK],
+        ["portatiles/celulares/", CELL],
+        ["portatiles/tablet/", TABLET],
+        ["memorias/para-notebook/", RAM],
+        ["almacenamiento/disco-estado-solido/", SOLID_STATE_DRIVE],
+        ["almacenamiento/disco-duro-notebook/", STORAGE_DRIVE],
+        ["computadores/todo-en-uno/", ALL_IN_ONE],
+        ["memorias/para-computadores/", RAM],
+        ["almacenamiento/disco-duro-pc-s/", STORAGE_DRIVE],
+        ["partes-y-piezas/tarjetas-de-video/", VIDEO_CARD],
+        ["accesorios/mouse/", MOUSE],
+        ["accesorios/teclados/", KEYBOARD],
+        ["accesorios/kit-perifericos/", KEYBOARD_MOUSE_COMBO],
+        ["partes-y-piezas/placas-madres/", MOTHERBOARD],
+        ["partes-y-piezas/procesadores/", PROCESSOR],
+        ["memorias/", RAM],
+        ["partes-y-piezas/gabinetes/", COMPUTER_CASE],
+        ["partes-y-piezas/fuente-de-poder/", POWER_SUPPLY],
+        ["partes-y-piezas/disipadores/", CPU_COOLER],
+        ["accesorios/sillas-y-mesas/", GAMING_CHAIR],
+        ["almacenamiento/nas/", STORAGE_DRIVE],
+        ["almacenamiento/discos-portatiles/", EXTERNAL_STORAGE_DRIVE],
+        ["almacenamiento/discos-sobremesa/", EXTERNAL_STORAGE_DRIVE],
+        ["almacenamiento/memorias-flash/", MEMORY_CARD],
+        ["almacenamiento/pendrive/", USB_FLASH_DRIVE],
+        ["apple/imac/", ALL_IN_ONE],
+        ["apple/macbook-pro-retina/", NOTEBOOK],
+        ["apple/ipad/", TABLET],
+        ["apple/watch/", WEARABLE],
+        ["monitores/", MONITOR],
+        ["impresoras/", PRINTER],
+        ["accesorios/audifonos/", HEADPHONES],
+        ["accesorios/parlantes/", STEREO_SYSTEM],
+        ["ups/ups/", UPS],
+    ]
+
     @classmethod
-    def categories(cls):
-        return [
-            "Notebook",
-            "Monitor",
-            "Tablet",
-            "VideoCard",
-            "Ram",
-            "Cell",
-            "StorageDrive",
-            "SolidStateDrive",
-            "Processor",
-            "Motherboard",
-            "ComputerCase",
-            "PowerSupply",
-            CPU_COOLER,
-            "Printer",
-            "ExternalStorageDrive",
-            MOUSE,
-            "Television",
-            "StereoSystem",
-            HEADPHONES,
-            "Ups",
-            GAMING_CHAIR,
-            MEMORY_CARD,
-            USB_FLASH_DRIVE,
-            ALL_IN_ONE,
-            WEARABLE,
-            KEYBOARD,
-            KEYBOARD_MOUSE_COMBO,
-        ]
-
-    @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         base_url = "https://www.winpy.cl"
-
-        category_paths = [
-            ["portatiles/notebooks/", "Notebook"],
-            ["portatiles/mobile-workstation/", "Notebook"],
-            ["zona-notebook-gamers/", "Notebook"],
-            ["portatiles/celulares/", "Cell"],
-            ["portatiles/tablet/", "Tablet"],
-            ["memorias/para-notebook/", "Ram"],
-            ["almacenamiento/disco-estado-solido/", "SolidStateDrive"],
-            ["almacenamiento/disco-duro-notebook/", "StorageDrive"],
-            ["computadores/todo-en-uno/", ALL_IN_ONE],
-            ["memorias/para-computadores/", "Ram"],
-            ["almacenamiento/disco-duro-pc-s/", "StorageDrive"],
-            ["partes-y-piezas/tarjetas-de-video/", "VideoCard"],
-            ["accesorios/mouse/", MOUSE],
-            ["accesorios/teclados/", KEYBOARD],
-            ["accesorios/kit-perifericos/", KEYBOARD_MOUSE_COMBO],
-            ["partes-y-piezas/placas-madres/", "Motherboard"],
-            ["partes-y-piezas/procesadores/", "Processor"],
-            ["memorias/", "Ram"],
-            ["partes-y-piezas/gabinetes/", "ComputerCase"],
-            ["partes-y-piezas/fuente-de-poder/", "PowerSupply"],
-            ["partes-y-piezas/disipadores/", CPU_COOLER],
-            ["accesorios/sillas-y-mesas/", GAMING_CHAIR],
-            ["almacenamiento/nas/", "StorageDrive"],
-            ["almacenamiento/discos-portatiles/", "ExternalStorageDrive"],
-            ["almacenamiento/discos-sobremesa/", "ExternalStorageDrive"],
-            ["almacenamiento/memorias-flash/", MEMORY_CARD],
-            ["almacenamiento/pendrive/", USB_FLASH_DRIVE],
-            ["apple/imac/", ALL_IN_ONE],
-            ["apple/macbook-pro-retina/", "Notebook"],
-            ["apple/ipad/", "Tablet"],
-            ["apple/watch/", WEARABLE],
-            ["monitores/", "Monitor"],
-            ["impresoras/", "Printer"],
-            ["accesorios/audifonos/", HEADPHONES],
-            ["accesorios/parlantes/", "StereoSystem"],
-            ["ups/ups/", "Ups"],
-        ]
-
         product_urls = []
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
+        url = base_url + "/" + url_extension
 
-        for category_path, local_category in category_paths:
-            if local_category != category:
-                continue
+        page = 1
+        while True:
+            if page >= 40:
+                raise Exception("Page overflow: " + url_extension)
 
-            url = base_url + "/" + category_path
+            url_with_page = url + "paged/" + str(page) + "/"
+            print(url_with_page)
+            soup = BeautifulSoup(session.get(url_with_page).text, "html5lib")
+            product_containers = soup.find("section", {"id": "productos"})
+            product_containers = product_containers.findAll("article")
 
-            page = 1
-            while True:
-                if page >= 40:
-                    raise Exception("Page overflow: " + category_path)
+            if not product_containers:
+                if page == 1:
+                    logging.warning("Empty category: " + url_extension)
+                break
 
-                url_with_page = url + "paged/" + str(page) + "/"
-                print(url_with_page)
-                soup = BeautifulSoup(session.get(url_with_page).text, "html5lib")
-                product_containers = soup.find("section", {"id": "productos"})
-                product_containers = product_containers.findAll("article")
+            for container in product_containers:
+                product_url = "https://www.winpy.cl" + container.find("a")["href"]
+                product_urls.append(product_url)
 
-                if not product_containers:
-                    if page == 1:
-                        logging.warning("Empty category: " + category_path)
-                    break
+            if not soup.find("div", "paginador"):
+                break
 
-                for container in product_containers:
-                    product_url = "https://www.winpy.cl" + container.find("a")["href"]
-                    product_urls.append(product_url)
-
-                if not soup.find("div", "paginador"):
-                    break
-
-                page += 1
+            page += 1
 
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
 
         if response.url != url or response.status_code == 404:
