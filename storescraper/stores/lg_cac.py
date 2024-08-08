@@ -10,6 +10,9 @@ class LgCac(LgV5):
             # Todos los Televisores
             ("CT20188038", "Television", True),
             ("CT20188038", "Television", False),
+            # Lifestyle Screens
+            ("CT40018527", "Television", True),
+            ("CT40018527", "Television", False),
             # Proyectores
             ("CT20188025", "Projector", True),
             ("CT20188025", "Projector", False),
