@@ -66,6 +66,7 @@ from .diunsa import Diunsa
 from .divino import Divino
 from .dl_phone import DLPhone
 from .dreamtec import Dreamtec
+from .dummy import Dummy
 from .dust2 import Dust2
 from .e_forest import EForest
 from .e_vision import EVision

@@ -337,8 +337,7 @@ class Store:
                     count += 1
                     url_category_weights[url][category] = 1
                     entry_positions[url] = []
-        print(len(entry_positions), count)
-        exit()
+
         discovered_entries = {}
         for url, positions in entry_positions.items():
             category, max_weight = max(
