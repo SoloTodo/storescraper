@@ -130,10 +130,11 @@ class Todoclick(StoreWithUrlExtensions):
         name = json_data["name"]
         key = str(json_data["id_product"])
         offer_price = Decimal(json_data["price_amount"])
-        normal_price = Decimal(
-            remove_words(soup.find("span", "precio-otrosmedios").text)
-        )
-        if not normal_price or not offer_price:
+        normal_price_tag = soup.find("span", "precio-otrosmedios")
+        if not normal_price_tag:
+            return []
+        normal_price = Decimal(remove_words(normal_price_tag.text))
+        if not offer_price or not normal_price:
             return []
         stock = json_data["quantity"]
         sku = json_data["reference"] or None
