@@ -37,7 +37,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 
 class Todoclick(StoreWithUrlExtensions):
@@ -130,7 +130,12 @@ class Todoclick(StoreWithUrlExtensions):
         name = json_data["name"]
         key = str(json_data["id_product"])
         offer_price = Decimal(json_data["price_amount"])
-        normal_price = (offer_price * Decimal("1.05")).quantize(0)
+        normal_price_tag = soup.find("span", "precio-otrosmedios")
+        if not normal_price_tag:
+            return []
+        normal_price = Decimal(remove_words(normal_price_tag.text))
+        if not offer_price or not normal_price:
+            return []
         stock = json_data["quantity"]
         sku = json_data["reference"] or None
         description = html_to_markdown(json_data["description"])
