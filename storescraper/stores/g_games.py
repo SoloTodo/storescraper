@@ -82,7 +82,7 @@ class GGames(StoreWithUrlExtensions):
 
             data = response.text
             soup = BeautifulSoup(data, "lxml")
-            product_containers = soup.findAll("li", "list-view-item")
+            product_containers = soup.findAll("div", "product-card")
             if not product_containers:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
