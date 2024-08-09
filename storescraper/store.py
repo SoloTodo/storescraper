@@ -187,15 +187,16 @@ class Store:
             task_group.append(group(*chunk_tasks))
 
         task_group.append(
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper2")
         )
 
-        for i in range(len(task_group) - 1):
+        # link failing with high workers concurrency
+        """for i in range(len(task_group) - 1):
             task_group[i].link(task_group[i + 1])
 
-        task_group[0].apply_async()
+        task_group[0].apply_async()"""
 
-        # chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
+        chain(cls.nothing.si().set(queue="storescraper2"), *task_group).apply_async()
 
         cls.fetch_es_url_logs(process_id, scrape_products=scrape_products)
 
@@ -496,7 +497,7 @@ class Store:
     @staticmethod
     @shared_task()
     def finish_process(store, process_id):
-        time.sleep(10)
+        redis_client.delete(f"{process_id}_scraped_urls")
         logstash_logger.info(
             f"{store}: process finished",
             extra={"process_id": process_id},
@@ -525,16 +526,18 @@ class Store:
             raise StoreScrapError(error_message)
 
         for url in discovered_entries.keys():
-            logger.info(url)
-            logstash_logger.info(
-                f"{store.__name__}: Discovered URL",
-                extra={
-                    "process_id": process_id or None,
-                    "store": store.__name__,
-                    "category": category,
-                    "url": url,
-                },
-            )
+            if not redis_client.sismember(f"{process_id}_scraped_urls", url):
+                redis_client.sadd(f"{process_id}_scraped_urls", url)
+                logger.info(url)
+                logstash_logger.info(
+                    f"{store.__name__}: Discovered URL",
+                    extra={
+                        "process_id": process_id or None,
+                        "store": store.__name__,
+                        "category": category,
+                        "url": url,
+                    },
+                )
 
         return discovered_entries
 
@@ -614,7 +617,7 @@ class Store:
                         store_class_name=store_class_name,
                         category=category,
                         extra_args=extra_args,
-                    ).set(queue="storescraper"),
+                    ).set(queue="storescraper2"),
                 )
 
                 chunk_tasks.append(task)
