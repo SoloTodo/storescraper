@@ -1,3 +1,4 @@
+import json
 import logging
 import logstash
 import time
@@ -168,7 +169,7 @@ class Store:
             chunk_tasks = []
 
             for category in category_chunk:
-                task = cls.discover_entries_for_category_task.si(
+                task = cls.discover_entries_for_category_non_blocker_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
 
@@ -187,17 +188,16 @@ class Store:
             task_group.append(group(*chunk_tasks))
 
         task_group.append(
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper2")
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
         )
 
         # link failing with high workers concurrency
-        """for i in range(len(task_group) - 1):
+        for i in range(len(task_group) - 1):
             task_group[i].link(task_group[i + 1])
 
-        task_group[0].apply_async()"""
+        task_group[0].apply_async()
 
-        chain(cls.nothing.si().set(queue="storescraper2"), *task_group).apply_async()
-
+        # chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
         cls.fetch_es_url_logs(process_id, scrape_products=scrape_products)
 
     @shared_task()
@@ -325,7 +325,7 @@ class Store:
         entry_positions = defaultdict(lambda: list())
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
         extra_args = cls._extra_args_with_preflight(extra_args)
-        count = 0
+
         if use_async:
             category_chunks = chunks(categories, discover_urls_concurrency)
 
@@ -371,9 +371,20 @@ class Store:
                 for url, positions in cls.discover_entries_for_category(
                     category, extra_args
                 ).items():
-                    count += 1
-                    url_category_weights[url][category] = 1
-                    entry_positions[url] = []
+                    logger.info("Discovered URL: {} ({})".format(url, category))
+
+                    if positions:
+                        for pos in positions:
+                            entry_positions[url].append(
+                                (pos["section_name"], pos["value"])
+                            )
+                            url_category_weights[url][category] += pos[
+                                "category_weight"
+                            ]
+                    else:
+                        # Legacy for implementations without position data
+                        url_category_weights[url][category] = 1
+                        entry_positions[url] = []
 
         discovered_entries = {}
         for url, positions in entry_positions.items():
@@ -389,12 +400,12 @@ class Store:
             # map generic sections positioning without considering their
             # products if they don't appear in a specifically mapped
             # relevant section
-
-            discovered_entries[url] = {
-                "positions": positions,
-                "category": category,
-                "category_weight": 1,
-            }
+            if max_weight:
+                discovered_entries[url] = {
+                    "positions": positions,
+                    "category": category,
+                    "category_weight": max_weight,
+                }
 
         return discovered_entries
 
@@ -510,6 +521,31 @@ class Store:
         logger.info("Discovering URLs")
         logger.info("Store: " + store.__name__)
         logger.info("Category: " + category)
+        try:
+            discovered_entries = store.discover_entries_for_category(
+                category, extra_args
+            )
+        except Exception:
+            error_message = "Error discovering URLs from {}: {} - {}".format(
+                store_class_name, category, traceback.format_exc()
+            )
+            logger.error(error_message)
+            raise StoreScrapError(error_message)
+
+        for url in discovered_entries.keys():
+            logger.info(url)
+
+        return discovered_entries
+
+    @staticmethod
+    @shared_task()
+    def discover_entries_for_category_non_blocker_task(
+        store_class_name, category, extra_args=None
+    ):
+        store = get_store_class_by_name(store_class_name)
+        logger.info("Discovering URLs")
+        logger.info("Store: " + store.__name__)
+        logger.info("Category: " + category)
 
         process_id = extra_args.get("process_id", None)
         logger.info(f"Process ID: {process_id}")
@@ -525,19 +561,49 @@ class Store:
             logger.error(error_message)
             raise StoreScrapError(error_message)
 
-        for url in discovered_entries.keys():
+        entry_positions = defaultdict(lambda: list())
+        url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
+
+        for url, positions in discovered_entries.items():
+            if positions:
+                for pos in positions:
+                    entry_positions[url].append((pos["section_name"], pos["value"]))
+                    url_category_weights[url][category] += pos["category_weight"]
+            else:
+                url_category_weights[url][category] = 1
+                entry_positions[url] = []
+
+        discovered_entries = {}
+
+        for url, positions in entry_positions.items():
+            category, max_weight = max(
+                url_category_weights[url].items(),
+                key=lambda x: x[1],
+            )
+
+            if max_weight:
+                discovered_entries[url] = {
+                    "positions": positions,
+                    "category": category,
+                    "category_weight": max_weight,
+                }
+        print(discovered_entries)
+
+        for url, data in discovered_entries.items():
             if not redis_client.sismember(f"{process_id}_scraped_urls", url):
                 redis_client.sadd(f"{process_id}_scraped_urls", url)
-                logger.info(url)
-                logstash_logger.info(
-                    f"{store.__name__}: Discovered URL",
-                    extra={
-                        "process_id": process_id or None,
-                        "store": store.__name__,
-                        "category": category,
-                        "url": url,
-                    },
-                )
+            logger.info(url)
+            logstash_logger.info(
+                f"{store.__name__}: Discovered URL",
+                extra={
+                    "process_id": process_id or None,
+                    "store": store.__name__,
+                    "category": category,
+                    "url": url,
+                    "positions": json.dumps(data["positions"]),
+                    "category_weight": data["category_weight"],
+                },
+            )
 
         return discovered_entries
 
@@ -617,7 +683,7 @@ class Store:
                         store_class_name=store_class_name,
                         category=category,
                         extra_args=extra_args,
-                    ).set(queue="storescraper2"),
+                    ).set(queue="storescraper"),
                 )
 
                 chunk_tasks.append(task)
