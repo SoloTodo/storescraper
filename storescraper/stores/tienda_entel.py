@@ -52,14 +52,21 @@ class TiendaEntel(Store):
         except json.decoder.JSONDecodeError:
             return []
 
+        offer_price = min(
+            [x["priceIVA"] for x in json_data["planPriceRange"]["rangeDetail"]]
+        )
+        offer_price = Decimal(offer_price).quantize(0)
+
         base_name = json_data["renderVOBean"]["productName"]
 
         for sku in json_data["renderSkusBean"]["skus"]:
+            if not sku["available"]:
+                continue
             price_container = sku["skuPrice"]
             if not price_container:
                 continue
 
-            price = Decimal(price_container).quantize(0)
+            normal_price = Decimal(price_container).quantize(0)
             sku_id = sku["skuId"]
 
             pictures_container = []
@@ -91,8 +98,8 @@ class TiendaEntel(Store):
                 url,
                 sku_id,
                 stock,
-                price,
-                price,
+                normal_price,
+                offer_price,
                 "CLP",
                 sku=sku_id,
                 picture_urls=picture_urls,
