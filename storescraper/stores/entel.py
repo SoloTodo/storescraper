@@ -107,31 +107,21 @@ class Entel(Store):
     @classmethod
     def _plans(cls, extra_args):
         session = session_with_proxy(extra_args)
-        endpoint = (
-            "https://www.entel.cl/planes/includes/template-card/"
-            "public/js/data-planes.js?v=260722.1056"
-        )
-        res = session.get(endpoint)
-
-        try:
-            raw_plans = re.search(
-                r"const Planes_Parrilla_1plan=(\[[\s\S]*?])", res.text
-            ).groups()[0]
-        except Exception:
-            raw_plans = re.search(
-                r"const Planes_Parrilla_1plan = (\[[\s\S]*?])", res.text
-            ).groups()[0]
-        plans = pyjson5.decode(raw_plans)
-
+        response = session.get(cls.planes_url)
+        soup = BeautifulSoup(response.text, "lxml")
+        plans_container = soup.find("swiper-container", {"id": "cards-planes-movil"})
+        plans = plans_container.findAll("swiper-slide")
         products = []
 
         for plan in plans:
-            base_plan_soup = BeautifulSoup(plan["nombre"], "lxml")
-            base_plan_name = base_plan_soup.text
-            price = Decimal(plan["precio"])
+            plan_data = json.loads(
+                plan.find("eds-card-movil-2").get("eds-btn-detail-complete")
+            )["data"]
+            base_plan_name = plan_data["product_name"]
+            price = Decimal(plan_data["product_price"])
 
             for suffix in ["", " Portabilidad"]:
-                name = "{}{}".format(base_plan_name, suffix)
+                name = f"{base_plan_name}{suffix}"
                 products.append(
                     Product(
                         name,
