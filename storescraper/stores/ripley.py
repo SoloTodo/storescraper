@@ -351,7 +351,7 @@ class Ripley(Store):
             position = 1
 
             while True:
-                if page > 300:
+                if page > 400:
                     raise Exception("Page overflow")
 
                 if "?" in category_path:
@@ -386,10 +386,10 @@ class Ripley(Store):
                 )
                 page_json = json.loads(page_data.groups()[0])
 
-                if "products" not in page_json:
+                if "products" not in page_json["catalog"]:
                     break
 
-                products_json_1 = page_json["products"]
+                products_json_1 = page_json["catalog"]["products"]
 
                 products_json_2 = json.loads(
                     soup.find("script", {"type": "application/ld+json"}).string
