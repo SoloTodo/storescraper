@@ -94,17 +94,18 @@ class EliteCenter(StoreWithUrlExtensions):
             response = session.get(url_webpage)
 
             data = response.text
-            soup = BeautifulSoup(data, "html5lib")
+            soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-grid-item")
-
-            if soup.find("div", {"data-elementor-type": "error-404"}):
-                if page == 1:
-                    logging.warning("Empty category: " + url_extension)
-                break
 
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
+
+            if not soup.find("a", "next page-numbers"):
+                if not product_containers and page == 1:
+                    logging.warning("Empty category: " + url_extension)
+                break
+
             page += 1
         return product_urls
 
