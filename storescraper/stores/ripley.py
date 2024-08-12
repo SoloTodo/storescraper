@@ -351,7 +351,7 @@ class Ripley(Store):
             position = 1
 
             while True:
-                if page > 300:
+                if page > 400:
                     raise Exception("Page overflow")
 
                 if "?" in category_path:
