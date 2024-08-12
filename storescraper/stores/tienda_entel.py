@@ -52,10 +52,13 @@ class TiendaEntel(Store):
         except json.decoder.JSONDecodeError:
             return []
 
-        offer_price = min(
-            [x["priceIVA"] for x in json_data["planPriceRange"]["rangeDetail"]]
-        )
-        offer_price = Decimal(offer_price).quantize(0)
+        if json_data["planPriceRange"]:
+            offer_price = min(
+                [x["priceIVA"] for x in json_data["planPriceRange"]["rangeDetail"]]
+            )
+            offer_price = Decimal(offer_price).quantize(0)
+        else:
+            offer_price = None
 
         base_name = json_data["renderVOBean"]["productName"]
 
@@ -67,6 +70,8 @@ class TiendaEntel(Store):
                 continue
 
             normal_price = Decimal(price_container).quantize(0)
+            if not offer_price:
+                offer_price = normal_price
             sku_id = sku["skuId"]
 
             pictures_container = []
