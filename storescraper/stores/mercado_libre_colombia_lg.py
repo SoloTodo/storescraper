@@ -38,11 +38,7 @@ class MercadoLibreColombiaLg(MercadoLibreChile):
                     logging.warning("Empty category")
                 break
             for container in product_containers:
-                product_url = (
-                    container.find("a", "ui-search-link")["href"]
-                    .split("#")[0]
-                    .split("?")[0]
-                )
+                product_url = container.find("a")["href"].split("#")[0].split("?")[0]
                 product_url += "?pdp_filters=official_store:{}".format(
                     cls.official_store_id
                 )
