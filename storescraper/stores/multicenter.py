@@ -83,7 +83,9 @@ class Multicenter(Store):
 
         key = json_data["mpn"]
         name = json_data["name"]
-        sku = json_data["sku"]
+        sku = soup.find(
+            "span", "vtex-product-identifier-0-x-product-identifier__value"
+        ).text
         price = Decimal(str(json_data["offers"]["offers"][0]["price"]))
 
         if soup.find("div", "vtex-add-to-cart-button-0-x-buttonDataContainer"):
