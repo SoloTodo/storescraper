@@ -1,15 +1,14 @@
 import json
-import re
 
 from collections import defaultdict
 
-import pyjson5
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
+from storescraper.categories import CELL, CELL_PLAN
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import session_with_proxy
 
 
 class Entel(Store):
@@ -18,7 +17,7 @@ class Entel(Store):
 
     @classmethod
     def categories(cls):
-        return ["Cell", "CellPlan"]
+        return [CELL, CELL_PLAN]
 
     @classmethod
     def discover_entries_for_category(cls, category, extra_args=None):
@@ -26,7 +25,7 @@ class Entel(Store):
         session.headers["Accept"] = "application/json"
         product_entries = defaultdict(lambda: [])
 
-        if category == "Cell":
+        if category == CELL:
             # Contrato
 
             endpoints = [
@@ -62,7 +61,7 @@ class Entel(Store):
                         }
                     )
 
-        if category == "CellPlan":
+        if category == CELL_PLAN:
             product_entries[cls.prepago_url].append(
                 {"category_weight": 1, "section_name": "Planes", "value": 1}
             )
@@ -126,7 +125,7 @@ class Entel(Store):
                     Product(
                         name,
                         cls.__name__,
-                        "CellPlan",
+                        CELL_PLAN,
                         cls.planes_url,
                         cls.planes_url,
                         name,
@@ -203,7 +202,7 @@ class Entel(Store):
                     Product(
                         variant_name,
                         cls.__name__,
-                        "Cell",
+                        CELL,
                         url,
                         url,
                         "{} - {}".format(variant_sku, plan_name),
@@ -225,7 +224,6 @@ class Entel(Store):
                 continue
 
             price = Decimal(price_container).quantize(0)
-            offer_price = price
             product_data = json.loads(
                 soup.find("script", {"type": "application/ld+json"}).text
             )
@@ -235,11 +233,13 @@ class Entel(Store):
                 and "AggregateOffer" in product_data["offers"]["@type"]
             ):
                 offer_price = Decimal(product_data["offers"]["lowPrice"]).quantize(0)
+            else:
+                offer_price = price
 
             product = Product(
                 variant_name,
                 cls.__name__,
-                "Cell",
+                CELL,
                 url,
                 url,
                 "{} - Entel Prepago".format(variant_sku),
