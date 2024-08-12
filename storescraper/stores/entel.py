@@ -160,8 +160,7 @@ class Entel(Store):
         if json_data["isAccessory"]:
             return []
 
-        stock_dict = {x["skuId"]: x["maxQuantity"] for x in json_data["skuViews"]}
-
+        stock_dict = {x["skuId"]: x["stockDelivery"] for x in json_data["skuViews"]}
         products = []
 
         for variant in json_data["renderSkusBean"]["skus"]:
@@ -200,10 +199,6 @@ class Entel(Store):
 
                 price = Decimal(round(plan["priceIVA"]))
 
-                # Please keep the stock as -1 even if the product is marked
-                # as "Unavailable" in Entel's website as requested by client
-                # Value
-
                 products.append(
                     Product(
                         variant_name,
@@ -230,6 +225,16 @@ class Entel(Store):
                 continue
 
             price = Decimal(price_container).quantize(0)
+            offer_price = price
+            product_data = json.loads(
+                soup.find("script", {"type": "application/ld+json"}).text
+            )
+
+            if (
+                "offers" in product_data
+                and "AggregateOffer" in product_data["offers"]["@type"]
+            ):
+                offer_price = Decimal(product_data["offers"]["lowPrice"]).quantize(0)
 
             product = Product(
                 variant_name,
@@ -240,7 +245,7 @@ class Entel(Store):
                 "{} - Entel Prepago".format(variant_sku),
                 stock,
                 price,
-                price,
+                offer_price,
                 "CLP",
                 sku=variant_sku,
                 cell_monthly_payment=Decimal(0),
