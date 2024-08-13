@@ -44,7 +44,7 @@ class Exito(Store):
             }
 
             response = session.get(
-                "https://www.exito.com/api/graphql?operationName=ProductsQuery&variables={}".format(
+                "https://www.exito.com/api/graphql?operationName=QuerySearch&variables={}".format(
                     urllib.parse.quote(json.dumps(payload))
                 )
             )

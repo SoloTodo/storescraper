@@ -5,6 +5,7 @@ from .acer_store import AcerStore
 from .adventure_store import AdventureStore
 from .agaval import Agaval
 from .adis_store import AdisStore
+from .af_store import AFStore
 from .agencias_way_online import AgenciasWayOnline
 from .agil_store import AgilStore
 from .ak_byte_computacion import AkByteComputacion

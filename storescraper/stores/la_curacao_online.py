@@ -81,8 +81,10 @@ class LaCuracaoOnline(Store):
             return []
 
         soup = BeautifulSoup(response.text, "lxml")
-        name = soup.find("span", {"itemprop": "name"}).text.strip()
-        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
+        name = soup.find("span", {"data-ui-id": "page-title-wrapper"}).text.strip()
+        sku = (
+            soup.find("div", "product attribute sku").find("div", "value").text.strip()
+        )
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"].strip()
         )
