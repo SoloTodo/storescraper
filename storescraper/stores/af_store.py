@@ -87,6 +87,7 @@ class AFStore(StoreWithUrlExtensions):
                 price,
                 "CLP",
                 sku=sku,
+                condition=condition,
                 description=description,
                 picture_urls=picture_urls,
             )
