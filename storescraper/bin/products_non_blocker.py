@@ -9,16 +9,23 @@ from storescraper.utils import get_store_class_by_name  # noqa
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        filename="products_non_blocker.log",
+        filemode="w",
+    )
 
     parser = argparse.ArgumentParser(
-        description="Discovers the URLs of the given store and (optional) " "categories"
+        description="Retrieves the products of the given store."
     )
+
     parser.add_argument("store", type=str, help="The name of the store to be parsed")
+
     parser.add_argument(
         "--categories", type=str, nargs="*", help="Specific categories to be parsed"
     )
+
     parser.add_argument(
         "--extra_args",
         type=json.loads,
@@ -31,10 +38,7 @@ def main():
     args = parser.parse_args()
     store = get_store_class_by_name(args.store)
 
-    store.discover_entries_for_categories_non_blocker(
-        categories=args.categories,
-        extra_args=args.extra_args,
-    )
+    store.products_non_blocker(categories=args.categories, extra_args=args.extra_args)
 
 
 if __name__ == "__main__":

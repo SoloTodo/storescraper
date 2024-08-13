@@ -46,7 +46,6 @@ class Store:
     preferred_discover_urls_concurrency = 3
     preferred_products_for_url_concurrency = 10
     prefer_async = True
-    scrape_products = True
 
     ##########################################################################
     # API methods
@@ -92,6 +91,39 @@ class Store:
             extra_args=extra_args,
             products_for_url_concurrency=products_for_url_concurrency,
             use_async=use_async,
+        )
+
+    @classmethod
+    def products_non_blocker(
+        cls,
+        categories=None,
+        extra_args=None,
+        discover_urls_concurrency=None,
+        products_for_url_concurrency=None,
+    ):
+        sanitized_parameters = cls.sanitize_parameters(
+            categories=categories,
+            discover_urls_concurrency=discover_urls_concurrency,
+            products_for_url_concurrency=products_for_url_concurrency,
+        )
+
+        categories = sanitized_parameters["categories"]
+        discover_urls_concurrency = sanitized_parameters["discover_urls_concurrency"]
+        products_for_url_concurrency = sanitized_parameters[
+            "products_for_url_concurrency"
+        ]
+
+        extra_args = cls._extra_args_with_preflight(extra_args)
+        process_id = str(uuid.uuid4())
+        extra_args["process_id"] = process_id
+
+        print(f"Starting process: {process_id}")
+
+        cls.discover_entries_for_categories_non_blocker(
+            categories=categories,
+            extra_args=extra_args,
+            discover_urls_concurrency=discover_urls_concurrency,
+            callback=cls.products_for_urls_non_blocker_task,
         )
 
     @classmethod
@@ -144,24 +176,24 @@ class Store:
         categories=None,
         extra_args=None,
         discover_urls_concurrency=None,
-        scrape_products=None,
+        callback=None,
     ):
         sanitized_parameters = cls.sanitize_parameters(
             categories=categories,
             discover_urls_concurrency=discover_urls_concurrency,
-            scrape_products=scrape_products,
         )
 
-        scrape_products = sanitized_parameters["scrape_products"]
         categories = sanitized_parameters["categories"]
         discover_urls_concurrency = sanitized_parameters["discover_urls_concurrency"]
-        extra_args = cls._extra_args_with_preflight(extra_args)
-        process_id = str(uuid.uuid4())
 
-        print(f"Process ID: {process_id}")
+        if not "process_id" in extra_args:
+            process_id = str(uuid.uuid4())
+            extra_args["process_id"] = process_id
+            print(f"Process ID: {process_id}")
+
+        process_id = extra_args["process_id"]
         print(f"Discovering URLs for: {cls.__name__}")
 
-        extra_args["process_id"] = process_id
         category_chunks = chunks(categories, discover_urls_concurrency)
         task_group = []
 
@@ -173,10 +205,10 @@ class Store:
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
 
-                if scrape_products:
+                if callback:
                     task = chain(
                         task,
-                        cls.products_for_urls_task_non_blocker.s(
+                        callback.s(
                             store_class_name=cls.__name__,
                             category=category,
                             extra_args=extra_args,
@@ -187,18 +219,8 @@ class Store:
 
             task_group.append(group(*chunk_tasks))
 
-        task_group.append(
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
-        )
-
-        # link failing with high workers concurrency
-        for i in range(len(task_group) - 1):
-            task_group[i].link(task_group[i + 1])
-
-        task_group[0].apply_async()
-
-        # chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
-        cls.fetch_es_url_logs(process_id, scrape_products=scrape_products)
+        chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
+        cls.fetch_es_url_logs(process_id)
 
     @shared_task()
     def nothing():
@@ -206,12 +228,10 @@ class Store:
 
     @classmethod
     def fetch_es_url_logs(
-        cls, process_id, scrape_products=False, count_by_category=False
+        cls, process_id, scrape_products=True, count_by_category=False
     ):
         with_errors = availables = unavailables = products_count = urls_count = 0
-        previous_products_count = previous_urls_count = -1
         categories = {}
-        timestamp = datetime.now(timezone.utc).isoformat()
         finished_flag = False
 
         query = {
@@ -220,7 +240,6 @@ class Store:
                 "bool": {
                     "must": [
                         {"term": {"@fields.process_id.keyword": None}},
-                        {"range": {"@timestamp": {"gt": None}}},
                     ]
                 }
             },
@@ -231,7 +250,6 @@ class Store:
             query["query"]["bool"]["must"][0]["term"][
                 "@fields.process_id.keyword"
             ] = process_id
-            query["query"]["bool"]["must"][1]["range"]["@timestamp"]["gt"] = timestamp
 
             response = ES.search(index="logs-test", body=query)
 
@@ -259,29 +277,6 @@ class Store:
 
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
                     finished_flag = True
-
-                timestamp = hit["_source"]["@timestamp"]
-
-            if (
-                finished_flag
-                and previous_urls_count == urls_count
-                and (not scrape_products or previous_products_count == products_count)
-            ):
-                print(
-                    f"\n{cls.__name__} process {process_id} finished with {urls_count} URLs"
-                )
-
-                if count_by_category:
-                    print("-" * 80)
-                    for category, count in categories.items():
-                        print(f"{category}: {count}")
-                    print("\n")
-
-                if scrape_products:
-                    print(f"\nAvailable: {availables}")
-                    print(f"Unavailable: {unavailables}")
-                    print(f"With error: {with_errors}")
-                    print(f"Total: {products_count}")
 
                 return
 
@@ -507,15 +502,6 @@ class Store:
 
     @staticmethod
     @shared_task()
-    def finish_process(store, process_id):
-        redis_client.delete(f"{process_id}_scraped_urls")
-        logstash_logger.info(
-            f"{store}: process finished",
-            extra={"process_id": process_id},
-        )
-
-    @staticmethod
-    @shared_task()
     def discover_entries_for_category_task(store_class_name, category, extra_args=None):
         store = get_store_class_by_name(store_class_name)
         logger.info("Discovering URLs")
@@ -543,9 +529,10 @@ class Store:
         store_class_name, category, extra_args=None
     ):
         store = get_store_class_by_name(store_class_name)
+        store_name = store.__name__
         logger.info("Discovering URLs")
-        logger.info("Store: " + store.__name__)
-        logger.info("Category: " + category)
+        logger.info(f"Store: {store_name}")
+        logger.info(f"Category: {category}")
 
         process_id = extra_args.get("process_id", None)
         logger.info(f"Process ID: {process_id}")
@@ -587,23 +574,18 @@ class Store:
                     "category": category,
                     "category_weight": max_weight,
                 }
-        print(discovered_entries)
-
-        for url, data in discovered_entries.items():
-            if not redis_client.sismember(f"{process_id}_scraped_urls", url):
-                redis_client.sadd(f"{process_id}_scraped_urls", url)
-            logger.info(url)
-            logstash_logger.info(
-                f"{store.__name__}: Discovered URL",
-                extra={
-                    "process_id": process_id or None,
-                    "store": store.__name__,
-                    "category": category,
-                    "url": url,
-                    "positions": json.dumps(data["positions"]),
-                    "category_weight": data["category_weight"],
-                },
-            )
+                logger.info(url)
+                logstash_logger.info(
+                    f"{store_name}: Discovered URL",
+                    extra={
+                        "process_id": process_id or None,
+                        "store": store_name,
+                        "category": category,
+                        "url": url,
+                        "positions": json.dumps("positions"),
+                        "category_weight": max_weight,
+                    },
+                )
 
         return discovered_entries
 
@@ -627,8 +609,8 @@ class Store:
 
         serialized_products = [p.serialize() for p in raw_products]
 
-        # for idx, product in enumerate(serialized_products):
-        #    logger.info("{} - {}".format(idx, product))
+        for idx, product in enumerate(serialized_products):
+            logger.info("{} - {}".format(idx, product))
 
         return serialized_products
 
@@ -660,7 +642,7 @@ class Store:
 
     @staticmethod
     @shared_task(autoretry_for=(StoreScrapError,), max_retries=5, default_retry_delay=5)
-    def products_for_urls_task_non_blocker(
+    def products_for_urls_non_blocker_task(
         discovered_entries,
         store_class_name,
         category,
@@ -767,7 +749,6 @@ class Store:
         discover_urls_concurrency=None,
         products_for_url_concurrency=None,
         use_async=None,
-        scrape_products=None,
     ):
         if categories is None:
             categories = cls.categories()
@@ -785,15 +766,11 @@ class Store:
         if use_async is None:
             use_async = cls.prefer_async
 
-        if scrape_products is None:
-            scrape_products = cls.scrape_products
-
         return {
             "categories": categories,
             "discover_urls_concurrency": discover_urls_concurrency,
             "products_for_url_concurrency": products_for_url_concurrency,
             "use_async": use_async,
-            "scrape_products": scrape_products,
         }
 
     ######################################################################
