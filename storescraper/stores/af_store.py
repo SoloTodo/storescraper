@@ -69,6 +69,11 @@ class AFStore(StoreWithUrlExtensions):
                 container.find("img")["src"]
                 for container in soup.findAll("div", "wpgs_image")
             ]
+            condition = (
+                "https://schema.org/NewCondition"
+                if "SELLADO" in description.upper()
+                else "https://schema.org/OpenBoxCondition"
+            )
 
             p = Product(
                 base_name,
@@ -93,10 +98,13 @@ class AFStore(StoreWithUrlExtensions):
         for variation in json.loads(variations.get("data-product_variations")):
             attributes = variation["attributes"]
             name = f"{base_name} ({' / '.join(attributes.values())})"
-            condition_attribute = attributes.get("attribute_estado-del-producto", None)
-            condition = "https://schema.org/NewCondition"
 
-            if condition_attribute in ["Open Box", "Vitrina"]:
+            if (
+                attributes.get("attribute_estado-del-producto", "").upper() == "SELLADO"
+                or "SELLADO" in variation["variation_description"].upper()
+            ):
+                condition = "https://schema.org/NewCondition"
+            else:
                 condition = "https://schema.org/OpenBoxCondition"
 
             key = str(variation["variation_id"])
