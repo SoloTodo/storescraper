@@ -65,10 +65,10 @@ class AFStore(StoreWithUrlExtensions):
             stock_container = soup.find("p", "stock in-stock")
 
             stock = 0 if not stock_container else int(stock_container.text.split()[0])
-            pictures_container = soup.find("div", "woocommerce-product-gallery")
-            picture_urls = set(
-                [img["src"] for img in pictures_container.findAll("img")]
-            )
+            picture_urls = [
+                container.find("img")["src"]
+                for container in soup.findAll("div", "wpgs_image")
+            ]
 
             p = Product(
                 base_name,
@@ -83,7 +83,7 @@ class AFStore(StoreWithUrlExtensions):
                 "CLP",
                 sku=sku,
                 description=description,
-                picture_urls=list(picture_urls),
+                picture_urls=picture_urls,
             )
 
             return [p]
@@ -92,39 +92,12 @@ class AFStore(StoreWithUrlExtensions):
 
         for variation in json.loads(variations.get("data-product_variations")):
             attributes = variation["attributes"]
+            name = f"{base_name} ({' / '.join(attributes.values())})"
+            condition_attribute = attributes.get("attribute_estado-del-producto", None)
+            condition = "https://schema.org/NewCondition"
 
-            storage = (
-                attributes.get(
-                    "attribute_capacidad",
-                )
-                or attributes.get("attribute_almacenamiento")
-                or None
-            )
-            color = attributes.get("attribute_color") or None
-            condition_attribute = (
-                attributes.get("attribute_estado-del-producto") or None
-            )
-            condition = None
-            box = attributes.get("attribute_incluye-caja-original") or None
-
-            name = base_name
-
-            if storage:
-                name += f" ({storage}"
-            if color:
-                name += f" / {color}"
-            if condition_attribute:
-                name += f" / {condition_attribute}"
-                if condition_attribute == "Open Box":
-                    condition = "https://schema.org/OpenBoxCondition"
-                elif condition_attribute == "Vitrina":
-                    condition = "https://schema.org/UsedCondition"
-
-            if box:
-                name += f" / {box}"
-
-            if name != base_name:
-                name += ")"
+            if condition_attribute in ["Open Box", "Vitrina"]:
+                condition = "https://schema.org/OpenBoxCondition"
 
             key = str(variation["variation_id"])
             sku = variation["sku"]
@@ -144,7 +117,7 @@ class AFStore(StoreWithUrlExtensions):
                 price,
                 "CLP",
                 sku=sku,
-                condition=condition or "https://schema.org/NewCondition",
+                condition=condition,
                 description=description,
                 picture_urls=picture_urls,
             )
