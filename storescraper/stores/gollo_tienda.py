@@ -66,8 +66,10 @@ class GolloTienda(Store):
         data = response.text
         soup = BeautifulSoup(data, "lxml")
 
-        name = soup.find("span", {"itemprop": "name"}).text.strip()
-        sku = soup.find("div", {"itemprop": "sku"}).text.strip()
+        name = soup.find("span", {"data-ui-id": "page-title-wrapper"}).text.strip()
+        sku = (
+            soup.find("div", "product attribute sku").find("div", "value").text.strip()
+        )
 
         if soup.find("div", "stock available").find("span").text == "Disponible":
             stock = -1
