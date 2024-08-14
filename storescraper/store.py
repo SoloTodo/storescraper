@@ -219,6 +219,10 @@ class Store:
 
             task_group.append(group(*chunk_tasks))
 
+        task_group.append(
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper2")
+        )
+
         chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
         cls.fetch_es_url_logs(process_id)
 
@@ -226,37 +230,45 @@ class Store:
     def nothing():
         pass
 
+    @shared_task
+    def finish_process(store, process_id):
+        logstash_logger.info(
+            f"{store}: process finished",
+            extra={"process_id": process_id},
+        )
+
     @classmethod
     def fetch_es_url_logs(
-        cls, process_id, scrape_products=True, count_by_category=False
+        cls,
+        process_id,
     ):
-        with_errors = availables = unavailables = products_count = urls_count = 0
-        categories = {}
         finished_flag = False
-
+        current_timestamp = datetime.utcnow().isoformat() + "Z"
         query = {
-            "size": 1000,
+            "size": 10000,
             "query": {
                 "bool": {
                     "must": [
-                        {"term": {"@fields.process_id.keyword": None}},
+                        {"term": {"@fields.process_id.keyword": process_id}},
+                        {"range": {"@timestamp": {"gte": current_timestamp}}},
                     ]
                 }
             },
             "sort": [{"@timestamp": {"order": "asc"}}],
         }
+        previous_urls_count = previous_products_count = 0
 
         while True:
-            query["query"]["bool"]["must"][0]["term"][
-                "@fields.process_id.keyword"
-            ] = process_id
-
             response = ES.search(index="logs-test", body=query)
+            with_errors = availables = unavailables = products_count = urls_count = 0
 
             for hit in response["hits"]["hits"]:
                 source_fields = hit["_source"]["@fields"]
 
-                if scrape_products and "product" in source_fields:
+                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
+                    finished_flag = True
+
+                if "product" in source_fields:
                     products_count += 1
 
                     if not source_fields["product"]:
@@ -271,29 +283,22 @@ class Store:
                 elif "url" in source_fields:
                     urls_count += 1
 
-                    if count_by_category:
-                        category = source_fields["category"]
-                        categories[category] = categories.get(category, 0) + 1
-
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    finished_flag = True
+                    return
 
-                return
-
-            if urls_count != previous_urls_count or (
-                scrape_products and products_count != previous_products_count
+            if (
+                urls_count != previous_urls_count
+                or products_count != previous_products_count
             ):
                 print(
-                    f"Discovered URLs: {urls_count}"
-                    + (
-                        f" | Scraped products: {products_count}"
-                        if scrape_products
-                        else ""
-                    )
+                    f"Discovered URLs: {urls_count} | Scraped products: {products_count} | Available: {availables} | Unavailable: {unavailables} | Errors: {with_errors}"
                 )
 
             previous_urls_count = urls_count
             previous_products_count = products_count
+
+            if finished_flag:
+                break
 
             time.sleep(3)
 
