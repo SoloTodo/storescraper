@@ -111,6 +111,10 @@ class Bip(StoreWithUrlExtensions):
             return []
 
         soup = BeautifulSoup(response.text, "html5lib")
+
+        if soup.find("h1", text="An Error Was Encountered"):
+            return []
+
         name = soup.find("div", "details-image-concept").find("h2").text
         sku = soup.find("input", {"id": "id_producto"}).get("value")
         stocks_container = soup.find("div", "product-buttons").findAll("span")
