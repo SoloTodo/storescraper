@@ -81,7 +81,7 @@ class Bip(StoreWithUrlExtensions):
 
             url_webpage = "https://bip.cl/categoria/{}/{}".format(url_extension, offset)
 
-            data = session.get(url_webpage, verify=False).text
+            data = session.get(url_webpage).text
 
             soup = BeautifulSoup(data, "lxml")
             product_containers = soup.findAll("div", "product-box")
@@ -105,7 +105,7 @@ class Bip(StoreWithUrlExtensions):
         ajax_session.headers["Content-Type"] = (
             "application/x-www-form-urlencoded; charset=UTF-8"
         )
-        response = session.get(url, verify=False)
+        response = session.get(url)
 
         if response.status_code in [404, 500]:
             return []
@@ -120,7 +120,7 @@ class Bip(StoreWithUrlExtensions):
         stocks_container = soup.find("div", "product-buttons").findAll("span")
         stock = 0 if "No Disponible" in [x.text for x in stocks_container] else -1
         price_data = ajax_session.post(
-            "https://bip.cl/home/viewProductAjax", "idProd=" + sku, verify=False
+            "https://bip.cl/home/viewProductAjax", "idProd=" + sku
         ).json()
         offer_price = Decimal(price_data["internet_price"].replace(".", ""))
         normal_price = Decimal(price_data["price"].replace(".", ""))
