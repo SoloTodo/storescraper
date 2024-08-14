@@ -14,7 +14,7 @@ from elasticsearch import Elasticsearch
 from datetime import datetime, timezone
 
 from .product import Product
-from .utils import get_store_class_by_name, chunks
+from .utils import get_store_class_by_name, chunks, get_timestamp_with_nanoseconds
 import redis
 
 logger = get_task_logger(__name__)
@@ -192,7 +192,6 @@ class Store:
             print(f"Process ID: {process_id}")
 
         process_id = extra_args["process_id"]
-        print(f"Discovering URLs for: {cls.__name__}")
 
         category_chunks = chunks(categories, discover_urls_concurrency)
         task_group = []
@@ -219,10 +218,6 @@ class Store:
 
             task_group.append(group(*chunk_tasks))
 
-        task_group.append(
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper2")
-        )
-
         chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
         cls.fetch_es_url_logs(process_id)
 
@@ -234,7 +229,11 @@ class Store:
     def finish_process(store, process_id):
         logstash_logger.info(
             f"{store}: process finished",
-            extra={"process_id": process_id},
+            extra={
+                "log_id": str(uuid.uuid4()),
+                "process_id": process_id,
+                "created_at": get_timestamp_with_nanoseconds(),
+            },
         )
 
     @classmethod
@@ -242,39 +241,40 @@ class Store:
         cls,
         process_id,
     ):
-        finished_flag = False
-        current_timestamp = datetime.utcnow().isoformat() + "Z"
+        scraped = set()
         query = {
             "size": 10000,
             "query": {
                 "bool": {
                     "must": [
                         {"term": {"@fields.process_id.keyword": process_id}},
-                        {"range": {"@timestamp": {"gte": current_timestamp}}},
                     ]
                 }
             },
-            "sort": [{"@timestamp": {"order": "asc"}}],
+            "sort": [{"@fields.created_at": "desc"}],
         }
-        previous_urls_count = previous_products_count = 0
+        urls_count = products_count = previous_urls_count = previous_products_count = (
+            with_errors
+        ) = availables = unavailables = 0
 
         while True:
             response = ES.search(index="logs-test", body=query)
-            with_errors = availables = unavailables = products_count = urls_count = 0
+            hits = response["hits"]["hits"]
 
-            for hit in response["hits"]["hits"]:
+            for hit in hits:
+
+                if hit["_id"] in scraped:
+                    continue
+
+                scraped.add(hit["_id"])
                 source_fields = hit["_source"]["@fields"]
 
-                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    finished_flag = True
-
                 if "product" in source_fields:
-                    products_count += 1
-
                     if not source_fields["product"]:
                         with_errors += 1
                     else:
                         for product in source_fields["product"]:
+                            products_count += 1
                             if product["stock"] == 0:
                                 unavailables += 1
                             else:
@@ -282,9 +282,6 @@ class Store:
 
                 elif "url" in source_fields:
                     urls_count += 1
-
-                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    return
 
             if (
                 urls_count != previous_urls_count
@@ -297,10 +294,7 @@ class Store:
             previous_urls_count = urls_count
             previous_products_count = products_count
 
-            if finished_flag:
-                break
-
-            time.sleep(3)
+            time.sleep(1)
 
     @classmethod
     def discover_entries_for_categories(
@@ -557,13 +551,16 @@ class Store:
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
 
         for url, positions in discovered_entries.items():
-            if positions:
-                for pos in positions:
-                    entry_positions[url].append((pos["section_name"], pos["value"]))
-                    url_category_weights[url][category] += pos["category_weight"]
-            else:
-                url_category_weights[url][category] = 1
-                entry_positions[url] = []
+            # prevent duplicated URLs, allow to validate numbers for debugging
+            if not redis_client.sismember(f"{process_id}_urls", url):
+                redis_client.sadd(f"{process_id}_urls", url)
+                if positions:
+                    for pos in positions:
+                        entry_positions[url].append((pos["section_name"], pos["value"]))
+                        url_category_weights[url][category] += pos["category_weight"]
+                else:
+                    url_category_weights[url][category] = 1
+                    entry_positions[url] = []
 
         discovered_entries = {}
 
@@ -581,14 +578,18 @@ class Store:
                 }
                 logger.info(url)
                 logstash_logger.info(
-                    f"{store_name}: Discovered URL",
+                    {
+                        "message": f"{store_name}: Discovered URL",
+                    },
                     extra={
+                        "log_id": str(uuid.uuid4()),
                         "process_id": process_id or None,
                         "store": store_name,
                         "category": category,
                         "url": url,
                         "positions": json.dumps("positions"),
                         "category_weight": max_weight,
+                        "created_at": get_timestamp_with_nanoseconds(),
                     },
                 )
 
@@ -683,10 +684,12 @@ class Store:
         logstash_logger.info(
             f"{store_class_name}: Discovered product",
             extra={
+                "log_id": str(uuid.uuid4()),
                 "process_id": extra_args["process_id"],
                 "store": store_class_name,
                 "category": category,
                 "product": product,
+                "created_at": get_timestamp_with_nanoseconds(),
             },
         )
 
