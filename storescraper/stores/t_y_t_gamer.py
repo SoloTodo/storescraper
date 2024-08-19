@@ -96,9 +96,9 @@ class TyTGamer(StoreWithUrlExtensions):
         product_id = re.search(r"/(\d+)-", url).groups()[0]
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, "lxml")
-        session.headers[
-            "Content-Type"
-        ] = "application/x-www-form-urlencoded; charset=UTF-8"
+        session.headers["Content-Type"] = (
+            "application/x-www-form-urlencoded; charset=UTF-8"
+        )
         session.headers["Accept"] = "application/json, text/javascript, */*; q=0.01"
         payload = "action=quickview&id_product={}".format(product_id)
         res = session.post(
@@ -114,7 +114,7 @@ class TyTGamer(StoreWithUrlExtensions):
             stock = 0
 
         price_tags = soup.findAll("span", "current-price-display")
-        assert len(price_tags) == 2
+        assert len(price_tags) == 3 and price_tags[2].text.strip() == ""
         offer_price = Decimal(remove_words(price_tags[0].text))
         normal_price = Decimal(remove_words(price_tags[1].text))
 

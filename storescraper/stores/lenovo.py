@@ -29,9 +29,9 @@ class Lenovo(StoreWithUrlExtensions):
         product_urls = []
         session = session_with_proxy(extra_args)
         session.headers["Referer"] = "https://www.lenovo.com/"
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
 
         page = 1
         while True:
@@ -81,9 +81,9 @@ class Lenovo(StoreWithUrlExtensions):
         # session
         session = cf_session_with_proxy(extra_args)
         session.headers["Referer"] = "https://www.lenovo.com/"
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
 
         res = session.get(url)
         soup = BeautifulSoup(res.text, "lxml")
@@ -110,6 +110,7 @@ class Lenovo(StoreWithUrlExtensions):
         default_page_filters = {
             NOTEBOOK: "55262423-c9c7-4e23-a79a-073ce2679bc8",
             ALL_IN_ONE: "12c2c59d-900c-4e1d-ba88-5d744b774c77",
+            TABLET: "b422cb4c-ba83-4f96-95a8-82872c7f1e57",
         }
 
         if form_tag:
