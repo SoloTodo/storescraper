@@ -6,15 +6,13 @@ import traceback
 import uuid
 from collections import defaultdict, OrderedDict
 
-from celery import chain, group, shared_task
+from celery import chain, group, shared_task, chord
 from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
 from elasticsearch import Elasticsearch
 
-from datetime import datetime, timezone
-
 from .product import Product
-from .utils import get_store_class_by_name, chunks, get_timestamp_with_nanoseconds
+from .utils import get_store_class_by_name, chunks
 import redis
 
 logger = get_task_logger(__name__)
@@ -192,15 +190,14 @@ class Store:
             print(f"Process ID: {process_id}")
 
         process_id = extra_args["process_id"]
-        category_chunks = chunks(categories, 1)
+
+        category_chunks = chunks(categories, discover_urls_concurrency)
         task_group = []
 
         for category_chunk in category_chunks:
-            print(category_chunk)
             chunk_tasks = []
 
             for category in category_chunk:
-                print(category)
                 task = cls.discover_entries_for_category_non_blocker_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
@@ -216,15 +213,23 @@ class Store:
                     )
 
                 chunk_tasks.append(task)
+            group_tasks = group(*chunk_tasks)
+            task_group.append(group_tasks)
 
-            task_group.append(group(*chunk_tasks))
+        group_chunks = chunks(task_group, 3)
+        group_chunks_len = 0
 
-        task_group.append(
-            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
-        )
-        print(task_group)
-        chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
-        cls.fetch_es_url_logs(process_id)
+        for group_chunk in group_chunks:
+            group_chunks_len += 1
+            chain(
+                cls.nothing.si().set(queue="storescraper"),
+                *group_chunk,
+                cls.finish_process.si(cls.__name__, process_id).set(
+                    queue="storescraper"
+                ),
+            )()
+
+        cls.fetch_es_url_logs(process_id, group_chunks_len)
 
     @shared_task()
     def nothing():
@@ -235,9 +240,7 @@ class Store:
         logstash_logger.info(
             f"{store}: process finished",
             extra={
-                "log_id": str(uuid.uuid4()),
                 "process_id": process_id,
-                "created_at": get_timestamp_with_nanoseconds(),
             },
         )
 
@@ -245,7 +248,9 @@ class Store:
     def fetch_es_url_logs(
         cls,
         process_id,
+        group_chunks_len,
     ):
+        finished_groups = 0
         finished_flag = False
         loop_wait = 10
         not_updated = 0
@@ -259,7 +264,7 @@ class Store:
                     ]
                 }
             },
-            "sort": [{"@fields.created_at": "desc"}],
+            "sort": [{"@timestamp": "desc"}],
         }
         urls_count = products_count = previous_urls_count = previous_products_count = (
             with_errors
@@ -270,14 +275,20 @@ class Store:
             hits = response["hits"]["hits"]
 
             for hit in hits:
+                source_fields = hit["_source"]["@fields"]
 
-                if hit["_id"] in scraped:
+                if hit["_id"] in scraped or (
+                    "url" in source_fields and source_fields["url"] in scraped
+                ):
                     continue
 
                 scraped.add(hit["_id"])
 
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    finished_flag = True
+                    finished_groups += 1
+                    print(f"Group {finished_groups}/{group_chunks_len} finished")
+                    if finished_groups == group_chunks_len:
+                        finished_flag = True
 
                 source_fields = hit["_source"]["@fields"]
 
@@ -293,6 +304,7 @@ class Store:
                                 availables += 1
 
                 elif "url" in source_fields:
+                    scraped.add(source_fields["url"])
                     urls_count += 1
 
             if (
@@ -348,7 +360,7 @@ class Store:
         extra_args = cls._extra_args_with_preflight(extra_args)
 
         if use_async:
-            category_chunks = chunks(categories, 1)
+            category_chunks = chunks(categories, discover_urls_concurrency)
 
             for category_chunk in category_chunks:
                 chunk_tasks = []
@@ -555,12 +567,12 @@ class Store:
         store_class_name, category, extra_args=None
     ):
         store = get_store_class_by_name(store_class_name)
-        store_name = store.__name__
         logger.info("Discovering URLs")
-        logger.info(f"Store: {store_name}")
+        logger.info(f"Store: {store_class_name}")
         logger.info(f"Category: {category}")
-
         process_id = extra_args.get("process_id", None)
+        extra_args = store._extra_args_with_preflight(extra_args)
+
         logger.info(f"Process ID: {process_id}")
 
         try:
@@ -578,16 +590,13 @@ class Store:
         url_category_weights = defaultdict(lambda: defaultdict(lambda: 0))
 
         for url, positions in discovered_entries.items():
-            # prevent duplicated URLs, allow to validate numbers for debugging
-            if not redis_client.sismember(f"{process_id}_urls", url):
-                redis_client.sadd(f"{process_id}_urls", url)
-                if positions:
-                    for pos in positions:
-                        entry_positions[url].append((pos["section_name"], pos["value"]))
-                        url_category_weights[url][category] += pos["category_weight"]
-                else:
-                    url_category_weights[url][category] = 1
-                    entry_positions[url] = []
+            if positions:
+                for pos in positions:
+                    entry_positions[url].append((pos["section_name"], pos["value"]))
+                    url_category_weights[url][category] += pos["category_weight"]
+            else:
+                url_category_weights[url][category] = 1
+                entry_positions[url] = []
 
         discovered_entries = {}
 
@@ -606,17 +615,15 @@ class Store:
                 logger.info(url)
                 logstash_logger.info(
                     {
-                        "message": f"{store_name}: Discovered URL",
+                        "message": f"{store_class_name}: Discovered URL",
                     },
                     extra={
-                        "log_id": str(uuid.uuid4()),
                         "process_id": process_id or None,
-                        "store": store_name,
+                        "store": store_class_name,
                         "category": category,
                         "url": url,
-                        "positions": json.dumps("positions"),
+                        "positions": json.dumps(positions),
                         "category_weight": max_weight,
-                        "created_at": get_timestamp_with_nanoseconds(),
                     },
                 )
 
@@ -711,12 +718,10 @@ class Store:
         logstash_logger.info(
             f"{store_class_name}: Discovered product",
             extra={
-                "log_id": str(uuid.uuid4()),
                 "process_id": extra_args["process_id"],
                 "store": store_class_name,
                 "category": category,
                 "product": product,
-                "created_at": get_timestamp_with_nanoseconds(),
             },
         )
 
