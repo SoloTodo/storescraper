@@ -96,11 +96,16 @@ class PowerPlay(StoreWithUrlExtensions):
                 picture_urls = [img["href"] for img in gallery]
                 description = html_to_markdown(product_data["description"])
                 stock_container = soup.find("div", "availability stock in-stock")
-                stock = (
-                    int(re.search(r"\d+", stock_container.text).group())
-                    if stock_container
-                    else 0
-                )
+
+                if not stock_container:
+                    stock = 0
+                else:
+                    print(stock_container.text)
+                    stock = (
+                        -1
+                        if stock_container.text.strip() == "En stock"
+                        else int(re.search(r"\d+", stock_container.text).group())
+                    )
 
                 p = Product(
                     name,
