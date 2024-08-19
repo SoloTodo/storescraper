@@ -192,14 +192,15 @@ class Store:
             print(f"Process ID: {process_id}")
 
         process_id = extra_args["process_id"]
-
-        category_chunks = chunks(categories, discover_urls_concurrency)
+        category_chunks = chunks(categories, 1)
         task_group = []
 
         for category_chunk in category_chunks:
+            print(category_chunk)
             chunk_tasks = []
 
             for category in category_chunk:
+                print(category)
                 task = cls.discover_entries_for_category_non_blocker_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
@@ -218,7 +219,11 @@ class Store:
 
             task_group.append(group(*chunk_tasks))
 
-        chain(cls.nothing.si().set(queue="storescraper"), *task_group)()
+        task_group.append(
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
+        )
+        print(task_group)
+        chain(cls.nothing.si().set(queue="storescraper"), *task_group).apply_async()
         cls.fetch_es_url_logs(process_id)
 
     @shared_task()
@@ -241,6 +246,9 @@ class Store:
         cls,
         process_id,
     ):
+        finished_flag = False
+        loop_wait = 10
+        not_updated = 0
         scraped = set()
         query = {
             "size": 10000,
@@ -267,6 +275,10 @@ class Store:
                     continue
 
                 scraped.add(hit["_id"])
+
+                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
+                    finished_flag = True
+
                 source_fields = hit["_source"]["@fields"]
 
                 if "product" in source_fields:
@@ -287,14 +299,29 @@ class Store:
                 urls_count != previous_urls_count
                 or products_count != previous_products_count
             ):
+                not_updated = 0
                 print(
-                    f"Discovered URLs: {urls_count} | Scraped products: {products_count} | Available: {availables} | Unavailable: {unavailables} | Errors: {with_errors}"
+                    f"Available: {availables} | Unavailable: {unavailables} | With error: {with_errors} | Total: {urls_count}"
                 )
+            else:
+                # print(".", end="", flush=True)
+                not_updated += 1
+                elapsed_time = loop_wait * not_updated
+
+                if (elapsed_time > 600 and urls_count) or (
+                    elapsed_time > 30 and finished_flag
+                ):
+                    print(f"\nProcess ID: {process_id} finished:")
+                    print(f"Available: {availables}")
+                    print(f"Unavailable: {unavailables}")
+                    print(f"With error: {with_errors}")
+                    print(f"Total: {urls_count}")
+                    break
 
             previous_urls_count = urls_count
             previous_products_count = products_count
 
-            time.sleep(1)
+            time.sleep(loop_wait)
 
     @classmethod
     def discover_entries_for_categories(
@@ -321,7 +348,7 @@ class Store:
         extra_args = cls._extra_args_with_preflight(extra_args)
 
         if use_async:
-            category_chunks = chunks(categories, discover_urls_concurrency)
+            category_chunks = chunks(categories, 1)
 
             for category_chunk in category_chunks:
                 chunk_tasks = []
