@@ -1,21 +1,23 @@
 import json
 import logging
-import logstash
 import time
 import traceback
 import uuid
 from collections import defaultdict, OrderedDict
-from celery import chain, group, shared_task, chord, Celery
+
+from celery import Celery, chain, chord, group, shared_task
 from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
 from elasticsearch import Elasticsearch
-import sys
+import logstash
 
 from .product import Product
-from .utils import get_store_class_by_name, chunks
-import redis
+from .utils import chunks, get_store_class_by_name
 
 logger = get_task_logger(__name__)
+logstash_logger = logging.getLogger("python-logstash-logger")
+logstash_logger.setLevel(logging.INFO)
+logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
 
 ES = Elasticsearch(
     "https://localhost:9200",
@@ -23,16 +25,6 @@ ES = Elasticsearch(
     http_auth=("elastic", "Mo+2hdOYBpIJi4NYG*KL"),
 )
 logging.getLogger("elastic_transport").setLevel(logging.WARNING)
-
-logstash_logger = logging.getLogger("python-logstash-logger")
-logstash_logger.setLevel(logging.INFO)
-logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
-
-redis_client = redis.StrictRedis(
-    host="localhost",
-    port=6379,
-    db=0,
-)
 
 
 class StoreScrapError(Exception):
@@ -180,7 +172,7 @@ class Store:
         callback=None,
     ):
         if not use_async:
-            app = Celery("celery")
+            app = Celery()
             app.conf.task_always_eager = True
 
         sanitized_parameters = cls.sanitize_parameters(
@@ -197,10 +189,9 @@ class Store:
             print(f"Process ID: {process_id}")
 
         process_id = extra_args["process_id"]
-
         category_chunks = chunks(categories, discover_urls_concurrency)
         task_group = []
-        total_size = 0
+
         for category_chunk in category_chunks:
             chunk_tasks = []
 
@@ -208,7 +199,7 @@ class Store:
                 task = cls.discover_entries_for_category_non_blocker_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
-                total_size += sys.getsizeof(task)
+
                 if callback:
                     task = chain(
                         task,
@@ -226,110 +217,8 @@ class Store:
         chord(task_group)(
             cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
         )
-        cls.fetch_es_url_logs(process_id)
 
-    @shared_task()
-    def nothing():
-        pass
-
-    @shared_task
-    def finish_process(store, process_id):
-        logstash_logger.info(
-            f"{store}: process finished",
-            extra={
-                "process_id": process_id,
-            },
-        )
-
-    @classmethod
-    def fetch_es_url_logs(
-        cls,
-        process_id,
-    ):
-        finished_flag = False
-        loop_wait = 5
-        not_updated = 0
-        scraped_logs = set()
-        scraped_urls = set()
-        scraped_products = set()
-        query = {
-            "size": 10000,
-            "query": {
-                "bool": {
-                    "must": [
-                        {"term": {"@fields.process_id.keyword": process_id}},
-                    ]
-                }
-            },
-            "sort": [{"@timestamp": "desc"}],
-        }
-        urls_count = products_count = previous_urls_count = previous_products_count = (
-            with_errors
-        ) = availables = unavailables = 0
-
-        while True:
-            response = ES.search(index="logs-test", body=query)
-            hits = response["hits"]["hits"]
-
-            for hit in hits:
-                source_fields = hit["_source"]["@fields"]
-
-                if hit["_id"] in scraped_logs:
-                    continue
-
-                scraped_logs.add(hit["_id"])
-
-                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    finished_flag = True
-
-                source_fields = hit["_source"]["@fields"]
-
-                if "product" in source_fields:
-                    if not source_fields["product"]:
-                        with_errors += 1
-                    else:
-                        for product in source_fields["product"]:
-                            if product["url"] in scraped_products:
-                                continue
-
-                            scraped_products.add(product["url"])
-                            products_count += 1
-                            if product["stock"] == 0:
-                                unavailables += 1
-                            else:
-                                availables += 1
-
-                elif "url" in source_fields:
-                    scraped_urls.add(source_fields["url"])
-                    urls_count += 1
-
-            if (
-                urls_count != previous_urls_count
-                or products_count != previous_products_count
-            ):
-                not_updated = 0
-                print(
-                    f"Available: {availables} | Unavailable: {unavailables} | With error: {with_errors} | Total: {urls_count}/{len(scraped_urls)}"
-                )
-            else:
-                # print(".", end="", flush=True)
-                not_updated += 1
-                elapsed_time = loop_wait * not_updated
-
-                if (elapsed_time > 600 and urls_count) or (
-                    elapsed_time > 10 and finished_flag
-                ):
-                    print(f"\nProcess ID: {process_id} finished:")
-                    print(f"Available: {availables}")
-                    print(f"Unavailable: {unavailables}")
-                    print(f"With error: {with_errors}")
-                    print(f"Total: {urls_count}/{len(scraped_urls)}")
-                    break
-
-            previous_urls_count = urls_count
-            previous_products_count = products_count
-
-            time.sleep(loop_wait)
+        cls.fetch_process_logs(process_id)
 
     @classmethod
     def discover_entries_for_categories(
@@ -437,6 +326,105 @@ class Store:
                 }
 
         return discovered_entries
+
+    @shared_task
+    def finish_process(store, process_id):
+        logstash_logger.info(
+            f"{store}: process finished",
+            extra={
+                "process_id": process_id,
+            },
+        )
+
+    @classmethod
+    def fetch_process_logs(
+        cls,
+        process_id,
+    ):
+        finished_flag = False
+        seconds_between_fetches = 5
+        fetches_without_updates = 0
+        scraped_logs = set()
+        scraped_urls = set()
+        scraped_products = set()
+        es_query = {
+            "size": 10000,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"@fields.process_id.keyword": process_id}},
+                    ]
+                }
+            },
+            "sort": [{"@timestamp": "desc"}],
+        }
+        urls_count = products_count = previous_urls_count = previous_products_count = (
+            products_with_errors
+        ) = available_products = unavailable_products = 0
+
+        while True:
+            response = ES.search(index="logs-test", body=es_query)
+            hits = response["hits"]["hits"]
+
+            for hit in hits:
+                if hit["_id"] in scraped_logs:
+                    continue
+
+                scraped_logs.add(hit["_id"])
+
+                if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
+                    finished_flag = True
+
+                source_fields = hit["_source"]["@fields"]
+
+                if "product" in source_fields:
+                    if not source_fields["product"]:
+                        products_with_errors += 1
+                    else:
+                        for product in source_fields["product"]:
+                            if product["url"] in scraped_products:
+                                continue
+
+                            scraped_products.add(product["url"])
+                            products_count += 1
+                            if product["stock"] == 0:
+                                unavailable_products += 1
+                            else:
+                                available_products += 1
+
+                elif "url" in source_fields:
+                    scraped_urls.add(source_fields["url"])
+                    urls_count += 1
+
+            if (
+                urls_count != previous_urls_count
+                or products_count != previous_products_count
+            ):
+                fetches_without_updates = 0
+                print(
+                    f"Available: {available_products} | "
+                    f"Unavailable: {unavailable_products} | "
+                    f"With error: {products_with_errors} | "
+                    f"Total: {urls_count}/{len(scraped_urls)}"
+                )
+            else:
+                fetches_without_updates += 1
+                elapsed_time = seconds_between_fetches * fetches_without_updates
+
+                if (elapsed_time > 600 and urls_count) or (
+                    elapsed_time > 30 and finished_flag
+                ):
+                    print(f"\nProcess ID: {process_id} finished:")
+                    print(f"Available: {available_products}")
+                    print(f"Unavailable: {unavailable_products}")
+                    print(f"With error: {products_with_errors}")
+                    print(f"Total: {urls_count}/{len(scraped_urls)}")
+                    break
+
+            previous_urls_count = urls_count
+            previous_products_count = products_count
+
+            time.sleep(seconds_between_fetches)
 
     @classmethod
     def products_for_urls(
@@ -701,7 +689,7 @@ class Store:
                     store.log_product.s(
                         store_class_name=store_class_name,
                         category=category,
-                        extra_args=extra_args,
+                        process_id=extra_args["process_id"],
                     ).set(queue="storescraper"),
                 )
 
@@ -711,11 +699,11 @@ class Store:
             tasks_group.apply_async()
 
     @shared_task()
-    def log_product(product, store_class_name, category, extra_args):
+    def log_product(product, store_class_name, category, process_id):
         logstash_logger.info(
             f"{store_class_name}: Discovered product",
             extra={
-                "process_id": extra_args["process_id"],
+                "process_id": process_id,
                 "store": store_class_name,
                 "category": category,
                 "product": product,
