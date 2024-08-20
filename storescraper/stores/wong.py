@@ -91,7 +91,11 @@ class Wong(Store):
             description = html_to_markdown(description)
 
         key_key = "{}.items.0".format(base_json_key)
+
         ean = product_data[key_key].get("ean", None)
+
+        if not check_ean13(ean):
+            ean = None
 
         pricing_key = "${}.items.0.sellers.0.commertialOffer".format(base_json_key)
         pricing_data = product_data[pricing_key]
