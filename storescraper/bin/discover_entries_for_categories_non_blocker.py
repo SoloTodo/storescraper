@@ -20,6 +20,14 @@ def main():
         "--categories", type=str, nargs="*", help="Specific categories to be parsed"
     )
     parser.add_argument(
+        "--with_async",
+        type=bool,
+        nargs="?",
+        default=False,
+        const=True,
+        help="Use asynchronous tasks (celery)",
+    )
+    parser.add_argument(
         "--extra_args",
         type=json.loads,
         nargs="?",
@@ -33,6 +41,7 @@ def main():
 
     store.discover_entries_for_categories_non_blocker(
         categories=args.categories,
+        use_async=args.with_async,
         extra_args=args.extra_args,
     )
 

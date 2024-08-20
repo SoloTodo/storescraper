@@ -21,7 +21,14 @@ def main():
     )
 
     parser.add_argument("store", type=str, help="The name of the store to be parsed")
-
+    parser.add_argument(
+        "--with_async",
+        type=bool,
+        nargs="?",
+        default=False,
+        const=True,
+        help="Use asynchronous tasks (celery)",
+    )
     parser.add_argument(
         "--categories", type=str, nargs="*", help="Specific categories to be parsed"
     )
@@ -38,7 +45,11 @@ def main():
     args = parser.parse_args()
     store = get_store_class_by_name(args.store)
 
-    store.products_non_blocker(categories=args.categories, extra_args=args.extra_args)
+    store.products_non_blocker(
+        categories=args.categories,
+        use_async=args.with_async,
+        extra_args=args.extra_args,
+    )
 
 
 if __name__ == "__main__":

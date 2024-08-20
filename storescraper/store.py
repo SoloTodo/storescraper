@@ -5,11 +5,11 @@ import time
 import traceback
 import uuid
 from collections import defaultdict, OrderedDict
-
-from celery import chain, group, shared_task, chord
+from celery import chain, group, shared_task, chord, Celery
 from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
 from elasticsearch import Elasticsearch
+import sys
 
 from .product import Product
 from .utils import get_store_class_by_name, chunks
@@ -95,6 +95,7 @@ class Store:
     def products_non_blocker(
         cls,
         categories=None,
+        use_async=None,
         extra_args=None,
         discover_urls_concurrency=None,
         products_for_url_concurrency=None,
@@ -120,6 +121,7 @@ class Store:
         cls.discover_entries_for_categories_non_blocker(
             categories=categories,
             extra_args=extra_args,
+            use_async=use_async,
             discover_urls_concurrency=discover_urls_concurrency,
             callback=cls.products_for_urls_non_blocker_task,
         )
@@ -172,10 +174,15 @@ class Store:
     def discover_entries_for_categories_non_blocker(
         cls,
         categories=None,
+        use_async=False,
         extra_args=None,
         discover_urls_concurrency=None,
         callback=None,
     ):
+        if not use_async:
+            app = Celery("celery")
+            app.conf.task_always_eager = True
+
         sanitized_parameters = cls.sanitize_parameters(
             categories=categories,
             discover_urls_concurrency=discover_urls_concurrency,
@@ -193,7 +200,7 @@ class Store:
 
         category_chunks = chunks(categories, discover_urls_concurrency)
         task_group = []
-
+        total_size = 0
         for category_chunk in category_chunks:
             chunk_tasks = []
 
@@ -201,7 +208,7 @@ class Store:
                 task = cls.discover_entries_for_category_non_blocker_task.si(
                     cls.__name__, category, extra_args
                 ).set(queue="storescraper")
-
+                total_size += sys.getsizeof(task)
                 if callback:
                     task = chain(
                         task,
@@ -216,20 +223,10 @@ class Store:
             group_tasks = group(*chunk_tasks)
             task_group.append(group_tasks)
 
-        group_chunks = chunks(task_group, 3)
-        group_chunks_len = 0
-
-        for group_chunk in group_chunks:
-            group_chunks_len += 1
-            chain(
-                cls.nothing.si().set(queue="storescraper"),
-                *group_chunk,
-                cls.finish_process.si(cls.__name__, process_id).set(
-                    queue="storescraper"
-                ),
-            )()
-
-        cls.fetch_es_url_logs(process_id, group_chunks_len)
+        chord(task_group)(
+            cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
+        )
+        cls.fetch_es_url_logs(process_id)
 
     @shared_task()
     def nothing():
@@ -248,13 +245,13 @@ class Store:
     def fetch_es_url_logs(
         cls,
         process_id,
-        group_chunks_len,
     ):
-        finished_groups = 0
         finished_flag = False
-        loop_wait = 10
+        loop_wait = 5
         not_updated = 0
-        scraped = set()
+        scraped_logs = set()
+        scraped_urls = set()
+        scraped_products = set()
         query = {
             "size": 10000,
             "query": {
@@ -277,18 +274,13 @@ class Store:
             for hit in hits:
                 source_fields = hit["_source"]["@fields"]
 
-                if hit["_id"] in scraped or (
-                    "url" in source_fields and source_fields["url"] in scraped
-                ):
+                if hit["_id"] in scraped_logs:
                     continue
 
-                scraped.add(hit["_id"])
+                scraped_logs.add(hit["_id"])
 
                 if hit["_source"]["@message"] == f"{cls.__name__}: process finished":
-                    finished_groups += 1
-                    print(f"Group {finished_groups}/{group_chunks_len} finished")
-                    if finished_groups == group_chunks_len:
-                        finished_flag = True
+                    finished_flag = True
 
                 source_fields = hit["_source"]["@fields"]
 
@@ -297,6 +289,10 @@ class Store:
                         with_errors += 1
                     else:
                         for product in source_fields["product"]:
+                            if product["url"] in scraped_products:
+                                continue
+
+                            scraped_products.add(product["url"])
                             products_count += 1
                             if product["stock"] == 0:
                                 unavailables += 1
@@ -304,7 +300,7 @@ class Store:
                                 availables += 1
 
                 elif "url" in source_fields:
-                    scraped.add(source_fields["url"])
+                    scraped_urls.add(source_fields["url"])
                     urls_count += 1
 
             if (
@@ -313,7 +309,7 @@ class Store:
             ):
                 not_updated = 0
                 print(
-                    f"Available: {availables} | Unavailable: {unavailables} | With error: {with_errors} | Total: {urls_count}"
+                    f"Available: {availables} | Unavailable: {unavailables} | With error: {with_errors} | Total: {urls_count}/{len(scraped_urls)}"
                 )
             else:
                 # print(".", end="", flush=True)
@@ -321,13 +317,13 @@ class Store:
                 elapsed_time = loop_wait * not_updated
 
                 if (elapsed_time > 600 and urls_count) or (
-                    elapsed_time > 30 and finished_flag
+                    elapsed_time > 10 and finished_flag
                 ):
                     print(f"\nProcess ID: {process_id} finished:")
                     print(f"Available: {availables}")
                     print(f"Unavailable: {unavailables}")
                     print(f"With error: {with_errors}")
-                    print(f"Total: {urls_count}")
+                    print(f"Total: {urls_count}/{len(scraped_urls)}")
                     break
 
             previous_urls_count = urls_count
@@ -572,7 +568,6 @@ class Store:
         logger.info(f"Category: {category}")
         process_id = extra_args.get("process_id", None)
         extra_args = store._extra_args_with_preflight(extra_args)
-
         logger.info(f"Process ID: {process_id}")
 
         try:
@@ -690,8 +685,10 @@ class Store:
         extra_args=None,
     ):
         store = get_store_class_by_name(store_class_name)
-        # extra_args = cls._extra_args_with_preflight(extra_args)
-        discovery_entries_chunks = chunks(list(discovered_entries.items()), 6)
+        extra_args = store._extra_args_with_preflight(extra_args)
+        discovery_entries_chunks = chunks(
+            list(discovered_entries.items()), products_for_url_concurrency
+        )
 
         for discovery_entries_chunk in discovery_entries_chunks:
             chunk_tasks = []
