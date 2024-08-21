@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -84,6 +83,7 @@ class Diayta(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
+        buy_button = soup.find("button", "product-form__add-button")
         product_data = json.loads(
             soup.find("script", {"type": "application/ld+json"}).text
         )
@@ -96,15 +96,14 @@ class Diayta(StoreWithUrlExtensions):
                 name = f"{name} - {offer['name']}"
 
             key = offer["url"].split("?variant=")[1]
-            buy_button = soup.find("button", "product-form__add-button")
 
             if (
-                buy_button.text == "Reservar"
-                or offer["availability"] == "https://schema.org/OutOfStock"
+                offer["availability"] == "https://schema.org/InStock"
+                and buy_button.text != "Reservar"
             ):
-                stock = 0
-            elif offer["availability"] == "https://schema.org/InStock":
                 stock = -1
+            else:
+                stock = 0
 
             price = Decimal(offer["price"])
 
