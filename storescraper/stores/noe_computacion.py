@@ -53,7 +53,7 @@ class NoeComputacion(StoreWithUrlExtensions):
         product_urls = []
         page = 1
         while True:
-            if page > 10:
+            if page > 12:
                 raise Exception("Page overflow: " + url_extension)
             url_webpage = (
                 "https://noecomputacion.com/tienda/page/{}/"
