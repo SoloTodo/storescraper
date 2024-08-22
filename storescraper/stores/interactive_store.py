@@ -69,7 +69,7 @@ class InteractiveStore(StoreWithUrlExtensions):
 
         product_data = json_data["@graph"][1]
         name = product_data["name"]
-        sku = product_data["sku"]
+        sku = str(product_data["sku"])
         offer = product_data["offers"][0]
         price = Decimal(offer["price"])
         stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
