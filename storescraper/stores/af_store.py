@@ -58,13 +58,20 @@ class AFStore(StoreWithUrlExtensions):
             product_data = json.loads(
                 soup.find("script", {"type": "application/ld+json"}).text
             )
+            offer = product_data["offers"][0]
             key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
             sku = soup.find("span", "sku").text
-            price = Decimal(product_data["offers"][0]["price"])
-
+            price = Decimal(offer["price"])
+            availability = offer.get("availability")
             stock_container = soup.find("p", "stock in-stock")
 
-            stock = 0 if not stock_container else int(stock_container.text.split()[0])
+            if stock_container:
+                stock = int(stock_container.text.split()[0])
+            elif availability == "http://schema.org/InStock":
+                stock = -1
+            else:
+                stock = 0
+
             picture_urls = [
                 container.find("img")["src"]
                 for container in soup.findAll("div", "wpgs_image")
