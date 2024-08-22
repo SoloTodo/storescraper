@@ -1,6 +1,6 @@
 import base64
 import json
-import re
+from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.categories import TELEVISION
@@ -75,12 +75,13 @@ class AlmacenesJapon(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, "lxml")
 
         if response.status_code == 404:
             return []
 
         product_data = json.loads(
-            "{" + re.search(r"__STATE__ = {(.+)}", response.text).groups()[0] + "}"
+            soup.find("template", {"data-varname": "__STATE__"}).find("script").text
         )
 
         base_json_key = list(product_data.keys())[0]
