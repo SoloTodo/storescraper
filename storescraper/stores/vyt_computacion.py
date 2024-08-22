@@ -65,18 +65,27 @@ class VyTComputacion(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
-        name = soup.find("h4", "product_title").text.strip()
+        name_container = soup.find("h4", "product_title")
+
+        if not name_container:
+            return []
+
+        name = name_container.text.strip()
         key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
         stock = -1 if soup.find("button", "single_add_to_cart_button") else 0
         price_tags = soup.find("p", "price").findAll("span", "woocommerce-Price-amount")
+
         if not price_tags:
             return []
+
         price = Decimal(remove_words(price_tags[-1].text.strip()))
         sku_tag = soup.find("span", "sku")
+
         if sku_tag:
             sku = sku_tag.text.strip()
         else:
             sku = None
+
         picture_urls = [soup.find("meta", {"property": "og:image"})["content"]]
 
         p = Product(
