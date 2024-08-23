@@ -2,18 +2,20 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy
+from storescraper.categories import ALL_IN_ONE, KEYBOARD, MONITOR, NOTEBOOK, PRINTER
 
 
 class InteractiveStore(StoreWithUrlExtensions):
     url_extensions = [
-        ["notebooks", NOTEBOOK],
+        ["accesorios", KEYBOARD],
+        ["all-in-one", ALL_IN_ONE],
+        ["gamer", NOTEBOOK],
         ["impresion-e-imagen", PRINTER],
         ["monitores-y-proyectores", MONITOR],
-        ["accesorios", KEYBOARD],
+        ["notebooks", NOTEBOOK],
     ]
 
     @classmethod
@@ -25,6 +27,7 @@ class InteractiveStore(StoreWithUrlExtensions):
         )
         product_urls = []
         page = 1
+
         while True:
             if page > 10:
                 raise Exception("Page overflow: " + url_extension)
@@ -34,16 +37,20 @@ class InteractiveStore(StoreWithUrlExtensions):
                 )
             )
             print(url_webpage)
+
             response = session.get(url_webpage)
             soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("div", "product-small")
+
             if not product_containers:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
+
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
+
             page += 1
 
         return product_urls
@@ -51,6 +58,7 @@ class InteractiveStore(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -92,4 +100,5 @@ class InteractiveStore(StoreWithUrlExtensions):
             description=description,
             part_number=sku,
         )
+
         return [p]

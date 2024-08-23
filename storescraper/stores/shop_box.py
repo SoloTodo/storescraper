@@ -104,9 +104,14 @@ class ShopBox(StoreWithUrlExtensions):
         original_name = products_data["name"]
         name = original_name[:256]
         sku = str(products_data["sku"])
+        prices_container = soup.find("table", {"id": "tabla-precios"})
+
+        if not prices_container:
+            return []
+
         prices = [
             int(price.text.replace(".", "").replace("$", ""))
-            for price in soup.find("table", {"id": "tabla-precios"}).findAll(
+            for price in prices_container.findAll(
                 "span", "woocommerce-Price-amount amount"
             )
         ]
