@@ -118,7 +118,7 @@ class ZonaPortatil(StoreWithUrlExtensions):
         alternate_url = soup.find(
             "link", {"rel": "alternate", "type": "application/json"}
         )["href"]
-        key_match = re.search("/product/(\d+)", alternate_url)
+        key_match = re.search(r"/product/(\d+)", alternate_url)
         key = key_match.groups()[0]
 
         qty_input = soup.find("input", "input-text qty text")

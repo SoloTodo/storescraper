@@ -27,7 +27,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, remove_words
 
 
 class Nuevatec(StoreWithUrlExtensions):
@@ -121,8 +121,14 @@ class Nuevatec(StoreWithUrlExtensions):
         name = product_data["name"]
         sku = str(product_data["sku"])
         description = product_data["description"]
-        offer_price = Decimal(product_data["offers"][0]["price"])
-        normal_price = (offer_price * Decimal(1.06)).quantize(0)
+
+        prices_table = soup.find("div", "summary-inner").find("table")
+        prices = [
+            Decimal(remove_words(x.text))
+            for x in prices_table.findAll("span", "woocommerce-Price-amount")
+        ]
+        offer_price = min(prices)
+        normal_price = max(prices)
 
         qty_input = soup.find("input", "input-text qty text")
         if qty_input:

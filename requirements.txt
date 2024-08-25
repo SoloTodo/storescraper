@@ -1,5 +1,5 @@
 beautifulsoup4==4.12.2
-black==23.12.1
+black==24.8.0
 celery==5.3.1
 chardet==5.2.0
 curl_cffi==0.6.3
@@ -9,8 +9,7 @@ ipdb==0.13.13
 lxml==4.9.3
 pip==24.0
 pipdeptree==2.9.4
-playwright==1.35.0
-pycodestyle==2.10.0
+playwright==1.46.0
 pyjson5==1.6.4
 pytz==2023.3
 request-curl==0.0.3
