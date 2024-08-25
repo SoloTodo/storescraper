@@ -33,6 +33,7 @@ from storescraper.categories import (
     MICROPHONE,
     VIDEO_GAME_CONSOLE,
     SOLID_STATE_DRIVE,
+    CASE_FAN,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -41,7 +42,8 @@ from storescraper.utils import session_with_proxy
 
 class SipoOnline(StoreWithUrlExtensions):
     url_extensions = [
-        ["disipadores-cooler", CPU_COOLER],
+        ["cooler-cpu", CPU_COOLER],
+        ["ventiladores", CASE_FAN],
         ["placa_madres", MOTHERBOARD],
         ["tarjeta_de_video", VIDEO_CARD],
         ["procesadores", PROCESSOR],

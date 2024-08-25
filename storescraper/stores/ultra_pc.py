@@ -65,7 +65,7 @@ class UltraPc(StoreWithUrlExtensions):
 
         bundle_tag = soup.find("span", "accesorios_sumario")
         if bundle_tag:
-            base_name += " + " + " ".join(bundle_tag["data-tooltip"].split())
+            base_name += " BUNDLE: " + " ".join(bundle_tag["data-tooltip"].split())
 
         variants = soup.find("form", "variations_form")
         products = []

@@ -24,22 +24,20 @@ from storescraper.categories import (
 
 class Alfaomega(StoreWithUrlExtensions):
     url_extensions = [
-        ["procesadores-intel-2", PROCESSOR],
-        ["procesadores-amd-2", PROCESSOR],
+        ["procesadores-intel", PROCESSOR],
+        ["procesadores-amd", PROCESSOR],
         ["mouse-y-teclados", MOUSE],
         ["refrigeracion", CPU_COOLER],
         ["placas-intel-2", MOTHERBOARD],
-        ["placas-amd-2", MOTHERBOARD],
-        ["memorias", RAM],
+        ["placas-amd", MOTHERBOARD],
+        ["memorias-notebook-pc", RAM],
         ["discos-ssd", SOLID_STATE_DRIVE],
         ["fuentes-de-poder", POWER_SUPPLY],
-        ["gabinetes", COMPUTER_CASE],
-        ["tarjetas-graficas", VIDEO_CARD],
+        ["gabinetes-gamer", COMPUTER_CASE],
+        ["tarjetas-graficas-gamer", VIDEO_CARD],
         ["monitores", MONITOR],
-        ["mouse-y-teclados", KEYBOARD],
-        ["pendrive", USB_FLASH_DRIVE],
-        ["notebooks", NOTEBOOK],
-        ["impresoras-y-suministros", PRINTER],
+        ["pendrive-almacenamiento-externo", USB_FLASH_DRIVE],
+        ["tintas-de-impresora", PRINTER],
     ]
 
     @classmethod

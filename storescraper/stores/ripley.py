@@ -321,10 +321,8 @@ class Ripley(Store):
         # of the library. We patch it by detecting this call and calling
         # a function that actually uses the URL PDP page of the product.
         if extra_args and extra_args.get("source", None) == "keyword_search":
-            product = cls._assemble_full_product(url, category, extra_args)
-            if not product:
-                return []
-            return [product]
+            products = cls._assemble_full_product(url, category, extra_args)
+            return products
 
         session = cf_session_with_proxy(extra_args)
 
@@ -351,105 +349,77 @@ class Ripley(Store):
             position = 1
 
             while True:
-                if page > 300:
+                if page > 400:
                     raise Exception("Page overflow")
 
                 if "?" in category_path:
                     param = "&"
                 else:
                     param = "?"
-                url_base = "{}/{}{}{}page={}"
+                url_base = "{}/api/v1/catalog-products/{}{}{}page={}"
                 category_url = url_base.format(
                     cls.domain, category_path, param, seller_filter, page
                 )
                 print(category_url)
-                response = session.get(category_url, allow_redirects=True, timeout=60)
+                response = session.post(category_url, allow_redirects=True, timeout=60)
 
-                if response.url != category_url:
-                    raise Exception(
-                        'Mismatching URL. Expected "{}", got "{}"'.format(
-                            category_url, response.url
-                        )
-                    )
-
-                if response.status_code != 200 and page == 1:
-                    if fast_mode:
-                        # Some sections do not have SKUs sold directly by Ripley
-                        break
+                if response.status_code == 404:
+                    if page == 1:
+                        if fast_mode:
+                            # Some sections do not have SKUs sold directly by Ripley
+                            break
+                        else:
+                            raise Exception("Invalid section: " + category_url)
                     else:
-                        raise Exception("Invalid section: " + category_url)
-
-                soup = BeautifulSoup(response.text, "lxml")
-
-                page_data = re.search(
-                    r"window.__PRELOADED_STATE__ = (.+);", response.text
-                )
-                page_json = json.loads(page_data.groups()[0])
+                        break
+                page_json = response.json()
 
                 if "products" not in page_json:
                     break
 
-                products_json_1 = page_json["products"]
+                products_json = page_json["products"]
 
-                products_json_2 = json.loads(
-                    soup.find("script", {"type": "application/ld+json"}).string
-                )["itemListElement"]
-
-                products_soup = soup.find("div", "catalog-container")
-
-                if not products_json_1 or not products_soup or not products_json_2:
+                if not products_json:
                     if page == 1:
                         logging.warning("Empty path: {}".format(category_url))
                     break
 
-                assert len(products_json_1) == len(products_json_2)
+                for product_json in products_json:
+                    products = cls._assemble_product(product_json, category)
+                    brand = product_json["manufacturer"]
+                    for product in products:
+                        if (
+                            brand in ["LG", "SAMSUNG"]
+                            and not product.seller
+                            and not fast_mode
+                            and product.sku not in product_dict
+                        ):
+                            # If the product is LG or Samsung and is sold directly
+                            # by Ripley (not marketplace) obtain the full data
 
-                for product_json_1, product_json_2 in zip(
-                    products_json_1, products_json_2
-                ):
-                    product = cls._assemble_product(product_json_1, category)
-                    brand = product_json_2["item"].get("brand", "").upper()
+                            cls._append_metadata(product, extra_args)
+                        elif category == HEADPHONES and "MPM" in product.sku:
+                            # Skip the thousands of headphones sold in marketplace
+                            continue
 
-                    if (
-                        brand in ["LG", "SAMSUNG"]
-                        and not product.seller
-                        and not fast_mode
-                        and product.sku not in product_dict
-                    ):
-                        # If the product is LG or Samsung and is sold directly
-                        # by Ripley (not marketplace) obtain the full data
+                        if product.normal_price == Decimal(
+                            "9999999"
+                        ) or product.offer_price == Decimal("9999999"):
+                            continue
 
-                        cls._append_metadata(product, extra_args)
-                    elif category == HEADPHONES and "MPM" in product.sku:
-                        # Skip the thousands of headphones sold in marketplace
-                        continue
-                    else:
-                        product = cls._assemble_product(product_json_1, category)
+                        if product.sku in product_dict:
+                            product_to_update = product_dict[product.sku]
+                        else:
+                            product_dict[product.sku] = product
+                            product_to_update = product
 
-                    if product.normal_price == Decimal(
-                        "9999999"
-                    ) or product.offer_price == Decimal("9999999"):
-                        continue
-
-                    if product.sku in product_dict:
-                        product_to_update = product_dict[product.sku]
-                    else:
-                        product_dict[product.sku] = product
-                        product_to_update = product
-
-                    product_to_update.positions.append((section_name, position))
+                        product_to_update.positions.append((section_name, position))
 
                     position += 1
 
-                pagination_tag = soup.find(
-                    "div", "catalog-page__footer-pagination"
-                ).find("ul", "pagination")
-                next_page_link_tag = pagination_tag.findAll("a")[-1]
-                if next_page_link_tag["href"] == "#":
-                    break
-
                 if fast_mode and page >= 50:
                     break
+                break
 
                 page += 1
 
@@ -522,105 +492,117 @@ class Ripley(Store):
 
     @classmethod
     def _assemble_product(cls, specs_json, category):
-        sku = specs_json["partNumber"]
-        url = specs_json["url"]
-        name = specs_json["name"].encode("ascii", "ignore").decode("ascii").strip()
-        short_description = specs_json.get("shortDescription", "")
+        products = []
+        for product_entry in specs_json["SKUs"]:
+            sku = product_entry["partNumber"] + "P"
+            url = specs_json["url"]
+            name = specs_json["name"].encode("ascii", "ignore").decode("ascii").strip()
+            short_description = specs_json.get("shortDescription", "")
 
-        # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
-        # "Prepago" information in its description
-        if category in [CELL, "Unknown"] and "MPM" not in sku:
-            name += " ({})".format(short_description)
+            # If it's a cell sold by Ripley directly (not Mercado Ripley) add the
+            # "Prepago" information in its description
+            if category in [CELL, "Unknown"] and "MPM" not in sku:
+                name += " ({})".format(short_description)
 
-        if "offerPrice" in specs_json["prices"]:
-            normal_price = Decimal(specs_json["prices"]["offerPrice"]).quantize(0)
-        elif "listPrice" in specs_json["prices"]:
-            normal_price = Decimal(specs_json["prices"]["listPrice"]).quantize(0)
-        else:
-            return []
+            for attribute in product_entry["Attributes"]:
+                if attribute["usage"] == "Defining":
+                    name += " ({})".format(attribute["Values"][0]["values"])
+                    break
 
-        offer_price = Decimal(
-            specs_json["prices"].get("cardPrice", normal_price)
-        ).quantize(0)
+            if "offerPrice" in product_entry["prices"]:
+                normal_price = Decimal(product_entry["prices"]["offerPrice"]).quantize(
+                    0
+                )
+            elif "listPrice" in product_entry["prices"]:
+                normal_price = Decimal(product_entry["prices"]["listPrice"]).quantize(0)
+            else:
+                return []
 
-        if offer_price > normal_price:
-            offer_price = normal_price
+            offer_price = Decimal(
+                product_entry["prices"].get("cardPrice", normal_price)
+            ).quantize(0)
 
-        description = ""
+            if offer_price > normal_price:
+                offer_price = normal_price
 
-        if "longDescription" in specs_json:
-            description += html_to_markdown(specs_json["longDescription"])
+            description = ""
 
-        description += "\n\nAtributo | Valor\n-- | --\n"
+            if "longDescription" in specs_json:
+                description += html_to_markdown(specs_json["longDescription"])
 
-        for attribute in specs_json["attributes"]:
-            if "name" in attribute and "value" in attribute:
-                description += "{} | {}\n".format(attribute["name"], attribute["value"])
+            description += "\n\nAtributo | Valor\n-- | --\n"
 
-        description += "\n\n"
-        condition = "https://schema.org/NewCondition"
+            for attribute in specs_json["attributes"]:
+                if "name" in attribute and "value" in attribute:
+                    description += "{} | {}\n".format(
+                        attribute["name"], attribute["value"]
+                    )
 
-        if (
-            "reacondicionado" in description.lower()
-            or "reacondicionado" in name.lower()
-            or "reacondicionado" in short_description.lower()
-        ):
-            condition = "https://schema.org/RefurbishedCondition"
+            description += "\n\n"
+            condition = "https://schema.org/NewCondition"
 
-        picture_urls = []
-        for path in specs_json["images"]:
-            picture_url = path
+            if (
+                "reacondicionado" in description.lower()
+                or "reacondicionado" in name.lower()
+                or "reacondicionado" in short_description.lower()
+            ):
+                condition = "https://schema.org/RefurbishedCondition"
 
-            if "file://" in picture_url:
-                continue
+            picture_urls = []
+            for path in specs_json["images"]:
+                picture_url = path
 
-            if not picture_url.startswith("http"):
-                picture_url = "https:" + picture_url
+                if "file://" in picture_url:
+                    continue
 
-            if not validators.url(picture_url):
-                continue
+                if not picture_url.startswith("http"):
+                    picture_url = "https:" + picture_url
 
-            picture_urls.append(picture_url)
+                if not validators.url(picture_url):
+                    continue
 
-        if not picture_urls:
-            picture_urls = None
+                picture_urls.append(picture_url)
 
-        if "shop_name" in specs_json["sellerOp"]:
-            seller = specs_json["sellerOp"]["shop_name"]
-        elif specs_json["isMarketplaceProduLgRsEntct"]:
-            seller = "Mercado R"
-        else:
-            seller = None
+            if not picture_urls:
+                picture_urls = None
 
-        if seller == "Shop Ecsa":
-            seller = None
+            if "shop_name" in specs_json["sellerOp"]:
+                seller = specs_json["sellerOp"]["shop_name"]
+            elif product_entry["isMarketplaceProduct"]:
+                seller = "Mercado R"
+            else:
+                seller = None
 
-        if seller:
-            stock = 0
-        elif specs_json["isOutOfStock"] or specs_json["isUnavailable"]:
-            stock = 0
-        else:
-            stock = -1
+            if seller == "Shop Ecsa":
+                seller = None
 
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            sku,
-            stock,
-            normal_price,
-            offer_price,
-            cls.currency,
-            sku=sku,
-            description=description,
-            picture_urls=picture_urls,
-            condition=condition,
-            seller=seller,
-        )
+            if seller:
+                stock = 0
+            elif product_entry["stock"]:
+                stock = -1
+            else:
+                stock = 0
 
-        return p
+            p = Product(
+                name,
+                cls.__name__,
+                category,
+                url,
+                url,
+                sku,
+                stock,
+                normal_price,
+                offer_price,
+                cls.currency,
+                sku=sku,
+                description=description,
+                picture_urls=picture_urls,
+                condition=condition,
+                seller=seller,
+            )
+            products.append(p)
+
+        return products
 
     @classmethod
     def _assemble_full_product(cls, url, category, extra_args, retries=5):
@@ -651,9 +633,10 @@ class Ripley(Store):
             return None
 
         specs_json = product_json["product"]["product"]
-        product = cls._assemble_product(specs_json, category)
-        cls._append_metadata(product, extra_args)
-        return product
+        products = cls._assemble_product(specs_json, category)
+        for product in products:
+            cls._append_metadata(product, extra_args)
+        return products
 
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):

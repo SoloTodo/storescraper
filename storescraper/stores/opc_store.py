@@ -89,7 +89,7 @@ class OpcStore(StoreWithUrlExtensions):
         else:
             stock = 0
 
-        if not price and not stock:
+        if not price or (not price and not stock):
             return []
 
         picture_urls = []

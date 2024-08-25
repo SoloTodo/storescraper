@@ -27,24 +27,21 @@ class RipleyPeru(Store):
         session = cf_session_with_proxy(extra_args)
 
         page = 1
+
         while True:
             if page > 10:
                 raise Exception("Page overflow")
 
-            url = "https://simple.ripley.com.pe/tecnologia/marcas/ver-todo-lg?page={}".format(
-                page
-            )
+            url = f"https://simple.ripley.com.pe/api/v1/catalog-products/tecnologia/marcas/ver-todo-lg?page={page}"
             print(url)
-            response = session.get(url)
-            soup = BeautifulSoup(response.text, "lxml")
-            product_containers = soup.findAll("div", "catalog-product-item")
-            if not product_containers:
+
+            response = json.loads(session.post(url).text)
+
+            for product in response["products"]:
+                product_urls.append(product["url"])
+
+            if page == response["pagination"]["totalPages"]:
                 break
-            for container in product_containers:
-                product_url = (
-                    "https://simple.ripley.com.pe" + container.find("a")["href"]
-                )
-                product_urls.append(product_url)
 
             page += 1
 

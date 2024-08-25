@@ -5,6 +5,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (
+    ALL_IN_ONE,
     TABLET,
     NOTEBOOK,
     MOTHERBOARD,
@@ -19,6 +20,7 @@ from storescraper.categories import (
     MONITOR,
     HEADPHONES,
     USB_FLASH_DRIVE,
+    PRINTER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -27,25 +29,29 @@ from storescraper.utils import session_with_proxy
 
 class WebRedes(StoreWithUrlExtensions):
     url_extensions = [
-        ["229-procesadores", PROCESSOR],
-        ["228-placas-madre", MOTHERBOARD],
-        ["91-memorias-ram", RAM],
-        ["62-discos-duros-hdd", STORAGE_DRIVE],
-        ["63-discos-duros-ssd", SOLID_STATE_DRIVE],
-        ["249-nvme", SOLID_STATE_DRIVE],
-        ["232-fuentes-de-poder", POWER_SUPPLY],
-        ["272-audifonos", HEADPHONES],
-        ["230-tarjetas-de-video", VIDEO_CARD],
-        ["269-refrigeracion-y-ventiladores", CPU_COOLER],
-        ["231-gabinetes", COMPUTER_CASE],
-        ["239-monitores", MONITOR],
         ["60-notebooks", NOTEBOOK],
+        ["62-discos-hdd", STORAGE_DRIVE],
+        ["63-discos-ssd", SOLID_STATE_DRIVE],
+        ["91-memorias-ram", RAM],
+        ["228-placas-madre", MOTHERBOARD],
+        ["229-procesadores", PROCESSOR],
+        ["230-tarjetas-de-video", VIDEO_CARD],
+        ["231-gabinetes", COMPUTER_CASE],
+        ["232-fuentes-de-poder", POWER_SUPPLY],
+        ["239-monitores", MONITOR],
+        ["240-accesorios-", USB_FLASH_DRIVE],
+        ["249-nvme", SOLID_STATE_DRIVE],
+        ["258-impresoras", PRINTER],
+        ["260-multifuncional", PRINTER],
+        ["269-refrigeracion-y-ventiladores", CPU_COOLER],
+        ["272-audifonos", HEADPHONES],
         ["291-tablets", TABLET],
-        ["299-procesador", PROCESSOR],
         ["298-memoria-ram", RAM],
+        ["299-procesador", PROCESSOR],
         ["300-fuentes-de-poder", POWER_SUPPLY],
         ["302-almacenamiento", STORAGE_DRIVE],
-        ["240-accesorios-", USB_FLASH_DRIVE],
+        ["318-todo-en-uno", ALL_IN_ONE],
+        ["320-notebooks-gamer", NOTEBOOK],
     ]
 
     @classmethod

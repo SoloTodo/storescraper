@@ -1127,6 +1127,7 @@ class MercadoLibreChile(Store):
         session = session_with_proxy(None)
         session.headers["Authorization"] = "Bearer {}".format(access_token)
         result = []
+        seller_data = {}
         while True:
             items_page_url = "https://api.mercadolibre.com/sites/MLC/search?seller_id={}&offset={}".format(
                 seller_id, page * offset
@@ -1134,6 +1135,8 @@ class MercadoLibreChile(Store):
             response = session.get(items_page_url).json()
             if not response["results"]:
                 break
+            local_seller_ids = []
+
             for item in response["results"]:
                 catalog_product_id = item["catalog_product_id"]
                 if not catalog_product_id:
@@ -1142,6 +1145,10 @@ class MercadoLibreChile(Store):
                     catalog_product_id
                 )
                 catalog_response = session.get(catalog_url).json()
+                if catalog_response["buy_box_winner"]:
+                    local_seller_ids.append(
+                        str(catalog_response["buy_box_winner"]["seller_id"])
+                    )
                 catalog_items_url = (
                     "https://api.mercadolibre.com/products/{}/items".format(
                         catalog_product_id
@@ -1157,5 +1164,14 @@ class MercadoLibreChile(Store):
                     }
                 )
 
+            seller_url = "https://api.mercadolibre.com/users/?ids={}".format(
+                ",".join(local_seller_ids)
+            )
+            seller_response = session.get(seller_url).json()
+            for seller_entry in seller_response:
+                seller_data[seller_entry["body"]["id"]] = seller_entry["body"][
+                    "nickname"
+                ]
+
             page += 1
-        return result
+        return result, seller_data

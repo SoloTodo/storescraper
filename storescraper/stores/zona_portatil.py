@@ -144,6 +144,10 @@ class ZonaPortatil(StoreWithUrlExtensions):
             raise Exception(response.text)
 
         offer_price = Decimal(remove_words(offer_price_tag.find("bdi").text))
+
+        if offer_price > normal_price:
+            offer_price = normal_price
+
         sku = re.search(r"Part Number: (.+?)<", response.text).groups()[0]
         picture_urls = [
             x["href"]

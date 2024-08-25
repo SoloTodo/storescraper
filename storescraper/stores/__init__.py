@@ -5,6 +5,7 @@ from .acer_store import AcerStore
 from .adventure_store import AdventureStore
 from .agaval import Agaval
 from .adis_store import AdisStore
+from .af_store import AFStore
 from .agencias_way_online import AgenciasWayOnline
 from .agil_store import AgilStore
 from .ak_byte_computacion import AkByteComputacion
@@ -59,6 +60,7 @@ from .de_aires import DeAires
 from .all_tech_market import AllTechMarket
 from .de_prati import DePrati
 from .diamond_pc import DiamondPc
+from .diayta import Diayta
 from .digiplot import Digiplot
 from .digital_choice import DigitalChoice
 from .dismac import Dismac
