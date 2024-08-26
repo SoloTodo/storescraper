@@ -74,9 +74,6 @@ class TodoGeek(StoreWithUrlExtensions):
         ]
         max_day = max(order_ready_day_range)
 
-        match = re.search(r"const ga4productJson = (.+);", response.text)
-        json_data = json.loads(match.groups()[0])
-
         category_tags = soup.find("span", text="Categoria: ").parent.findAll("a")
         assert category_tags
 
@@ -110,21 +107,31 @@ class TodoGeek(StoreWithUrlExtensions):
 
         picture_urls = []
 
-        for picture in json_data["images"]:
-            picture_urls.append("https:" + picture)
-
-        description = html_to_markdown(json_data["description"])
-
+        json_data = soup.findAll("script", {"type": "application/ld+json"})
+        picture_urls = json.loads(json_data[0].text)["offers"]["image"]
+        product_data = [
+            json.loads(data.text)
+            for data in json_data
+            if json.loads(data.text)["@type"] == "Product"
+            and "description" in json.loads(data.text)
+        ][0]
+        description = html_to_markdown(product_data["description"])
         products = []
-        for variant in json_data["variants"]:
-            key = str(variant["id"])
-            name = variant["name"]
-            offer_price = (Decimal(variant["price"]) / Decimal(100)).quantize(0)
+        offers = product_data["offers"]
+        for offer in offers:
+            key = offer["url"].split("?variant=")[1]
+            sku = offer.get("sku", None)
+            name = product_data["name"]
+
+            if len(offers) > 1:
+                name += f" ({offer['name']})"
+
+            offer_price = Decimal(offer["price"]).quantize(0)
             normal_price = (offer_price * Decimal("1.035")).quantize(0)
 
             if a_pedido or "RESERVA" in description.upper() or "VENTA" in name.upper():
                 stock = 0
-            elif variant["available"]:
+            elif offer["availability"] == "https://schema.org/InStock":
                 stock = -1
             else:
                 stock = 0
@@ -140,6 +147,7 @@ class TodoGeek(StoreWithUrlExtensions):
                 normal_price,
                 offer_price,
                 "CLP",
+                sku=sku,
                 picture_urls=picture_urls,
                 description=description,
                 condition=condition,
