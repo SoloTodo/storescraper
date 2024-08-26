@@ -136,7 +136,7 @@ class PcLinkStore(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html5lib")
 
