@@ -7,6 +7,8 @@ from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import (
     CELL,
     NOTEBOOK,
+    TELEVISION,
+    WEARABLE,
 )
 
 
@@ -16,6 +18,8 @@ class AFStore(StoreWithUrlExtensions):
         ["lenovo", NOTEBOOK],
         ["mac", NOTEBOOK],
         ["samsung", CELL],
+        ["tv-hogar", TELEVISION],
+        ["watch", WEARABLE],
     ]
 
     @classmethod
