@@ -138,7 +138,7 @@ class Movistar(Store):
         for plan_container in plan_containers:
             plan_link = plan_container.find("a")
             plan_url = plan_link["href"]
-            base_plan_name = plan_container.find("h3").text.strip()
+            base_plan_name = plan_container.find("p").text.strip()
 
             price_text = plan_container.find("div", "precio").find("span").text
             price = Decimal(remove_words(price_text.split()[0]))
@@ -175,9 +175,9 @@ class Movistar(Store):
 
         session = session_with_proxy(extra_args)
         session.headers["user-agent"] = "python-requests/2.21.0"
-        session.headers[
-            "content-type"
-        ] = "application/x-www-form-urlencoded; charset=UTF-8"
+        session.headers["content-type"] = (
+            "application/x-www-form-urlencoded; charset=UTF-8"
+        )
         session.headers["x-requested-with"] = "XMLHttpRequest"
         page = session.get(url)
 
