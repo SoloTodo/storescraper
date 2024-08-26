@@ -22,11 +22,8 @@ class Syd(StoreWithUrlExtensions):
     url_extensions = [
         ["imac", ALL_IN_ONE],
         ["macbook-air", NOTEBOOK],
+        ["macbook-pro", NOTEBOOK],
         ["studio-display", MONITOR],
-        ["macbook-pro-16-m1-de-apple", NOTEBOOK],
-        ["macbook-pro-14-m2-pro", NOTEBOOK],
-        ["macbook-pro-16-m2-de-apple", NOTEBOOK],
-        ["macbook-pro-13-m2-nuevo", NOTEBOOK],
         ["usb-c", EXTERNAL_STORAGE_DRIVE],
         ["thunderbolt-3", EXTERNAL_STORAGE_DRIVE],
         ["ssd", EXTERNAL_STORAGE_DRIVE],
