@@ -150,10 +150,13 @@ class PcExpress(StoreWithUrlExtensions):
 
         stock_container = soup.find("div", "rm-producto-stock-message")
 
-        if not stock_container:
+        if (
+            not stock_container
+            or stock_container.text == "Sin disponibilidad para venta web"
+        ):
             stock = 0
-        elif stock_container.text == "Sin disponibilidad para venta web":
-            stock = 0
+        elif "Más" in stock_container.text:
+            stock = -1
         else:
             stock = int(stock_container.text.split(" ")[0])
 
