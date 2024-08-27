@@ -1,7 +1,6 @@
-import json
 import logging
-import re
 import urllib
+import time
 from bs4 import BeautifulSoup
 
 from decimal import Decimal
@@ -50,9 +49,18 @@ class LgV6(Store):
                     "numberOfResults": page_size,
                     "firstResult": page * page_size,
                 }
+                results_unavailable = True
+                json_response = None
 
-                response = session.post(cls.endpoint_url, json=payload)
-                json_response = response.json()
+                while results_unavailable:
+                    response = session.post(cls.endpoint_url, json=payload)
+                    json_response = response.json()
+
+                    if "results" in json_response:
+                        results_unavailable = False
+                    else:
+                        time.sleep(10)
+
                 product_entries = json_response["results"]
 
                 if not product_entries:
@@ -74,6 +82,9 @@ class LgV6(Store):
                             ) or Decimal(subproduct_entry["raw"].get("ec_msrp", 0))
                             if not price or not is_active:
                                 continue
+
+                        if "ec_model_url_path" not in subproduct_entry["raw"]:
+                            continue
 
                         product_url = (
                             cls.base_url + subproduct_entry["raw"]["ec_model_url_path"]
