@@ -35,6 +35,8 @@ from storescraper.categories import (
     VACUUM_CLEANER,
     PRINTER,
     MICROPHONE,
+    VIDEO_CARD,
+    MOTHERBOARD,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -615,6 +617,8 @@ class MercadoLibreChile(Store):
         ("MLC116433", "Otros", None),
         ("MLC440647", "Otros", None),
         ("MLC174376", "Walkman", None),
+        ("MLC10350", "Tarjetas de Video", VIDEO_CARD),
+        ("MLC1692", "Placas Madre", MOTHERBOARD),
     ]
 
     @classmethod
@@ -644,6 +648,8 @@ class MercadoLibreChile(Store):
             VACUUM_CLEANER,
             ALL_IN_ONE,
             PRINTER,
+            VIDEO_CARD,
+            MOTHERBOARD,
         ]
         # return [i for i in set(cls.categories_name.values()) if i]
 
