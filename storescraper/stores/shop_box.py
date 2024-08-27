@@ -92,9 +92,14 @@ class ShopBox(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         soup = BeautifulSoup(session.get(url).text, "lxml")
-        products_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[1].text
+        products_data_container = soup.findAll(
+            "script", {"type": "application/ld+json"}
         )
+
+        if len(products_data_container) < 2:
+            return []
+
+        products_data = json.loads(products_data_container[1].text)
         key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
         offers = products_data["offers"]
 
