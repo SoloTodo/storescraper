@@ -64,7 +64,7 @@ class TravelTienda(StoreWithUrlExtensions):
         # ("1189841113", VACUUM_CLEANER),  # Aspirado y limpieza
         ("312008500", SPACE_HEATER),  # Calefaccion
         # ("1445819056", DISH_WASHER),  # Lavavajillas
-        ("2348142863", DISH_WASHER),  # Lavavajillas
+        ("4166046921", DISH_WASHER),  # Lavavajillas
         # ("1318662286", OVEN),  # Empotrados
         ("1864719901", OVEN),  # Empotrados
     ]

@@ -39,7 +39,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, remove_words
+from storescraper.utils import cf_session_with_proxy, remove_words
 
 
 class PcLinkStore(StoreWithUrlExtensions):
@@ -83,7 +83,7 @@ class PcLinkStore(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         session.headers["Content-Type"] = "application/x-www-form-urlencoded"
         session.headers["x-requested-with"] = "XMLHttpRequest"
         product_urls = []
@@ -136,7 +136,7 @@ class PcLinkStore(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "html5lib")
 

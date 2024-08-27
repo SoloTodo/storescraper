@@ -83,17 +83,21 @@ class PcInfinity(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+        status_code = None
+
+        while status_code != 200:
+            response = session.get(url, timeout=90)
+            status_code = response.status_code
+
         soup = BeautifulSoup(response.text, "lxml")
-
         key = soup.find("link", {"rel": "shortlink"})["href"].split("=")[-1]
-
         name = soup.find("h1", "product_title").text.strip()
         sku_tag = soup.find("span", "sku")
+
         if not sku_tag:
             return []
-        sku = sku_tag.text.strip()
 
+        sku = sku_tag.text.strip()
         offer_price = Decimal(
             remove_words(soup.find("div", "wds-first").find("span").text)
         )
@@ -105,6 +109,7 @@ class PcInfinity(StoreWithUrlExtensions):
             normal_price = offer_price
 
         input_qty = soup.find("input", "qty")
+
         if input_qty:
             if "max" in input_qty.attrs and input_qty["max"]:
                 stock = int(input_qty["max"])
@@ -114,9 +119,9 @@ class PcInfinity(StoreWithUrlExtensions):
             stock = 0
 
         description = html_to_markdown(soup.find("div", {"id": "tab-description"}).text)
-
         picture_container = soup.find("figure", "woocommerce-product-gallery__wrapper")
         picture_urls = []
+
         for i in picture_container.findAll("img"):
             picture_urls.append(i["src"])
 
@@ -135,4 +140,5 @@ class PcInfinity(StoreWithUrlExtensions):
             picture_urls=picture_urls,
             description=description,
         )
+
         return [p]
