@@ -22,10 +22,6 @@ class LaCuracaoOnline(Store):
         return [TELEVISION]
 
     @classmethod
-    def format_url(cls, page):
-        return f"https://www.lacuracaonline.com/{cls.country}/catalogsearch/result/index/?marca=42974&p={page}&q=lg"
-
-    @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         # KEEPS ONLY LG PRODUCTS
 
@@ -41,7 +37,7 @@ class LaCuracaoOnline(Store):
             if page >= 15:
                 raise Exception("Page overflow")
 
-            url = cls.format_url(page)
+            url = f"https://www.lacuracaonline.com/{cls.country}/search/lg?p={page}"
             print(url)
 
             response = session.get(url)
