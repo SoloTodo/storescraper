@@ -30,7 +30,7 @@ class GolloTienda(Store):
             if page > 10:
                 raise Exception("Page overflow")
 
-            url = f"https://www.gollo.com/c/LG?p={page}"
+            url = f"https://www.gollo.com/c?marca=42974&p={page}"
             print(url)
 
             response = session.get(url)
