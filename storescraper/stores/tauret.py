@@ -46,6 +46,10 @@ class Tauret(Store):
         soup = BeautifulSoup(response.text, "lxml")
 
         product_tag = soup.find("button-add-cart")
+
+        if not product_tag:
+            return []
+
         product_data = json.loads(product_tag[":product"])
         name = product_data["title"]
         key = str(product_data["id"])
