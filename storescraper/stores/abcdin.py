@@ -367,8 +367,12 @@ class AbcDin(Store):
                 logging.warning("Empty category: " + category_id)
 
             for idx, product_cell in enumerate(product_cells):
-                product_path = product_cell.find("a", "image-link")["href"]
-                product_url = cls.base_url + product_path
+                product_path = product_cell.find("a", "image-link")
+
+                if not product_path:
+                    continue
+
+                product_url = cls.base_url + product_path["href"]
                 discovered_entries[product_url].append(
                     {
                         "category_weight": category_weight,
