@@ -144,10 +144,12 @@ class PcFactory(Store):
             while True:
                 if page > 10:
                     raise Exception("page overflow: " + url_extension)
-                url_webpage = (
+
+                url_webpage = f"https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos/query?page={page}&size=100&categorias={url_extension}"
+                """url_webpage = (
                     "https://integracion.pcfactory.cl/catalogo/productos/query"
                     "?size=100&categorias={}&page={}".format(url_extension, page)
-                )
+                )"""
                 print(url_webpage)
                 response = session.get(url_webpage)
                 json_data = response.json()
@@ -213,7 +215,7 @@ class PcFactory(Store):
         product_id = product_id_match.groups()[0]
         # Specs
         res = session.get(
-            "https://integracion.pcfactory.cl/catalogo/productos/" + product_id
+            f"https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos/{product_id}"
         )
         product_data = res.json()
         sku = str(product_data["id"])
@@ -226,9 +228,7 @@ class PcFactory(Store):
 
         # Precio
         res = session.get(
-            "https://integracion.pcfactory.cl/catalogo/productos/{}/precio".format(
-                product_id
-            )
+            f"https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos/{product_id}/precio"
         )
         price_data = res.json()
 
@@ -237,9 +237,7 @@ class PcFactory(Store):
 
         # Stock
         res = session.get(
-            "https://integracion.pcfactory.cl/catalogo/productos/{}/stock".format(
-                product_id
-            )
+            f"https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos/{product_id}/stock"
         )
         stock_data = res.json()
         stock = 0
@@ -249,9 +247,7 @@ class PcFactory(Store):
 
         # Pictures
         res = session.get(
-            "https://integracion.pcfactory.cl/catalogo/productos/{}/imagenes".format(
-                product_id
-            )
+            f"https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos/{product_id}/imagenes"
         )
         pictures_data = res.json()
         picture_urls = [x["sizes"]["0"] for x in pictures_data["imagenes"]]
