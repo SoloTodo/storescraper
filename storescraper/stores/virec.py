@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import cf_session_with_proxy
 from storescraper.categories import (
     HEADPHONES,
     MONITOR,
@@ -27,7 +27,7 @@ class Virec(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         product_urls = []
         page = 1
         while True:
@@ -54,7 +54,7 @@ class Virec(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
