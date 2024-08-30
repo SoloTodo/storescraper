@@ -146,8 +146,8 @@ class UltraPc(StoreWithUrlExtensions):
             if len(price_tags) == 1:
                 price_tags.append(price_tags[0])
 
-            normal_price = Decimal(remove_words(price_tags[0].text))
-            offer_price = Decimal(remove_words(price_tags[1].text))
+            normal_price = Decimal(remove_words(price_tags[1].text))
+            offer_price = Decimal(remove_words(price_tags[0].text))
 
             picture_urls = [
                 "https://www.ultrapc.cl/" + tag["src"]
