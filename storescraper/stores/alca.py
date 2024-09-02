@@ -20,13 +20,16 @@ class Alca(Store):
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         url_extensions = [["solotodo", PRINTER]]
-
         session = session_with_proxy(extra_args)
         product_urls = []
+
         for url_extension, local_category in url_extensions:
+
             if local_category != category:
                 continue
+
             page = 1
+
             while True:
                 if page > 20:
                     raise Exception("Page overflow: " + url_extension)
@@ -37,14 +40,18 @@ class Alca(Store):
                 data = session.get(url_webpage).text
                 soup = BeautifulSoup(data, "lxml")
                 product_containers = soup.findAll("div", "product")
+
                 if not product_containers:
                     if page == 1:
                         logging.warning("Empty category: " + url_extension)
                     break
+
                 for container in product_containers:
                     product_url = container.find("a")["href"]
                     product_urls.append(product_url)
+
                 page += 1
+
         return product_urls
 
     @classmethod
@@ -58,56 +65,83 @@ class Alca(Store):
             return []
 
         soup = BeautifulSoup(response.text, "lxml")
-
-        key_tag = soup.find("link", {"rel": "shortlink"})
-
-        if not key_tag:
-            return []
-
-        key = key_tag["href"].split("=")[-1]
-
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text
         )
+        products = []
 
         for entry in json_data["@graph"]:
             if entry["@type"] == "Product":
+                key_tag = soup.find("link", {"rel": "shortlink"})
+                key = key_tag["href"].split("=")[-1]
                 product_data = entry
+                name = product_data["name"]
+                sku = product_data["sku"][:50]
+                description = product_data["description"]
+
+                assert len(product_data["offers"]) == 1
+
+                price = Decimal(
+                    product_data["offers"][0]["priceSpecification"]["price"]
+                )
+                picture_container = soup.find(
+                    "figure", "woocommerce-product-gallery__wrapper"
+                )
+                picture_urls = [
+                    image["href"]
+                    for image in picture_container.findAll("a")
+                    if validators.url(image["href"])
+                ]
+                stock_button = soup.find("button", {"name": "add-to-cart"})
+                stock = -1 if stock_button else 0
+
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description,
+                )
+                products.append(p)
+
                 break
         else:
-            raise Exception("No JSON product data found")
+            for product in json.loads(
+                soup.find("form", "variations_form")["data-product_variations"]
+            ):
+                key = str(product["variation_id"])
+                name = f"{json_data['@graph'][0]['name']} ({', '.join(product['attributes'].values())})"
+                sku = product["sku"][:50]
+                description = json_data["@graph"][0]["description"]
+                price = Decimal(product["display_price"])
+                stock = 0 if product["is_in_stock"] == "False" else product["max_qty"]
+                picture_urls = [product["image"]["url"]]
 
-        name = product_data["name"]
-        sku = product_data["sku"][:50]
-        description = product_data["description"]
-        price = Decimal(product_data["offers"][0]["priceSpecification"]["price"])
+                p = Product(
+                    name,
+                    cls.__name__,
+                    category,
+                    url,
+                    url,
+                    key,
+                    stock,
+                    price,
+                    price,
+                    "CLP",
+                    sku=sku,
+                    part_number=sku,
+                    picture_urls=picture_urls,
+                    description=description,
+                )
+                products.append(p)
 
-        stock_button = soup.find("button", {"name": "add-to-cart"})
-        if stock_button:
-            stock = -1
-        else:
-            stock = 0
-
-        picture_urls = []
-        picture_container = soup.find("figure", "product-gallery-slider")
-        for i in picture_container.findAll("a"):
-            if validators.url(i["href"]):
-                picture_urls.append(i["href"])
-
-        p = Product(
-            name,
-            cls.__name__,
-            category,
-            url,
-            url,
-            key,
-            stock,
-            price,
-            price,
-            "CLP",
-            sku=sku,
-            part_number=sku,
-            picture_urls=picture_urls,
-            description=description,
-        )
-        return [p]
+        return products
