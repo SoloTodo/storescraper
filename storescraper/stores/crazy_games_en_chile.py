@@ -127,7 +127,6 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
             price = Decimal(str(variants[0]["offers"]["price"]))
             sku = variants[0]["sku"]
         else:
-            print(url, "no variants")
             price = Decimal(str(json_data["offers"]["price"]))
 
         if "disabled" in soup.find("button", "product-form__submit").attrs:
@@ -137,6 +136,7 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
 
         picture_container = soup.find("ul", "product__media-list")
         picture_urls = []
+
         for a in picture_container.findAll("li"):
             picture_urls.append("https:" + a.find("img")["src"])
 
@@ -161,4 +161,5 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
             description=description,
             condition=condition,
         )
+
         return [p]
