@@ -12,6 +12,7 @@ from storescraper.categories import (
     TELEVISION,
     VIDEO_GAME_CONSOLE,
     MOUSE,
+    UPS,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -36,6 +37,7 @@ class Dreamtec(StoreWithUrlExtensions):
         ["tablets", TABLET],
         ["pantalla-interactiva", MONITOR],
         ["plotter", PRINTER],
+        ["ups", UPS],
     ]
 
     @classmethod
