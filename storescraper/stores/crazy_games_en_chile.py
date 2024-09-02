@@ -117,12 +117,18 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
         json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[-1].text
         )
-        print(json.dumps(json_data))
-
         name = json_data["name"]
         sku = json_data.get("sku", None)
         description = json_data["description"]
-        price = Decimal(str(json_data["offers"][0]["price"]))
+        variants = json_data.get("hasVariant", [])
+
+        if variants:
+            assert len(variants) == 1
+            price = Decimal(str(variants[0]["offers"]["price"]))
+            sku = variants[0]["sku"]
+        else:
+            print(url, "no variants")
+            price = Decimal(str(json_data["offers"]["price"]))
 
         if "disabled" in soup.find("button", "product-form__submit").attrs:
             stock = 0
