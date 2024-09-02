@@ -49,17 +49,18 @@ class LgV6(Store):
                     "numberOfResults": page_size,
                     "firstResult": page * page_size,
                 }
-                results_unavailable = True
+                results_unavailable = 0
                 json_response = None
 
-                while results_unavailable:
+                while results_unavailable < 5:
                     response = session.post(cls.endpoint_url, json=payload)
                     json_response = response.json()
 
                     if "results" in json_response:
-                        results_unavailable = False
-                    else:
-                        time.sleep(10)
+                        break
+
+                    results_unavailable += 1
+                    time.sleep(12)
 
                 product_entries = json_response["results"]
 
