@@ -13,6 +13,11 @@ import logstash
 
 from .product import Product
 from .utils import chunks, get_store_class_by_name
+from solotodo.models.store import (
+    process_non_blocker_positions_data,
+    process_non_blocker_product_data,
+    process_non_blocker_store_update_log_data,
+)
 
 logger = get_task_logger(__name__)
 logstash_logger = logging.getLogger("python-logstash-logger")
@@ -88,6 +93,7 @@ class Store:
         cls,
         categories=None,
         use_async=None,
+        update_log_id=None,
         extra_args=None,
         discover_urls_concurrency=None,
         products_for_url_concurrency=None,
@@ -108,7 +114,7 @@ class Store:
         process_id = str(uuid.uuid4())
         extra_args["process_id"] = process_id
 
-        print(f"Starting process: {process_id}")
+        print(f"Starting process: {process_id} | Update log id: {update_log_id}\n")
 
         cls.discover_entries_for_categories_non_blocker(
             categories=categories,
@@ -116,6 +122,7 @@ class Store:
             use_async=use_async,
             discover_urls_concurrency=discover_urls_concurrency,
             callback=cls.products_for_urls_non_blocker_task,
+            update_log_id=update_log_id,
         )
 
     @classmethod
@@ -170,7 +177,9 @@ class Store:
         extra_args=None,
         discover_urls_concurrency=None,
         callback=None,
+        update_log_id=None,
     ):
+        logger.info(f"update log id: {update_log_id}")
         if not use_async:
             app = Celery()
             app.conf.task_always_eager = True
@@ -207,6 +216,7 @@ class Store:
                             store_class_name=cls.__name__,
                             category=category,
                             extra_args=extra_args,
+                            update_log_id=update_log_id,
                         ).set(queue="storescraper"),
                     )
 
@@ -218,7 +228,7 @@ class Store:
             cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
         )
 
-        cls.fetch_process_logs(process_id)
+        cls.fetch_process_logs(process_id, update_log_id)
 
     @classmethod
     def discover_entries_for_categories(
@@ -340,6 +350,7 @@ class Store:
     def fetch_process_logs(
         cls,
         process_id,
+        update_log_id,
     ):
         finished_flag = False
         seconds_between_fetches = 5
@@ -412,13 +423,23 @@ class Store:
                 elapsed_time = seconds_between_fetches * fetches_without_updates
 
                 if (elapsed_time > 600 and urls_count) or (
-                    elapsed_time > 30 and finished_flag
+                    elapsed_time > 15 and finished_flag
                 ):
                     print(f"\nProcess ID: {process_id} finished:")
-                    print(f"Available: {available_products}")
+                    print(f"\nAvailable: {available_products}")
                     print(f"Unavailable: {unavailable_products}")
                     print(f"With error: {products_with_errors}")
                     print(f"Total: {urls_count}/{len(scraped_urls)}")
+
+                    process_non_blocker_store_update_log_data(
+                        update_log_id,
+                        {
+                            "available": available_products,
+                            "unavailable": unavailable_products,
+                            "with_error": products_with_errors,
+                        },
+                    )
+
                     break
 
             previous_urls_count = urls_count
@@ -595,6 +616,9 @@ class Store:
                     "category": category,
                     "category_weight": max_weight,
                 }
+                positions = json.dumps(positions)
+                process_non_blocker_positions_data(url, positions, category)
+
                 logger.info(url)
                 logstash_logger.info(
                     {
@@ -605,7 +629,7 @@ class Store:
                         "store": store_class_name,
                         "category": category,
                         "url": url,
-                        "positions": json.dumps(positions),
+                        "positions": positions,
                         "category_weight": max_weight,
                     },
                 )
@@ -670,6 +694,7 @@ class Store:
         store_class_name,
         category,
         products_for_url_concurrency=10,
+        update_log_id=None,
         extra_args=None,
     ):
         store = get_store_class_by_name(store_class_name)
@@ -690,6 +715,7 @@ class Store:
                         store_class_name=store_class_name,
                         category=category,
                         process_id=extra_args["process_id"],
+                        update_log_id=update_log_id,
                     ).set(queue="storescraper"),
                 )
 
@@ -699,7 +725,7 @@ class Store:
             tasks_group.apply_async()
 
     @shared_task()
-    def log_product(product, store_class_name, category, process_id):
+    def log_product(product, store_class_name, category, process_id, update_log_id):
         logstash_logger.info(
             f"{store_class_name}: Discovered product",
             extra={
@@ -708,6 +734,9 @@ class Store:
                 "category": category,
                 "product": product,
             },
+        )
+        process_non_blocker_product_data(
+            product, store_class_name, [category], update_log_id
         )
 
     ##########################################################################
