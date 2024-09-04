@@ -115,7 +115,11 @@ class Raenco(Store):
         stock_and_sku = soup.find("div", "product-info-stock-sku")
         sku = stock_and_sku.find("div", {"itemprop": "sku"}).text.strip()
         stock_div = stock_and_sku.find("div", "stock")
-        stock = int(stock_div.text.replace(stock_div.find("span").text, "").strip())
+
+        if stock_div.text.strip() == "Disponible":
+            stock = -1
+        else:
+            stock = int(stock_div.text.replace(stock_div.find("span").text, "").strip())
 
         price = Decimal(
             soup.find("meta", {"property": "product:price:amount"})["content"]
