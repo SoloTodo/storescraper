@@ -1135,6 +1135,7 @@ class MercadoLibreChile(Store):
         result = []
         seller_data = {}
         while True:
+            print(page)
             items_page_url = "https://api.mercadolibre.com/sites/MLC/search?seller_id={}&offset={}".format(
                 seller_id, page * offset
             )
