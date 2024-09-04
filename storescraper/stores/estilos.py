@@ -2,6 +2,8 @@ import base64
 from decimal import Decimal
 import json
 from bs4 import BeautifulSoup
+import re
+
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
@@ -72,18 +74,15 @@ class Estilos(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "lxml")
-
-        product_data = json.loads(
-            soup.find("template", {"data-varname": "__STATE__"}).find("script").string
-        )
-
+        product_match = re.search(r"__STATE__ = {(.+)}", response.text)
+        product_data = json.loads("{" + product_match.groups()[0] + "}")
         base_json_key = list(product_data.keys())[0]
         product_specs = product_data[base_json_key]
-
         item_key = "{}.items.0".format(base_json_key)
+
         key = product_data[item_key]["itemId"]
         ean = product_data[item_key]["ean"]
+
         if not check_ean13(ean):
             ean = None
 
@@ -103,6 +102,7 @@ class Estilos(Store):
         picture_ids = [x["id"] for x in picture_list_node["images"]]
 
         picture_urls = []
+
         for picture_id in picture_ids:
             picture_node = product_data[picture_id]
             picture_urls.append(picture_node["imageUrl"].split("?")[0])

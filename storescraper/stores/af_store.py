@@ -6,6 +6,7 @@ from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
 from storescraper.categories import (
     CELL,
+    HEADPHONES,
     NOTEBOOK,
     TELEVISION,
     WEARABLE,
@@ -14,6 +15,7 @@ from storescraper.categories import (
 
 class AFStore(StoreWithUrlExtensions):
     url_extensions = [
+        ["airpods", HEADPHONES],
         ["iphone", CELL],
         ["lenovo", NOTEBOOK],
         ["mac", NOTEBOOK],

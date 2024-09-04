@@ -2,14 +2,22 @@ from decimal import Decimal
 import json
 import logging
 from bs4 import BeautifulSoup
-from storescraper.categories import *
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import cf_session_with_proxy
+from storescraper.categories import (
+    HEADPHONES,
+    MONITOR,
+    TELEVISION,
+    STORAGE_DRIVE,
+    MEMORY_CARD,
+    UPS,
+)
 
 
 class Virec(StoreWithUrlExtensions):
     url_extensions = [
+        ["auriculares", HEADPHONES],
         ["monitores", MONITOR],
         ["televisores", TELEVISION],
         ["discos-duros", STORAGE_DRIVE],
@@ -19,7 +27,7 @@ class Virec(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         product_urls = []
         page = 1
         while True:
@@ -46,7 +54,7 @@ class Virec(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = session_with_proxy(extra_args)
+        session = cf_session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
@@ -56,12 +64,20 @@ class Virec(StoreWithUrlExtensions):
         offer = json_data["offers"][0]
         price = (Decimal(offer["price"]) * Decimal("1.19")).quantize(0)
         description = json_data["description"]
+
         if "image" in json_data:
             picture_urls = [json_data["image"]]
         else:
             picture_urls = None
+
         sku = json_data["sku"]
-        stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
+        stock_container = soup.find("span", "stock in-stock")
+        stock_number = stock_container.text.split()[0]
+
+        if stock_number.isdigit():
+            stock = int(stock_number)
+        else:
+            stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
 
         p = Product(
             name,

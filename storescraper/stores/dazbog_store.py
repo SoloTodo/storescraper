@@ -15,6 +15,7 @@ from storescraper.categories import (
     RAM,
     COMPUTER_CASE,
     KEYBOARD,
+    CASE_FAN,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -34,6 +35,7 @@ class DazbogStore(StoreWithUrlExtensions):
         ["gpus", VIDEO_CARD],
         ["gabinete", COMPUTER_CASE],
         ["perifericos", KEYBOARD],
+        ["ventiladores", CASE_FAN],
     ]
 
     @classmethod

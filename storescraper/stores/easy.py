@@ -368,7 +368,8 @@ class Easy(Store):
         print(url)
         session = session_with_proxy(extra_args)
         res = session.get(url)
-        soup = BeautifulSoup(res.text, "lxml")
+        soup = BeautifulSoup(res.text, "html.parser")
+
         product_data = json.loads(
             str(
                 soup.find("template", {"data-varname": "__STATE__"})

@@ -80,6 +80,10 @@ class Clie(StoreWithUrlExtensions):
         key = str(product_data["sku"])
         offer = product_data["offers"][0]
         stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
+
+        if offer["price"] == "0":
+            return []
+
         offer_price = Decimal(offer["price"])
         normal_price = (offer_price * Decimal("1.03")).quantize(0)
         picture_urls = (
@@ -102,4 +106,5 @@ class Clie(StoreWithUrlExtensions):
             picture_urls=picture_urls,
             description=description,
         )
+
         return [p]
