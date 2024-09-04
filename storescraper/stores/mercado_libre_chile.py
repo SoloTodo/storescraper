@@ -40,7 +40,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import session_with_proxy, chunks
 
 
 class MercadoLibreChile(Store):
@@ -1134,6 +1134,8 @@ class MercadoLibreChile(Store):
         session.headers["Authorization"] = "Bearer {}".format(access_token)
         result = []
         seller_data = {}
+        seller_ids = []
+
         while True:
             print(page)
             items_page_url = "https://api.mercadolibre.com/sites/MLC/search?seller_id={}&offset={}".format(
@@ -1142,10 +1144,10 @@ class MercadoLibreChile(Store):
             response = session.get(items_page_url).json()
             if not response["results"]:
                 break
-            local_seller_ids = []
 
             for item in response["results"]:
                 catalog_product_id = item["catalog_product_id"]
+                print(catalog_product_id)
                 if not catalog_product_id:
                     continue
                 catalog_url = "https://api.mercadolibre.com/products/{}".format(
@@ -1153,7 +1155,7 @@ class MercadoLibreChile(Store):
                 )
                 catalog_response = session.get(catalog_url).json()
                 if catalog_response["buy_box_winner"]:
-                    local_seller_ids.append(
+                    seller_ids.append(
                         str(catalog_response["buy_box_winner"]["seller_id"])
                     )
                 catalog_items_url = (
@@ -1171,14 +1173,17 @@ class MercadoLibreChile(Store):
                     }
                 )
 
+            page += 1
+
+        seller_chunks = chunks(seller_ids, 20)
+
+        for seller_chunk in seller_chunks:
             seller_url = "https://api.mercadolibre.com/users/?ids={}".format(
-                ",".join(local_seller_ids)
+                ",".join(seller_chunk)
             )
             seller_response = session.get(seller_url).json()
             for seller_entry in seller_response:
                 seller_data[seller_entry["body"]["id"]] = seller_entry["body"][
                     "nickname"
                 ]
-
-            page += 1
         return result, seller_data
