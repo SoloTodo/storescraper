@@ -8,28 +8,30 @@ from collections import defaultdict, OrderedDict
 from celery import Celery, chain, chord, group, shared_task
 from celery.result import allow_join_result
 from celery.utils.log import get_task_logger
-from elasticsearch import Elasticsearch
-import logstash
 
 from .product import Product
 from .utils import chunks, get_store_class_by_name
-from solotodo.models.store import (
-    process_non_blocker_positions_data,
-    process_non_blocker_product_data,
-    process_non_blocker_store_update_log_data,
-)
 
 logger = get_task_logger(__name__)
-logstash_logger = logging.getLogger("python-logstash-logger")
-logstash_logger.setLevel(logging.INFO)
-logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
 
-ES = Elasticsearch(
-    "https://localhost:9200",
-    ca_certs="http_ca.crt",
-    http_auth=("elastic", "Mo+2hdOYBpIJi4NYG*KL"),
-)
-logging.getLogger("elastic_transport").setLevel(logging.WARNING)
+ISOLATED_MODE = True
+
+if not ISOLATED_MODE:
+    import logstash
+
+    from django.conf import settings
+    from solotodo.models.store import (
+        process_non_blocker_positions_data,
+        process_non_blocker_product_data,
+        process_non_blocker_store_update_log_data,
+    )
+
+    ES = settings.ES
+    logstash_logger = logging.getLogger("python-logstash-logger")
+    logstash_logger.setLevel(logging.INFO)
+    logstash_logger.addHandler(logstash.TCPLogstashHandler("localhost", 5959))
+
+    logging.getLogger("elastic_transport").setLevel(logging.WARNING)
 
 
 class StoreScrapError(Exception):
@@ -180,6 +182,7 @@ class Store:
         update_log_id=None,
     ):
         logger.info(f"update log id: {update_log_id}")
+
         if not use_async:
             app = Celery()
             app.conf.task_always_eager = True
@@ -228,7 +231,10 @@ class Store:
             cls.finish_process.si(cls.__name__, process_id).set(queue="storescraper")
         )
 
-        cls.fetch_process_logs(process_id, update_log_id)
+        if ISOLATED_MODE:
+            cls.fetch_process_file(process_id)
+        else:
+            cls.fetch_process_logs(process_id, update_log_id)
 
     @classmethod
     def discover_entries_for_categories(
@@ -338,13 +344,46 @@ class Store:
         return discovered_entries
 
     @shared_task
-    def finish_process(store, process_id):
-        logstash_logger.info(
-            f"{store}: process finished",
-            extra={
-                "process_id": process_id,
-            },
-        )
+    def finish_process(store_name, process_id):
+        print("Process finished")
+
+        store = get_store_class_by_name(store_name)
+
+        if ISOLATED_MODE:
+            store.update_process_file(
+                f"process_{process_id}.json", [{"finished": True}]
+            )
+        else:
+            logstash_logger.info(
+                f"{store}: process finished",
+                extra={
+                    "process_id": process_id,
+                },
+            )
+
+    @classmethod
+    def fetch_process_file(cls, process_id):
+        import os
+
+        while True:
+            file_name = f"urls_process_{process_id}.json"
+
+            if os.path.exists(file_name):
+                with open(file_name, "r") as file:
+                    content = json.load(file)
+                    print(f"Available: {len(content)}")
+
+            file_name = f"process_{process_id}.json"
+
+            if os.path.exists(file_name):
+                with open(file_name, "r") as file:
+                    content = json.load(file)
+
+                    for entry in content:
+                        if "finished" in entry and entry["finished"]:
+                            return
+
+            time.sleep(15)
 
     @classmethod
     def fetch_process_logs(
@@ -353,7 +392,7 @@ class Store:
         update_log_id,
     ):
         finished_flag = False
-        seconds_between_fetches = 5
+        seconds_between_fetches = 15
         fetches_without_updates = 0
         scraped_logs = set()
         scraped_urls = set()
@@ -423,7 +462,7 @@ class Store:
                 elapsed_time = seconds_between_fetches * fetches_without_updates
 
                 if (elapsed_time > 600 and urls_count) or (
-                    elapsed_time > 15 and finished_flag
+                    elapsed_time > 30 and finished_flag
                 ):
                     print(f"\nProcess ID: {process_id} finished:")
                     print(f"\nAvailable: {available_products}")
@@ -431,14 +470,15 @@ class Store:
                     print(f"With error: {products_with_errors}")
                     print(f"Total: {urls_count}/{len(scraped_urls)}")
 
-                    process_non_blocker_store_update_log_data(
-                        update_log_id,
-                        {
-                            "available": available_products,
-                            "unavailable": unavailable_products,
-                            "with_error": products_with_errors,
-                        },
-                    )
+                    if not ISOLATED_MODE:
+                        process_non_blocker_store_update_log_data(
+                            update_log_id,
+                            {
+                                "available": available_products,
+                                "unavailable": unavailable_products,
+                                "with_error": products_with_errors,
+                            },
+                        )
 
                     break
 
@@ -539,6 +579,21 @@ class Store:
             "discovery_urls_without_products": discovery_urls_without_products,
         }
 
+    @classmethod
+    def update_process_file(cls, file_name, updated_content):
+        import os
+
+        if os.path.exists(file_name):
+            with open(file_name, "r") as file:
+                content = json.load(file)
+        else:
+            content = []
+
+        content.extend(updated_content)
+
+        with open(file_name, "w") as file:
+            json.dump(content, file, indent=4)
+
     ##########################################################################
     # Celery tasks wrappers
     ##########################################################################
@@ -617,22 +672,28 @@ class Store:
                     "category_weight": max_weight,
                 }
                 positions = json.dumps(positions)
-                process_non_blocker_positions_data(url, positions, category)
-
                 logger.info(url)
-                logstash_logger.info(
-                    {
-                        "message": f"{store_class_name}: Discovered URL",
-                    },
-                    extra={
-                        "process_id": process_id or None,
-                        "store": store_class_name,
-                        "category": category,
-                        "url": url,
-                        "positions": positions,
-                        "category_weight": max_weight,
-                    },
-                )
+                entry_data = {
+                    "process_id": process_id or None,
+                    "store": store_class_name,
+                    "category": category,
+                    "url": url,
+                    "positions": positions,
+                    "category_weight": max_weight,
+                }
+
+                if ISOLATED_MODE:
+                    store.update_process_file(
+                        f"urls_process_{process_id}.json", [entry_data]
+                    )
+                else:
+                    logstash_logger.info(
+                        {
+                            "message": f"{store_class_name}: Discovered URL",
+                        },
+                        extra=entry_data,
+                    )
+                    process_non_blocker_positions_data(url, positions, category)
 
         return discovered_entries
 
@@ -726,18 +787,25 @@ class Store:
 
     @shared_task()
     def log_product(product, store_class_name, category, process_id, update_log_id):
-        logstash_logger.info(
-            f"{store_class_name}: Discovered product",
-            extra={
-                "process_id": process_id,
-                "store": store_class_name,
-                "category": category,
-                "product": product,
-            },
-        )
-        process_non_blocker_product_data(
-            product, store_class_name, [category], update_log_id
-        )
+        store = get_store_class_by_name(store_class_name)
+        product_data = {
+            "process_id": process_id,
+            "store": store_class_name,
+            "category": category,
+            "product": product,
+        }
+
+        if ISOLATED_MODE:
+            store.update_process_file(
+                f"products_process_{process_id}.json", [product_data]
+            )
+        else:
+            logstash_logger.info(
+                f"{store_class_name}: Discovered product",
+                extra={product_data},
+            )
+
+            process_non_blocker_product_data(product, store_class_name)
 
     ##########################################################################
     # Implementation dependant methods
