@@ -9,6 +9,7 @@ from storescraper.categories import (
     HEADPHONES,
     MONITOR,
     TELEVISION,
+    RAM,
     STORAGE_DRIVE,
     MEMORY_CARD,
     UPS,
@@ -22,6 +23,7 @@ class Virec(StoreWithUrlExtensions):
         ["televisores", TELEVISION],
         ["discos-duros", STORAGE_DRIVE],
         ["memorias-micro-sd", MEMORY_CARD],
+        ["memoria-ram", RAM],
         ["ups", UPS],
     ]
 
@@ -59,6 +61,10 @@ class Virec(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         json_tag = soup.find("script", {"type": "application/ld+json"})
+
+        if not json_tag:
+            return []
+
         json_data = json.loads(json_tag.text)
         name = json_data["name"]
         offer = json_data["offers"][0]
