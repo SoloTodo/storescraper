@@ -100,7 +100,6 @@ class PowerPlay(StoreWithUrlExtensions):
                 if not stock_container:
                     stock = 0
                 else:
-                    print(stock_container.text)
                     stock = (
                         -1
                         if stock_container.text.strip() == "En stock"
