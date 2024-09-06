@@ -37,7 +37,7 @@ class Alfaomega(StoreWithUrlExtensions):
         ["tarjetas-graficas-gamer", VIDEO_CARD],
         ["monitores", MONITOR],
         ["pendrive-almacenamiento-externo", USB_FLASH_DRIVE],
-        ["tintas-de-impresora", PRINTER],
+        ["impresoras", PRINTER],
     ]
 
     @classmethod
