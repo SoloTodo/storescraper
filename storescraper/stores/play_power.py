@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import MONITOR
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, session_with_proxy
 
 
 class PlayPower(StoreWithUrlExtensions):
@@ -48,15 +48,27 @@ class PlayPower(StoreWithUrlExtensions):
         soup = BeautifulSoup(response.text, "lxml")
         products = []
         variants_tag = soup.find("variant-radios")
-
         if variants_tag:
             base_name = soup.find("h1").text.strip()
             variants_data = json.loads(variants_tag.find("script").text)
+
             for variant in variants_data:
                 name = "{} ({})".format(base_name, variant["title"])
                 key = str(variant["id"])
-                stock = -1 if variant["available"] else 0
+                description = html_to_markdown(
+                    soup.find("div", "product__description").text
+                )
+
+                if (
+                    variant["available"]
+                    and "compra internacional" not in description.lower()
+                ):
+                    stock = -1
+                else:
+                    stock = 0
+
                 price = Decimal(variant["price"] // 100)
+
                 if variant["featured_image"]:
                     picture_urls = ["https:" + variant["featured_image"]["src"]]
                 else:
@@ -74,6 +86,7 @@ class PlayPower(StoreWithUrlExtensions):
                     price,
                     "CLP",
                     picture_urls=picture_urls,
+                    description=description,
                 )
                 products.append(p)
         else:
@@ -83,10 +96,18 @@ class PlayPower(StoreWithUrlExtensions):
             )
             name = product_data["name"]
             offer = product_data["offers"][0]
-            if offer["availability"] == "http://schema.org/InStock":
+            description = html_to_markdown(
+                soup.find("div", "product__description").text
+            )
+
+            if (
+                offer["availability"] == "http://schema.org/InStock"
+                and "compra internacional" not in description.lower()
+            ):
                 stock = -1
             else:
                 stock = 0
+
             price = Decimal(offer["price"])
             picture_urls = product_data["image"]
 
@@ -102,6 +123,7 @@ class PlayPower(StoreWithUrlExtensions):
                 price,
                 "CLP",
                 picture_urls=picture_urls,
+                description=description,
             )
             products.append(p)
 
