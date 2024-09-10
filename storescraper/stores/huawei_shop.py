@@ -98,7 +98,7 @@ class HuaweiShop(Store):
                     "cardParameter"
                 ]["allEnds"]["moduleData"]["productSets"]["productInfo"]
                 for product_entry in product_list:
-                    product_url = product_entry["data"]["pcpLink"]
+                    product_url = product_entry["pdpLinkUrl"]
                     if not product_url.startswith("https"):
                         product_url = "https://consumer.huawei.com" + product_url
                     product_urls.append(product_url)
