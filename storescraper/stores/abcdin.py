@@ -427,17 +427,22 @@ class AbcDin(Store):
         name = soup.find("h1", {"itemprop": "name"}).text.strip()
         key = soup.find("span", {"itemprop": "sku"})["data-sku"]
         prices_tag = soup.find("div", "prices")
-
         internet_price_tag = prices_tag.find("p", "internet")
+
         if internet_price_tag:
             normal_price_tag = internet_price_tag.find("span", "price-value")
         else:
-            normal_price_tag = prices_tag.find("p", "js-internet-price").find(
-                "span", "price-value"
-            )
+            js_internet_price_tag = prices_tag.find("p", "js-internet-price")
+
+            if not js_internet_price_tag:
+                return []
+
+            normal_price_tag = js_internet_price_tag.find("span", "price-value")
+
         normal_price = Decimal(normal_price_tag["data-value"]).quantize(0)
 
         offer_price_tag = prices_tag.find("p", "js-tlp-price")
+
         if offer_price_tag:
             offer_price_text = offer_price_tag.find("span", "price-value")
             offer_price = Decimal(offer_price_text["data-value"]).quantize(0)
@@ -446,10 +451,12 @@ class AbcDin(Store):
 
         stock = -1
         sku_tag = soup.find("span", "cod")
+
         if sku_tag:
             sku = soup.find("span", "cod").text.split(":")[1].strip()
         else:
             sku = key
+
         description = html_to_markdown(str(soup.find("div", "description-and-detail")))
         picture_urls = [
             x.find("img")["src"]
