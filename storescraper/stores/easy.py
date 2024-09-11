@@ -22,6 +22,8 @@ from storescraper.utils import session_with_proxy, html_to_markdown, vtex_prefli
 
 
 class Easy(Store):
+    base_url = "https://cl-ccom-easy-bff-web.ecomm.cencosud.com/v2"
+
     @classmethod
     def categories(cls):
         return [
@@ -227,7 +229,7 @@ class Easy(Store):
                 if page > 20:
                     raise Exception("page overflow: " + category_path)
 
-                url = f"https://cl-ccom-easy-bff-web.ecomm.cencosud.com/v2/search/categories?count=40&page={page}&categories={category_path}"
+                url = f"{cls.base_url}/search/categories?count=40&page={page}&categories={category_path}"
 
                 response = session.get(
                     url, headers={"X-Api-Key": "jFt3XhoLqFAGr6qN9SCpr9K6y83HpakP"}
@@ -254,90 +256,25 @@ class Easy(Store):
     @classmethod
     def discover_urls_for_keyword(cls, keyword, threshold, extra_args=None):
         session = session_with_proxy(extra_args)
-        session.headers["Content-Type"] = "application/json"
         product_urls = []
+        page = 1
 
-        base_prod_url = "https://www.easy.cl/tienda/producto/{}"
-        prods_url = "https://www.easy.cl/api/prodeasy/_search"
+        while True:
+            response = session.get(
+                f"{cls.base_url}/search?count=40&page={page}&query={keyword}",
+                headers={"X-Api-Key": "jFt3XhoLqFAGr6qN9SCpr9K6y83HpakP"},
+            ).json()
 
-        prods_data = {
-            "query": {
-                "function_score": {
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "bool": {
-                                        "should": [
-                                            {
-                                                "function_score": {
-                                                    "query": {
-                                                        "multi_match": {
-                                                            "query": keyword,
-                                                            "fields": [
-                                                                "name^1000",
-                                                                "brand",
-                                                                "cat_3.stop",
-                                                                "partNumber",
-                                                            ],
-                                                            "type": "best_fields",
-                                                            "operator": "and",
-                                                        }
-                                                    },
-                                                    "field_value_factor": {
-                                                        "field": "boost",
-                                                        "factor": 6,
-                                                    },
-                                                }
-                                            },
-                                            {
-                                                "multi_match": {
-                                                    "query": keyword,
-                                                    "fields": ["name^8", "cat_3.stop"],
-                                                    "type": "best_fields",
-                                                    "operator": "or",
-                                                }
-                                            },
-                                            {
-                                                "span_first": {
-                                                    "match": {
-                                                        "span_term": {
-                                                            "name.dym": keyword
-                                                        }
-                                                    },
-                                                    "end": 1,
-                                                    "boost": 2000,
-                                                }
-                                            },
-                                        ],
-                                        "minimum_should_match": "1",
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "boost_mode": "sum",
-                    "score_mode": "max",
-                }
-            },
-            "size": 450,
-            "from": 0,
-        }
+            if response["productList"] == []:
+                break
 
-        prods_response = session.post(prods_url, data=json.dumps(prods_data))
+            for product in response["productList"]:
+                product_urls.append(f"https://www.easy.cl/{product['linkText']}")
 
-        prods_json = json.loads(prods_response.text)
-        prods_hits = prods_json["hits"]["hits"]
+                if len(product_urls) == threshold:
+                    return product_urls
 
-        if not prods_hits:
-            return []
-
-        for prods_hit in prods_hits:
-            product_url = base_prod_url.format(prods_hit["_source"]["url"])
-            product_urls.append(product_url)
-
-            if len(product_urls) == threshold:
-                return product_urls
+            page += 1
 
         return product_urls
 
@@ -347,9 +284,10 @@ class Easy(Store):
         session = session_with_proxy(extra_args)
         sku = re.findall(r"-(\d+)", url)[-1]
         response = session.get(
-            f"https://cl-ccom-easy-bff-web.ecomm.cencosud.com/v2/products/by-sku/{sku}",
+            f"{cls.base_url}/products/by-sku/{sku}",
             headers={"X-Api-Key": "jFt3XhoLqFAGr6qN9SCpr9K6y83HpakP"},
         ).json()
+
         assert len(response["items"]) == 1
 
         item = response["items"][0]
