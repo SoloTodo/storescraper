@@ -74,6 +74,7 @@ class MyShop(StoreWithUrlExtensions):
         ],  # almacenamiento-discos-ssd-internos-discos-ssd-m-2
         ["8", HEADPHONES],  # audio-video-audifonos-in-ear
         ["11", STEREO_SYSTEM],  # audio-video-parlantes
+        ["157", STEREO_SYSTEM],  # gamer-parlantes-gamer
         ["14", HEADPHONES],  # audio-video-video-conferencia
         ["152", MONITOR],  # monitor-monitores
         ["139", MONITOR],  # monitor-monitores-monitores-gamer
