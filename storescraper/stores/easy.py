@@ -1,9 +1,9 @@
 import base64
 import json
+import re
 from collections import defaultdict
 from decimal import Decimal
 
-from bs4 import BeautifulSoup
 from storescraper.categories import (
     AIR_CONDITIONER,
     OVEN,
@@ -258,7 +258,7 @@ class Easy(Store):
         product_urls = []
 
         base_prod_url = "https://www.easy.cl/tienda/producto/{}"
-        prods_url = "https://www.easy.cl/api//prodeasy/_search"
+        prods_url = "https://www.easy.cl/api/prodeasy/_search"
 
         prods_data = {
             "query": {
@@ -345,7 +345,7 @@ class Easy(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        sku = url.split("-")[-1]
+        sku = re.findall(r"-(\d+)", url)[-1]
         response = session.get(
             f"https://cl-ccom-easy-bff-web.ecomm.cencosud.com/v2/products/by-sku/{sku}",
             headers={"X-Api-Key": "jFt3XhoLqFAGr6qN9SCpr9K6y83HpakP"},
@@ -369,6 +369,8 @@ class Easy(Store):
 
                 stock = offer["availableQuantity"]
                 break
+        else:
+            return []
 
         description = html_to_markdown(response["description"])
 
