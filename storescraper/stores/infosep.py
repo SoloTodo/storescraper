@@ -3,6 +3,7 @@ import logging
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
+from requests.exceptions import ChunkedEncodingError
 
 from storescraper.categories import (
     ALL_IN_ONE,
@@ -98,6 +99,7 @@ class Infosep(StoreWithUrlExtensions):
         while True:
             if page > 20:
                 raise Exception("page overflow: " + url_extension)
+
             if page == 1:
                 url_webpage = "https://infosep.cl/categoria-producto/{}/" "".format(
                     url_extension
@@ -108,17 +110,26 @@ class Infosep(StoreWithUrlExtensions):
                     "page/{}/".format(url_extension, page)
                 )
             print(url_webpage)
-            data = session.get(url_webpage).text
+
+            try:
+                data = session.get(url_webpage).text
+            except ChunkedEncodingError:
+                break
+
             soup = BeautifulSoup(data, "lxml")
             product_containers = soup.find("div", "products")
+
             if not product_containers:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
+
             for container in product_containers.findAll("div", "product-grid-item"):
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
+
             page += 1
+
         return product_urls
 
     @classmethod
