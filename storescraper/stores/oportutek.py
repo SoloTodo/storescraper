@@ -21,6 +21,7 @@ from storescraper.categories import (
     SOLID_STATE_DRIVE,
     UPS,
     VIDEO_CARD,
+    STEREO_SYSTEM,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -49,6 +50,7 @@ class Oportutek(Store):
             MONITOR,
             UPS,
             PRINTER,
+            STEREO_SYSTEM,
         ]
 
     @classmethod
@@ -69,6 +71,8 @@ class Oportutek(Store):
             ["computacion/Teclado", KEYBOARD],
             ["perifericos/Mouse-y-Teclado", KEYBOARD_MOUSE_COMBO],
             ["computacion/Auriculares", HEADPHONES],
+            ["audio/Auriculares", HEADPHONES],
+            ["audio/Parlante-JBL", STEREO_SYSTEM],
             ["computacion/All-in-One", ALL_IN_ONE],
             ["monitores", MONITOR],
             ["ups-estructura-energia", UPS],
