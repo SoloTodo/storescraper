@@ -298,7 +298,11 @@ class Easy(Store):
         for seller in item["sellers"]:
             if seller["sellerName"] == "Easy.cl":
                 offer = seller["commertialOffer"]
-                normal_price = Decimal(offer["prices"]["offerPrice"])
+
+                if "offerPrice" in offer["prices"] and offer["prices"]["offerPrice"]:
+                    normal_price = Decimal(offer["prices"]["offerPrice"])
+                else:
+                    normal_price = Decimal(offer["prices"]["normalPrice"])
 
                 if "brandPrice" in offer["prices"] and offer["prices"]["brandPrice"]:
                     offer_price = Decimal(offer["prices"]["brandPrice"])
