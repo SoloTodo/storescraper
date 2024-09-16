@@ -1,3 +1,4 @@
+import json
 import logging
 import urllib
 import time
@@ -73,11 +74,10 @@ class LgV6(Store):
                     for subproduct_entry in product_entry["childResults"] + [
                         product_entry
                     ]:
+                        is_active = (
+                            "ACTIVE" in subproduct_entry["raw"]["ec_model_status_code"]
+                        )
                         if cls.skip_products_without_price:
-                            is_active = (
-                                "ACTIVE"
-                                in subproduct_entry["raw"]["ec_model_status_code"]
-                            )
                             price = Decimal(
                                 subproduct_entry["raw"].get("ec_price", 0)
                             ) or Decimal(subproduct_entry["raw"].get("ec_msrp", 0))
@@ -90,6 +90,8 @@ class LgV6(Store):
                         product_url = (
                             cls.base_url + subproduct_entry["raw"]["ec_model_url_path"]
                         )
+                        # if subproduct_entry['raw']['ec_where_to_buy_flag'] == 'N' and is_active:
+                        #     print(subproduct_entry['raw']['ec_model_id'], subproduct_entry['raw']['ec_sku'], product_url, sep='¬')
                         discovered_urls.append(product_url)
                 page += 1
 

@@ -209,16 +209,16 @@ class Paris(Store):
             logging.info("Obtaining base section data from " + base_url)
             response = session.get(base_url)
             soup = BeautifulSoup(response.text, "lxml")
-            category_id = re.search(
-                r'dw\.ac\.applyContext\(\{category: "(.+)"', response.text
-            ).groups()[0]
             breadcrumbs_tag = soup.find("div", "PLPbreadcrumbs")
             breadcrumbs = []
             for link_tag in breadcrumbs_tag.find_all("a", "breadcrumb-element"):
                 breadcrumbs.append(link_tag.text.strip())
-            breadcrumbs.append(
-                breadcrumbs_tag.find("span", "breadcrumb-result-text").text.strip()
+
+            breadcrumbs_detail_tag = breadcrumbs_tag.find(
+                "span", "breadcrumb-result-text"
             )
+            if breadcrumbs_detail_tag:
+                breadcrumbs.append(breadcrumbs_detail_tag.text.strip())
             added_filters_breadcrumbs_tag = soup.find("div", "clear-refinement")
             if added_filters_breadcrumbs_tag:
                 for added_filters_breadcrumb in added_filters_breadcrumbs_tag.findAll(
@@ -232,7 +232,12 @@ class Paris(Store):
             parsed_url = urllib.parse.urlparse(base_url)
             url_params = urllib.parse.parse_qs(parsed_url.query)
 
-            filters = ["cgid=" + category_id]
+            category_id_match = re.search(
+                r'dw\.ac\.applyContext\(\{category: "(.+)"', response.text
+            )
+            filters = []
+            if category_id_match:
+                filters = ["cgid=" + category_id_match.groups()[0]]
 
             filter_idx = 1
             while True:
@@ -245,6 +250,10 @@ class Paris(Store):
                     break
                 filter_idx += 1
 
+            parsed_url = urllib.parse.urlparse(base_url)
+            if parsed_url.query.strip():
+                filters.append(parsed_url.query)
+
             if fast_mode:
                 filters.append("isMarketplace=Paris")
 
@@ -252,7 +261,7 @@ class Paris(Store):
 
             while True:
                 if page > (15000 / cls.RESULTS_PER_PAGE):
-                    raise Exception("Page overflow: " + category_id)
+                    raise Exception("Page overflow: " + category_path)
 
                 filter_strings = []
                 for idx, filter_str in enumerate(filters):
