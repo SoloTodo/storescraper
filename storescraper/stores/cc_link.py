@@ -27,6 +27,7 @@ from storescraper.categories import (
     GAMING_CHAIR,
     CASE_FAN,
     CELL,
+    STEREO_SYSTEM,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -70,6 +71,7 @@ class CCLink(StoreWithUrlExtensions):
         ["gamer/componentes-rgb", MOTHERBOARD],
         ["gamer/comodidad-gamer/sillas-gamer", GAMING_CHAIR],
         ["celulares", CELL],
+        ["parlantes", STEREO_SYSTEM],
     ]
 
     @classmethod
