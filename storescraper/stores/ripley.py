@@ -1,8 +1,8 @@
 import logging
 import re
 import json
-import time
 from datetime import datetime
+from collections import defaultdict
 
 import validators
 from bs4 import BeautifulSoup
@@ -298,7 +298,7 @@ class Ripley(Store):
     def categories(cls):
         cats = set()
 
-        for path, local_categories, section, weight in cls.category_paths:
+        for _, local_categories, _, _ in cls.category_paths:
             for local_category in local_categories:
                 cats.add(local_category)
 
@@ -306,24 +306,6 @@ class Ripley(Store):
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
-        # If the method returns too soon it seems to trigger a RabbitMQ bug
-        time.sleep(5)
-        return [category]
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        # This implementation of products_for_url is botched to obtain the
-        # products directly from the PLP page of Ripley because we can't
-        # make too many requests to the Ripley website. Therefore "url" is
-        # just the name of the category and ignored
-
-        # This method may be called as part of the keyword search functionality
-        # of the library. We patch it by detecting this call and calling
-        # a function that actually uses the URL PDP page of the product.
-        if extra_args and extra_args.get("source", None) == "keyword_search":
-            products = cls._assemble_full_product(url, category, extra_args)
-            return products
-
         session = cf_session_with_proxy(extra_args)
 
         if extra_args and "user-agent" in extra_args:
@@ -332,104 +314,99 @@ class Ripley(Store):
         fast_mode = extra_args and extra_args.get("fast_mode", False)
         print("fast_mode", fast_mode)
 
-        if fast_mode:
-            seller_filter = "facet=Vendido%20por%3ARipley&"
-        else:
-            seller_filter = ""
-
-        product_dict = {}
+        product_entries = defaultdict(lambda: [])
 
         for e in cls.category_paths:
-            category_path, local_categories, section_name, category_weight = e
+            path, local_categories, section_name, weight = e
+            page = 1
 
             if category not in local_categories:
                 continue
 
-            page = 1
-            position = 1
+            total_pages = None
 
             while True:
-                if page > 400:
-                    raise Exception("Page overflow")
+                if total_pages and page > total_pages:
+                    break
 
-                if "?" in category_path:
-                    param = "&"
-                else:
-                    param = "?"
-                url_base = "{}/api/v1/catalog-products/{}{}{}page={}"
-                category_url = url_base.format(
-                    cls.domain, category_path, param, seller_filter, page
-                )
-                print(category_url)
-                response = session.post(category_url, allow_redirects=True, timeout=60)
+                url = f"{cls.domain}/api/v1/catalog-products/{path}?pageSize=200&page={page}"
+
+                if fast_mode:
+                    url += "&facet=Vendido%20por%3ARipley"
+
+                print(url)
+
+                response = session.post(url)
 
                 if response.status_code == 404:
                     if page == 1:
                         if fast_mode:
-                            # Some sections do not have SKUs sold directly by Ripley
                             break
                         else:
-                            raise Exception("Invalid section: " + category_url)
+                            raise Exception(f"Invalid section: {url}")
                     else:
                         break
+
                 page_json = response.json()
-
-                if "products" not in page_json:
-                    break
-
-                products_json = page_json["products"]
+                total_pages = page_json["pagination"]["totalPages"]
+                products_json = page_json.get("products", None)
 
                 if not products_json:
                     if page == 1:
-                        logging.warning("Empty path: {}".format(category_url))
+                        logging.warning(f"Empty path: {url}")
                     break
 
-                for product_json in products_json:
-                    products = cls._assemble_product(product_json, category)
-                    brand = product_json["manufacturer"]
-                    for product in products:
-                        if (
-                            brand in ["LG", "SAMSUNG"]
-                            and not product.seller
-                            and not fast_mode
-                            and product.sku not in product_dict
-                        ):
-                            # If the product is LG or Samsung and is sold directly
-                            # by Ripley (not marketplace) obtain the full data
+                for idx, product_json in enumerate(products_json):
+                    if product_json["partNumber"][:3] == "MPM":
+                        continue
 
-                            cls._append_metadata(product, extra_args)
-                        elif category == HEADPHONES and "MPM" in product.sku:
-                            # Skip the thousands of headphones sold in marketplace
-                            continue
+                    url = product_json["url"]
 
-                        if product.normal_price == Decimal(
-                            "9999999"
-                        ) or product.offer_price == Decimal("9999999"):
-                            continue
-
-                        if product.sku in product_dict:
-                            product_to_update = product_dict[product.sku]
-                        else:
-                            product_dict[product.sku] = product
-                            product_to_update = product
-
-                        product_to_update.positions.append((section_name, position))
-
-                    position += 1
+                    if fast_mode:
+                        product_entries[url] = []
+                    else:
+                        product_entries[url].append(
+                            {
+                                "category_weight": weight,
+                                "section_name": section_name,
+                                "value": idx + 1,
+                            }
+                        )
 
                 if fast_mode and page >= 50:
                     break
-                break
 
                 page += 1
 
-        products_list = [p for p in product_dict.values()]
-        if fast_mode:
-            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
-            for p in products_list:
-                p.positions = None
+        return product_entries
 
-        return products_list
+    @classmethod
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
+        session = cf_session_with_proxy(extra_args)
+
+        if extra_args and "user-agent" in extra_args:
+            session.headers["user-agent"] = extra_args["user-agent"]
+
+        response = session.get(url).text
+        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
+
+        if not product_data:
+            return []
+
+        product_json = json.loads(product_data.groups()[0])
+
+        if "product" not in product_json:
+            return None
+
+        specs_json = product_json["product"]["product"]
+        products = cls._assemble_product(specs_json, category)
+
+        for product in products:
+            cls._append_metadata(product, extra_args)
+
+        return products
 
     @classmethod
     def _append_metadata(cls, product, extra_args, retries=5):
@@ -602,40 +579,6 @@ class Ripley(Store):
             )
             products.append(p)
 
-        return products
-
-    @classmethod
-    def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        session = cf_session_with_proxy(extra_args)
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
-        print(url)
-        page_source = session.get(url, timeout=30).text
-
-        soup = BeautifulSoup(page_source, "lxml")
-
-        if soup.find("div", "error-page"):
-            return []
-
-        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
-        if not product_data:
-            if retries:
-                return cls._assemble_full_product(
-                    url, category, extra_args, retries=retries - 1
-                )
-            else:
-                return None
-
-        product_json = json.loads(product_data.groups()[0])
-
-        if "product" not in product_json:
-            return None
-
-        specs_json = product_json["product"]["product"]
-        products = cls._assemble_product(specs_json, category)
-        for product in products:
-            cls._append_metadata(product, extra_args)
         return products
 
     @classmethod
