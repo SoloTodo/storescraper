@@ -1,8 +1,8 @@
 import logging
 import re
 import json
-import time
 from datetime import datetime
+from collections import defaultdict
 
 import validators
 from bs4 import BeautifulSoup
@@ -48,6 +48,11 @@ from storescraper import banner_sections as bs
 class Ripley(Store):
     preferred_products_for_url_concurrency = 3
     domain = "https://simple.ripley.cl"
+    items_per_page = 48
+    flixmedia_urls = [
+        "//media.flixfacts.com/js/loader.js",
+        "https://media.flixfacts.com/js/loader.js",
+    ]
     currency = "CLP"
 
     category_paths = [
@@ -298,201 +303,104 @@ class Ripley(Store):
     def categories(cls):
         cats = set()
 
-        for path, local_categories, section, weight in cls.category_paths:
+        for _, local_categories, _, _ in cls.category_paths:
             for local_category in local_categories:
                 cats.add(local_category)
 
         return list(cats)
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
-        # If the method returns too soon it seems to trigger a RabbitMQ bug
-        time.sleep(5)
-        return [category]
-
-    @classmethod
-    def products_for_url(cls, url, category=None, extra_args=None):
-        # This implementation of products_for_url is botched to obtain the
-        # products directly from the PLP page of Ripley because we can't
-        # make too many requests to the Ripley website. Therefore "url" is
-        # just the name of the category and ignored
-
-        # This method may be called as part of the keyword search functionality
-        # of the library. We patch it by detecting this call and calling
-        # a function that actually uses the URL PDP page of the product.
-        if extra_args and extra_args.get("source", None) == "keyword_search":
-            products = cls._assemble_full_product(url, category, extra_args)
-            return products
-
+    def discover_entries_for_category(cls, category, extra_args=None):
+        category_paths = cls.category_paths
         session = cf_session_with_proxy(extra_args)
-
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
         fast_mode = extra_args and extra_args.get("fast_mode", False)
-        print("fast_mode", fast_mode)
+        product_entries = defaultdict(lambda: [])
 
-        if fast_mode:
-            seller_filter = "facet=Vendido%20por%3ARipley&"
-        else:
-            seller_filter = ""
-
-        product_dict = {}
-
-        for e in cls.category_paths:
+        for e in category_paths:
             category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
                 continue
 
             page = 1
-            position = 1
+            section_urls = []
 
             while True:
-                if page > 400:
-                    raise Exception("Page overflow")
+                if page > 300:
+                    raise Exception(f"Page overflow: {category_path}")
 
-                if "?" in category_path:
-                    param = "&"
-                else:
-                    param = "?"
-                url_base = "{}/api/v1/catalog-products/{}{}{}page={}"
-                category_url = url_base.format(
-                    cls.domain, category_path, param, seller_filter, page
-                )
-                print(category_url)
-                response = session.post(category_url, allow_redirects=True, timeout=60)
+                url = f"{cls.domain}/{category_path}?page={page}"
 
-                if response.status_code == 404:
-                    if page == 1:
-                        if fast_mode:
-                            # Some sections do not have SKUs sold directly by Ripley
-                            break
-                        else:
-                            raise Exception("Invalid section: " + category_url)
+                if fast_mode:
+                    url += "&facet=Vendido%20por%3ARipley"
+
+                print(url)
+
+                response = session.get(url).text
+                soup = BeautifulSoup(response, "lxml")
+                products_container = soup.find("div", "catalog-container")
+
+                if not products_container:
+                    break
+
+                products = products_container.find_all("a", "catalog-product-item")
+                assert products
+                full_page_repeated = True
+
+                for idx, product in enumerate(products):
+                    full_url = f"{cls.domain}{product['href']}".split("?")[0]
+                    if full_url not in section_urls:
+                        full_page_repeated = False
+                        section_urls.append(full_url)
+
+                    if product["id"][:3] == "MPM":
+                        continue
+
+                    if fast_mode:
+                        product_entries[full_url] = []
                     else:
-                        break
-                page_json = response.json()
+                        product_entries[full_url].append(
+                            {
+                                "category_weight": category_weight,
+                                "section_name": section_name,
+                                "value": cls.items_per_page * page + idx + 1,
+                            }
+                        )
 
-                if "products" not in page_json:
+                if full_page_repeated:
                     break
-
-                products_json = page_json["products"]
-
-                if not products_json:
-                    if page == 1:
-                        logging.warning("Empty path: {}".format(category_url))
-                    break
-
-                for product_json in products_json:
-                    products = cls._assemble_product(product_json, category)
-                    brand = product_json["manufacturer"]
-                    for product in products:
-                        if (
-                            brand in ["LG", "SAMSUNG"]
-                            and not product.seller
-                            and not fast_mode
-                            and product.sku not in product_dict
-                        ):
-                            # If the product is LG or Samsung and is sold directly
-                            # by Ripley (not marketplace) obtain the full data
-
-                            cls._append_metadata(product, extra_args)
-                        elif category == HEADPHONES and "MPM" in product.sku:
-                            # Skip the thousands of headphones sold in marketplace
-                            continue
-
-                        if product.normal_price == Decimal(
-                            "9999999"
-                        ) or product.offer_price == Decimal("9999999"):
-                            continue
-
-                        if product.sku in product_dict:
-                            product_to_update = product_dict[product.sku]
-                        else:
-                            product_dict[product.sku] = product
-                            product_to_update = product
-
-                        product_to_update.positions.append((section_name, position))
-
-                    position += 1
 
                 if fast_mode and page >= 50:
                     break
-                break
 
                 page += 1
 
-        products_list = [p for p in product_dict.values()]
-        if fast_mode:
-            # Since the fast mode filters the results, it messes up the position data, so remove it altogether
-            for p in products_list:
-                p.positions = None
-
-        return products_list
+        return product_entries
 
     @classmethod
-    def _append_metadata(cls, product, extra_args, retries=5):
+    def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
         session = cf_session_with_proxy(extra_args)
+
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
-        print(product.url)
-        page_source = session.get(product.url, timeout=30).text
+        response = session.get(url, allow_redirects=True, timeout=60).text
+        soup = BeautifulSoup(response, "lxml")
+        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
 
-        soup = BeautifulSoup(page_source, "lxml")
-
-        if soup.find("div", "error-page"):
-            return
-
-        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
         if not product_data:
-            if retries:
-                cls._append_metadata(product, extra_args, retries=retries - 1)
-            else:
-                return
+            return []
 
-        flixmedia_id = None
-        video_urls = []
+        product_json = json.loads(product_data.groups()[0])
 
-        flixmedia_urls = [
-            "//media.flixfacts.com/js/loader.js",
-            "https://media.flixfacts.com/js/loader.js",
-        ]
+        if "product" not in product_json:
+            return None
 
-        for flixmedia_url in flixmedia_urls:
-            flixmedia_tag = soup.find("script", {"src": flixmedia_url})
-            if flixmedia_tag and flixmedia_tag.has_attr("data-flix-mpn"):
-                flixmedia_id = flixmedia_tag["data-flix-mpn"]
-                video_urls = flixmedia_video_urls(flixmedia_id)
-                break
-
-        product.flixmedia_id = flixmedia_id
-        product.video_urls = video_urls
-
-        reviews_endpoint = (
-            "https://display.powerreviews.com/m/"
-            "1243872956/l/all/product/{}/reviews?"
-            "apikey=22c8538c-1cba-41bb-8d47-234a796148bf"
-            "&_noconfig=true".format(product.sku)
-        )
-        print(reviews_endpoint)
-        reviews_session = session_with_proxy(extra_args)
-        res = reviews_session.get(reviews_endpoint)
-        reviews_json = res.json()
-        if "results" in reviews_json:
-            reviews_data = reviews_json["results"][0]
-            if "rollup" in reviews_data:
-                product.review_count = reviews_data["rollup"]["rating_count"]
-                product.review_avg_score = reviews_data["rollup"]["average_rating"]
-            else:
-                product.review_count = 0
-
-        return
-
-    @classmethod
-    def _assemble_product(cls, specs_json, category):
+        specs_json = product_json["product"]["product"]
         products = []
+
         for product_entry in specs_json["SKUs"]:
             sku = product_entry["partNumber"] + "P"
             url = specs_json["url"]
@@ -549,6 +457,7 @@ class Ripley(Store):
                 condition = "https://schema.org/RefurbishedCondition"
 
             picture_urls = []
+
             for path in specs_json["images"]:
                 picture_url = path
 
@@ -583,6 +492,37 @@ class Ripley(Store):
             else:
                 stock = 0
 
+            flixmedia_id = None
+            video_urls = []
+
+            for flixmedia_url in cls.flixmedia_urls:
+                flixmedia_tag = soup.find("script", {"src": flixmedia_url})
+
+                if flixmedia_tag and flixmedia_tag.has_attr("data-flix-mpn"):
+                    flixmedia_id = flixmedia_tag["data-flix-mpn"]
+                    video_urls = flixmedia_video_urls(flixmedia_id)
+                    break
+
+            reviews_endpoint = (
+                f"https://display.powerreviews.com/m/"
+                "1243872956/l/all/product/{product.sku}/reviews?"
+                "apikey=22c8538c-1cba-41bb-8d47-234a796148bf"
+                "&_noconfig=true"
+            )
+            reviews_session = session_with_proxy(extra_args)
+            reviews_response = reviews_session.get(reviews_endpoint).json()
+            review_count = None
+            review_avg_score = None
+
+            if "results" in reviews_response:
+                reviews_data = reviews_response["results"][0]
+
+                if "rollup" in reviews_data:
+                    review_count = reviews_data["rollup"]["rating_count"]
+                    review_avg_score = reviews_data["rollup"]["average_rating"]
+                else:
+                    review_count = 0
+
             p = Product(
                 name,
                 cls.__name__,
@@ -599,43 +539,13 @@ class Ripley(Store):
                 picture_urls=picture_urls,
                 condition=condition,
                 seller=seller,
+                flixmedia_id=flixmedia_id,
+                video_urls=video_urls,
+                review_count=review_count,
+                review_avg_score=review_avg_score,
             )
             products.append(p)
 
-        return products
-
-    @classmethod
-    def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        session = cf_session_with_proxy(extra_args)
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
-        print(url)
-        page_source = session.get(url, timeout=30).text
-
-        soup = BeautifulSoup(page_source, "lxml")
-
-        if soup.find("div", "error-page"):
-            return []
-
-        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
-        if not product_data:
-            if retries:
-                return cls._assemble_full_product(
-                    url, category, extra_args, retries=retries - 1
-                )
-            else:
-                return None
-
-        product_json = json.loads(product_data.groups()[0])
-
-        if "product" not in product_json:
-            return None
-
-        specs_json = product_json["product"]["product"]
-        products = cls._assemble_product(specs_json, category)
-        for product in products:
-            cls._append_metadata(product, extra_args)
         return products
 
     @classmethod
