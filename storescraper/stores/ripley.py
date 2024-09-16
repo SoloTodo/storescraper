@@ -49,6 +49,10 @@ class Ripley(Store):
     preferred_products_for_url_concurrency = 3
     domain = "https://simple.ripley.cl"
     items_per_page = 48
+    flixmedia_urls = [
+        "//media.flixfacts.com/js/loader.js",
+        "https://media.flixfacts.com/js/loader.js",
+    ]
     currency = "CLP"
 
     category_paths = [
@@ -379,6 +383,7 @@ class Ripley(Store):
             session.headers["user-agent"] = extra_args["user-agent"]
 
         response = session.get(url, allow_redirects=True, timeout=60).text
+        soup = BeautifulSoup(response, "lxml")
         product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
 
         if not product_data:
@@ -390,75 +395,8 @@ class Ripley(Store):
             return None
 
         specs_json = product_json["product"]["product"]
-        products = cls._assemble_product(specs_json, category)
-
-        for product in products:
-            cls._append_metadata(product, extra_args)
-
-        return products
-
-    @classmethod
-    def _append_metadata(cls, product, extra_args, retries=5):
-        session = cf_session_with_proxy(extra_args)
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
-        print(product.url)
-        page_source = session.get(product.url, timeout=30).text
-
-        soup = BeautifulSoup(page_source, "lxml")
-
-        if soup.find("div", "error-page"):
-            return
-
-        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
-        if not product_data:
-            if retries:
-                cls._append_metadata(product, extra_args, retries=retries - 1)
-            else:
-                return
-
-        flixmedia_id = None
-        video_urls = []
-
-        flixmedia_urls = [
-            "//media.flixfacts.com/js/loader.js",
-            "https://media.flixfacts.com/js/loader.js",
-        ]
-
-        for flixmedia_url in flixmedia_urls:
-            flixmedia_tag = soup.find("script", {"src": flixmedia_url})
-            if flixmedia_tag and flixmedia_tag.has_attr("data-flix-mpn"):
-                flixmedia_id = flixmedia_tag["data-flix-mpn"]
-                video_urls = flixmedia_video_urls(flixmedia_id)
-                break
-
-        product.flixmedia_id = flixmedia_id
-        product.video_urls = video_urls
-
-        reviews_endpoint = (
-            "https://display.powerreviews.com/m/"
-            "1243872956/l/all/product/{}/reviews?"
-            "apikey=22c8538c-1cba-41bb-8d47-234a796148bf"
-            "&_noconfig=true".format(product.sku)
-        )
-        print(reviews_endpoint)
-        reviews_session = session_with_proxy(extra_args)
-        res = reviews_session.get(reviews_endpoint)
-        reviews_json = res.json()
-        if "results" in reviews_json:
-            reviews_data = reviews_json["results"][0]
-            if "rollup" in reviews_data:
-                product.review_count = reviews_data["rollup"]["rating_count"]
-                product.review_avg_score = reviews_data["rollup"]["average_rating"]
-            else:
-                product.review_count = 0
-
-        return
-
-    @classmethod
-    def _assemble_product(cls, specs_json, category):
         products = []
+
         for product_entry in specs_json["SKUs"]:
             sku = product_entry["partNumber"] + "P"
             url = specs_json["url"]
@@ -515,6 +453,7 @@ class Ripley(Store):
                 condition = "https://schema.org/RefurbishedCondition"
 
             picture_urls = []
+
             for path in specs_json["images"]:
                 picture_url = path
 
@@ -549,6 +488,37 @@ class Ripley(Store):
             else:
                 stock = 0
 
+            flixmedia_id = None
+            video_urls = []
+
+            for flixmedia_url in cls.flixmedia_urls:
+                flixmedia_tag = soup.find("script", {"src": flixmedia_url})
+
+                if flixmedia_tag and flixmedia_tag.has_attr("data-flix-mpn"):
+                    flixmedia_id = flixmedia_tag["data-flix-mpn"]
+                    video_urls = flixmedia_video_urls(flixmedia_id)
+                    break
+
+            reviews_endpoint = (
+                f"https://display.powerreviews.com/m/"
+                "1243872956/l/all/product/{product.sku}/reviews?"
+                "apikey=22c8538c-1cba-41bb-8d47-234a796148bf"
+                "&_noconfig=true"
+            )
+            reviews_session = session_with_proxy(extra_args)
+            reviews_response = reviews_session.get(reviews_endpoint).json()
+            review_count = None
+            review_avg_score = None
+
+            if "results" in reviews_response:
+                reviews_data = reviews_response["results"][0]
+
+                if "rollup" in reviews_data:
+                    review_count = reviews_data["rollup"]["rating_count"]
+                    review_avg_score = reviews_data["rollup"]["average_rating"]
+                else:
+                    review_count = 0
+
             p = Product(
                 name,
                 cls.__name__,
@@ -565,43 +535,13 @@ class Ripley(Store):
                 picture_urls=picture_urls,
                 condition=condition,
                 seller=seller,
+                flixmedia_id=flixmedia_id,
+                video_urls=video_urls,
+                review_count=review_count,
+                review_avg_score=review_avg_score,
             )
             products.append(p)
 
-        return products
-
-    @classmethod
-    def _assemble_full_product(cls, url, category, extra_args, retries=5):
-        session = cf_session_with_proxy(extra_args)
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
-        print(url)
-        page_source = session.get(url, timeout=30).text
-
-        soup = BeautifulSoup(page_source, "lxml")
-
-        if soup.find("div", "error-page"):
-            return []
-
-        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
-        if not product_data:
-            if retries:
-                return cls._assemble_full_product(
-                    url, category, extra_args, retries=retries - 1
-                )
-            else:
-                return None
-
-        product_json = json.loads(product_data.groups()[0])
-
-        if "product" not in product_json:
-            return None
-
-        specs_json = product_json["product"]["product"]
-        products = cls._assemble_product(specs_json, category)
-        for product in products:
-            cls._append_metadata(product, extra_args)
         return products
 
     @classmethod
