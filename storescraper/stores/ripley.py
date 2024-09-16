@@ -48,6 +48,7 @@ from storescraper import banner_sections as bs
 class Ripley(Store):
     preferred_products_for_url_concurrency = 3
     domain = "https://simple.ripley.cl"
+    items_per_page = 48
     currency = "CLP"
 
     category_paths = [
@@ -357,7 +358,7 @@ class Ripley(Store):
                             {
                                 "category_weight": category_weight,
                                 "section_name": section_name,
-                                "value": idx + 1,
+                                "value": cls.items_per_page * page + idx + 1,
                             }
                         )
 
