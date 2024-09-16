@@ -74,6 +74,10 @@ class Estilos(Store):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+
+        if response.status_code == 404:
+            return []
+
         product_match = re.search(r"__STATE__ = {(.+)}", response.text)
         product_data = json.loads("{" + product_match.groups()[0] + "}")
         base_json_key = list(product_data.keys())[0]

@@ -205,6 +205,9 @@ class Lenovo(StoreWithUrlExtensions):
             specs_json["data"]["classification"] or specs_json["data"]["tables"]
         )
 
+        if not specs_root:
+            return []
+
         for spec in specs_root[0]["specs"]:
             description += "{}: {}\n".format(spec["headline"], spec["text"])
 
