@@ -99,7 +99,9 @@ class Vtr(Store):
         products = []
 
         for plan_entry in json_data:
-            base_plan_name = plan_entry["displayName"]
+            base_plan_name = "{} {}".format(
+                plan_entry["displayName"].strip(), plan_entry["gigabyte"].strip()
+            )
             price = Decimal(plan_entry["salePrice"])
 
             for suffix in cuotas_suffixes:

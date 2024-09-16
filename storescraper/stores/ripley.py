@@ -323,15 +323,11 @@ class Ripley(Store):
                 continue
 
             page = 1
+            section_urls = []
 
             while True:
-                if (
-                    page > 300
-                ):  # there's a bug in the audio section where products are repeated after page 210
-                    if category == STEREO_SYSTEM:
-                        break
-                    else:
-                        raise Exception(f"Page overflow: {category_path}")
+                if page > 300:
+                    raise Exception(f"Page overflow: {category_path}")
 
                 url = f"{cls.domain}/{category_path}?page={page}"
 
@@ -348,12 +344,17 @@ class Ripley(Store):
                     break
 
                 products = products_container.find_all("a", "catalog-product-item")
+                assert products
+                full_page_repeated = True
 
                 for idx, product in enumerate(products):
+                    full_url = f"{cls.domain}{product['href']}".split("?")[0]
+                    if full_url not in section_urls:
+                        full_page_repeated = False
+                        section_urls.append(full_url)
+
                     if product["id"][:3] == "MPM":
                         continue
-
-                    full_url = f"{cls.domain}{product['href']}"
 
                     if fast_mode:
                         product_entries[full_url] = []
@@ -365,6 +366,9 @@ class Ripley(Store):
                                 "value": cls.items_per_page * page + idx + 1,
                             }
                         )
+
+                if full_page_repeated:
+                    break
 
                 if fast_mode and page >= 50:
                     break
