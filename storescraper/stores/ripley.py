@@ -46,15 +46,6 @@ from storescraper import banner_sections as bs
 
 
 class Ripley(Store):
-    preferred_products_for_url_concurrency = 3
-    domain = "https://simple.ripley.cl"
-    items_per_page = 48
-    flixmedia_urls = [
-        "//media.flixfacts.com/js/loader.js",
-        "https://media.flixfacts.com/js/loader.js",
-    ]
-    currency = "CLP"
-
     category_paths = [
         [
             "tecno/computacion/notebooks",
@@ -324,12 +315,13 @@ class Ripley(Store):
 
             page = 1
             section_urls = []
+            section_index = 1
 
             while True:
                 if page > 300:
                     raise Exception(f"Page overflow: {category_path}")
 
-                url = f"{cls.domain}/{category_path}?page={page}"
+                url = f"https://simple.ripley.cl/{category_path}?page={page}"
 
                 if fast_mode:
                     url += "&facet=Vendido%20por%3ARipley"
@@ -348,7 +340,9 @@ class Ripley(Store):
                 full_page_repeated = True
 
                 for idx, product in enumerate(products):
-                    full_url = f"{cls.domain}{product['href']}".split("?")[0]
+                    full_url = f"https://simple.ripley.cl{product['href']}".split("?")[
+                        0
+                    ]
                     if full_url not in section_urls:
                         full_page_repeated = False
                         section_urls.append(full_url)
@@ -363,9 +357,10 @@ class Ripley(Store):
                             {
                                 "category_weight": category_weight,
                                 "section_name": section_name,
-                                "value": cls.items_per_page * page + idx + 1,
+                                "value": section_index,
                             }
                         )
+                    section_index += 1
 
                 if full_page_repeated:
                     break
@@ -494,8 +489,12 @@ class Ripley(Store):
 
             flixmedia_id = None
             video_urls = []
+            flixmedia_urls = [
+                "//media.flixfacts.com/js/loader.js",
+                "https://media.flixfacts.com/js/loader.js",
+            ]
 
-            for flixmedia_url in cls.flixmedia_urls:
+            for flixmedia_url in flixmedia_urls:
                 flixmedia_tag = soup.find("script", {"src": flixmedia_url})
 
                 if flixmedia_tag and flixmedia_tag.has_attr("data-flix-mpn"):
@@ -533,7 +532,7 @@ class Ripley(Store):
                 stock,
                 normal_price,
                 offer_price,
-                cls.currency,
+                "CLP",
                 sku=sku,
                 description=description,
                 picture_urls=picture_urls,
@@ -574,7 +573,7 @@ class Ripley(Store):
             if page > 40:
                 raise Exception("Page overflow")
 
-            search_url = "{}/api/v2/search".format(cls.domain)
+            search_url = "https://simple.ripley.cl/api/v2/search"
             search_body = {
                 "filters": filters,
                 "term": keyword,
