@@ -305,69 +305,57 @@ class Ripley(Store):
         return list(cats)
 
     @classmethod
-    def discover_urls_for_category(cls, category, extra_args=None):
+    def discover_entries_for_category(cls, category, extra_args=None):
+        category_paths = cls.category_paths
         session = cf_session_with_proxy(extra_args)
-
-        if extra_args and "user-agent" in extra_args:
-            session.headers["user-agent"] = extra_args["user-agent"]
-
         fast_mode = extra_args and extra_args.get("fast_mode", False)
-        print("fast_mode", fast_mode)
-
         product_entries = defaultdict(lambda: [])
 
-        for e in cls.category_paths:
-            path, local_categories, section_name, weight = e
-            page = 1
+        for e in category_paths:
+            category_path, local_categories, section_name, category_weight = e
 
             if category not in local_categories:
                 continue
 
-            total_pages = None
+            page = 1
 
             while True:
-                if total_pages and page > total_pages:
-                    break
+                if (
+                    page > 300
+                ):  # there's a bug in the audio section where products are repeated after page 210
+                    if category == STEREO_SYSTEM:
+                        break
+                    else:
+                        raise Exception(f"Page overflow: {category_path}")
 
-                url = f"{cls.domain}/api/v1/catalog-products/{path}?pageSize=200&page={page}"
+                url = f"{cls.domain}/{category_path}?page={page}"
 
                 if fast_mode:
                     url += "&facet=Vendido%20por%3ARipley"
 
                 print(url)
 
-                response = session.post(url)
+                response = session.get(url).text
+                soup = BeautifulSoup(response, "lxml")
+                products_container = soup.find("div", "catalog-container")
 
-                if response.status_code == 404:
-                    if page == 1:
-                        if fast_mode:
-                            break
-                        else:
-                            raise Exception(f"Invalid section: {url}")
-                    else:
-                        break
-
-                page_json = response.json()
-                total_pages = page_json["pagination"]["totalPages"]
-                products_json = page_json.get("products", None)
-
-                if not products_json:
-                    if page == 1:
-                        logging.warning(f"Empty path: {url}")
+                if not products_container:
                     break
 
-                for idx, product_json in enumerate(products_json):
-                    if product_json["partNumber"][:3] == "MPM":
+                products = products_container.find_all("a", "catalog-product-item")
+
+                for idx, product in enumerate(products):
+                    if product["id"][:3] == "MPM":
                         continue
 
-                    url = product_json["url"]
+                    full_url = f"{cls.domain}{product['href']}"
 
                     if fast_mode:
-                        product_entries[url] = []
+                        product_entries[full_url] = []
                     else:
-                        product_entries[url].append(
+                        product_entries[full_url].append(
                             {
-                                "category_weight": weight,
+                                "category_weight": category_weight,
                                 "section_name": section_name,
                                 "value": idx + 1,
                             }
@@ -389,7 +377,7 @@ class Ripley(Store):
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
-        response = session.get(url).text
+        response = session.get(url, allow_redirects=True, timeout=60).text
         product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", response)
 
         if not product_data:
@@ -579,6 +567,40 @@ class Ripley(Store):
             )
             products.append(p)
 
+        return products
+
+    @classmethod
+    def _assemble_full_product(cls, url, category, extra_args, retries=5):
+        session = cf_session_with_proxy(extra_args)
+        if extra_args and "user-agent" in extra_args:
+            session.headers["user-agent"] = extra_args["user-agent"]
+
+        print(url)
+        page_source = session.get(url, timeout=30).text
+
+        soup = BeautifulSoup(page_source, "lxml")
+
+        if soup.find("div", "error-page"):
+            return []
+
+        product_data = re.search(r"window.__PRELOADED_STATE__ = (.+);", page_source)
+        if not product_data:
+            if retries:
+                return cls._assemble_full_product(
+                    url, category, extra_args, retries=retries - 1
+                )
+            else:
+                return None
+
+        product_json = json.loads(product_data.groups()[0])
+
+        if "product" not in product_json:
+            return None
+
+        specs_json = product_json["product"]["product"]
+        products = cls._assemble_product(specs_json, category)
+        for product in products:
+            cls._append_metadata(product, extra_args)
         return products
 
     @classmethod
