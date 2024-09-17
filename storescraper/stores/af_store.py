@@ -9,6 +9,7 @@ from storescraper.categories import (
     HEADPHONES,
     NOTEBOOK,
     TELEVISION,
+    VIDEO_GAME_CONSOLE,
     WEARABLE,
 )
 
@@ -16,6 +17,7 @@ from storescraper.categories import (
 class AFStore(StoreWithUrlExtensions):
     url_extensions = [
         ["airpods", HEADPHONES],
+        ["consolas", VIDEO_GAME_CONSOLE],
         ["iphone", CELL],
         ["lenovo", NOTEBOOK],
         ["mac", NOTEBOOK],
