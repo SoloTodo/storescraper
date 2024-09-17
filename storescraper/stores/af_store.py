@@ -68,7 +68,8 @@ class AFStore(StoreWithUrlExtensions):
             )
             offer = product_data["offers"][0]
             key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
-            sku = soup.find("span", "sku").text
+            sku_container = soup.find("span", "sku")
+            sku = sku_container.text if sku_container else None
             price = Decimal(offer["price"])
             availability = offer.get("availability")
             stock_container = soup.find("p", "stock in-stock")
