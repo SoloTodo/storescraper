@@ -40,12 +40,12 @@ class Virec(StoreWithUrlExtensions):
             )
             print(url_webpage)
             response = session.get(url_webpage)
+            if response.status_code == 404:
+                break
             soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("li", "product-type-simple")
             if not product_containers:
-                if page == 1:
-                    logging.warning("Empty category: " + url_extension)
-                break
+                raise Exception("{} {}".format(response.status_code, response.text))
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
