@@ -100,8 +100,7 @@ class PcLinkStore(StoreWithUrlExtensions):
         query_url = "https://www.pclinkstore.cl/productos"
 
         page = 1
-        done = False
-        while not done:
+        while True:
             if page > 50:
                 raise Exception("Page overflow")
 
@@ -124,8 +123,7 @@ class PcLinkStore(StoreWithUrlExtensions):
 
             for container in product_containers:
                 if "Avisame" in container.text:
-                    done = True
-                    break
+                    continue
                 product_url = container.find("a")["href"]
                 product_urls.append(product_url)
 
