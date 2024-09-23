@@ -61,21 +61,25 @@ class NewHorizons(StoreWithUrlExtensions):
             soup.find("script", {"type": "application/ld+json"}).text
         )
 
-        assert len(json_data["hasVariant"]) == 1
+        # assert len(json_data["hasVariant"]) == 1
 
-        key = str(json_data["productGroupID"])
-        name = json_data["name"]
-        sku = json_data["hasVariant"][0]["sku"]
-        description = json_data["description"]
-        offer = json_data["hasVariant"][0]["offers"]
-        price = Decimal(offer["price"])
-
-        if offer["availability"] == "http://schema.org/InStock":
-            stock = -1
+        if "hasVariant" in json_data:
+            assert len(json_data["hasVariant"]) == 1
+            key = str(json_data["productGroupID"])
+            sku = json_data["hasVariant"][0]["sku"]
+            offer = json_data["hasVariant"][0]["offers"]
         else:
-            stock = 0
+            assert isinstance(json_data["offers"], dict)
+            key = soup.find("input", {"name": "product-id"})["value"]
+            sku = json_data["sku"]
+            offer = json_data["offers"]
 
+        name = json_data["name"]
+        description = json_data["description"]
+        price = Decimal(offer["price"])
+        stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
         picture_urls = []
+
         for i in soup.findAll("div", "product-gallery__media"):
             picture_urls.append("https:" + i.find("img")["src"])
 
