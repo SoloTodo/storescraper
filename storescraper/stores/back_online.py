@@ -76,24 +76,33 @@ class BackOnline(StoreWithUrlExtensions):
 
         json_tag = soup.findAll("script", {"type": "application/ld+json"})
         json_data = json.loads(json_tag[1].text)
-
-        if "NUEVO" in json_data["brand"]["name"].upper():
-            condition = "https://schema.org/NewCondition"
-        elif "OPEN BOX" in json_data["brand"]["name"].upper():
-            condition = "https://schema.org/OpenBoxCondition"
-        else:
-            condition = "https://schema.org/RefurbishedCondition"
-
+        json_data_tags = [tag.lower() for tag in json_data["tags"]]
         variations_tags = soup.findAll("script", {"type": "application/json"})
         products = []
+        product_caption = soup.find(
+            "p", "product__text caption-with-letter-spacing"
+        ).text.lower()
+
+        if "reacondicionado" in product_caption:
+            condition = "https://schema.org/RefurbishedCondition"
+        elif "open" in product_caption:
+            condition = "https://schema.org/OpenBoxCondition"
+        else:
+            condition = "https://schema.org/NewCondition"
 
         if len(variations_tags) <= 3:
-            name = json_data["name"].strip()
-            sku = json_data["sku"]
-            picture_urls = json_data.get("image", None)
+            product_data = json.loads(
+                soup.findAll("script", {"type": "application/ld+json"})[2].text
+            )
 
-            offer = json_data["offers"][0]
-            key = re.search(r"variant=(\d+)$", offer["url"]).groups()[0]
+            if "open" in product_data["brand"]["name"].lower():
+                condition = "https://schema.org/OpenBoxCondition"
+
+            name = product_data["name"]
+            sku = product_data["sku"]
+            picture_urls = product_data["image"]
+            offer = product_data["offers"][0]
+            key = str(re.search(r"variant=(\d+)", offer["url"]).groups()[0])
             stock = -1 if (offer["availability"] == "http://schema.org/InStock") else 0
             price = Decimal(offer["price"]).quantize(0)
 
@@ -118,6 +127,10 @@ class BackOnline(StoreWithUrlExtensions):
             variations = json.loads(variations_tags[-1].text)
             for variation in variations:
                 name = variation["name"]
+
+                if "grado" in name.lower():
+                    condition = "https://schema.org/RefurbishedCondition"
+
                 key = str(variation["id"])
                 stock = -1 if variation["available"] else 0
                 price = Decimal(variation["price"] / 100).quantize(0)
