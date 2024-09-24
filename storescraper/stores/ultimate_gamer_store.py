@@ -33,12 +33,12 @@ class UltimateGamerStore(StoreWithUrlExtensions):
         ["hdd", STORAGE_DRIVE],
         ["fuentes-de-poder", POWER_SUPPLY],
         ["monitor", MONITOR],
-        ["productos/refrigeracion", CPU_COOLER],
-        ["productos/gabinetes", COMPUTER_CASE],
+        ["refrigeracion", CPU_COOLER],
+        ["gabinetes", COMPUTER_CASE],
+        ["notebook", NOTEBOOK],
+        ["memorias", RAM],
+        ["almacenamiento/ssd", SOLID_STATE_DRIVE],
         ["productos/sillas", GAMING_CHAIR],
-        ["productos/notebook", NOTEBOOK],
-        ["productos/memorias", RAM],
-        ["productos/ssd", SOLID_STATE_DRIVE],
     ]
 
     @classmethod
