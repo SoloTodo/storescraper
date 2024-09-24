@@ -4,20 +4,19 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import (
+    COMPUTER_CASE,
+    CPU_COOLER,
+    HEADPHONES,
     KEYBOARD,
-    NOTEBOOK,
-    RAM,
-    PROCESSOR,
-    PRINTER,
     MONITOR,
     MOTHERBOARD,
-    HEADPHONES,
-    VIDEO_CARD,
-    SOLID_STATE_DRIVE,
-    EXTERNAL_STORAGE_DRIVE,
     MOUSE,
-    CPU_COOLER,
+    NOTEBOOK,
     POWER_SUPPLY,
+    PROCESSOR,
+    RAM,
+    SOLID_STATE_DRIVE,
+    VIDEO_CARD,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -28,87 +27,48 @@ class Eylstore(StoreWithUrlExtensions):
     preferred_products_for_url_concurrency = 3
 
     url_extensions = [
-        ["discos-externos", EXTERNAL_STORAGE_DRIVE],
-        ["disco-nvme", SOLID_STATE_DRIVE],
-        # ["discos-ssd", SOLID_STATE_DRIVE],
+        ["audifonos", HEADPHONES],
+        ["discos-nvme", SOLID_STATE_DRIVE],
+        ["discos-ssd", SOLID_STATE_DRIVE],
+        ["fuentes-de-poder", POWER_SUPPLY],
+        ["gabinetes", COMPUTER_CASE],
         ["memorias-ram", RAM],
+        ["monitores", MONITOR],
+        ["mouse", MOUSE],
+        ["notebooks", NOTEBOOK],
         ["placas-madres", MOTHERBOARD],
         ["procesadores", PROCESSOR],
-        ["tarjetas-de-video", VIDEO_CARD],
-        ["audifonos-gaming", HEADPHONES],
-        ["monitores-gaming", MONITOR],
-        ["mouse-gaming", MOUSE],
-        ["teclados-gaming", KEYBOARD],
-        ["impresoras-laser", PRINTER],
-        ["impresoras-tinta", PRINTER],
-        ["monitores", MONITOR],
-        ["gaming-notebooks", NOTEBOOK],
-        ["oficina", NOTEBOOK],
-        ["ultra-livianos", NOTEBOOK],
-        ["workstation", NOTEBOOK],
-        ["audifonos", HEADPHONES],
-        ["mouse", MOUSE],
-        ["teclados", KEYBOARD],
         ["refrigeracion", CPU_COOLER],
-        ["fuentes-de-poder", POWER_SUPPLY],
+        ["tarjetas-de-video", VIDEO_CARD],
+        ["teclados", KEYBOARD],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
-        session.headers[
-            "Content-Type"
-        ] = "application/x-www-form-urlencoded; charset=UTF-8"
-
-        url = "https://eylstore.cl/categoria-producto/{}".format(url_extension)
-        res = session.get(url)
-        print(url)
-        soup = BeautifulSoup(res.text, "lxml")
-
-        product_urls = []
-        widget_tags = soup.findAll(
-            "div", {"data-widget_type": "uael-woo-products.grid-franko"}
+        session.headers["Content-Type"] = (
+            "application/x-www-form-urlencoded; charset=UTF-8"
         )
-        if len(widget_tags) > 1:
-            widget_id = widget_tags[0]["data-id"]
-            match = re.search(r'"get_product_nonce":"(.+?)"', res.text)
-            nonce = match.groups()[0]
-            page_tag = soup.find("div", {"data-elementor-type": "product-archive"})
-            page_id = page_tag["data-elementor-id"]
-            page = 1
-            while True:
-                if page > 20:
-                    raise Exception("page overflow: " + url_extension)
-                payload = (
-                    "action=uael_get_products&page_id={}&skin=grid_franko&"
-                    "widget_id={}&page_number={}"
-                    "&nonce={}"
-                ).format(page_id, widget_id, page, nonce)
-                res = session.post(
-                    "https://eylstore.cl/wp-admin/admin-ajax.php", payload
-                )
+        product_urls = []
+        page = 1
 
-                soup = BeautifulSoup(res.json()["data"]["html"], "lxml")
-                product_containers = soup.findAll("li", "product-type-simple")
+        while True:
+            url = f"https://eylstore.cl/categoria-producto/{url_extension}?product-page={page}"
+            print(url)
+            response = session.get(url)
+            soup = BeautifulSoup(response.text, "lxml")
+            product_containers = soup.findAll("li", "product")
 
-                if not product_containers:
-                    break
+            if not product_containers:
+                if page == 1:
+                    raise Exception("Empty category: " + url_extension)
+                break
 
-                for container in product_containers:
-                    product_url = container.find("a")["href"]
-                    print(product_url)
-                    product_urls.append(product_url)
-                page += 1
-        else:
-            products_containers = soup.findAll("div", "uael-woo-products-inner")
-            if len(products_containers) == 1:
-                return []
-
-            for container in products_containers[0].findAll(
-                "li", "product-type-simple"
-            ):
-                product_url = container.find("a")["href"]
+            for product in product_containers:
+                product_url = product.find("a")["href"]
                 product_urls.append(product_url)
+
+            page += 1
 
         return product_urls
 
@@ -136,16 +96,18 @@ class Eylstore(StoreWithUrlExtensions):
         else:
             stock = -1
 
-        pricing_tag = soup.find("div", "elementor-widget-woocommerce-product-price")
+        pricing_tag = soup.find("div", "wc_dynprice container")
         price_tags = pricing_tag.findAll("span", "woocommerce-Price-amount")
 
         if not price_tags:
             return []
 
-        price = Decimal(remove_words(price_tags[-1].text))
+        normal_price = Decimal(remove_words(price_tags[1].text))
+        offer_price = Decimal(remove_words(price_tags[0].text))
 
         picture_urls = []
-        picture_container = soup.find("div", "woocommerce-product-gallery__wrapper")
+        picture_container = soup.find("div", "product-images-container")
+
         for a in picture_container.findAll("a"):
             picture_urls.append(a["href"])
 
@@ -157,8 +119,8 @@ class Eylstore(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             "CLP",
             sku=sku,
             picture_urls=picture_urls,
