@@ -1,5 +1,6 @@
 import logging
 import re
+import json
 from bs4 import BeautifulSoup
 from decimal import Decimal
 
@@ -27,17 +28,17 @@ class UltimateGamerStore(StoreWithUrlExtensions):
     url_extensions = [
         ["tarjeta-de-video", VIDEO_CARD],
         ["procesadores", PROCESSOR],
-        ["productos/memorias", RAM],
-        ["productos/ssd", SOLID_STATE_DRIVE],
-        ["productos/accesorios", MONITOR],
         ["placas-madre", MOTHERBOARD],
-        ["p-e-r-i-f-e-r-i-c-o-s", HEADPHONES],
-        ["d-i-s-c-o-d-u-r-o-1", STORAGE_DRIVE],
+        ["perifericos", HEADPHONES],
+        ["hdd", STORAGE_DRIVE],
         ["fuentes-de-poder", POWER_SUPPLY],
+        ["monitor", MONITOR],
         ["productos/refrigeracion", CPU_COOLER],
         ["productos/gabinetes", COMPUTER_CASE],
         ["productos/sillas", GAMING_CHAIR],
         ["productos/notebook", NOTEBOOK],
+        ["productos/memorias", RAM],
+        ["productos/ssd", SOLID_STATE_DRIVE],
     ]
 
     @classmethod
@@ -50,24 +51,20 @@ class UltimateGamerStore(StoreWithUrlExtensions):
             if page >= 10:
                 raise Exception("Page overflow")
 
-            url = "https://www.ugstore.cl/{}?page={}".format(url_extension, page)
+            url = f"https://www.ugstore.cl/{url_extension}?page={page}"
             print(url)
 
             response = session.get(url)
             soup = BeautifulSoup(response.text, "lxml")
-
-            items = soup.findAll("article", "product-block")
+            items = soup.findAll("div", "product-block")
 
             if not items:
                 if page == 1:
-                    logging.warning("Emtpy Path: {}".format(url))
+                    logging.warning(f"Emtpy Path: {url}")
                 break
 
             for item in items:
-                product_url = "https://www.ugstore.cl{}".format(
-                    item.find("a", "product-block__anchor")["href"]
-                )
-                product_urls.append(product_url)
+                product_urls.append(f"https://www.ugstore.cl{item.find('a')['href']}")
 
             page += 1
 
@@ -78,41 +75,46 @@ class UltimateGamerStore(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, "lxml")
+        json_data = json.loads(
+            soup.find("script", {"type": "application/ld+json"}).text
+        )
+        product_data = None
 
-        if response.status_code == 404:
-            return []
+        for data in json_data:
+            if data["@type"] == "Product":
+                product_data = data
+                break
 
-        page_source = response.text
-        soup = BeautifulSoup(page_source, "lxml")
-
-        name = soup.find("h1", "product-info__name").text
-        key = re.search(r"data.content_ids = \[(\d+)];", page_source).groups()[0]
+        name = product_data["name"]
+        normal_price = Decimal(product_data["offers"]["price"])
+        offer_price = (normal_price * Decimal("0.96")).quantize(0)
+        key = soup.find("meta", {"property": "og:id"})["content"]
 
         if "PREVENTA" in name.upper() or "PREVENTA" in url.upper():
             stock = 0
-        elif (
-            soup.find("meta", {"property": "product:availability"})["content"]
-            == "instock"
-        ):
-            stock = -1
         else:
-            stock = 0
+            stock = (
+                -1
+                if product_data["offers"]["availability"] == "http://schema.org/InStock"
+                else 0
+            )
 
-        normal_price = Decimal(
-            remove_words(soup.find("span", "product-info__price-current").text).strip()
+        description = html_to_markdown(soup.find("div", "description").text)
+
+        pictures_container = soup.find(
+            "swiper-slider", {"product-gallery__slider--main"}
         )
 
-        offer_price = Decimal(
-            remove_words(soup.find("span", "discount-value").text).strip()
-        )
-
-        description = html_to_markdown(
-            str(soup.find("section", {"id": "product-description"}))
-        )
-
-        picture_urls = [
-            i["src"] for i in soup.findAll("img", "product-slider__block-image")
-        ]
+        if not pictures_container:
+            picture_urls = [product_data["image"]]
+        else:
+            picture_urls = [
+                img["src"]
+                for img in soup.find(
+                    "swiper-slider", {"product-gallery__slider--main"}
+                ).findAll("img")
+            ]
 
         p = Product(
             name,
