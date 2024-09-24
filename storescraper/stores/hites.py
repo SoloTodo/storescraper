@@ -306,7 +306,7 @@ class Hites(Store):
                 1,
             ],
             [
-                "tecnologia/computacion/all-in-one",
+                "tecnologia/computacion/computadores-y-all-in-one",
                 [ALL_IN_ONE],
                 "Inicio > Tecnología > Computacioń > All in One",
                 1,
