@@ -11,16 +11,20 @@ from storescraper.categories import (
     TELEVISION,
     VIDEO_GAME_CONSOLE,
     WEARABLE,
+    ALL_IN_ONE,
 )
 
 
 class AFStore(StoreWithUrlExtensions):
     url_extensions = [
         ["airpods", HEADPHONES],
+        ["imac", ALL_IN_ONE],
+        ["macbook-air", NOTEBOOK],
+        ["macbook-pro", NOTEBOOK],
+        ["notebook", NOTEBOOK],
         ["consolas", VIDEO_GAME_CONSOLE],
         ["iphone", CELL],
         ["lenovo", NOTEBOOK],
-        ["mac", NOTEBOOK],
         ["samsung", CELL],
         ["tv-hogar", TELEVISION],
         ["watch", WEARABLE],
