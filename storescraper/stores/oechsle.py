@@ -53,6 +53,7 @@ class Oechsle(PeruStores):
         ).json()
         if (
             len(offer_info) != 0
+            and offer_info[0]["Params"]["tarjeta"]
             and offer_info[0]["Params"]["tarjeta"] != "0"
             and offer_info[0]["Params"]["seller"] == "oechsle"
         ):
