@@ -75,38 +75,7 @@ class Tekmachine(StoreWithUrlExtensions):
         else:
             stock = -1
 
-        prices_container = soup.find("p", "price")
-        if prices_container.find("span", "regular-price").find("ins"):
-            normal_price = Decimal(
-                remove_words(
-                    prices_container.find("span", "regular-price").find("ins").text
-                )
-            )
-        else:
-            normal_price = Decimal(
-                remove_words(
-                    remove_words(
-                        prices_container.find("span", "regular-price").find("bdi").text
-                    )
-                )
-            )
-
-        if not normal_price:
-            return []
-
-        sale_price_container = prices_container.find("span", "sale-price")
-
-        if sale_price_container:
-            if sale_price_container.find("ins"):
-                offer_price = Decimal(
-                    remove_words(sale_price_container.find("ins").text)
-                )
-            else:
-                offer_price = Decimal(
-                    remove_words(remove_words(sale_price_container.find("bdi").text))
-                )
-        else:
-            offer_price = normal_price
+        price = Decimal(remove_words(soup.find("p", "price").findAll("bdi")[1].text))
 
         picture_urls = [
             tag["src"]
@@ -120,8 +89,8 @@ class Tekmachine(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            normal_price,
-            offer_price,
+            price,
+            price,
             "CLP",
             sku=sku,
             part_number=sku,
