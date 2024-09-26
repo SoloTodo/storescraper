@@ -61,7 +61,7 @@ class LgV6(Store):
                         break
 
                     results_unavailable += 1
-                    time.sleep(12)
+                    time.sleep(30)
 
                 product_entries = json_response["results"]
 
