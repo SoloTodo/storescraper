@@ -94,14 +94,14 @@ class LoiChile(StoreWithUrlExtensions):
 
         picture_urls = []
 
-        for tag in soup.find("div", "swiper-wrapper").findAll("img"):
-            if tag["src"] == "":
-                continue
-            picture_url = "https://{}.cloudfront.net/_img_productos/{}".format(
-                cls.IMAGE_DOMAIN, tag["src"].split("_img_productos/")[1]
+        picture_response = session.get(
+            f"https://loi.com.uy/index.php?ctrl=productos&urlseo=smart-tv-lg-4k-43ur7800psb"
+        )
+
+        for picture in picture_response.json()["multimedia"]:
+            picture_urls.append(
+                f"https://{cls.IMAGE_DOMAIN}.cloudfront.net/{picture['url']}"
             )
-            if validators.url(picture_url):
-                picture_urls.append(picture_url)
 
         p = Product(
             name,
