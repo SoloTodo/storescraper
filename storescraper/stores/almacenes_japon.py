@@ -30,7 +30,7 @@ class AlmacenesJapon(Store):
 
         offset = 0
         while True:
-            if offset >= 100:
+            if offset >= 150:
                 raise Exception("Page overflow")
 
             variables = {
