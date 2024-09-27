@@ -77,7 +77,7 @@ class UltimateGamerStore(StoreWithUrlExtensions):
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         data = soup.find("script", {"type": "application/ld+json"}).text
-        clean_data = re.sub(r"[\n\t\r]", "", data)
+        clean_data = re.sub(r'"description":\s*"[^"]*",\s*', "", data)
         json_data = json.loads(clean_data)
         product_data = None
 
