@@ -26,7 +26,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import cf_session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class MegaDriveStore(StoreWithUrlExtensions):
@@ -56,7 +56,7 @@ class MegaDriveStore(StoreWithUrlExtensions):
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
-        session = cf_session_with_proxy(extra_args)
+        session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
@@ -88,17 +88,19 @@ class MegaDriveStore(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        session = cf_session_with_proxy(extra_args)
+        session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
         )
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
+        product_data_container = soup.find("div", {"id": "product-details"})
 
-        json_data = json.loads(
-            soup.find("div", {"id": "product-details"})["data-product"]
-        )
+        if "data-product" not in product_data_container.attrs:
+            return []
+
+        json_data = json.loads(product_data_container["data-product"])
 
         key = str(json_data["id_product"])
         name = json_data["name"]
