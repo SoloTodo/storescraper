@@ -84,7 +84,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
         for offer in products_data["offers"]:
             name = products_data["name"]
             key = offer["url"].split("?variant=")[1]
-            sku = offer["sku"]
+            sku = offer.get("sku", None)
             price = Decimal(offer["price"])
             stock = -1 if offer["availability"] == "https://schema.org/InStock" else 0
             picture_urls = [
