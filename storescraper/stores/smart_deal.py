@@ -14,7 +14,7 @@ from storescraper.categories import (
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 
 class SmartDeal(StoreWithUrlExtensions):
@@ -87,7 +87,12 @@ class SmartDeal(StoreWithUrlExtensions):
 
         name = product_data["name"]
         sku = str(product_data["sku"])
-        price = Decimal(product_data["offers"][0]["price"])
+
+        offer_price = Decimal(
+            remove_words(soup.find("span", "precio-transferencia").text)
+        )
+        normal_price = Decimal(remove_words(soup.find("span", "precio-otromedio").text))
+
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
         description = html_to_markdown(str(soup.find("div", "et_pb_tabs")))
 
@@ -127,8 +132,8 @@ class SmartDeal(StoreWithUrlExtensions):
             url,
             key,
             stock,
-            price,
-            price,
+            normal_price,
+            offer_price,
             "CLP",
             sku=sku,
             condition=condition,
