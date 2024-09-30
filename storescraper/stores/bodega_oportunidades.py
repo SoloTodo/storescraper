@@ -94,7 +94,11 @@ class BodegaOportunidades(StoreWithUrlExtensions):
                 ).findAll("img")
             ]
             description = html_to_markdown(products_data["description"])
-            condition = "https://schema.org/RefurbishedCondition"
+
+            if "Estado del producto : Nuevo" in description:
+                condition = "https://schema.org/NewCondition"
+            else:
+                condition = "https://schema.org/RefurbishedCondition"
 
             p = Product(
                 name,
