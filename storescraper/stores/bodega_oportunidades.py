@@ -94,7 +94,7 @@ class BodegaOportunidades(StoreWithUrlExtensions):
                 ).findAll("img")
             ]
             description = html_to_markdown(products_data["description"])
-            condition = offer["itemCondition"]
+            condition = "https://schema.org/RefurbishedCondition"
 
             p = Product(
                 name,
