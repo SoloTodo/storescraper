@@ -874,10 +874,9 @@ class Falabella(Store):
             normal_price = None
             offer_price = None
 
-            remove_words_blacklist = None
-
-            if "remove_words_blacklist" in extra_args:
-                remove_words_blacklist = extra_args["remove_words_blacklist"]
+            remove_words_blacklist = (
+                extra_args.get("remove_words_blacklist", None) if extra_args else None
+            )
 
             for key in normal_price_keys:
                 if key not in prices:

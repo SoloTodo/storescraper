@@ -4,10 +4,15 @@ from .falabella_peru import FalabellaPeru
 class SodimacPeru(FalabellaPeru):
     store_and_subdomain = "sodimac"
     seller = "SODIMAC"
+    remove_words_blacklist = {"remove_words_blacklist": [","]}
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
-        extra_args = {"remove_words_blacklist": [","]}
+        if extra_args is None:
+            extra_args = {}
+
+        extra_args.update(cls.remove_words_blacklist)
+
         products = super(SodimacPeru, cls).products_for_url(
             url, category=category, extra_args=extra_args
         )
