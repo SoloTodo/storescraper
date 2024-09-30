@@ -874,10 +874,19 @@ class Falabella(Store):
             normal_price = None
             offer_price = None
 
+            remove_words_blacklist = []
+
+            if "remove_words_blacklist" in extra_args:
+                remove_words_blacklist = extra_args["remove_words_blacklist"]
+
             for key in normal_price_keys:
                 if key not in prices:
                     continue
-                normal_price = Decimal(remove_words(prices[key]["price"][0]))
+                normal_price = Decimal(
+                    remove_words(
+                        prices[key]["price"][0], blacklist=remove_words_blacklist
+                    )
+                )
                 if normal_price.is_finite():
                     break
                 else:
@@ -886,7 +895,11 @@ class Falabella(Store):
             for key in offer_price_keys:
                 if key not in prices:
                     continue
-                offer_price = Decimal(remove_words(prices[key]["price"][0]))
+                offer_price = Decimal(
+                    remove_words(
+                        prices[key]["price"][0], blacklist=remove_words_blacklist
+                    )
+                )
                 if offer_price.is_finite():
                     break
                 else:
