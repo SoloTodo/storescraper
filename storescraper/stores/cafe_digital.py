@@ -104,7 +104,9 @@ class CafeDigital(StoreWithUrlExtensions):
         sku = str(product_data["sku"])[:45]
         description = html_to_markdown(product_data["description"])
 
-        if product_data["offers"][0]["availability"] == "http://schema.org/InStock":
+        if "PREVENTA" in name.upper():
+            stock = 0
+        elif product_data["offers"][0]["availability"] == "http://schema.org/InStock":
             stock = -1
         else:
             stock = 0
