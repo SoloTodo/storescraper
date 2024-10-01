@@ -1,22 +1,21 @@
 import json
-import logging
+import re
 
-from bs4 import BeautifulSoup
 from decimal import Decimal
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, magento_picture_urls, \
-    html_to_markdown
+from storescraper.utils import (
+    session_with_proxy,
+    html_to_markdown,
+)
 from storescraper.categories import TELEVISION
 
 
 class PlazaLama(Store):
     @classmethod
     def categories(cls):
-        return [
-            TELEVISION
-        ]
+        return [TELEVISION]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
@@ -24,50 +23,87 @@ class PlazaLama(Store):
 
         session = session_with_proxy(extra_args)
         product_urls = []
+
         if TELEVISION != category:
             return []
 
+        payload = {
+            "operationName": "SearchProducts",
+            "variables": {
+                "searchProductsInput": {
+                    "clientId": "PLAZA_LAMA",
+                    "storeReference": "PL08-D",
+                    "currentPage": 0,
+                    "minScore": 1,
+                    "pageSize": 200,
+                    "search": [{"query": "lg"}],
+                }
+            },
+            "query": "fragment CatalogProductModel on CatalogProductModel {slug __typename}"
+            "query SearchProducts($searchProductsInput: SearchProductsInput!) {searchProducts(searchProductsInput: $searchProductsInput) {products {...CatalogProductModel __typename} __typename}}",
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
         page = 1
+
         while True:
             if page >= 30:
-                raise Exception('Page overflow')
+                raise Exception("Page overflow")
 
-            url = 'https://plazalama.com.do/catalogsearch/result/?marca=368&q=LG+LG' \
-                '&p={}'.format(page)
-            print(url)
-            response = session.get(url)
-            soup = BeautifulSoup(response.text, 'html5lib')
-            product_containers = soup.findAll('li', 'product-item')
+            payload["variables"]["searchProductsInput"]["currentPage"] = page
+            url = "https://nextgentheadless.instaleap.io/api/v3"
+            response = json.loads(session.post(url, json=payload, headers=headers).text)
+            products = response["data"]["searchProducts"]["products"]
 
-            if not product_containers:
-                if page == 1:
-                    logging.warning('Empty category:' + url)
+            if products == []:
                 break
 
-            for container in product_containers:
-                product_url = container.find('a', 'product')['href']
-                product_urls.append(product_url)
+            for product in products:
+                product_urls.append(f"https://plazalama.com.do/p/{product['slug']}")
+
             page += 1
+
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
+        sku = re.search(r"-(\d+)$", url).group(1)
+
+        payload = {
+            "operationName": "GetProductsBySKU",
+            "variables": {
+                "getProductsBySkuInput": {
+                    "clientId": "PLAZA_LAMA",
+                    "skus": [sku],
+                    "storeReference": "PL08-D",
+                }
+            },
+            "query": "fragment CatalogProductModel on CatalogProductModel {name isAvailable price photosUrl description __typename}"
+            "query GetProductsBySKU($getProductsBySkuInput: GetProductsBySKUInput!) {getProductsBySKU(getProductsBySKUInput: $getProductsBySkuInput) {...CatalogProductModel __typename}}",
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
         session = session_with_proxy(extra_args)
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'html5lib')
+        response = json.loads(
+            session.post(
+                "https://nextgentheadless.instaleap.io/api/v3",
+                json=payload,
+                headers=headers,
+            ).text
+        )
+        product_response = response["data"]["getProductsBySKU"]
 
-        name = soup.find('span', {'itemprop': 'name'}).text.strip()
-        key = soup.find('input', {'name': 'product'})['value']
-        sku = soup.find('div', {'itemprop': 'sku'}).text.strip()
-        price = Decimal(soup.find('meta', {'itemprop': 'price'})['content'])
-        picture_urls = magento_picture_urls(soup)
+        assert len(product_response) == 1
 
-        description_tag = soup.find('div', 'additional-attributes-wrapper')
-        if description_tag:
-            description = html_to_markdown(description_tag.text)
-        else:
-            description = None
+        product = product_response[0]
+        name = product["name"]
+        stock = -1 if product["isAvailable"] else 0
+        price = Decimal(product["price"])
+        picture_urls = product["photosUrl"]
+        description = html_to_markdown(product["description"])
 
         p = Product(
             name,
@@ -75,13 +111,14 @@ class PlazaLama(Store):
             category,
             url,
             url,
-            key,
-            -1,
+            sku,
+            stock,
             price,
             price,
-            'DOP',
+            "DOP",
             sku=sku,
             picture_urls=picture_urls,
-            description=description
+            description=description,
         )
+
         return [p]
