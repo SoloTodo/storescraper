@@ -55,9 +55,13 @@ class Electromillonaria(Store):
             max_qty = qty_input["max"]
             stock = int(max_qty) if max_qty else -1
 
-        product_data = json.loads(
+        json_data = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[2].text
-        )["@graph"][1]
+        )
+        if "@graph" not in json_data:
+            return []
+
+        product_data = json_data["@graph"][1]
         name = product_data["name"]
         sku = str(product_data["sku"])
         price = Decimal(product_data["offers"][0]["price"])
