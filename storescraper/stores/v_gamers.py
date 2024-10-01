@@ -73,12 +73,15 @@ class VGamers(StoreWithUrlExtensions):
             response = session.get(url_webpage)
 
             if response.status_code == 404:
-                if page == 1:
-                    logging.warning("Empty category: " + url_extension)
                 break
 
             soup = BeautifulSoup(response.text, "lxml")
             products_container = soup.find("div", "products")
+
+            if not products_container:
+                if page == 1:
+                    logging.warning("Empty category: " + url_extension)
+                break
 
             for product in products_container.find_all("div", "product"):
                 product_url = product.find("a")["href"]
