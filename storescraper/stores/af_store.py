@@ -28,6 +28,7 @@ class AFStore(StoreWithUrlExtensions):
         ["samsung", CELL],
         ["tv-hogar", TELEVISION],
         ["watch", WEARABLE],
+        ["celulares", CELL],
     ]
 
     @classmethod
