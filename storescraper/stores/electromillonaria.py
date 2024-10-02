@@ -56,7 +56,7 @@ class Electromillonaria(Store):
             stock = int(max_qty) if max_qty else -1
 
         json_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[2].text
+            soup.findAll("script", {"type": "application/ld+json"})[1].text
         )
         if "@graph" not in json_data:
             return []
