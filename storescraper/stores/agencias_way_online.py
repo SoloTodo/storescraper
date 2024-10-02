@@ -4,7 +4,17 @@ from bs4 import BeautifulSoup
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
+
+
+from storescraper.categories import (
+    TELEVISION,
+    STEREO_SYSTEM,
+    REFRIGERATOR,
+    WASHING_MACHINE,
+    STOVE,
+    AIR_CONDITIONER,
+)
 
 
 class AgenciasWayOnline(Store):
@@ -14,27 +24,22 @@ class AgenciasWayOnline(Store):
     @classmethod
     def categories(cls):
         return [
-            "Television",
-            "StereoSystem",
-            "Cell",
-            "Refrigerator",
-            "Oven",
-            "AirConditioner",
-            "WashingMachine",
-            "OpticalDiskPlayer",
-            "Stove",
+            TELEVISION,
+            STEREO_SYSTEM,
+            REFRIGERATOR,
+            AIR_CONDITIONER,
+            WASHING_MACHINE,
+            STOVE,
         ]
 
     @classmethod
     def discover_urls_for_category(cls, category, extra_args=None):
         category_filters = [
-            ("categoria/televisores", "Television"),
-            ("categoria/audio", "StereoSystem"),
-            ("categoria/tecnologia/celulares", "Cell"),
-            ("categoria/linea-blanca/refrigeradoras", "Refrigerator"),
-            ("categoria/linea-blanca/congeladores", "Refrigerator"),
-            ("categoria/linea-blanca/horno-microondas", "Oven"),
-            ("categoria/linea-blanca/lavadoras", "WashingMachine"),
+            ("categorias/televisores", TELEVISION),
+            ("categorias/audio?marca=lg", STEREO_SYSTEM),
+            ("categorias/linea-blanca/?categoria=refrigeradoras", REFRIGERATOR),
+            ("categorias/linea-blanca/?categoria=lavadoras", WASHING_MACHINE),
+            ("categorias/linea-blanca/?categoria=estufas", STOVE),
         ]
 
         session = session_with_proxy(extra_args)
@@ -50,25 +55,27 @@ class AgenciasWayOnline(Store):
                 if page >= 15:
                     raise Exception("Page overflow")
 
-                url = "https://agenciaswayonline.com/{}/page/{}/".format(
-                    category_path, page
+                separator = "&" if "?" in category_path else "?"
+                url = f"https://agenciasway.com.gt/{category_path}{separator}marca=lg&page={page}"
+                print(url)
+
+                soup = BeautifulSoup(session.get(url, timeout=60).text, "lxml")
+
+                products_container = soup.find(
+                    "div", {"data-widget_type": "loop-grid.product"}
                 )
 
-                soup = BeautifulSoup(session.get(url, timeout=20).text, "lxml")
-
-                products_container = soup.find("div", "wrap-products")
-
-                if not products_container:
+                if not products_container or soup.find(
+                    "div", "e-loop-nothing-found-message"
+                ):
                     if page == 1:
                         raise Exception("Empty path: {}".format(url))
                     break
 
-                products = products_container.findAll("div", "block-item")
+                products = products_container.findAll("div", "product")
 
                 for product in products:
-                    if product.find("img", {"alt": "LG"}):
-                        product_url = product.find("a")["href"]
-                        product_urls.append(product_url)
+                    product_urls.append(product.find("a")["href"])
 
                 page += 1
 
@@ -76,39 +83,38 @@ class AgenciasWayOnline(Store):
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
+        print(url)
+
         session = session_with_proxy(extra_args)
         data = session.get(url, timeout=20).text
         soup = BeautifulSoup(data, "lxml")
 
-        product_container = soup.find("div", "detail-product")
+        key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
+        name = soup.find("h2", "product_title").text
+        containers = soup.find_all("div", class_="elementor-widget-container")
 
-        if not product_container:
-            return []
+        for container in containers:
+            bold_tag = container.find("b")
 
-        sku = product_container["id"].split("-")[1]
+            if bold_tag:
+                text = bold_tag.text.strip().lower()
+                text_value = bold_tag.next_sibling.strip()
 
-        model = (
-            product_container.findAll("p", "alter")[-1]
-            .text.split("Alterno")[0]
-            .split(":")[1]
-            .strip()
-        )
+                if text == "sku:":
+                    sku = text_value
+                elif text == "modelo:":
+                    model = text_value
 
-        name = "{} - {} ({})".format(
-            product_container.find("h3").text.strip(),
-            product_container.find("h1").text.strip(),
-            model,
-        )
-
-        stock = -1
-
+        name = f"{model} - {name}"
         price = Decimal(
-            product_container.find("h6").text.replace("Q", "").replace(",", "")
+            remove_words(soup.find("p", "price").find("bdi").text, blacklist=["Q", ","])
         )
-
-        picture_urls = [product_container.find("img")["data-large_image"]]
-
-        description = html_to_markdown(str(product_container.find("ul")))
+        stock_tag = soup.find("span", "awl-inner-text")
+        stock = 0 if stock_tag and stock_tag.text.lower() == "¡agotado!" else -1
+        description_tag = soup.findAll("div", "elementor-widget-n-accordion")[1]
+        picture_containers = soup.findAll("div", "woocommerce-product-gallery__image")
+        picture_urls = [container.find("a")["href"] for container in picture_containers]
+        description = html_to_markdown(description_tag.text)
 
         p = Product(
             name,
@@ -116,7 +122,7 @@ class AgenciasWayOnline(Store):
             category,
             url,
             url,
-            sku,
+            key,
             stock,
             price,
             price,
