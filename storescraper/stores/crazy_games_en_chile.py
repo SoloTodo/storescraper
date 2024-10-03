@@ -119,13 +119,22 @@ class CrazyGamesenChile(StoreWithUrlExtensions):
         )
         name = json_data["name"]
         sku = json_data.get("sku", None)
+
+        if not sku:
+            hidden_spans = soup.findAll("span", "visually-hidden")
+
+            for span in hidden_spans:
+                if "SKU:" in span.text and span.next_sibling:
+                    sku = span.next_sibling.strip()
+
         description = json_data["description"]
         variants = json_data.get("hasVariant", [])
 
-        if variants:
-            assert len(variants) == 1
-            price = Decimal(str(variants[0]["offers"]["price"]))
-            sku = variants[0]["sku"]
+        if variants and sku:
+            for variant in variants:
+                if variant["sku"] == sku:
+                    price = Decimal(str(variant["offers"]["price"]))
+                    break
         else:
             price = Decimal(str(json_data["offers"]["price"]))
 
