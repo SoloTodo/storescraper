@@ -240,7 +240,7 @@ class Easy(Store):
 
                 for idx, product in enumerate(response["productList"]):
                     product_entries[
-                        f"https://www.easy.cl/{product['linkText']}"
+                        f"https://www.easy.cl/{product['linkText']}/p"
                     ].append(
                         {
                             "category_weight": category_weight,
@@ -269,7 +269,7 @@ class Easy(Store):
                 break
 
             for product in response["productList"]:
-                product_urls.append(f"https://www.easy.cl/{product['linkText']}")
+                product_urls.append(f"https://www.easy.cl/{product['linkText']}/p")
 
                 if len(product_urls) == threshold:
                     return product_urls
