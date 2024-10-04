@@ -11,6 +11,7 @@ from storescraper.categories import (
     VIDEO_CARD,
     VIDEO_GAME_CONSOLE,
     POWER_SUPPLY,
+    NOTEBOOK,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -25,6 +26,7 @@ class SmartMobile(StoreWithUrlExtensions):
         ["gabinete", COMPUTER_CASE],
         ["fuente-de-poder", POWER_SUPPLY],
         ["consolas", VIDEO_GAME_CONSOLE],
+        ["macbook", NOTEBOOK],
     ]
 
     @classmethod
