@@ -1,4 +1,5 @@
 import logging
+import requests
 from decimal import Decimal
 
 from bs4 import BeautifulSoup
@@ -108,7 +109,12 @@ class TruluStore(Store):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
-        response = session.get(url)
+
+        try:
+            response = session.get(url)
+        except requests.exceptions.TooManyRedirects:
+            return []
+
         soup = BeautifulSoup(response.text, "lxml")
         name = soup.find("h1", "product-title").text.strip()
         sku = soup.find("span", "sku").text
