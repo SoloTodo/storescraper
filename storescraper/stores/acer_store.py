@@ -78,7 +78,7 @@ class AcerStore(StoreWithUrlExtensions):
             "outlet" in description_lower
             or "outlet" in name_lower
             or "seminuevo" in description_lower
-            or "seminuevo" in name.lower()
+            or "seminuevo" in name_lower
         ):
             if "openbox" in description_lower or "open box" in description_lower:
                 condition = "https://schema.org/OpenBoxCondition"
