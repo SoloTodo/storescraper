@@ -4,14 +4,19 @@ import re
 
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from storescraper.categories import MONITOR, NOTEBOOK, MOUSE, HEADPHONES, WEARABLE
+from storescraper.categories import (
+    MONITOR,
+    NOTEBOOK,
+    MOUSE,
+    HEADPHONES,
+    TABLET,
+    WEARABLE,
+)
 
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import (
-    check_ean13,
     session_with_proxy,
-    remove_words,
     html_to_markdown,
 )
 
@@ -27,6 +32,7 @@ class AcerStore(StoreWithUrlExtensions):
         ["outlet-notebook-tradicional", NOTEBOOK],
         ["outlet-notebook-gamer", NOTEBOOK],
         ["outlet-ultralivianos", NOTEBOOK],
+        ["tablets", TABLET],
         ["smartband", WEARABLE],
     ]
 
