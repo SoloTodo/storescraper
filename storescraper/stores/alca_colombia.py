@@ -55,7 +55,11 @@ class AlcaColombia(StoreWithUrlExtensions):
                 product_name = product.find("h3").text.strip().upper()
                 categories = product.find("div", "wd-product-cats").text.strip().upper()
 
-                if "LG" not in product_name and "LG" not in categories:
+                if (
+                    " LG" not in product_name
+                    and "LG " not in product_name
+                    and "LG" not in categories
+                ):
                     continue
 
                 product_url = product.find("a")["href"]
