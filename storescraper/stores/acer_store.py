@@ -98,9 +98,11 @@ class AcerStore(StoreWithUrlExtensions):
         key = offer["url"].split("?variant=")[1]
         stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
         pictures_container = soup.find("div", "grid__item product__media-wrapper")
-        picture_urls = set(
-            f"https:{img['src'].split('?')[0]}"
-            for img in pictures_container.findAll("img")
+        picture_urls = list(
+            set(
+                f"https:{img['src'].split('?')[0]}"
+                for img in pictures_container.findAll("img")
+            )
         )
 
         p = Product(
