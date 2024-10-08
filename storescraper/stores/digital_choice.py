@@ -84,6 +84,9 @@ class DigitalChoice(StoreWithUrlExtensions):
             picture_urls = [x for x in json_data["image"] if validators.url(x)]
             price = Decimal(json_data["offers"]["price"])
 
+            if price == 0:
+                continue
+
             if json_data["offers"]["availability"] == "https://schema.org/InStock":
                 stock = -1
             else:
