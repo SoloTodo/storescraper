@@ -112,11 +112,19 @@ class Progaming(Store):
 
         name = soup.find("h3", "product_title").text.strip()
         sku = soup.find("span", "sku").text.strip()
+        offer_price_tag = soup.find("p", "price").text.lower()
 
-        offer_price = Decimal(remove_words(soup.find("h3", {"id": "precio2"}).text))
+        if "el precio actual es:" in offer_price_tag:
+            offer_price = Decimal(
+                remove_words(offer_price_tag.split("el precio actual es:")[1])
+            )
+        else:
+            offer_price = Decimal(remove_words(soup.find("p", "price").text))
+
         normal_price = Decimal(remove_words(soup.find("h5", {"id": "precio3"}).text))
 
         stock_tag = soup.find("input", "qty")
+
         if stock_tag:
             stock = int(stock_tag["value"])
         else:
