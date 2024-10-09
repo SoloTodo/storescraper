@@ -1,15 +1,19 @@
 import json
 import logging
-from decimal import Decimal
+import time
+import re
 
 from bs4 import BeautifulSoup
+
+from decimal import Decimal
+from storescraper.utils import html_to_markdown, remove_words
+
 
 from storescraper.categories import (
     TABLET,
     HEADPHONES,
     MOUSE,
     KEYBOARD,
-    GAMING_CHAIR,
     MONITOR,
     MOTHERBOARD,
     RAM,
@@ -20,6 +24,17 @@ from storescraper.categories import (
     SOLID_STATE_DRIVE,
     NOTEBOOK,
     VIDEO_CARD,
+    STORAGE_DRIVE,
+    EXTERNAL_STORAGE_DRIVE,
+    USB_FLASH_DRIVE,
+    MEMORY_CARD,
+    CASE_FAN,
+    ALL_IN_ONE,
+    KEYBOARD_MOUSE_COMBO,
+    TELEVISION,
+    STEREO_SYSTEM,
+    UPS,
+    PRINTER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -28,50 +43,88 @@ from storescraper.utils import session_with_proxy, remove_words
 
 class Sandos(StoreWithUrlExtensions):
     url_extensions = [
-        ["tablet", TABLET],
-        ["almacenamiento", SOLID_STATE_DRIVE],
-        ["cooler", CPU_COOLER],
-        ["fuentes-de-poder", POWER_SUPPLY],
-        ["gabinetes", COMPUTER_CASE],
-        ["memorias-ram", RAM],
-        ["placas-madre", MOTHERBOARD],
-        ["procesadores", PROCESSOR],
-        ["tarjetas-de-video", VIDEO_CARD],
-        ["monitores", MONITOR],
-        ["audifonos", HEADPHONES],
-        ["mouse", MOUSE],
-        ["teclados", KEYBOARD],
-        ["sillas-gamer", GAMING_CHAIR],
-        ["notebooks", NOTEBOOK],
+        [20, SOLID_STATE_DRIVE],
+        [145, SOLID_STATE_DRIVE],
+        [149, STORAGE_DRIVE],
+        [147, EXTERNAL_STORAGE_DRIVE],
+        [148, EXTERNAL_STORAGE_DRIVE],
+        [32, USB_FLASH_DRIVE],
+        [33, MEMORY_CARD],
+        [7, PROCESSOR],
+        [8, PROCESSOR],
+        [10, MOTHERBOARD],
+        [12, MOTHERBOARD],
+        [15, VIDEO_CARD],
+        [16, VIDEO_CARD],
+        [17, VIDEO_CARD],
+        [27, CPU_COOLER],
+        [28, CPU_COOLER],
+        [35, POWER_SUPPLY],
+        [36, POWER_SUPPLY],
+        [39, COMPUTER_CASE],
+        [39, COMPUTER_CASE],
+        [40, COMPUTER_CASE],
+        [29, COMPUTER_CASE],
+        [142, CASE_FAN],
+        [70, ALL_IN_ONE],
+        [90, ALL_IN_ONE],
+        [63, NOTEBOOK],
+        [64, NOTEBOOK],
+        [88, NOTEBOOK],
+        [66, TABLET],
+        [89, TABLET],
+        [76, MOUSE],
+        [78, KEYBOARD],
+        [80, KEYBOARD_MOUSE_COMBO],
+        [180, TELEVISION],
+        [169, MONITOR],
+        [153, MONITOR],
+        [101, MONITOR],
+        [179, MONITOR],
+        [182, RAM],
+        [25, RAM],
+        [160, HEADPHONES],
+        [161, HEADPHONES],
+        [162, HEADPHONES],
+        [165, HEADPHONES],
+        [159, STEREO_SYSTEM],
+        [164, STEREO_SYSTEM],
+        [121, UPS],
+        [98, PRINTER],
+        [125, PRINTER],
+        [128, PRINTER],
+        [129, PRINTER],
+        [167, PRINTER],
     ]
 
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args=None):
         session = session_with_proxy(extra_args)
-        product_urls = []
+        session.headers["content-type"] = "application/json"
         page = 1
+        product_urls = []
+
         while True:
-            if page > 10:
-                raise Exception("page overflow: " + url_extension)
-            url_webpage = "https://sandos.cl/product-category" "/{}/page/{}/".format(
-                url_extension, page
+            time.sleep(2)
+
+            response = session.post(
+                "https://sandos.cl/servicio/producto",
+                data=json.dumps({"idFamilia": url_extension, "page": page, "tipo": 3}),
             )
-            print(url_webpage)
-            response = session.get(url_webpage)
-            soup = BeautifulSoup(response.text, "lxml")
-            if soup.find("body", "error404"):
+            response = json.loads(response.text)
+
+            products = response["resultado"]["items"]
+
+            if products == []:
                 if page == 1:
-                    logging.warning("Empty category: " + url_extension)
+                    logging.warning(f"Empty category: {url_extension}")
                 break
 
-            product_containers = soup.find("div", "site-content").findAll(
-                "div", "product"
-            )
-
-            for container in product_containers:
-                product_url = container.find("a")["href"]
-                product_urls.append(product_url)
+            product_urls += [
+                f"https://sandos.cl{product['url']}" for product in products
+            ]
             page += 1
+
         return product_urls
 
     @classmethod
@@ -80,41 +133,50 @@ class Sandos(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
-        key = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[-1]
 
-        json_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[-1].text
+        name = soup.find("div", "pro-group mb-3").find("h2").text
+        condition = "https://schema.org/NewCondition"
+
+        if "OPEN BOX" in name.upper() or "OPENBOX" in name.upper():
+            condition = "https://schema.org/OpenBoxCondition"
+        elif "REACONDICIONADO" in name.upper() or "RE ACONDICIONADO" in name.upper():
+            condition = "https://schema.org/RefurbishedCondition"
+
+        offer_price = Decimal(
+            remove_words(soup.find("ul", "pro-price mt-3").find("li").text)
+        )
+        normal_price = Decimal(
+            remove_words(soup.find("ul", "pro-price mt-1").find("li").text)
         )
 
-        for entry in json_data["@graph"]:
-            if entry["@type"] == "Product":
-                product_data = entry
-                break
-        else:
-            raise Exception("No JSON product data found")
+        for row in soup.find("div", "single-product-tables").findAll("tr"):
+            cells = row.find_all("td")
 
-        name = product_data["name"]
-        description = product_data["description"]
-        sku = str(product_data["sku"])
-        offer_price = Decimal(product_data["offers"][0]["price"])
+            if len(cells) == 1:
+                continue
 
-        price_table = soup.find("table", {"id": "precio_tabla"})
-        price_spans = price_table.findAll("span", "amount")
-        if len(price_spans) > 1:
-            normal_price = Decimal(remove_words(price_spans[-1].text))
-        else:
-            normal_price = offer_price
+            label = cells[0].get_text().upper()
+            value = cells[1].get_text().upper()
 
-        stock_p = soup.find("p", "in-stock")
-        if stock_p:
-            stock = int(stock_p.text.split(" ")[0])
-        else:
-            stock = -1
+            if label == "SKU":
+                sku = value
+            elif label == "PART NUMBER":
+                part_number = value
 
-        if "image" in product_data:
-            picture_urls = [product_data["image"]]
-        else:
-            picture_urls = None
+        stock = 0
+
+        for p in soup.find("div", "timer").findAll("p"):
+            value = re.search(r"[\+\-]?\d+", p.get_text()).group()
+            stock += int(value)
+
+        img_tag = soup.find("img", "img-fluid image_zoom_cls-1")
+        picture_urls = [f"https://sandos.cl{img_tag['src']}"] if img_tag else []
+        json_description = soup.find("input", {"id": "ObjectoJSON"})
+        description = None
+
+        if json_description:
+            description_data = json.loads(json_description["value"])
+            description = html_to_markdown(description_data["PRODUCTO"]["descripcion"])
 
         p = Product(
             name,
@@ -122,13 +184,15 @@ class Sandos(StoreWithUrlExtensions):
             category,
             url,
             url,
-            key,
+            sku,
             stock,
             normal_price,
             offer_price,
             "CLP",
             sku=sku,
+            part_number=part_number,
             picture_urls=picture_urls,
             description=description,
+            condition=condition,
         )
         return [p]
