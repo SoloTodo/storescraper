@@ -29,6 +29,7 @@ from storescraper.categories import (
     USB_FLASH_DRIVE,
     VIDEO_CARD,
     UPS,
+    TELEVISION,
 )
 from storescraper.product import Product
 from storescraper.store import Store
@@ -65,6 +66,7 @@ class CNava(Store):
             ALL_IN_ONE,
             GAMING_CHAIR,
             UPS,
+            TELEVISION,
         ]
 
     @classmethod
@@ -97,6 +99,7 @@ class CNava(Store):
             ["equipos/all-in-one", ALL_IN_ONE],
             ["hogar/sillas-gamer", GAMING_CHAIR],
             ["equipos/ups", UPS],
+            ["televisores", TELEVISION],
         ]
 
         session = session_with_proxy(extra_args)
