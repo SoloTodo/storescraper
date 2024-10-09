@@ -64,7 +64,6 @@ class PcLinkStore(StoreWithUrlExtensions):
         ["tarjetas-de-video", VIDEO_CARD],
         ["ventiladores-y-sistemas-de-enfriamiento", CPU_COOLER],
         ["all-in-one", ALL_IN_ONE],
-        ["apple-2", NOTEBOOK],
         ["notebook", NOTEBOOK],
         ["tableta", TABLET],
         ["consolas", VIDEO_GAME_CONSOLE],
