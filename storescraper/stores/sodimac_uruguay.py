@@ -69,8 +69,7 @@ class SodimacUruguay(Store):
         next_tag = soup.find("script", {"id": "__NEXT_DATA__"})
         json_data = json.loads(next_tag.text)
         product_data = json_data["props"]["pageProps"]["productProps"]["result"]
-
-        pictures_resource_url = (
+        """pictures_resource_url = (
             "http://sodimac.scene7.com/is/image/" "SodimacUruguay/{}?req=set,json"
         ).format(product_data["id"])
         pictures_json = json.loads(
@@ -89,16 +88,18 @@ class SodimacUruguay(Store):
             picture_url = ("https://sodimac.scene7.com/is/image/{}?" "scl=1.0").format(
                 picture_entry["i"]["n"]
             )
-            picture_urls.append(picture_url)
+            picture_urls.append(picture_url)"""
 
         products = []
 
         for variant in product_data["variants"]:
+
             name = "{} {}".format(product_data["brandName"], variant["name"])
             key = variant["id"]
             ean = variant["upc"]
             stock = -1
             description = variant["description"]
+            picture_urls = [img["url"] for img in variant["images"]]
 
             min_price = Decimal("Inf")
 
