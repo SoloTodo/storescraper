@@ -92,7 +92,7 @@ class MegaBytes(StoreWithUrlExtensions):
         product_data = json_data["@graph"][1]
 
         name = product_data["name"]
-        sku = product_data["sku"]
+        sku = str(product_data["sku"])
 
         offer = product_data["offers"][0]
         if offer["availability"] == "http://schema.org/InStock":
