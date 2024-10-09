@@ -148,6 +148,8 @@ class Sandos(StoreWithUrlExtensions):
         normal_price = Decimal(
             remove_words(soup.find("ul", "pro-price mt-1").find("li").text)
         )
+        sku = None
+        part_number = None
 
         for row in soup.find("div", "single-product-tables").findAll("tr"):
             cells = row.find_all("td")
@@ -158,10 +160,11 @@ class Sandos(StoreWithUrlExtensions):
             label = cells[0].get_text().upper()
             value = cells[1].get_text().upper()
 
-            if label == "SKU":
-                sku = value
-            elif label == "PART NUMBER":
-                part_number = value
+            if value:
+                if label == "SKU":
+                    sku = value
+                elif label == "PART NUMBER":
+                    part_number = value
 
         stock = 0
 
