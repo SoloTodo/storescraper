@@ -9,6 +9,7 @@ from storescraper.utils import (
     session_with_proxy,
     html_to_markdown,
     magento_picture_urls,
+    remove_words,
 )
 
 
@@ -83,8 +84,14 @@ class Tecnofacil(Store):
             stock = -1
         else:
             stock = 0
-
-        price = Decimal(soup.find("span", "price-wrapper")["data-price-amount"])
+        price_container = soup.find("span", "price-wrapper")
+        price_integer = int(
+            remove_words(
+                price_container.find("span", "price-integer").text, blacklist=["Q", ","]
+            )
+        )
+        price_decimal = float(price_container.find("span", "price-decimal").text)
+        price = Decimal(price_integer + price_decimal)
 
         picture_urls = magento_picture_urls(soup)
         description = html_to_markdown(
