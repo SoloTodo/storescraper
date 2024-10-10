@@ -277,6 +277,7 @@ from .tecno_pc_shop import TecnoPCShop
 from .tecno_saga import TecnoSaga
 from .tecno_site import TecnoSite
 from .tic_online_store import TicOnlineStore
+from .ti_shop import TiShop
 from .tecno_master import TecnoMaster
 from .tecno_pro import TecnoPro
 from .tec_tec import TecTec
