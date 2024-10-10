@@ -1,9 +1,8 @@
 import sys
-sys.path.append('../..')
 
-broker_url = 'amqp://storescraper:storescraper@localhost/storescraper'
-result_backend = 'rpc://'
+sys.path.append("../..")
 
-imports = (
-    'storescraper.store'
-)
+broker_url = "redis://localhost:6379/0"
+result_backend = "redis://localhost:6379/0"
+
+imports = "storescraper.store"
