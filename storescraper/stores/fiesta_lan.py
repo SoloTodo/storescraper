@@ -62,24 +62,34 @@ class FiestaLan(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         product_urls = []
         page = 1
+
         while True:
             if page > 10:
-                raise Exception("page overflow: " + url_extension)
+                raise Exception(f"page overflow: {url_extension}")
+
             url_webpage = (
-                "https://fiestalan.cl/categoria-producto/"
-                "{}/page/{}".format(url_extension, page)
+                f"https://fiestalan.cl/categoria-producto/{url_extension}/page/{page}/"
             )
-            data = session.get(url_webpage, verify=False).text
-            soup = BeautifulSoup(data, "lxml")
-            product_containers = soup.findAll("li", "product")
-            if not product_containers:
+            print(url_webpage)
+
+            response = session.get(url_webpage)
+
+            if response.status_code == 404:
                 if page == 1:
                     logging.warning("Empty category: " + url_extension)
                 break
+
+            soup = BeautifulSoup(response.text, "lxml")
+            product_containers = soup.findAll("li", "product")
+
             for container in product_containers:
-                product_url = container.find("a")["href"]
+                product_url = container.find("a", "woocommerce-LoopProduct-link")[
+                    "href"
+                ]
                 product_urls.append(product_url)
+
             page += 1
+
         return product_urls
 
     @classmethod
@@ -87,15 +97,17 @@ class FiestaLan(StoreWithUrlExtensions):
         session = session_with_proxy(extra_args)
         response = session.get(url, verify=False)
         soup = BeautifulSoup(response.text, "lxml")
-        stock_tag = soup.find("p", "stock")
-
-        if not stock_tag:
-            return []
 
         name = soup.find("h1", "product_title").text.replace("\n\t", "")
         sku = soup.find("link", {"rel": "shortlink"})["href"].split("p=")[1]
-        stock = -1 if stock_tag.text == "Hay existencias" else 0
-        price = Decimal(remove_words(soup.find("p", "price").findAll("bdi")[-1].text))
+        stock_tag = soup.find("p", "stock")
+        stock_class = soup.find("div", {"class": "instock", "id": f"product-{sku}"})
+
+        if not stock_tag and not stock_class:
+            return []
+
+        stock = -1 if stock_class or stock_tag.text == "Hay existencias" else 0
+        price = Decimal(remove_words(soup.find("p", "price").find("bdi").text))
         picture_containers = soup.find("div", "woocommerce-product-gallery").findAll(
             "img"
         )
