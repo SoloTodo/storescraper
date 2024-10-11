@@ -286,8 +286,12 @@ class Easy(Store):
         response = session.get(
             f"{cls.base_url}/products/by-sku/{sku}",
             headers={"X-Api-Key": "jFt3XhoLqFAGr6qN9SCpr9K6y83HpakP"},
-        ).json()
+        )
 
+        if response.status_code == 404:
+            return []
+
+        response = response.json()
         assert len(response["items"]) == 1
 
         item = response["items"][0]
