@@ -6,15 +6,7 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
-from storescraper.categories import (
-    TELEVISION,
-    AIR_CONDITIONER,
-    OVEN,
-    REFRIGERATOR,
-    WASHING_MACHINE,
-    STEREO_SYSTEM,
-    HEADPHONES,
-    MONITOR,
+from storescraper.categories import TELEVISION
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -107,4 +99,5 @@ class MiTiendaDamasco(StoreWithUrlExtensions):
             picture_urls=picture_urls,
             description=description,
         )
+        
         return [p]
