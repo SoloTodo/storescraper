@@ -7,7 +7,6 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 
 from storescraper.categories import TELEVISION
-)
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
 from storescraper.utils import session_with_proxy, html_to_markdown
@@ -58,7 +57,7 @@ class MiTiendaDamasco(StoreWithUrlExtensions):
         reference_name = re.search(r"\/([^\/]+)\/p", url).group(1)
         session = session_with_proxy(extra_args)
         response = session.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, "lxml")
         state_match = re.search("__STATE__ = (.+)", response.text)
         json_data = json.loads(state_match.groups()[0])
         product_data = json_data[f"Product:{reference_name}.items.0"]
@@ -99,5 +98,5 @@ class MiTiendaDamasco(StoreWithUrlExtensions):
             picture_urls=picture_urls,
             description=description,
         )
-        
+
         return [p]
