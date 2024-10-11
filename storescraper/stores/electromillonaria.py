@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from storescraper.categories import TELEVISION
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy
+from storescraper.utils import html_to_markdown, remove_words, session_with_proxy
 
 
 class Electromillonaria(Store):
@@ -55,17 +55,10 @@ class Electromillonaria(Store):
             max_qty = qty_input["max"]
             stock = int(max_qty) if max_qty else -1
 
-        json_data = json.loads(
-            soup.findAll("script", {"type": "application/ld+json"})[1].text
-        )
-        if "@graph" not in json_data:
-            return []
-
-        product_data = json_data["@graph"][1]
-        name = product_data["name"]
-        sku = str(product_data["sku"])
-        price = Decimal(product_data["offers"][0]["price"])
-        description = product_data["description"]
+        name = soup.find("h1", "product_title").text
+        sku = str(soup.find("span", "sku").text.strip())
+        price = Decimal(remove_words(soup.find("p", "price").findAll("bdi")[-1].text))
+        description = html_to_markdown(soup.find("div", "flix-key-feature").text)
 
         p = Product(
             name,
