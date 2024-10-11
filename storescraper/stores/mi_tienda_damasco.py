@@ -1,4 +1,3 @@
-import html
 import json
 import logging
 import re
@@ -54,7 +53,7 @@ class MiTiendaDamasco(StoreWithUrlExtensions):
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
-        reference_name = re.search(r"\/([^\/]+)\/p", url).group(1)
+        reference_name = re.search(r"/([^/]+)/p", url).group(1)
         session = session_with_proxy(extra_args)
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
@@ -73,14 +72,13 @@ class MiTiendaDamasco(StoreWithUrlExtensions):
             return []
 
         price = Decimal(price_data["lowPrice"])
-        picture_urls = None
         description = html_to_markdown(
             json_data[f"Product:{reference_name}"]["description"]
         )
         picture_ids = [x["id"].split("Image:")[1] for x in product_data["images"]]
         picture_urls = [
-            f"https://damasco.vtexassets.com/arquivos/ids/{id}-1600-1600"
-            for id in picture_ids
+            f"https://damasco.vtexassets.com/arquivos/ids/{picture}-1600-1600"
+            for picture in picture_ids
         ]
 
         p = Product(
