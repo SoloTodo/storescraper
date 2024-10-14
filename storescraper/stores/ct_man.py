@@ -79,6 +79,10 @@ class CtMan(StoreWithUrlExtensions):
         ["ups", UPS],
         ["parlantes", STEREO_SYSTEM],
         ["reloj-inteligente", WEARABLE],
+        ["macbooks", NOTEBOOK],
+        ["ipads", TABLET],
+        ["iphone", CELL],
+        ["watch", WEARABLE],
     ]
 
     @classmethod
