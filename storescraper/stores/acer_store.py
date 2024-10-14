@@ -33,7 +33,6 @@ class AcerStore(StoreWithUrlExtensions):
         ["outlet-notebook-gamer", NOTEBOOK],
         ["outlet-ultralivianos", NOTEBOOK],
         ["tablets", TABLET],
-        ["smartband", WEARABLE],
     ]
 
     @classmethod
