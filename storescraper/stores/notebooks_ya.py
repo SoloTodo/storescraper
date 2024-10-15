@@ -8,7 +8,6 @@ from storescraper.categories import (
     NOTEBOOK,
     PRINTER,
     MONITOR,
-    STORAGE_DRIVE,
     HEADPHONES,
     KEYBOARD,
     WEARABLE,
@@ -25,10 +24,10 @@ from storescraper.categories import (
     VIDEO_CARD,
     MOTHERBOARD,
     EXTERNAL_STORAGE_DRIVE,
-    MEMORY_CARD,
     MOUSE,
     STEREO_SYSTEM,
     VIDEO_GAME_CONSOLE,
+    CPU_COOLER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -101,6 +100,10 @@ class NotebooksYa(StoreWithUrlExtensions):
         ["audio-y-video-ya/?filter_producto-audio-y-video=sound-bar", STEREO_SYSTEM],
         ["ups-ya/?filter_producto-ups=ups", UPS],
         ["consolas-y-controles", VIDEO_GAME_CONSOLE],
+        [
+            "partes-y-piezas-ya/?filter_producto-partes-y-piezas=refrigeracion",
+            CPU_COOLER,
+        ],
     ]
 
     @classmethod
