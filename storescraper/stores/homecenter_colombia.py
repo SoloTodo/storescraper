@@ -68,28 +68,6 @@ class HomecenterColombia(Store):
         next_tag = soup.find("script", {"id": "__NEXT_DATA__"})
         json_data = json.loads(next_tag.text)
         product_data = json_data["props"]["pageProps"]["productProps"]["result"]
-
-        pictures_resource_url = (
-            "https://homecenterco.scene7.com/is/image/SodimacCO/{}?req=set,json"
-        ).format(product_data["id"])
-        pictures_json = json.loads(
-            re.search(
-                r's7jsonResponse\((.+),""\);', session.get(pictures_resource_url).text
-            ).groups()[0]
-        )
-
-        picture_urls = []
-
-        picture_entries = pictures_json["set"]["item"]
-        if not isinstance(picture_entries, list):
-            picture_entries = [picture_entries]
-
-        for picture_entry in picture_entries:
-            picture_url = (
-                "https://homecenterco.scene7.com/is/image/{}?scl=1.0"
-            ).format(picture_entry["i"]["n"])
-            picture_urls.append(picture_url)
-
         products = []
 
         for variant in product_data["variants"]:
@@ -112,6 +90,8 @@ class HomecenterColombia(Store):
                 )
                 if price < min_price:
                     min_price = price
+
+            picture_urls = [image["url"] for image in variant["images"]]
 
             p = Product(
                 name,
