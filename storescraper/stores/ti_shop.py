@@ -86,7 +86,7 @@ class TiShop(StoreWithUrlExtensions):
             soup = BeautifulSoup(response.text, "lxml")
             product_containers = soup.findAll("article", "group/item")
             urls = set(
-                f"https://tishop.cl/{tag.find('a')['href']}"
+                f"https://tishop.cl{tag.find('a')['href']}"
                 for tag in product_containers
             )
 
