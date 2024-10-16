@@ -123,7 +123,11 @@ class Alca(Store):
                 sku = product["sku"][:50]
                 description = json_data["@graph"][0]["description"]
                 price = Decimal(product["display_price"])
-                stock = 0 if product["is_in_stock"] == "False" else product["max_qty"]
+                stock = (
+                    0
+                    if (product["is_in_stock"] == "False" or not product["max_qty"])
+                    else product["max_qty"]
+                )
                 picture_urls = [product["image"]["url"]]
 
                 p = Product(
