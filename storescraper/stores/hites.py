@@ -702,12 +702,6 @@ class Hites(Store):
             ],
             [
                 bs.TELEVISIONS,
-                "Smart TV",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "tecnologia/tv-video/smart-tv",
-            ],
-            [
-                bs.TELEVISIONS,
                 "Smart TV LG",
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "tecnologia/tv-video/smart-tv-lg",
