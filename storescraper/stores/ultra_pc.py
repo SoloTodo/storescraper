@@ -11,6 +11,7 @@ from storescraper.categories import (
     MOUSE,
     VIDEO_GAME_CONSOLE,
     CELL,
+    TELEVISION,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
@@ -25,6 +26,7 @@ class UltraPc(StoreWithUrlExtensions):
         ["accesorios", MOUSE],
         ["consolas-videojuegos", VIDEO_GAME_CONSOLE],
         ["smartphones-2", CELL],
+        ["electrodomesticos", TELEVISION],
     ]
 
     @classmethod
