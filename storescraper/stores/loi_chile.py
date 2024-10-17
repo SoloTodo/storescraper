@@ -44,6 +44,12 @@ class LoiChile(StoreWithUrlExtensions):
     @classmethod
     def discover_urls_for_url_extension(cls, url_extension, extra_args):
         session = session_with_proxy(extra_args)
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+        )
+        session.headers["Cookie"] = (
+            "cf_clearance=nHt8.nUwp8rNLsuEHMb4NGw620W1L1k8P8nzZgT3bLM-1729174456-1.2.1.1-3IOKpzlfDUTKw7AEcD0yKlc7ikhg7ZAjCn9i2tBglyxu.vUwrpQPBlPBNeB1G0UVWjTqUbTWATwpYV5DPhHwe1BOlL4SYos7wyD2Php1A2cLfTDGesvTFmme.qTgvxnc4lMOtWd29v9PqWpjuQI4oqW3G7BPQYElyucX9nppKHi_1VLPASiFao1fJ0RCEC8yuvovSvhb_KIE07HGW3CgnexYbqyHrEJl9aWyXqGynAKoMo23OzNlQn73rDmFdPfuVrU9vWPqaUSFEFBjUFBkDBmOzlIxReK0kPez8AldCDDcgQ7zyHBmw5zDrD4px4X2ZSLDJsO4oZwNH4urBWDvKXqd1xYfar6O68TsND91UtHIu0Acl2kq8yU5fZOFDW_2p33nQx8Ke1UNqouEyRh7DjSHzSizRSf5R.iMrBjp.a.mVZA5LLaxpx9PV3E28D1I;"
+        )
         products_urls = []
         page_size = 50
         page = 0
@@ -75,6 +81,12 @@ class LoiChile(StoreWithUrlExtensions):
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers["user-agent"] = (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+        )
+        session.headers["Cookie"] = (
+            "cf_clearance=nHt8.nUwp8rNLsuEHMb4NGw620W1L1k8P8nzZgT3bLM-1729174456-1.2.1.1-3IOKpzlfDUTKw7AEcD0yKlc7ikhg7ZAjCn9i2tBglyxu.vUwrpQPBlPBNeB1G0UVWjTqUbTWATwpYV5DPhHwe1BOlL4SYos7wyD2Php1A2cLfTDGesvTFmme.qTgvxnc4lMOtWd29v9PqWpjuQI4oqW3G7BPQYElyucX9nppKHi_1VLPASiFao1fJ0RCEC8yuvovSvhb_KIE07HGW3CgnexYbqyHrEJl9aWyXqGynAKoMo23OzNlQn73rDmFdPfuVrU9vWPqaUSFEFBjUFBkDBmOzlIxReK0kPez8AldCDDcgQ7zyHBmw5zDrD4px4X2ZSLDJsO4oZwNH4urBWDvKXqd1xYfar6O68TsND91UtHIu0Acl2kq8yU5fZOFDW_2p33nQx8Ke1UNqouEyRh7DjSHzSizRSf5R.iMrBjp.a.mVZA5LLaxpx9PV3E28D1I;"
+        )
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
 
