@@ -841,7 +841,7 @@ class Ripley(Store):
                     {
                         "url": url,
                         "picture_url": picture_url,
-                        "destination_urls": banner["url"]["url"],
+                        "destination_urls": [banner["url"]["url"]],
                         "key": picture_url,
                         "position": idx + 1,
                         "section": section,
