@@ -26,6 +26,9 @@ from storescraper.utils import session_with_proxy
 
 
 class VGamers(StoreWithUrlExtensions):
+    preferred_discover_urls_concurrency = 3
+    preferred_products_for_url_concurrency = 3
+
     url_extensions = [
         ["audifonos-gamer", HEADPHONES],
         ["teclados-gamers", KEYBOARD],
@@ -87,13 +90,16 @@ class VGamers(StoreWithUrlExtensions):
                 product_url = product.find("a")["href"]
                 product_urls.append(product_url)
             page += 1
-
         return product_urls
 
     @classmethod
     def products_for_url(cls, url, category=None, extra_args=None):
         print(url)
         session = session_with_proxy(extra_args)
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
+        )
         response = session.get(url)
         soup = BeautifulSoup(response.text, "lxml")
         key = soup.find("link", {"rel": "shortlink"})["href"].split("?p=")[-1]
