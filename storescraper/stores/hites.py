@@ -240,7 +240,7 @@ class Hites(Store):
                 0,
             ],
             [
-                "tecnologia/tv-video/smart-tv",
+                "tecnologia/tv-video/televisores-smart-tv",
                 [TELEVISION],
                 "Inicio > Tecnología > Tv Video > Smart TV",
                 1,
