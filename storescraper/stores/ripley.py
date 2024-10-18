@@ -637,12 +637,12 @@ class Ripley(Store):
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "electro/refrigeracion/freezers-y-congeladores/",
             ],
-            [
-                bs.REFRIGERATION,
-                "Door In Door",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/refrigeracion/door-in-door/",
-            ],
+            # [
+            #    bs.REFRIGERATION,
+            #    "Door In Door",
+            #    bs.SUBSECTION_TYPE_MOSAIC,
+            #    "electro/refrigeracion/door-in-door/",
+            # ],
             [
                 bs.REFRIGERATION,
                 "Frigobar",
@@ -679,12 +679,12 @@ class Ripley(Store):
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "electro/lavanderia/secadoras",
             ],
-            [
-                bs.WASHING_MACHINES,
-                "Doble Carga",
-                bs.SUBSECTION_TYPE_MOSAIC,
-                "electro/lavanderia/doble-carga",
-            ],
+            # [
+            #    bs.WASHING_MACHINES,
+            #    "Doble Carga",
+            #    bs.SUBSECTION_TYPE_MOSAIC,
+            #    "electro/lavanderia/doble-carga",
+            # ],
             [
                 bs.TELEVISIONS,
                 "Televisión",
@@ -780,7 +780,7 @@ class Ripley(Store):
                 banners_container = soup.find("section", "catalog-top-banner")
 
                 if not banners_container:
-                    print("No banners for: " + url)
+                    raise Exception("No banners for: " + url)
                     continue
 
                 idx = 1
@@ -815,81 +815,115 @@ class Ripley(Store):
     @classmethod
     def get_owl_banners(cls, url, section, subsection, subsection_type, extra_args):
         session = cf_session_with_proxy(extra_args)
+        banners = []
 
         if extra_args and "user-agent" in extra_args:
             session.headers["user-agent"] = extra_args["user-agent"]
 
-        response = session.get(url + "?v=2")
-        soup = BeautifulSoup(response.text, "lxml")
-        carousel_tag = soup.find("div", "home-carousel")
-        banners = []
+        if subsection_type == bs.SUBSECTION_TYPE_HOME:
+            response = session.get(
+                "https://simple.ripley.cl/marketingcomponent/api/bff/marketing"
+            )
+            response = response.json()
+            banner_items = None
 
-        if carousel_tag:
-            carousel_tag = carousel_tag.find("div")
-            for idx, banner_tag in enumerate(carousel_tag.findAll(recursive=False)):
-                if banner_tag.name == "a":
-                    destination_urls = [banner_tag["href"]]
-                    if banner_tag.find("img"):
-                        picture_url = banner_tag.find("img")["src"]
-                    else:
-                        picture_style = banner_tag.find("span")["style"]
-                        picture_url = re.search(r"url\((.+)\)", picture_style).groups()[
-                            0
-                        ]
+            for response_section in response:
+                if (
+                    response_section["type"] == "zone_a"
+                    and response_section["data"][0]["sliceType"] == "homebanner"
+                ):
+                    banner_items = response_section["data"][0]["items"]
+                    break
 
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": idx + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
-                else:
-                    # Collage
-                    desktop_container_tag = banner_tag.find("div")
-                    cell_tags = desktop_container_tag.findAll("a")
-                    destination_urls = [
-                        tag["href"] for tag in cell_tags if "href" in tag.attrs
-                    ]
-                    picture_url = desktop_container_tag.find("img")["src"]
+            for idx, banner in enumerate(banner_items):
+                picture_url = banner["image"]["url"].split("?")[0]
+                banners.append(
+                    {
+                        "url": url,
+                        "picture_url": picture_url,
+                        "destination_urls": banner["url"]["url"],
+                        "key": picture_url,
+                        "position": idx + 1,
+                        "section": section,
+                        "subsection": subsection,
+                        "type": subsection_type,
+                    }
+                )
 
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": idx + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
         else:
-            carousel_tag = soup.find("ul", "splide__list")
-            if carousel_tag:
-                for idx, banner_tag in enumerate(carousel_tag.findAll("li")):
-                    banner_link = banner_tag.find("a")
-                    destination_urls = [banner_link["href"]]
-                    picture_url = banner_link.find("img")["src"]
+            response = session.get(url + "?v=2")
+            soup = BeautifulSoup(response.text, "lxml")
+            carousel_tag = soup.find("div", "home-carousel")
 
-                    banners.append(
-                        {
-                            "url": url,
-                            "picture_url": picture_url,
-                            "destination_urls": destination_urls,
-                            "key": picture_url,
-                            "position": idx + 1,
-                            "section": section,
-                            "subsection": subsection,
-                            "type": subsection_type,
-                        }
-                    )
+            if carousel_tag:
+                carousel_tag = carousel_tag.find("div")
+                for idx, banner_tag in enumerate(carousel_tag.findAll(recursive=False)):
+                    if banner_tag.name == "a":
+                        destination_urls = [banner_tag["href"]]
+                        if banner_tag.find("img"):
+                            picture_url = banner_tag.find("img")["src"]
+                        else:
+                            picture_style = banner_tag.find("span")["style"]
+                            picture_url = re.search(
+                                r"url\((.+)\)", picture_style
+                            ).groups()[0]
+
+                        banners.append(
+                            {
+                                "url": url,
+                                "picture_url": picture_url,
+                                "destination_urls": destination_urls,
+                                "key": picture_url,
+                                "position": idx + 1,
+                                "section": section,
+                                "subsection": subsection,
+                                "type": subsection_type,
+                            }
+                        )
+                    else:
+                        # Collage
+                        desktop_container_tag = banner_tag.find("div")
+                        cell_tags = desktop_container_tag.findAll("a")
+                        destination_urls = [
+                            tag["href"] for tag in cell_tags if "href" in tag.attrs
+                        ]
+                        picture_url = desktop_container_tag.find("img")["src"]
+
+                        banners.append(
+                            {
+                                "url": url,
+                                "picture_url": picture_url,
+                                "destination_urls": destination_urls,
+                                "key": picture_url,
+                                "position": idx + 1,
+                                "section": section,
+                                "subsection": subsection,
+                                "type": subsection_type,
+                            }
+                        )
+            else:
+                carousel_tag = soup.find("ul", "splide__list")
+                if carousel_tag:
+                    for idx, banner_tag in enumerate(carousel_tag.findAll("li")):
+                        banner_link = banner_tag.find("a")
+                        destination_urls = [banner_link["href"]]
+                        picture_url = banner_link.find("img")["src"]
+
+                        banners.append(
+                            {
+                                "url": url,
+                                "picture_url": picture_url,
+                                "destination_urls": destination_urls,
+                                "key": picture_url,
+                                "position": idx + 1,
+                                "section": section,
+                                "subsection": subsection,
+                                "type": subsection_type,
+                            }
+                        )
+
+        if not banners:
+            raise Exception("No banners for: " + url)
 
         return banners
 
