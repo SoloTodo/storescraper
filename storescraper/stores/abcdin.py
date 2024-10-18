@@ -491,7 +491,7 @@ class AbcDin(Store):
         banners = []
 
         soup = BeautifulSoup(session.get(cls.base_url).text, "lxml")
-        slider_tags = soup.findAll("div", "rojoPolar")
+        slider_tags = soup.find("div", "slider_bp desk").findAll("div")
 
         for index, slider_tag in enumerate(slider_tags):
             destination_urls = [slider_tag.find("a")["href"]]
@@ -509,4 +509,8 @@ class AbcDin(Store):
                     "type": bs.SUBSECTION_TYPE_HOME,
                 }
             )
+
+        if not banners:
+            raise Exception("No banners for Home section: " + cls.base_url)
+
         return banners

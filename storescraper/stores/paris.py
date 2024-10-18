@@ -486,6 +486,7 @@ class Paris(Store):
 
     @classmethod
     def banners(cls, extra_args=None):
+        base_url = "https://www.paris.cl/"
         session = session_with_proxy(extra_args)
         session.headers["User-Agent"] = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -493,7 +494,7 @@ class Paris(Store):
         )
         banners = []
 
-        res = session.get("https://www.paris.cl/")
+        res = session.get(base_url)
         soup = BeautifulSoup(res.text, "lxml")
         page_json = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)
 
@@ -506,16 +507,20 @@ class Paris(Store):
 
             banners.append(
                 {
-                    "url": "https://www.paris.cl/",
+                    "url": base_url,
                     "picture_url": picture_url,
                     "destination_urls": [banner_entry["link"][:500]],
                     "key": picture_url,
                     "position": idx + 1,
-                    "section": "Home",
-                    "subsection": bs.SUBSECTION_TYPE_HOME,
-                    "type": bs.HOME,
+                    "section": bs.HOME,
+                    "subsection": bs.HOME,
+                    "type": bs.SUBSECTION_TYPE_HOME,
                 }
             )
+
+        if not banners:
+            raise Exception("No banners for Home section: " + base_url)
+
         return banners
 
     @classmethod

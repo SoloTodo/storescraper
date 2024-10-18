@@ -1060,6 +1060,10 @@ class Falabella(Store):
                             "type": subsection_type,
                         }
                     )
+
+                if not banners:
+                    raise Exception("No banners for Home section: " + url)
+
             elif subsection_type == bs.SUBSECTION_TYPE_CATEGORY_PAGE:
                 session = requests.Session(impersonate="chrome120")
                 soup = BeautifulSoup(session.get(url, timeout=30).text, "lxml")

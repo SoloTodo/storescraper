@@ -637,12 +637,12 @@ class Ripley(Store):
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "electro/refrigeracion/freezers-y-congeladores/",
             ],
-            # [
-            #    bs.REFRIGERATION,
-            #    "Door In Door",
-            #    bs.SUBSECTION_TYPE_MOSAIC,
-            #    "electro/refrigeracion/door-in-door/",
-            # ],
+            [
+                bs.REFRIGERATION,
+                "Door In Door",
+                bs.SUBSECTION_TYPE_MOSAIC,
+                "electro/refrigeracion/door-in-door/",
+            ],
             [
                 bs.REFRIGERATION,
                 "Frigobar",
@@ -679,12 +679,12 @@ class Ripley(Store):
                 bs.SUBSECTION_TYPE_MOSAIC,
                 "electro/lavanderia/secadoras",
             ],
-            # [
-            #    bs.WASHING_MACHINES,
-            #    "Doble Carga",
-            #    bs.SUBSECTION_TYPE_MOSAIC,
-            #    "electro/lavanderia/doble-carga",
-            # ],
+            [
+                bs.WASHING_MACHINES,
+                "Doble Carga",
+                bs.SUBSECTION_TYPE_MOSAIC,
+                "electro/lavanderia/doble-carga",
+            ],
             [
                 bs.TELEVISIONS,
                 "Televisión",
@@ -780,7 +780,7 @@ class Ripley(Store):
                 banners_container = soup.find("section", "catalog-top-banner")
 
                 if not banners_container:
-                    raise Exception("No banners for: " + url)
+                    print("No banners for: " + url)
                     continue
 
                 idx = 1
@@ -849,6 +849,9 @@ class Ripley(Store):
                         "type": subsection_type,
                     }
                 )
+
+            if not banners:
+                raise Exception("No banners for Home section: " + url)
 
         else:
             response = session.get(url + "?v=2")
@@ -923,7 +926,7 @@ class Ripley(Store):
                         )
 
         if not banners:
-            raise Exception("No banners for: " + url)
+            print("No banners for: " + url)
 
         return banners
 

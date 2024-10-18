@@ -49,4 +49,8 @@ class Tottus(Falabella):
                     "type": bs.SUBSECTION_TYPE_HOME,
                 }
             )
+
+        if not banners:
+            raise Exception("No banners for Home section: " + cls.banners_base_url)
+
         return banners

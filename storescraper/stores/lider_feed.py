@@ -486,9 +486,14 @@ class LiderFeed(Store):
                     "key": picture_url,
                     "position": idx + 1,
                     "section": bs.HOME,
-                    "subsection": "Home",
+                    "subsection": bs.HOME,
                     "type": bs.SUBSECTION_TYPE_HOME,
                 }
+            )
+
+        if not banners:
+            raise Exception(
+                "No banners for Home section: " + destination_url_base.format("")
             )
 
         return banners
