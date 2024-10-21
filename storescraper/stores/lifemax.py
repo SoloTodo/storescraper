@@ -26,51 +26,53 @@ from storescraper.categories import (
     STORAGE_DRIVE,
     USB_FLASH_DRIVE,
     VIDEO_CARD,
-    TABLET,
     ALL_IN_ONE,
+    CPU_COOLER,
 )
 from storescraper.product import Product
 from storescraper.store_with_url_extensions import StoreWithUrlExtensions
-from storescraper.utils import session_with_proxy, html_to_markdown
+from storescraper.utils import session_with_proxy, html_to_markdown, remove_words
 
 
 class Lifemax(StoreWithUrlExtensions):
     url_extensions = [
-        ["audifonos-bluetooth", HEADPHONES],
-        ["audifonos-con-cable", HEADPHONES],
-        ["tarjeta-flash-micro-sd", MEMORY_CARD],
-        ["discos-ssd", SOLID_STATE_DRIVE],
-        ["discos-ssd-m-2", SOLID_STATE_DRIVE],
+        ["notebooks", NOTEBOOK],
+        ["impresoras-multifuncionales-tinta", PRINTER],
+        ["Impresoras-de-Inyeccion-de-Tinta", PRINTER],
+        ["all-in-one", ALL_IN_ONE],
+        ["discos-ssd-unidad-estado-solido", SOLID_STATE_DRIVE],
         ["discos-duros-externos", EXTERNAL_STORAGE_DRIVE],
+        ["discos-ssd-externos", EXTERNAL_STORAGE_DRIVE],
+        ["disco-duro-interno", STORAGE_DRIVE],
+        ["tarjeta-flash-micro-sd", MEMORY_CARD],
+        ["pendrives", USB_FLASH_DRIVE],
+        ["monitores", MONITOR],
+        ["mouse", MOUSE],
+        ["teclados", KEYBOARD],
+        ["kits-de-mouse-y-teclado", KEYBOARD_MOUSE_COMBO],
         ["memoria-ram-notebook", RAM],
         ["memoria-ram-pc", RAM],
-        ["disco-duro-interno", STORAGE_DRIVE],
-        ["disco-ssd-externo", EXTERNAL_STORAGE_DRIVE],
-        ["monitores", MONITOR],
-        ["notebook-corporativos", NOTEBOOK],
-        ["impresoras-multifuncionales-tinta", PRINTER],
-        ["impresoras-laser", PRINTER],
-        ["pendrives", USB_FLASH_DRIVE],
-        ["tablets", TABLET],
-        ["all-in-one", ALL_IN_ONE],
-        ["mouse", MOUSE],
-        ["kits-de-mouse-y-teclado", KEYBOARD_MOUSE_COMBO],
-        ["teclados", KEYBOARD],
-        ["memorias-ram-pc-gaming", RAM],
-        ["memoria-ram-notebook-gamers", RAM],
-        ["ssd-m-2-especial-gamers", SOLID_STATE_DRIVE],
-        ["monitores-gamer", MONITOR],
-        ["procesadores", PROCESSOR],
-        ["gabinetes-gamer", COMPUTER_CASE],
+        ["refrigeracion-liquida", CPU_COOLER],
+        ["fuentes-de-poder-pc", POWER_SUPPLY],
+        ["gabinetes", COMPUTER_CASE],
+        ["tarjetas-de-video", VIDEO_CARD],
         ["placas-madre", MOTHERBOARD],
-        ["mouse-gamers", MOUSE],
-        ["fuentes-de-poder", POWER_SUPPLY],
+        ["procesadores", PROCESSOR],
+        ["audifonos-gamer", HEADPHONES],
         ["sillas-gamer", GAMING_CHAIR],
-        ["tarjeta-de-video", VIDEO_CARD],
-        ["audifonos-gamers", HEADPHONES],
-        ["disco-duro-externo-especial-gamer", EXTERNAL_STORAGE_DRIVE],
+        ["monitores-gamer", MONITOR],
+        ["teclado-gamer", KEYBOARD],
+        ["parlantes-gamer-1", STEREO_SYSTEM],
+        ["mouse-y-teclados-gamer", MOUSE],
+        ["memoria-ram-notebook-gamer", RAM],
+        ["memoria-ram-pc-gaming", RAM],
+        ["parlantes-portatiles", STEREO_SYSTEM],
         ["parlantes-y-subwoofers", STEREO_SYSTEM],
-        ["audifonos-c-microfono", HEADPHONES],
+        ["barra-de-sonido", STEREO_SYSTEM],
+        ["audifonos-in-ear", HEADPHONES],
+        ["audifonos-on-ear-1", HEADPHONES],
+        ["audifonos-over-ear", HEADPHONES],
+        ["audifonos-tws", HEADPHONES],
     ]
 
     @classmethod
@@ -83,16 +85,18 @@ class Lifemax(StoreWithUrlExtensions):
             if page > 10:
                 raise Exception("Page overflow: " + url_extension)
 
-            page_url = "https://www.lifemaxstore.cl/collection/{}/" "?page={}".format(
-                url_extension, page
+            page_url = (
+                f"https://www.lifemaxstore.cl/collections/{url_extension}?page={page}"
             )
             print(page_url)
             response = session.get(page_url)
+
             if response.url != page_url:
                 raise Exception("Url mismatch: {} - {}".format(page_url, response.url))
+
             data = response.text
             soup = BeautifulSoup(data, "html5lib")
-            product_container = soup.find("div", "bs-collection")
+            product_container = soup.find("hdt-reval-items", "hdt-collection-products")
 
             if not product_container:
                 if page == 1:
@@ -100,18 +104,15 @@ class Lifemax(StoreWithUrlExtensions):
                 break
 
             product_containers = product_container.findAll(
-                "div", "bs-collection__product"
+                "hdt-card-product", "hdt-card-product"
             )
-            if not product_containers:
-                if page == 1:
-                    logging.warning("Empty category: " + url_extension)
-                break
 
             for container in product_containers:
                 product_url = container.find("a")["href"]
                 product_urls.append("https://www.lifemaxstore.cl" + product_url)
 
             page += 1
+
         return product_urls
 
     @classmethod
@@ -119,41 +120,51 @@ class Lifemax(StoreWithUrlExtensions):
         print(url)
         session = session_with_proxy(extra_args)
         response = session.get(url)
+        soup = BeautifulSoup(response.text, "lxml")
+        products = []
 
-        if response.text == "":
+        if response.url == "https://www.lifemaxstore.cl/":
             return []
 
-        soup = BeautifulSoup(response.text, "html5lib")
-
-        json_container = soup.find("main", "bs-main").find("script").string.strip()
-        json_container = json.loads(
-            re.search(
-                r"window.INIT.products.push\(([\s\S]+)\);", json_container
-            ).groups()[0]
-        )
-
         product_data = json.loads(
-            soup.find(
-                "script", {"type": "application/ld+json", "data-schema": "Product"}
-            ).string
+            soup.findAll("script", {"type": "application/ld+json"})[3].text
+        )
+        main_section = soup.find("div", "hdt-main-product")
+        normal_price = Decimal(
+            remove_words(
+                main_section.find("hdt-price", "hdt-price")
+                .find("span", "hdt-money")
+                .text
+            )
+        )
+        offer_price = Decimal(
+            remove_words(
+                main_section.find("p", "hdt-transferencia-price")
+                .find("span", "hdt-money")
+                .text
+            )
+        )
+        picture_urls_container = main_section.find("div", "hdt-slider__viewport")
+
+        if picture_urls_container:
+            picture_urls = [
+                f"https:{img['src'].split('?')[0]}"
+                for img in picture_urls_container.findAll("img")
+            ]
+        else:
+            picture_urls = [
+                f"https:{soup.find('div', 'hdt-product__media').find('img')['src'].split('?')[0]}"
+            ]
+        description = html_to_markdown(
+            soup.find("div", "hdt-product-tab__content").text
         )
 
-        picture_urls = [x for x in product_data["image"] if validators.url(x)]
-        base_name = json_container["product"]["title"]
-        description = html_to_markdown(json_container["product"]["description"])
-
-        products = []
-        for variant in json_container["variants"]:
-            name = base_name + " " + variant["title"]
-            key = str(variant["id"])
+        for variant in product_data["hasVariant"]:
+            name = variant["name"]
             sku = variant["sku"]
-            stock = int(variant["stock"][0]["quantityAvailable"])
-            normal_price = Decimal(variant["finalPrice"])
-
-            if not normal_price:
-                continue
-
-            offer_price = (normal_price * Decimal("0.96")).quantize(0)
+            offer = variant["offers"]
+            stock = -1 if offer["availability"] == "http://schema.org/InStock" else 0
+            key = offer["url"].split("?variant=")[1]
 
             p = Product(
                 name,
@@ -171,6 +182,7 @@ class Lifemax(StoreWithUrlExtensions):
                 picture_urls=picture_urls,
                 description=description,
             )
+
             products.append(p)
 
         return products
