@@ -58,11 +58,7 @@ class Electromillonaria(Store):
         name = soup.find("h1", "product_title").text
         sku = str(soup.find("span", "sku").text.strip())
         price = Decimal(remove_words(soup.find("p", "price").findAll("bdi")[-1].text))
-        description = html_to_markdown(
-            soup.find(
-                "div", {"data-widget_type": "woocommerce-product-content.default"}
-            ).text
-        )
+        description = html_to_markdown(soup.find("div", "product-content").text)
 
         p = Product(
             name,
