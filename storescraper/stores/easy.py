@@ -1,8 +1,7 @@
-import base64
-import json
 import re
 from collections import defaultdict
 from decimal import Decimal
+from storescraper import banner_sections as bs
 
 from storescraper.categories import (
     AIR_CONDITIONER,
@@ -18,7 +17,7 @@ from storescraper.categories import (
 
 from storescraper.product import Product
 from storescraper.store import Store
-from storescraper.utils import session_with_proxy, html_to_markdown, vtex_preflight
+from storescraper.utils import session_with_proxy, html_to_markdown
 
 
 class Easy(Store):
@@ -337,3 +336,46 @@ class Easy(Store):
         )
 
         return [p]
+
+    @classmethod
+    def banners(cls, extra_args=None):
+        base_url = "https://www.easy.cl"
+        session = session_with_proxy(extra_args)
+        response = session.get(
+            f"{base_url}/_next/data/m8xQcO37fhHpOCbmLYnu8/index.json"
+        ).json()
+        content_data = response["pageProps"]["repo"]["content"]
+        banners_data = None
+
+        for content in content_data:
+            if content["component"] == "banner-carousel":
+                banners_data = content
+                break
+
+        banners = []
+
+        for idx, banner in enumerate(banners_data["items"]):
+            banner_link = banner["link"]
+            banner_url = (
+                f"{base_url}{banner_link}"
+                if banner_link[0] == "/"
+                else f"{base_url}/{banner_link}"
+            )
+
+            banners.append(
+                {
+                    "url": base_url,
+                    "picture_url": banner["image"],
+                    "destination_urls": [banner_url],
+                    "key": banner["image"],
+                    "position": idx + 1,
+                    "section": bs.HOME,
+                    "subsection": bs.HOME,
+                    "type": bs.SUBSECTION_TYPE_HOME,
+                }
+            )
+
+        if not banners:
+            raise Exception(f"No banners for Home section: {base_url}")
+
+        return banners
