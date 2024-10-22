@@ -56,9 +56,9 @@ class Claro(Store):
     def _discover_cells(cls, extra_args=None):
         product_urls = []
         session = session_with_proxy(extra_args)
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        )
         session.headers["Accept-Language"] = "en"
         offset = 0
 
@@ -127,9 +127,9 @@ class Claro(Store):
     @classmethod
     def _planes(cls, url, extra_args):
         session = session_with_proxy(extra_args)
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        )
         session.headers["Accept-Language"] = "en"
         data_url = (
             "https://digital.clarochile.cl/wcm-inyect/" "landing-postpago/content.html"
@@ -177,9 +177,9 @@ class Claro(Store):
     def _celular_postpago(cls, url, extra_args):
         print(url)
         session = session_with_proxy(extra_args)
-        session.headers[
-            "User-Agent"
-        ] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        session.headers["User-Agent"] = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        )
         session.headers["Accept-Language"] = "en"
         res = session.get(url)
         soup = BeautifulSoup(res.text, "html5lib")
@@ -226,7 +226,7 @@ class Claro(Store):
 
             combination_type = data["attrSwatchFlujo"]
 
-            if combination_type in ["REB", "RET", ""]:
+            if combination_type in ["PE_MIGRA", "REB", "RET", ""]:
                 # Renovación or Default
                 continue
 
