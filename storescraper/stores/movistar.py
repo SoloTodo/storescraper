@@ -214,17 +214,21 @@ class Movistar(Store):
             condition = "https://schema.org/NewCondition"
         products = []
 
+        form_key = soup.find("input", {"id": "du-form-key"})["value"]
+        form_emh = soup.find("input", {"id": "du-form-emh"})["value"]
+        base_payload = f"key={form_key}&emh={form_emh}"
+        base_endpoint = "https://catalogo.movistar.cl/tienda/detalleequipo/ajax/"
         # Prepago
         if cls.include_prepago:
             product_id = soup.find("input", {"id": "du-product-id"})["value"]
-            payload = "id={}".format(product_id)
+            payload = f"{base_payload}&id={product_id}"
             prepago_res = session.post(
-                "https://catalogo.movistar.cl/tienda/detalleequipo/"
-                "ajax/dataproducto",
+                f"{base_endpoint}dataproducto",
                 payload,
             )
             prepago_json = prepago_res.json()
             prepago_price = Decimal(remove_words(prepago_json["special_price"]))
+
             if prepago_price:
                 products.append(
                     Product(
@@ -250,25 +254,23 @@ class Movistar(Store):
             regex = "var {} = '(.*)';".format(variation["base_plan"])
             match = re.search(regex, page.text)
             codigo_oferta = match.groups()[0]
+
             if not codigo_oferta:
                 continue
-            payload = "sku={}&codigo_oferta={}".format(sku, codigo_oferta)
 
+            payload = f"{base_payload}&sku={sku}&codigo_oferta={codigo_oferta}"
             planes_res = session.post(
-                "https://catalogo.movistar.cl/tienda/"
-                "detalleequipo/ajax/dataplanesproducto",
+                f"{base_endpoint}dataplanesproducto",
                 payload,
             )
             planes = planes_res.json()
 
             for plan in planes:
-                precio_payload = "sku_plan={}&sku={}&sku_oferta={}".format(
-                    plan["sku_plan"].replace(" ", "+"), sku, codigo_oferta
-                )
+                sku_plan = plan["sku_plan"].replace(" ", "+")
+                payload = f"{base_payload}&sku_plan={sku_plan}&sku={sku}&sku_oferta={codigo_oferta}"
                 precio_res = session.post(
-                    "https://catalogo.movistar.cl/tienda/detalleequipo/"
-                    "ajax/datafinanciamientoproducto",
-                    precio_payload,
+                    f"{base_endpoint}datafinanciamientoproducto",
+                    payload,
                 )
                 precio_data = precio_res.json()
 
