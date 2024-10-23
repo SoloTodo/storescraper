@@ -1,6 +1,9 @@
+import json
 import re
 from collections import defaultdict
 from decimal import Decimal
+from bs4 import BeautifulSoup
+
 from storescraper import banner_sections as bs
 
 from storescraper.categories import (
@@ -341,9 +344,11 @@ class Easy(Store):
     def banners(cls, extra_args=None):
         base_url = "https://www.easy.cl"
         session = session_with_proxy(extra_args)
-        response = session.get(
-            f"{base_url}/_next/data/m8xQcO37fhHpOCbmLYnu8/index.json"
-        ).json()
+        soup = BeautifulSoup(session.get(base_url).text, "lxml")
+        build_id = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
+            "buildId"
+        ]
+        response = session.get(f"{base_url}/_next/data/{build_id}/index.json").json()
         content_data = response["pageProps"]["repo"]["content"]
         banners_data = None
 
