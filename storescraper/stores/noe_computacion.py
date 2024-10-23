@@ -96,7 +96,7 @@ class NoeComputacion(StoreWithUrlExtensions):
         else:
             raise Exception("No JSON product data found")
 
-        name = product_data["name"]
+        name = product_data["name"][:250]
         sku = str(product_data["sku"])
         description = product_data["description"]
 
