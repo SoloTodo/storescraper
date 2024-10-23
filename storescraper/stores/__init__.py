@@ -329,6 +329,7 @@ from .winpy import Winpy
 from .wom import Wom
 from .wong import Wong
 from .x_com import XCom
+from .xtreme_components import XtremeComponents
 from .xiaomi_online import XiaomiOnline
 from .yokan import Yokan
 from .you_tech import YouTech
