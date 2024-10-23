@@ -110,6 +110,9 @@ class NoeComputacion(StoreWithUrlExtensions):
         else:
             offer_price = normal_price
 
+        if offer_price > Decimal(100000000) or normal_price > Decimal(100000000):
+            return []
+
         qty_input = soup.find("input", "input-text qty text")
         if qty_input:
             if qty_input["max"]:
