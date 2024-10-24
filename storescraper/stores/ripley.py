@@ -60,9 +60,9 @@ class Ripley(Store):
             1,
         ],
         [
-            "tecno/computacion/tablets-y-e-readers",
+            "tecno/computacion/tablets",
             [TABLET],
-            "Tecno > Computación > Tablets y E-readers",
+            "Tecno > Computación > Tablets",
             1,
         ],
         [
@@ -314,58 +314,49 @@ class Ripley(Store):
                 continue
 
             page = 1
-            section_urls = []
             section_index = 1
 
             while True:
-                if page > 300:
+                if page > 400:
                     raise Exception(f"Page overflow: {category_path}")
 
-                url = f"https://simple.ripley.cl/{category_path}?page={page}"
+                url = f"https://simple.ripley.cl/api/v1/catalog-products/{category_path}?page={page}"
 
                 if fast_mode:
                     url += "&facet=Vendido%20por%3ARipley"
 
                 print(url)
+                response = json.loads(session.post(url).text)
+                products = response["products"]
 
-                response = session.get(url).text
-                soup = BeautifulSoup(response, "lxml")
-                products_container = soup.find("div", "catalog-container")
-
-                if not products_container:
-                    break
-
-                products = products_container.find_all("a", "catalog-product-item")
                 assert products
-                full_page_repeated = True
 
-                for idx, product in enumerate(products):
-                    full_url = f"https://simple.ripley.cl{product['href']}".split("?")[
-                        0
-                    ]
-                    if full_url not in section_urls:
-                        full_page_repeated = False
-                        section_urls.append(full_url)
+                for product in products:
+                    product_url = product["url"]
 
-                    if product["id"][:3] == "MPM":
+                    if product["partNumber"][:3] == "MPM":
                         continue
 
                     if fast_mode:
-                        product_entries[full_url] = []
+                        product_entries[product_url] = []
                     else:
-                        product_entries[full_url].append(
+                        product_entries[product_url].append(
                             {
                                 "category_weight": category_weight,
                                 "section_name": section_name,
                                 "value": section_index,
                             }
                         )
+
                     section_index += 1
 
-                if full_page_repeated:
+                if fast_mode and page >= 50:
                     break
 
-                if fast_mode and page >= 50:
+                if (
+                    response["pagination"]["actualPage"]
+                    == response["pagination"]["totalPages"]
+                ):
                     break
 
                 page += 1
