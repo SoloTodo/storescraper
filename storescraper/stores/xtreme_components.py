@@ -19,6 +19,9 @@ class XtremeComponents(StoreWithUrlExtensions):
         page = 1
 
         while True:
+            if page > 10:
+                raise Exception("Page overflow")
+
             url = f"https://xtremecomponents.cl/product-category/{url_extension}/page/{page}"
             print(url)
             response = session.get(url)
@@ -45,11 +48,13 @@ class XtremeComponents(StoreWithUrlExtensions):
         response = json.loads(
             soup.findAll("script", {"type": "application/ld+json"})[1].text
         )
-        product_data = None
 
-        for type in response["@graph"]:
-            if type["@type"] == "Product":
-                product_data = type
+        for node in response["@graph"]:
+            if node["@type"] == "Product":
+                product_data = node
+                break
+        else:
+            raise Exception("No product tag found")
 
         name = product_data["name"]
 
@@ -78,6 +83,7 @@ class XtremeComponents(StoreWithUrlExtensions):
             sku=sku,
             description=description,
             picture_urls=picture_urls,
+            condition="https://schema.org/RefurbishedCondition",
         )
 
         return [p]
