@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import json
 
 from storescraper import banner_sections as bs
 from storescraper.utils import session_with_proxy
@@ -28,22 +29,23 @@ class Tottus(Falabella):
     def banners(cls, extra_args=None):
         session = session_with_proxy(extra_args)
         banners = []
-
         soup = BeautifulSoup(session.get(cls.banners_base_url).text, "lxml")
-        slider_container = soup.find("div", "slideshow-container-desk")
-        slider_tags = slider_container.findAll("a")
+        json_data = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)
+        props = json_data["props"]["pageProps"]["page"]["containers"]
+        banners_data = None
 
-        for index, slider_tag in enumerate(slider_tags):
-            destination_urls = [slider_tag["href"]]
-            picture_url = slider_tag.find("img")["src"]
+        for container in props:
+            if container["key"] == "showcase":
+                banners_data = container["components"][0]["data"]["slides"]
 
+        for idx, banner in enumerate(banners_data):
             banners.append(
                 {
                     "url": cls.banners_base_url,
-                    "picture_url": picture_url,
-                    "destination_urls": destination_urls,
-                    "key": picture_url,
-                    "position": index + 1,
+                    "picture_url": banner["imgBackgroundDesktopUrl"],
+                    "destination_urls": [banner["mainUrl"]],
+                    "key": banner["imgBackgroundDesktopUrl"],
+                    "position": idx + 1,
                     "section": bs.HOME,
                     "subsection": bs.HOME,
                     "type": bs.SUBSECTION_TYPE_HOME,
@@ -51,6 +53,6 @@ class Tottus(Falabella):
             )
 
         if not banners:
-            raise Exception("No banners for Home section: " + cls.banners_base_url)
+            raise Exception(f"No banners for Home section: {cls.banners_base_url}")
 
         return banners
